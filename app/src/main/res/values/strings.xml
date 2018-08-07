@@ -2,7 +2,13 @@
     tools:locale="pt">
     <string name="app_name">Melon</string>
     <string name="login_welcome_to_unes">Bem-vindo ao UNES</string>
-    <string name="login_first_steps">Primeiros Passos</string>
-    <string name="login_unes_single_help">Acessar o Sagres nunca foi tão fácil</string>
+    <string name="login_first_steps">Primeiros passos</string>
+    <string name="login_unes_single_help">A maneira mais fácil de acessar o Sagres</string>
     <string name="unes_image">UNES Imagem</string>
+    <string name="login_access_account">Acessar sua conta</string>
+    <string name="login_using_sagres_account">Entre utilizando sua conta do Sagres</string>
+    <string name="login_user">Usuário</string>
+    <string name="login_password">Senha</string>
+    <string name="login_sign_in">Entrar</string>
+    <string name="login_about_unes">Sobre o UNES</string>
 </resources>
