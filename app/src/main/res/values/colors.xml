@@ -10,5 +10,6 @@
     <color name="text_tertiary_dark">#61000000</color> <!-- 38% -->
     <color name="text_primary_light">#ffffffff</color>
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
-    <color name="text_disabled_light">#4dffffff</color> <!-- 30% -->
+    <color name="text_disabled_light">#4dffffff</color>
+    <color name="white">#FFFF</color> <!-- 30% -->
 </resources>
