@@ -1,0 +1,48 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+
+android {
+    compileSdkVersion 28
+    defaultConfig {
+        applicationId "com.forcetower.uefs"
+        minSdkVersion 21
+        targetSdkVersion 28
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dataBinding {
+        enabled = true
+    }
+    kapt {
+        correctErrorTypes = true
+        javacOptions {
+            option("-Xmaxerrs", 1000)
+        }
+    }
+}
+
+ext {
+    androidX = "1.0.0-rc01"
+    google_material = "1.0.0-rc01"
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    implementation "androidx.appcompat:appcompat:$androidX"
+    implementation "androidx.constraintlayout:constraintlayout:1.1.2"
+    implementation "com.google.android.material:material:$google_material"
+
+    implementation "de.hdodenhof:circleimageview:2.2.0"
+    implementation "com.jakewharton.timber:timber:4.6.1"
+}

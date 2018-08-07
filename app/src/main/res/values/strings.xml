@@ -1,0 +1,8 @@
+<resources xmlns:tools="http://schemas.android.com/tools"
+    tools:locale="pt">
+    <string name="app_name">Melon</string>
+    <string name="login_welcome_to_unes">Bem-vindo ao UNES</string>
+    <string name="login_first_steps">Primeiros Passos</string>
+    <string name="login_unes_single_help">Acessar o Sagres nunca foi tão fácil</string>
+    <string name="unes_image">UNES Imagem</string>
+</resources>
