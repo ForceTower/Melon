@@ -4,7 +4,7 @@ Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para 
 🛑 Versão altamente instável e com funções faltando 🛑
 
 ### Objetivos
-* Diminuir o tempo de resposta do aplicativo
+* Diminuir o tempo de carregamento do aplicativo quando está abrindo
 * Utilizar os novos componentes do Android
 * Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal (cof, cof Processo da Oracle cof, cof)
 * Corrigir o deadlock raro durante a sincronização
