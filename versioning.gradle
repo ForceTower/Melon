@@ -1,0 +1,20 @@
+ext {
+    buildVersionCode = {
+        def candidate = "99"
+        def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
+        if (patch.endsWith("development")) {
+            candidate = "0"
+            patch = patch.replaceAll("[^0-9]","")
+        } else {
+            def rc
+            (patch, rc) = patch.tokenize("rc")
+            if (rc) {
+                candidate = rc
+            }
+        }
+
+        (major, minor, patch, candidate) = [major, minor, patch, candidate].collect{it.toInteger()}
+
+        (major * 100000) + (minor * 10000) + (patch * 100) + candidate
+    }
+}
