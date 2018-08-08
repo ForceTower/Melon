@@ -1,7 +1,6 @@
-<resources xmlns:tools="http://schemas.android.com/tools"
-    tools:locale="pt">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt">
     <string name="app_name">Melon</string>
-    <string name="login_welcome_to_unes">Bem-vindo ao UNES</string>
+    <string name="login_welcome_to_unes">Boas-vindas ao UNES</string>
     <string name="login_first_steps">Primeiros passos</string>
     <string name="login_unes_single_help">A maneira mais fácil de acessar o Sagres</string>
     <string name="unes_image">UNES Imagem</string>
@@ -12,4 +11,5 @@
     <string name="login_sign_in">Entrar</string>
     <string name="login_about_unes">Sobre o UNES</string>
     <string name="login_text_preparing_rockets">Preparando os Foguetes</string>
+    <string name="user_image_transition" translatable="false">user_image_transition</string>
 </resources>
