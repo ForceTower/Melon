@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
-import com.forcetower.uefs.databinding.FragmentLoadingBinding
+import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
-class LoadingFragment : UFragment() {
-    private lateinit var binding: FragmentLoadingBinding
+class SigningInFragment : UFragment() {
+    private lateinit var binding: FragmentSigningInBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentLoadingBinding.inflate(inflater, container, false).also {
+        return FragmentSigningInBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }

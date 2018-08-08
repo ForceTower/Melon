@@ -12,8 +12,9 @@ import com.forcetower.uefs.feature.shared.UFragment
 class LoginFragment : UFragment() {
     private lateinit var binding: FragmentLoginBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? =
-        DataBindingUtil.inflate<FragmentLoginBinding>(inflater, R.layout.fragment_login, container, false).also {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentLoginBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
+    }
 }

@@ -19,5 +19,15 @@
         android:id="@+id/login_form"
         android:name="com.forcetower.uefs.feature.login.LoginFragment"
         android:label="LoginFragment"
-        tools:layout="@layout/fragment_login"/>
+        tools:layout="@layout/fragment_login">
+        <action
+            android:id="@+id/action_login_form_to_signingInFragment"
+            app:destination="@id/login_signing_in" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_signing_in"
+        android:name="com.forcetower.uefs.feature.login.SigningInFragment"
+        android:label="SigningInFragment"
+        tools:layout="@layout/fragment_signing_in"/>
 </navigation>
