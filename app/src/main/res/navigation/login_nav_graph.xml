@@ -9,5 +9,15 @@
         android:id="@+id/login_loading"
         android:name="com.forcetower.uefs.feature.login.LoadingFragment"
         android:label="LoadingFragment"
-        tools:layout="@layout/fragment_loading"/>
+        tools:layout="@layout/fragment_loading">
+        <action
+            android:id="@+id/action_login_loading_to_login_form"
+            app:destination="@id/login_form" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_form"
+        android:name="com.forcetower.uefs.feature.login.LoginFragment"
+        android:label="LoginFragment"
+        tools:layout="@layout/fragment_login"/>
 </navigation>
