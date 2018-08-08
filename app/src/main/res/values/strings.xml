@@ -11,4 +11,5 @@
     <string name="login_password">Senha</string>
     <string name="login_sign_in">Entrar</string>
     <string name="login_about_unes">Sobre o UNES</string>
+    <string name="login_text_preparing_rockets">Preparando os Foguetes</string>
 </resources>
