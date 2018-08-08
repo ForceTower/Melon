@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/login_nav_graph"
+    app:startDestination="@id/login_loading">
+
+    <fragment
+        android:id="@+id/login_loading"
+        android:name="com.forcetower.uefs.feature.login.LoadingFragment"
+        android:label="LoadingFragment"
+        tools:layout="@layout/fragment_loading"/>
+</navigation>

@@ -9,8 +9,8 @@ android {
         applicationId "com.forcetower.uefs"
         minSdkVersion 21
         targetSdkVersion 28
-        versionCode 1
-        versionName "1.0"
+        versionCode 700000
+        versionName "7.0-development"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
@@ -33,6 +33,7 @@ android {
 ext {
     androidX = "1.0.0-rc01"
     google_material = "1.0.0-rc01"
+    nav_version = "1.0.0-alpha04"
 }
 
 dependencies {
@@ -42,6 +43,11 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     implementation "com.google.android.material:material:$google_material"
+
+    implementation "android.arch.navigation:navigation-fragment:$nav_version"
+    implementation "android.arch.navigation:navigation-ui:$nav_version"
+    implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
+    implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
 
     implementation "de.hdodenhof:circleimageview:2.2.0"
     implementation "com.jakewharton.timber:timber:4.6.1"
