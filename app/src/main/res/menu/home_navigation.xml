@@ -29,10 +29,6 @@
             android:id="@+id/calendar"
             android:title="@string/label_calendar"
             android:icon="@drawable/ic_calendar_black_24dp"/>
-
-        <item
-            android:id="@+id/open_source"
-            android:title="@string/label_open_source_libraries"/>
     </group>
 
     <item android:title="@string/label_services">
@@ -76,4 +72,12 @@
             </group>
         </menu>
     </item>
+
+    <item
+        android:id="@+id/open_source"
+        android:title="@string/label_open_source_libraries"/>
+
+    <item
+        android:id="@+id/open_source_2"
+        android:title="@string/label_open_source_libraries"/>
 </menu>
