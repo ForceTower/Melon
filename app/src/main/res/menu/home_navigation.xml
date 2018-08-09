@@ -21,7 +21,7 @@
             android:icon="@drawable/ic_message_black_24dp"/>
 
         <item
-            android:id="@+id/grades"
+            android:id="@+id/grades_disciplines"
             android:title="@string/label_grades_disciplines"
             android:icon="@drawable/ic_discipline_black_24dp"/>
 
@@ -29,10 +29,15 @@
             android:id="@+id/calendar"
             android:title="@string/label_calendar"
             android:icon="@drawable/ic_calendar_black_24dp"/>
+
+        <item
+            android:id="@+id/open_source"
+            android:title="@string/label_open_source_libraries"/>
     </group>
 
     <item android:title="@string/label_services">
         <menu>
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/events"
                 android:title="@string/label_events"
@@ -47,11 +52,13 @@
                 android:id="@+id/adventure"
                 android:title="@string/label_adventure"
                 android:icon="@drawable/ic_games_black_24dp"/>
+            </group>
         </menu>
     </item>
 
     <item android:title="@string/label_definitions">
         <menu>
+            <group android:checkableBehavior="single">
             <item
                 android:id="@+id/about"
                 android:title="@string/label_about_app"
@@ -66,6 +73,7 @@
                 android:id="@+id/logout"
                 android:title="@string/label_logout"
                 android:icon="@drawable/ic_logout_black_24dp"/>
+            </group>
         </menu>
     </item>
 </menu>
