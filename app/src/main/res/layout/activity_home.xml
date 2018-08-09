@@ -6,11 +6,38 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white">
+        
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize">
+
+            <TextView
+                android:id="@+id/text_toolbar_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                tools:text="Painel de Controle"
+                android:textSize="18sp"
+                android:textColor="@color/colorPrimaryDark" />
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/image_user_picture"
+                android:layout_width="?attr/actionBarSize"
+                android:layout_height="?attr/actionBarSize"
+                android:layout_gravity="end|center_vertical"
+                android:transitionName="@string/user_image_transition"
+                android:padding="8dp"
+                android:layout_marginEnd="8dp"
+                tools:src="@tools:sample/avatars"/>
+        </androidx.appcompat.widget.Toolbar>
 
         <fragment
             android:id="@+id/home_nav_host"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:layout_marginTop="?attr/actionBarSize"
             android:layout_marginBottom="56dp"
             android:name="androidx.navigation.fragment.NavHostFragment"
             app:navGraph="@navigation/home_nav_graph"
@@ -20,7 +47,7 @@
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimaryDark"
             app:navigationIcon="@drawable/ic_menu_white_24dp"
             android:layout_gravity="bottom"
             android:elevation="8dp">
