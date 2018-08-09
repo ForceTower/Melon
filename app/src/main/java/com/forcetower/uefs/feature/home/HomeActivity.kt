@@ -18,7 +18,7 @@ class HomeActivity : UActivity() {
             setSupportActionBar(it.bottomAppBar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
             it.bottomAppBar.setNavigationOnClickListener {
-                bottomFragment.show(supportFragmentManager, bottomFragment.tag)
+                if (!bottomFragment.isAdded) bottomFragment.show(supportFragmentManager, bottomFragment.tag)
             }
         }
     }
