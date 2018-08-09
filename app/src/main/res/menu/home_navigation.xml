@@ -76,8 +76,4 @@
     <item
         android:id="@+id/open_source"
         android:title="@string/label_open_source_libraries"/>
-
-    <item
-        android:id="@+id/open_source_2"
-        android:title="@string/label_open_source_libraries"/>
 </menu>

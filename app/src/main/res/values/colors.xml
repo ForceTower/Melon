@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#2196F3</color>
-    <color name="colorPrimaryDark">#1976D2</color>
-    <color name="colorPrimaryLight">#BBDEFB</color>
-    <color name="colorAccent">#ffa000</color>
+    <color name="colorPrimary">#FFC107</color>
+    <color name="colorPrimaryDark">#FFA000</color>
+    <color name="colorPrimaryLight">#FFECB3</color>
+    <color name="colorAccent">#2196F3</color>
 
     <color name="grey">#FF757575</color>
 
@@ -14,5 +14,5 @@
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
-    <color name="drawer_selected_color">#192196F3</color>
+    <color name="drawer_selected_color">#19FFC107</color>
 </resources>
