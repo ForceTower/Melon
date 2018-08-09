@@ -1,12 +1,12 @@
-package com.forcetower.uefs_2.feature.home
+package com.forcetower.unes.feature.home
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs_2.R
-import com.forcetower.uefs_2.databinding.HomeBottomBinding
-import com.forcetower.uefs_2.feature.shared.RoundedBottomSheetDialogFragment
+import com.forcetower.unes.R
+import com.forcetower.unes.databinding.HomeBottomBinding
+import com.forcetower.unes.feature.shared.RoundedBottomSheetDialogFragment
 import kotlinx.android.synthetic.main.fragment_home_bottom_sheet.*
 import timber.log.Timber
 

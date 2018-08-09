@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/login_loading"
-        android:name="com.forcetower.uefs_2.feature.login.LoadingFragment"
+        android:name="com.forcetower.unes.feature.login.LoadingFragment"
         android:label="LoadingFragment"
         tools:layout="@layout/fragment_loading">
         <action
@@ -17,7 +17,7 @@
 
     <fragment
         android:id="@+id/login_form"
-        android:name="com.forcetower.uefs_2.feature.login.LoginFragment"
+        android:name="com.forcetower.unes.feature.login.LoginFragment"
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
@@ -27,7 +27,7 @@
 
     <fragment
         android:id="@+id/login_signing_in"
-        android:name="com.forcetower.uefs_2.feature.login.SigningInFragment"
+        android:name="com.forcetower.unes.feature.login.SigningInFragment"
         android:label="SigningInFragment"
         tools:layout="@layout/fragment_signing_in"/>
 </navigation>

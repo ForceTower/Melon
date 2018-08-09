@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/dashboard"
-        android:name="com.forcetower.uefs_2.feature.DashboardFragment"
+        android:name="com.forcetower.unes.feature.dashboard.DashboardFragment"
         android:label="DashboardFragment"
         tools:layout="@layout/fragment_dashboard"/>
 </navigation>

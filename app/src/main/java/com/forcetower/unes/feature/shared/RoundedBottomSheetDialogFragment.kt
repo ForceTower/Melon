@@ -1,8 +1,8 @@
-package com.forcetower.uefs_2.feature.shared
+package com.forcetower.unes.feature.shared
 
 import android.app.Dialog
 import android.os.Bundle
-import com.forcetower.uefs_2.R
+import com.forcetower.unes.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 

@@ -1,11 +1,11 @@
-package com.forcetower.uefs_2.feature.login
+package com.forcetower.unes.feature.login
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs_2.databinding.FragmentSigningInBinding
-import com.forcetower.uefs_2.feature.shared.UFragment
+import com.forcetower.unes.databinding.FragmentSigningInBinding
+import com.forcetower.unes.feature.shared.UFragment
 
 class SigningInFragment : UFragment() {
     private lateinit var binding: FragmentSigningInBinding

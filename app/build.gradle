@@ -6,7 +6,7 @@ apply plugin: 'kotlin-android-extensions'
 android {
     compileSdkVersion 28
     defaultConfig {
-        applicationId "com.forcetower.uefs_2"
+        applicationId "com.forcetower.unes"
         minSdkVersion 21
         targetSdkVersion 28
         multiDexEnabled true

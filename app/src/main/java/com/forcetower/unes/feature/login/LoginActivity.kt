@@ -1,13 +1,13 @@
-package com.forcetower.uefs_2.feature.login
+package com.forcetower.unes.feature.login
 
 import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.forcetower.uefs_2.R
-import com.forcetower.uefs_2.feature.shared.UActivity
-import com.forcetower.uefs_2.databinding.ActivityLoginBinding
-import com.forcetower.uefs_2.feature.shared.config
+import com.forcetower.unes.R
+import com.forcetower.unes.feature.shared.UActivity
+import com.forcetower.unes.databinding.ActivityLoginBinding
+import com.forcetower.unes.feature.shared.config
 import com.google.android.material.snackbar.Snackbar
 
 class LoginActivity : UActivity() {
