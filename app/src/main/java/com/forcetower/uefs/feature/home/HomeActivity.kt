@@ -2,6 +2,7 @@ package com.forcetower.uefs.feature.home
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.navigation.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.shared.UActivity
@@ -21,5 +22,7 @@ class HomeActivity : UActivity() {
             }
         }
     }
+
+    override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
 
 }

@@ -25,4 +25,5 @@
     <string name="label_about_app">Sobre o Aplicativo</string>
     <string name="label_definitions">Definições</string>
     <string name="label_logout">Sair</string>
+    <string name="label_open_source_libraries">Licenças de Código Aberto</string>
 </resources>

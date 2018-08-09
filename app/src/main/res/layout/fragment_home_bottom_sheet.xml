@@ -2,9 +2,10 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data class="HomeBottomBinding"/>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/header_bottom"
@@ -50,7 +51,9 @@
 
         <View
             android:id="@+id/divider"
-            style="@style/AppTheme.BottomSheetEntryDivider"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            style="@style/BottomSheetEntryDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_bottom"/>
@@ -63,7 +66,9 @@
             app:itemIconPadding="@dimen/second_keyline"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:menu="@menu/home_navigation"
-            app:itemBackground="@drawable/navigation_item_background"/>
+            app:itemBackground="@drawable/navigation_item_background"
+            app:itemTextColor="@color/navigation_text_color"
+            app:itemIconTint="@color/navigation_icon_color"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
