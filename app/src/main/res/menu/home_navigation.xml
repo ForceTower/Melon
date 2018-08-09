@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group_main"
+        android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/dashboard"
+            android:title="@string/label_dashboard"
+            android:icon="@drawable/ic_dashboard_black_24dp"
+            android:checked="true"/>
+
+        <item
+            android:id="@+id/schedule"
+            android:title="@string/label_schedule"
+            android:icon="@drawable/ic_clock_black_24dp"/>
+
+        <item
+            android:id="@+id/messages"
+            android:title="@string/label_messages"
+            android:icon="@drawable/ic_message_black_24dp"/>
+
+        <item
+            android:id="@+id/grades"
+            android:title="@string/label_grades_disciplines"
+            android:icon="@drawable/ic_discipline_black_24dp"/>
+
+        <item
+            android:id="@+id/calendar"
+            android:title="@string/label_calendar"
+            android:icon="@drawable/ic_calendar_black_24dp"/>
+    </group>
+
+    <item android:title="@string/label_services">
+        <menu>
+            <item
+                android:id="@+id/events"
+                android:title="@string/label_events"
+                android:icon="@drawable/ic_event_black_24dp"/>
+
+            <item
+                android:id="@+id/reminders"
+                android:title="@string/label_reminders"
+                android:icon="@drawable/ic_reminder_black_24dp"/>
+
+            <item
+                android:id="@+id/adventure"
+                android:title="@string/label_adventure"
+                android:icon="@drawable/ic_games_black_24dp"/>
+        </menu>
+    </item>
+
+    <item android:title="@string/label_definitions">
+        <menu>
+            <item
+                android:id="@+id/about"
+                android:title="@string/label_about_app"
+                android:icon="@drawable/ic_info_black_24dp"/>
+
+            <item
+                android:id="@+id/settings"
+                android:title="@string/label_settings"
+                android:icon="@drawable/ic_settings_black_24dp"/>
+
+            <item
+                android:id="@+id/logout"
+                android:title="@string/label_logout"
+                android:icon="@drawable/ic_logout_black_24dp"/>
+        </menu>
+    </item>
+</menu>
