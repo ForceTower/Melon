@@ -1,4 +1,4 @@
-package com.forcetower.uefs_2.feature.shared
+package com.forcetower.unes.feature.shared
 
 import android.content.Context
 import android.util.TypedValue

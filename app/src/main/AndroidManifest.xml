@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.forcetower.uefs_2">
+    package="com.forcetower.unes">
 
     <application
-        android:name="com.forcetower.uefs_2.UApplication"
+        android:name="com.forcetower.unes.UApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,9 +11,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Base">
-        <activity android:name="com.forcetower.uefs_2.feature.login.LoginActivity">
+        <activity android:name="com.forcetower.unes.feature.login.LoginActivity">
         </activity>
-        <activity android:name="com.forcetower.uefs_2.feature.home.HomeActivity">
+        <activity android:name="com.forcetower.unes.feature.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
                 <action android:name="android.intent.action.MAIN" />

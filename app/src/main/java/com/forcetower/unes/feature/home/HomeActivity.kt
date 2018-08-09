@@ -1,13 +1,16 @@
-package com.forcetower.uefs_2.feature.home
+package com.forcetower.unes.feature.home
 
 import android.os.Bundle
+import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.forcetower.uefs_2.R
-import com.forcetower.uefs_2.databinding.ActivityHomeBinding
-import com.forcetower.uefs_2.feature.shared.UActivity
+import com.forcetower.unes.R
+import com.forcetower.unes.databinding.ActivityHomeBinding
+import com.forcetower.unes.feature.shared.ToolbarActivity
+import com.forcetower.unes.feature.shared.UActivity
 
-class HomeActivity : UActivity() {
+class HomeActivity : UActivity(), ToolbarActivity {
+
     private lateinit var binding: ActivityHomeBinding
     private val bottomFragment: HomeBottomFragment by lazy { HomeBottomFragment() }
 
@@ -24,5 +27,7 @@ class HomeActivity : UActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
+
+    override fun getToolbar(): Toolbar = binding.toolbar
 
 }

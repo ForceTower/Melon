@@ -1,10 +1,10 @@
-package com.forcetower.uefs_2.feature.shared
+package com.forcetower.unes.feature.shared
 
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.ViewCompat
-import com.forcetower.uefs_2.R
+import com.forcetower.unes.R
 import com.google.android.material.snackbar.Snackbar
 
 fun Snackbar.config() {

@@ -1,5 +1,7 @@
-package com.forcetower.uefs_2.feature.shared
+package com.forcetower.unes.feature.shared
 
+import android.content.Context
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import timber.log.Timber
 
@@ -13,4 +15,6 @@ abstract class UFragment : Fragment() {
             Timber.d("Not part of UActivity")
         }
     }
+
+    fun getToolbar(): Toolbar = (activity!! as ToolbarActivity).getToolbar()
 }

@@ -1,4 +1,4 @@
-package com.forcetower.uefs_2
+package com.forcetower.unes
 
 import android.app.Application
 import timber.log.Timber
