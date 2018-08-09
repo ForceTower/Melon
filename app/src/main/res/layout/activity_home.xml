@@ -8,7 +8,7 @@
         android:background="@color/white">
 
         <fragment
-            android:id="@+id/fragment_host"
+            android:id="@+id/home_nav_host"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_marginBottom="56dp"
@@ -20,8 +20,10 @@
             android:id="@+id/bottom_app_bar"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:navigationIcon="@drawable/ic_menu_black_24dp"
-            android:layout_gravity="bottom">
+            app:backgroundTint="@color/colorPrimary"
+            app:navigationIcon="@drawable/ic_menu_white_24dp"
+            android:layout_gravity="bottom"
+            android:elevation="8dp">
         </com.google.android.material.bottomappbar.BottomAppBar>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
