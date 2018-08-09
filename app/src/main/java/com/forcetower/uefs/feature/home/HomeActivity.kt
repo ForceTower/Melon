@@ -8,6 +8,7 @@ import com.forcetower.uefs.feature.shared.UActivity
 
 class HomeActivity : UActivity() {
     private lateinit var binding: ActivityHomeBinding
+    private val bottomFragment: HomeBottomFragment by lazy { HomeBottomFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -16,7 +17,7 @@ class HomeActivity : UActivity() {
             setSupportActionBar(it.bottomAppBar)
             supportActionBar?.setDisplayShowTitleEnabled(false)
             it.bottomAppBar.setNavigationOnClickListener {
-
+                bottomFragment.show(supportFragmentManager, bottomFragment.tag)
             }
         }
     }

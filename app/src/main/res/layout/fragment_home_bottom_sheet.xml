@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/header_bottom"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="@dimen/nav_header_keyline"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/third_keyline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/third_keyline"/>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/image_user_picture"
+            android:layout_width="@dimen/nav_header_size"
+            android:layout_height="@dimen/nav_header_size"
+            android:layout_marginStart="@dimen/second_keyline"
+            app:layout_constraintBottom_toBottomOf="@id/header_bottom"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@mipmap/ic_unes_large_image_512"/>
+
+        <TextView
+            android:id="@+id/text_user_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="@+id/third_keyline"
+            app:layout_constraintTop_toTopOf="@+id/image_user_picture"
+            tools:text="João Paulo Santos Sena"
+            android:textColor="@color/text_primary_dark"/>
+
+        <TextView
+            android:id="@+id/text_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@+id/third_keyline"
+            app:layout_constraintTop_toBottomOf="@+id/text_user_name"
+            tools:text="Seu score é: 2.7" />
+
+        <View
+            android:id="@+id/divider"
+            style="@style/AppTheme.BottomSheetEntryDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/header_bottom"/>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/navigation_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            app:itemIconPadding="@dimen/second_keyline"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:menu="@menu/home_navigation"
+            app:itemBackground="@drawable/navigation_item_background"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
