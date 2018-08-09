@@ -1,11 +1,11 @@
-package com.forcetower.uefs.feature.home
+package com.forcetower.uefs_2.feature.home
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.forcetower.uefs.R
-import com.forcetower.uefs.databinding.ActivityHomeBinding
-import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs_2.R
+import com.forcetower.uefs_2.databinding.ActivityHomeBinding
+import com.forcetower.uefs_2.feature.shared.UActivity
 
 class HomeActivity : UActivity() {
     private lateinit var binding: ActivityHomeBinding

@@ -1,4 +1,4 @@
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs_2.feature.shared
 
 import androidx.appcompat.app.AppCompatActivity
 

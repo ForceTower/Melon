@@ -68,7 +68,8 @@
             app:menu="@menu/home_navigation"
             app:itemBackground="@drawable/navigation_item_background"
             app:itemTextColor="@color/navigation_text_color"
-            app:itemIconTint="@color/navigation_icon_color"/>
+            app:itemIconTint="@color/navigation_icon_color"
+            android:paddingBottom="56dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

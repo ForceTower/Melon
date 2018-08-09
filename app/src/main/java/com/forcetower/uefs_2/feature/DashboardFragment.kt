@@ -1,11 +1,11 @@
-package com.forcetower.uefs.feature
+package com.forcetower.uefs_2.feature
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.databinding.FragmentDashboardBinding
-import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs_2.databinding.FragmentDashboardBinding
+import com.forcetower.uefs_2.feature.shared.UFragment
 
 class DashboardFragment : UFragment() {
     private lateinit var binding: FragmentDashboardBinding
