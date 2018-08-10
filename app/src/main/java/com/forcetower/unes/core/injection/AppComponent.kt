@@ -1,6 +1,7 @@
 package com.forcetower.unes.core.injection
 
 import com.forcetower.unes.UApplication
+import com.forcetower.unes.core.injection.module.ActivityModule
 import com.forcetower.unes.core.injection.module.AppModule
 import com.forcetower.unes.core.injection.module.NetworkModule
 import com.forcetower.unes.core.injection.module.ViewModelModule
@@ -17,7 +18,8 @@ import javax.inject.Singleton
         AndroidSupportInjectionModule::class,
         AppModule::class,
         NetworkModule::class,
-        ViewModelModule::class
+        ViewModelModule::class,
+        ActivityModule::class
     ]
 )
 interface AppComponent: AndroidInjector<UApplication> {
