@@ -7,8 +7,8 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RestrictTo;
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-public class ArchTaskExecutor extends TaskExecutor {
-    private static volatile ArchTaskExecutor sInstance;
+public class SagresTaskExecutor extends TaskExecutor {
+    private static volatile SagresTaskExecutor sInstance;
 
     @NonNull
     private TaskExecutor mDelegate;
@@ -25,7 +25,7 @@ public class ArchTaskExecutor extends TaskExecutor {
     @NonNull
     private static final Executor sNetworkThreadExecutor = command -> getInstance().executeOnNetworkIO(command);
 
-    private ArchTaskExecutor() {
+    private SagresTaskExecutor() {
         mDefaultTaskExecutor = new DefaultTaskExecutor();
         mDelegate = mDefaultTaskExecutor;
     }
@@ -33,16 +33,16 @@ public class ArchTaskExecutor extends TaskExecutor {
     /**
      * Returns an instance of the task executor.
      *
-     * @return The singleton ArchTaskExecutor.
+     * @return The singleton SagresTaskExecutor.
      */
     @NonNull
-    public static ArchTaskExecutor getInstance() {
+    public static SagresTaskExecutor getInstance() {
         if (sInstance != null) {
             return sInstance;
         }
-        synchronized (ArchTaskExecutor.class) {
+        synchronized (SagresTaskExecutor.class) {
             if (sInstance == null) {
-                sInstance = new ArchTaskExecutor();
+                sInstance = new SagresTaskExecutor();
             }
         }
         return sInstance;
