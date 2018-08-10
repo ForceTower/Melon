@@ -35,6 +35,8 @@ ext {
     androidX = "1.0.0-rc01"
     google_material = "1.0.0-rc01"
     nav_version = "1.0.0-alpha04"
+    paging_version = "2.0.0-rc01"
+    room_version = "2.0.0-rc01"
 }
 
 dependencies {
@@ -50,9 +52,13 @@ dependencies {
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
 
+    implementation "androidx.paging:paging-runtime:$paging_version"
+
+    implementation "androidx.room:room-runtime:$room_version"
+    kapt "androidx.room:room-compiler:$room_version"
+
     implementation "de.hdodenhof:circleimageview:2.2.0"
     implementation "com.jakewharton.timber:timber:4.6.1"
-    implementation 'androidx.appcompat:appcompat:1.0.0-alpha1'
 }
 
 apply from: "../artifacts.gradle"
