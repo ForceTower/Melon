@@ -13,15 +13,29 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/text_label_evaluation"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
                 android:layout_marginTop="8dp"
-                android:text="Avaliação"
+                android:text="@string/label_evaluate_recent_class"
                 android:textSize="16sp"
                 android:textColor="@color/text_primary_dark"
+                android:drawableStart="@drawable/ic_live_help_black_24dp"
+                android:drawablePadding="12dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/evaluation_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="16dp"
+                tools:itemCount="1"
+                tools:listitem="@layout/item_recent_class_resumed"
+                app:layout_constraintTop_toBottomOf="@id/text_label_evaluation"/>
 
             <TextView
                 android:id="@+id/text_label_classes"
@@ -35,7 +49,7 @@
                 android:textColor="@color/text_primary_dark"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toBottomOf="@+id/evaluation_recycler" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/recycler_classes"
