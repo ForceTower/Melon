@@ -57,7 +57,8 @@
                     app:tabBackground="@color/white"
                     app:tabTextColor="?attr/colorPrimaryDark"
                     app:tabIndicatorColor="?attr/colorPrimaryDark"
-                    app:tabTextAppearance="@style/TextAppearanceTabLayout">
+                    app:tabTextAppearance="@style/TextAppearanceTabLayout"
+                    app:tabIndicator="@drawable/tab_indicator">
                 </com.google.android.material.tabs.TabLayout>
             </com.google.android.material.appbar.AppBarLayout>
 

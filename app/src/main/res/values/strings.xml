@@ -31,4 +31,5 @@
     <string name="label_recent_messages">Mensagens</string>
     <string name="login_no_account_message">Ainda não tem uma conta? Passe no vestibular</string>
     <string name="there_is_no_vestibular_anymore">\"Não tem vestibular\"\nEntão faça o ENEM, você entendeu</string>
+    <string name="label_evaluate_recent_class">Avalie aula recente</string>
 </resources>
