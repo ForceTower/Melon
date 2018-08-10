@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android">
+    <scale
+        android:toYScale="1"
+        android:fromYScale="0.8"
+        android:toXScale="1"
+        android:fromXScale="0.8"
+        android:pivotY=".5"
+        android:pivotX=".5"
+        android:duration="@android:integer/config_shortAnimTime"/>
+
+    <alpha
+        android:fromAlpha=".8"
+        android:toAlpha="1"
+        android:duration="@android:integer/config_shortAnimTime"/>
+</set>

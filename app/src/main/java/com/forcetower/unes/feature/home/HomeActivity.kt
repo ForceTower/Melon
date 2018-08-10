@@ -8,6 +8,8 @@ import com.forcetower.unes.R
 import com.forcetower.unes.databinding.ActivityHomeBinding
 import com.forcetower.unes.feature.shared.ToolbarActivity
 import com.forcetower.unes.feature.shared.UActivity
+import com.forcetower.unes.feature.shared.config
+import com.google.android.material.snackbar.Snackbar
 
 class HomeActivity : UActivity(), ToolbarActivity {
 
@@ -30,4 +32,9 @@ class HomeActivity : UActivity(), ToolbarActivity {
 
     override fun getToolbar(): Toolbar = binding.toolbar
 
+    override fun showSnack(string: String) {
+        val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
+        snack.config()
+        snack.show()
+    }
 }
