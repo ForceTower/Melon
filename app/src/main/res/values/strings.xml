@@ -36,4 +36,7 @@
     <string name="error_invalid_credentials">Usuário ou senha incorreto</string>
     <string name="error_login_failed">Login Incorreto</string>
     <string name="error_connection_failed">Erro de conexão</string>
+    <string name="error_network_error">Falha de conexão</string>
+    <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
+    <string name="login_connected">Conectado</string>
 </resources>

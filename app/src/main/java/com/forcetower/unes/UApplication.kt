@@ -3,11 +3,13 @@ package com.forcetower.unes
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.unes.core.injection.AppInjector
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -42,6 +44,11 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     @Inject
     fun setInjected() {
         injected = true
+    }
+
+    @Inject
+    fun configureSagresNavigator(client: OkHttpClient) {
+        SagresNavigator.initialize(this, client)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector

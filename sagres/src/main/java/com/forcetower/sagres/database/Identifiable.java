@@ -1,4 +1,4 @@
-package com.forcetower.unes.core.model;
+package com.forcetower.sagres.database;
 
 import androidx.room.PrimaryKey;
 
