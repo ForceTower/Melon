@@ -18,15 +18,18 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @JvmStatic
     fun provideCookieHandler(): CookieHandler = CookieManager()
 
     @Provides
     @Singleton
+    @JvmStatic
     fun provideCookieJar(context: Context): PersistentCookieJar =
             PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
 
     @Provides
     @Singleton
+    @JvmStatic
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
                 .followRedirects(true)
@@ -40,6 +43,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    @JvmStatic
     fun provideInterceptor(): Interceptor = Interceptor {
         val request = it.request()
         it.proceed(request)
