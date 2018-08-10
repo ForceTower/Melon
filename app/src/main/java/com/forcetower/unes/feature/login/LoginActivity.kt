@@ -17,7 +17,7 @@ import javax.inject.Inject
 
 class LoginActivity : UActivity(), HasSupportFragmentInjector {
     @Inject
-    private lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     private lateinit var binding: ActivityLoginBinding
 
