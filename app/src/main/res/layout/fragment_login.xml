@@ -28,6 +28,7 @@
                 android:layout_height="125dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
+                android:src="@mipmap/ic_unes_large_image_512"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/btn_about_unes" />
@@ -107,13 +108,27 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
                 android:text="@string/login_sign_in"
+                android:textAllCaps="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/input_password" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_no_account"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:text="@string/login_no_account_message"
                 android:textAllCaps="false"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/input_password" />
+                app:layout_constraintTop_toBottomOf="@+id/btn_connect" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
