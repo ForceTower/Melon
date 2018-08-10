@@ -4,7 +4,7 @@ import android.content.Context;
 
 import com.forcetower.sagres.SagresNavigator;
 import com.forcetower.sagres.database.SagresDatabase;
-import com.forcetower.sagres.executor.ArchTaskExecutor;
+import com.forcetower.sagres.executor.SagresTaskExecutor;
 import com.forcetower.sagres.operation.LoginOperation;
 import com.forcetower.sagres.operation.LoginCallback;
 
@@ -73,7 +73,7 @@ public class SagresNavigatorImpl extends SagresNavigator {
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
     public LiveData<LoginCallback> login(@NonNull String username, @NonNull String password) {
-        return new LoginOperation(username, password, ArchTaskExecutor.getNetworkThreadExecutor()).getResult();
+        return new LoginOperation(username, password, SagresTaskExecutor.getNetworkThreadExecutor()).getResult();
     }
 
     @Override
