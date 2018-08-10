@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.unes.R
-import com.forcetower.unes.core.model.sagres.SagresMessage
 import com.forcetower.unes.core.model.diff.IdentifiableItemDiff
 import com.forcetower.unes.feature.shared.UFragment
 import kotlinx.android.synthetic.main.fragment_unes_messages.*
