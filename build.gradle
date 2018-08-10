@@ -29,6 +29,16 @@ allprojects {
     }
 }
 
+ext {
+    androidX = "1.0.0-rc01"
+    google_material = "1.0.0-rc01"
+    paging_version = "2.0.0-rc01"
+    room_version = "2.0.0-rc01"
+    lifecycle_version = "2.0.0-rc01"
+    nav_version = "1.0.0-alpha04"
+    dagger_version = "2.16"
+}
+
 task clean(type: Delete) {
     delete rootProject.buildDir
 }

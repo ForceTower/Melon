@@ -9,9 +9,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.forcetower.sagres.database.model.SagresAccess
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
-import com.forcetower.unes.core.model.sagres.SagresAccess
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentLoadingBinding
@@ -39,7 +39,7 @@ class LoadingFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        provideViewModel<LoginViewModel>(factory).getAccess().observe(this, Observer { access -> onReceiveToken(access) })
+        provideViewModel<LoginViewModel>(factory).getAccess()?.observe(this, Observer { access -> onReceiveToken(access) })
     }
 
     private fun onReceiveToken(access: SagresAccess?) {

@@ -1,6 +1,6 @@
 package com.forcetower.unes.core.model.diff;
 
-import com.forcetower.unes.core.model.Identifiable;
+import com.forcetower.sagres.database.Identifiable;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.DiffUtil;

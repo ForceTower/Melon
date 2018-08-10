@@ -41,16 +41,6 @@ android {
     }
 }
 
-ext {
-    androidX = "1.0.0-rc01"
-    google_material = "1.0.0-rc01"
-    paging_version = "2.0.0-rc01"
-    room_version = "2.0.0-rc01"
-    lifecycle_version = "2.0.0-rc01"
-    nav_version = "1.0.0-alpha04"
-    dagger_version = "2.16"
-}
-
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
@@ -90,6 +80,8 @@ dependencies {
 
     implementation "de.hdodenhof:circleimageview:2.2.0"
     implementation "com.jakewharton.timber:timber:4.6.1"
+
+    implementation project(path: ':sagres')
 }
 
 apply from: "../artifacts.gradle"
