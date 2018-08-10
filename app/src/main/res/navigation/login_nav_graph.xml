@@ -25,7 +25,7 @@
         android:label="LoginFragment"
         tools:layout="@layout/fragment_login">
         <action
-            android:id="@+id/action_login_form_to_signingInFragment"
+            android:id="@+id/action_login_form_to_signing_in"
             app:destination="@id/login_signing_in" />
     </fragment>
 
@@ -33,5 +33,14 @@
         android:id="@+id/login_signing_in"
         android:name="com.forcetower.unes.feature.login.SigningInFragment"
         android:label="SigningInFragment"
-        tools:layout="@layout/fragment_signing_in"/>
+        tools:layout="@layout/fragment_signing_in">
+        <argument
+            android:name="username"
+            android:defaultValue="username"
+            app:argType="string"/>
+        <argument
+            android:name="password"
+            android:defaultValue="password"
+            app:argType="string"/>
+    </fragment>
 </navigation>

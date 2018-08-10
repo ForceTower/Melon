@@ -1,7 +1,8 @@
-package com.forcetower.unes.core.model
+package com.forcetower.unes.core.model.sagres
 
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import com.forcetower.unes.core.model.Identifiable
 
 @Entity
 data class SagresMessage(

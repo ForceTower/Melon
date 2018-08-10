@@ -8,7 +8,7 @@ import com.google.android.material.tabs.TabLayout
 import timber.log.Timber
 
 abstract class UFragment : Fragment() {
-    var displayName: String = javaClass.simpleName;
+    var displayName: String = javaClass.simpleName
 
     fun showSnack(string: String) {
         val activity = activity
