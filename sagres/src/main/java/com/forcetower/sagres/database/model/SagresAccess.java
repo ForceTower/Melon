@@ -1,7 +1,5 @@
 package com.forcetower.sagres.database.model;
 
-import java.util.UUID;
-
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -11,8 +9,6 @@ public class SagresAccess {
     @PrimaryKey(autoGenerate = true)
     private long uid;
     @NonNull
-    private String uuid;
-    @NonNull
     private String username;
     @NonNull
     private String password;
@@ -20,7 +16,6 @@ public class SagresAccess {
     public SagresAccess(@NonNull String username, @NonNull String password) {
         this.username = username;
         this.password = password;
-        this.uuid = UUID.randomUUID().toString();
     }
 
     public long getUid() {
@@ -29,15 +24,6 @@ public class SagresAccess {
 
     public void setUid(long uid) {
         this.uid = uid;
-    }
-
-    @NonNull
-    public String getUuid() {
-        return uuid;
-    }
-
-    public void setUuid(@NonNull String uuid) {
-        this.uuid = uuid;
     }
 
     @NonNull
@@ -56,5 +42,13 @@ public class SagresAccess {
 
     public void setPassword(@NonNull String password) {
         this.password = password;
+    }
+
+    public boolean equals(Object other) {
+        if (other instanceof SagresAccess) {
+            SagresAccess created = (SagresAccess) other;
+            return created.getPassword().equals(password) && created.getUsername().equals(username);
+        }
+        return false;
     }
 }

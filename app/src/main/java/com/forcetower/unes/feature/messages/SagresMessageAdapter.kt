@@ -4,12 +4,12 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.databinding.ItemSagresMessageBinding
 import com.forcetower.unes.feature.shared.inflater
 
-class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<SagresMessage>):
-        PagedListAdapter<SagresMessage, SagresMessageAdapter.MessageHolder>(diffCallback) {
+class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<Message>):
+        PagedListAdapter<Message, SagresMessageAdapter.MessageHolder>(diffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val binding = ItemSagresMessageBinding.inflate(parent.inflater(), parent, false)
@@ -22,7 +22,7 @@ class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<SagresMessage>):
 
     class MessageHolder(val binding: ItemSagresMessageBinding) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(message: SagresMessage?) {
+        fun bind(message: Message?) {
             TODO("Implement Message Binding")
         }
     }

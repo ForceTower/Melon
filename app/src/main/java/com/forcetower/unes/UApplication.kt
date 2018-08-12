@@ -25,6 +25,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         injectApplicationIfNecessary()
         super.onCreate()
+        configureSagresNavigator()
     }
 
     private fun createApplicationInjector(): AndroidInjector<UApplication> = AppInjector.create(this)
@@ -46,9 +47,8 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         injected = true
     }
 
-    @Inject
-    fun configureSagresNavigator(client: OkHttpClient) {
-        SagresNavigator.initialize(this, client)
+    fun configureSagresNavigator() {
+        SagresNavigator.initialize(this)
     }
 
     override fun activityInjector(): AndroidInjector<Activity> = activityInjector
