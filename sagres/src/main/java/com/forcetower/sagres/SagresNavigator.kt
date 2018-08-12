@@ -15,7 +15,6 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 
 abstract class SagresNavigator {
-
     abstract val database: SagresDatabase
 
     @AnyThread
