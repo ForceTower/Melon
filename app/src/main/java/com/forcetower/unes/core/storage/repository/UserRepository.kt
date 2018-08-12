@@ -15,11 +15,11 @@ class UserRepository @Inject constructor(
         private val executor: AppExecutors
 ) {
 
-    fun getAccess(): LiveData<SagresAccess> = SagresNavigator.getInstance().database.accessDao().access
+    fun getAccess(): LiveData<SagresAccess> = SagresNavigator.instance.database.accessDao().access
 
     fun login(username: String, password: String): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
-        val login = SagresNavigator.getInstance().aLogin(username, password)
+        val login = SagresNavigator.instance.aLogin(username, password)
         login(signIn, login)
         return signIn
     }
@@ -43,7 +43,7 @@ class UserRepository @Inject constructor(
     }
 
     private fun me(data: MediatorLiveData<Callback>) {
-        val me = SagresNavigator.getInstance().aMe()
+        val me = SagresNavigator.instance.aMe()
         data.addSource(me) {m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(me)
@@ -62,7 +62,7 @@ class UserRepository @Inject constructor(
     }
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long) {
-        val messages = SagresNavigator.getInstance().aMessages(userId)
+        val messages = SagresNavigator.instance.aMessages(userId)
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
@@ -82,7 +82,7 @@ class UserRepository @Inject constructor(
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {
-        val start = SagresNavigator.getInstance().startPage()
+        val start = SagresNavigator.instance.startPage()
         data.addSource(start){s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(start)
@@ -103,6 +103,6 @@ class UserRepository @Inject constructor(
     }
 
     fun stopCurrentLogin() {
-        SagresNavigator.getInstance().stopTags("aLogin")
+        SagresNavigator.instance.stopTags("aLogin")
     }
 }

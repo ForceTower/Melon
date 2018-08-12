@@ -26,7 +26,7 @@ public class PersonOperation extends Operation<PersonCallback> {
     @Override
     protected void execute() {
         result.postValue(new PersonCallback(Status.STARTED));
-        Call call = userId == null ? SagresCalls.getMe() : SagresCalls.getPerson(userId);
+        Call call = userId == null ? SagresCalls.INSTANCE.getMe() : SagresCalls.INSTANCE.getPerson(userId);
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {

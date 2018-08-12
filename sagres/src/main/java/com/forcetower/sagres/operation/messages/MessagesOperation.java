@@ -33,7 +33,7 @@ public class MessagesOperation extends Operation<MessagesCallback> {
     @Override
     protected void execute() {
         result.postValue(new MessagesCallback(Status.STARTED));
-        Call call = SagresCalls.getMessages(userId);
+        Call call = SagresCalls.INSTANCE.getMessages(userId);
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
@@ -65,7 +65,7 @@ public class MessagesOperation extends Operation<MessagesCallback> {
     }
 
     private Person getPerson(Linker linker) {
-        Call call = SagresCalls.getLink(linker);
+        Call call = SagresCalls.INSTANCE.getLink(linker);
 
         try {
             Response response = call.execute();
