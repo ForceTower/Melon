@@ -39,4 +39,65 @@
     <string name="error_network_error">Falha de conexão</string>
     <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
     <string name="login_connected">Conectado</string>
+
+    <string-array name="login_random_messages">
+        <item>Preparando Foguetes</item>
+        <item>Iniciando Sincronização</item>
+        <item>Procurando por itens interessantes</item>
+        <item>Unificando o UNES</item>
+        <item>Carregando mensagens aleatórias</item>
+        <item>Alguém lê isso?</item>
+        <item>Girando barra de progresso</item>
+        <item>João Paulo está dormindo</item>
+        <item>A barra de progresso está girando</item>
+        <item>Carregando capacitores</item>
+        <item>Ligando a FPGA</item>
+        <item>Dormindo um pouco</item>
+        <item>UNES > Sagres</item>
+        <item>Jogando 2048</item>
+        <item>Concluindo a Graduação</item>
+        <item>Processando processadores</item>
+        <item>Usando algoritmos genéticos</item>
+        <item>Classificando usuários</item>
+        <item>Otimizando o UNES</item>
+        <item>Aumentando suas notas</item>
+        <item>Criando o UNESverso</item>
+        <item>Visitando o Bandejão</item>
+        <item>Entrando em Greve</item>
+        <item>Calculando Hashes malucos</item>
+        <item>RX o rato</item>
+        <item>Eu amo barras de carregamento</item>
+        <item>Criando aviãozinho</item>
+        <item>Gerando código de ignição</item>
+        <item>Deixando o aplicativo bonito</item>
+        <item>Criando compras no aplicativo</item>
+        <item>Andando por ai sem motivo</item>
+        <item>Retirando suas faltas</item>
+        <item>Aprovando as matérias</item>
+        <item>Indo para a calourada</item>
+        <item>Descansando um pouco</item>
+        <item>Criando novas strings</item>
+        <item>Desvendando seus segredos</item>
+        <item>Criando barreira anti-jubilamento</item>
+        <item>Recebendo um aviãozinho</item>
+        <item>Mensagem Aleátoria</item>
+        <item>Fingindo que está carregando</item>
+        <item>Roubando sua caneta</item>
+        <item>Comprando almofadas</item>
+        <item>A cozinha está em chamas</item>
+        <item>Já volto</item>
+        <item>Lendo livro na biblioteca</item>
+        <item>Estudando para a prova</item>
+        <item>Passando em PDS</item>
+        <item>Enfrentando o monstro do mau</item>
+        <item>Carregando suas mensagens</item>
+        <item>Vazando suas notas</item>
+        <item>Olhando esta barra</item>
+        <item>Olhando o Ponto U</item>
+        <item>Olhando os raios de luz!</item>
+        <item>BUNITO</item>
+        <item>Entendendo tudo agora</item>
+        <item>Encaixando todas as peças</item>
+        <item>Ficando de olhos abertos</item>
+    </string-array>
 </resources>
