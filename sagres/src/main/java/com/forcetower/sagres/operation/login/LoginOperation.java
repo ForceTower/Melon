@@ -40,7 +40,7 @@ public class LoginOperation extends Operation<LoginCallback> {
 
     protected void execute() {
         result.postValue(LoginCallback.started());
-        Call call = SagresCalls.login(username, password);
+        Call call = SagresCalls.INSTANCE.login(username, password);
 
         try {
             Response response = call.execute();
@@ -72,7 +72,7 @@ public class LoginOperation extends Operation<LoginCallback> {
     }
 
     private void approval(@NonNull Document document, @NonNull Response oldResp) {
-        Call call = SagresCalls.loginApproval(document, oldResp);
+        Call call = SagresCalls.INSTANCE.loginApproval(document, oldResp);
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {

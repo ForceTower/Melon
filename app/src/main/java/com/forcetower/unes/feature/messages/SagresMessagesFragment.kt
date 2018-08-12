@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.R
-import com.forcetower.unes.core.model.diff.IdentifiableItemDiff
 import com.forcetower.unes.feature.shared.UFragment
 import kotlinx.android.synthetic.main.fragment_unes_messages.*
 
