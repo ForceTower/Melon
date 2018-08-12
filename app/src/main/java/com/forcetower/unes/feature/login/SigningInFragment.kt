@@ -1,9 +1,16 @@
 package com.forcetower.unes.feature.login
 
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.ViewSwitcher
+import androidx.core.content.ContextCompat
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.forcetower.sagres.impl.SagresNavigatorImpl
@@ -26,11 +33,36 @@ class SigningInFragment : UFragment(), Injectable {
 
     private lateinit var binding: FragmentSigningInBinding
     private lateinit var viewModel: LoginViewModel
+    private lateinit var messages: Array<String>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentSigningInBinding.inflate(inflater, container, false).also {
             binding = it
+            prepareSwitcher()
+            prepareMessages()
         }.root
+    }
+
+    private fun prepareMessages() {
+        messages = resources.getStringArray(R.array.login_random_messages)
+    }
+
+    private fun prepareSwitcher() {
+        binding.textStatus.setFactory {
+            val textView = TextView(requireContext())
+            textView.textSize = 16f
+            textView.gravity = CENTER
+            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary_dark))
+            textView
+        }
+
+        binding.textTips.setFactory {
+            val textView = TextView(requireContext())
+            textView.textSize = 12f
+            textView.gravity = CENTER
+            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary_dark))
+            textView
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -38,6 +70,21 @@ class SigningInFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
         doLogin()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        displayRandomText()
+    }
+
+    private fun displayRandomText() {
+        val position = (Math.random() * (messages.size - 1)).toInt()
+        val message = messages[position]
+        binding.textStatus.setText(message)
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                displayRandomText()
+        }, 3000)
     }
 
     private fun doLogin() {
