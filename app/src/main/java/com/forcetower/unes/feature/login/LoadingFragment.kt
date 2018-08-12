@@ -39,7 +39,7 @@ class LoadingFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        provideViewModel<LoginViewModel>(factory).getAccess()?.observe(this, Observer { access -> onReceiveToken(access) })
+        provideViewModel<LoginViewModel>(factory).getAccess().observe(this, Observer { access -> onReceiveToken(access) })
     }
 
     private fun onReceiveToken(access: SagresAccess?) {

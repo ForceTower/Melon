@@ -6,7 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.forcetower.sagres.operation.LoginCallback
+import com.forcetower.sagres.impl.SagresNavigatorImpl
+import com.forcetower.sagres.operation.Callback
+import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
@@ -15,7 +17,6 @@ import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentSigningInBinding
 import com.forcetower.unes.feature.shared.UFragment
 import com.forcetower.unes.feature.shared.provideViewModel
-import kotlinx.android.synthetic.main.activity_home.*
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,7 +36,7 @@ class SigningInFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideViewModel(factory)
-        viewModel.getLogin().observe(this, Observer<LoginCallback?>(this::onLoginProgress))
+        viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
         doLogin()
     }
 
@@ -51,8 +52,8 @@ class SigningInFragment : UFragment(), Injectable {
         }
     }
 
-    private fun onLoginProgress(callback: LoginCallback?) {
-        when(callback?.status) {
+    private fun onLoginProgress(callback: Callback) {
+        when(callback.status) {
             Status.STARTED -> Timber.d("Status: Started")
             Status.LOADING -> Timber.d("Status: Loading")
             Status.INVALID_LOGIN -> snackAndBack(getString(R.string.error_invalid_credentials))

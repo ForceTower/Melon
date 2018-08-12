@@ -1,9 +1,11 @@
 package com.forcetower.sagres.operation;
 
+import org.jsoup.nodes.Document;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-public class LoginCallback {
+public class Callback {
     @NonNull
     private final Status status;
     @Nullable
@@ -11,12 +13,15 @@ public class LoginCallback {
     private final int code;
     @Nullable
     private final Throwable throwable;
+    @Nullable
+    private final Document document;
 
-    private LoginCallback(@NonNull Status status, @Nullable String message, int code, @Nullable Throwable throwable) {
+    protected Callback(@NonNull Status status, @Nullable String message, int code, @Nullable Throwable throwable, @Nullable Document document) {
         this.status = status;
         this.message = message;
         this.code = code;
         this.throwable = throwable;
+        this.document = document;
     }
 
     @NonNull
@@ -34,12 +39,13 @@ public class LoginCallback {
     }
 
     @Nullable
-    public Throwable getThrowable() {
-        return throwable;
+    public Document getDocument() {
+        return document;
     }
 
-    static LoginCallback started() {
-        return new Builder(Status.STARTED).build();
+    @Nullable
+    public Throwable getThrowable() {
+        return throwable;
     }
 
     public static class Builder {
@@ -47,6 +53,7 @@ public class LoginCallback {
         private String message = null;
         private int code = 200;
         private Throwable throwable = null;
+        private Document document = null;
 
         public Builder(Status status) {
             this.status = status;
@@ -67,8 +74,13 @@ public class LoginCallback {
             return this;
         }
 
-        public LoginCallback build() {
-            return new LoginCallback(status, message, code, throwable);
+        public Builder document(Document document) {
+            this.document = document;
+            return this;
+        }
+
+        public Callback build() {
+            return new Callback(status, message, code, throwable, document);
         }
     }
 }

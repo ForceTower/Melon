@@ -6,8 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.R
 import com.forcetower.unes.core.model.diff.IdentifiableItemDiff
 import com.forcetower.unes.feature.shared.UFragment
@@ -15,7 +16,10 @@ import kotlinx.android.synthetic.main.fragment_unes_messages.*
 
 class SagresMessagesFragment: UFragment() {
     init { displayName = "Sagres" }
-    private val adapter by lazy { SagresMessageAdapter(IdentifiableItemDiff())}
+    private val adapter by lazy { SagresMessageAdapter(diffCallback = object: DiffUtil.ItemCallback<Message>() {
+        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
+        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem
+    })}
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view =  inflater.inflate(R.layout.fragment_sagres_messages, container, false)
@@ -34,7 +38,7 @@ class SagresMessagesFragment: UFragment() {
         super.onActivityCreated(savedInstanceState)
     }
 
-    private fun onMessagesChange(list: PagedList<SagresMessage>) {
+    private fun onMessagesChange(list: PagedList<Message>) {
         adapter.submitList(list)
     }
 }

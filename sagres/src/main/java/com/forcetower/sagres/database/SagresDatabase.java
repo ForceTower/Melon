@@ -2,6 +2,7 @@ package com.forcetower.sagres.database;
 
 import android.content.Context;
 
+import com.forcetower.sagres.database.dao.AccessDao;
 import com.forcetower.sagres.database.model.SagresAccess;
 
 import androidx.annotation.RestrictTo;
@@ -19,6 +20,7 @@ public abstract class SagresDatabase extends RoomDatabase {
     public static SagresDatabase create(Context context) {
         return Room.databaseBuilder(context, SagresDatabase.class, DB_NAME)
                 .fallbackToDestructiveMigration()
+                .allowMainThreadQueries()
                 .build();
     }
 
