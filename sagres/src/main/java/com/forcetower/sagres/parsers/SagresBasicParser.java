@@ -9,7 +9,7 @@ import androidx.annotation.Nullable;
 public class SagresBasicParser {
 
     public static boolean needApproval(@NonNull Document document) {
-        Element approval = document.selectFirst("div[class=\"acesso-externo-pagina-login\"]");
+        Element approval = document.selectFirst("div[class=\"acesso-externo-pagina-aLogin\"]");
         if (approval != null) return true;
 
         approval = document.selectFirst("input[value=\"Acessar o SAGRES Portal\"]");
