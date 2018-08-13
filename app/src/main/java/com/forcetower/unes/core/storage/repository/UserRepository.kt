@@ -8,28 +8,31 @@ import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.unes.AppExecutors
+import com.forcetower.unes.core.model.Profile
+import com.forcetower.unes.core.storage.database.UDatabase
 import timber.log.Timber
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
-        private val executor: AppExecutors
+        private val executor: AppExecutors,
+        private val database: UDatabase
 ) {
 
     fun getAccess(): LiveData<SagresAccess> = SagresNavigator.instance.database.accessDao().access
 
     fun login(username: String, password: String): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
-        val login = SagresNavigator.instance.aLogin(username, password)
-        login(signIn, login)
+        login(signIn, username, password)
         return signIn
     }
 
-    private fun login(data: MediatorLiveData<Callback>, source: LiveData<LoginCallback>) {
+    private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
+        val source = SagresNavigator.instance.aLogin(username, password)
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
                 Timber.d("Login Completed")
-                //TODO Insert Data to Database
+                executor.diskIO().execute { database.accessDao().insert(username, password) }
                 me(data)
             } else {
                 data.value = Callback.Builder(l.status)
@@ -48,8 +51,16 @@ class UserRepository @Inject constructor(
             if (m.status == Status.SUCCESS) {
                 data.removeSource(me)
                 Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
-                //TODO Insert Data to Database
-                messages(data, m.person?.id!!)
+                val person = m.person
+                if (person != null) {
+                    //TODO Continue from here. If I want users to be able to check on others to create a
+                    //TODO social network around this, I need to be able to differentiate between
+                    //TODO the different profiles so I will update the correct one
+                    executor.diskIO().execute { database.profileDao() }
+                    messages(data, m.person?.id!!)
+                } else {
+                    Timber.d("Person is null")
+                }
             } else {
                 data.value = Callback.Builder(m.status)
                         .code(m.code)
