@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.forcetower.sagres.database.model.Semester
 
 @Entity(indices = [Index(value = ["sagres_id"], unique = true)])
 data class Semester(
@@ -19,4 +20,9 @@ data class Semester(
     val startClass: Long?,
     @ColumnInfo(name = "end_class")
     val endClass: Long?
-)
+) {
+    companion object {
+        fun fromSagres(s: Semester) =
+                Semester(0, s.uefsId, s.name, s.codename, s.startInMillis, s.endInMillis, s.startClassesInMillis, s.endClassesInMillis)
+    }
+}

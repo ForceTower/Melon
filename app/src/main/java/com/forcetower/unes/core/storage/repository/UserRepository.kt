@@ -2,13 +2,17 @@ package com.forcetower.unes.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import com.annimon.stream.Collectors
+import com.annimon.stream.Stream
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresAccess
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.unes.AppExecutors
+import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.model.Profile
+import com.forcetower.unes.core.model.Semester
 import com.forcetower.unes.core.storage.database.UDatabase
 import timber.log.Timber
 import javax.inject.Inject
@@ -53,11 +57,8 @@ class UserRepository @Inject constructor(
                 Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
                 val person = m.person
                 if (person != null) {
-                    //TODO Continue from here. If I want users to be able to check on others to create a
-                    //TODO social network around this, I need to be able to differentiate between
-                    //TODO the different profiles so I will update the correct one
-                    executor.diskIO().execute { database.profileDao() }
-                    messages(data, m.person?.id!!)
+                    executor.diskIO().execute { database.profileDao().insert(person) }
+                    messages(data, person.id)
                 } else {
                     Timber.d("Person is null")
                 }
@@ -77,7 +78,9 @@ class UserRepository @Inject constructor(
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
-                //TODO Insert Data to Database
+                val values = Stream.of(m.messages!!).map { Message.fromMessage(it) }.collect(Collectors.toList())
+
+                executor.diskIO().execute { database.messageDao().insert(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
                 semesters(data, userId)
@@ -97,7 +100,8 @@ class UserRepository @Inject constructor(
         data.addSource(semesters) {s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(semesters)
-                //TODO Insert Data to Database
+                val values = Stream.of(s.getSemesters()).map { Semester.fromSagres(it) }.collect(Collectors.toList())
+                executor.diskIO().execute { database.semesterDao().insert(values) }
                 Timber.d("Semesters Completed")
                 Timber.d("You got: ${s.getSemesters()}")
                 startPage(data)
