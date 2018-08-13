@@ -60,8 +60,8 @@ class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
     }
 
     private fun setupUserData() {
-        viewModel.getAccess().observe(this, Observer { onAccessUpdate(it) })
-        viewModel.getProfile().observe(this, Observer { onProfileUpdate(it) })
+        viewModel.access.observe(this, Observer { onAccessUpdate(it) })
+        viewModel.profile.observe(this, Observer { onProfileUpdate(it) })
     }
 
     private fun onAccessUpdate(access: Access?) {
