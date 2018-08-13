@@ -3,6 +3,8 @@ package com.forcetower.sagres.request;
 import com.forcetower.sagres.Constants;
 import com.forcetower.sagres.database.model.Linker;
 
+import org.jetbrains.annotations.NotNull;
+
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
@@ -59,6 +61,14 @@ public class SagresRequests {
                 .url(Constants.SAGRES_DIARY_PAGE)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
+                .build();
+    }
+
+    @NotNull
+    public static Request getSemesters(long userId) {
+        String url = BASE_URL + "/diario/periodos-letivos?idPessoa=" + userId + "&perfil=1";
+        return new Request.Builder()
+                .url(url)
                 .build();
     }
 }

@@ -24,7 +24,7 @@
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
-        <item name="android:background">@drawable/bottom_sheet_dialog_background</item>
+        <!--<item name="android:background">@drawable/bottom_sheet_dialog_background</item>-->
     </style>
 
     <style name="BottomSheetEntryDivider">

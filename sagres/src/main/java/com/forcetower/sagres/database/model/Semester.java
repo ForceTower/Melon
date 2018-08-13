@@ -1,17 +1,37 @@
 package com.forcetower.sagres.database.model;
 
+import com.forcetower.sagres.database.Timestamped;
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 
-public class Semester implements Comparable<Semester> {
+public class Semester implements Comparable<Semester>, Timestamped {
+    @SerializedName("id")
     private String uefsId;
+    @SerializedName("descricao")
     private String name;
+    @SerializedName("codigo")
+    private String codename;
+    @SerializedName("inicio")
+    private String start;
+    @SerializedName("fim")
+    private String end;
+    @SerializedName("inicioAulas")
+    private String startClasses;
+    @SerializedName("fimAulas")
+    private String endClasses;
 
-    public Semester(String uefsId, String name) {
+    public Semester(String uefsId, String name, String codename, String start, String end, String startClasses, String endClasses) {
         this.uefsId = uefsId;
         this.name = name;
+        this.codename = codename;
+        this.start = start;
+        this.end = end;
+        this.startClasses = startClasses;
+        this.endClasses = endClasses;
     }
 
     public String getName() {
@@ -49,6 +69,14 @@ public class Semester implements Comparable<Semester> {
         }
     }
 
+    public String getCodename() {
+        return codename;
+    }
+
+    public void setCodename(String codename) {
+        this.codename = codename;
+    }
+
     @Override
     public String toString() {
         return getName();
@@ -56,9 +84,41 @@ public class Semester implements Comparable<Semester> {
 
     public static Semester getCurrentSemester(List<Semester> semesters) {
         if (semesters == null || semesters.isEmpty()) {
-            return new Semester("0", "20182");
+            return new Semester("0", "2018.2", "20182", "", "", "", "");
         }
         Collections.sort(semesters);
         return semesters.get(0);
+    }
+
+    public String getStart() {
+        return start;
+    }
+
+    public void setStart(String start) {
+        this.start = start;
+    }
+
+    public String getEnd() {
+        return end;
+    }
+
+    public void setEnd(String end) {
+        this.end = end;
+    }
+
+    public String getStartClasses() {
+        return startClasses;
+    }
+
+    public void setStartClasses(String startClasses) {
+        this.startClasses = startClasses;
+    }
+
+    public String getEndClasses() {
+        return endClasses;
+    }
+
+    public void setEndClasses(String endClasses) {
+        this.endClasses = endClasses;
     }
 }

@@ -68,4 +68,9 @@ object SagresCalls {
         val request = SagresRequests.messages(userId)
         return getCall(request)
     }
+
+    fun getSemesters(userId: Long): Call {
+        val request = SagresRequests.getSemesters(userId)
+        return getCall(request)
+    }
 }
