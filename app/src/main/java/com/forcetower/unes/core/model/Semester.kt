@@ -23,6 +23,6 @@ data class Semester(
 ) {
     companion object {
         fun fromSagres(s: Semester) =
-                Semester(0, s.uefsId, s.name, s.codename, s.startInMillis, s.endInMillis, s.startClassesInMillis, s.endClassesInMillis)
+                Semester(0, s.uefsId, s.name.trim(), s.codename.trim(), s.startInMillis, s.endInMillis, s.startClassesInMillis, s.endClassesInMillis)
     }
 }
