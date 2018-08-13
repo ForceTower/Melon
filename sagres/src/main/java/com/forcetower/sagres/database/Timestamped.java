@@ -10,4 +10,13 @@ public interface Timestamped {
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
         return formatter.parse(string).getTime();
     }
+
+    default long getInMillis(String string, long def) {
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
+            return formatter.parse(string).getTime();
+        } catch (Exception e) {
+            return def;
+        }
+    }
 }

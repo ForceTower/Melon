@@ -3,6 +3,7 @@ package com.forcetower.sagres.database.model;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
+import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
@@ -10,7 +11,7 @@ import androidx.annotation.NonNull;
 
 public class Semester implements Comparable<Semester>, Timestamped {
     @SerializedName("id")
-    private String uefsId;
+    private long uefsId;
     @SerializedName("descricao")
     private String name;
     @SerializedName("codigo")
@@ -24,7 +25,7 @@ public class Semester implements Comparable<Semester>, Timestamped {
     @SerializedName("fimAulas")
     private String endClasses;
 
-    public Semester(String uefsId, String name, String codename, String start, String end, String startClasses, String endClasses) {
+    public Semester(long uefsId, String name, String codename, String start, String end, String startClasses, String endClasses) {
         this.uefsId = uefsId;
         this.name = name;
         this.codename = codename;
@@ -42,12 +43,28 @@ public class Semester implements Comparable<Semester>, Timestamped {
         this.name = name;
     }
 
-    public String getUefsId() {
+    public long getUefsId() {
         return uefsId;
     }
 
-    public void setUefsId(String uefsId) {
+    public void setUefsId(long uefsId) {
         this.uefsId = uefsId;
+    }
+
+    public long getStartInMillis() {
+        return getInMillis(getStart(), -1);
+    }
+
+    public long getEndInMillis() {
+        return getInMillis(getEnd(), -1);
+    }
+
+    public long getStartClassesInMillis() {
+        return getInMillis(getStartClasses(), -1);
+    }
+
+    public long getEndClassesInMillis() {
+        return getInMillis(getEndClasses(), -1);
     }
 
     @Override
@@ -84,7 +101,7 @@ public class Semester implements Comparable<Semester>, Timestamped {
 
     public static Semester getCurrentSemester(List<Semester> semesters) {
         if (semesters == null || semesters.isEmpty()) {
-            return new Semester("0", "2018.2", "20182", "", "", "", "");
+            return new Semester(0, "2018.2", "20182", "", "", "", "");
         }
         Collections.sort(semesters);
         return semesters.get(0);
