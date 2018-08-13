@@ -1,17 +1,19 @@
 package com.forcetower.unes.core.storage.repository
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.annimon.stream.Collectors
-import com.annimon.stream.Stream
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SagresAccess
+import com.forcetower.sagres.database.model.Discipline
+import com.forcetower.sagres.database.model.DisciplineClassLocation
+import com.forcetower.sagres.database.model.DisciplineGroup
+import com.forcetower.sagres.database.model.SagresCalendar
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.login.LoginCallback
+import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.unes.AppExecutors
+import com.forcetower.unes.core.model.Access
 import com.forcetower.unes.core.model.Message
-import com.forcetower.unes.core.model.Profile
 import com.forcetower.unes.core.model.Semester
 import com.forcetower.unes.core.storage.database.UDatabase
 import timber.log.Timber
@@ -22,22 +24,40 @@ class UserRepository @Inject constructor(
         private val database: UDatabase
 ) {
 
-    fun getAccess(): LiveData<SagresAccess> = SagresNavigator.instance.database.accessDao().access
+    fun getAccess(): LiveData<Access?> = database.accessDao().getAccess()
 
-    fun login(username: String, password: String): LiveData<Callback> {
+    fun stopCurrentLogin() {
+        SagresNavigator.instance.stopTags("aLogin")
+    }
+
+    fun getProfileMe() = database.profileDao().selectMe()
+
+    @MainThread
+    fun login(username: String, password: String, deleteDatabase: Boolean = false): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
-        login(signIn, username, password)
+        if (deleteDatabase) {
+            executor.diskIO().execute {
+                database.clearAllTables()
+                executor.mainThread().execute{
+                    login(signIn, username, password)
+                }
+            }
+        } else {
+            login(signIn, username, password)
+        }
         return signIn
     }
 
+    @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
         val source = SagresNavigator.instance.aLogin(username, password)
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
                 Timber.d("Login Completed")
+                val score = SagresBasicParser.getScore(l.document)
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
-                me(data)
+                me(data, score)
             } else {
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
@@ -49,7 +69,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private fun me(data: MediatorLiveData<Callback>) {
+    private fun me(data: MediatorLiveData<Callback>, score: Double) {
         val me = SagresNavigator.instance.aMe()
         data.addSource(me) {m ->
             if (m.status == Status.SUCCESS) {
@@ -57,7 +77,7 @@ class UserRepository @Inject constructor(
                 Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
                 val person = m.person
                 if (person != null) {
-                    executor.diskIO().execute { database.profileDao().insert(person) }
+                    executor.diskIO().execute { database.profileDao().insert(person, score) }
                     messages(data, person.id)
                 } else {
                     Timber.d("Person is null")
@@ -78,9 +98,8 @@ class UserRepository @Inject constructor(
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
-                val values = Stream.of(m.messages!!).map { Message.fromMessage(it) }.collect(Collectors.toList())
-
-                executor.diskIO().execute { database.messageDao().insert(values) }
+                val values = m.messages!!.map { Message.fromMessage(it) }
+                executor.diskIO().execute { database.messageDao().insertIgnoring(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
                 semesters(data, userId)
@@ -100,8 +119,8 @@ class UserRepository @Inject constructor(
         data.addSource(semesters) {s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(semesters)
-                val values = Stream.of(s.getSemesters()).map { Semester.fromSagres(it) }.collect(Collectors.toList())
-                executor.diskIO().execute { database.semesterDao().insert(values) }
+                val values = s.getSemesters().map { Semester.fromSagres(it) }
+                executor.diskIO().execute { database.semesterDao().insertIgnoring(values) }
                 Timber.d("Semesters Completed")
                 Timber.d("You got: ${s.getSemesters()}")
                 startPage(data)
@@ -121,11 +140,19 @@ class UserRepository @Inject constructor(
         data.addSource(start){s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(start)
-                //TODO Insert Data to Database
+
+                executor.diskIO().execute {
+                    defineCalendar(s.calendar)
+                    defineDisciplines(s.disciplines)
+                    defineDisciplineGroups(s.groups)
+                    defineSchedule(s.locations)
+                }
+
                 Timber.d("Start Page completed")
                 Timber.d("Semesters: " + s.semesters)
                 Timber.d("Disciplines: " + s.disciplines)
                 Timber.d("Calendar: " + s.calendar)
+                grades(data)
             } else {
                 data.value = Callback.Builder(s.status)
                         .code(s.code)
@@ -137,7 +164,23 @@ class UserRepository @Inject constructor(
         }
     }
 
-    fun stopCurrentLogin() {
-        SagresNavigator.instance.stopTags("aLogin")
+    private fun grades(data: MediatorLiveData<Callback>) {
+        data.value = Callback.Builder(Status.SUCCESS).build()
+    }
+
+    private fun defineSchedule(locations: List<DisciplineClassLocation>) {
+
+    }
+
+    private fun defineDisciplineGroups(groups: List<DisciplineGroup>) {
+
+    }
+
+    private fun defineDisciplines(disciplines: List<Discipline>) {
+
+    }
+
+    private fun defineCalendar(calendar: List<SagresCalendar>) {
+
     }
 }
