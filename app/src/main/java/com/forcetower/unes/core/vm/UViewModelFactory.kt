@@ -9,6 +9,7 @@ import androidx.lifecycle.ViewModelProvider
 /**
  * Created by João Paulo on 05/03/2018.
  */
+@Suppress("UNCHECKED_CAST")
 @Singleton
 class UViewModelFactory @Inject
 constructor(private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>) : ViewModelProvider.Factory {
@@ -27,7 +28,6 @@ constructor(private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcard
             throw IllegalArgumentException("unknown model class $modelClass")
         }
         try {
-            //
             return creator.get() as T
         } catch (e: Exception) {
             throw RuntimeException(e)
