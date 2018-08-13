@@ -6,6 +6,8 @@ import com.forcetower.unes.core.model.Access
 import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.model.Profile
 import com.forcetower.unes.core.model.Semester
+import com.forcetower.unes.core.storage.database.dao.AccessDao
+import com.forcetower.unes.core.storage.database.dao.ProfileDao
 
 @Database(entities = [
     Access::class,
@@ -14,4 +16,6 @@ import com.forcetower.unes.core.model.Semester
     Message::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
+    abstract fun accessDao(): AccessDao
+    abstract fun profileDao(): ProfileDao
 }
