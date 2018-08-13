@@ -36,6 +36,7 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
 
     fun getLogin(): LiveData<Callback> = loginSrc
 
+    fun getProfile() = repository.getProfileMe()
 
     fun setConnected() {
         connected = true

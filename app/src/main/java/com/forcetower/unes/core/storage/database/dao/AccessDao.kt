@@ -1,10 +1,12 @@
 package com.forcetower.unes.core.storage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
+import com.forcetower.sagres.database.model.SagresAccess
 import com.forcetower.unes.core.model.Access
 
 @Dao
@@ -13,7 +15,7 @@ abstract class AccessDao {
     abstract fun insert(access: Access)
 
     @Transaction
-    fun insert(username: String, password: String) {
+    open fun insert(username: String, password: String) {
         val access = findDirect(username, password)
         if (access != null) return
         deleteAll()
@@ -25,4 +27,7 @@ abstract class AccessDao {
 
     @Query("DELETE FROM Access")
     abstract fun deleteAll()
+
+    @Query("SELECT * FROM Access LIMIT 1")
+    abstract fun getAccess(): LiveData<Access?>
 }

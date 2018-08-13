@@ -4,7 +4,7 @@ import android.view.ViewGroup
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.sagres.database.model.Message
+import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.databinding.ItemSagresMessageBinding
 import com.forcetower.unes.feature.shared.inflater
 

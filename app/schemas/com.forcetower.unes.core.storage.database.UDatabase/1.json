@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7672167adce61a2b7dba75c813b3eb80",
+    "identityHash": "c42523684acbbd9341146378d03ba7ce",
     "entities": [
       {
         "tableName": "Access",
@@ -38,7 +38,7 @@
       },
       {
         "tableName": "Profile",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `email` TEXT NOT NULL, `score` REAL NOT NULL, `course` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `email` TEXT, `score` REAL NOT NULL, `course` INTEGER, `imageUrl` TEXT, `sagres_id` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `me` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -50,13 +50,13 @@
             "fieldPath": "name",
             "columnName": "name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "email",
             "columnName": "email",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "score",
@@ -68,6 +68,30 @@
             "fieldPath": "course",
             "columnName": "course",
             "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "imageUrl",
+            "columnName": "imageUrl",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "sagresId",
+            "columnName": "sagres_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "me",
+            "columnName": "me",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -77,12 +101,29 @@
           ],
           "autoGenerate": true
         },
-        "indices": [],
+        "indices": [
+          {
+            "name": "index_Profile_sagres_id",
+            "unique": true,
+            "columnNames": [
+              "sagres_id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Profile_sagres_id` ON `${TABLE_NAME}` (`sagres_id`)"
+          },
+          {
+            "name": "index_Profile_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Profile_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          }
+        ],
         "foreignKeys": []
       },
       {
         "tableName": "Semester",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sagres_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `codename` TEXT NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER NOT NULL, `start_class` INTEGER NOT NULL, `end_class` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sagres_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `codename` TEXT NOT NULL, `start` INTEGER, `end` INTEGER, `start_class` INTEGER, `end_class` INTEGER)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -112,25 +153,25 @@
             "fieldPath": "start",
             "columnName": "start",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "end",
             "columnName": "end",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "startClass",
             "columnName": "start_class",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "endClass",
             "columnName": "end_class",
             "affinity": "INTEGER",
-            "notNull": true
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -153,7 +194,7 @@
       },
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT NOT NULL, `notified` INTEGER NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -190,6 +231,12 @@
             "columnName": "sender_name",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "notified",
+            "columnName": "notified",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -213,7 +260,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7672167adce61a2b7dba75c813b3eb80\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c42523684acbbd9341146378d03ba7ce\")"
     ]
   }
 }

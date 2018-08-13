@@ -8,13 +8,19 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.R
+import com.forcetower.unes.core.model.Message
+import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.feature.shared.UFragment
 import kotlinx.android.synthetic.main.fragment_unes_messages.*
+import javax.inject.Inject
 
 class SagresMessagesFragment: UFragment() {
+    @Inject
+    lateinit var vmFactory: UViewModelFactory
+
     init { displayName = "Sagres" }
+
     private val adapter by lazy { SagresMessageAdapter(diffCallback = object: DiffUtil.ItemCallback<Message>() {
         override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem

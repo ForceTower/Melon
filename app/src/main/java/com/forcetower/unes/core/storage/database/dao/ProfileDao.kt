@@ -7,6 +7,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.sagres.database.model.Person
+import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.unes.core.model.Profile
 
 @Dao
@@ -21,15 +22,20 @@ abstract class ProfileDao {
     abstract fun selectMe(): LiveData<Profile>
 
     @Transaction
-    fun insert(person: Person) {
+    open fun insert(person: Person, score: Double = -1.0) {
+        val name = WordUtils.capitalize(person.name.trim())
         var profile = selectMeDirect()
         if (profile != null) {
-            updateProfile(person.name, person.email)
+            updateProfile(name, person.email.trim())
+            if (score >= 0) updateScore(score)
         } else {
-            profile = Profile(name = person.name, email = person.email, sagresId = person.id, me = true)
+            profile = Profile(name = name, email = person.email.trim(), sagresId = person.id, me = true, score = score)
             insert(profile)
         }
     }
+
+    @Query("UPDATE Profile SET score = :score WHERE me = 1")
+    abstract fun updateScore(score: Double)
 
     @Query("UPDATE Profile SET name = :name, email = :email WHERE me = 1")
     abstract fun updateProfile(name: String, email: String)

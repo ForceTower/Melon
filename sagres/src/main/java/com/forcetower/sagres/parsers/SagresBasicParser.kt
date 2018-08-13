@@ -31,7 +31,9 @@ object SagresBasicParser {
         }
     }
 
-    fun getScore(document: Document): Double {
+    fun getScore(document: Document?): Double {
+        if (document == null) return -1.0
+
         val elements = document.select("div[class=\"situacao-escore\"]")
         for (element in elements) {
             if (element != null) {

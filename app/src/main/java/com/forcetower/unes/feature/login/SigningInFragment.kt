@@ -15,17 +15,22 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
+import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.sagres.impl.SagresNavigatorImpl
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.Status
+import com.forcetower.unes.GlideApp
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
+import com.forcetower.unes.core.model.Profile
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentSigningInBinding
 import com.forcetower.unes.feature.home.HomeActivity
 import com.forcetower.unes.feature.shared.UFragment
+import com.forcetower.unes.feature.shared.fadeIn
 import com.forcetower.unes.feature.shared.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -72,6 +77,7 @@ class SigningInFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideViewModel(factory)
         viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
+        viewModel.getProfile().observe(this, Observer<Profile>(this::onProfileUpdate))
         doLogin()
     }
 
@@ -113,6 +119,21 @@ class SigningInFragment : UFragment(), Injectable {
             Status.SUCCESS -> completeLogin()
             Status.APPROVAL_ERROR -> snackAndBack(getString(R.string.error_network_error))
         }
+    }
+
+    private fun onProfileUpdate(profile: Profile?) {
+        if (profile != null) {
+            binding.textHelloUser.text = getString(R.string.login_hello_user, profile.name)
+            binding.textHelloUser.fadeIn()
+        }
+
+        GlideApp.with(this)
+                .load(profile?.imageUrl)
+                .fallback(R.mipmap.ic_unes_large_image_512)
+                .placeholder(R.mipmap.ic_unes_large_image_512)
+                .circleCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.imageCenter)
     }
 
     private fun completeLogin() {
