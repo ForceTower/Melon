@@ -10,15 +10,15 @@ Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para 
 * Corrigir o deadlock raro durante a sincronização
 * Corrigir o erro que afeta alguns estudantes que tem 2 cursos em 1 (????)
 * Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO
-* Integrar o UNES com o MongoDB para fazer backup dos hórarios para não sermos traídos pelo Portal
+* Integrar o UNES com o MongoDB para fazer backup dos horários para não sermos traídos pelo Portal
 
 ### Versão do Android
 Esta nova versão não oferecerá suporte para dispositivos com Android inferior ao 5.0
-Os dispositivos com esta versão ainda receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
+Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
 
 ### Sobre o Aplicativo
 Este aplicativo mostra notificações quando algo novo é detectado no Sagres.
 Ele tambem tenta aproximar todo o conteúdo do Sagres em um aplicativo cujas ações podem ser feitas offline e então quando houver internet elas serão sincronizadas com o portal online. Também espera-se que possua algumas funcionalidades aleatórias que forem julgadas interessantes :)
 
 ### Aviso
-Este aplicativo não é lincenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantêm o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.
+Este aplicativo não é licenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantem o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.
