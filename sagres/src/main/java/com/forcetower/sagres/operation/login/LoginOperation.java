@@ -59,8 +59,8 @@ public class LoginOperation extends Operation<LoginCallback> {
 
     private void resolveLogin(@NonNull String string, @NonNull Response response) {
         Document document = createDocument(string);
-        if (SagresBasicParser.isConnected(document)) {
-            if (SagresBasicParser.needApproval(document)) {
+        if (SagresBasicParser.INSTANCE.isConnected(document)) {
+            if (SagresBasicParser.INSTANCE.needApproval(document)) {
                 result.postValue(new LoginCallback.Builder(Status.LOADING).message("Need approval").build());
                 approval(document, response);
             } else {

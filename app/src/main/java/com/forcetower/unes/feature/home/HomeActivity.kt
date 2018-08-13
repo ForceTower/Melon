@@ -3,6 +3,7 @@ package com.forcetower.unes.feature.home
 import android.os.Bundle
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.forcetower.unes.R
 import com.forcetower.unes.databinding.ActivityHomeBinding
@@ -12,14 +13,21 @@ import com.forcetower.unes.feature.shared.config
 import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class HomeActivity : UActivity(), ToolbarActivity {
+class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     private lateinit var binding: ActivityHomeBinding
     private val bottomFragment: HomeBottomFragment by lazy { HomeBottomFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home).also { it ->
             binding = it
             setSupportActionBar(it.bottomAppBar)
@@ -43,4 +51,6 @@ class HomeActivity : UActivity(), ToolbarActivity {
         snack.config()
         snack.show()
     }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
 }

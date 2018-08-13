@@ -28,6 +28,7 @@ class LoadingFragment : UFragment(), Injectable {
     lateinit var factory: UViewModelFactory
 
     private lateinit var binding: FragmentLoadingBinding
+    private lateinit var viewModel: LoginViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentLoadingBinding.inflate(inflater, container, false).also {
@@ -39,7 +40,8 @@ class LoadingFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        provideViewModel<LoginViewModel>(factory).getAccess().observe(this, Observer { access -> onReceiveToken(access) })
+        viewModel = provideViewModel(factory)
+        viewModel.getAccess().observe(this, Observer { onReceiveToken(it) })
     }
 
     private fun onReceiveToken(access: SagresAccess?) {
@@ -48,8 +50,12 @@ class LoadingFragment : UFragment(), Injectable {
             binding.contentLoading.fadeOut()
         } else {
             Timber.d("Connected already")
+            if (viewModel.isConnected()) return
+
+            viewModel.setConnected()
             val intent = Intent(context, HomeActivity::class.java)
             startActivity(intent)
+            activity?.finish()
         }
     }
 }
