@@ -1,5 +1,6 @@
 package com.forcetower.unes.feature.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -9,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.ViewSwitcher
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -22,6 +24,7 @@ import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentSigningInBinding
+import com.forcetower.unes.feature.home.HomeActivity
 import com.forcetower.unes.feature.shared.UFragment
 import com.forcetower.unes.feature.shared.provideViewModel
 import timber.log.Timber
@@ -107,9 +110,20 @@ class SigningInFragment : UFragment(), Injectable {
             Status.APPROVING -> Timber.d("Status: Approving")
             Status.NETWORK_ERROR -> snackAndBack(getString(R.string.error_network_error))
             Status.RESPONSE_FAILED -> snackAndBack(getString(R.string.error_unexpected_response))
-            Status.SUCCESS -> showSnack(getString(R.string.login_connected))
+            Status.SUCCESS -> completeLogin()
             Status.APPROVAL_ERROR -> snackAndBack(getString(R.string.error_network_error))
         }
+    }
+
+    private fun completeLogin() {
+        if (viewModel.isConnected()) return
+        viewModel.setConnected()
+        val intent = Intent(requireContext(), HomeActivity::class.java)
+        val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
+                .toBundle()
+
+        startActivity(intent, bundle)
+        activity?.finish()
     }
 
     private fun snackAndBack(string: String) {

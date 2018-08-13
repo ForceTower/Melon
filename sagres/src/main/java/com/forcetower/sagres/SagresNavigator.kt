@@ -9,6 +9,7 @@ import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.messages.MessagesCallback
 import com.forcetower.sagres.operation.person.PersonCallback
 import com.forcetower.sagres.operation.start_page.StartPageCallback
+import com.forcetower.sagres.operation.semester.SemesterCallback
 
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
@@ -34,6 +35,9 @@ abstract class SagresNavigator {
 
     @AnyThread
     abstract fun aCalendar(): LiveData<CalendarCallback>
+
+    @AnyThread
+    abstract fun aSemesters(userId: Long): LiveData<SemesterCallback>
 
     @AnyThread
     abstract fun startPage(): LiveData<StartPageCallback>

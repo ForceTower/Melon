@@ -25,7 +25,7 @@ public class SagresSemesterParser {
         }
         Timber.d("Semesters: %s", strings);
         for (int i = 0; i < strings.size(); i++) {
-            semesters.add(new Semester(Integer.toString(strings.size() - i), strings.get(i)));
+            semesters.add(new Semester(Integer.toString(strings.size() - i), strings.get(i), strings.get(i), "", "", "", ""));
         }
 
         return semesters;

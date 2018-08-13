@@ -14,11 +14,15 @@ import com.forcetower.sagres.operation.messages.MessagesCallback;
 import com.forcetower.sagres.operation.messages.MessagesOperation;
 import com.forcetower.sagres.operation.person.PersonCallback;
 import com.forcetower.sagres.operation.person.PersonOperation;
+import com.forcetower.sagres.operation.semester.SemesterCallback;
+import com.forcetower.sagres.operation.semester.SemesterOperation;
 import com.forcetower.sagres.operation.start_page.StartPageCallback;
 import com.forcetower.sagres.operation.start_page.StartPageOperation;
 import com.franmontiel.persistentcookiejar.PersistentCookieJar;
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache;
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -172,6 +176,14 @@ public class SagresNavigatorImpl extends SagresNavigator {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     public LiveData<CalendarCallback> aCalendar() {
         return new CalendarOperation(SagresTaskExecutor.getNetworkThreadExecutor()).getResult();
+    }
+
+    @NotNull
+    @Override
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    public LiveData<SemesterCallback> aSemesters(long userId) {
+        return new SemesterOperation(userId, SagresTaskExecutor.getNetworkThreadExecutor()).getResult();
     }
 
     @NonNull

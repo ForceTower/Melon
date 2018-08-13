@@ -12,6 +12,7 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(private val repository: UserRepository): ViewModel() {
     private var loginSrc : MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
+    private var connected: Boolean = false
 
     fun getAccess() = repository.getAccess()
 
@@ -34,6 +35,13 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
     }
 
     fun getLogin(): LiveData<Callback> = loginSrc
+
+
+    fun setConnected() {
+        connected = true
+    }
+
+    fun isConnected() = connected
 
     override fun onCleared() {
         super.onCleared()

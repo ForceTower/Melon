@@ -69,13 +69,33 @@ class UserRepository @Inject constructor(
                 //TODO Insert Data to Database
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
-                startPage(data)
+                semesters(data, userId)
             } else {
                 data.value = Callback.Builder(m.status)
                         .code(m.code)
                         .message(m.message)
                         .throwable(m.throwable)
                         .document(m.document)
+                        .build()
+            }
+        }
+    }
+
+    private fun semesters(data: MediatorLiveData<Callback>, userId: Long) {
+        val semesters = SagresNavigator.instance.aSemesters(userId)
+        data.addSource(semesters) {s ->
+            if (s.status == Status.SUCCESS) {
+                data.removeSource(semesters)
+                //TODO Insert Data to Database
+                Timber.d("Semesters Completed")
+                Timber.d("You got: ${s.getSemesters()}")
+                startPage(data)
+            } else {
+                data.value = Callback.Builder(s.status)
+                        .code(s.code)
+                        .message(s.message)
+                        .throwable(s.throwable)
+                        .document(s.document)
                         .build()
             }
         }
