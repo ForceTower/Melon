@@ -1,6 +1,7 @@
 package com.forcetower.unes.core.storage.repository
 
 import androidx.annotation.MainThread
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.forcetower.sagres.SagresNavigator
@@ -13,6 +14,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.unes.AppExecutors
 import com.forcetower.unes.core.model.Access
+import com.forcetower.unes.core.model.CalendarItem
 import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.model.Semester
 import com.forcetower.unes.core.storage.database.UDatabase
@@ -168,19 +170,25 @@ class UserRepository @Inject constructor(
         data.value = Callback.Builder(Status.SUCCESS).build()
     }
 
+    @WorkerThread
     private fun defineSchedule(locations: List<DisciplineClassLocation>) {
 
     }
 
+    @WorkerThread
     private fun defineDisciplineGroups(groups: List<DisciplineGroup>) {
 
     }
 
+    @WorkerThread
     private fun defineDisciplines(disciplines: List<Discipline>) {
-
+        val values = disciplines.map { com.forcetower.unes.core.model.Discipline.fromSagres(it) }
+        database.disciplineDao().insert(values)
     }
 
+    @WorkerThread
     private fun defineCalendar(calendar: List<SagresCalendar>) {
-
+        val values = calendar.map { CalendarItem.fromSagres(it) }
+        database.calendarDao().deleteAndInsert(values)
     }
 }
