@@ -14,11 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme.Base">
         <activity android:name="com.forcetower.unes.feature.login.LoginActivity">
-        </activity>
-        <activity android:name="com.forcetower.unes.feature.home.HomeActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name="com.forcetower.unes.feature.home.HomeActivity">
+            <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
