@@ -8,33 +8,38 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.forcetower.unes.R
+import com.forcetower.unes.databinding.FragmentAllMessagesBinding
 import com.forcetower.unes.feature.shared.UFragment
+import com.forcetower.unes.feature.shared.fadeIn
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_all_messages.*
 import java.util.*
 
 class MessagesFragment: UFragment() {
+    private lateinit var binding: FragmentAllMessagesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_all_messages, container, false)
+        binding = FragmentAllMessagesBinding.inflate(inflater, container, false)
+        getToolbarTitleText().text = getString(R.string.label_messages)
         preparePager()
-        return view
+        return binding.root
     }
 
     private fun preparePager() {
         val tabLayout = getTabLayout()
+        tabLayout.fadeIn()
 
         tabLayout.clearOnTabSelectedListeners()
         tabLayout.removeAllTabs()
 
-        tabLayout.setupWithViewPager(pager_message)
-        tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(pager_message))
-        pager_message.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
+        tabLayout.setupWithViewPager(binding.pagerMessage)
+        tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.pagerMessage))
+        binding.pagerMessage.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
         val sagres = SagresMessagesFragment()
         val unes   = UnesMessagesFragment()
 
-        pager_message.adapter = SectionFragmentAdapter(childFragmentManager, Arrays.asList(sagres, unes))
+        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, Arrays.asList(sagres, unes))
     }
 
     private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>): FragmentPagerAdapter(fm) {

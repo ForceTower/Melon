@@ -11,19 +11,22 @@ import com.forcetower.sagres.operation.Status;
 import java.util.List;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 public class StartPageCallback extends BaseCallback<StartPageCallback> {
+    @Nullable
     private List<SagresCalendar> calendar;
     private List<Semester> semesters;
     private List<Discipline> disciplines;
     private List<DisciplineGroup> groups;
+    @Nullable
     private List<DisciplineClassLocation> locations;
 
     public StartPageCallback(@NonNull Status status) {
         super(status);
     }
 
-    public StartPageCallback calendar(List<SagresCalendar> calendar) {
+    public StartPageCallback calendar(@Nullable List<SagresCalendar> calendar) {
         this.calendar = calendar;
         return this;
     }
@@ -43,11 +46,12 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
         return this;
     }
 
-    public StartPageCallback locations(List<DisciplineClassLocation> locations) {
+    public StartPageCallback locations(@Nullable List<DisciplineClassLocation> locations) {
         this.locations = locations;
         return this;
     }
 
+    @Nullable
     public List<SagresCalendar> getCalendar() {
         return calendar;
     }
@@ -64,6 +68,7 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
         return groups;
     }
 
+    @Nullable
     public List<DisciplineClassLocation> getLocations() {
         return locations;
     }

@@ -9,7 +9,7 @@ import com.forcetower.unes.core.model.Message
 
 @Dao
 interface MessageDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertIgnoring(messages: List<Message>)
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")

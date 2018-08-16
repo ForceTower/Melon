@@ -21,9 +21,8 @@ class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<Message>):
     }
 
     class MessageHolder(val binding: ItemSagresMessageBinding) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(message: Message?) {
-            TODO("Implement Message Binding")
+            binding.message = message
         }
     }
 }

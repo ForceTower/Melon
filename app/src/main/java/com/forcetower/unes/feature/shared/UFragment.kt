@@ -1,6 +1,7 @@
 package com.forcetower.unes.feature.shared
 
 import android.content.Context
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.AppBarLayout
@@ -22,4 +23,5 @@ abstract class UFragment : Fragment() {
     fun getToolbar(): Toolbar = (activity as ToolbarActivity).getToolbar()
     fun getAppBar(): AppBarLayout = (activity as ToolbarActivity).getAppBar()
     fun getTabLayout(): TabLayout = (activity as ToolbarActivity).getTabLayout()
+    fun getToolbarTitleText(): TextView = (activity as ToolbarActivity).getToolbarTextView()
 }
