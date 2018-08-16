@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "31c25a42b40c5c5cbfb8b587818bd976",
+    "identityHash": "5f126d56c810d35d9f7370fefc5ed762",
     "entities": [
       {
         "tableName": "Access",
@@ -259,7 +259,7 @@
       },
       {
         "tableName": "CalendarItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `message` TEXT NOT NULL, `date` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `message` TEXT NOT NULL, `date` TEXT NOT NULL, `uuid` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -278,6 +278,12 @@
             "columnName": "date",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -291,7 +297,7 @@
       },
       {
         "tableName": "Discipline",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `code` TEXT NOT NULL, `credits` INTEGER NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `code` TEXT NOT NULL, `credits` INTEGER NOT NULL, `department` TEXT, `uuid` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -316,6 +322,18 @@
             "columnName": "credits",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "department",
+            "columnName": "department",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -332,6 +350,22 @@
               "code"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_Discipline_code` ON `${TABLE_NAME}` (`code`)"
+          },
+          {
+            "name": "index_Discipline_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Discipline_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          },
+          {
+            "name": "index_Discipline_name",
+            "unique": true,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Discipline_name` ON `${TABLE_NAME}` (`name`)"
           }
         ],
         "foreignKeys": []
@@ -339,7 +373,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"31c25a42b40c5c5cbfb8b587818bd976\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"5f126d56c810d35d9f7370fefc5ed762\")"
     ]
   }
 }

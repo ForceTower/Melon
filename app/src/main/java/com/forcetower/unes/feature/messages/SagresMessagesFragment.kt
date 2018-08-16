@@ -9,14 +9,18 @@ import androidx.paging.PagedList
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.vm.HomeViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
+import com.forcetower.unes.databinding.FragmentSagresMessagesBinding
 import com.forcetower.unes.feature.shared.UFragment
+import com.forcetower.unes.feature.shared.getPixelsFromDp
 import com.forcetower.unes.feature.shared.provideViewModel
 import kotlinx.android.synthetic.main.fragment_unes_messages.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class SagresMessagesFragment: UFragment(), Injectable {
@@ -30,17 +34,27 @@ class SagresMessagesFragment: UFragment(), Injectable {
         override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem
     })}
 
+    private val manager by lazy { LinearLayoutManager(context) }
+
+    private lateinit var binding: FragmentSagresMessagesBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view =  inflater.inflate(R.layout.fragment_sagres_messages, container, false)
+        binding =  FragmentSagresMessagesBinding.inflate(inflater, container, false)
         setupRecycler()
-        return view
+        return binding.root
     }
 
     private fun setupRecycler() {
-        recycler_sagres_messages.adapter = adapter
-        recycler_sagres_messages.layoutManager = LinearLayoutManager(context)
-        recycler_sagres_messages.itemAnimator = DefaultItemAnimator()
-        recycler_sagres_messages.isNestedScrollingEnabled = false
+        binding.recyclerSagresMessages.adapter = adapter
+        binding.recyclerSagresMessages.layoutManager = manager
+        binding.recyclerSagresMessages.itemAnimator = DefaultItemAnimator()
+        binding.recyclerSagresMessages.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                if (manager.findFirstCompletelyVisibleItemPosition() == 0) getAppBar().elevation = 0F
+                else getAppBar().elevation = getPixelsFromDp(requireContext(), 6).toFloat()
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -49,6 +63,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
     }
 
     private fun onMessagesChange(list: PagedList<Message>) {
+        Timber.d("Messages List size is ${list.size}")
         adapter.submitList(list)
     }
 }

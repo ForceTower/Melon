@@ -1,5 +1,6 @@
 package com.forcetower.unes.feature.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,10 +13,12 @@ import com.forcetower.unes.core.model.Access
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentLoadingBinding
+import com.forcetower.unes.feature.home.HomeActivity
 import com.forcetower.unes.feature.shared.UFragment
 import com.forcetower.unes.feature.shared.fadeIn
 import com.forcetower.unes.feature.shared.fadeOut
 import com.forcetower.unes.feature.shared.provideViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class LoadingFragment : UFragment(), Injectable {
@@ -40,17 +43,17 @@ class LoadingFragment : UFragment(), Injectable {
     }
 
     private fun onReceiveToken(access: Access?) {
-//        if (access == null) {
+        if (access == null) {
             binding.btnFirstSteps.fadeIn()
             binding.contentLoading.fadeOut()
-//        } else {
-//            Timber.d("Connected already")
-//            if (viewModel.isConnected()) return
-//
-//            viewModel.setConnected()
-//            val intent = Intent(context, HomeActivity::class.java)
-//            startActivity(intent)
-//            activity?.finish()
-//        }
+        } else {
+            Timber.d("Connected already")
+            if (viewModel.isConnected()) return
+
+            viewModel.setConnected()
+            val intent = Intent(context, HomeActivity::class.java)
+            startActivity(intent)
+            activity?.finish()
+        }
     }
 }

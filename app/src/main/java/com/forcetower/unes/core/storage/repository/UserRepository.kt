@@ -171,8 +171,8 @@ class UserRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineSchedule(locations: List<DisciplineClassLocation>) {
-
+    private fun defineSchedule(locations: List<DisciplineClassLocation>?) {
+        if (locations == null) return
     }
 
     @WorkerThread
@@ -187,8 +187,8 @@ class UserRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineCalendar(calendar: List<SagresCalendar>) {
-        val values = calendar.map { CalendarItem.fromSagres(it) }
+    private fun defineCalendar(calendar: List<SagresCalendar>?) {
+        val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
     }
 }

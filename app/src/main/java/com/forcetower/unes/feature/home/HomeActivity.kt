@@ -2,6 +2,7 @@ package com.forcetower.unes.feature.home
 
 import android.content.Intent
 import android.os.Bundle
+import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -99,6 +100,10 @@ class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
         val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
         snack.config()
         snack.show()
+    }
+
+    override fun getToolbarTextView(): TextView {
+        return binding.textToolbarTitle
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
