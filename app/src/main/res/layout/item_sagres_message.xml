@@ -2,6 +2,12 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <import type="com.forcetower.unes.core.util.DateUtils"/>
+        <variable
+            name="message"
+            type="com.forcetower.unes.core.model.Message"/>
+    </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -25,6 +31,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="UEFS"
+                android:text="@{message.senderName}"
                 android:textColor="?attr/colorAccent"/>
 
 
@@ -36,6 +43,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 tools:text="@sample/messages.json/data/message"
+                android:text="@{message.content}"
                 android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -49,6 +57,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
+                android:text="@{@string/message_received_date_format(DateUtils.getTimeStampedDate(message.timestamp))}"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

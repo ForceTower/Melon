@@ -101,4 +101,6 @@
         <item>Encaixando todas as peças</item>
         <item>Ficando de olhos abertos</item>
     </string-array>
+
+    <string name="message_received_date_format">Mensagem recebida: %1$s</string>
 </resources>

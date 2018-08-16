@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.findNavController
 import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.R
 import com.forcetower.unes.databinding.HomeBottomBinding
@@ -17,7 +18,7 @@ class HomeBottomFragment : RoundedBottomSheetDialogFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
-        }.root
+        }.root.also {  }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -28,7 +29,7 @@ class HomeBottomFragment : RoundedBottomSheetDialogFragment() {
     private fun setupNavigation() {
         navigation_view.setNavigationItemSelectedListener{item ->
             when (item.itemId) {
-                R.id.messages -> Timber.d("Messages")
+                R.id.messages -> activity?.findNavController(R.id.home_nav_host)?.navigate(R.id.messages)
                 R.id.grades_disciplines -> Timber.d("Grades")
             }
             dismiss()
