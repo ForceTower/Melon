@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/schedule"
+        android:title="@string/label_schedule"
+        android:icon="@drawable/ic_clock_black_24dp"/>
+
+    <item
+        android:id="@+id/messages"
+        android:title="@string/label_messages"
+        android:icon="@drawable/ic_message_black_24dp"/>
+
+    <item
+        android:id="@+id/grades_disciplines"
+        android:title="@string/label_grades_disciplines_short"
+        android:icon="@drawable/ic_discipline_black_24dp"/>
+
+    <item
+        android:id="@+id/bottom_menu"
+        android:title="@string/label_menu"
+        android:icon="@drawable/ic_menu_white_24dp"/>
+</menu>
