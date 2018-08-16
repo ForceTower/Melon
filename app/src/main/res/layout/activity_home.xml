@@ -28,8 +28,8 @@
                         android:layout_height="wrap_content"
                         android:paddingStart="8dp"
                         android:paddingEnd="8dp"
-                        tools:text="Painel de Controle"
-                        android:textSize="20sp"
+                        tools:text="Horários"
+                        android:textSize="22sp"
                         android:textColor="@color/colorPrimaryDark" />
 
                     <de.hdodenhof.circleimageview.CircleImageView
@@ -85,15 +85,21 @@
                 app:navGraph="@navigation/home_nav_graph" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottom_app_bar"
+        <com.google.android.material.bottomnavigation.BottomNavigationView
+            android:id="@+id/bottom_navigation"
+            android:layout_alignParentBottom="true"
             android:layout_width="match_parent"
             android:layout_height="56dp"
-            app:backgroundTint="@color/colorPrimaryDark"
-            app:navigationIcon="@drawable/ic_menu_white_24dp"
+            android:background="@color/white"
             android:layout_gravity="bottom"
-            android:elevation="8dp">
-        </com.google.android.material.bottomappbar.BottomAppBar>
+            app:elevation="12dp"
+            app:labelVisibilityMode="auto"
+            app:itemHorizontalTranslationEnabled="true"
+            app:itemTextAppearanceActive="@style/AppTheme.BottomNavigation.Active"
+            app:itemTextAppearanceInactive="@style/AppTheme.BottomNavigation.Active"
+            app:menu="@menu/home_bottom_navigation"
+            app:itemIconTint="@color/navigation_bottom_color"
+            app:itemTextColor="@color/navigation_bottom_color"/>
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/snack"

@@ -6,6 +6,7 @@
     <color name="colorAccent">#2196F3</color>
 
     <color name="grey">#FF757575</color>
+    <color name="navigation_grey">#757575</color>
 
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
     <color name="text_secondary_dark">#8a000000</color> <!-- 54% -->
