@@ -39,7 +39,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
     private lateinit var binding: FragmentSagresMessagesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding =  FragmentSagresMessagesBinding.inflate(inflater, container, false)
+        binding = FragmentSagresMessagesBinding.inflate(inflater, container, false)
         setupRecycler()
         return binding.root
     }
