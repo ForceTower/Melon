@@ -65,7 +65,7 @@
             android:layout_gravity="bottom"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:itemIconPadding="@dimen/second_keyline"
-            app:menu="@menu/home_navigation"
+            app:menu="@menu/home_menu_navigation"
             app:itemBackground="@drawable/navigation_item_background"
             app:itemTextColor="@color/navigation_text_color"
             app:itemIconTint="@color/navigation_icon_color"
