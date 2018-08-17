@@ -1,30 +1,33 @@
 package com.forcetower.unes.core.storage.repository
 
+import android.content.Context
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.Discipline
-import com.forcetower.sagres.database.model.DisciplineClassLocation
-import com.forcetower.sagres.database.model.DisciplineGroup
-import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.*
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.unes.AppExecutors
+import com.forcetower.unes.R
 import com.forcetower.unes.core.model.Access
 import com.forcetower.unes.core.model.CalendarItem
 import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.model.Semester
 import com.forcetower.unes.core.storage.database.UDatabase
+import com.forcetower.unes.core.storage.network.UService
 import timber.log.Timber
 import javax.inject.Inject
 
 class UserRepository @Inject constructor(
         private val executor: AppExecutors,
-        private val database: UDatabase
+        private val database: UDatabase,
+        private val service: UService,
+        context: Context
 ) {
+    private val appToken = context.getString(R.string.app_service_token)
 
     fun getAccess(): LiveData<Access?> = database.accessDao().getAccess()
 
@@ -59,7 +62,7 @@ class UserRepository @Inject constructor(
                 Timber.d("Login Completed")
                 val score = SagresBasicParser.getScore(l.document)
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
-                me(data, score)
+                me(data, score, username, password)
             } else {
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
@@ -71,7 +74,7 @@ class UserRepository @Inject constructor(
         }
     }
 
-    private fun me(data: MediatorLiveData<Callback>, score: Double) {
+    private fun me(data: MediatorLiveData<Callback>, score: Double, username: String, password: String) {
         val me = SagresNavigator.instance.aMe()
         data.addSource(me) {m ->
             if (m.status == Status.SUCCESS) {
@@ -80,6 +83,7 @@ class UserRepository @Inject constructor(
                 val person = m.person
                 if (person != null) {
                     executor.diskIO().execute { database.profileDao().insert(person, score) }
+                    executor.networkIO().execute { loginToService(person, username, password) }
                     messages(data, person.id)
                 } else {
                     Timber.d("Person is null")
@@ -190,5 +194,21 @@ class UserRepository @Inject constructor(
     private fun defineCalendar(calendar: List<SagresCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
+    }
+
+
+    private fun loginToService(person: Person, username: String, password: String) {
+        val login = service.loginOrCreate(username, password, person.email, person.name, person.cpf, appToken)
+        val response = login.execute()
+        if (response.isSuccessful) {
+            val token = response.body()
+            if (token != null) {
+                database.accessTokenDao().insert(token)
+            } else {
+                Timber.d("Access Token is null")
+            }
+        } else {
+            Timber.d("Response is unsuccessful. The code is: ${response.code()}")
+        }
     }
 }

@@ -16,9 +16,9 @@ class LoginViewModel @Inject constructor(private val repository: UserRepository)
 
     fun getAccess() = repository.getAccess()
 
-    fun login(username: String, password: String) {
+    fun login(username: String, password: String, deleteDatabase: Boolean = false) {
         if (!loginRunning) {
-            val login = repository.login(username, password)
+            val login = repository.login(username, password, deleteDatabase)
             loginRunning = true
             loginSrc.addSource(login) {
                 loginRunning = when (it.status) {

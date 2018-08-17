@@ -11,10 +11,12 @@ import com.forcetower.unes.core.storage.database.dao.*
     Semester::class,
     Message::class,
     CalendarItem::class,
-    Discipline::class
+    Discipline::class,
+    AccessToken::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
+    abstract fun accessTokenDao(): AccessTokenDao
     abstract fun profileDao(): ProfileDao
     abstract fun messageDao(): MessageDao
     abstract fun semesterDao(): SemesterDao

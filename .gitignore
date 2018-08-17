@@ -69,3 +69,4 @@ freeline_project_description.json
 /app/src/main/res/values/ids.xml
 /.idea/navEditor.xml
 /app/release/
+/app/src/main/res/values/service_strings.xml
