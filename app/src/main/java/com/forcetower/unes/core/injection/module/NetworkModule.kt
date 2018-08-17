@@ -1,6 +1,9 @@
 package com.forcetower.unes.core.injection.module
 
 import android.content.Context
+import com.forcetower.unes.core.Constants
+import com.forcetower.unes.core.storage.network.UService
+import com.forcetower.unes.core.storage.network.adapter.LiveDataCallAdapterFactory
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
@@ -8,6 +11,8 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
@@ -47,5 +52,18 @@ object NetworkModule {
     fun provideInterceptor(): Interceptor = Interceptor {
         val request = it.request()
         it.proceed(request)
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideService(client: OkHttpClient): UService {
+        return Retrofit.Builder()
+                .baseUrl(Constants.UNES_SERVICE_URL)
+                .client(client)
+                .addCallAdapterFactory(LiveDataCallAdapterFactory())
+                .addConverterFactory(GsonConverterFactory.create())
+                .build()
+                .create(UService::class.java)
     }
 }

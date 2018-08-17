@@ -104,7 +104,7 @@ class SigningInFragment : UFragment(), Injectable {
             showSnack(getString(R.string.error_invalid_credentials))
             view?.findNavController()?.popBackStack()
         } else {
-            viewModel.login(username!!, password!!)
+            viewModel.login(username!!, password!!, true)
         }
     }
 
