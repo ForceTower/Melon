@@ -4,20 +4,20 @@
     <string name="login_welcome_to_unes">Welcome to UNES</string>
     <string name="login_first_steps">First steps</string>
     <string name="login_unes_single_help">Easiest way to access Sagres</string>
-    <string name="unes_image">UNES image</string>
+    <string name="unes_image">UNES Image</string>
     <string name="login_access_account">Access UNES</string>
     <string name="login_using_sagres_account">Login using your Sagres account</string>
     <string name="login_user">User</string>
     <string name="login_password">Password</string>
     <string name="login_sign_in">Login</string>
     <string name="login_about_unes">About UNES</string>
-    <string name="login_text_preparing_rockets">Getting the rockets</string>
+    <string name="login_text_preparing_rockets">Getting the rockets ready</string>
     <string name="label_schedule">Schedule</string>
     <string name="label_dashboard">Control Panel</string>
     <string name="label_messages">Messages</string>
     <string name="label_grades_disciplines">Grades and Subjects</string>
     <string name="label_calendar">Academic Calendar</string>
-    <string name="label_events">Events</string>
+    <string name="label_events">Ongoings</string>
     <string name="label_services">Services</string>
     <string name="label_reminders">Reminders</string>
     <string name="label_adventure">Adventure</string>
@@ -26,12 +26,12 @@
     <string name="label_logout">Exit</string>
     <string name="label_open_source_libraries">Open Source Licenses</string>
     <string name="label_today_schedule">Today Classes</string>
-    <string name="label_recent_messages">Messages</string>
+    <string name="label_recent_messages">Recent messages</string>
     <string name="login_no_account_message">"Don't have an account? "</string>
     <string name="label_evaluate_recent_class">Evaluate the recent class</string>
     <string name="error_too_small">Too short</string>
     <string name="error_invalid_credentials">"User or password invalid "</string>
-    <string name="error_login_failed">Login invalid</string>
+    <string name="error_login_failed">Invalid login</string>
     <string name="error_connection_failed">Conection error</string>
     <string name="error_network_error">Connection failure</string>
     <string name="login_connected">Connected</string>
@@ -41,7 +41,7 @@
     <string name="label_menu">Menu</string>
     <string name="label_grades_disciplines_short">Classes</string>
     <string name="there_is_no_vestibular_anymore">Baby steps, come back next year</string>
-    <string name="discipline_icon">Subject icon</string>
+    <string name="discipline_icon">Course Icon</string>
     <string name="error_unexpected_response">"Sagres isn't responding "</string>
     <string name="label_definitions">Options</string>
 </resources>
