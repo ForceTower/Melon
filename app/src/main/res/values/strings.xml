@@ -27,13 +27,13 @@
     <string name="label_logout">Sair</string>
     <string name="label_open_source_libraries">Licenças de Código Aberto</string>
     <string name="label_today_schedule">Aulas de Hoje</string>
-    <string name="discipline_icon">Discipline Icon</string>
+    <string name="discipline_icon">ìcone da disciplina</string>
     <string name="label_recent_messages">Mensagens</string>
     <string name="login_no_account_message">Ainda não tem uma conta? Passe no vestibular</string>
     <string name="there_is_no_vestibular_anymore">\"Mas não tem vestibular\"\nEntão faça o ENEM, você entendeu</string>
     <string name="label_evaluate_recent_class">Avalie aula recente</string>
     <string name="error_too_small">Muito curto</string>
-    <string name="error_invalid_credentials">Usuário ou senha não está certo</string>
+    <string name="error_invalid_credentials">Usuário ou senha incorretos</string>
     <string name="error_login_failed">Login Incorreto</string>
     <string name="error_connection_failed">Erro de conexão</string>
     <string name="error_network_error">Falha de conexão</string>
@@ -106,4 +106,5 @@
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
     <string name="label_grades_disciplines_short">Disciplinas</string>
+    <string name="login_using_sagres_account">Entre utilizando a conta do Sagres</string>
 </resources>
