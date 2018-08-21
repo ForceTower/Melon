@@ -12,7 +12,7 @@
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
         app:cardElevation="0dp"
-        app:strokeColor="@color/text_secondary_dark"
+        app:strokeColor="@color/messages_stroke"
         app:strokeWidth="1dp"
         android:layout_marginBottom="8dp">
 
