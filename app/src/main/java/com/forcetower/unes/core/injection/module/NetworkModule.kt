@@ -11,6 +11,7 @@ import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieHandler
@@ -49,9 +50,9 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideInterceptor(): Interceptor = Interceptor {
-        val request = it.request()
-        it.proceed(request)
+    fun provideInterceptor(): Interceptor = Interceptor { chain ->
+        val request = chain.request()
+        chain.proceed(request)
     }
 
     @Provides
