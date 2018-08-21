@@ -19,7 +19,9 @@ import com.forcetower.unes.core.model.Semester
 import com.forcetower.unes.core.storage.database.UDatabase
 import com.forcetower.unes.core.storage.network.UService
 import timber.log.Timber
+import java.io.IOException
 import javax.inject.Inject
+import kotlin.concurrent.timer
 
 class UserRepository @Inject constructor(
         private val executor: AppExecutors,
@@ -199,16 +201,21 @@ class UserRepository @Inject constructor(
 
     private fun loginToService(person: Person, username: String, password: String) {
         val login = service.loginOrCreate(username, password, person.email, person.name, person.cpf, appToken)
-        val response = login.execute()
-        if (response.isSuccessful) {
-            val token = response.body()
-            if (token != null) {
-                database.accessTokenDao().insert(token)
+        try {
+            val response = login.execute()
+            if (response.isSuccessful) {
+                val token = response.body()
+                if (token != null) {
+                    database.accessTokenDao().insert(token)
+                } else {
+                    Timber.d("Access Token is null")
+                }
             } else {
-                Timber.d("Access Token is null")
+                Timber.d("Response is unsuccessful. The code is: ${response.code()}")
             }
-        } else {
-            Timber.d("Response is unsuccessful. The code is: ${response.code()}")
+        } catch (e: IOException) {
+            Timber.d("Request Failed")
+            e.printStackTrace()
         }
     }
 }
