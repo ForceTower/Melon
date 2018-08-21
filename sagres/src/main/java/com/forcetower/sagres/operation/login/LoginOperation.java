@@ -89,7 +89,7 @@ public class LoginOperation extends Operation<LoginCallback> {
     private void successMeasures(@NonNull Document document) {
         success = true;
 
-        SagresDatabase database = SagresNavigatorImpl.getInstance().getDatabase();
+        SagresDatabase database = SagresNavigatorImpl.Companion.getInstance().getDatabase();
         SagresAccess access = database.accessDao().getAccessDirect();
         SagresAccess created = new SagresAccess(username, password);
         if (access == null || !access.equals(created)) database.accessDao().insert(created);

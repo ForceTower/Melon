@@ -106,5 +106,4 @@
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
     <string name="label_grades_disciplines_short">Disciplinas</string>
-    <string name="login_using_sagres_account">Entre utilizando a conta do Sagres</string>
 </resources>

@@ -46,7 +46,7 @@ abstract class SagresNavigator {
 
     companion object {
         val instance: SagresNavigator
-            get() = SagresNavigatorImpl.getInstance()
+            get() = SagresNavigatorImpl.instance
 
         fun initialize(context: Context) {
             SagresNavigatorImpl.initialize(context)

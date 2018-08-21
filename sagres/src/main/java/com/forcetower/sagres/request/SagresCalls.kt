@@ -31,7 +31,7 @@ object SagresCalls {
 
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     private fun getCall(request: Request): Call {
-        val client = SagresNavigatorImpl.getInstance().client
+        val client = SagresNavigatorImpl.instance.client
         return client.newCall(request)
     }
 
