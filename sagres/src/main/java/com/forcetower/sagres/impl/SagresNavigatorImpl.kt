@@ -29,6 +29,8 @@ import androidx.annotation.AnyThread
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.operation.grades.GradesCallback
+import com.forcetower.sagres.operation.grades.GradesOperation
 import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.Interceptor
@@ -144,8 +146,16 @@ private constructor(context: Context) : SagresNavigator() {
         return SemesterOperation(userId, SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
 
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun startPage(): LiveData<StartPageCallback> {
         return StartPageOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun getCurrentGrades(): LiveData<GradesCallback> {
+        return GradesOperation(null, SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
 
     companion object {
