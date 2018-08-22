@@ -16,6 +16,7 @@ import okhttp3.Response
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object SagresCalls {
 
+    @JvmStatic
     val me: Call
         @RestrictTo(RestrictTo.Scope.LIBRARY)
         get() {
@@ -23,6 +24,7 @@ object SagresCalls {
             return getCall(request)
         }
 
+    @JvmStatic
     val startPage: Call
         get() {
             val request = SagresRequests.startPage()
@@ -35,6 +37,7 @@ object SagresCalls {
         return client.newCall(request)
     }
 
+    @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun login(username: String, password: String): Call {
         val body = SagresForms.loginBody(username, password)
@@ -42,6 +45,7 @@ object SagresCalls {
         return getCall(request)
     }
 
+    @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun loginApproval(document: Document, response: Response): Call {
         val responsePath = response.request().url().url()
@@ -51,26 +55,43 @@ object SagresCalls {
         return getCall(request)
     }
 
+    @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getPerson(userId: Long?): Call {
         val request = SagresRequests.getPerson(userId!!)
         return getCall(request)
     }
 
+    @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getLink(linker: Linker): Call {
         val request = SagresRequests.link(linker)
         return getCall(request)
     }
 
+    @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getMessages(userId: Long): Call {
         val request = SagresRequests.messages(userId)
         return getCall(request)
     }
 
+    @JvmStatic
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getSemesters(userId: Long): Call {
         val request = SagresRequests.getSemesters(userId)
+        return getCall(request)
+    }
+
+    @JvmStatic
+    @RestrictTo
+    fun getGrades(semester: Long?, document: Document?): Call {
+        val request = if (semester == null) {
+            SagresRequests.getCurrentGrades()
+        } else {
+            SagresRequests.getGradesForSemester(semester, document!!)
+        }
+
         return getCall(request)
     }
 }
