@@ -7,6 +7,7 @@ import timber.log.Timber
 
 object SagresBasicParser {
 
+    @JvmStatic
     fun needApproval(document: Document): Boolean {
         var approval: Element? = document.selectFirst("div[class=\"acesso-externo-pagina-aLogin\"]")
         if (approval != null) return true
@@ -16,6 +17,7 @@ object SagresBasicParser {
 
     }
 
+    @JvmStatic
     fun isConnected(document: Document?): Boolean {
         if (document == null) return false
 
@@ -31,6 +33,7 @@ object SagresBasicParser {
         }
     }
 
+    @JvmStatic
     fun getScore(document: Document?): Double {
         if (document == null) return -1.0
 
