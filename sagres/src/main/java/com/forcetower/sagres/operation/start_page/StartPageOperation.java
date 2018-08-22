@@ -35,7 +35,7 @@ public class StartPageOperation extends Operation<StartPageCallback> {
     @Override
     protected void execute() {
         result.postValue(new StartPageCallback(Status.STARTED));
-        Call call = SagresCalls.INSTANCE.getStartPage();
+        Call call = SagresCalls.getStartPage();
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {

@@ -4,7 +4,13 @@ import com.forcetower.sagres.Constants;
 import com.forcetower.sagres.database.model.Linker;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
+import androidx.annotation.NonNull;
+import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
 
@@ -69,6 +75,38 @@ public class SagresRequests {
         String url = BASE_URL + "/diario/periodos-letivos?idPessoa=" + userId + "&perfil=1";
         return new Request.Builder()
                 .url(url)
+                .build();
+    }
+
+    @NotNull
+    public static Request getCurrentGrades() {
+        return new Request.Builder()
+                .url(Constants.SAGRES_GRADE_PAGE)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
+
+    @NotNull
+    public static Request getGradesForSemester(long semester, @NonNull Document document) {
+        FormBody.Builder formBody = new FormBody.Builder();
+
+        Elements elements = document.select("input[value][type=\"hidden\"]");
+
+        for (Element element : elements) {
+            String key = element.attr("id");
+            String value = element.attr("value");
+            formBody.add(key, value);
+        }
+
+        formBody.add("ctl00$MasterPlaceHolder$ddPeriodosLetivos$ddPeriodosLetivos", Long.valueOf(semester).toString());
+        formBody.add("ctl00$MasterPlaceHolder$imRecuperar", "Exibir");
+        return new Request.Builder()
+                .url(Constants.SAGRES_GRADE_ANY)
+                .post(formBody.build())
+                .addHeader("x-requested-with", "XMLHttpRequest")
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
                 .build();
     }
 }

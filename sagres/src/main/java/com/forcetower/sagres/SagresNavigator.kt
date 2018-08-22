@@ -14,6 +14,7 @@ import com.forcetower.sagres.operation.semester.SemesterCallback
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.operation.grades.GradesCallback
 
 abstract class SagresNavigator {
     abstract val database: SagresDatabase
@@ -41,6 +42,9 @@ abstract class SagresNavigator {
 
     @AnyThread
     abstract fun startPage(): LiveData<StartPageCallback>
+
+    @AnyThread
+    abstract fun getCurrentGrades(): LiveData<GradesCallback>
 
     abstract fun stopTags(tag: String)
 
