@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2018.
+ * João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This file is part of the UNES Open Source Project.
  *
