@@ -28,4 +28,6 @@ data class Grade(
     fun addInfo(info: GradeInfo) {
         values.add(info)
     }
+
+    override fun toString(): String = "$discipline has $values"
 }
