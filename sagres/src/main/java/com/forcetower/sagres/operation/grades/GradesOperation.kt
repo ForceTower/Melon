@@ -1,3 +1,21 @@
+/*
+ * Copyright (c) 2018.
+ *
+ * This file is part of the UNES Open Source Project.
+ *
+ * UNES is licensed under the Apache License, Version 2.0 (the "License");
+ * You may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *        http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.forcetower.sagres.operation.grades
 
 import com.forcetower.sagres.Utils
@@ -21,7 +39,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
             val response = call.execute()
             if (response.isSuccessful) {
                 val body = response.body()!!.string()
-                successMeasures(body)
+                processResults(body)
             } else {
                 result.postValue(GradesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
@@ -30,8 +48,15 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         }
     }
 
-    private fun successMeasures(body: String) {
+    private fun processResults(body: String) {
         val document = Utils.createDocument(body)
+        val codes    = SagresGradesParser.extractSemesterCodes(document)
         val selected = SagresGradesParser.getSelectedSemester(document)
+
+        if (selected == null) {
+
+        } else {
+            //successMeasures(document, selected, codes)
+        }
     }
 }
