@@ -19,11 +19,15 @@
 package com.forcetower.sagres.operation.grades
 
 import com.forcetower.sagres.Utils
+import com.forcetower.sagres.database.model.DisciplineMissedClass
+import com.forcetower.sagres.database.model.Grade
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresGradesParser
+import com.forcetower.sagres.parsers.SagresMissedClassesParser
 import com.forcetower.sagres.request.SagresCalls
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executor
 
@@ -44,7 +48,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
                 result.postValue(GradesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            result.postValue(GradesCallback(Status.NETWORK_ERROR).throwable(e))
         }
     }
 
@@ -53,10 +57,26 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         val codes    = SagresGradesParser.extractSemesterCodes(document)
         val selected = SagresGradesParser.getSelectedSemester(document)
 
-        if (selected == null) {
-
+        if (selected != null) {
+            if (SagresGradesParser.canExtractGrades(document)) {
+                val grades = SagresGradesParser.extractGrades(document)
+                val frequency = SagresMissedClassesParser.extractMissedClasses(document)
+                successMeasures(document, codes, grades, frequency)
+            } else {
+                val variants = SagresGradesParser.extractCourseVariants(document)
+                Timber.d("Trying alternate page on this bad boy")
+            }
         } else {
-            //successMeasures(document, selected, codes)
+            Timber.d("Can't find semester on this situation")
+            result.postValue(GradesCallback(Status.APPROVAL_ERROR).message("Can't find semester on situation. Nothing is selected"))
         }
+    }
+
+    private fun successMeasures(document: Document, codes: List<Pair<Long, String>>, grades: List<Grade>,
+                                frequency: Pair<Boolean, List<DisciplineMissedClass>>) {
+        result.postValue(GradesCallback(Status.SUCCESS).document(document)
+                .grades(grades)
+                .frequency(if (frequency.first) frequency.second else null)
+                .codes(codes))
     }
 }
