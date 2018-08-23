@@ -18,13 +18,10 @@
 
 package com.forcetower.sagres.database.model
 
-data class GradeInfo(
-    val name: String,
-    val grade: String,
+data class DisciplineMissedClass(
     val date: String,
-    val weight: Double
+    val description: String,
+    val disciplineCode: String
 ) {
-    override fun toString(): String {
-        return "$name: $grade"
-    }
+    override fun toString(): String = "${disciplineCode}_$date -> $description"
 }
