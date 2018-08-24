@@ -19,16 +19,12 @@
 
 package com.forcetower.sagres.parsers;
 
-import android.os.SystemClock;
-
-import com.forcetower.sagres.database.model.Message;
+import com.forcetower.sagres.database.model.SMessage;
 
 import org.jsoup.nodes.Document;
 
-import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Created by João Paulo on 06/03/2018.
@@ -40,9 +36,9 @@ public class SagresMessageParser {
     private static final String MESSAGE_MESSAGE_RECEIVED = "class=\"recado-texto\">";
     private static final String MESSAGE_FROM_RECEIVED = "class=\"recado-remetente\">";
 
-    public static List<Message> getMessages(Document document) {
+    public static List<SMessage> getMessages(Document document) {
         String html = document.html();
-        List<Message> messages = new ArrayList<>();
+        List<SMessage> messages = new ArrayList<>();
 
         int position = 0;
         boolean found = html.indexOf("<article id", position) != -1;
@@ -56,7 +52,7 @@ public class SagresMessageParser {
 
             String article = html.substring(start, end);
 
-            Message message = extractInfoArticle(article);
+            SMessage message = extractInfoArticle(article);
             messages.add(message);
             position = end;
         }
@@ -64,7 +60,7 @@ public class SagresMessageParser {
         return messages;
     }
 
-    private static Message extractInfoArticle(String article) {
+    private static SMessage extractInfoArticle(String article) {
         String clazz = extractArticleForm1(MESSAGE_CLASS_RECEIVED, article);
         String date = extractArticleForm1(MESSAGE_DATE_RECEIVED, article);
         String message = extractArticleForm2(MESSAGE_MESSAGE_RECEIVED, article);

@@ -20,8 +20,8 @@
 package com.forcetower.sagres.operation.grades
 
 import com.forcetower.sagres.Utils
-import com.forcetower.sagres.database.model.DisciplineMissedClass
-import com.forcetower.sagres.database.model.Grade
+import com.forcetower.sagres.database.model.SDisciplineMissedClass
+import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresGradesParser
@@ -73,8 +73,8 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         }
     }
 
-    private fun successMeasures(document: Document, codes: List<Pair<Long, String>>, grades: List<Grade>,
-                                frequency: Pair<Boolean, List<DisciplineMissedClass>>) {
+    private fun successMeasures(document: Document, codes: List<Pair<Long, String>>, grades: List<SGrade>,
+                                frequency: Pair<Boolean, List<SDisciplineMissedClass>>) {
         result.postValue(GradesCallback(Status.SUCCESS).document(document)
                 .grades(grades)
                 .frequency(if (frequency.first) null else frequency.second)

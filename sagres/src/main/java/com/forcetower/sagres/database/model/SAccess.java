@@ -24,7 +24,7 @@ import androidx.room.Entity;
 import androidx.room.PrimaryKey;
 
 @Entity
-public class SagresAccess {
+public class SAccess {
     @PrimaryKey(autoGenerate = true)
     private long uid;
     @NonNull
@@ -32,7 +32,7 @@ public class SagresAccess {
     @NonNull
     private String password;
 
-    public SagresAccess(@NonNull String username, @NonNull String password) {
+    public SAccess(@NonNull String username, @NonNull String password) {
         this.username = username;
         this.password = password;
     }
@@ -64,8 +64,8 @@ public class SagresAccess {
     }
 
     public boolean equals(Object other) {
-        if (other instanceof SagresAccess) {
-            SagresAccess created = (SagresAccess) other;
+        if (other instanceof SAccess) {
+            SAccess created = (SAccess) other;
             return created.getPassword().equals(password) && created.getUsername().equals(username);
         }
         return false;

@@ -26,7 +26,7 @@ import java.text.ParseException;
 
 import androidx.annotation.NonNull;
 
-public class Message implements Comparable<Message>, Timestamped {
+public class SMessage implements Comparable<SMessage>, Timestamped {
     @SerializedName("id")
     private long sagresId;
     @SerializedName(value = "timeStamp")
@@ -37,9 +37,9 @@ public class Message implements Comparable<Message>, Timestamped {
     private int senderProfile;
     private String senderName;
     @SerializedName(value = "remetente")
-    private Linker sender;
+    private SLinker sender;
 
-    public Message(long sagresId, String timestamp, Linker sender, String message, int senderProfile, String senderName) {
+    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, String senderName) {
         this.sagresId = sagresId;
         this.timestamp = timestamp;
         this.sender = sender;
@@ -88,16 +88,16 @@ public class Message implements Comparable<Message>, Timestamped {
         this.senderName = senderName;
     }
 
-    public Linker getSender() {
+    public SLinker getSender() {
         return sender;
     }
 
-    public void setSender(Linker sender) {
+    public void setSender(SLinker sender) {
         this.sender = sender;
     }
 
     @Override
-    public int compareTo(@NonNull Message o) {
+    public int compareTo(@NonNull SMessage o) {
         return Long.compare(getTimeStampInMillis(), o.getTimeStampInMillis());
     }
 

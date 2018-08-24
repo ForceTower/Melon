@@ -22,6 +22,7 @@ package com.forcetower.unes.core.model
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.forcetower.sagres.database.model.SDiscipline
 import java.util.*
 
 @Entity(indices = [
@@ -35,12 +36,12 @@ data class Discipline(
     val name: String,
     val code: String,
     val credits: Int,
-    val department: String? = null,
+    var department: String? = null,
     val uuid: String = UUID.randomUUID().toString()
 ) {
 
     companion object {
-        fun fromSagres(discipline: com.forcetower.sagres.database.model.Discipline)
+        fun fromSagres(discipline: SDiscipline)
                 = Discipline(name = discipline.name, code = discipline.code, credits = discipline.credits)
     }
 }

@@ -19,17 +19,14 @@
 
 package com.forcetower.sagres.request
 
-import com.forcetower.sagres.database.model.Linker
+import com.forcetower.sagres.database.model.SLinker
 import com.forcetower.sagres.impl.SagresNavigatorImpl
 
 import org.jsoup.nodes.Document
 
-import java.net.URL
 import androidx.annotation.RestrictTo
 import okhttp3.Call
-import okhttp3.OkHttpClient
 import okhttp3.Request
-import okhttp3.RequestBody
 import okhttp3.Response
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -83,7 +80,7 @@ object SagresCalls {
 
     @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    fun getLink(linker: Linker): Call {
+    fun getLink(linker: SLinker): Call {
         val request = SagresRequests.link(linker)
         return getCall(request)
     }

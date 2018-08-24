@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.parsers;
 
-import com.forcetower.sagres.database.model.Semester;
+import com.forcetower.sagres.database.model.SSemester;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -32,8 +32,8 @@ import timber.log.Timber;
 
 public class SagresSemesterParser {
 
-    public static List<Semester> getSemesters(Document document) {
-        List<Semester> semesters = new ArrayList<>();
+    public static List<SSemester> getSemesters(Document document) {
+        List<SSemester> semesters = new ArrayList<>();
         Elements classes = document.select("section[class=\"webpart-aluno-item\"]");
 
         List<String> strings = new ArrayList<>();
@@ -44,7 +44,7 @@ public class SagresSemesterParser {
         }
         Timber.d("Semesters: %s", strings);
         for (int i = 0; i < strings.size(); i++) {
-            semesters.add(new Semester(strings.size() - i, strings.get(i), strings.get(i), "", "", "", ""));
+            semesters.add(new SSemester(strings.size() - i, strings.get(i), strings.get(i), "", "", "", ""));
         }
 
         return semesters;

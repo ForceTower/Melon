@@ -29,4 +29,7 @@ import com.forcetower.unes.core.model.Semester
 interface SemesterDao {
     @Insert(onConflict = IGNORE)
     fun insertIgnoring(semesters: List<Semester>)
+
+    @Insert(onConflict = IGNORE)
+    fun insertIgnoring(semester: Semester)
 }

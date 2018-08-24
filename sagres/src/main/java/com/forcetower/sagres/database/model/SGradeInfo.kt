@@ -19,16 +19,13 @@
 
 package com.forcetower.sagres.database.model
 
-data class Grade(
-    val discipline: String,
-    var partialMean: String = "",
-    var finalScore: String = ""
+data class SGradeInfo(
+    val name: String,
+    val grade: String,
+    val date: String,
+    val weight: Double
 ) {
-    private val values: MutableList<GradeInfo> = ArrayList()
-
-    fun addInfo(info: GradeInfo) {
-        values.add(info)
+    override fun toString(): String {
+        return "$name: $grade"
     }
-
-    override fun toString(): String = "$discipline has $values"
 }

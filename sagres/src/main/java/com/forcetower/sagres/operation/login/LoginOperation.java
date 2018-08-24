@@ -20,7 +20,7 @@
 package com.forcetower.sagres.operation.login;
 
 import com.forcetower.sagres.database.SagresDatabase;
-import com.forcetower.sagres.database.model.SagresAccess;
+import com.forcetower.sagres.database.model.SAccess;
 import com.forcetower.sagres.impl.SagresNavigatorImpl;
 import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
@@ -40,7 +40,6 @@ import androidx.lifecycle.MediatorLiveData;
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
-import timber.log.Timber;
 
 import static com.forcetower.sagres.Utils.createDocument;
 
@@ -109,8 +108,8 @@ public class LoginOperation extends Operation<LoginCallback> {
         success = true;
 
         SagresDatabase database = SagresNavigatorImpl.Companion.getInstance().getDatabase();
-        SagresAccess access = database.accessDao().getAccessDirect();
-        SagresAccess created = new SagresAccess(username, password);
+        SAccess access = database.accessDao().getAccessDirect();
+        SAccess created = new SAccess(username, password);
         if (access == null || !access.equals(created)) database.accessDao().insert(created);
 
         finished = new LoginCallback.Builder(Status.SUCCESS).document(document).build();

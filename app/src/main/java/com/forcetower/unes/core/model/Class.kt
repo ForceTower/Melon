@@ -21,6 +21,7 @@ package com.forcetower.unes.core.model
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import com.forcetower.sagres.database.model.SDiscipline
 import java.util.*
 
 @Entity(
@@ -28,20 +29,28 @@ import java.util.*
         ForeignKey(entity = Discipline::class, parentColumns = ["uid"], childColumns = ["discipline_id"], onDelete = CASCADE, onUpdate = CASCADE),
         ForeignKey(entity = Semester::class, parentColumns = ["uid"], childColumns = ["semester_id"], onDelete = CASCADE, onUpdate = CASCADE)
     ], indices = [
-        Index(value = ["discipline_id", "semester_id", "code"], unique = true),
+        Index(value = ["discipline_id", "semester_id"], unique = true),
         Index(value = ["uuid"], unique = true)
     ]
 )
 data class Class(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long,
+    val uid: Long = 0,
     @ColumnInfo(name = "discipline_id")
     val disciplineId: Long,
     @ColumnInfo(name = "semester_id")
     val semesterId: Long,
-    val code: String,
-    val teacher: String? = null,
-    val status: String? = null,
+    var status: String? = null,
     val uuid: String = UUID.randomUUID().toString(),
-    val credits: Int? = null
-)
+    var missedClasses: Int = 0,
+    var lastClass: String = "",
+    var nextClass: String = ""
+) {
+
+    fun selectiveCopy(dis: SDiscipline) {
+        if (!dis.nextClass.isNullOrBlank()) nextClass = dis.nextClass;
+        if (!dis.lastClass.isNullOrBlank()) lastClass = dis.lastClass
+        if (dis.missedClasses >= 0) missedClasses = dis.missedClasses
+        if (!dis.situation.isNullOrBlank()) status = dis.situation
+    }
+}
