@@ -27,7 +27,7 @@ import timber.log.Timber
 object SagresMissedClassesParser {
 
     @JvmStatic
-    fun extractMissedClasses(document: Document): Pair<Boolean, List<SDisciplineMissedClass>> {
+    fun extractMissedClasses(document: Document, semesterId: Long): Pair<Boolean, List<SDisciplineMissedClass>> {
         var error = false
         val values: MutableList<SDisciplineMissedClass> = ArrayList()
 
@@ -48,7 +48,7 @@ object SagresMissedClassesParser {
                 else {
                     val body = spectrum.selectFirst("tbody")
                     if (body == null) Timber.d("<body_not_found> :: There's no missed classes for $code")
-                    else values.addAll(fourier(body, code))
+                    else values.addAll(fourier(body, code, semesterId))
                 }
             }
         } catch (t: Throwable) {
@@ -60,7 +60,7 @@ object SagresMissedClassesParser {
     }
 
     @JvmStatic
-    private fun fourier(element: Element, code: String): List<SDisciplineMissedClass> {
+    private fun fourier(element: Element, code: String, semesterId: Long): List<SDisciplineMissedClass> {
         val values: MutableList<SDisciplineMissedClass> = ArrayList()
         val indexes = element.select("tr")
 
@@ -68,7 +68,7 @@ object SagresMissedClassesParser {
             val information = index.child(0).child(0).children()
             val date = information[0].text().trim()
             val desc = information[1].text().trim()
-            values.add(SDisciplineMissedClass(date, desc, code))
+            values.add(SDisciplineMissedClass(date, desc, code, semesterId))
         }
         return values
     }

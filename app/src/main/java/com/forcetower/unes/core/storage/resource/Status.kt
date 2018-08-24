@@ -17,9 +17,9 @@
  * limitations under the License.
  */
 
-package com.forcetower.unes.core.storage.resource;
+package com.forcetower.unes.core.storage.resource
 
-public enum Status {
+enum class Status {
     SUCCESS,
     ERROR,
     LOADING

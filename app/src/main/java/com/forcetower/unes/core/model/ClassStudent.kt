@@ -19,14 +19,23 @@
 
 package com.forcetower.unes.core.model
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
+import java.util.*
 
-@Entity
+@Entity(foreignKeys = [
+    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = CASCADE, onUpdate = CASCADE),
+    ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onDelete = CASCADE, onUpdate = CASCADE)
+], indices = [
+    Index(value = ["profile_id", "group_id"], unique = true),
+    Index(value = ["uuid"], unique = true)
+])
 data class ClassStudent(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
+    @ColumnInfo(name = "profile_id")
     val profileId: Long,
+    @ColumnInfo(name = "group_id")
     val groupId: Long,
-    val finalGrade: Double? = null
+    val uuid: String = UUID.randomUUID().toString()
 )

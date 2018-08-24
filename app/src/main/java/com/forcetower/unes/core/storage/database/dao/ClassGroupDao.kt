@@ -31,17 +31,17 @@ import timber.log.Timber
 @Dao
 abstract class ClassGroupDao {
     @Insert(onConflict = IGNORE)
-    abstract fun insert(group: ClassGroup)
+    abstract fun insert(group: ClassGroup): Long
 
     @Transaction
-    open fun insert(grp: SDisciplineGroup) {
+    open fun insert(grp: SDisciplineGroup): ClassGroup {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code)
         var group = selectGroupDirect(grp.semester, grp.code, sgr)
         if (group == null) {
             val clazz = selectClassDirect(grp.semester, grp.code)
             group = ClassGroup(classId = clazz.uid, group = sgr)
-            insert(group)
+            group.uid = insert(group)
         }
 
         group.selectiveCopy(grp)
@@ -52,6 +52,7 @@ abstract class ClassGroupDao {
             updateDiscipline(discipline)
             Timber.d("Updated discipline ${discipline.code} department to ${discipline.department}")
         }
+        return group
     }
 
     @Update

@@ -20,11 +20,14 @@
 package com.forcetower.unes.core.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SCalendar
 import java.util.*
 
-@Entity
+@Entity(indices = [
+    Index(value = ["uuid"], unique = true)
+])
 data class CalendarItem(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

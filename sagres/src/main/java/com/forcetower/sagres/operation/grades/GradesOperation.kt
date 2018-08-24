@@ -60,8 +60,8 @@ class GradesOperation(private val semester: Long?, private val document: Documen
 
         if (selected != null) {
             if (SagresGradesParser.canExtractGrades(document)) {
-                val grades = SagresGradesParser.extractGrades(document)
-                val frequency = SagresMissedClassesParser.extractMissedClasses(document)
+                val grades = SagresGradesParser.extractGrades(document, selected.second)
+                val frequency = SagresMissedClassesParser.extractMissedClasses(document, selected.second)
                 successMeasures(document, codes, grades, frequency)
             } else {
                 val variants = SagresGradesParser.extractCourseVariants(document)
