@@ -10,7 +10,7 @@ Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para 
 * Corrigir o deadlock raro durante a sincronização
 * Corrigir o erro que afeta alguns estudantes que tem 2 cursos em 1 (????)
 * Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO
-* Integrar o UNES com o MongoDB para fazer backup dos horários para não sermos traídos pelo Portal
+* Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal
 
 ### Versão do Android
 Esta nova versão não oferecerá suporte para dispositivos com Android inferior ao 5.0
