@@ -47,7 +47,7 @@ class LoginSagresRepository @Inject constructor(
         private val context: Context
 ) {
     private val appToken = context.getString(R.string.app_service_token)
-    private val currentStep: MutableLiveData<Step> = MutableLiveData()
+    val currentStep: MutableLiveData<Step> = MutableLiveData()
 
     fun getAccess(): LiveData<Access?> = database.accessDao().getAccess()
 
@@ -296,7 +296,7 @@ class LoginSagresRepository @Inject constructor(
 
     companion object {
         private var currentStep = 0
-        private const val stepCount = 5
+        private const val stepCount = 7
 
         private fun resetSteps() {
             currentStep = 0

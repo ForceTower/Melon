@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--
   ~ Copyright (c) 2018.
   ~ João Paulo Sena <joaopaulo761@gmail.com>
@@ -18,17 +19,13 @@
   ~ limitations under the License.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_sagres_messages"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_sagres_message"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"/>
-</layout>
+<resources>
+    <attr name="lineHeightHint" format="dimension" />
+    <declare-styleable name="BaselineGridTextView">
+        <attr name="lineHeightMultiplierHint" format="float" />
+        <attr name="lineHeightHint" />
+        <attr name="maxLinesByHeight" format="boolean" />
+        <attr name="android:textAppearance"/>
+        <attr name="android:fontFamily"/>
+    </declare-styleable>
+</resources>

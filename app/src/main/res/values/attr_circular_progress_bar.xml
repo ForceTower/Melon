@@ -18,17 +18,13 @@
   ~ limitations under the License.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_sagres_messages"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        tools:listitem="@layout/item_sagres_message"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"/>
-</layout>
+<resources>
+    <declare-styleable name="CircleProgressBar">
+        <attr name="min" format="integer" />
+        <attr name="max" format="integer" />
+        <attr name="progress" format="integer" />
+        <attr name="progressbarColor" format="color" />
+        <attr name="foregroundThickness" format="dimension" />
+        <attr name="backgroundThickness" format="dimension" />
+    </declare-styleable>
+</resources>

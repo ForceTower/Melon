@@ -28,22 +28,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.ViewSwitcher
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.forcetower.sagres.impl.SagresNavigatorImpl
 import com.forcetower.sagres.operation.Callback
-import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.unes.GlideApp
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.core.model.Profile
+import com.forcetower.unes.core.storage.repository.LoginSagresRepository
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentSigningInBinding
@@ -97,6 +94,7 @@ class SigningInFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
         viewModel.getProfile().observe(this, Observer<Profile>(this::onProfileUpdate))
+        viewModel.getStep().observe(this, Observer<LoginSagresRepository.Step>(this::onStep))
         doLogin()
     }
 
@@ -125,6 +123,10 @@ class SigningInFragment : UFragment(), Injectable {
         } else {
             viewModel.login(username!!, password!!, true)
         }
+    }
+
+    private fun onStep(step: LoginSagresRepository.Step) {
+        binding.contentLoading.setProgressWithAnimation(step.step.toFloat()*100/step.count)
     }
 
     private fun onLoginProgress(callback: Callback) {
@@ -162,8 +164,12 @@ class SigningInFragment : UFragment(), Injectable {
         val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
                 .toBundle()
 
-        startActivity(intent, bundle)
-        activity?.finish()
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                startActivity(intent, bundle)
+                activity?.finish()
+            }
+        }, 1000)
     }
 
     private fun snackAndBack(string: String) {

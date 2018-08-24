@@ -1,1 +1,2 @@
-include ':app', ':sagres'
+include ':app', ':sagres', ':bypass'
+project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')
