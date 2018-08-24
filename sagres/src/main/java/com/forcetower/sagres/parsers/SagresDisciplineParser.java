@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.parsers;
 
-import com.forcetower.sagres.database.model.Discipline;
+import com.forcetower.sagres.database.model.SDiscipline;
 import com.forcetower.sagres.utils.ValueUtils;
 import com.forcetower.sagres.utils.WordUtils;
 
@@ -32,8 +32,8 @@ import java.util.List;
 
 public class SagresDisciplineParser {
 
-    public static List<Discipline> getDisciplines(Document document) {
-        List<Discipline> disciplines = new ArrayList<>();
+    public static List<SDiscipline> getDisciplines(Document document) {
+        List<SDiscipline> disciplines = new ArrayList<>();
 
         Elements elements = document.select("section[class=\"webpart-aluno-item\"]");
         for (Element dElement : elements) {
@@ -79,7 +79,7 @@ public class SagresDisciplineParser {
             String code = title.substring(0, codePos).trim();
             String name = title.substring(codePos + 1);
 
-            Discipline discipline = new Discipline(period, name, code);
+            SDiscipline discipline = new SDiscipline(period, name, code);
             discipline.setCredits(ValueUtils.toInteger(credits));
             discipline.setMissedClasses(ValueUtils.toInteger(missedClasses));
             discipline.setLastClass(last);

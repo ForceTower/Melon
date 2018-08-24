@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.parsers
 
-import com.forcetower.sagres.database.model.DisciplineMissedClass
+import com.forcetower.sagres.database.model.SDisciplineMissedClass
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import timber.log.Timber
@@ -27,9 +27,9 @@ import timber.log.Timber
 object SagresMissedClassesParser {
 
     @JvmStatic
-    fun extractMissedClasses(document: Document): Pair<Boolean, List<DisciplineMissedClass>> {
+    fun extractMissedClasses(document: Document): Pair<Boolean, List<SDisciplineMissedClass>> {
         var error = false
-        val values: MutableList<DisciplineMissedClass> = ArrayList()
+        val values: MutableList<SDisciplineMissedClass> = ArrayList()
 
         try {
             val div = document.selectFirst("div[id=\"divBoletins\"]")
@@ -60,15 +60,15 @@ object SagresMissedClassesParser {
     }
 
     @JvmStatic
-    private fun fourier(element: Element, code: String): List<DisciplineMissedClass> {
-        val values: MutableList<DisciplineMissedClass> = ArrayList()
+    private fun fourier(element: Element, code: String): List<SDisciplineMissedClass> {
+        val values: MutableList<SDisciplineMissedClass> = ArrayList()
         val indexes = element.select("tr")
 
         for (index in indexes) {
             val information = index.child(0).child(0).children()
             val date = information[0].text().trim()
             val desc = information[1].text().trim()
-            values.add(DisciplineMissedClass(date, desc, code))
+            values.add(SDisciplineMissedClass(date, desc, code))
         }
         return values
     }

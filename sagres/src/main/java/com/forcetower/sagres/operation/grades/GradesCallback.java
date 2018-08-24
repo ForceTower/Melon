@@ -19,8 +19,8 @@
 
 package com.forcetower.sagres.operation.grades;
 
-import com.forcetower.sagres.database.model.DisciplineMissedClass;
-import com.forcetower.sagres.database.model.Grade;
+import com.forcetower.sagres.database.model.SDisciplineMissedClass;
+import com.forcetower.sagres.database.model.SGrade;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
@@ -32,20 +32,20 @@ import kotlin.Pair;
 
 public class GradesCallback extends BaseCallback<GradesCallback> {
     @Nullable
-    private List<DisciplineMissedClass> frequency;
-    private List<Grade> grades;
+    private List<SDisciplineMissedClass> frequency;
+    private List<SGrade> grades;
     private List<Pair<Long, String>> semesters;
 
     public GradesCallback(@NonNull Status status) {
         super(status);
     }
 
-    public GradesCallback grades(@Nullable List<Grade> grades) {
+    public GradesCallback grades(@Nullable List<SGrade> grades) {
         this.grades = grades;
         return this;
     }
 
-   public GradesCallback frequency(@Nullable List<DisciplineMissedClass> frequency) {
+   public GradesCallback frequency(@Nullable List<SDisciplineMissedClass> frequency) {
         this.frequency = frequency;
         return this;
    }
@@ -56,11 +56,11 @@ public class GradesCallback extends BaseCallback<GradesCallback> {
    }
 
    @Nullable
-    public List<DisciplineMissedClass> getFrequency() {
+    public List<SDisciplineMissedClass> getFrequency() {
         return frequency;
     }
 
-    public List<Grade> getGrades() {
+    public List<SGrade> getGrades() {
         return grades;
     }
 

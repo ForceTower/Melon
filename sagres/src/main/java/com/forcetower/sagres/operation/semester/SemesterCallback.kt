@@ -19,17 +19,17 @@
 
 package com.forcetower.sagres.operation.semester
 
-import com.forcetower.sagres.database.model.Semester
+import com.forcetower.sagres.database.model.SSemester
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
 class SemesterCallback(status: Status) : BaseCallback<SemesterCallback>(status) {
-    private var semesters: List<Semester> = ArrayList()
+    private var semesters: List<SSemester> = ArrayList()
 
-    fun semesters(semesters: List<Semester>): SemesterCallback {
+    fun semesters(semesters: List<SSemester>): SemesterCallback {
         this.semesters = semesters
         return this
     }
 
-    fun getSemesters(): List<Semester> = semesters
+    fun getSemesters(): List<SSemester> = semesters
 }

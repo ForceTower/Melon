@@ -40,7 +40,6 @@ import com.forcetower.unes.core.storage.network.UService
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
-import kotlin.concurrent.timer
 
 class LoginSagresRepository @Inject constructor(
         private val executor: AppExecutors,
@@ -107,7 +106,7 @@ class LoginSagresRepository @Inject constructor(
                     executor.networkIO().execute { loginToService(person, username, password) }
                     messages(data, person.id)
                 } else {
-                    Timber.d("Person is null")
+                    Timber.d("SPerson is null")
                 }
             } else {
                 data.value = Callback.Builder(m.status)
@@ -218,44 +217,49 @@ class LoginSagresRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineFrequency(frequency: List<DisciplineMissedClass>?) {
+    private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
 
     }
 
     @WorkerThread
-    private fun defineGrades(grades: List<Grade>) {
+    private fun defineGrades(grades: List<SGrade>) {
 
     }
 
     @WorkerThread
     private fun defineSemesters(semesters: List<Pair<Long, String>>) {
-
+        semesters.forEach {
+            val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
+            database.semesterDao().insertIgnoring(semester)
+        }
     }
 
     @WorkerThread
-    private fun defineSchedule(locations: List<DisciplineClassLocation>?) {
+    private fun defineSchedule(locations: List<SDisciplineClassLocation>?) {
         if (locations == null) return
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<DisciplineGroup>) {
-
+    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
+        groups.forEach { database.classGroupDao().insert(it) }
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<Discipline>) {
+    private fun defineDisciplines(disciplines: List<SDiscipline>) {
         val values = disciplines.map { com.forcetower.unes.core.model.Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
+
+        disciplines.forEach { database.classDao().insert(it) }
     }
 
     @WorkerThread
-    private fun defineCalendar(calendar: List<SagresCalendar>?) {
+    private fun defineCalendar(calendar: List<SCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
     }
 
 
-    private fun loginToService(person: Person, username: String, password: String) {
+    private fun loginToService(person: SPerson, username: String, password: String) {
         val login = service.loginOrCreate(username, password, person.email, person.name, person.cpf, appToken)
         try {
             val response = login.execute()

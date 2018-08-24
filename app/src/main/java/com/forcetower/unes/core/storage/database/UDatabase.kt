@@ -25,13 +25,15 @@ import com.forcetower.unes.core.model.*
 import com.forcetower.unes.core.storage.database.dao.*
 
 @Database(entities = [
+    AccessToken::class,
     Access::class,
     Profile::class,
     Semester::class,
     Message::class,
     CalendarItem::class,
     Discipline::class,
-    AccessToken::class
+    Class::class,
+    ClassGroup::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -41,4 +43,6 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun semesterDao(): SemesterDao
     abstract fun calendarDao(): CalendarDao
     abstract fun disciplineDao(): DisciplineDao
+    abstract fun classDao(): ClassDao
+    abstract fun classGroupDao(): ClassGroupDao
 }

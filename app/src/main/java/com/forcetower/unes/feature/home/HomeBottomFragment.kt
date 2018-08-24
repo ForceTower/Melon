@@ -24,7 +24,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
-import com.forcetower.sagres.database.model.Message
 import com.forcetower.unes.R
 import com.forcetower.unes.databinding.HomeBottomBinding
 import com.forcetower.unes.feature.shared.RoundedBottomSheetDialogFragment

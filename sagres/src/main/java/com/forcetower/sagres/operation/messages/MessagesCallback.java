@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.operation.messages;
 
-import com.forcetower.sagres.database.model.Message;
+import com.forcetower.sagres.database.model.SMessage;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
@@ -29,19 +29,19 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
 public class MessagesCallback extends BaseCallback<MessagesCallback> {
-    @Nullable private List<Message> messages;
+    @Nullable private List<SMessage> messages;
 
     public MessagesCallback(@NonNull Status status) {
         super(status);
     }
 
-    public MessagesCallback messages(List<Message> items) {
+    public MessagesCallback messages(List<SMessage> items) {
         this.messages = items;
         return this;
     }
 
     @Nullable
-    public List<Message> getMessages() {
+    public List<SMessage> getMessages() {
         return messages;
     }
 }
