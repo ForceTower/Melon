@@ -21,35 +21,25 @@ package com.forcetower.sagres.database.model;
 
 import static com.forcetower.sagres.utils.WordUtils.validString;
 
-public class DisciplineGroup {
-    private int discipline;
+public class SDisciplineGroup {
     private String teacher;
     private String group;
     private int credits;
     private int missLimit;
-    private String classPeriod = "";
-    private String department = "";
+    private String classPeriod;
+    private String department;
     private boolean draft = true;
     private int ignored = 0;
     private String semester;
     private String code;
 
-    public DisciplineGroup(int discipline, String teacher, String group, int credits, int missLimit, String classPeriod, String department) {
-        this.discipline = discipline;
+    public SDisciplineGroup(String teacher, String group, int credits, int missLimit, String classPeriod, String department) {
         this.teacher = teacher;
         this.group = group;
         this.credits = credits;
         this.missLimit = missLimit;
         this.classPeriod = classPeriod;
         this.department = department;
-    }
-
-    public int getDiscipline() {
-        return discipline;
-    }
-
-    public void setDiscipline(int discipline) {
-        this.discipline = discipline;
     }
 
     public String getTeacher() {
@@ -121,7 +111,7 @@ public class DisciplineGroup {
         return code;
     }
 
-    public void selectiveCopy(DisciplineGroup other) {
+    public void selectiveCopy(SDisciplineGroup other) {
         if (other == null) return;
 
         if (validString(other.teacher)      || teacher == null)     teacher     = other.teacher;
@@ -134,7 +124,7 @@ public class DisciplineGroup {
 
     @Override
     public String toString() {
-        return group + " - d_id: " + discipline;
+        return group + "";
     }
 
     public int getIgnored() {

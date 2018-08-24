@@ -21,11 +21,11 @@ package com.forcetower.sagres.database.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Linker {
+public class SLinker {
     @SerializedName(value = "$link")
     private Link link;
 
-    public Linker(Link link) {
+    public SLinker(Link link) {
         this.link = link;
     }
 

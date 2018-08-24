@@ -23,7 +23,6 @@ import android.content.Context
 
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.SagresDatabase
-import com.forcetower.sagres.database.model.SagresAccess
 import com.forcetower.sagres.executor.SagresTaskExecutor
 import com.forcetower.sagres.operation.calendar.CalendarCallback
 import com.forcetower.sagres.operation.calendar.CalendarOperation
@@ -54,7 +53,6 @@ import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Request
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)

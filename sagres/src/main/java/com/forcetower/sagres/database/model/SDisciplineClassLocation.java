@@ -21,7 +21,7 @@ package com.forcetower.sagres.database.model;
 
 import androidx.annotation.NonNull;
 
-public class DisciplineClassLocation implements Comparable<DisciplineClassLocation> {
+public class SDisciplineClassLocation implements Comparable<SDisciplineClassLocation> {
     private int groupId;
     private String startTime;
     private String endTime;
@@ -33,7 +33,7 @@ public class DisciplineClassLocation implements Comparable<DisciplineClassLocati
     private String classGroup;
     private String classCode;
 
-    public DisciplineClassLocation(String startTime, String endTime, String day, String room, String campus, String modulo, String className, String classCode, String classGroup) {
+    public SDisciplineClassLocation(String startTime, String endTime, String day, String room, String campus, String modulo, String className, String classCode, String classGroup) {
         this.startTime = startTime;
         this.endTime = endTime;
         this.day = day;
@@ -110,7 +110,7 @@ public class DisciplineClassLocation implements Comparable<DisciplineClassLocati
     }
 
     @Override
-    public int compareTo(@NonNull DisciplineClassLocation o) {
+    public int compareTo(@NonNull SDisciplineClassLocation o) {
         return getStartTime().compareTo(o.getStartTime());
     }
 
@@ -135,7 +135,7 @@ public class DisciplineClassLocation implements Comparable<DisciplineClassLocati
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        DisciplineClassLocation that = (DisciplineClassLocation) o;
+        SDisciplineClassLocation that = (SDisciplineClassLocation) o;
 
         if (groupId != that.groupId) return false;
         if (startTime != null ? !startTime.equals(that.startTime) : that.startTime != null)

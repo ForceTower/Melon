@@ -21,7 +21,7 @@ package com.forcetower.sagres.database.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Person {
+public class SPerson {
     private long id;
     @SerializedName(value = "nome")
     private String name;
@@ -30,7 +30,7 @@ public class Person {
     private String cpf;
     private String email;
 
-    public Person(long id, String name, String exhibitionName, String cpf, String email) {
+    public SPerson(long id, String name, String exhibitionName, String cpf, String email) {
         this.id = id;
         this.name = name;
         this.exhibitionName = exhibitionName;

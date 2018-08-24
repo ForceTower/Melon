@@ -21,7 +21,7 @@ package com.forcetower.sagres.parsers;
 
 import android.util.SparseArray;
 
-import com.forcetower.sagres.database.model.DisciplineClassLocation;
+import com.forcetower.sagres.database.model.SDisciplineClassLocation;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -45,7 +45,7 @@ public class SagresScheduleParser {
     private static SparseArray<String> iterationPerDay;
     private static HashMap<String, SagresClass> codePerLessons;
 
-    public static List<DisciplineClassLocation> getSchedule(@NonNull Document document) {
+    public static List<SDisciplineClassLocation> getSchedule(@NonNull Document document) {
         Element schedule = document.selectFirst("table[class=\"meus-horarios\"]");
         Element subtitle = document.selectFirst("table[class=\"meus-horarios-legenda\"]");
 
@@ -63,15 +63,15 @@ public class SagresScheduleParser {
         return convertToNewType(classDay);
     }
 
-    private static List<DisciplineClassLocation> convertToNewType(HashMap<String, List<SagresClassDay>> hashMap) {
-        List<DisciplineClassLocation> disciplineClassLocations = new ArrayList<>();
+    private static List<SDisciplineClassLocation> convertToNewType(HashMap<String, List<SagresClassDay>> hashMap) {
+        List<SDisciplineClassLocation> disciplineClassLocations = new ArrayList<>();
         for (String key : hashMap.keySet()) {
             List<SagresClassDay> classDays = hashMap.get(key);
             if (classDays == null)
                 continue;
 
             for (SagresClassDay classDay : classDays) {
-                DisciplineClassLocation location = new DisciplineClassLocation(
+                SDisciplineClassLocation location = new SDisciplineClassLocation(
                         classDay.starts_at,
                         classDay.ends_at,
                         classDay.day,

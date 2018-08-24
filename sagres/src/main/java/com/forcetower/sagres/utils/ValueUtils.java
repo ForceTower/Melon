@@ -35,7 +35,7 @@ public class ValueUtils {
     }
 
     public static int toInteger(@NonNull String string) {
-        return toInteger(string, 0);
+        return toInteger(string, -1);
     }
 
     public static double toDouble(@NonNull String string) {

@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.database.model;
 
-public class Discipline {
+public class SDiscipline {
     private String semester;
     private String name;
     private String code;
@@ -29,7 +29,7 @@ public class Discipline {
     private String nextClass = "0";
     private String situation;
 
-    public Discipline(String semester, String name, String code) {
+    public SDiscipline(String semester, String name, String code) {
         this.semester = semester;
         this.name = name;
         this.code = code;

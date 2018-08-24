@@ -23,7 +23,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.Message
+import com.forcetower.sagres.database.model.SMessage
 
 @Entity(indices = [Index(value = ["sagres_id"], unique = true)])
 data class Message(
@@ -40,6 +40,6 @@ data class Message(
     val notified: Boolean = false) {
 
     companion object {
-        fun fromMessage(me: Message) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis)
+        fun fromMessage(me: SMessage) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis)
     }
 }

@@ -27,6 +27,6 @@ data class ClassStudent(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
     val profileId: Long,
-    val classId: Long,
-    val finalGrade: Double?
+    val groupId: Long,
+    val finalGrade: Double? = null
 )

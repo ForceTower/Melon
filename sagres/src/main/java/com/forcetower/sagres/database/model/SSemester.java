@@ -22,13 +22,12 @@ package com.forcetower.sagres.database.model;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.ParseException;
 import java.util.Collections;
 import java.util.List;
 
 import androidx.annotation.NonNull;
 
-public class Semester implements Comparable<Semester>, Timestamped {
+public class SSemester implements Comparable<SSemester>, Timestamped {
     @SerializedName("id")
     private long uefsId;
     @SerializedName("descricao")
@@ -44,7 +43,7 @@ public class Semester implements Comparable<Semester>, Timestamped {
     @SerializedName("fimAulas")
     private String endClasses;
 
-    public Semester(long uefsId, String name, String codename, String start, String end, String startClasses, String endClasses) {
+    public SSemester(long uefsId, String name, String codename, String start, String end, String startClasses, String endClasses) {
         this.uefsId = uefsId;
         this.name = name;
         this.codename = codename;
@@ -87,7 +86,7 @@ public class Semester implements Comparable<Semester>, Timestamped {
     }
 
     @Override
-    public int compareTo(@NonNull Semester o) {
+    public int compareTo(@NonNull SSemester o) {
         try {
             String o1 = getName();
             String o2 = o.getName();
@@ -118,9 +117,9 @@ public class Semester implements Comparable<Semester>, Timestamped {
         return getName();
     }
 
-    public static Semester getCurrentSemester(List<Semester> semesters) {
+    public static SSemester getCurrentSemester(List<SSemester> semesters) {
         if (semesters == null || semesters.isEmpty()) {
-            return new Semester(0, "2018.2", "20182", "", "", "", "");
+            return new SSemester(0, "2018.2", "20182", "", "", "", "");
         }
         Collections.sort(semesters);
         return semesters.get(0);

@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.database.model
 
-data class DisciplineMissedClass(
+data class SDisciplineMissedClass(
     val date: String,
     val description: String,
     val disciplineCode: String

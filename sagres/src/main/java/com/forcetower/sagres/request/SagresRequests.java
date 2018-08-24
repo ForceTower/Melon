@@ -20,10 +20,9 @@
 package com.forcetower.sagres.request;
 
 import com.forcetower.sagres.Constants;
-import com.forcetower.sagres.database.model.Linker;
+import com.forcetower.sagres.database.model.SLinker;
 
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -63,7 +62,7 @@ public class SagresRequests {
                 .build();
     }
 
-    public static Request link(Linker linker) {
+    public static Request link(SLinker linker) {
         String link = linker.getLink();
         String url = BASE_URL + (link.startsWith("/") ? link : "/" + link);
         return new Request.Builder().url(url).build();

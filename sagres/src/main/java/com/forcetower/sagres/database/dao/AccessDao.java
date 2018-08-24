@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.database.dao;
 
-import com.forcetower.sagres.database.model.SagresAccess;
+import com.forcetower.sagres.database.model.SAccess;
 
 import androidx.lifecycle.LiveData;
 import androidx.room.Dao;
@@ -28,12 +28,12 @@ import androidx.room.Query;
 
 @Dao
 public interface AccessDao {
-    @Query("SELECT * FROM SagresAccess LIMIT 1")
-    LiveData<SagresAccess> getAccess();
+    @Query("SELECT * FROM SAccess LIMIT 1")
+    LiveData<SAccess> getAccess();
 
-    @Query("SELECT * FROM SagresAccess LIMIT 1")
-    SagresAccess getAccessDirect();
+    @Query("SELECT * FROM SAccess LIMIT 1")
+    SAccess getAccessDirect();
 
     @Insert
-    void insert(SagresAccess access);
+    void insert(SAccess access);
 }

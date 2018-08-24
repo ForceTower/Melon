@@ -19,11 +19,11 @@
 
 package com.forcetower.sagres.operation.start_page;
 
-import com.forcetower.sagres.database.model.Discipline;
-import com.forcetower.sagres.database.model.DisciplineClassLocation;
-import com.forcetower.sagres.database.model.DisciplineGroup;
-import com.forcetower.sagres.database.model.SagresCalendar;
-import com.forcetower.sagres.database.model.Semester;
+import com.forcetower.sagres.database.model.SDiscipline;
+import com.forcetower.sagres.database.model.SDisciplineClassLocation;
+import com.forcetower.sagres.database.model.SDisciplineGroup;
+import com.forcetower.sagres.database.model.SCalendar;
+import com.forcetower.sagres.database.model.SSemester;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
@@ -34,61 +34,61 @@ import androidx.annotation.Nullable;
 
 public class StartPageCallback extends BaseCallback<StartPageCallback> {
     @Nullable
-    private List<SagresCalendar> calendar;
-    private List<Semester> semesters;
-    private List<Discipline> disciplines;
-    private List<DisciplineGroup> groups;
+    private List<SCalendar> calendar;
+    private List<SSemester> semesters;
+    private List<SDiscipline> disciplines;
+    private List<SDisciplineGroup> groups;
     @Nullable
-    private List<DisciplineClassLocation> locations;
+    private List<SDisciplineClassLocation> locations;
 
     public StartPageCallback(@NonNull Status status) {
         super(status);
     }
 
-    public StartPageCallback calendar(@Nullable List<SagresCalendar> calendar) {
+    public StartPageCallback calendar(@Nullable List<SCalendar> calendar) {
         this.calendar = calendar;
         return this;
     }
 
-    public StartPageCallback semesters(List<Semester> semesters) {
+    public StartPageCallback semesters(List<SSemester> semesters) {
         this.semesters = semesters;
         return this;
     }
 
-    public StartPageCallback disciplines(List<Discipline> disciplines) {
+    public StartPageCallback disciplines(List<SDiscipline> disciplines) {
         this.disciplines = disciplines;
         return this;
     }
 
-    public StartPageCallback groups(List<DisciplineGroup> groups) {
+    public StartPageCallback groups(List<SDisciplineGroup> groups) {
         this.groups = groups;
         return this;
     }
 
-    public StartPageCallback locations(@Nullable List<DisciplineClassLocation> locations) {
+    public StartPageCallback locations(@Nullable List<SDisciplineClassLocation> locations) {
         this.locations = locations;
         return this;
     }
 
     @Nullable
-    public List<SagresCalendar> getCalendar() {
+    public List<SCalendar> getCalendar() {
         return calendar;
     }
 
-    public List<Semester> getSemesters() {
+    public List<SSemester> getSemesters() {
         return semesters;
     }
 
-    public List<Discipline> getDisciplines() {
+    public List<SDiscipline> getDisciplines() {
         return disciplines;
     }
 
-    public List<DisciplineGroup> getGroups() {
+    public List<SDisciplineGroup> getGroups() {
         return groups;
     }
 
     @Nullable
-    public List<DisciplineClassLocation> getLocations() {
+    public List<SDisciplineClassLocation> getLocations() {
         return locations;
     }
 }

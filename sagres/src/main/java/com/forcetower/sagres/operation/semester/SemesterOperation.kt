@@ -19,14 +19,13 @@
 
 package com.forcetower.sagres.operation.semester
 
-import com.forcetower.sagres.database.model.Semester
+import com.forcetower.sagres.database.model.SSemester
 import com.forcetower.sagres.operation.Dumb
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.request.SagresCalls
 import com.google.gson.reflect.TypeToken
 import java.io.IOException
-import java.util.*
 import java.util.concurrent.Executor
 
 class SemesterOperation(private val userId: Long, executor: Executor): Operation<SemesterCallback>(executor) {
@@ -51,8 +50,8 @@ class SemesterOperation(private val userId: Long, executor: Executor): Operation
     }
 
     private fun successMeasures(body: String) {
-        val type = object: TypeToken<Dumb<MutableList<Semester>>>(){}.type
-        val dSemesters = gson.fromJson<Dumb<MutableList<Semester>>>(body, type)
+        val type = object: TypeToken<Dumb<MutableList<SSemester>>>(){}.type
+        val dSemesters = gson.fromJson<Dumb<MutableList<SSemester>>>(body, type)
         val semesters = dSemesters.items
 
         val callback = SemesterCallback(Status.SUCCESS).semesters(semesters)

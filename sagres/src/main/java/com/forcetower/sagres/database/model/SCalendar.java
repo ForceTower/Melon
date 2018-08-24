@@ -19,11 +19,11 @@
 
 package com.forcetower.sagres.database.model;
 
-public class SagresCalendar {
+public class SCalendar {
     private String day;
     private String message;
 
-    public SagresCalendar(String day, String message) {
+    public SCalendar(String day, String message) {
         this.day = day;
         this.message = message;
     }
@@ -49,7 +49,7 @@ public class SagresCalendar {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
 
-        SagresCalendar that = (SagresCalendar) o;
+        SCalendar that = (SCalendar) o;
 
         if (!day.equals(that.day)) return false;
         return message.equals(that.message);

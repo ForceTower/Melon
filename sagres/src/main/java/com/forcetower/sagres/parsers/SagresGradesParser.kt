@@ -19,9 +19,9 @@
 
 package com.forcetower.sagres.parsers
 
-import com.forcetower.sagres.database.model.CourseVariant
-import com.forcetower.sagres.database.model.Grade
-import com.forcetower.sagres.database.model.GradeInfo
+import com.forcetower.sagres.database.model.SCourseVariant
+import com.forcetower.sagres.database.model.SGrade
+import com.forcetower.sagres.database.model.SGradeInfo
 import org.jsoup.nodes.Document
 import timber.log.Timber
 
@@ -82,8 +82,8 @@ object SagresGradesParser {
     }
 
     @JvmStatic
-    fun extractCourseVariants(document: Document): List<CourseVariant> {
-        val courses: MutableList<CourseVariant> = ArrayList()
+    fun extractCourseVariants(document: Document): List<SCourseVariant> {
+        val courses: MutableList<SCourseVariant> = ArrayList()
         val variants = document.selectFirst("select[id=\"ctl00_MasterPlaceHolder_ddRegistroCurso\"]")
         if (variants != null) {
             val elements = variants.children()
@@ -91,7 +91,7 @@ object SagresGradesParser {
                 try {
                     val uefsId = element.attr("value").toLong()
                     val name   = element.text().trim()
-                    courses.add(CourseVariant(uefsId, name))
+                    courses.add(SCourseVariant(uefsId, name))
                     Timber.d("Added variant id: $uefsId with name: $name")
                 } catch (e: Exception) {}
             }
@@ -111,8 +111,8 @@ object SagresGradesParser {
     }
 
     @JvmStatic
-    fun extractGrades(document: Document): List<Grade> {
-        val grades: MutableList<Grade> = ArrayList()
+    fun extractGrades(document: Document): List<SGrade> {
+        val grades: MutableList<SGrade> = ArrayList()
         val bulletin = document.selectFirst("div[id=\"divBoletins\"]")
         val classes  = bulletin.select("div[class=\"boletim-container\"]")
 
@@ -122,7 +122,7 @@ object SagresGradesParser {
                 val name = info.selectFirst("span[class=\"boletim-item-titulo cor-destaque\"]")
 
                 val discipline = name.text().trim()
-                val grade = Grade(discipline)
+                val grade = SGrade(discipline)
 
                 val gradeInfo = clazz.selectFirst("div[class=\"boletim-notas\"]")
                 val table = gradeInfo.selectFirst("table")
@@ -143,7 +143,7 @@ object SagresGradesParser {
                                 val score = children[2].text().trim()
                                 var weight = children[3].text().trim().toDoubleOrNull()
                                 if (weight == null) weight = 1.0
-                                grade.addInfo(GradeInfo(evaluation, score, date, weight))
+                                grade.addInfo(SGradeInfo(evaluation, score, date, weight))
                             }
                         }
                     }

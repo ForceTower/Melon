@@ -19,11 +19,11 @@
 
 package com.forcetower.sagres.operation.start_page;
 
-import com.forcetower.sagres.database.model.Discipline;
-import com.forcetower.sagres.database.model.DisciplineClassLocation;
-import com.forcetower.sagres.database.model.DisciplineGroup;
-import com.forcetower.sagres.database.model.SagresCalendar;
-import com.forcetower.sagres.database.model.Semester;
+import com.forcetower.sagres.database.model.SDiscipline;
+import com.forcetower.sagres.database.model.SDisciplineClassLocation;
+import com.forcetower.sagres.database.model.SDisciplineGroup;
+import com.forcetower.sagres.database.model.SCalendar;
+import com.forcetower.sagres.database.model.SSemester;
 import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
 import com.forcetower.sagres.parsers.SagresCalendarParser;
@@ -71,11 +71,11 @@ public class StartPageOperation extends Operation<StartPageCallback> {
     }
 
     private void successMeasures(Document document) {
-        List<SagresCalendar> calendar = SagresCalendarParser.getCalendar(document);
-        List<Semester> semesters = SagresSemesterParser.getSemesters(document);
-        List<Discipline> disciplines = SagresDisciplineParser.getDisciplines(document);
-        List<DisciplineGroup> groups = SagresDcpGroupsParser.getGroups(document);
-        List<DisciplineClassLocation> locations = SagresScheduleParser.getSchedule(document);
+        List<SCalendar> calendar = SagresCalendarParser.getCalendar(document);
+        List<SSemester> semesters = SagresSemesterParser.getSemesters(document);
+        List<SDiscipline> disciplines = SagresDisciplineParser.getDisciplines(document);
+        List<SDisciplineGroup> groups = SagresDcpGroupsParser.getGroups(document);
+        List<SDisciplineClassLocation> locations = SagresScheduleParser.getSchedule(document);
 
         StartPageCallback callback = new StartPageCallback(Status.SUCCESS)
                 .document(document)

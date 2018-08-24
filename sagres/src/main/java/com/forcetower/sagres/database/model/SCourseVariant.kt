@@ -19,13 +19,7 @@
 
 package com.forcetower.sagres.database.model
 
-data class GradeInfo(
-    val name: String,
-    val grade: String,
-    val date: String,
-    val weight: Double
-) {
-    override fun toString(): String {
-        return "$name: $grade"
-    }
-}
+data class SCourseVariant(
+    val uefsId: Long,
+    val name: String
+)

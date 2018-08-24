@@ -19,9 +19,9 @@
 
 package com.forcetower.sagres.operation.messages;
 
-import com.forcetower.sagres.database.model.Linker;
-import com.forcetower.sagres.database.model.Message;
-import com.forcetower.sagres.database.model.Person;
+import com.forcetower.sagres.database.model.SLinker;
+import com.forcetower.sagres.database.model.SMessage;
+import com.forcetower.sagres.database.model.SPerson;
 import com.forcetower.sagres.operation.Dumb;
 import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
@@ -68,29 +68,29 @@ public class MessagesOperation extends Operation<MessagesCallback> {
     }
 
     private void successMeasures(String body) {
-        Type type = new TypeToken<Dumb<ArrayList<Message>>>(){}.getType();
-        Dumb<List<Message>> dMessages = new Gson().fromJson(body, type);
-        List<Message> items = dMessages.getItems();
+        Type type = new TypeToken<Dumb<ArrayList<SMessage>>>(){}.getType();
+        Dumb<List<SMessage>> dMessages = new Gson().fromJson(body, type);
+        List<SMessage> items = dMessages.getItems();
         Collections.sort(items);
-        for (Message message : items) {
-            Person person = getPerson(message.getSender());
+        for (SMessage message : items) {
+            SPerson person = getPerson(message.getSender());
             if (person != null)
                 message.setSenderName(person.getName());
             else
-                System.out.println("Person is Invalid");
+                System.out.println("SPerson is Invalid");
         }
 
         result.postValue(new MessagesCallback(Status.SUCCESS).messages(items));
     }
 
-    private Person getPerson(Linker linker) {
+    private SPerson getPerson(SLinker linker) {
         Call call = SagresCalls.getLink(linker);
 
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
                 String body = response.body().string();
-                return gson.fromJson(body, Person.class);
+                return gson.fromJson(body, SPerson.class);
             }
         } catch (Exception e) {
             e.printStackTrace();

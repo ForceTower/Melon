@@ -19,7 +19,7 @@
 
 package com.forcetower.sagres.parsers;
 
-import com.forcetower.sagres.database.model.SagresCalendar;
+import com.forcetower.sagres.database.model.SCalendar;
 
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -36,7 +36,7 @@ import timber.log.Timber;
 
 public class SagresCalendarParser {
 
-    public static List<SagresCalendar> getCalendar(@NonNull Document document) {
+    public static List<SCalendar> getCalendar(@NonNull Document document) {
         Element element = document.selectFirst("div[class=\"webpart-calendario\"]");
         if (element == null) {
             Timber.d("Calendar not found");
@@ -48,7 +48,7 @@ public class SagresCalendarParser {
             return null;
         }
 
-        List<SagresCalendar> items = new ArrayList<>();
+        List<SCalendar> items = new ArrayList<>();
         Element events = element.child(1);
         Element ul = events.selectFirst("ul");
 
@@ -57,7 +57,7 @@ public class SagresCalendarParser {
             int index = text.indexOf("-");
             String days = text.substring(0, index);
             String event = text.substring(index + 1);
-            items.add(new SagresCalendar(days, event.trim()));
+            items.add(new SCalendar(days, event.trim()));
         }
 
         return items;
