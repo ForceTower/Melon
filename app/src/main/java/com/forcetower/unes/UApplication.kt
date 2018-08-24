@@ -43,7 +43,6 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         injectApplicationIfNecessary()
         super.onCreate()
-        configureSagresNavigator()
     }
 
     private fun createApplicationInjector(): AndroidInjector<UApplication> = AppInjection.create(this)
@@ -65,6 +64,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         injected = true
     }
 
+    @Inject
     fun configureSagresNavigator() {
         SagresNavigator.initialize(this)
     }

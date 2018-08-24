@@ -26,15 +26,15 @@ import com.forcetower.unes.core.model.Access
 import com.forcetower.unes.core.model.Message
 import com.forcetower.unes.core.model.Profile
 import com.forcetower.unes.core.storage.repository.SagresDataRepository
-import com.forcetower.unes.core.storage.repository.UserRepository
+import com.forcetower.unes.core.storage.repository.LoginSagresRepository
 import javax.inject.Inject
 
 class HomeViewModel
 @Inject constructor(
-        private val userRepository: UserRepository,
+        private val loginSagresRepository: LoginSagresRepository,
         private val dataRepository: SagresDataRepository
 ): ViewModel() {
-    val access: LiveData<Access?> by lazy { userRepository.getAccess() }
-    val profile: LiveData<Profile> by lazy { userRepository.getProfileMe() }
+    val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
+    val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<PagedList<Message>> by lazy { dataRepository.getMessages() }
 }

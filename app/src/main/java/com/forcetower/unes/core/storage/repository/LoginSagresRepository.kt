@@ -42,7 +42,7 @@ import java.io.IOException
 import javax.inject.Inject
 import kotlin.concurrent.timer
 
-class UserRepository @Inject constructor(
+class LoginSagresRepository @Inject constructor(
         private val executor: AppExecutors,
         private val database: UDatabase,
         private val service: UService,
@@ -192,7 +192,41 @@ class UserRepository @Inject constructor(
     }
 
     private fun grades(data: MediatorLiveData<Callback>) {
-        data.value = Callback.Builder(Status.SUCCESS).build()
+        val grades = SagresNavigator.instance.getCurrentGrades()
+        data.addSource(grades){g ->
+            if (g.status == Status.SUCCESS) {
+                data.removeSource(grades)
+
+                executor.diskIO().execute {
+                    defineSemesters(g.semesters)
+                    defineGrades(g.grades)
+                    defineFrequency(g.frequency)
+                    data.postValue(Callback.Builder(g.status).document(g.document).build())
+                }
+            } else {
+                data.value = Callback.Builder(g.status)
+                        .code(g.code)
+                        .message(g.message)
+                        .throwable(g.throwable)
+                        .document(g.document)
+                        .build()
+            }
+        }
+    }
+
+    @WorkerThread
+    private fun defineFrequency(frequency: List<DisciplineMissedClass>?) {
+
+    }
+
+    @WorkerThread
+    private fun defineGrades(grades: List<Grade>) {
+
+    }
+
+    @WorkerThread
+    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
+
     }
 
     @WorkerThread

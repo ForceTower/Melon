@@ -24,8 +24,6 @@ import com.forcetower.sagres.database.model.Grade;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
-import org.jetbrains.annotations.NotNull;
-
 import java.util.List;
 
 import androidx.annotation.NonNull;
@@ -33,6 +31,7 @@ import androidx.annotation.Nullable;
 import kotlin.Pair;
 
 public class GradesCallback extends BaseCallback<GradesCallback> {
+    @Nullable
     private List<DisciplineMissedClass> frequency;
     private List<Grade> grades;
     private List<Pair<Long, String>> semesters;
@@ -56,6 +55,7 @@ public class GradesCallback extends BaseCallback<GradesCallback> {
         return this;
    }
 
+   @Nullable
     public List<DisciplineMissedClass> getFrequency() {
         return frequency;
     }

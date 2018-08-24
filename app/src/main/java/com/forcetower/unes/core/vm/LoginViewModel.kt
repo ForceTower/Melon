@@ -23,12 +23,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.sagres.operation.Callback
-import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.Status
-import com.forcetower.unes.core.storage.repository.UserRepository
+import com.forcetower.unes.core.storage.repository.LoginSagresRepository
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repository: UserRepository): ViewModel() {
+class LoginViewModel @Inject constructor(private val repository: LoginSagresRepository): ViewModel() {
     private var loginSrc : MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
     private var connected: Boolean = false
