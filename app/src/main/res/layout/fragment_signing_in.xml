@@ -25,10 +25,14 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <ProgressBar
+        <com.forcetower.unes.widget.CircleProgressBar
             android:id="@+id/content_loading"
-            android:layout_width="150dp"
-            android:layout_height="150dp"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            app:progressbarColor="@color/colorAccent"
+            app:backgroundThickness="4dp"
+            app:foregroundThickness="4dp"
+            tools:progress="65"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -42,6 +46,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
+            android:elevation="8dp"
             android:transitionName="@string/user_image_transition"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -134,4 +134,6 @@
     <string name="step_fetching_semesters">Buscando semestres</string>
     <string name="step_moving_to_start_page">Movendo para página inicial</string>
     <string name="step_fetching_grades">Buscando notas</string>
+
+    <string name="label_terms_and_conditions">Ao continuar, você concorda com os [Termos de Serviço](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md)</string>
 </resources>

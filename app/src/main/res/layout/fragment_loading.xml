@@ -47,10 +47,8 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
-            android:fontFamily="@font/product_sans_regular"
             android:text="@string/login_welcome_to_unes"
-            android:textColor="@color/text_primary_dark"
-            android:textSize="24sp"
+            style="@style/UTheme.TextAppearance.Headline1"
             app:layout_constraintBottom_toTopOf="@+id/text_tag_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -62,26 +60,23 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
-            android:fontFamily="@font/product_sans_regular"
             android:text="@string/login_unes_single_help"
-            android:textColor="@color/text_secondary_dark"
-            android:textSize="14sp"
+            style="@style/UTheme.TextAppearance.Common"
             app:layout_constraintBottom_toTopOf="@+id/btn_first_steps"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_first_steps"
+            style="@style/UTheme.MaterialButton.Default"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
-            android:layout_marginBottom="32dp"
-            android:fontFamily="@font/product_sans_regular"
+            android:layout_marginBottom="16dp"
             android:text="@string/login_first_steps"
-            android:textAllCaps="false"
             android:visibility="invisible"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@+id/text_terms_and_privacy"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             tools:visibility="visible" />
@@ -96,6 +91,21 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/btn_first_steps" />
+
+        <com.forcetower.unes.widget.BaselineGridTextView
+            android:id="@+id/text_terms_and_privacy"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="16dp"
+            tools:text="@string/label_terms_and_conditions"
+            style="@style/UTheme.TextAppearance.TermsAndConditions"
+            android:textColorLink="@color/unes_links"
+            android:textColorHighlight="@color/links_highlighted"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
