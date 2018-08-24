@@ -32,7 +32,7 @@ import java.util.*
 ])
 data class ClassGroup(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
+    var uid: Long = 0,
     @ColumnInfo(name = "class_id")
     val classId: Long,
     var group: String,
@@ -47,5 +47,9 @@ data class ClassGroup(
         if (!grp.group.isNullOrBlank()) group = grp.group
         if (!grp.teacher.isNullOrBlank()) teacher = grp.teacher
         if (grp.credits > 0) credits = grp.credits
+    }
+
+    override fun toString(): String {
+        return "${classId}_$group draft: $draft"
     }
 }

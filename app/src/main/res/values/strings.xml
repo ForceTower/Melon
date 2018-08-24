@@ -125,4 +125,13 @@
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
     <string name="label_grades_disciplines_short">Disciplinas</string>
+
+    <string name="data_step_format">Passo %1$d de %2$d: %3$s</string>
+    <string name="step_delete_database">Apagando dados</string>
+    <string name="step_logging_in">Fazendo login</string>
+    <string name="step_finding_profile">Buscando perfil</string>
+    <string name="step_fetching_messages">Buscando mensagens</string>
+    <string name="step_fetching_semesters">Buscando semestres</string>
+    <string name="step_moving_to_start_page">Movendo para página inicial</string>
+    <string name="step_fetching_grades">Buscando notas</string>
 </resources>
