@@ -20,11 +20,12 @@
 package com.forcetower.sagres.database.model
 
 data class SGrade(
+    val semesterId: Long,
     val discipline: String,
     var partialMean: String = "",
     var finalScore: String = ""
 ) {
-    private val values: MutableList<SGradeInfo> = ArrayList()
+    val values: MutableList<SGradeInfo> = ArrayList()
 
     fun addInfo(info: SGradeInfo) {
         values.add(info)

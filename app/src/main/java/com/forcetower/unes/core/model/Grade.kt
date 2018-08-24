@@ -21,18 +21,34 @@ package com.forcetower.unes.core.model
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import java.util.*
 
 @Entity(foreignKeys = [
     ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
-    Index(value = ["name", "class_id"])
+    Index(value = ["name", "class_id"], unique = true),
+    Index(value = ["uuid"], unique = true)
 ])
 data class Grade(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val name: String,
-    val date: String,
-    val notified: Int = 0,
+    var uid: Long = 0,
     @ColumnInfo(name = "class_id")
-    val classId: Long
-)
+    val classId: Long,
+    val name: String,
+    var date: String,
+    var grade: String,
+    var notified: Int = 0,
+    val uuid: String = UUID.randomUUID().toString()
+) {
+    fun hasGrade(): Boolean {
+        return (!grade.trim { it <= ' ' }.isEmpty()
+                && !grade.trim { it <= ' ' }.equals("Não Divulgada", ignoreCase = true)
+                && !grade.trim { it <= ' ' }.equals("-", ignoreCase = true)
+                && !grade.trim { it <= ' ' }.equals("--", ignoreCase = true)
+                && !grade.trim { it <= ' ' }.equals("*", ignoreCase = true)
+                && !grade.trim { it <= ' ' }.equals("**", ignoreCase = true)
+                && !grade.trim { it <= ' ' }.equals("-1", ignoreCase = true))
+    }
+
+    override fun toString(): String = "${name}_${grade}_${date}_$notified"
+}

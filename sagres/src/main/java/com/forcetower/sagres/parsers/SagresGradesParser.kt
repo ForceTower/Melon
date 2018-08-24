@@ -111,7 +111,7 @@ object SagresGradesParser {
     }
 
     @JvmStatic
-    fun extractGrades(document: Document): List<SGrade> {
+    fun extractGrades(document: Document, semesterId: Long): List<SGrade> {
         val grades: MutableList<SGrade> = ArrayList()
         val bulletin = document.selectFirst("div[id=\"divBoletins\"]")
         val classes  = bulletin.select("div[class=\"boletim-container\"]")
@@ -122,7 +122,7 @@ object SagresGradesParser {
                 val name = info.selectFirst("span[class=\"boletim-item-titulo cor-destaque\"]")
 
                 val discipline = name.text().trim()
-                val grade = SGrade(discipline)
+                val grade = SGrade(semesterId, discipline)
 
                 val gradeInfo = clazz.selectFirst("div[class=\"boletim-notas\"]")
                 val table = gradeInfo.selectFirst("table")

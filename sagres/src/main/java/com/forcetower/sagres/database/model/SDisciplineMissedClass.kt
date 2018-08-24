@@ -22,7 +22,8 @@ package com.forcetower.sagres.database.model
 data class SDisciplineMissedClass(
     val date: String,
     val description: String,
-    val disciplineCode: String
+    val disciplineCode: String,
+    val semester: Long
 ) {
     override fun toString(): String = "${disciplineCode}_$date -> $description"
 }

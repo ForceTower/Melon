@@ -19,33 +19,26 @@
 
 package com.forcetower.unes.core.model
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SMessage
+import androidx.room.*
+import androidx.room.ForeignKey.CASCADE
 import java.util.*
 
-@Entity(indices = [
-    Index(value = ["sagres_id"], unique = true),
+@Entity(foreignKeys = [
+    ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE),
+    ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onUpdate = CASCADE, onDelete = CASCADE)
+], indices = [
+    Index(value = ["class_id", "profile_id"], unique = false),
     Index(value = ["uuid"], unique = true)
 ])
-data class Message(
+data class ClassAbsence(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
-    val content: String,
-    @ColumnInfo(name = "sagres_id")
-    val sagresId: Long,
-    val timestamp: Long,
-    @ColumnInfo(name = "sender_profile")
-    val senderProfile: Int,
-    @ColumnInfo(name = "sender_name")
-    val senderName: String,
-    val notified: Boolean = false,
+    @ColumnInfo(name = "class_id")
+    val classId: Long,
+    @ColumnInfo(name = "profile_id")
+    val profileId: Long,
+    val sequence: Int,
+    val description: String,
+    val date: String,
     val uuid: String = UUID.randomUUID().toString()
-) {
-
-    companion object {
-        fun fromMessage(me: SMessage) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis)
-    }
-}
+)

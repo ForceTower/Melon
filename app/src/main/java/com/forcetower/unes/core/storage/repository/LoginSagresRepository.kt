@@ -21,9 +21,11 @@ package com.forcetower.unes.core.storage.repository
 
 import android.content.Context
 import androidx.annotation.MainThread
+import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.*
 import com.forcetower.sagres.operation.Callback
@@ -31,10 +33,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.unes.AppExecutors
 import com.forcetower.unes.R
-import com.forcetower.unes.core.model.Access
-import com.forcetower.unes.core.model.CalendarItem
-import com.forcetower.unes.core.model.Message
-import com.forcetower.unes.core.model.Semester
+import com.forcetower.unes.core.model.*
 import com.forcetower.unes.core.storage.database.UDatabase
 import com.forcetower.unes.core.storage.network.UService
 import timber.log.Timber
@@ -45,9 +44,10 @@ class LoginSagresRepository @Inject constructor(
         private val executor: AppExecutors,
         private val database: UDatabase,
         private val service: UService,
-        context: Context
+        private val context: Context
 ) {
     private val appToken = context.getString(R.string.app_service_token)
+    private val currentStep: MutableLiveData<Step> = MutableLiveData()
 
     fun getAccess(): LiveData<Access?> = database.accessDao().getAccess()
 
@@ -60,7 +60,9 @@ class LoginSagresRepository @Inject constructor(
     @MainThread
     fun login(username: String, password: String, deleteDatabase: Boolean = false): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
+        resetSteps()
         if (deleteDatabase) {
+            currentStep.value = createStep(context, R.string.step_delete_database)
             executor.diskIO().execute {
                 database.clearAllTables()
                 executor.mainThread().execute{
@@ -68,6 +70,7 @@ class LoginSagresRepository @Inject constructor(
                 }
             }
         } else {
+            incSteps()
             login(signIn, username, password)
         }
         return signIn
@@ -76,6 +79,7 @@ class LoginSagresRepository @Inject constructor(
     @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
         val source = SagresNavigator.instance.aLogin(username, password)
+        currentStep.value = createStep(context, R.string.step_logging_in)
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
@@ -96,6 +100,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun me(data: MediatorLiveData<Callback>, score: Double, username: String, password: String) {
         val me = SagresNavigator.instance.aMe()
+        currentStep.value = createStep(context, R.string.step_finding_profile)
         data.addSource(me) {m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(me)
@@ -121,6 +126,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long) {
         val messages = SagresNavigator.instance.aMessages(userId)
+        currentStep.value = createStep(context, R.string.step_fetching_messages)
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
@@ -142,6 +148,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun semesters(data: MediatorLiveData<Callback>, userId: Long) {
         val semesters = SagresNavigator.instance.aSemesters(userId)
+        currentStep.value = createStep(context, R.string.step_fetching_semesters)
         data.addSource(semesters) {s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(semesters)
@@ -163,6 +170,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun startPage(data: MediatorLiveData<Callback>) {
         val start = SagresNavigator.instance.startPage()
+        currentStep.value = createStep(context, R.string.step_moving_to_start_page)
         data.addSource(start){s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(start)
@@ -192,6 +200,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun grades(data: MediatorLiveData<Callback>) {
         val grades = SagresNavigator.instance.getCurrentGrades()
+        currentStep.value = createStep(context, R.string.step_fetching_grades)
         data.addSource(grades){g ->
             if (g.status == Status.SUCCESS) {
                 data.removeSource(grades)
@@ -218,12 +227,14 @@ class LoginSagresRepository @Inject constructor(
 
     @WorkerThread
     private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
-
+        if (frequency == null) return
+        database.classAbsenceDao().putAbsences(frequency)
     }
 
     @WorkerThread
     private fun defineGrades(grades: List<SGrade>) {
-
+        database.gradesDao().putGrades(grades)
+        Timber.d("All Grades: ${database.gradesDao().getAllGradesDirect()}")
     }
 
     @WorkerThread
@@ -241,14 +252,18 @@ class LoginSagresRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        groups.forEach { database.classGroupDao().insert(it) }
+        val values = ArrayList<ClassGroup>()
+        groups.forEach {
+            val group = database.classGroupDao().insert(it)
+            values.add(group)
+        }
+        database.classStudentDao().joinGroups(values)
     }
 
     @WorkerThread
     private fun defineDisciplines(disciplines: List<SDiscipline>) {
         val values = disciplines.map { com.forcetower.unes.core.model.Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
-
         disciplines.forEach { database.classDao().insert(it) }
     }
 
@@ -277,5 +292,25 @@ class LoginSagresRepository @Inject constructor(
             Timber.d("Request Failed")
             e.printStackTrace()
         }
+    }
+
+    companion object {
+        private var currentStep = 0
+        private const val stepCount = 5
+
+        private fun resetSteps() {
+            currentStep = 0
+        }
+
+        private fun incSteps() {
+            currentStep++
+        }
+
+        private fun createStep(ctx: Context, @StringRes desc: Int): Step = Step(currentStep++, desc)
+                //ctx.getString(R.string.data_step_format, currentStep++, stepCount, ctx.getString(desc))
+    }
+
+    data class Step(val step: Int, @StringRes val res: Int) {
+        val count = stepCount
     }
 }

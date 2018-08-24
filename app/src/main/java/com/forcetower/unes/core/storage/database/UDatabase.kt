@@ -33,7 +33,10 @@ import com.forcetower.unes.core.storage.database.dao.*
     CalendarItem::class,
     Discipline::class,
     Class::class,
-    ClassGroup::class
+    ClassGroup::class,
+    ClassStudent::class,
+    ClassAbsence::class,
+    Grade::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -45,4 +48,7 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun disciplineDao(): DisciplineDao
     abstract fun classDao(): ClassDao
     abstract fun classGroupDao(): ClassGroupDao
+    abstract fun classStudentDao(): ClassStudentDao
+    abstract fun classAbsenceDao(): ClassAbsenceDao
+    abstract fun gradesDao(): GradeDao
 }
