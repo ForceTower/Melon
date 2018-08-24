@@ -102,7 +102,7 @@ object SagresGradesParser {
 
     @JvmStatic
     fun canExtractGrades(document: Document): Boolean {
-        val bulletin = document.selectFirst("div[id\"divBoletins\"]")
+        val bulletin = document.selectFirst("div[id=\"divBoletins\"]")
         return if (bulletin != null) {
             bulletin.selectFirst("div[class=\"boletim-container\"]") != null
         } else {
@@ -113,8 +113,8 @@ object SagresGradesParser {
     @JvmStatic
     fun extractGrades(document: Document): List<Grade> {
         val grades: MutableList<Grade> = ArrayList()
-        val bulletin = document.selectFirst("div[id\"divBoletins\"]")
-        val classes  = document.select("div[class=\"boletim-container\"]")
+        val bulletin = document.selectFirst("div[id=\"divBoletins\"]")
+        val classes  = bulletin.select("div[class=\"boletim-container\"]")
 
         for (clazz in classes) {
             try {
@@ -147,8 +147,16 @@ object SagresGradesParser {
                             }
                         }
                     }
+                    grades.add(grade)
                 } else {
+                    Timber.d("<body_is_null> :: Can't parse grades")
+                }
 
+                val foot = table.selectFirst("tfoot")
+                if (foot != null) {
+                    val tr = foot.selectFirst("tr")
+                    if (tr != null && tr.children().size == 4)
+                        grade.finalScore = tr.children()[2].text().trim()
                 }
             } catch (t: Throwable) {
                 Timber.d("Exception happened")

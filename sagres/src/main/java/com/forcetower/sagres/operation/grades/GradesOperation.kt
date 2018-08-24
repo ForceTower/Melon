@@ -77,7 +77,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
                                 frequency: Pair<Boolean, List<DisciplineMissedClass>>) {
         result.postValue(GradesCallback(Status.SUCCESS).document(document)
                 .grades(grades)
-                .frequency(if (frequency.first) frequency.second else null)
+                .frequency(if (frequency.first) null else frequency.second)
                 .codes(codes))
     }
 }

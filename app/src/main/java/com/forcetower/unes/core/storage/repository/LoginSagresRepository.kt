@@ -197,6 +197,9 @@ class LoginSagresRepository @Inject constructor(
             if (g.status == Status.SUCCESS) {
                 data.removeSource(grades)
 
+                Timber.d("Grades received: ${g.grades}")
+                Timber.d("Frequency: ${g.frequency}")
+                Timber.d("Semesters: ${g.semesters}")
                 executor.diskIO().execute {
                     defineSemesters(g.semesters)
                     defineGrades(g.grades)
