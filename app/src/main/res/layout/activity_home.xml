@@ -114,8 +114,8 @@
             app:elevation="12dp"
             app:labelVisibilityMode="auto"
             app:itemHorizontalTranslationEnabled="true"
-            app:itemTextAppearanceActive="@style/AppTheme.BottomNavigation.Active"
-            app:itemTextAppearanceInactive="@style/AppTheme.BottomNavigation.Active"
+            app:itemTextAppearanceActive="@style/UTheme.BottomNavigation.Active"
+            app:itemTextAppearanceInactive="@style/UTheme.BottomNavigation.Active"
             app:menu="@menu/home_bottom_navigation"
             app:itemIconTint="@color/navigation_bottom_color"
             app:itemTextColor="@color/navigation_bottom_color"/>

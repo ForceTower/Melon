@@ -19,6 +19,7 @@
 
 package com.forcetower.unes.feature.login
 
+import `in`.uncod.android.bypass.Bypass
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -29,6 +30,7 @@ import androidx.navigation.findNavController
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.core.model.Access
+import com.forcetower.unes.core.util.HtmlUtils
 import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.FragmentLoadingBinding
@@ -46,12 +48,16 @@ class LoadingFragment : UFragment(), Injectable {
 
     private lateinit var binding: FragmentLoadingBinding
     private lateinit var viewModel: LoginViewModel
+    private lateinit var markdown: Bypass
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentLoadingBinding.inflate(inflater, container, false).also {
             binding = it
             binding.btnFirstSteps.setOnClickListener { v ->
-                v.findNavController().navigate(R.id.action_login_loading_to_login_form) }
+                v.findNavController().navigate(R.id.action_login_loading_to_login_form)
+            }
+            markdown = Bypass(requireContext(), Bypass.Options())
+            setupTermsText()
         }.root
     }
 
@@ -74,5 +80,10 @@ class LoadingFragment : UFragment(), Injectable {
             startActivity(intent)
             activity?.finish()
         }
+    }
+
+    private fun setupTermsText() {
+        val sequence = markdown.markdownToSpannable(resources.getString(R.string.label_terms_and_conditions), binding.textTermsAndPrivacy, null)
+        HtmlUtils.setTextWithNiceLinks(binding.textTermsAndPrivacy, sequence)
     }
 }

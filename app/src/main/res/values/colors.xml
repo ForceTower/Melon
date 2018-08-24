@@ -19,14 +19,22 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#FFC107</color>
-    <color name="colorPrimaryDark">#FFA000</color>
-    <color name="colorPrimaryLight">#FFECB3</color>
+    <color name="colorPrimary">#FFF</color>
+    <color name="colorPrimaryDark">#FFF</color>
+    <color name="colorPrimaryLight">#FFF</color>
     <color name="colorAccent">#2196F3</color>
+
+    <color name="yellow_pr">#FFC107</color>
+    <color name="yellow_pr_dark">#FFA000</color>
+    <color name="yellow_pr_light">#FFECB3</color>
+    <color name="blue_accent">#2196F3</color>
+
+    <color name="links_colors">#892196F3</color>
+    <color name="links_highlighted">#FFC107</color>
 
     <color name="grey">#FF757575</color>
     <color name="navigation_grey">#757575</color>
-    <color name="messages_stroke">#bdbdbd</color>
+    <color name="messages_stroke">#a9a9a9</color>
 
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
     <color name="text_secondary_dark">#8a000000</color> <!-- 54% -->
