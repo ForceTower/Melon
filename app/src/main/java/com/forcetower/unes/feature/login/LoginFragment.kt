@@ -19,6 +19,7 @@
 
 package com.forcetower.unes.feature.login
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,6 +29,7 @@ import androidx.navigation.findNavController
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.databinding.FragmentLoginBinding
+import com.forcetower.unes.feature.about.AboutActivity
 import com.forcetower.unes.feature.shared.UFragment
 
 class LoginFragment : UFragment() {
@@ -41,6 +43,9 @@ class LoginFragment : UFragment() {
             }
             binding.btnConnect.setOnClickListener{_ ->
                 prepareLogin()
+            }
+            binding.btnAboutUnes.setOnClickListener {_ ->
+                toAbout()
             }
         }.root
     }
@@ -68,5 +73,10 @@ class LoginFragment : UFragment() {
                 "username" to username,
                 "password" to password
         ))
+    }
+
+    private fun toAbout() {
+        val intent = Intent(requireContext(), AboutActivity::class.java)
+        startActivity(intent)
     }
 }

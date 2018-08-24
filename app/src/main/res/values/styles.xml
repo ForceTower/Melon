@@ -35,6 +35,20 @@
         <item name="android:statusBarColor">@color/white</item>
     </style>
 
+    <style name="UTheme.Translucent">
+        <item name="android:windowBackground">@color/scrim</item>
+        <item name="android:colorBackgroundCacheHint">@null</item>
+        <item name="android:windowContentOverlay">@null</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowNoTitle">true</item>
+    </style>
+
+    <style name="UTheme.Translucent.About">
+        <item name="android:windowEnterTransition">@transition/about_enter</item>
+        <item name="android:windowReturnTransition">@transition/about_return</item>
+    </style>
+
     <style name="UTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
     </style>
 
@@ -96,5 +110,4 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="textAllCaps">false</item>
     </style>
-
 </resources>

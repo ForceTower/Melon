@@ -17,20 +17,18 @@
  * limitations under the License.
  */
 
-package com.forcetower.unes.core.injection.module
+package com.forcetower.unes.core.util
 
-import com.forcetower.unes.feature.about.AboutActivity
-import com.forcetower.unes.feature.home.HomeActivity
-import com.forcetower.unes.feature.login.LoginActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.annotation.ColorInt
+import androidx.annotation.CheckResult
+import androidx.annotation.IntRange
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector
-    abstract fun bindAboutActivity(): AboutActivity
+
+object ColorUtils {
+    @CheckResult
+    @ColorInt
+    @JvmStatic
+    fun modifyAlpha(@ColorInt color: Int, @IntRange(from = 0, to = 255) alpha: Int): Int {
+        return color and 0x00ffffff or (alpha shl 24)
+    }
 }

@@ -41,6 +41,12 @@ import com.forcetower.unes.feature.shared.fadeOut
 import com.forcetower.unes.feature.shared.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
+import android.text.Spanned
+import android.text.Layout
+import android.text.style.AlignmentSpan
+import android.text.SpannableString
+import android.text.TextUtils
+
 
 class LoadingFragment : UFragment(), Injectable {
     @Inject
@@ -83,7 +89,12 @@ class LoadingFragment : UFragment(), Injectable {
     }
 
     private fun setupTermsText() {
-        val sequence = markdown.markdownToSpannable(resources.getString(R.string.label_terms_and_conditions), binding.textTermsAndPrivacy, null)
+        val sequence1 = SpannableString(resources.getString(R.string.label_terms_and_conditions_p1))
+        sequence1.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, sequence1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val sequence2 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.label_terms_and_conditions_p2), binding.textTermsAndPrivacy, null))
+        sequence2.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, sequence2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+
+        val sequence = TextUtils.concat(sequence1, "\n", sequence2)
         HtmlUtils.setTextWithNiceLinks(binding.textTermsAndPrivacy, sequence)
     }
 }
