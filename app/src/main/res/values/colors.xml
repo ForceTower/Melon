@@ -29,8 +29,8 @@
     <color name="yellow_pr_light">#FFECB3</color>
     <color name="blue_accent">#2196F3</color>
 
-    <color name="links_colors">#892196F3</color>
-    <color name="links_highlighted">#FFC107</color>
+    <color name="links_colors">#2196F3</color>
+    <color name="links_highlighted">#2196F3</color>
 
     <color name="grey">#FF757575</color>
     <color name="navigation_grey">#757575</color>
@@ -44,4 +44,9 @@
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
     <color name="drawer_selected_color">#19FFC107</color>
+
+    <color name="page_indicator_dark">#80333333</color>
+    <color name="page_indicator_dark_selected">#ff333333</color>
+
+    <color name="scrim">#99323232</color>
 </resources>

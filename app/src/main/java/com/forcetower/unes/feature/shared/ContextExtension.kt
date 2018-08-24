@@ -17,20 +17,14 @@
  * limitations under the License.
  */
 
-package com.forcetower.unes.core.injection.module
+package com.forcetower.unes.feature.shared
 
-import com.forcetower.unes.feature.about.AboutActivity
-import com.forcetower.unes.feature.home.HomeActivity
-import com.forcetower.unes.feature.login.LoginActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.content.Context
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector
-    abstract fun bindAboutActivity(): AboutActivity
+
+fun Context.isNavBarOnBottom(): Boolean {
+    val config = resources.configuration
+    val dm = resources.displayMetrics
+    val canMove = dm.widthPixels != dm.heightPixels && config.smallestScreenWidthDp < 600
+    return !canMove || dm.widthPixels < dm.heightPixels
 }
