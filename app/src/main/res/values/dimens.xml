@@ -38,4 +38,5 @@
     <dimen name="contributor_image_size">56dp</dimen>
     <dimen name="contributor_default_elevation">1dp</dimen>
     <dimen name="contributor_card_raised">6dp</dimen>
+    <dimen name="spacing_xlarge">48dp</dimen>
 </resources>
