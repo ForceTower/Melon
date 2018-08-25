@@ -30,10 +30,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:cardCornerRadius="8dp"
-        app:cardElevation="2dp"
+        app:cardElevation="1dp"
         app:strokeColor="@color/messages_stroke"
         app:strokeWidth="1dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:stateListAnimator="@animator/default_card_raise">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
