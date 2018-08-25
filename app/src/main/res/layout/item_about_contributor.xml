@@ -26,16 +26,15 @@
             type="com.forcetower.unes.core.model.Contributor"/>
     </data>
     <com.google.android.material.card.MaterialCardView
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="80dp"
         app:cardCornerRadius="@dimen/contributor_card_corners"
-        app:strokeWidth="1dp"
-        app:strokeColor="@color/blue_accent"
         android:layout_marginBottom="@dimen/spacing_common"
         android:layout_marginStart="@dimen/spacing_common"
         android:layout_marginEnd="@dimen/spacing_common"
-        android:stateListAnimator="@animator/contributor_raise">
+        android:stateListAnimator="@animator/contributor_raise"
+        android:clickable="true"
+        android:focusable="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

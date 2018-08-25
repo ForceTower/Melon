@@ -27,10 +27,12 @@ import com.forcetower.unes.core.model.Contributor
 import com.forcetower.unes.databinding.ItemAboutContributorBinding
 import com.forcetower.unes.feature.shared.inflater
 
-class ContributorAdapter: ListAdapter<Contributor, ContributorHolder>(ContributorDiff) {
+class ContributorAdapter(
+        private val listener: ContributorActions? = null
+): ListAdapter<Contributor, ContributorHolder>(ContributorDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContributorHolder {
         val binding = ItemAboutContributorBinding.inflate(parent.inflater(), parent, false)
-        return ContributorHolder(binding)
+        return ContributorHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: ContributorHolder, position: Int) {
@@ -40,8 +42,18 @@ class ContributorAdapter: ListAdapter<Contributor, ContributorHolder>(Contributo
 }
 
 class ContributorHolder(
-    private val binding: ItemAboutContributorBinding
+    private val binding: ItemAboutContributorBinding,
+    private val listener: ContributorActions? = null
 ): RecyclerView.ViewHolder(binding.root) {
+    init {
+        binding.root.setOnClickListener {_ -> onClick() }
+    }
+
+    private fun onClick() {
+        val position = adapterPosition
+        val item = binding.contributor
+        if (item != null) listener?.onContributorClick(item, position)
+    }
 
     fun bind(contributor: Contributor) {
         binding.contributor = contributor
@@ -52,4 +64,8 @@ class ContributorHolder(
 object ContributorDiff: DiffUtil.ItemCallback<Contributor>() {
     override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem.uid == newItem.uid
     override fun areContentsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem == newItem
+}
+
+interface ContributorActions {
+    fun onContributorClick(contributor: Contributor, position: Int)
 }
