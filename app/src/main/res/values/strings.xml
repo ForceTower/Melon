@@ -145,4 +145,5 @@
     <string name="acc_contributor_image">Imagem do contribuidor</string>
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
+    <string name="label_contributors_calling">Pessoas que contribuíram com código ou ideias</string>
 </resources>

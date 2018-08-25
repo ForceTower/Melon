@@ -26,8 +26,9 @@ object MockUtils {
     @JvmStatic
     fun contributors(): List<Contributor> {
         val c1 = Contributor(1, "João Paulo Sena", "Programação do núcleo", "https://avatars.githubusercontent.com/ForceTower", "http://facebook.com/ForceTower")
-        val c2 = Contributor(2, "Alberto Junior", "Muitas Idéias Geniais", "https://avatars.githubusercontent.com/AlbertoJunior", "http://facebook.com/jr_da_pesada")
-        return listOf(c1, c2)
+        val c2 = Contributor(2, "Alberto Junior", "Muitas Idéias Geniais", "https://avatars.githubusercontent.com/AlbertoJunior", "http://facebook.com/alberto.junior.995")
+        val c3 = Contributor(3, "Galuber Silva", "Tradução dos Textos (en)", "https://avatars.githubusercontent.com/sglauber", "http://facebook.com/Gss.14")
+        return listOf(c1, c2, c3)
     }
 
 }

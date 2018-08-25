@@ -32,18 +32,53 @@
             android:layout_height="wrap_content"
             android:background="@color/white"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_contributors"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:paddingTop="@dimen/spacing_common"
-            android:paddingBottom="@dimen/spacing_normal"
-            android:clipToPadding="false"
-            android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            tools:listitem="@layout/item_about_contributor">
-        </androidx.recyclerview.widget.RecyclerView>
+            android:layout_height="wrap_content">
+
+            <TextView
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:id="@+id/text_about_intro"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xlarge"
+                android:layout_marginBottom="@dimen/spacing_common"
+                android:padding="@dimen/padding_normal"
+                android:text="@string/label_contributors_calling"
+                style="@style/UTheme.TextAppearance.About"/>
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recycler_contributors"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="@dimen/spacing_normal"
+                    android:paddingBottom="@dimen/spacing_normal"
+                    android:clipToPadding="false"
+                    android:scrollbars="vertical"
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    tools:listitem="@layout/item_about_contributor">
+                </androidx.recyclerview.widget.RecyclerView>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:background="@drawable/gradient_top_bottom"
+                    android:backgroundTint="@color/white"/>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="24dp"
+                    android:background="@drawable/gradient_bottom_top"
+                    android:backgroundTint="@color/white"
+                    android:layout_alignBottom="@id/recycler_contributors"/>
+            </RelativeLayout>
+
+        </LinearLayout>
 
     </FrameLayout>
 </layout>
