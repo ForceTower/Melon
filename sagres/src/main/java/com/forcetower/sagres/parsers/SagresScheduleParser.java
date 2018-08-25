@@ -78,7 +78,7 @@ public class SagresScheduleParser {
                         classDay.room,
                         classDay.campus,
                         classDay.modulo,
-                        classDay.class_code,
+                        classDay.class_name,
                         classDay.class_code,
                         classDay.class_type
                 );
