@@ -48,7 +48,7 @@
                         android:paddingEnd="8dp"
                         tools:text="Horários"
                         android:textSize="22sp"
-                        android:textColor="@color/colorPrimaryDark" />
+                        android:textColor="@color/blue_accent" />
 
                     <ImageView
                         android:id="@+id/image_user_picture"
@@ -66,10 +66,10 @@
                         android:id="@+id/btn_reload"
                         android:layout_width="?attr/actionBarSize"
                         android:layout_height="?attr/actionBarSize"
-                        android:layout_gravity="end|center_vertical"
+                        android:layout_gravity="end"
                         app:icon="@drawable/ic_refresh_black_24dp"
                         style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        app:iconTint="?colorPrimary"
+                        app:iconTint="@color/blue_accent"
                         app:strokeWidth="0dp"/>
                 </androidx.appcompat.widget.Toolbar>
 
@@ -85,8 +85,8 @@
                     app:tabIndicatorFullWidth="false"
                     app:tabMode="scrollable"
                     app:tabBackground="@color/white"
-                    app:tabTextColor="?attr/colorPrimaryDark"
-                    app:tabIndicatorColor="?attr/colorPrimaryDark"
+                    app:tabTextColor="@color/tab_text_color"
+                    app:tabIndicatorColor="@color/tab_drawable_color"
                     app:tabTextAppearance="@style/TextAppearanceTabLayout"
                     app:tabIndicator="@drawable/tab_indicator">
                 </com.google.android.material.tabs.TabLayout>

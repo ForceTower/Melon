@@ -26,3 +26,6 @@ import androidx.lifecycle.ViewModelProviders
 
 inline fun <reified VM: ViewModel> Fragment.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
         ViewModelProviders.of(this, viewModelFactory)[VM::class.java]
+
+inline fun <reified VM: ViewModel> Fragment.provideActivityViewModel(viewModelFactory: ViewModelProvider.Factory) =
+        ViewModelProviders.of(requireActivity(), viewModelFactory)[VM::class.java]

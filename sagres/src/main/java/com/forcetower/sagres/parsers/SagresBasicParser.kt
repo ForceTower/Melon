@@ -54,9 +54,13 @@ object SagresBasicParser {
 
     @JvmStatic
     fun getScore(document: Document?): Double {
-        if (document == null) return -1.0
+        if (document == null) {
+            Timber.d("Document is null. Score will not be parsed")
+            return -1.0
+        }
 
         val elements = document.select("div[class=\"situacao-escore\"]")
+        if (elements.isEmpty()) Timber.d("<score_404> :: No elements")
         for (element in elements) {
             if (element != null) {
                 val score = element.selectFirst("span[class=\"destaque\"]")
@@ -65,6 +69,7 @@ object SagresBasicParser {
                         var text = score.text()
                         text = text.replace("[^\\d,]".toRegex(), "")
                         text = text.replace(",", ".")
+                        Timber.d("Text at score parsing: $text")
                         val d = toDouble(text, -1.0)
                         if (d != -1.0) return d
                     } catch (ignored: Exception) { }

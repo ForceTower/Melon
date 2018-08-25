@@ -25,18 +25,32 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import com.forcetower.unes.R
+import com.forcetower.unes.core.injection.Injectable
+import com.forcetower.unes.core.vm.HomeViewModel
+import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.HomeBottomBinding
+import com.forcetower.unes.feature.about.AboutActivity
 import com.forcetower.unes.feature.shared.RoundedBottomSheetDialogFragment
+import com.forcetower.unes.feature.shared.provideViewModel
 import kotlinx.android.synthetic.main.fragment_home_bottom_sheet.*
 import timber.log.Timber
+import javax.inject.Inject
 
-class HomeBottomFragment : RoundedBottomSheetDialogFragment() {
+class HomeBottomFragment: RoundedBottomSheetDialogFragment(), Injectable {
+    @Inject
+    lateinit var viewModelFactory: UViewModelFactory
+
     private lateinit var binding: HomeBottomBinding
+    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideViewModel(viewModelFactory)
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
-        }.root.also {  }
+        }.apply {
+            setLifecycleOwner(this@HomeBottomFragment)
+            viewModel = this@HomeBottomFragment.viewModel
+        }.root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -45,10 +59,11 @@ class HomeBottomFragment : RoundedBottomSheetDialogFragment() {
     }
 
     private fun setupNavigation() {
-        navigation_view.setNavigationItemSelectedListener{item ->
+        navigation_view.setNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.messages -> activity?.findNavController(R.id.home_nav_host)?.navigate(R.id.messages)
                 R.id.grades_disciplines -> Timber.d("Grades")
+                R.id.about -> AboutActivity.startActivity(requireActivity())
             }
             dismiss()
             true

@@ -30,6 +30,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -72,10 +73,12 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun prepareSwitcher() {
+        val font = ResourcesCompat.getFont(requireContext(), R.font.product_sans_regular)
         binding.textStatus.setFactory {
             val textView = TextView(requireContext())
             textView.textSize = 16f
             textView.gravity = CENTER
+            textView.typeface = font
             textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary_dark))
             textView
         }
@@ -84,6 +87,7 @@ class SigningInFragment : UFragment(), Injectable {
             val textView = TextView(requireContext())
             textView.textSize = 12f
             textView.gravity = CENTER
+            textView.typeface = font
             textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary_dark))
             textView
         }

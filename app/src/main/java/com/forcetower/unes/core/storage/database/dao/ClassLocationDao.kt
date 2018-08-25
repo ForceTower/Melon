@@ -35,6 +35,8 @@ abstract class ClassLocationDao {
 
     @Transaction
     open fun putSchedule(locations: List<SDisciplineClassLocation>) {
+        if (locations.isEmpty()) return
+
         val semester = selectCurrentSemesterDirect()
         val profile  = getMeProfile()
         wipeScheduleProfile(profile.uid)

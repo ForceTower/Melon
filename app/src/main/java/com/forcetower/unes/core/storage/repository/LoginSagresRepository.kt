@@ -83,8 +83,8 @@ class LoginSagresRepository @Inject constructor(
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
-                Timber.d("Login Completed")
                 val score = SagresBasicParser.getScore(l.document)
+                Timber.d("Login Completed. Score parsed: $score")
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
                 me(data, score, username, password)
             } else {
