@@ -29,12 +29,17 @@
     <color name="yellow_pr_light">#FFECB3</color>
     <color name="blue_accent">#2196F3</color>
 
+    <color name="indigo_dark">#3c54fe</color>
+    <color name="indigo">#4768fd</color>
+
     <color name="links_colors">#2196F3</color>
     <color name="links_highlighted">#2196F3</color>
 
     <color name="grey">#FF757575</color>
     <color name="navigation_grey">#757575</color>
     <color name="messages_stroke">#a9a9a9</color>
+
+    <color name="highlight_light">#33ffffff</color>
 
     <color name="text_primary_dark">#de000000</color> <!-- 87% -->
     <color name="text_secondary_dark">#8a000000</color> <!-- 54% -->
@@ -49,4 +54,10 @@
     <color name="page_indicator_dark_selected">#ff333333</color>
 
     <color name="scrim">#99323232</color>
+    <color name="background_light">#fafafa</color>
+
+    <color name="mid_grey">#40808080</color>
+    <color name="light_grey">#fff5f5f5</color>
+    <color name="grey_200">#ffeeeeee</color>
+    <color name="grey_300">#ffe0e0e0</color>
 </resources>

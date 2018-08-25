@@ -22,6 +22,11 @@ package com.forcetower.unes.feature.login
 import `in`.uncod.android.bypass.Bypass
 import android.content.Intent
 import android.os.Bundle
+import android.text.Layout
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,11 +46,6 @@ import com.forcetower.unes.feature.shared.fadeOut
 import com.forcetower.unes.feature.shared.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
-import android.text.Spanned
-import android.text.Layout
-import android.text.style.AlignmentSpan
-import android.text.SpannableString
-import android.text.TextUtils
 
 
 class LoadingFragment : UFragment(), Injectable {

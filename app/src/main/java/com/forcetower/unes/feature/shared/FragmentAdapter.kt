@@ -17,20 +17,20 @@
  * limitations under the License.
  */
 
-package com.forcetower.unes.core.injection.module
+package com.forcetower.unes.feature.shared
 
-import com.forcetower.unes.feature.about.AboutActivity
-import com.forcetower.unes.feature.home.HomeActivity
-import com.forcetower.unes.feature.login.LoginActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentPagerAdapter
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
+class FragmentAdapter(fm: FragmentManager?) : FragmentPagerAdapter(fm) {
+    private val fragments = ArrayList<Fragment>()
+    override fun getCount(): Int = fragments.size
+    override fun getItem(position: Int): Fragment = fragments[position]
+
+    fun setItems(items: List<Fragment>) {
+        fragments.clear()
+        fragments.addAll(items)
+        notifyDataSetChanged()
+    }
 }
