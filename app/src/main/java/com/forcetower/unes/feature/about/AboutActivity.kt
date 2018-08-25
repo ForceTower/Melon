@@ -22,14 +22,23 @@ package com.forcetower.unes.feature.about
 import android.os.Bundle
 import android.transition.TransitionInflater
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.forcetower.unes.R
 import com.forcetower.unes.databinding.ActivityAboutBinding
+import com.forcetower.unes.feature.shared.FragmentAdapter
+import com.forcetower.unes.feature.shared.UActivity
 import com.forcetower.unes.widget.ElasticDragDismissFrameLayout
-import dagger.android.DaggerActivity
+import dagger.android.AndroidInjector
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
 
-class AboutActivity : DaggerActivity() {
+class AboutActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     private lateinit var binding: ActivityAboutBinding
+    private val adapter: FragmentAdapter by lazy { FragmentAdapter(supportFragmentManager) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,5 +55,19 @@ class AboutActivity : DaggerActivity() {
                 finishAfterTransition()
             }
         })
+
+        setupPager()
     }
+
+    private fun setupPager() {
+        val about = AboutMeFragment()
+        val contributors = ContributorsFragment()
+        adapter.setItems(listOf(about, contributors))
+
+        binding.viewPager.adapter = adapter
+        binding.viewPager.pageMargin = resources.getDimensionPixelSize(R.dimen.spacing_normal)
+        binding.indicator.setViewPager(binding.viewPager)
+    }
+
+    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
 }

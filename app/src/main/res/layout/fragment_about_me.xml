@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018.
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the Apache License, Version 2.0 (the "License");
+  ~ You may not use this file except in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing, software
+  ~ distributed under the License is distributed on an "AS IS" BASIS,
+  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  ~ See the License for the specific language governing permissions and
+  ~ limitations under the License.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:nestedScrollingEnabled="true">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <com.forcetower.unes.widget.CutoutTextView
+                android:layout_width="match_parent"
+                android:layout_height="@dimen/about_app_name_header"
+                app:foregroundColor="@color/colorAccent"
+                android:text="@string/app_name"
+                android:fontFamily="@font/product_sans_regular"/>
+
+            <com.forcetower.unes.widget.BaselineGridTextView
+                android:id="@+id/text_about_description"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_light"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingBottom="@dimen/spacing_large"
+                style="@style/UTheme.TextAppearance.About"
+                android:textColorHighlight="@color/links_colors"
+                android:textColorLink="@color/unes_links"/>
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_light">
+
+                <de.hdodenhof.circleimageview.CircleImageView
+                    android:id="@+id/image_creator_picture"
+                    android:layout_width="@dimen/about_header_image"
+                    android:layout_height="@dimen/about_header_image"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_margin="@dimen/about_header_margin"/>
+            </FrameLayout>
+
+            <com.forcetower.unes.widget.BaselineGridTextView
+                android:id="@+id/text_about_continuation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@color/background_light"
+                android:paddingStart="@dimen/padding_normal"
+                android:paddingTop="@dimen/padding_normal"
+                android:paddingEnd="@dimen/padding_normal"
+                android:paddingBottom="@dimen/spacing_large"
+                style="@style/UTheme.TextAppearance.About"
+                android:textColorHighlight="@color/links_colors"
+                android:textColorLink="@color/unes_links"/>
+        </LinearLayout>
+    </ScrollView>
+</layout>

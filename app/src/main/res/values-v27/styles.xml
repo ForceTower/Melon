@@ -18,19 +18,10 @@
   ~ limitations under the License.
   -->
 
-<resources>
-    <dimen name="bottom_sheet_corner_radius">16dp</dimen>
-    <dimen name="bottom_sheet_top_padding">8dp</dimen>
-    <dimen name="nav_header_size">40dp</dimen>
-    <dimen name="nav_header_keyline">56dp</dimen>
-    <dimen name="third_keyline">72dp</dimen>
-    <dimen name="second_keyline">24dp</dimen>
-    <dimen name="drag_dismiss_distance">112dp</dimen>
-    <dimen name="padding_normal">16dp</dimen>
-    <dimen name="spacing_normal">16dp</dimen>
-    <dimen name="display_4_text_size">112dp</dimen>
-    <dimen name="about_app_name_header">224dp</dimen>
-    <dimen name="spacing_large">32dp</dimen>
-    <dimen name="about_header_image">80dp</dimen>
-    <dimen name="about_header_margin">8dp</dimen>
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <style name="UTheme.LightNav">
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:navigationBarColor">@color/white</item>
+        <item name="android:statusBarColor">@color/highlight_light</item>
+    </style>
 </resources>
