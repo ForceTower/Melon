@@ -183,9 +183,9 @@ class LoginSagresRepository @Inject constructor(
                 }
 
                 Timber.d("Start Page completed")
-                Timber.d("Semesters: " + s.semesters)
-                Timber.d("Disciplines: " + s.disciplines)
-                Timber.d("Calendar: " + s.calendar)
+                Timber.d("Semesters: ${s.semesters}")
+                Timber.d("Disciplines:  ${s.disciplines}")
+                Timber.d("Calendar: ${s.calendar}")
                 grades(data)
             } else {
                 data.value = Callback.Builder(s.status)
@@ -234,7 +234,6 @@ class LoginSagresRepository @Inject constructor(
     @WorkerThread
     private fun defineGrades(grades: List<SGrade>) {
         database.gradesDao().putGrades(grades)
-        Timber.d("All Grades: ${database.gradesDao().getAllGradesDirect()}")
     }
 
     @WorkerThread
@@ -248,6 +247,7 @@ class LoginSagresRepository @Inject constructor(
     @WorkerThread
     private fun defineSchedule(locations: List<SDisciplineClassLocation>?) {
         if (locations == null) return
+        database.classLocationDao().putSchedule(locations)
     }
 
     @WorkerThread
@@ -296,7 +296,7 @@ class LoginSagresRepository @Inject constructor(
 
     companion object {
         private var currentStep = 0
-        private const val stepCount = 7
+        private const val stepCount = 6
 
         private fun resetSteps() {
             currentStep = 0

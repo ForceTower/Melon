@@ -59,7 +59,7 @@ abstract class ClassGroupDao {
     abstract fun update(group: ClassGroup)
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code AND g.`group` = :group")
-    abstract fun selectGroupDirect(semester: String, code: String, group: String): ClassGroup?
+    protected abstract fun selectGroupDirect(semester: String, code: String, group: String): ClassGroup?
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code AND g.`group` = :group")
     abstract fun selectGroup(semester: String, code: String, group: String): LiveData<ClassGroup?>
