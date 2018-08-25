@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "6aa5093b98636fca6a2697a89b7c52b5",
+    "identityHash": "e73dca6e89b7c99770d3d3f7750b3b99",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -803,6 +803,124 @@
         ]
       },
       {
+        "tableName": "ClassLocation",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `profile_id` INTEGER NOT NULL, `starts_at` TEXT NOT NULL, `ends_at` TEXT NOT NULL, `day` TEXT NOT NULL, `room` TEXT, `modulo` TEXT, `campus` TEXT, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupId",
+            "columnName": "group_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "profileId",
+            "columnName": "profile_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "startsAt",
+            "columnName": "starts_at",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "endsAt",
+            "columnName": "ends_at",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "day",
+            "columnName": "day",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "room",
+            "columnName": "room",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "modulo",
+            "columnName": "modulo",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "campus",
+            "columnName": "campus",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_ClassLocation_group_id_day_starts_at_ends_at_profile_id",
+            "unique": true,
+            "columnNames": [
+              "group_id",
+              "day",
+              "starts_at",
+              "ends_at",
+              "profile_id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassLocation_group_id_day_starts_at_ends_at_profile_id` ON `${TABLE_NAME}` (`group_id`, `day`, `starts_at`, `ends_at`, `profile_id`)"
+          },
+          {
+            "name": "index_ClassLocation_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassLocation_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ClassGroup",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "group_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "Profile",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "profile_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "Grade",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT NOT NULL, `grade` TEXT NOT NULL, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
@@ -891,7 +1009,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"6aa5093b98636fca6a2697a89b7c52b5\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e73dca6e89b7c99770d3d3f7750b3b99\")"
     ]
   }
 }

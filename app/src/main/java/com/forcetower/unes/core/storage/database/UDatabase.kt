@@ -36,6 +36,7 @@ import com.forcetower.unes.core.storage.database.dao.*
     ClassGroup::class,
     ClassStudent::class,
     ClassAbsence::class,
+    ClassLocation::class,
     Grade::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
@@ -50,5 +51,6 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun classGroupDao(): ClassGroupDao
     abstract fun classStudentDao(): ClassStudentDao
     abstract fun classAbsenceDao(): ClassAbsenceDao
+    abstract fun classLocationDao(): ClassLocationDao
     abstract fun gradesDao(): GradeDao
 }
