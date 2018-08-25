@@ -19,10 +19,10 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <FrameLayout
-        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -36,10 +36,13 @@
             android:id="@+id/recycler_contributors"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingTop="@dimen/spacing_common"
             android:paddingBottom="@dimen/spacing_normal"
             android:clipToPadding="false"
             android:scrollbars="vertical"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_about_contributor">
         </androidx.recyclerview.widget.RecyclerView>
 
     </FrameLayout>

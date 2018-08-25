@@ -19,6 +19,7 @@
 
 package com.forcetower.unes.feature.login
 
+import android.app.ActivityOptions
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -77,6 +78,7 @@ class LoginFragment : UFragment() {
 
     private fun toAbout() {
         val intent = Intent(requireContext(), AboutActivity::class.java)
-        startActivity(intent)
+        val bundle = ActivityOptions.makeSceneTransitionAnimation(requireActivity()).toBundle()
+        startActivity(intent, bundle)
     }
 }

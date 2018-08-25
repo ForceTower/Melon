@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/image_center"
             android:layout_width="120dp"
             android:layout_height="120dp"
@@ -47,6 +47,8 @@
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:elevation="8dp"
+            app:clipToCircle="@{true}"
+            android:contentDescription="@string/acc_user_image"
             android:transitionName="@string/user_image_transition"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

@@ -56,12 +56,14 @@
                 android:layout_height="wrap_content"
                 android:background="@color/background_light">
 
-                <de.hdodenhof.circleimageview.CircleImageView
+                <ImageView
                     android:id="@+id/image_creator_picture"
                     android:layout_width="@dimen/about_header_image"
                     android:layout_height="@dimen/about_header_image"
                     android:layout_gravity="center_horizontal"
-                    android:layout_margin="@dimen/about_header_margin"/>
+                    android:layout_margin="@dimen/about_header_margin"
+                    android:contentDescription="@string/acc_developer_image"
+                    app:clipToCircle="@{true}"/>
             </FrameLayout>
 
             <com.forcetower.unes.widget.BaselineGridTextView

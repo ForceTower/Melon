@@ -73,6 +73,12 @@
         <item name="android:textSize">14sp</item>
     </style>
 
+    <style name="UTheme.TextAppearance.Subtitle1" parent="UTheme.TextAppearance">
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:fontFamily">@font/roboto</item>
+        <item name="android:textSize">12sp</item>
+    </style>
+
     <style name="UTheme.TextAppearance.TermsAndConditions" parent="UTheme.TextAppearance">
         <item name="android:textSize">12sp</item>
         <item name="android:textColor">@color/text_secondary_dark</item>

@@ -65,7 +65,6 @@ class AboutActivity : UActivity(), HasSupportFragmentInjector {
         adapter.setItems(listOf(about, contributors))
 
         binding.viewPager.adapter = adapter
-        binding.viewPager.pageMargin = resources.getDimensionPixelSize(R.dimen.spacing_normal)
         binding.indicator.setViewPager(binding.viewPager)
     }
 

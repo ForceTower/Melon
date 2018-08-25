@@ -142,4 +142,7 @@
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
     <string name="about_unes_2">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
     <string name="about_unes_3">Espero que gostem</string>
+    <string name="acc_contributor_image">Imagem do contribuidor</string>
+    <string name="acc_developer_image">Imagem do Desenvolvedor</string>
+    <string name="acc_user_image">Imagem de Usuário</string>
 </resources>

@@ -40,11 +40,13 @@
             android:orientation="vertical"
             app:layout_constraintGuide_begin="@dimen/third_keyline"/>
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:id="@+id/image_user_picture"
             android:layout_width="@dimen/nav_header_size"
             android:layout_height="@dimen/nav_header_size"
             android:layout_marginStart="@dimen/second_keyline"
+            android:contentDescription="@string/acc_user_image"
+            app:clipToCircle="@{true}"
             app:layout_constraintBottom_toBottomOf="@id/header_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
