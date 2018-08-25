@@ -19,19 +19,37 @@
 
 package com.forcetower.unes.feature.about
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DefaultItemAnimator
+import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
+import com.forcetower.unes.core.model.Contributor
 import com.forcetower.unes.core.util.MockUtils
 import com.forcetower.unes.databinding.FragmentAboutContributorsBinding
 import com.forcetower.unes.feature.shared.UFragment
+import com.forcetower.unes.feature.web.CustomTabActivityHelper
 
 class ContributorsFragment: UFragment(), Injectable {
     private lateinit var binding: FragmentAboutContributorsBinding
-    private val adapter: ContributorAdapter by lazy { ContributorAdapter() }
+    private val adapter: ContributorAdapter by lazy { ContributorAdapter(listener = object: ContributorActions {
+        override fun onContributorClick(contributor: Contributor, position: Int) {
+            if (contributor.link.isNotBlank()) {
+                CustomTabActivityHelper.openCustomTab(
+                        requireActivity(),
+                        CustomTabsIntent.Builder()
+                                .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                                .addDefaultShareMenuItem()
+                                .build(),
+                        Uri.parse(contributor.link))
+            }
+        }
+    }) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         FragmentAboutContributorsBinding.inflate(inflater, container, false).also {
