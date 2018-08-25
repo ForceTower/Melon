@@ -14,14 +14,18 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/UTheme">
-        <activity android:name=".feature.login.LoginActivity">
+        <activity
+            android:name=".feature.login.LoginActivity"
+            android:theme="@style/UTheme.LightNav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".feature.home.HomeActivity">
+        <activity
+            android:name=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

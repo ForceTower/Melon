@@ -28,14 +28,15 @@
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-
         <item name="android:windowBackground">@color/white</item>
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>
     </style>
 
-    <style name="UTheme.Translucent">
+    <style name="UTheme.LightNav"/>
+
+    <style name="UTheme.Translucent" parent="UTheme.LightNav">
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowContentOverlay">@null</item>
@@ -47,6 +48,7 @@
     <style name="UTheme.Translucent.About">
         <item name="android:windowEnterTransition">@transition/about_enter</item>
         <item name="android:windowReturnTransition">@transition/about_return</item>
+        <item name="android:statusBarColor">@color/blue_accent</item>
     </style>
 
     <style name="UTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
@@ -76,6 +78,13 @@
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="lineHeightHint">24sp</item>
         <item name="android:textAlignment">center</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+    </style>
+
+    <style name="UTheme.TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
+        <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="lineHeightHint">24sp</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 

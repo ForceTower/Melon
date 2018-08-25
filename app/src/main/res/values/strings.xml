@@ -137,4 +137,9 @@
 
     <string name="label_terms_and_conditions_p1">Ao continuar, você concorda com os</string>
     <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md)</string>
+
+    <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
+    <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
+    <string name="about_unes_2">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
+    <string name="about_unes_3">Espero que gostem</string>
 </resources>

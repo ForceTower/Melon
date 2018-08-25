@@ -17,20 +17,11 @@
  * limitations under the License.
  */
 
-package com.forcetower.unes.core.injection.module
+package com.forcetower.unes.feature.about
 
-import com.forcetower.unes.feature.about.AboutActivity
-import com.forcetower.unes.feature.home.HomeActivity
-import com.forcetower.unes.feature.login.LoginActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.fragment.app.Fragment
+import com.forcetower.unes.core.injection.Injectable
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
+class ContributorsFragment: Fragment(), Injectable {
+
 }
