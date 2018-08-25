@@ -49,6 +49,8 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "androidx.constraintlayout:constraintlayout:1.1.2"
     implementation "com.google.android.material:material:$google_material"
+    implementation "androidx.palette:palette:$androidX"
+    implementation "androidx.browser:browser:$androidX"
 
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
