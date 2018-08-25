@@ -27,8 +27,8 @@
 
         <com.forcetower.unes.widget.CircleProgressBar
             android:id="@+id/content_loading"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             app:progressbarColor="@color/colorAccent"
             app:backgroundThickness="4dp"
             app:foregroundThickness="4dp"
