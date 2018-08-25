@@ -73,7 +73,7 @@
 
     <item android:title="@string/label_definitions">
         <menu>
-            <group android:checkableBehavior="single">
+            <group android:checkableBehavior="none">
             <item
                 android:id="@+id/about"
                 android:title="@string/label_about_app"

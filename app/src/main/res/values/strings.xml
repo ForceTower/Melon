@@ -146,4 +146,6 @@
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com código ou ideias</string>
+
+    <string name="label_your_score">Seu score é %1$.1f</string>
 </resources>

@@ -19,6 +19,10 @@
 
 package com.forcetower.unes.feature.about
 
+import android.app.Activity
+import android.app.ActivityOptions
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.transition.TransitionInflater
 import androidx.databinding.DataBindingUtil
@@ -69,4 +73,12 @@ class AboutActivity : UActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    companion object {
+        fun startActivity(activity: Activity) {
+            val intent = Intent(activity, AboutActivity::class.java)
+            val bundle = ActivityOptions.makeSceneTransitionAnimation(activity).toBundle()
+            activity.startActivity(intent, bundle)
+        }
+    }
 }

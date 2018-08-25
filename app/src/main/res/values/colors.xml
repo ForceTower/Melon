@@ -32,6 +32,15 @@
     <color name="indigo_dark">#3c54fe</color>
     <color name="indigo">#4768fd</color>
 
+    <color name="tab_drawable_color">#2196F3</color>
+    <color name="tab_text_color">#2196F3</color>
+
+    <color name="navigation_bottom_checked_color">#2196F3</color>
+    <color name="text_bottom_sheet_menu">#2196F3</color>
+
+    <color name="drawer_selected_color">#192196F3</color>
+    <color name="icon_nav_color">#2196F3</color>
+
     <color name="links_colors">#2196F3</color>
     <color name="links_highlighted">#2196F3</color>
 
@@ -48,7 +57,6 @@
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
-    <color name="drawer_selected_color">#19FFC107</color>
 
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>

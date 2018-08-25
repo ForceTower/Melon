@@ -19,6 +19,7 @@
 
 package com.forcetower.unes.core.injection.module
 
+import com.forcetower.unes.feature.home.HomeBottomFragment
 import com.forcetower.unes.feature.messages.SagresMessagesFragment
 import com.forcetower.unes.feature.messages.UnesMessagesFragment
 import dagger.Module
@@ -31,4 +32,7 @@ abstract class HomeModule {
 
     @ContributesAndroidInjector
     abstract fun unesMessageFragment(): UnesMessagesFragment
+
+    @ContributesAndroidInjector
+    abstract fun homeBottomFragment(): HomeBottomFragment
 }

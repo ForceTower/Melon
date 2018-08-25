@@ -21,7 +21,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-    <data class="HomeBottomBinding"/>
+
+    <data class="HomeBottomBinding">
+        <variable
+            name="viewModel"
+            type="com.forcetower.unes.core.vm.HomeViewModel"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -38,7 +44,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="@dimen/third_keyline"/>
+            app:layout_constraintGuide_begin="96dp" />
 
         <ImageView
             android:id="@+id/image_user_picture"
@@ -47,28 +53,44 @@
             android:layout_marginStart="@dimen/second_keyline"
             android:contentDescription="@string/acc_user_image"
             app:clipToCircle="@{true}"
+            app:imageUrl="@{viewModel.profile.imageUrl}"
             app:layout_constraintBottom_toBottomOf="@id/header_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@mipmap/ic_unes_large_image_512"/>
 
-        <TextView
-            android:id="@+id/text_user_name"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="@+id/image_user_picture"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/third_keyline"
-            app:layout_constraintTop_toTopOf="@+id/image_user_picture"
-            tools:text="João Paulo Santos Sena"
-            android:textColor="@color/text_primary_dark"/>
+            app:layout_constraintTop_toTopOf="@+id/image_user_picture">
 
-        <TextView
-            android:id="@+id/text_score"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            app:layout_constraintStart_toStartOf="@+id/third_keyline"
-            app:layout_constraintTop_toBottomOf="@+id/text_user_name"
-            tools:text="Seu score é: 2.7" />
+            <TextView
+                android:id="@+id/text_user_name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{viewModel.profile.name}"
+                android:textColor="@color/text_primary_dark"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@+id/third_keyline"
+                app:layout_constraintTop_toTopOf="@+id/image_user_picture"
+                tools:text="João Paulo Santos Sena" />
+
+            <TextView
+                android:id="@+id/text_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:text="@{@string/label_your_score(viewModel.profile.score)}"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="@+id/third_keyline"
+                app:layout_constraintTop_toBottomOf="@+id/text_user_name"
+                tools:text="Seu score é: 2.7" />
+
+        </LinearLayout>
 
         <View
             android:id="@+id/divider"
@@ -90,7 +112,7 @@
             app:itemBackground="@drawable/navigation_item_background"
             app:itemTextColor="@color/navigation_text_color"
             app:itemIconTint="@color/navigation_icon_color"
-            android:paddingBottom="56dp"/>
+            android:paddingBottom="72dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

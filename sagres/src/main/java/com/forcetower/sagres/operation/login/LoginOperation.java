@@ -94,6 +94,7 @@ public class LoginOperation extends Operation<LoginCallback> {
         try {
             Response response = call.execute();
             if (response.isSuccessful()) {
+                document = createDocument(response.body().string());
                 successMeasures(document);
             } else {
                 result.postValue(new LoginCallback.Builder(Status.APPROVAL_ERROR).code(response.code()).build());

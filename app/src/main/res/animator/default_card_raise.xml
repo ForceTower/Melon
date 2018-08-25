@@ -19,6 +19,21 @@
   -->
 
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:color="@color/icon_nav_color" android:state_checked="true"/>
-    <item android:color="#8a000000" />
+
+    <item android:state_enabled="true" android:state_pressed="true">
+        <objectAnimator
+            android:propertyName="translationZ"
+            android:valueTo="@dimen/default_card_raised_elevation"
+            android:duration="@android:integer/config_shortAnimTime"
+            android:interpolator="@android:interpolator/fast_out_slow_in" />
+    </item>
+
+    <item>
+        <objectAnimator
+            android:propertyName="translationZ"
+            android:valueTo="@dimen/default_card_resting_elevation"
+            android:duration="@android:integer/config_shortAnimTime"
+            android:interpolator="@android:interpolator/fast_out_slow_in" />
+    </item>
+
 </selector>
