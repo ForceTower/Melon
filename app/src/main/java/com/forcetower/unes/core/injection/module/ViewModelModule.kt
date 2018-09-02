@@ -55,11 +55,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(EventViewModel::class)
-    abstract fun bindEventViewModel(vm: EventViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(LaunchViewModel::class)
     abstract fun bindLaunchViewModel(vm: LaunchViewModel): ViewModel
 

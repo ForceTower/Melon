@@ -51,7 +51,4 @@ interface UService {
             @Field("cpf") cpf: String,
             @Field("appToken") token: String
     ): Call<AccessToken>
-
-    @GET("siecomp/list_sessions")
-    fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>
 }
