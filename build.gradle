@@ -28,14 +28,14 @@ allprojects {
 
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xmaxerrs" << "4000"
-            options.compilerArgs << "-Xmaxwarns" << "4000"
+            options.compilerArgs << "-Xmaxerrs" << "10000"
+            options.compilerArgs << "-Xmaxwarns" << "10000"
         }
     }
 }
 
 ext {
-    androidX = "1.0.0-rc01"
+    androidX = "1.0.0-rc02"
     google_material = "1.0.0-rc01"
     paging_version = "2.0.0-rc01"
     room_version = "2.0.0-rc01"

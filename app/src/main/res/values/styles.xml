@@ -4,17 +4,25 @@
   ~
   ~ This file is part of the UNES Open Source Project.
   ~
-  ~ UNES is licensed under the Apache License, Version 2.0 (the "License");
-  ~ You may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~ UNES is licensed under the MIT License
   ~
-  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
   -->
 
 <resources>
@@ -66,6 +74,13 @@
     <style name="UTheme.TextAppearance.Headline1" parent="UTheme.TextAppearance">
         <item name="android:textColor">@color/text_primary_dark</item>
         <item name="android:textSize">24sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="UTheme.TextAppearance.Headline2" parent="UTheme.TextAppearance">
+        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UTheme.TextAppearance.Common" parent="UTheme.TextAppearance">
@@ -122,5 +137,26 @@
     <style name="TextAppearanceTabLayout" parent="TextAppearance.MaterialComponents.Tab">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="textAllCaps">false</item>
+    </style>
+
+    <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
+        <item name="popupTheme">@style/UTheme.PopupTheme</item>
+        <item name="android:background">@color/white</item>
+        <item name="android:elevation">8dp</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+
+    <style name="Widget.Schedule" parent="@android:style/Widget" />
+
+    <style name="Widget.Schedule.TimeHeaders">
+        <item name="android:width">@dimen/session_keyline</item>
+        <item name="android:paddingTop">@dimen/time_header_padding_top</item>
+        <item name="android:textColor">@color/blue_accent</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="hourTextSize">@dimen/time_header_hour_text_size</item>
+        <item name="hourMinTextSize">@dimen/time_header_hour_min_text_size</item>
+        <item name="meridiemTextSize">@dimen/time_header_meridiem_text_size</item>
     </style>
 </resources>
