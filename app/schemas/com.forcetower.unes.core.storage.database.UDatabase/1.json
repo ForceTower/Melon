@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e73dca6e89b7c99770d3d3f7750b3b99",
+    "identityHash": "086e982ee6a86fce74d240eb9201c859",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -492,6 +492,14 @@
         },
         "indices": [
           {
+            "name": "index_Class_semester_id",
+            "unique": false,
+            "columnNames": [
+              "semester_id"
+            ],
+            "createSql": "CREATE  INDEX `index_Class_semester_id` ON `${TABLE_NAME}` (`semester_id`)"
+          },
+          {
             "name": "index_Class_discipline_id_semester_id",
             "unique": true,
             "columnNames": [
@@ -663,6 +671,14 @@
         },
         "indices": [
           {
+            "name": "index_ClassStudent_group_id",
+            "unique": false,
+            "columnNames": [
+              "group_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassStudent_group_id` ON `${TABLE_NAME}` (`group_id`)"
+          },
+          {
             "name": "index_ClassStudent_profile_id_group_id",
             "unique": true,
             "columnNames": [
@@ -759,6 +775,14 @@
           "autoGenerate": true
         },
         "indices": [
+          {
+            "name": "index_ClassAbsence_profile_id",
+            "unique": false,
+            "columnNames": [
+              "profile_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassAbsence_profile_id` ON `${TABLE_NAME}` (`profile_id`)"
+          },
           {
             "name": "index_ClassAbsence_class_id_profile_id",
             "unique": false,
@@ -887,6 +911,14 @@
             "createSql": "CREATE UNIQUE INDEX `index_ClassLocation_group_id_day_starts_at_ends_at_profile_id` ON `${TABLE_NAME}` (`group_id`, `day`, `starts_at`, `ends_at`, `profile_id`)"
           },
           {
+            "name": "index_ClassLocation_profile_id",
+            "unique": false,
+            "columnNames": [
+              "profile_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassLocation_profile_id` ON `${TABLE_NAME}` (`profile_id`)"
+          },
+          {
             "name": "index_ClassLocation_uuid",
             "unique": true,
             "columnNames": [
@@ -975,6 +1007,14 @@
         },
         "indices": [
           {
+            "name": "index_Grade_class_id",
+            "unique": false,
+            "columnNames": [
+              "class_id"
+            ],
+            "createSql": "CREATE  INDEX `index_Grade_class_id` ON `${TABLE_NAME}` (`class_id`)"
+          },
+          {
             "name": "index_Grade_name_class_id",
             "unique": true,
             "columnNames": [
@@ -1009,7 +1049,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e73dca6e89b7c99770d3d3f7750b3b99\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"086e982ee6a86fce74d240eb9201c859\")"
     ]
   }
 }

@@ -4,17 +4,25 @@
  *
  * This file is part of the UNES Open Source Project.
  *
- * UNES is licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * UNES is licensed under the MIT License
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.forcetower.unes.feature.home
@@ -22,8 +30,11 @@ package com.forcetower.unes.feature.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import com.forcetower.unes.R
 import com.forcetower.unes.core.injection.Injectable
 import com.forcetower.unes.core.vm.HomeViewModel
@@ -31,12 +42,14 @@ import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.HomeBottomBinding
 import com.forcetower.unes.feature.about.AboutActivity
 import com.forcetower.unes.feature.shared.RoundedBottomSheetDialogFragment
+import com.forcetower.unes.feature.shared.UFragment
+import com.forcetower.unes.feature.shared.provideActivityViewModel
 import com.forcetower.unes.feature.shared.provideViewModel
 import kotlinx.android.synthetic.main.fragment_home_bottom_sheet.*
 import timber.log.Timber
 import javax.inject.Inject
 
-class HomeBottomFragment: RoundedBottomSheetDialogFragment(), Injectable {
+class HomeBottomFragment: UFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: UViewModelFactory
 
@@ -44,7 +57,11 @@ class HomeBottomFragment: RoundedBottomSheetDialogFragment(), Injectable {
     private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(viewModelFactory)
+        viewModel = provideActivityViewModel(viewModelFactory)
+        getToolbarTitleText().text = getString(R.string.label_option_menu)
+        getTabLayout().visibility = GONE
+        getAppBar().elevation = 0f
+
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -59,14 +76,6 @@ class HomeBottomFragment: RoundedBottomSheetDialogFragment(), Injectable {
     }
 
     private fun setupNavigation() {
-        navigation_view.setNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.messages -> activity?.findNavController(R.id.home_nav_host)?.navigate(R.id.messages)
-                R.id.grades_disciplines -> Timber.d("Grades")
-                R.id.about -> AboutActivity.startActivity(requireActivity())
-            }
-            dismiss()
-            true
-        }
+        NavigationUI.setupWithNavController(binding.navigationView, findNavController())
     }
 }

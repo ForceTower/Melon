@@ -4,24 +4,31 @@
  *
  * This file is part of the UNES Open Source Project.
  *
- * UNES is licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * UNES is licensed under the MIT License
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.forcetower.unes.feature.home
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.MenuItem
 import android.widget.TextView
 import androidx.appcompat.widget.Toolbar
 import androidx.databinding.DataBindingUtil
@@ -32,10 +39,9 @@ import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.unes.GlideApp
 import com.forcetower.unes.R
-import com.forcetower.unes.core.model.Access
-import com.forcetower.unes.core.model.Profile
+import com.forcetower.unes.core.model.unes.Access
+import com.forcetower.unes.core.model.unes.Profile
 import com.forcetower.unes.core.vm.HomeViewModel
-import com.forcetower.unes.core.vm.LoginViewModel
 import com.forcetower.unes.core.vm.UViewModelFactory
 import com.forcetower.unes.databinding.ActivityHomeBinding
 import com.forcetower.unes.feature.login.LoginActivity
@@ -44,7 +50,6 @@ import com.forcetower.unes.feature.shared.UActivity
 import com.forcetower.unes.feature.shared.config
 import com.forcetower.unes.feature.shared.provideViewModel
 import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.android.AndroidInjector
@@ -75,24 +80,7 @@ class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
     }
 
     private fun setupBottomNav() {
-        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.bottom_sheet_menu -> {
-                    if (!bottomFragment.isAdded) {
-                        bottomFragment.show(supportFragmentManager, bottomFragment.tag)
-                    }
-                    false
-                }
-                R.id.messages -> {
-                    findNavController(R.id.home_nav_host).navigate(R.id.messages)
-                    true
-                }
-                else -> true
-            }
-        }
-        binding.bottomNavigation.setOnNavigationItemReselectedListener { menuItem ->
-            Timber.d("Menu item $menuItem was reselected")
-        }
+        NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
     }
 
     private fun setupViewModel() {

@@ -5,17 +5,25 @@
   ~
   ~ This file is part of the UNES Open Source Project.
   ~
-  ~ UNES is licensed under the Apache License, Version 2.0 (the "License");
-  ~ You may not use this file except in compliance with the License.
-  ~ You may obtain a copy of the License at
+  ~ UNES is licensed under the MIT License
   ~
-  ~        http://www.apache.org/licenses/LICENSE-2.0
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
   ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS,
-  ~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-  ~ See the License for the specific language governing permissions and
-  ~ limitations under the License.
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
   -->
 
 <resources>
@@ -31,6 +39,7 @@
 
     <color name="indigo_dark">#3c54fe</color>
     <color name="indigo">#4768fd</color>
+    <color name="default_tag_color">#2196F3</color>
 
     <color name="tab_drawable_color">#2196F3</color>
     <color name="tab_text_color">#2196F3</color>
@@ -44,9 +53,23 @@
     <color name="links_colors">#2196F3</color>
     <color name="links_highlighted">#2196F3</color>
 
+    <color name="teal">#31e7b6</color>
+    <color name="light_blue">#27e5fd</color>
+    <color name="yellow">#fcd230</color>
+    <color name="orange">#ff6c00</color>
+
+    <integer-array name="swipe_refresh_colors">
+        <item>@color/indigo</item>
+        <item>@color/teal</item>
+        <item>@color/light_blue</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+    </integer-array>
+
     <color name="grey">#FF757575</color>
     <color name="navigation_grey">#757575</color>
     <color name="messages_stroke">#a9a9a9</color>
+    <color name="schedule_divider">#1E000000</color>
 
     <color name="highlight_light">#33ffffff</color>
 
@@ -68,4 +91,38 @@
     <color name="light_grey">#fff5f5f5</color>
     <color name="grey_200">#ffeeeeee</color>
     <color name="grey_300">#ffe0e0e0</color>
+
+    <color name="dis_01">#2196F3</color>
+    <color name="dis_02">#4CAF50</color>
+    <color name="dis_03">#ffcf0e</color>
+    <color name="dis_04">#607D8B</color>
+    <color name="dis_05">#F44336</color>
+    <color name="dis_06">#ccff90</color>
+    <color name="dis_07">#bd7cff</color>
+    <color name="dis_08">#76ff03</color>
+    <color name="dis_09">#536dfe</color>
+    <color name="dis_10">#ff4e4e</color>
+    <color name="dis_11">#f55d93</color>
+    <color name="dis_12">#45b4f9</color>
+    <color name="dis_13">#b9f9ac</color>
+    <color name="dis_14">#ffcf0e</color>
+    <color name="dis_15">#ffb0ff</color>
+
+    <array name="discipline_colors">
+        <item>@color/dis_01</item>
+        <item>@color/dis_02</item>
+        <item>@color/dis_03</item>
+        <item>@color/dis_04</item>
+        <item>@color/dis_05</item>
+        <item>@color/dis_06</item>
+        <item>@color/dis_07</item>
+        <item>@color/dis_08</item>
+        <item>@color/dis_09</item>
+        <item>@color/dis_10</item>
+        <item>@color/dis_11</item>
+        <item>@color/dis_12</item>
+        <item>@color/dis_13</item>
+        <item>@color/dis_14</item>
+        <item>@color/dis_15</item>
+    </array>
 </resources>

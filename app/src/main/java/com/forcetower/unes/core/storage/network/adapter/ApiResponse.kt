@@ -4,66 +4,65 @@
  *
  * This file is part of the UNES Open Source Project.
  *
- * UNES is licensed under the Apache License, Version 2.0 (the "License");
- * You may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
+ * UNES is licensed under the MIT License
  *
- *        http://www.apache.org/licenses/LICENSE-2.0
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
  *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
  */
 
 package com.forcetower.unes.core.storage.network.adapter
 
-import com.google.gson.Gson
 import retrofit2.Response
 import timber.log.Timber
+import java.util.regex.Pattern
 
-class ApiResponse<T> {
-    val code: Int
-    val body: T?
-    val errorMessage: String?
-    val actionError: ActionError?
+/**
+ * Common class used by API responses.
+ * @param <T> the type of the response object
+</T> */
+@Suppress("unused") // T is used in extending classes
+sealed class ApiResponse<T> {
+    companion object {
+        fun <T> create(error: Throwable): ApiErrorResponse<T> {
+            return ApiErrorResponse(error.message ?: "unknown error")
+        }
 
-    val isSuccessful: Boolean
-        get() = code in 200..299
-
-    constructor(error: Throwable) {
-        code = 500
-        body = null
-        errorMessage = error.message
-        actionError = null
-    }
-
-    constructor(response: Response<T>) {
-        code = response.code()
-
-        if (response.isSuccessful) {
-            body = response.body()
-            errorMessage = null
-            actionError = null
-        } else {
-            var message: String? = null
-            var aError: ActionError? = null
-            if (response.errorBody() != null) {
-                try {
-                    message = response.errorBody()!!.string()
-                    if (message != null) aError = Gson().fromJson(message, ActionError::class.java)
-                } catch (e: Exception) {
-                    Timber.e(e, "error while parsing response")
+        fun <T> create(response: Response<T>): ApiResponse<T> {
+            return if (response.isSuccessful) {
+                val body = response.body()
+                if (body == null || response.code() == 204) {
+                    ApiEmptyResponse()
+                } else {
+                    ApiSuccessResponse(body = body)
                 }
-
+            } else {
+                val msg = response.errorBody()?.string()
+                val errorMsg = if (msg.isNullOrEmpty()) {
+                    response.message()
+                } else {
+                    msg
+                }
+                ApiErrorResponse(errorMsg ?: "unknown error")
             }
-            if (message == null || message.trim { it <= ' ' }.isEmpty()) {
-                message = response.message()
-            }
-            actionError = aError
-            errorMessage = message
-            body = null
         }
     }
 }
+
+class ApiEmptyResponse<T> : ApiResponse<T>()
+data class ApiSuccessResponse<T>(val body: T): ApiResponse<T>()
+data class ApiErrorResponse<T>(val errorMessage: String) : ApiResponse<T>()
