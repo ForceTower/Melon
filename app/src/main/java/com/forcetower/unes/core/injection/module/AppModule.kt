@@ -32,7 +32,6 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.unes.UApplication
-import com.forcetower.unes.core.storage.database.EDatabase
 import com.forcetower.unes.core.storage.database.UDatabase
 import dagger.Module
 import dagger.Provides
@@ -58,14 +57,6 @@ object AppModule {
     @JvmStatic
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
-                    .fallbackToDestructiveMigration()
-                    .build()
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun provideEventDatabase(context: Context): EDatabase =
-            Room.databaseBuilder(context.applicationContext, EDatabase::class.java, "unesco_events.db")
                     .fallbackToDestructiveMigration()
                     .build()
 
