@@ -32,14 +32,10 @@ import android.app.Application
 import androidx.fragment.app.Fragment
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.unes.core.injection.AppInjection
-import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -55,7 +51,6 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         injectApplicationIfNecessary()
         super.onCreate()
-        AndroidThreeTen.init(this)
     }
 
     private fun createApplicationInjector(): AndroidInjector<UApplication> = AppInjection.create(this)
