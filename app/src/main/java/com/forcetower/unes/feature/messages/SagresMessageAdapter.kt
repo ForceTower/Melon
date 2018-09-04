@@ -35,8 +35,7 @@ import com.forcetower.unes.core.model.unes.Message
 import com.forcetower.unes.databinding.ItemSagresMessageBinding
 import com.forcetower.unes.feature.shared.inflater
 
-class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<Message>):
-        PagedListAdapter<Message, SagresMessageAdapter.MessageHolder>(diffCallback) {
+class SagresMessageAdapter: PagedListAdapter<Message, SagresMessageAdapter.MessageHolder>(MessagesDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val binding = ItemSagresMessageBinding.inflate(parent.inflater(), parent, false)
@@ -52,4 +51,9 @@ class SagresMessageAdapter(diffCallback: DiffUtil.ItemCallback<Message>):
             binding.message = message
         }
     }
+}
+
+object MessagesDiff: DiffUtil.ItemCallback<Message>() {
+    override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
+    override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem
 }

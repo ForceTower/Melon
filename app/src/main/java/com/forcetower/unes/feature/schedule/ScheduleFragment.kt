@@ -31,7 +31,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
@@ -45,7 +44,6 @@ import com.forcetower.unes.databinding.FragmentScheduleBinding
 import com.forcetower.unes.feature.shared.UFragment
 import com.forcetower.unes.feature.shared.provideViewModel
 import timber.log.Timber
-import java.util.*
 import javax.inject.Inject
 
 class ScheduleFragment: UFragment(), Injectable {
@@ -66,9 +64,12 @@ class ScheduleFragment: UFragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideViewModel(factory)
+
         getTabLayout().visibility = GONE
         getToolbarTitleText().text = getString(R.string.label_schedule)
         getAppBar().elevation = 0f
+
         return FragmentScheduleBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -79,16 +80,26 @@ class ScheduleFragment: UFragment(), Injectable {
             recyclerScheduleLine.apply {
                 setRecycledViewPool(linePool)
                 adapter = lineAdapter
-                itemAnimator = DefaultItemAnimator()
+                itemAnimator?.run {
+                    addDuration = 120L
+                    moveDuration = 120L
+                    changeDuration = 120L
+                    removeDuration = 100L
+                }
             }
 
             recyclerScheduleBlocks.apply {
                 setRecycledViewPool(blockPool)
                 adapter = blockAdapter
+                itemAnimator?.run {
+                    addDuration = 120L
+                    moveDuration = 120L
+                    changeDuration = 120L
+                    removeDuration = 100L
+                }
             }
         }
 
-        viewModel = provideViewModel(factory)
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
     }
 
