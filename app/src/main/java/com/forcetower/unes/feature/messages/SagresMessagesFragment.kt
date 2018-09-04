@@ -54,10 +54,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
 
     init { displayName = "Sagres" }
 
-    private val adapter by lazy { SagresMessageAdapter(diffCallback = object: DiffUtil.ItemCallback<Message>() {
-        override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
-        override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem
-    })}
+    private val adapter by lazy { SagresMessageAdapter()}
 
     private val manager by lazy { LinearLayoutManager(context) }
 
@@ -70,16 +67,23 @@ class SagresMessagesFragment: UFragment(), Injectable {
     }
 
     private fun setupRecycler() {
-        binding.recyclerSagresMessages.adapter = adapter
-        binding.recyclerSagresMessages.layoutManager = manager
-        binding.recyclerSagresMessages.itemAnimator = DefaultItemAnimator()
-        binding.recyclerSagresMessages.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                if (manager.findFirstCompletelyVisibleItemPosition() == 0) getAppBar().elevation = 0F
-                else getAppBar().elevation = getPixelsFromDp(requireContext(), 6).toFloat()
+        binding.apply {
+            recyclerSagresMessages.adapter = adapter
+            recyclerSagresMessages.layoutManager = manager
+            recyclerSagresMessages.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    if (manager.findFirstCompletelyVisibleItemPosition() == 0) getAppBar().elevation = 0F
+                    else getAppBar().elevation = getPixelsFromDp(requireContext(), 6).toFloat()
+                }
+            })
+            recyclerSagresMessages.itemAnimator?.run {
+                addDuration = 120L
+                moveDuration = 120L
+                changeDuration = 120L
+                removeDuration = 100L
             }
-        })
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

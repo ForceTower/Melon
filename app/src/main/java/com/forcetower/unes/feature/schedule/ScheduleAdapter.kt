@@ -35,6 +35,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.unes.R
 import com.forcetower.unes.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.unes.core.util.ColorUtils
 import com.forcetower.unes.databinding.*
 import com.forcetower.unes.feature.shared.inflater
 import com.forcetower.unes.feature.shared.positionOf
@@ -292,7 +293,9 @@ class BClassHolder(
     fun bind(inner: InnerLocation, colors: IntArray) {
         binding.tvCode.text = inner.location!!.singleGroup().singleClass().singleDiscipline().code
         binding.tvGroup.text = inner.location.singleGroup().group!!.group
-        binding.cardRoot.strokeColor = colors[(inner.colorIndex?: 0) % colors.size]
+        val color = colors[(inner.colorIndex ?: 0) % colors.size]
+        binding.cardRoot.strokeColor = color
+        binding.cardRoot.setCardBackgroundColor(ColorUtils.modifyAlpha(color, 40))
     }
 }
 
@@ -301,7 +304,7 @@ class BNothingHolder(
 ): RecyclerView.ViewHolder(binding.root)
 
 class BHeadNotHolder(
-        binding: ItemScheduleBlockHeadNotBinding
+    binding: ItemScheduleBlockHeadNotBinding
 ): RecyclerView.ViewHolder(binding.root)
 
 class ClassTime(
