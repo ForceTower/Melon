@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppBar">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_normal"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+                <TextView
+                    android:id="@+id/text_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_gravity="start"
+                    android:gravity="center"
+                    android:minHeight="?actionBarSize"
+                    android:text="@string/label_grades_disciplines_short"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            </FrameLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:tabTextAppearance="@style/TextAppearanceTabLayout"/>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <com.forcetower.unes.widget.CustomSwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/pager_semester"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.forcetower.unes.widget.CustomSwipeRefreshLayout>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

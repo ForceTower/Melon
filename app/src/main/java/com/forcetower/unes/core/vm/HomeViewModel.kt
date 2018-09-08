@@ -44,5 +44,5 @@ class HomeViewModel
 ): ViewModel() {
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
-    val messages: LiveData<PagedList<Message>> by lazy { dataRepository.getMessages() }
+    val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
 }

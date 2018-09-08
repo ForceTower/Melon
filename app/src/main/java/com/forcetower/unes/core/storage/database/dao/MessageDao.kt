@@ -27,7 +27,7 @@
 
 package com.forcetower.unes.core.storage.database.dao
 
-import androidx.paging.DataSource
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -40,5 +40,5 @@ interface MessageDao {
     fun insertIgnoring(messages: List<Message>)
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
-    fun getAllMessages(): DataSource.Factory<Int, Message>
+    fun getAllMessages(): LiveData<List<Message>>
 }
