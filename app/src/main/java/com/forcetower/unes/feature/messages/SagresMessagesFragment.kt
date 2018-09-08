@@ -55,9 +55,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
     init { displayName = "Sagres" }
 
     private val adapter by lazy { SagresMessageAdapter()}
-
     private val manager by lazy { LinearLayoutManager(context) }
-
     private lateinit var binding: FragmentSagresMessagesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -91,8 +89,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
         provideViewModel<HomeViewModel>(vmFactory).messages.observe(this, Observer { onMessagesChange(it) })
     }
 
-    private fun onMessagesChange(list: PagedList<Message>) {
-        Timber.d("Messages List size is ${list.size}")
+    private fun onMessagesChange(list: List<Message>) {
         adapter.submitList(list)
     }
 }
