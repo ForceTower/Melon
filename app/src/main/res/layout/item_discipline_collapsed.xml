@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="@dimen/spacing_common"
+        android:layout_marginVertical="@dimen/spacing_small"
+        app:cardCornerRadius="8dp"
+        android:stateListAnimator="@animator/default_card_raise">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_image_margin"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="@dimen/discipline_header_size"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="@dimen/discipline_header_size"/>
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guide_score"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="56dp"/>
+
+            <ImageView
+                android:id="@+id/image_discipline_icon"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="@dimen/spacing_common"
+                android:layout_marginTop="@dimen/spacing_common"
+                android:layout_marginEnd="@dimen/spacing_common"
+                android:layout_marginBottom="@dimen/spacing_common"
+                android:importantForAccessibility="no"
+                app:layout_constraintBottom_toTopOf="@+id/guide_title"
+                app:layout_constraintEnd_toStartOf="@+id/guide_image_margin"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@drawable/ic_atom_black_470dp"
+                android:tint="@color/dis_04"/>
+
+            <TextView
+                android:id="@+id/text_discipline_name"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:gravity="center_vertical"
+                android:textAlignment="gravity"
+                android:textColor="@color/colorAccent"
+                android:textSize="12sp"
+                app:layout_constraintBottom_toTopOf="@+id/guide_title"
+                app:layout_constraintEnd_toStartOf="@+id/guide_score"
+                app:layout_constraintStart_toStartOf="@+id/guide_image_margin"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Métodologia da Pesquisa e Desenvolvimento em Engenharia de Computação" />
+
+            <com.forcetower.uefs.widget.CircleProgressBar
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                app:layout_constraintBottom_toTopOf="@+id/guide_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guide_score"
+                app:layout_constraintTop_toTopOf="parent"
+                app:min="0"
+                app:max="100"
+                app:progressbarColor="@color/yellow_pr"
+                tools:progress="87"/>
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toTopOf="@+id/guide_title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guide_score"
+                app:layout_constraintTop_toTopOf="parent"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                tools:text="8.7"
+                android:textColor="@color/yellow_pr_dark"
+                android:gravity="center"/>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/guide_title"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_grade" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
