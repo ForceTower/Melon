@@ -31,7 +31,7 @@
     <data>
         <variable
             name="inner"
-            type="com.forcetower.unes.feature.schedule.InnerLocation"/>
+            type="com.forcetower.uefs.feature.schedule.InnerLocation"/>
     </data>
     <LinearLayout
         android:orientation="vertical"

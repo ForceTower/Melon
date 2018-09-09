@@ -33,7 +33,7 @@
     <data>
         <variable
             name="location"
-            type="com.forcetower.unes.core.storage.database.accessors.LocationWithGroup"/>
+            type="com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView

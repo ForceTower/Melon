@@ -31,7 +31,7 @@
     <data>
         <variable
             name="contributor"
-            type="com.forcetower.unes.core.model.unes.Contributor"/>
+            type="com.forcetower.uefs.core.model.unes.Contributor"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"

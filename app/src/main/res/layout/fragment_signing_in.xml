@@ -33,7 +33,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <com.forcetower.unes.widget.CircleProgressBar
+        <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/content_loading"
             android:layout_width="130dp"
             android:layout_height="130dp"
