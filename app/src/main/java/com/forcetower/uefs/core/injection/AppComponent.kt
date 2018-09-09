@@ -32,6 +32,8 @@ import com.forcetower.uefs.core.injection.module.ActivityModule
 import com.forcetower.uefs.core.injection.module.AppModule
 import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.AndroidInjector
@@ -49,7 +51,11 @@ import javax.inject.Singleton
         ActivityModule::class
     ]
 )
-interface AppComponent: AndroidInjector<UApplication> {
+interface AppComponent {
     @Component.Builder
-    abstract class Builder: AndroidInjector.Builder<UApplication>()
+    interface Builder {
+        @BindsInstance fun application(app: UApplication): Builder
+        fun build(): AppComponent
+    }
+    fun inject(worker: SyncMainWorker)
 }

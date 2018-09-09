@@ -40,13 +40,13 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 
 object AppInjection {
-    fun create(application: UApplication): AndroidInjector<UApplication> {
+    fun create(application: UApplication): AppComponent {
         application.registerActivityLifecycleCallbacks(object: ActLifecycleCbAdapter() {
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
                 handle(activity)
             }
         })
-        return DaggerAppComponent.builder().create(application)
+        return DaggerAppComponent.builder().application(application).build()
     }
 
     private fun handle(activity: Activity?) {

@@ -9,6 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-rc02'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+        classpath "com.google.gms:google-services:4.0.1"
 
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
@@ -35,13 +36,23 @@ allprojects {
 }
 
 ext {
+    //Android Components
     androidX = "1.0.0-rc02"
     google_material = "1.0.0-rc01"
     paging_version = "2.0.0-rc01"
     room_version = "2.0.0-rc01"
     lifecycle_version = "2.0.0-rc01"
     nav_version = "1.0.0-alpha05"
+    work_version = "1.0.0-alpha08"
+
+    //Dagger
     dagger_version = "2.16"
+
+    //Firebase
+    firebase_core = "16.0.3"
+    firebase_auth = "16.0.3"
+    firebase_messaging = "17.3.1"
+    firebase_firestore = "17.1.0"
 }
 
 task clean(type: Delete) {

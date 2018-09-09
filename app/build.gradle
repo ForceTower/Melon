@@ -43,9 +43,11 @@ android {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+    //Kotlin Dependencies
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$androidX"
 
+    //Android Components
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
     implementation "com.google.android.material:material:$google_material"
@@ -53,41 +55,74 @@ dependencies {
     implementation "androidx.browser:browser:$androidX"
     implementation "com.google.android:flexbox:0.3.2"
 
+    //Lifecycle Extensions
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
+    //Navigation
     implementation "android.arch.navigation:navigation-fragment:$nav_version"
     implementation "android.arch.navigation:navigation-ui:$nav_version"
     implementation "android.arch.navigation:navigation-fragment-ktx:$nav_version"
     implementation "android.arch.navigation:navigation-ui-ktx:$nav_version"
 
+    //Paging
     implementation "androidx.paging:paging-runtime:$paging_version"
 
+    //Room Database
     implementation "androidx.room:room-runtime:$room_version"
     kapt "androidx.room:room-compiler:$room_version"
 
+    //Work Manager
+    implementation "android.arch.work:work-runtime:$work_version"
+    implementation "android.arch.work:work-runtime-ktx:$work_version"
+    implementation "android.arch.work:work-firebase:$work_version"
+
+    //Dagger Dependency Injection
     implementation "com.google.dagger:dagger:$dagger_version"
     kapt "com.google.dagger:dagger-compiler:$dagger_version"
-
     implementation "com.google.dagger:dagger-android:$dagger_version"
     implementation "com.google.dagger:dagger-android-support:$dagger_version"
     kapt "com.google.dagger:dagger-android-processor:$dagger_version"
 
+    //Firebase
+    implementation "com.google.firebase:firebase-core:$firebase_core"
+    implementation "com.google.firebase:firebase-auth:$firebase_auth"
+    implementation "com.google.firebase:firebase-messaging:$firebase_messaging"
+    implementation "com.google.firebase:firebase-firestore:$firebase_firestore"
+
+    //Google Play Services
+    implementation 'com.google.android.gms:play-services-auth:16.0.0'
+    implementation 'com.google.android.gms:play-services-games:15.0.1'
+    implementation 'com.google.android.gms:play-services-location:15.0.1'
+    implementation('com.google.api-client:google-api-client-android:1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+    implementation('com.google.apis:google-api-services-calendar:v3-rev304-1.23.0') {
+        exclude group: 'org.apache.httpcomponents'
+    }
+
+    //Internet / API Connection
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.3.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.3.0'
     implementation 'com.google.code.gson:gson:2.8.2'
 
+    //DOM Parser
     implementation 'org.jsoup:jsoup:1.11.2'
+    //Cookie Handler
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
+    //Debug Use
     implementation "com.jakewharton.timber:timber:4.7.0"
 
+    //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0-SNAPSHOT'
     kapt 'com.github.bumptech.glide:compiler:4.8.0-SNAPSHOT'
 
+    //Helper Projects
     implementation project(path: ':sagres')
     implementation project(':bypass')
 }
 
 apply from: "../artifacts.gradle"
+apply plugin: 'com.google.gms.google-services'
