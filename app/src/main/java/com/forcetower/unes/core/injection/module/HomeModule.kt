@@ -27,6 +27,8 @@
 
 package com.forcetower.unes.core.injection.module
 
+import com.forcetower.unes.feature.disciplines.DisciplineFragment
+import com.forcetower.unes.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.unes.feature.home.HomeBottomFragment
 import com.forcetower.unes.feature.messages.SagresMessagesFragment
 import com.forcetower.unes.feature.messages.UnesMessagesFragment
@@ -44,4 +46,8 @@ abstract class HomeModule {
     abstract fun homeBottomFragment(): HomeBottomFragment
     @ContributesAndroidInjector
     abstract fun scheduleFragment(): ScheduleFragment
+    @ContributesAndroidInjector
+    abstract fun disciplineFragment(): DisciplineFragment
+    @ContributesAndroidInjector
+    abstract fun disciplineSemesterFragment(): DisciplineSemesterFragment
 }
