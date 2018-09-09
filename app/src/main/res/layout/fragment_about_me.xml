@@ -39,14 +39,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <com.forcetower.unes.widget.CutoutTextView
+            <com.forcetower.uefs.widget.CutoutTextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_app_name_header"
                 app:foregroundColor="@color/colorAccent"
                 android:text="@string/app_name"
                 android:fontFamily="@font/product_sans_regular"/>
 
-            <com.forcetower.unes.widget.BaselineGridTextView
+            <com.forcetower.uefs.widget.BaselineGridTextView
                 android:id="@+id/text_about_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
                     app:clipToCircle="@{true}"/>
             </FrameLayout>
 
-            <com.forcetower.unes.widget.BaselineGridTextView
+            <com.forcetower.uefs.widget.BaselineGridTextView
                 android:id="@+id/text_about_continuation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

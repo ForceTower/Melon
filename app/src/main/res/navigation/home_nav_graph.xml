@@ -34,19 +34,19 @@
 
     <fragment
         android:id="@+id/schedule"
-        android:name="com.forcetower.unes.feature.schedule.ScheduleFragment"
+        android:name="com.forcetower.uefs.feature.schedule.ScheduleFragment"
         android:label="ScheduleFragment"
         tools:layout="@layout/fragment_schedule"/>
 
     <fragment
         android:id="@+id/messages"
-        android:name="com.forcetower.unes.feature.messages.MessagesFragment"
+        android:name="com.forcetower.uefs.feature.messages.MessagesFragment"
         android:label="MessagesFragment"
         tools:layout="@layout/fragment_all_messages"/>
 
     <fragment
         android:id="@+id/options_menu"
-        android:name="com.forcetower.unes.feature.home.HomeBottomFragment"
+        android:name="com.forcetower.uefs.feature.home.HomeBottomFragment"
         android:label="HomeBottomFragment"
         tools:layout="@layout/fragment_home_bottom_sheet">
     </fragment>
