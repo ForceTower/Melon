@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
@@ -11,6 +11,7 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/disciplines_recycler"
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        tools:listitem="@layout/item_discipline_collapsed">
     </androidx.recyclerview.widget.RecyclerView>
 </layout>
