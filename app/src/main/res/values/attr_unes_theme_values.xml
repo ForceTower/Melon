@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <attr name="color_primary" format="reference" type="color"/>
+    <attr name="color_accent" format="reference" type="color"/>
+    <attr name="font_family" format="reference" type="font"/>
+</resources>

@@ -27,9 +27,11 @@
 
 package com.forcetower.unes.core.storage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.Query
 import com.forcetower.unes.core.model.unes.Semester
 
 @Dao
@@ -39,4 +41,7 @@ interface SemesterDao {
 
     @Insert(onConflict = IGNORE)
     fun insertIgnoring(semester: Semester)
+
+    @Query("SELECT * FROM Semester")
+    fun getParticipatingSemesters(): LiveData<List<Semester>>
 }
