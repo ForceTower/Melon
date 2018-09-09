@@ -5,7 +5,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.forcetower.unes.core.vm.DisciplineViewModel"/>
+            type="com.forcetower.uefs.core.vm.DisciplineViewModel"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -43,7 +43,7 @@
                 app:tabTextAppearance="@style/TextAppearanceTabLayout"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.forcetower.unes.widget.CustomSwipeRefreshLayout
+        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -52,7 +52,7 @@
                 android:id="@+id/pager_semester"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
-        </com.forcetower.unes.widget.CustomSwipeRefreshLayout>
+        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

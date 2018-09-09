@@ -33,7 +33,7 @@
     <data class="HomeBottomBinding">
         <variable
             name="viewModel"
-            type="com.forcetower.unes.core.vm.HomeViewModel"/>
+            type="com.forcetower.uefs.core.vm.HomeViewModel"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
