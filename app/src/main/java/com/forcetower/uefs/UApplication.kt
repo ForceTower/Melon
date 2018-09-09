@@ -30,7 +30,9 @@ package com.forcetower.uefs
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
+import androidx.work.Worker
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -44,6 +46,9 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+
+    lateinit var component: AppComponent
+
     @Volatile
     private var injected = false
 
@@ -53,13 +58,13 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         super.onCreate()
     }
 
-    private fun createApplicationInjector(): AndroidInjector<UApplication> = AppInjection.create(this)
+    private fun createApplicationInjector() = AppInjection.create(this)
 
     private fun injectApplicationIfNecessary() {
         if (!injected) {
             synchronized(this) {
                 if (!injected) {
-                    createApplicationInjector().inject(this)
+                    component = createApplicationInjector()
                     if (!injected)
                         throw IllegalStateException("Attempt to inject the app has failed")
                 }
@@ -77,6 +82,6 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         SagresNavigator.initialize(this)
     }
 
-    override fun activityInjector(): AndroidInjector<Activity> = activityInjector
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+    override fun activityInjector() = activityInjector
+    override fun supportFragmentInjector() = fragmentInjector
 }
