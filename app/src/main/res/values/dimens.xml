@@ -35,6 +35,7 @@
     <dimen name="second_keyline">24dp</dimen>
     <dimen name="drag_dismiss_distance">112dp</dimen>
     <dimen name="padding_normal">16dp</dimen>
+    <dimen name="spacing_small">4dp</dimen>
     <dimen name="spacing_common">8dp</dimen>
     <dimen name="spacing_normal">16dp</dimen>
     <dimen name="display_4_text_size">112dp</dimen>
@@ -57,4 +58,5 @@
     <dimen name="time_header_hour_min_text_size">20sp</dimen>
     <dimen name="time_header_meridiem_text_size">12sp</dimen>
     <dimen name="time_header_padding_top">16dp</dimen>
+    <dimen name="discipline_header_size">60dp</dimen>
 </resources>
