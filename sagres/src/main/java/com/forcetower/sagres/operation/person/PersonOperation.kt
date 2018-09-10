@@ -41,7 +41,7 @@ class PersonOperation(private val userId: Long?, executor: Executor?) : Operatio
     }
 
     override fun execute() {
-        result.postValue(PersonCallback(Status.STARTED))
+        publishProgress(PersonCallback(Status.STARTED))
         val call = if (userId == null) SagresCalls.me else SagresCalls.getPerson(userId)
         try {
             val response = call.execute()
@@ -50,16 +50,16 @@ class PersonOperation(private val userId: Long?, executor: Executor?) : Operatio
                 val user = gson.fromJson(body, SPerson::class.java)
                 successMeasures(user)
             } else {
-                result.postValue(PersonCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+                publishProgress(PersonCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            result.postValue(PersonCallback(Status.NETWORK_ERROR).throwable(e))
+            publishProgress(PersonCallback(Status.NETWORK_ERROR).throwable(e))
         }
 
     }
 
     private fun successMeasures(user: SPerson) {
-        result.postValue(PersonCallback(Status.SUCCESS).person(user))
+        publishProgress(PersonCallback(Status.SUCCESS).person(user))
     }
 }

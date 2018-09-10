@@ -67,11 +67,11 @@ public class MessagesOperation extends Operation<MessagesCallback> {
                 String body = response.body().string();
                 successMeasures(body);
             } else {
-                result.postValue(new MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()));
+                publishProgress(new MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            result.postValue(new MessagesCallback(Status.NETWORK_ERROR).throwable(e));
+            publishProgress(new MessagesCallback(Status.NETWORK_ERROR).throwable(e));
         }
     }
 
@@ -88,7 +88,7 @@ public class MessagesOperation extends Operation<MessagesCallback> {
                 System.out.println("SPerson is Invalid");
         }
 
-        result.postValue(new MessagesCallback(Status.SUCCESS).messages(items));
+        publishProgress(new MessagesCallback(Status.SUCCESS).messages(items));
     }
 
     private SPerson getPerson(SLinker linker) {

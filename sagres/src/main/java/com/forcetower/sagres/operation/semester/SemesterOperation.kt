@@ -36,7 +36,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.util.concurrent.Executor
 
-class SemesterOperation(private val userId: Long, executor: Executor): Operation<SemesterCallback>(executor) {
+class SemesterOperation(executor: Executor?, private val userId: Long): Operation<SemesterCallback>(executor) {
     init {
         this.perform()
     }
@@ -49,11 +49,11 @@ class SemesterOperation(private val userId: Long, executor: Executor): Operation
                 val body = response.body()!!.string()
                 successMeasures(body)
             } else {
-                result.postValue(SemesterCallback(Status.NETWORK_ERROR).code(response.code()).message(response.message()))
+                publishProgress(SemesterCallback(Status.NETWORK_ERROR).code(response.code()).message(response.message()))
             }
         } catch (e: IOException) {
             e.printStackTrace()
-            result.postValue(SemesterCallback(Status.NETWORK_ERROR).throwable(e))
+            publishProgress(SemesterCallback(Status.NETWORK_ERROR).throwable(e))
         }
     }
 
@@ -66,6 +66,6 @@ class SemesterOperation(private val userId: Long, executor: Executor): Operation
         this.finished = callback
         this.success = true
 
-        result.postValue(callback)
+        publishProgress(callback)
     }
 }

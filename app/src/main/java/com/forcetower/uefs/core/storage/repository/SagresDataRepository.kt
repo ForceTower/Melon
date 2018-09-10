@@ -29,10 +29,11 @@ package com.forcetower.uefs.core.storage.repository
 
 import com.forcetower.uefs.core.storage.database.UDatabase
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class SagresDataRepository
-@Inject
-constructor(private val database: UDatabase) {
-
+@Singleton
+class SagresDataRepository @Inject constructor(
+    private val database: UDatabase
+) {
     fun getMessages() = database.messageDao().getAllMessages()
 }

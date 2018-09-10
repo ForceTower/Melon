@@ -75,11 +75,13 @@ public class LoginOperation extends Operation<LoginCallback> {
                 String string = body.string();
                 resolveLogin(string, response);
             } else {
-                result.postValue(new LoginCallback.Builder(Status.RESPONSE_FAILED).code(response.code()).build());
+                finished = new LoginCallback.Builder(Status.RESPONSE_FAILED).code(response.code()).build();
+                result.postValue(finished);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            result.postValue(new LoginCallback.Builder(Status.NETWORK_ERROR).throwable(e).build());
+            finished = new LoginCallback.Builder(Status.NETWORK_ERROR).throwable(e).build();
+            result.postValue(finished);
         }
     }
 
@@ -93,7 +95,8 @@ public class LoginOperation extends Operation<LoginCallback> {
                 successMeasures(document);
             }
         } else {
-            result.postValue(new LoginCallback.Builder(Status.INVALID_LOGIN).build());
+            finished = new LoginCallback.Builder(Status.INVALID_LOGIN).build();
+            result.postValue(finished);
         }
     }
 
@@ -105,11 +108,13 @@ public class LoginOperation extends Operation<LoginCallback> {
                 document = createDocument(response.body().string());
                 successMeasures(document);
             } else {
-                result.postValue(new LoginCallback.Builder(Status.APPROVAL_ERROR).code(response.code()).build());
+                finished = new LoginCallback.Builder(Status.APPROVAL_ERROR).code(response.code()).build();
+                result.postValue(finished);
             }
         } catch (IOException e) {
             e.printStackTrace();
-            result.postValue(new LoginCallback.Builder(Status.NETWORK_ERROR).throwable(e).build());
+            finished = new LoginCallback.Builder(Status.NETWORK_ERROR).throwable(e).build();
+            result.postValue(finished);
         }
     }
 

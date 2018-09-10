@@ -48,6 +48,21 @@ abstract class GradeDao {
     @Query("SELECT * FROM Grade")
     abstract fun getAllGradesDirect(): List<Grade>
 
+    @Query("SELECT * FROM Grade WHERE notified = 1")
+    abstract fun getCreatedGradesDirect(): List<Grade>
+
+    @Query("SELECT * FROM Grade WHERE notified = 2")
+    abstract fun getDateChangedGradesDirect(): List<Grade>
+
+    @Query("SELECT * FROM Grade WHERE notified = 3")
+    abstract fun getPostedGradesDirect(): List<Grade>
+
+    @Query("SELECT * FROM Grade WHERE notified = 4")
+    abstract fun getChangedGradesDirect(): List<Grade>
+
+    @Query("UPDATE Grade SET notified = 0")
+    abstract fun markAllNotified()
+
     @Transaction
     open fun putGrades(grades: List<SGrade>) {
         val profile = getMeProfile()

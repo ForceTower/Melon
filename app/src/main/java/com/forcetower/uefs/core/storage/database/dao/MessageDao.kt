@@ -36,9 +36,15 @@ import com.forcetower.uefs.core.model.unes.Message
 
 @Dao
 interface MessageDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insertIgnoring(messages: List<Message>)
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
     fun getAllMessages(): LiveData<List<Message>>
+
+    @Query("SELECT * FROM Message WHERE notified = 0")
+    fun getNewMessages(): List<Message>
+
+    @Query("UPDATE Message SET notified = 1")
+    fun setAllNotified()
 }
