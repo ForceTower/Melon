@@ -70,11 +70,11 @@ public class StartPageOperation extends Operation<StartPageCallback> {
                 Document document = createDocument(body);
                 successMeasures(document);
             } else {
-                result.postValue(new StartPageCallback(Status.RESPONSE_FAILED).message(response.message()).code(response.code()));
+                publishProgress(new StartPageCallback(Status.RESPONSE_FAILED).message(response.message()).code(response.code()));
             }
         } catch (IOException e) {
             e.printStackTrace();
-            result.postValue(new StartPageCallback(Status.NETWORK_ERROR).throwable(e));
+            publishProgress(new StartPageCallback(Status.NETWORK_ERROR).throwable(e));
         }
     }
 
@@ -96,6 +96,6 @@ public class StartPageOperation extends Operation<StartPageCallback> {
         finished = callback;
         success = true;
 
-        result.postValue(callback);
+        publishProgress(callback);
     }
 }

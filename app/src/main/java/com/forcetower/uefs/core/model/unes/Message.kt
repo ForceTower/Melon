@@ -27,11 +27,13 @@
 
 package com.forcetower.uefs.core.model.unes
 
+import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SMessage
+import com.forcetower.uefs.service.NotificationCreator
 import java.util.*
 
 @Entity(indices = [
@@ -54,6 +56,10 @@ data class Message(
 ) {
 
     companion object {
-        fun fromMessage(me: SMessage) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis)
+        fun fromMessage(me: SMessage, notified: Boolean) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis, notified = notified)
     }
+}
+
+fun Message.notify(context: Context) {
+    NotificationCreator.showSagresMessageNotification(this, context)
 }

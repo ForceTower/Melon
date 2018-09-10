@@ -169,6 +169,18 @@
     <string name="label_option_menu">Opções</string>
     <string name="siecomp_error_updating_info">Erro ao atualizar informações</string>
     <string name="label_hours">horas</string>
+    <string name="channel_group_grades">Notas</string>
+    <string name="channel_group_messages">Mensagens</string>
+    <string name="channel_group_general">Gerais</string>
+    <string name="channel_group_events">Eventos</string>
+    <string name="channel_messages_sagres">Mensagens Sagres</string>
+    <string name="channel_grades_posted">Notas Postadas</string>
+    <string name="channel_grades_date_changed">Mudança de data</string>
+    <string name="channel_grades_created">Avaliação criada</string>
+    <string name="warnings">Avisos</string>
+    <string name="remote">Avisos Remotos</string>
+    <string name="channel_events_general">Eventos Gerais</string>
+    <string name="channel_messages_dce">Mensagens DCE</string>
 
     <plurals name="duration_hours">
         <item quantity="one">%s hora</item>

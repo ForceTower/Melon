@@ -47,12 +47,14 @@ import com.forcetower.uefs.core.storage.network.UService
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class LoginSagresRepository @Inject constructor(
-        private val executor: AppExecutors,
-        private val database: UDatabase,
-        private val service: UService,
-        private val context: Context
+    private val executor: AppExecutors,
+    private val database: UDatabase,
+    private val service: UService,
+    private val context: Context
 ) {
     private val appToken = context.getString(R.string.app_service_token)
     val currentStep: MutableLiveData<Step> = MutableLiveData()
@@ -138,7 +140,7 @@ class LoginSagresRepository @Inject constructor(
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
-                val values = m.messages!!.map { Message.fromMessage(it) }
+                val values = m.messages!!.map { Message.fromMessage(it, true) }
                 executor.diskIO().execute { database.messageDao().insertIgnoring(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
@@ -177,7 +179,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {
-        val start = SagresNavigator.instance.startPage()
+        val start = SagresNavigator.instance.aStartPage()
         currentStep.value = createStep(context, R.string.step_moving_to_start_page)
         data.addSource(start){s ->
             if (s.status == Status.SUCCESS) {
@@ -207,7 +209,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun grades(data: MediatorLiveData<Callback>) {
-        val grades = SagresNavigator.instance.getCurrentGrades()
+        val grades = SagresNavigator.instance.aGetCurrentGrades()
         currentStep.value = createStep(context, R.string.step_fetching_grades)
         data.addSource(grades){g ->
             if (g.status == Status.SUCCESS) {

@@ -56,4 +56,7 @@ abstract class AccessDao {
 
     @Query("SELECT * FROM Access LIMIT 1")
     abstract fun getAccess(): LiveData<Access?>
+
+    @Query("SELECT * FROM Access LIMIT 1")
+    abstract fun getAccessDirect(): Access?
 }

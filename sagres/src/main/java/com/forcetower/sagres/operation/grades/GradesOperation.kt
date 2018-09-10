@@ -54,10 +54,10 @@ class GradesOperation(private val semester: Long?, private val document: Documen
                 val body = response.body()!!.string()
                 processResults(body)
             } else {
-                result.postValue(GradesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+                publishProgress(GradesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
         } catch (e: IOException) {
-            result.postValue(GradesCallback(Status.NETWORK_ERROR).throwable(e))
+            publishProgress(GradesCallback(Status.NETWORK_ERROR).throwable(e))
         }
     }
 
@@ -77,13 +77,13 @@ class GradesOperation(private val semester: Long?, private val document: Documen
             }
         } else {
             Timber.d("Can't find semester on this situation")
-            result.postValue(GradesCallback(Status.APPROVAL_ERROR).message("Can't find semester on situation. Nothing is selected"))
+            publishProgress(GradesCallback(Status.APPROVAL_ERROR).message("Can't find semester on situation. Nothing is selected"))
         }
     }
 
     private fun successMeasures(document: Document, codes: List<Pair<Long, String>>, grades: List<SGrade>,
                                 frequency: Pair<Boolean, List<SDisciplineMissedClass>>) {
-        result.postValue(GradesCallback(Status.SUCCESS).document(document)
+        publishProgress(GradesCallback(Status.SUCCESS).document(document)
                 .grades(grades)
                 .frequency(if (frequency.first) null else frequency.second)
                 .codes(codes))

@@ -31,6 +31,14 @@ import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
 import java.util.*
 
+/**
+ * Notified Status
+ * 0 -> No Changes
+ * 1 -> Created with no grade
+ * 2 -> Date changed
+ * 3 -> Grade posted
+ * 4 -> Grade changed
+ */
 @Entity(foreignKeys = [
     ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [

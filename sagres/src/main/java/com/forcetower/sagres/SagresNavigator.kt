@@ -50,28 +50,43 @@ abstract class SagresNavigator {
     abstract fun aLogin(username: String, password: String): LiveData<LoginCallback>
 
     @WorkerThread
-    abstract fun login(username: String, password: String): SagresNavigator?
+    abstract fun login(username: String, password: String): LoginCallback
 
     @AnyThread
     abstract fun aMe(): LiveData<PersonCallback>
 
     @WorkerThread
-    abstract fun me(): SagresNavigator?
+    abstract fun me(): PersonCallback
 
     @AnyThread
     abstract fun aMessages(userId: Long): LiveData<MessagesCallback>
 
+    @WorkerThread
+    abstract fun messages(userId: Long): MessagesCallback
+
     @AnyThread
     abstract fun aCalendar(): LiveData<CalendarCallback>
+
+    @WorkerThread
+    abstract fun calendar(): CalendarCallback
 
     @AnyThread
     abstract fun aSemesters(userId: Long): LiveData<SemesterCallback>
 
-    @AnyThread
-    abstract fun startPage(): LiveData<StartPageCallback>
+    @WorkerThread
+    abstract fun semesters(userId: Long): SemesterCallback
 
     @AnyThread
-    abstract fun getCurrentGrades(): LiveData<GradesCallback>
+    abstract fun aStartPage(): LiveData<StartPageCallback>
+
+    @WorkerThread
+    abstract fun startPage(): StartPageCallback
+
+    @AnyThread
+    abstract fun aGetCurrentGrades(): LiveData<GradesCallback>
+
+    @WorkerThread
+    abstract fun getCurrentGrades(): GradesCallback
 
     abstract fun stopTags(tag: String)
 
