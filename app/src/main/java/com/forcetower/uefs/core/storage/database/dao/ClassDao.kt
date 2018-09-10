@@ -34,6 +34,7 @@ import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 
 @Dao
 abstract class ClassDao {
@@ -62,6 +63,10 @@ abstract class ClassDao {
 
     @Query("SELECT c.* FROM Class c, Semester s WHERE c.semester_id = s.uid AND s.codename = :semester")
     abstract fun getClassesFromSemester(semester: String): LiveData<List<Class>>
+
+    @Transaction
+    @Query("SELECT c.* FROM Class c, ClassGroup cg, Profile p, ClassStudent cs WHERE c.semester_id = :semesterId AND c.uid = cg.class_id AND cg.uid = cs.group_id AND cs.profile_id = p.uid AND p.me = 1")
+    abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>>
 
     @Query("SELECT * FROM Discipline WHERE code = :code")
     protected abstract fun selectDisciplineDirect(code: String): Discipline
