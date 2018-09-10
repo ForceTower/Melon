@@ -43,6 +43,6 @@ public class CalendarOperation extends Operation<CalendarCallback> {
 
     @Override
     protected void execute() {
-        result.postValue(new CalendarCallback(Status.STARTED));
+        publishProgress(new CalendarCallback(Status.STARTED));
     }
 }

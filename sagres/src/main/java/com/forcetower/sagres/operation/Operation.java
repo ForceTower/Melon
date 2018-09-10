@@ -29,6 +29,8 @@ package com.forcetower.sagres.operation;
 
 import com.google.gson.Gson;
 
+import org.jetbrains.annotations.NotNull;
+
 import java.util.concurrent.Executor;
 
 import androidx.annotation.AnyThread;
@@ -41,7 +43,7 @@ public abstract class Operation<Result extends BaseCallback> {
     @NonNull protected final Gson gson;
     @NonNull protected final MediatorLiveData<Result> result;
     @Nullable protected final Executor executor;
-    @Nullable protected Result finished;
+    protected Result finished;
     protected boolean success;
 
     @AnyThread
@@ -69,12 +71,17 @@ public abstract class Operation<Result extends BaseCallback> {
         return result;
     }
 
-    @Nullable
+    @NonNull
     public Result getFinishedResult() {
         return finished;
     }
 
     public boolean isSuccess() {
         return success;
+    }
+
+    public void publishProgress(@NotNull Result value) {
+        finished = value;
+        result.postValue(value);
     }
 }

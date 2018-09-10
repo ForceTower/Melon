@@ -135,9 +135,8 @@ private constructor(context: Context) : SagresNavigator() {
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun login(username: String, password: String): SagresNavigator? {
-        val successful = LoginOperation(username, password, null).isSuccessful
-        return if (successful) this else null
+    override fun login(username: String, password: String): LoginCallback {
+        return LoginOperation(username, password, null).finishedResult
     }
 
     @AnyThread
@@ -148,9 +147,8 @@ private constructor(context: Context) : SagresNavigator() {
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun me(): SagresNavigator? {
-        val successful = PersonOperation(null, null).isSuccess
-        return if (successful) this else null
+    override fun me(): PersonCallback {
+        return PersonOperation(null, null).finishedResult
     }
 
     @AnyThread
@@ -159,28 +157,58 @@ private constructor(context: Context) : SagresNavigator() {
         return MessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), userId).result
     }
 
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun messages(userId: Long): MessagesCallback {
+        return MessagesOperation(null, userId).finishedResult
+    }
+
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun aCalendar(): LiveData<CalendarCallback> {
         return CalendarOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
 
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun calendar(): CalendarCallback {
+        return CalendarOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+    }
+
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun aSemesters(userId: Long): LiveData<SemesterCallback> {
-        return SemesterOperation(userId, SagresTaskExecutor.getNetworkThreadExecutor()).result
+        return SemesterOperation(SagresTaskExecutor.getNetworkThreadExecutor(), userId).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun semesters(userId: Long): SemesterCallback {
+        return SemesterOperation(null, userId).finishedResult
     }
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun startPage(): LiveData<StartPageCallback> {
+    override fun aStartPage(): LiveData<StartPageCallback> {
         return StartPageOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
 
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun startPage(): StartPageCallback {
+        return StartPageOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+    }
+
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun getCurrentGrades(): LiveData<GradesCallback> {
+    override fun aGetCurrentGrades(): LiveData<GradesCallback> {
         return GradesOperation(null, null, SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun getCurrentGrades(): GradesCallback {
+        return GradesOperation(null, null, SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
     }
 
     companion object {

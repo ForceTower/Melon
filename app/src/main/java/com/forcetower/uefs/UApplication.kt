@@ -34,6 +34,7 @@ import androidx.work.Worker
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
+import com.forcetower.uefs.service.NotificationHelper
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -80,6 +81,11 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     @Inject
     fun configureSagresNavigator() {
         SagresNavigator.initialize(this)
+    }
+
+    @Inject
+    fun configure() {
+        NotificationHelper(this).createChannels()
     }
 
     override fun activityInjector() = activityInjector
