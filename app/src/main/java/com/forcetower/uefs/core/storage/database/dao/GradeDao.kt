@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassStudent
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import timber.log.Timber
 
 @Dao
@@ -48,17 +49,21 @@ abstract class GradeDao {
     @Query("SELECT * FROM Grade")
     abstract fun getAllGradesDirect(): List<Grade>
 
+    @Transaction
     @Query("SELECT * FROM Grade WHERE notified = 1")
-    abstract fun getCreatedGradesDirect(): List<Grade>
+    abstract fun getCreatedGradesDirect(): List<GradeWithClassStudent>
 
+    @Transaction
     @Query("SELECT * FROM Grade WHERE notified = 2")
-    abstract fun getDateChangedGradesDirect(): List<Grade>
+    abstract fun getDateChangedGradesDirect(): List<GradeWithClassStudent>
 
+    @Transaction
     @Query("SELECT * FROM Grade WHERE notified = 3")
-    abstract fun getPostedGradesDirect(): List<Grade>
+    abstract fun getPostedGradesDirect(): List<GradeWithClassStudent>
 
+    @Transaction
     @Query("SELECT * FROM Grade WHERE notified = 4")
-    abstract fun getChangedGradesDirect(): List<Grade>
+    abstract fun getChangedGradesDirect(): List<GradeWithClassStudent>
 
     @Query("UPDATE Grade SET notified = 0")
     abstract fun markAllNotified()
