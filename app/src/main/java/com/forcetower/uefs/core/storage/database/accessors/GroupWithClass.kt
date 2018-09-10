@@ -34,9 +34,9 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 
 class GroupWithClass {
     @Embedded
-    var group: ClassGroup? = null
+    lateinit var group: ClassGroup
     @Relation(parentColumn = "class_id", entityColumn = "uid", entity = Class::class)
-    var classes: List<ClassWithDiscipline> = ArrayList()
+    lateinit var classes: List<ClassWithDiscipline>
 
     fun singleClass() = classes[0]
 }

@@ -11,7 +11,9 @@ import com.forcetower.uefs.core.model.unes.*
 import com.forcetower.uefs.core.storage.database.UDatabase
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class SagresSyncRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase
@@ -127,10 +129,21 @@ class SagresSyncRepository @Inject constructor(
                 Timber.d("Frequency: ${grades.frequency}")
                 Timber.d("Semesters: ${grades.semesters}")
 
+                gradesNotifications()
+                frequencyNotifications()
+
                 Timber.d("Completed!")
             }
             else -> produceErrorMessage(grades)
         }
+    }
+
+    private fun frequencyNotifications() {
+        //TODO Implement frequency notifications
+    }
+
+    private fun gradesNotifications() {
+        //TODO Implement grades notifications
     }
 
     @WorkerThread
