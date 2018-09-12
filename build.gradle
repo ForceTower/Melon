@@ -7,7 +7,7 @@ buildscript {
         jcenter()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.0-rc02'
+        classpath 'com.android.tools.build:gradle:3.2.0-rc03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.0.1"
 
@@ -38,7 +38,7 @@ allprojects {
 ext {
     //Android Components
     androidX = "1.0.0-rc02"
-    google_material = "1.0.0-rc01"
+    google_material = "1.0.0-rc02"
     paging_version = "2.0.0-rc01"
     room_version = "2.0.0-rc01"
     lifecycle_version = "2.0.0-rc01"
