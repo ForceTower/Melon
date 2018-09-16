@@ -40,7 +40,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executor
 
-class GradesOperation(private val semester: Long?, private val document: Document?, executor: Executor): Operation<GradesCallback>(executor) {
+class GradesOperation(private val semester: Long?, private val document: Document?, executor: Executor?): Operation<GradesCallback>(executor) {
     init {
         this.perform()
     }
