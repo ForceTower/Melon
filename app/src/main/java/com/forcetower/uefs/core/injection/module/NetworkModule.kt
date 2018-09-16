@@ -28,7 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
-import com.forcetower.uefs.core.Constants
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
 import com.franmontiel.persistentcookiejar.PersistentCookieJar

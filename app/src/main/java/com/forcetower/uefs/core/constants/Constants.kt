@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core
+package com.forcetower.uefs.core.constants
 
 object Constants {
     private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"

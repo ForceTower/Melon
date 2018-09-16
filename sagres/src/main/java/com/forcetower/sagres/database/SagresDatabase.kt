@@ -25,31 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database;
+package com.forcetower.sagres.database
 
-import android.content.Context;
+import android.content.Context
+import androidx.annotation.RestrictTo
+import androidx.room.Database
+import androidx.room.Room
+import androidx.room.RoomDatabase
+import com.forcetower.sagres.database.dao.AccessDao
+import com.forcetower.sagres.database.model.SAccess
 
-import com.forcetower.sagres.database.dao.AccessDao;
-import com.forcetower.sagres.database.model.SAccess;
+@Database(entities = [SAccess::class], version = 1, exportSchema = true)
+abstract class SagresDatabase : RoomDatabase() {
+    abstract fun accessDao(): AccessDao
 
-import androidx.annotation.RestrictTo;
-import androidx.room.Database;
-import androidx.room.Room;
-import androidx.room.RoomDatabase;
+    companion object {
+        private const val DB_NAME = "unesx_sagres_database.db"
 
-@Database(entities = {
-        SAccess.class
-}, version = 1)
-public abstract class SagresDatabase extends RoomDatabase {
-    private static final String DB_NAME = "unesx_sagres_database.db";
-
-    @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-    public static SagresDatabase create(Context context) {
-        return Room.databaseBuilder(context, SagresDatabase.class, DB_NAME)
-                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build();
+        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
+        fun create(context: Context): SagresDatabase {
+            return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
+                    .fallbackToDestructiveMigration()
+                    .allowMainThreadQueries()
+                    .build()
+        }
     }
-
-    public abstract AccessDao accessDao();
 }

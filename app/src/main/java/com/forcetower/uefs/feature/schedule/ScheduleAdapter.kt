@@ -134,7 +134,7 @@ data class ScheduleDay(
     val location: List<LocationWithGroup>
 )
 
-//--------------------------------------------------------------------------------------------------
+//-------------------------------------- Schedule Block --------------------------------------------
 
 class ScheduleBlockAdapter(
     private val pool: RecyclerView.RecycledViewPool,
@@ -150,6 +150,7 @@ class ScheduleBlockAdapter(
 
     override fun onBindViewHolder(holder: DayBlockHolder, position: Int) = holder.bind(list[position])
     override fun getItemCount() = list.size
+    override fun getItemViewType(position: Int) = DAY
 
     fun adaptList(location: List<LocationWithGroup>) {
         list.clear()
@@ -203,11 +204,14 @@ class ScheduleBlockAdapter(
     }
 }
 
+
+//==================================================================================================
 private const val HEADER: Int = 0
 private const val TIME: Int = 1
 private const val CLASS: Int = 2
 private const val NOTHING: Int = 3
 private const val HEAD_N: Int = 4
+private const val DAY: Int = 5
 
 class ScheduleBlockClassAdapter(private val colors: IntArray) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<InnerLocation>()
