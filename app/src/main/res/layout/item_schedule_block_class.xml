@@ -34,12 +34,9 @@
         android:layout_width="60dp"
         android:layout_height="48dp"
         android:layout_margin="2dp"
-        android:stateListAnimator="@animator/default_card_raise"
         app:cardCornerRadius="4dp"
         app:strokeWidth="1dp"
-        app:strokeColor="@color/blue_accent"
-        android:clickable="true"
-        android:focusable="true">
+        app:strokeColor="@color/blue_accent">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

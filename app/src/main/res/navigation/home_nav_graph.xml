@@ -51,4 +51,10 @@
         tools:layout="@layout/fragment_home_bottom_sheet">
     </fragment>
 
+    <activity
+        android:id="@+id/about"
+        android:name="com.forcetower.uefs.feature.about.AboutActivity"
+        android:label="AboutActivity"
+        tools:layout="@layout/activity_about"/>
+
 </navigation>

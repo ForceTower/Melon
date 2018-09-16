@@ -196,7 +196,7 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun startPage(): StartPageCallback {
-        return StartPageOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+        return StartPageOperation(null).finishedResult
     }
 
     @AnyThread
@@ -208,7 +208,7 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun getCurrentGrades(): GradesCallback {
-        return GradesOperation(null, null, SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+        return GradesOperation(null, null, null).finishedResult
     }
 
     companion object {

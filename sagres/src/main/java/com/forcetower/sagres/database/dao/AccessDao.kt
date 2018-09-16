@@ -25,23 +25,23 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.dao;
+package com.forcetower.sagres.database.dao
 
-import com.forcetower.sagres.database.model.SAccess;
+import com.forcetower.sagres.database.model.SAccess
 
-import androidx.lifecycle.LiveData;
-import androidx.room.Dao;
-import androidx.room.Insert;
-import androidx.room.Query;
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.Query
 
 @Dao
-public interface AccessDao {
-    @Query("SELECT * FROM SAccess LIMIT 1")
-    LiveData<SAccess> getAccess();
+interface AccessDao {
+    @get:Query("SELECT * FROM SAccess LIMIT 1")
+    val access: LiveData<SAccess?>
 
-    @Query("SELECT * FROM SAccess LIMIT 1")
-    SAccess getAccessDirect();
+    @get:Query("SELECT * FROM SAccess LIMIT 1")
+    val accessDirect: SAccess?
 
     @Insert
-    void insert(SAccess access);
+    fun insert(access: SAccess)
 }

@@ -103,7 +103,6 @@ class ScheduleFragment: UFragment(), Injectable {
     }
 
     private fun populateInterface(locations: List<LocationWithGroup>) {
-        Timber.d("Locations: $locations")
         binding.empty = locations.isEmpty()
         binding.executePendingBindings()
         val sorted = locations.toMutableList()

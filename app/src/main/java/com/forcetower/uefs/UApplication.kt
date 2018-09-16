@@ -34,6 +34,7 @@ import androidx.work.Worker
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
+import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.service.NotificationHelper
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
@@ -57,6 +58,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         injectApplicationIfNecessary()
         super.onCreate()
+        SyncMainWorker.createWorker(this, 15)
     }
 
     private fun createApplicationInjector() = AppInjection.create(this)
@@ -66,6 +68,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
             synchronized(this) {
                 if (!injected) {
                     component = createApplicationInjector()
+                    component.inject(this)
                     if (!injected)
                         throw IllegalStateException("Attempt to inject the app has failed")
                 }
@@ -84,7 +87,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     }
 
     @Inject
-    fun configure() {
+    fun configureNotifications() {
         NotificationHelper(this).createChannels()
     }
 
