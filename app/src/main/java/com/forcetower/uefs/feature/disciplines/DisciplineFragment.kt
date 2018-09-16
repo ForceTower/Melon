@@ -14,6 +14,7 @@ import com.forcetower.uefs.core.vm.DisciplineViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.makeSemester
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
@@ -44,6 +45,7 @@ class DisciplineFragment: UFragment(), Injectable {
         super.onViewCreated(view, savedInstanceState)
         adapter = SemesterAdapter(childFragmentManager)
         viewPager.adapter = adapter
+        tabs.setupWithViewPager(viewPager)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -65,6 +67,6 @@ class DisciplineFragment: UFragment(), Injectable {
 
         override fun getCount() = semesters.size
         override fun getItem(position: Int) = DisciplineSemesterFragment.newInstance(semesters[position])
-        override fun getPageTitle(position: Int) = semesters[position].codename
+        override fun getPageTitle(position: Int) = semesters[position].codename.makeSemester()
     }
 }

@@ -40,7 +40,17 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:tabTextAppearance="@style/TextAppearanceTabLayout"/>
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                android:background="@color/white"
+                app:tabContentStart="36dp"
+                app:tabGravity="fill"
+                app:tabIndicatorFullWidth="false"
+                app:tabMode="scrollable"
+                app:tabBackground="@color/white"
+                app:tabTextColor="@color/tab_text_color"
+                app:tabIndicatorColor="@color/tab_drawable_color"
+                app:tabTextAppearance="@style/TextAppearanceTabLayout"
+                app:tabIndicator="@drawable/tab_indicator"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
