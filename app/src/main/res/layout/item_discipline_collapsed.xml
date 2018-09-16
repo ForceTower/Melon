@@ -3,13 +3,23 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.common.DisciplineActions"/>
+        <variable
+            name="clazzGroup"
+            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="@dimen/spacing_common"
         android:layout_marginVertical="@dimen/spacing_small"
         app:cardCornerRadius="8dp"
-        android:stateListAnimator="@animator/default_card_raise">
+        android:stateListAnimator="@animator/default_card_raise"
+        android:onClick="@{() -> listener.classClicked(clazzGroup.clazz)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -49,7 +59,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/guide_image_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@drawable/ic_atom_black_470dp"
+                android:src="@drawable/ic_atom_black_470dp"
                 android:tint="@color/dis_04"/>
 
             <TextView
@@ -66,7 +76,8 @@
                 app:layout_constraintEnd_toStartOf="@+id/guide_score"
                 app:layout_constraintStart_toStartOf="@+id/guide_image_margin"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Métodologia da Pesquisa e Desenvolvimento em Engenharia de Computação" />
+                android:text="@{clazzGroup.discipline().name}"
+                tools:text="Métodologia da Pesquisa e Desenvolvimento em Engenharia de Computação"/>
 
             <com.forcetower.uefs.widget.CircleProgressBar
                 android:layout_width="0dp"
@@ -82,7 +93,8 @@
                 app:min="0"
                 app:max="100"
                 app:progressbarColor="@color/yellow_pr"
-                tools:progress="87"/>
+                tools:progress="87"
+                android:progress="0"/>
 
             <TextView
                 android:layout_width="0dp"
@@ -97,7 +109,8 @@
                 android:layout_marginBottom="8dp"
                 tools:text="8.7"
                 android:textColor="@color/yellow_pr_dark"
-                android:gravity="center"/>
+                android:gravity="center"
+                android:text="0.0"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
@@ -108,6 +121,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guide_title"
+                app:disciplineGroupsGrades="@{clazzGroup.groups}"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_grade" />
 

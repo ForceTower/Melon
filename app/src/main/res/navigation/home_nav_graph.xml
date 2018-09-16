@@ -48,13 +48,12 @@
         android:id="@+id/options_menu"
         android:name="com.forcetower.uefs.feature.home.HomeBottomFragment"
         android:label="HomeBottomFragment"
-        tools:layout="@layout/fragment_home_bottom_sheet">
-    </fragment>
+        tools:layout="@layout/fragment_home_bottom_sheet"/>
 
-    <activity
-        android:id="@+id/about"
-        android:name="com.forcetower.uefs.feature.about.AboutActivity"
-        android:label="AboutActivity"
-        tools:layout="@layout/activity_about"/>
+    <fragment
+        android:id="@+id/grades_disciplines"
+        android:name="com.forcetower.uefs.feature.disciplines.DisciplineFragment"
+        android:label="DisciplineFragment"
+        tools:layout="@layout/fragment_discipline" />
 
 </navigation>
