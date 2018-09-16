@@ -3,6 +3,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <data>
+        <variable
+            name="grade"
+            type="com.forcetower.uefs.core.model.unes.Grade"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="60dp">
@@ -35,6 +41,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed"
+            android:text="@{grade.name}"
             tools:text="AV1 - Provas e Diversos Trabalhos Aleatórios" />
 
         <TextView
@@ -50,6 +57,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
             app:layout_constraintTop_toBottomOf="@+id/text_evaluation_name"
+            android:text="@{grade.date}"
             tools:text="01/10/2018" />
 
         <TextView
@@ -62,6 +70,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline_grade"
             app:layout_constraintTop_toTopOf="parent"
+            android:text="@{grade.grade}"
             tools:text="8.7"
             android:textColor="@color/colorAccent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

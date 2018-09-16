@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.HomeViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
+import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
@@ -70,6 +71,15 @@ class HomeBottomFragment: UFragment(), Injectable {
     }
 
     private fun setupNavigation() {
-        NavigationUI.setupWithNavController(binding.navigationView, findNavController())
+        binding.navigationView.setNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.about -> {
+                    AboutActivity.startActivity(requireActivity())
+                    true
+                }
+                else -> NavigationUI.onNavDestinationSelected(item, findNavController())
+            }
+        }
+        //NavigationUI.setupWithNavController(binding.navigationView, findNavController())
     }
 }
