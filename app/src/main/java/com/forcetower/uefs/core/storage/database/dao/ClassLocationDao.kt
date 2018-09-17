@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy.REPLACE
 import com.forcetower.sagres.database.model.SDisciplineClassLocation
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
@@ -95,7 +96,7 @@ abstract class ClassLocationDao {
         update(group)
     }
 
-    @Update
+    @Update(onConflict = REPLACE)
     protected abstract fun update(group: ClassGroup)
 
     @Query("SELECT g.* FROM ClassGroup g, ClassStudent cs, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode AND cs.group_id = g.uid AND cs.profile_id = :profileId")

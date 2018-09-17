@@ -85,7 +85,7 @@ public class SagresDisciplineParser {
 
             int codePos = title.indexOf("-");
             String code = title.substring(0, codePos).trim();
-            String name = title.substring(codePos + 1);
+            String name = title.substring(codePos + 1).trim();
 
             SDiscipline discipline = new SDiscipline(period, name, code);
             discipline.setCredits(ValueUtils.toInteger(credits));
