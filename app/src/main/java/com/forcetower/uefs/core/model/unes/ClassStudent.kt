@@ -46,5 +46,7 @@ data class ClassStudent(
     val profileId: Long,
     @ColumnInfo(name = "group_id")
     val groupId: Long,
+    @ColumnInfo(name = "final_score")
+    var finalScore: Double? = null,
     val uuid: String = UUID.randomUUID().toString()
 )

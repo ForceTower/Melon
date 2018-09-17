@@ -46,7 +46,11 @@ abstract class ClassGroupDao {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code)
         var group = selectGroupDirect(grp.semester, grp.code, sgr)
-        if (group == null) {
+        var grops = selectGropsDirect(grp.semester, grp.code)
+
+        if (grp.group == null && grops.isNotEmpty()) {
+            group = grops[0]
+        } else if (group == null) {
             val clazz = selectClassDirect(grp.semester, grp.code)
             group = ClassGroup(classId = clazz.uid, group = sgr)
             group.uid = insert(group)
@@ -68,6 +72,9 @@ abstract class ClassGroupDao {
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code AND g.`group` = :group")
     protected abstract fun selectGroupDirect(semester: String, code: String, group: String): ClassGroup?
+
+    @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code")
+    protected abstract fun selectGropsDirect(semester: String, code: String): List<ClassGroup>
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code AND g.`group` = :group")
     abstract fun selectGroup(semester: String, code: String, group: String): LiveData<ClassGroup?>

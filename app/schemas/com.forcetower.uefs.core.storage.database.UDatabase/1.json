@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "086e982ee6a86fce74d240eb9201c859",
+    "identityHash": "9412c9bc340ee4f66e5e2b3f75f17c0c",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -636,7 +636,7 @@
       },
       {
         "tableName": "ClassStudent",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profile_id` INTEGER NOT NULL, `group_id` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profile_id` INTEGER NOT NULL, `group_id` INTEGER NOT NULL, `final_score` REAL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -655,6 +655,12 @@
             "columnName": "group_id",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "finalScore",
+            "columnName": "final_score",
+            "affinity": "REAL",
+            "notNull": false
           },
           {
             "fieldPath": "uuid",
@@ -1049,7 +1055,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"086e982ee6a86fce74d240eb9201c859\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"9412c9bc340ee4f66e5e2b3f75f17c0c\")"
     ]
   }
 }

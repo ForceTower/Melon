@@ -93,6 +93,7 @@
                 app:min="0"
                 app:max="100"
                 app:progressbarColor="@color/yellow_pr"
+                app:classStudentGrade="@{clazzGroup}"
                 tools:progress="87"
                 android:progress="0"/>
 
@@ -110,7 +111,7 @@
                 tools:text="8.7"
                 android:textColor="@color/yellow_pr_dark"
                 android:gravity="center"
-                android:text="0.0"/>
+                app:classStudentGrade="@{clazzGroup}"/>
 
             <androidx.recyclerview.widget.RecyclerView
                 android:layout_width="match_parent"
