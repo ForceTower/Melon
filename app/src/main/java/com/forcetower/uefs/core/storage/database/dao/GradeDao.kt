@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy.REPLACE
 import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.database.model.SGradeInfo
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -82,7 +83,7 @@ abstract class GradeDao {
                     val cs = getClassStudent(group.uid, profile.uid)
                     prepareInsertion(cs, it)
                 } else {
-                    val value = groups.firstOrNull { g -> g.group.startsWith("T") }
+                    val value = groups.firstOrNull { g -> !g.group.startsWith("P") }
                     if (value == null) {
                         Timber.e("<grades_no_T_found> :: This will be ignored forever ${code}_${it.semesterId}_${profile.name} ")
                     } else {
@@ -96,6 +97,13 @@ abstract class GradeDao {
 
     private fun prepareInsertion(cs: ClassStudent, it: SGrade) {
         val values = HashMap<String, SGradeInfo>()
+
+        try {
+            cs.finalScore = it.finalScore.toDouble()
+            updateCS(cs)
+        } catch (t: Throwable) {
+            Timber.d("Final Score of discipline is not available")
+        }
 
         it.values.forEach {g ->
             var grade = values[g.name]
@@ -133,6 +141,9 @@ abstract class GradeDao {
             }
         }
     }
+
+    @Update(onConflict = REPLACE)
+    protected abstract fun updateCS(cs: ClassStudent)
 
     @Query("SELECT * FROM Grade WHERE class_id = :classId AND name = :name")
     protected abstract fun getNamedGradeDirect(classId: Long, name: String): Grade?

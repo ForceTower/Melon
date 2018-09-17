@@ -61,6 +61,14 @@ class SemesterOperation(executor: Executor?, private val userId: Long): Operatio
         val type = object: TypeToken<Dumb<MutableList<SSemester>>>(){}.type
         val dSemesters = gson.fromJson<Dumb<MutableList<SSemester>>>(body, type)
         val semesters = dSemesters.items
+        semesters.forEach {
+            it.name = it.name.trim()
+            it.codename = it.codename.trim()
+            it.endClasses = it.endClasses.trim()
+            it.end = it.end.trim()
+            it.startClasses = it.startClasses.trim()
+            it.start = it.start.trim()
+        }
 
         val callback = SemesterCallback(Status.SUCCESS).semesters(semesters)
         this.finished = callback
