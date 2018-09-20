@@ -71,6 +71,7 @@
                     android:contentDescription="@string/acc_user_image"
                     app:clipToCircle="@{true}"
                     android:padding="8dp"
+                    android:src="@mipmap/ic_unes_large_image_512"
                     app:profileImage="@{viewModel.profile.imageUrl}"
                     tools:src="@tools:sample/avatars"/>
 
