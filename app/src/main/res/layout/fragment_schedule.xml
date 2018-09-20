@@ -75,6 +75,7 @@
                     app:clipToCircle="@{true}"
                     app:profileImage="@{profileViewModel.profile.imageUrl}"
                     android:padding="8dp"
+                    android:src="@mipmap/ic_unes_large_image_512"
                     tools:src="@tools:sample/avatars"/>
 
                 <com.google.android.material.button.MaterialButton

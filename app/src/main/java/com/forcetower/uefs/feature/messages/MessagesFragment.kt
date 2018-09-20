@@ -36,6 +36,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.ProfileViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
@@ -45,7 +46,7 @@ import com.google.android.material.tabs.TabLayout
 import java.util.*
 import javax.inject.Inject
 
-class MessagesFragment: UFragment() {
+class MessagesFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
