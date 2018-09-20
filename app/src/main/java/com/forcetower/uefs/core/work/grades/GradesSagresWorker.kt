@@ -1,5 +1,6 @@
 package com.forcetower.uefs.core.work.grades
 
+import android.content.Context
 import androidx.work.*
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
@@ -7,7 +8,9 @@ import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class GradesSagresWorker: Worker() {
+class GradesSagresWorker(
+        context : Context, params : WorkerParameters
+): Worker(context, params) {
     @Inject
     lateinit var repository: SagresGradesRepository
     override fun doWork(): Result {

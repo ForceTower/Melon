@@ -63,5 +63,10 @@ abstract class ViewModelModule {
     abstract fun bindDisciplineViewModel(vm: DisciplineViewModel): ViewModel
 
     @Binds
+    @IntoMap
+    @ViewModelKey(ProfileViewModel::class)
+    abstract fun bindProfileViewModel(vm: ProfileViewModel): ViewModel
+
+    @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
 }

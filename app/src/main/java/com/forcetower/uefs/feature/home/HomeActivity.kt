@@ -58,7 +58,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
+class HomeActivity : UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -89,7 +89,6 @@ class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
 
     private fun setupUserData() {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
-        viewModel.profile.observe(this, Observer { onProfileUpdate(it) })
     }
 
     private fun onAccessUpdate(access: Access?) {
@@ -103,34 +102,12 @@ class HomeActivity : UActivity(), ToolbarActivity, HasSupportFragmentInjector {
         }
     }
 
-    private fun onProfileUpdate(profile: Profile?) {
-        if (profile == null) return
-
-        GlideApp.with(this)
-                .load(profile.imageUrl)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(binding.imageUserPicture)
-    }
-
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
-
-    override fun getToolbar(): Toolbar = binding.toolbar
-
-    override fun getTabLayout(): TabLayout = binding.tabLayout
-
-    override fun getAppBar(): AppBarLayout = binding.appBar
 
     override fun showSnack(string: String) {
         val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
         snack.config()
         snack.show()
-    }
-
-    override fun getToolbarTextView(): TextView {
-        return binding.textToolbarTitle
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector

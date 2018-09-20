@@ -1,5 +1,6 @@
 package com.forcetower.uefs.core.work.sync
 
+import android.content.Context
 import androidx.annotation.IntRange
 import androidx.work.*
 import com.forcetower.uefs.UApplication
@@ -8,7 +9,9 @@ import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SyncLinkedWorker: Worker() {
+class SyncLinkedWorker(
+    context : Context, params : WorkerParameters
+): Worker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
 

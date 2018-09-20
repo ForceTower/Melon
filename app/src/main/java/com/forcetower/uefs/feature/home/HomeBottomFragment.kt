@@ -53,9 +53,6 @@ class HomeBottomFragment: UFragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(viewModelFactory)
-        getToolbarTitleText().text = getString(R.string.label_option_menu)
-        getTabLayout().visibility = GONE
-        getAppBar().elevation = 0f
 
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
