@@ -26,11 +26,88 @@
   ~ SOFTWARE.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/pager_message"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.core.vm.ProfileViewModel"/>
+    </data>
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-    </androidx.viewpager.widget.ViewPager>
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppBar">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="@dimen/spacing_normal"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+                <TextView
+                    android:id="@+id/text_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_gravity="start"
+                    android:gravity="center"
+                    android:minHeight="?actionBarSize"
+                    android:text="@string/label_messages"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+                <ImageView
+                    android:id="@+id/image_user_picture"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end|center_vertical"
+                    android:transitionName="@string/user_image_transition"
+                    android:contentDescription="@string/acc_user_image"
+                    app:clipToCircle="@{true}"
+                    android:padding="8dp"
+                    app:profileImage="@{viewModel.profile.imageUrl}"
+                    tools:src="@tools:sample/avatars"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reload"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="?attr/actionBarSize"
+                    app:icon="@drawable/ic_refresh_black_24dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:iconTint="@color/blue_accent"
+                    app:strokeWidth="0dp"/>
+            </FrameLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                android:background="@color/white"
+                app:tabContentStart="36dp"
+                app:tabGravity="fill"
+                app:tabIndicatorFullWidth="false"
+                app:tabMode="scrollable"
+                app:tabBackground="@color/white"
+                app:tabTextColor="@color/tab_text_color"
+                app:tabIndicatorColor="@color/tab_drawable_color"
+                app:tabTextAppearance="@style/TextAppearanceTabLayout"
+                app:tabIndicator="@drawable/tab_indicator"/>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager_message"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        </androidx.viewpager.widget.ViewPager>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

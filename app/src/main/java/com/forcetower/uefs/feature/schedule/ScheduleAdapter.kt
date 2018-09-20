@@ -295,7 +295,7 @@ class BClassHolder(
 
     fun bind(inner: InnerLocation, colors: IntArray) {
         binding.tvCode.text = inner.location!!.singleGroup().singleClass().singleDiscipline().code
-        binding.tvGroup.text = inner.location.singleGroup().group!!.group
+        binding.tvGroup.text = inner.location.singleGroup().group.group
         val color = colors[(inner.colorIndex ?: 0) % colors.size]
         binding.cardRoot.strokeColor = color
         binding.cardRoot.setCardBackgroundColor(ColorUtils.modifyAlpha(color, 40))

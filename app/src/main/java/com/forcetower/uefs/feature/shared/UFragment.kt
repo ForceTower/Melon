@@ -27,11 +27,7 @@
 
 package com.forcetower.uefs.feature.shared
 
-import android.widget.TextView
-import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
-import com.google.android.material.appbar.AppBarLayout
-import com.google.android.material.tabs.TabLayout
 import timber.log.Timber
 
 abstract class UFragment : Fragment() {
@@ -45,9 +41,4 @@ abstract class UFragment : Fragment() {
             Timber.d("Not part of UActivity")
         }
     }
-
-    fun getToolbar(): Toolbar = (activity as ToolbarActivity).getToolbar()
-    fun getAppBar(): AppBarLayout = (activity as ToolbarActivity).getAppBar()
-    fun getTabLayout(): TabLayout = (activity as ToolbarActivity).getTabLayout()
-    fun getToolbarTitleText(): TextView = (activity as ToolbarActivity).getToolbarTextView()
 }
