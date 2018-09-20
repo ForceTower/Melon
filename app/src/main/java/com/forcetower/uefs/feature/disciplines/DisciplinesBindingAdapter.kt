@@ -8,7 +8,6 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassGroupWithStudent
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
-import timber.log.Timber
 
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<ClassGroupWithStudents>) {

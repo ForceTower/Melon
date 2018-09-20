@@ -48,6 +48,7 @@ import androidx.lifecycle.MediatorLiveData;
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import timber.log.Timber;
 
 import static com.forcetower.sagres.Utils.createDocument;
 
@@ -79,6 +80,7 @@ public class LoginOperation extends Operation<LoginCallback> {
                 result.postValue(finished);
             }
         } catch (IOException e) {
+            Timber.d("Message: %s", e.getMessage());
             e.printStackTrace();
             finished = new LoginCallback.Builder(Status.NETWORK_ERROR).throwable(e).build();
             result.postValue(finished);

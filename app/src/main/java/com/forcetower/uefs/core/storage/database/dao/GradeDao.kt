@@ -75,9 +75,29 @@ abstract class GradeDao {
 
         grades.forEach {
             val code = it.discipline.split("-")[0].trim()
+            if (code.startsWith("FIS")) {
+                Timber.d("We are doing it with the value: ${it.finalScore}")
+            }
+
             val groups = getClassGroup(code, it.semesterId, profile.uid)
             if (groups.isEmpty()) Timber.d("<grades_group_404> :: Groups not found for ${code}_${it.semesterId}_${profile.name}")
             else {
+                //Sets the final score to this discipline in every class the student is in.
+                try {
+                    val finalScore = it.finalScore
+                            .replace(",", ".")
+                            .replace("-", "")
+                            .replace("*", "")
+                    val score = finalScore.toDouble()
+
+                    groups.forEach { g ->
+                        val cs = getClassStudent(g.uid, profile.uid)
+                        cs.finalScore = score
+                        updateCS(cs)
+                    }
+                } catch (ignored: Throwable) {}
+
+                //Insert the Grades on Classes
                 if (groups.size == 1) {
                     val group = groups[0]
                     val cs = getClassStudent(group.uid, profile.uid)
@@ -97,19 +117,6 @@ abstract class GradeDao {
 
     private fun prepareInsertion(cs: ClassStudent, it: SGrade) {
         val values = HashMap<String, SGradeInfo>()
-
-        try {
-            val finalScore = it.finalScore
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
-            val score = finalScore.toDouble()
-            cs.finalScore = score
-            updateCS(cs)
-        } catch (t: Throwable) {
-            Timber.d("Final Score of discipline is not available. It was ${it.finalScore}")
-        }
-
         it.values.forEach {g ->
             var grade = values[g.name]
             if (grade == null) { grade = g }
