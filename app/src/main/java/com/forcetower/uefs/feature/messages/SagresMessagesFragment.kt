@@ -64,13 +64,6 @@ class SagresMessagesFragment: UFragment(), Injectable {
         binding.apply {
             recyclerSagresMessages.adapter = adapter
             recyclerSagresMessages.layoutManager = manager
-            recyclerSagresMessages.addOnScrollListener(object: RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    if (manager.findFirstCompletelyVisibleItemPosition() == 0) getAppBar().elevation = 0F
-                    else getAppBar().elevation = getPixelsFromDp(requireContext(), 6).toFloat()
-                }
-            })
             recyclerSagresMessages.itemAnimator?.run {
                 addDuration = 120L
                 moveDuration = 120L

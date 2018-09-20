@@ -73,7 +73,7 @@ class LoginSagresRepository @Inject constructor(
         val signIn = MediatorLiveData<Callback>()
         resetSteps()
         if (deleteDatabase) {
-            currentStep.value = createStep(context, R.string.step_delete_database)
+            currentStep.value = createStep(R.string.step_delete_database)
             executor.diskIO().execute {
                 database.clearAllTables()
                 executor.mainThread().execute{
@@ -90,7 +90,7 @@ class LoginSagresRepository @Inject constructor(
     @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
         val source = SagresNavigator.instance.aLogin(username, password)
-        currentStep.value = createStep(context, R.string.step_logging_in)
+        currentStep.value = createStep(R.string.step_logging_in)
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
@@ -111,7 +111,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun me(data: MediatorLiveData<Callback>, score: Double, username: String, password: String) {
         val me = SagresNavigator.instance.aMe()
-        currentStep.value = createStep(context, R.string.step_finding_profile)
+        currentStep.value = createStep(R.string.step_finding_profile)
         data.addSource(me) {m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(me)
@@ -137,7 +137,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long) {
         val messages = SagresNavigator.instance.aMessages(userId)
-        currentStep.value = createStep(context, R.string.step_fetching_messages)
+        currentStep.value = createStep(R.string.step_fetching_messages)
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(messages)
@@ -159,7 +159,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun semesters(data: MediatorLiveData<Callback>, userId: Long) {
         val semesters = SagresNavigator.instance.aSemesters(userId)
-        currentStep.value = createStep(context, R.string.step_fetching_semesters)
+        currentStep.value = createStep(R.string.step_fetching_semesters)
         data.addSource(semesters) {s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(semesters)
@@ -181,7 +181,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun startPage(data: MediatorLiveData<Callback>) {
         val start = SagresNavigator.instance.aStartPage()
-        currentStep.value = createStep(context, R.string.step_moving_to_start_page)
+        currentStep.value = createStep(R.string.step_moving_to_start_page)
         data.addSource(start){s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(start)
@@ -211,7 +211,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun grades(data: MediatorLiveData<Callback>) {
         val grades = SagresNavigator.instance.aGetCurrentGrades()
-        currentStep.value = createStep(context, R.string.step_fetching_grades)
+        currentStep.value = createStep(R.string.step_fetching_grades)
         data.addSource(grades){g ->
             if (g.status == Status.SUCCESS) {
                 data.removeSource(grades)
@@ -324,8 +324,7 @@ class LoginSagresRepository @Inject constructor(
             currentStep++
         }
 
-        private fun createStep(ctx: Context, @StringRes desc: Int): Step = Step(currentStep++, desc)
-                //ctx.getString(R.string.data_step_format, currentStep++, stepCount, ctx.getString(desc))
+        private fun createStep(@StringRes desc: Int): Step = Step(currentStep++, desc)
     }
 
     data class Step(val step: Int, @StringRes val res: Int) {

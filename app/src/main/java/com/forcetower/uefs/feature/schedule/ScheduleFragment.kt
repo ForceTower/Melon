@@ -37,10 +37,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.vm.ProfileViewModel
 import com.forcetower.uefs.core.vm.ScheduleViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -50,6 +52,7 @@ class ScheduleFragment: UFragment(), Injectable {
     lateinit var factory: UViewModelFactory
 
     private lateinit var viewModel: ScheduleViewModel
+    private lateinit var profileViewModel: ProfileViewModel
     private lateinit var binding: FragmentScheduleBinding
 
     private val linePool = RecyclerView.RecycledViewPool()
@@ -64,13 +67,13 @@ class ScheduleFragment: UFragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
-
-        getTabLayout().visibility = GONE
-        getToolbarTitleText().text = getString(R.string.label_schedule)
-        getAppBar().elevation = 0f
+        profileViewModel = provideActivityViewModel(factory)
 
         return FragmentScheduleBinding.inflate(inflater, container, false).also {
             binding = it
+        }.apply {
+            profileViewModel = this@ScheduleFragment.profileViewModel
+            setLifecycleOwner(this@ScheduleFragment)
         }.root
     }
 

@@ -36,23 +36,36 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.ProfileViewModel
+import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import java.util.*
+import javax.inject.Inject
 
 class MessagesFragment: UFragment() {
+    @Inject
+    lateinit var factory: UViewModelFactory
+
     private lateinit var binding: FragmentAllMessagesBinding
+    private lateinit var profileViewModel: ProfileViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        binding = FragmentAllMessagesBinding.inflate(inflater, container, false)
-        getToolbarTitleText().text = getString(R.string.label_messages)
+        profileViewModel = provideActivityViewModel(factory)
+
+        binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
+            viewModel = profileViewModel
+            setLifecycleOwner(this@MessagesFragment)
+        }
+
         preparePager()
         return binding.root
     }
 
     private fun preparePager() {
-        val tabLayout = getTabLayout()
+        val tabLayout = binding.tabLayout
         tabLayout.visibility = VISIBLE
 
         tabLayout.clearOnTabSelectedListeners()
@@ -69,8 +82,8 @@ class MessagesFragment: UFragment() {
     }
 
     private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>): FragmentPagerAdapter(fm) {
-        override fun getCount(): Int = fragments.size
-        override fun getItem(position: Int): Fragment = fragments[position]
-        override fun getPageTitle(position: Int): CharSequence? = fragments[position].displayName
+        override fun getCount() = fragments.size
+        override fun getItem(position: Int) = fragments[position]
+        override fun getPageTitle(position: Int) = fragments[position].displayName
     }
 }

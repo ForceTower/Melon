@@ -33,119 +33,138 @@
         <variable
             name="empty"
             type="Boolean"/>
+
+        <variable
+            name="profileViewModel"
+            type="com.forcetower.uefs.core.vm.ProfileViewModel"/>
     </data>
 
-    <RelativeLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-
-        <androidx.core.widget.NestedScrollView
-            android:id="@+id/layout_data"
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:goneIf="@{safeUnbox(empty)}">
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppBar">
 
-            <LinearLayout
+            <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:paddingHorizontal="@dimen/spacing_normal"
+                app:layout_scrollFlags="enterAlways">
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_schedule_blocks"
+                <TextView
+                    android:id="@+id/text_toolbar_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_margin="4dp"
-                    android:paddingBottom="8dp"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    android:orientation="horizontal"
-                    tools:itemCount="4"
-                    tools:listitem="@layout/item_schedule_day">
-                </androidx.recyclerview.widget.RecyclerView>
+                    android:layout_marginStart="16dp"
+                    android:layout_gravity="start"
+                    android:gravity="center"
+                    android:minHeight="?actionBarSize"
+                    android:text="@string/label_schedule"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recycler_schedule_line"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:paddingBottom="72dp"
-                    android:clipToPadding="false"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                    tools:itemCount="5"
-                    tools:listitem="@layout/item_schedule_line_day">
-                </androidx.recyclerview.widget.RecyclerView>
+                <ImageView
+                    android:id="@+id/image_user_picture"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end|center_vertical"
+                    android:transitionName="@string/user_image_transition"
+                    android:contentDescription="@string/acc_user_image"
+                    app:clipToCircle="@{true}"
+                    app:profileImage="@{profileViewModel.profile.imageUrl}"
+                    android:padding="8dp"
+                    tools:src="@tools:sample/avatars"/>
 
-            </LinearLayout>
-        </androidx.core.widget.NestedScrollView>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_reload"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end"
+                    android:layout_marginEnd="?attr/actionBarSize"
+                    app:icon="@drawable/ic_refresh_black_24dp"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    app:iconTint="@color/blue_accent"
+                    app:strokeWidth="0dp"/>
+            </FrameLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layout_no_data"
+        <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:visibility="invisible"
-            app:goneIf="@{!safeUnbox(empty)}">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-            <ImageView
-                android:layout_width="0dp"
-                android:layout_height="200dp"
-                android:layout_marginTop="16dp"
-                android:contentDescription="@string/acc_no_schedule_defined"
-                android:scaleType="fitCenter"
-                android:src="@mipmap/school_items"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"/>
+            <androidx.core.widget.NestedScrollView
+                android:id="@+id/layout_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:goneIf="@{safeUnbox(empty)}">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical">
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_schedule_blocks"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_margin="4dp"
+                        android:paddingBottom="8dp"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        android:orientation="horizontal"
+                        tools:itemCount="4"
+                        tools:listitem="@layout/item_schedule_day">
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                    <androidx.recyclerview.widget.RecyclerView
+                        android:id="@+id/recycler_schedule_line"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="72dp"
+                        android:clipToPadding="false"
+                        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                        tools:itemCount="5"
+                        tools:listitem="@layout/item_schedule_line_day">
+                    </androidx.recyclerview.widget.RecyclerView>
+
+                </LinearLayout>
+            </androidx.core.widget.NestedScrollView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_no_data"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:visibility="invisible"
+                app:goneIf="@{!safeUnbox(empty)}">
+
+                <ImageView
+                    android:layout_width="0dp"
+                    android:layout_height="200dp"
+                    android:layout_marginTop="16dp"
+                    android:contentDescription="@string/acc_no_schedule_defined"
+                    android:scaleType="fitCenter"
+                    android:src="@mipmap/school_items"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"/>
 
 
-            <TextView
-                style="@style/UTheme.TextAppearance.Headline2"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/label_schedule_not_found"
-                android:textColor="@color/blue_accent"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
-
-            <!--<TextView-->
-                <!--android:layout_width="0dp"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:layout_marginStart="16dp"-->
-                <!--android:layout_marginEnd="16dp"-->
-                <!--android:layout_marginBottom="16dp"-->
-                <!--android:text="@string/label_schedule_retry"-->
-                <!--android:textAlignment="center"-->
-                <!--android:textSize="12sp"-->
-                <!--app:layout_constraintBottom_toBottomOf="parent"-->
-                <!--app:layout_constraintEnd_toEndOf="parent"-->
-                <!--app:layout_constraintStart_toStartOf="parent" />-->
-
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <!--<com.google.android.material.button.MaterialButton-->
-            <!--android:id="@+id/btn_siecomp_schedule"-->
-            <!--style="@style/Widget.MaterialComponents.Button"-->
-            <!--android:letterSpacing=".001"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="64dp"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_centerHorizontal="true"-->
-            <!--android:layout_marginBottom="8dp"-->
-            <!--android:elevation="6dp"-->
-            <!--android:paddingStart="20dp"-->
-            <!--android:paddingEnd="20dp"-->
-            <!--android:text="@string/btn_siecomp_schedule"-->
-            <!--android:textAllCaps="false"-->
-            <!--android:textColor="@android:color/white"-->
-            <!--android:textSize="14sp"-->
-            <!--app:backgroundTint="?attr/colorAccent"-->
-            <!--app:cornerRadius="32dp"-->
-            <!--app:icon="@drawable/ic_local_activity_black_24dp"-->
-            <!--app:iconPadding="12dp"-->
-            <!--app:iconSize="24dp"-->
-            <!--app:iconTint="@android:color/white" />-->
-
-    </RelativeLayout>
+                <TextView
+                    style="@style/UTheme.TextAppearance.Headline2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="8dp"
+                    android:text="@string/label_schedule_not_found"
+                    android:textColor="@color/blue_accent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </FrameLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

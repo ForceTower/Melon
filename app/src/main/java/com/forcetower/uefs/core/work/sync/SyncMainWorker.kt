@@ -13,7 +13,9 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SyncMainWorker: Worker() {
+class SyncMainWorker(
+    context : Context, params : WorkerParameters
+): Worker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
 
