@@ -7,7 +7,9 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 
 @BindingAdapter("profileImage")
-fun profileImage(iv: ImageView, url: String) {
+fun profileImage(iv: ImageView, url: String?) {
+    if (url == null) return
+
     GlideApp.with(iv.context)
             .load(url)
             .fallback(R.mipmap.ic_unes_large_image_512)

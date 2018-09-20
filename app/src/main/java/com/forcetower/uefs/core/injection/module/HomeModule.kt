@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
+import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
 import com.forcetower.uefs.feature.messages.UnesMessagesFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
@@ -40,6 +41,8 @@ import dagger.android.ContributesAndroidInjector
 abstract class HomeModule {
     @ContributesAndroidInjector
     abstract fun sagresMessageFragment(): SagresMessagesFragment
+    @ContributesAndroidInjector
+    abstract fun messagesFragment(): MessagesFragment
     @ContributesAndroidInjector
     abstract fun unesMessageFragment(): UnesMessagesFragment
     @ContributesAndroidInjector
