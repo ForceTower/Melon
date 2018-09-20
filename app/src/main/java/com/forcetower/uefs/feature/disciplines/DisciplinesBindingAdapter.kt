@@ -8,6 +8,7 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassGroupWithStudent
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
+import timber.log.Timber
 
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<ClassGroupWithStudents>) {
@@ -23,17 +24,17 @@ fun generateGradesList(classes: List<ClassGroupWithStudents>): List<Grade>? {
         if (it.students.isNotEmpty())
             list.addAll(it.students[0].grades)
     }
+    list.sortBy { it -> it.name }
     return list
 }
 
 @BindingAdapter("classStudentGrade")
 fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
     val value: Double? = getClassWithGroupsGrade(clazz)
-
     if (value == null) {
         cpb.setProgress(0.0f)
     } else {
-        cpb.setProgressWithAnimation(value.toFloat() * 100)
+        cpb.setProgressWithAnimation(value.toFloat() * 10)
     }
 }
 

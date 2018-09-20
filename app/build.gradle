@@ -73,9 +73,15 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //Work Manager
-    implementation "android.arch.work:work-runtime:$work_version"
-    implementation "android.arch.work:work-runtime-ktx:$work_version"
-    implementation "android.arch.work:work-firebase:$work_version"
+    implementation ("android.arch.work:work-runtime:$work_version") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+    implementation ("android.arch.work:work-runtime-ktx:$work_version") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
+    implementation ("android.arch.work:work-firebase:$work_version") {
+        exclude group: 'com.google.guava', module: 'listenablefuture'
+    }
 
     //Dagger Dependency Injection
     implementation "com.google.dagger:dagger:$dagger_version"
