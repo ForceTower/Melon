@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.injection.module.ActivityModule
 import com.forcetower.uefs.core.injection.module.AppModule
 import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.BindsInstance
@@ -62,4 +63,5 @@ interface AppComponent {
     fun inject(app: UApplication)
     fun inject(worker: SyncMainWorker)
     fun inject(worker: SyncLinkedWorker)
+    fun inject(worker: GradesSagresWorker)
 }

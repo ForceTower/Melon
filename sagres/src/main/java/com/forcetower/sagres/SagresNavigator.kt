@@ -42,6 +42,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.operation.grades.GradesCallback
+import org.jsoup.nodes.Document
 
 abstract class SagresNavigator {
     abstract val database: SagresDatabase
@@ -87,6 +88,9 @@ abstract class SagresNavigator {
 
     @WorkerThread
     abstract fun getCurrentGrades(): GradesCallback
+
+    @WorkerThread
+    abstract fun getGradesFromSemester(semesterSagresId: Long, document: Document): GradesCallback
 
     abstract fun stopTags(tag: String)
 

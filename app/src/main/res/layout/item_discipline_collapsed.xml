@@ -94,8 +94,7 @@
                 app:max="100"
                 app:progressbarColor="@color/yellow_pr"
                 app:classStudentGrade="@{clazzGroup}"
-                tools:progress="87"
-                android:progress="0"/>
+                tools:progress="87" />
 
             <TextView
                 android:layout_width="0dp"
@@ -123,6 +122,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guide_title"
                 app:disciplineGroupsGrades="@{clazzGroup.groups}"
+                android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_grade" />
 

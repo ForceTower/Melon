@@ -46,7 +46,7 @@ abstract class ClassGroupDao {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code)
         var group = selectGroupDirect(grp.semester, grp.code, sgr)
-        var grops = selectGropsDirect(grp.semester, grp.code)
+        val grops = selectGropsDirect(grp.semester, grp.code)
 
         if (grp.group == null && grops.isNotEmpty()) {
             group = grops[0]

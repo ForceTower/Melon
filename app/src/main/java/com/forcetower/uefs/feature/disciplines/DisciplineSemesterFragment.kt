@@ -9,7 +9,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.vm.DisciplineViewModel
@@ -72,7 +74,26 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.classes(semesterId).observe(this, Observer {
-            populateInterface(it)
+            val mapped = ArrayList<ClassWithGroups>()
+
+            it.groupBy { cg -> cg.discipline() }.entries.forEach { e ->
+                var added = false
+                e.value.forEach { cg ->
+                    val grs = cg.groups
+                    if (grs.isNotEmpty()) {
+                        val std = grs[0].students
+                        if (std.isNotEmpty()) {
+                            val grd = std[0].grades
+                            if (grd.isNotEmpty()) {
+                                mapped.add(cg)
+                                added = true
+                            }
+                        }
+                    }
+                }
+                if (e.value.isNotEmpty() && !added) mapped.add(e.value[0])
+            }
+            populateInterface(mapped)
         })
     }
 

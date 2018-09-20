@@ -99,10 +99,15 @@ abstract class GradeDao {
         val values = HashMap<String, SGradeInfo>()
 
         try {
-            cs.finalScore = it.finalScore.toDouble()
+            val finalScore = it.finalScore
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+            val score = finalScore.toDouble()
+            cs.finalScore = score
             updateCS(cs)
         } catch (t: Throwable) {
-            Timber.d("Final Score of discipline is not available")
+            Timber.d("Final Score of discipline is not available. It was ${it.finalScore}")
         }
 
         it.values.forEach {g ->

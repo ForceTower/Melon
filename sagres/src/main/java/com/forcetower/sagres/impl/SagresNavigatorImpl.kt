@@ -61,6 +61,7 @@ import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.jsoup.nodes.Document
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -209,6 +210,12 @@ private constructor(context: Context) : SagresNavigator() {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun getCurrentGrades(): GradesCallback {
         return GradesOperation(null, null, null).finishedResult
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun getGradesFromSemester(semesterSagresId: Long, document: Document): GradesCallback {
+        return GradesOperation(semesterSagresId, document, null).finishedResult
     }
 
     companion object {
