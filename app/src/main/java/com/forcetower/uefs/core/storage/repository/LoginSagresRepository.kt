@@ -44,6 +44,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.*
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -222,6 +223,7 @@ class LoginSagresRepository @Inject constructor(
                     defineSemesters(g.semesters)
                     defineGrades(g.grades)
                     defineFrequency(g.frequency)
+                    defineGradesWorkers(g.semesters.map { pair -> pair.first })
                     data.postValue(Callback.Builder(g.status).document(g.document).build())
                 }
             } else {
@@ -232,6 +234,12 @@ class LoginSagresRepository @Inject constructor(
                         .document(g.document)
                         .build()
             }
+        }
+    }
+
+    private fun defineGradesWorkers(semesters: List<Long>) {
+        semesters.forEach {
+            GradesSagresWorker.createWorker(it)
         }
     }
 

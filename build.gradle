@@ -9,10 +9,7 @@ buildscript {
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0-rc03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
-        classpath "com.google.gms:google-services:4.0.1"
-
-        // NOTE: Do not place your application dependencies here; they belong
-        // in the individual module build.gradle files
+        classpath "com.google.gms:google-services:4.1.0"
     }
 }
 
@@ -43,7 +40,7 @@ ext {
     room_version = "2.0.0-rc01"
     lifecycle_version = "2.0.0-rc01"
     nav_version = "1.0.0-alpha05"
-    work_version = "1.0.0-alpha08"
+    work_version = "1.0.0-alpha09"
 
     //Dagger
     dagger_version = "2.16"
