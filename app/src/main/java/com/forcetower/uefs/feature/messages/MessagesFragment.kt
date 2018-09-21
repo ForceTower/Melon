@@ -37,6 +37,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.MessagesViewModel
 import com.forcetower.uefs.core.vm.ProfileViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
@@ -52,12 +53,15 @@ class MessagesFragment: UFragment(), Injectable {
 
     private lateinit var binding: FragmentAllMessagesBinding
     private lateinit var profileViewModel: ProfileViewModel
+    private lateinit var messagesViewModel: MessagesViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         profileViewModel = provideActivityViewModel(factory)
+        messagesViewModel = provideActivityViewModel(factory)
 
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
-            viewModel = profileViewModel
+            profileViewModel = this@MessagesFragment.profileViewModel
+            messagesViewModel = this@MessagesFragment.messagesViewModel
             setLifecycleOwner(this@MessagesFragment)
         }
 

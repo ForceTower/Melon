@@ -32,7 +32,10 @@
 
     <data>
         <variable
-            name="viewModel"
+            name="messagesViewModel"
+            type="com.forcetower.uefs.core.vm.MessagesViewModel"/>
+        <variable
+            name="profileViewModel"
             type="com.forcetower.uefs.core.vm.ProfileViewModel"/>
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -72,19 +75,8 @@
                     app:clipToCircle="@{true}"
                     android:padding="8dp"
                     android:src="@mipmap/ic_unes_large_image_512"
-                    app:profileImage="@{viewModel.profile.imageUrl}"
+                    app:profileImage="@{profileViewModel.profile.imageUrl}"
                     tools:src="@tools:sample/avatars"/>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_reload"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="end"
-                    android:layout_marginEnd="?attr/actionBarSize"
-                    app:icon="@drawable/ic_refresh_black_24dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:iconTint="@color/blue_accent"
-                    app:strokeWidth="0dp"/>
             </FrameLayout>
 
             <com.google.android.material.tabs.TabLayout
@@ -104,11 +96,18 @@
                 app:tabIndicator="@drawable/tab_indicator"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager_message"
+        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:onSwipeRefresh="@{() -> messagesViewModel.onRefresh()}"
+            app:refreshing="@{safeUnbox(messagesViewModel.refreshing)}"
+            app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
+            <androidx.viewpager.widget.ViewPager
+                android:id="@+id/pager_message"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
         </androidx.viewpager.widget.ViewPager>
+        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

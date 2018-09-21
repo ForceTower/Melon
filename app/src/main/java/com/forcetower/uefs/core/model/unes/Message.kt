@@ -33,6 +33,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SMessage
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
 import java.util.*
 
@@ -62,4 +63,9 @@ data class Message(
 
 fun Message.notify(context: Context) {
     NotificationCreator.showSagresMessageNotification(this, context)
+}
+
+fun List<SMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
+    val values = this?.map { Message.fromMessage(it, true) }?: emptyList()
+    database.messageDao().insertIgnoring(values)
 }
