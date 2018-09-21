@@ -26,7 +26,7 @@
   -->
 
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt">
-    <string name="app_name">Melon</string>
+    <string name="app_name">UNES</string>
     <string name="login_welcome_to_unes">Boas-vindas ao UNES</string>
     <string name="login_first_steps">Primeiros passos</string>
     <string name="login_unes_single_help">A maneira mais fácil de acessar o Sagres</string>
