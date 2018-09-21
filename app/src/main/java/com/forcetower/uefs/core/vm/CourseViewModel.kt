@@ -25,26 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.core.vm
 
-import com.forcetower.uefs.LauncherActivity
-import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.home.HomeActivity
-import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.storage.repository.CourseRepository
+import javax.inject.Inject
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector
-    abstract fun bindLauncherActivity(): LauncherActivity
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [SetupModule::class])
-    abstract fun bindSetupActivity(): SetupActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
+class CourseViewModel @Inject constructor(
+    private val repository: CourseRepository
+): ViewModel() {
+    val courses by lazy { repository.getCourses() }
 }

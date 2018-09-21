@@ -25,26 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.core.model.unes
 
-import com.forcetower.uefs.LauncherActivity
-import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.home.HomeActivity
-import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector
-    abstract fun bindLauncherActivity(): LauncherActivity
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [SetupModule::class])
-    abstract fun bindSetupActivity(): SetupActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
-}
+@Entity
+data class Course(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+    val name: String
+)

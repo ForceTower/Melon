@@ -25,26 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.core.storage.repository
 
-import com.forcetower.uefs.LauncherActivity
-import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.home.HomeActivity
-import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
+import javax.inject.Inject
+import javax.inject.Singleton
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector
-    abstract fun bindLauncherActivity(): LauncherActivity
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [SetupModule::class])
-    abstract fun bindSetupActivity(): SetupActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
+@Singleton
+class CourseRepository @Inject constructor(
+    private val database: UDatabase,
+    private val executors: AppExecutors,
+    private val service: UService
+){
+    fun getCourses() = object: NetworkBoundResource<List<Course>, List<Course>>(executors) {
+        override fun loadFromDb() = database.courseDao().selectAll()
+        override fun shouldFetch(it: List<Course>?) = true
+        override fun createCall() = service.getCourses()
+        override fun saveCallResult(value: List<Course>) = database.courseDao().insert(value)
+    }.asLiveData()
 }

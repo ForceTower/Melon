@@ -41,7 +41,9 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
@@ -172,14 +174,13 @@ class SigningInFragment : UFragment(), Injectable {
     private fun completeLogin() {
         if (viewModel.isConnected()) return
         viewModel.setConnected()
-        val intent = Intent(requireContext(), HomeActivity::class.java)
-        val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
-                .toBundle()
+        val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
+        val extras = ActivityNavigator.Extras(options)
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                startActivity(intent, bundle)
-                activity?.finish()
+                findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
+                activity?.finishAfterTransition()
             }
         }, 1000)
     }
