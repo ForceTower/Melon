@@ -53,11 +53,10 @@
         tools:layout="@layout/fragment_login">
         <action
             android:id="@+id/action_login_form_to_signing_in"
-            app:destination="@id/login_signing_in"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:destination="@id/login_signing_in" />
+        <action
+            android:id="@+id/action_login_open_about"
+            app:destination="@id/activity_about" />
     </fragment>
 
     <fragment
@@ -73,5 +72,22 @@
             android:name="password"
             android:defaultValue="password"
             app:argType="string"/>
+        <action
+            android:id="@+id/action_login_to_setup"
+            app:destination="@id/activity_setup"
+            app:enterAnim="@anim/scale_up_fade_in"
+            app:exitAnim="@anim/scale_down" />
     </fragment>
+
+    <activity
+        android:id="@+id/activity_setup"
+        android:name="com.forcetower.uefs.feature.setup.SetupActivity"
+        android:label="SetupActivity"
+        tools:layout="@layout/activity_setup"/>
+
+    <activity
+        android:id="@+id/activity_about"
+        android:name="com.forcetower.uefs.feature.about.AboutActivity"
+        android:label="AboutActivity"
+        tools:layout="@layout/activity_about"/>
 </navigation>

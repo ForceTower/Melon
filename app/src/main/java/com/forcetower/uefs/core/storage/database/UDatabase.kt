@@ -45,7 +45,8 @@ import com.forcetower.uefs.core.storage.database.dao.*
     ClassStudent::class,
     ClassAbsence::class,
     ClassLocation::class,
-    Grade::class
+    Grade::class,
+    Course::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -61,4 +62,5 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun classAbsenceDao(): ClassAbsenceDao
     abstract fun classLocationDao(): ClassLocationDao
     abstract fun gradesDao(): GradeDao
+    abstract fun courseDao(): CourseDao
 }

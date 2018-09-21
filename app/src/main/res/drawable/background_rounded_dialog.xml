@@ -25,17 +25,8 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="UTheme.LightNav">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:statusBarColor">@color/highlight_light</item>
-    </style>
-
-    <style name="CropTheme.Default">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:statusBarColor">@color/highlight_light</item>
-    </style>
-</resources>
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <solid android:color="@android:color/white" />
+    <corners android:radius="@dimen/rounded_dialog_corners" />
+</shape>

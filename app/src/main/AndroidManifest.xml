@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<!--
+<?xml version="1.0" encoding="utf-8"?><!--
   ~ Copyright (c) 2018.
   ~ João Paulo Sena <joaopaulo761@gmail.com>
   ~
@@ -24,16 +23,17 @@
   ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
-  -->
-
+-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.forcetower.uefs">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
 
     <application
-        android:name="com.forcetower.uefs.UApplication"
+        android:name=".UApplication"
         android:allowBackup="true"
         android:fullBackupContent="true"
         android:icon="@mipmap/ic_launcher"
@@ -42,29 +42,34 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name="com.forcetower.uefs.LauncherActivity"
+        <activity
+            android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name="com.forcetower.uefs.feature.login.LoginActivity"
+            android:name=".feature.login.LoginActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.setup.SetupActivity"
             android:theme="@style/UTheme.LightNav"/>
-
         <activity
-            android:name="com.forcetower.uefs.feature.home.HomeActivity"
+            android:name=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-        
         <activity
-            android:name="com.forcetower.uefs.feature.about.AboutActivity"
+            android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
+        <activity
+            android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
+            android:theme="@style/CropTheme.Default"/>
 
         <meta-data
             android:name="preloaded_fonts"

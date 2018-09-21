@@ -27,7 +27,7 @@
   -->
 
 <resources>
-    <string name="app_name">Melon</string>
+    <string name="app_name">UNES</string>
     <string name="login_welcome_to_unes">Welcome to UNES</string>
     <string name="login_first_steps">First steps</string>
     <string name="login_unes_single_help">Easiest way to access Sagres</string>

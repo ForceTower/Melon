@@ -26,16 +26,15 @@
   ~ SOFTWARE.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools">
-    <style name="UTheme.LightNav">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:statusBarColor">@color/highlight_light</item>
-    </style>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/setup_nav_graph.xml"
+    app:startDestination="@id/introduction">
 
-    <style name="CropTheme.Default">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
-        <item name="android:navigationBarColor">@color/white</item>
-        <item name="android:statusBarColor">@color/highlight_light</item>
-    </style>
-</resources>
+    <fragment
+        android:id="@+id/introduction"
+        android:name="com.forcetower.uefs.feature.setup.IntroductionFragment"
+        android:label="IntroductionFragment"
+        tools:layout="@layout/fragment_setup_introduction"/>
+</navigation>

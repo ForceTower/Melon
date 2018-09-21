@@ -73,13 +73,13 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //Work Manager
-    implementation ("android.arch.work:work-runtime:$work_version") {
+    implementation("android.arch.work:work-runtime:$work_version") {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation ("android.arch.work:work-runtime-ktx:$work_version") {
+    implementation("android.arch.work:work-runtime-ktx:$work_version") {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
-    implementation ("android.arch.work:work-firebase:$work_version") {
+    implementation("android.arch.work:work-firebase:$work_version") {
         exclude group: 'com.google.guava', module: 'listenablefuture'
     }
 
@@ -111,8 +111,11 @@ dependencies {
     implementation "com.jakewharton.timber:timber:4.7.0"
 
     //Glide
-    implementation 'com.github.bumptech.glide:glide:4.8.0-SNAPSHOT'
-    kapt 'com.github.bumptech.glide:compiler:4.8.0-SNAPSHOT'
+    implementation 'com.github.bumptech.glide:glide:4.8.0'
+    kapt 'com.github.bumptech.glide:compiler:4.8.0'
+
+    //Image Utils
+    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 
     //Helper Projects
     implementation project(path: ':sagres')

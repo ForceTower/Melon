@@ -73,5 +73,10 @@ abstract class ViewModelModule {
     abstract fun bindMessagesViewModel(vm: MessagesViewModel): ViewModel
 
     @Binds
+    @IntoMap
+    @ViewModelKey(CourseViewModel::class)
+    abstract fun bindCourseViewModel(vm: CourseViewModel): ViewModel
+
+    @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
 }
