@@ -181,6 +181,16 @@
     <string name="remote">Avisos Remotos</string>
     <string name="channel_events_general">Eventos Gerais</string>
     <string name="channel_messages_dce">Mensagens DCE</string>
+    <string name="unes_image_transition">unes_image_transition</string>
+    <string name="setup_about_you">Sobre você</string>
+    <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada</string>
+    <string name="setup_select_course_label">Selecione um curso</string>
+    <string name="setup_next">Próximo</string>
+    <string name="label_course">Curso</string>
+    <string name="label_course_selection_information">Quando você seleciona o seu curso o UNES te mostra apenas eventos e outras coisas que são relevantes para você</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancelar</string>
+    <string name="cut_profile_image">Cortar Imagem</string>
 
     <plurals name="duration_hours">
         <item quantity="one">%s hora</item>

@@ -18,10 +18,6 @@ allprojects {
         google()
         jcenter()
         maven { url "https://jitpack.io" }
-        maven {
-            name 'glide-snapshot'
-            url 'http://oss.sonatype.org/content/repositories/snapshots'
-        }
     }
 
     gradle.projectsEvaluated {
@@ -39,7 +35,7 @@ ext {
     paging_version = "2.0.0-rc01"
     room_version = "2.0.0-rc01"
     lifecycle_version = "2.0.0-rc01"
-    nav_version = "1.0.0-alpha05"
+    nav_version = "1.0.0-alpha06"
     work_version = "1.0.0-alpha09"
 
     //Dagger

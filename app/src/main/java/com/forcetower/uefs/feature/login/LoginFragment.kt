@@ -27,17 +27,17 @@
 
 package com.forcetower.uefs.feature.login
 
-import android.app.ActivityOptions
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
-import androidx.navigation.findNavController
+import androidx.navigation.ActivityNavigator
+import androidx.navigation.fragment.FragmentNavigatorExtras
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentLoginBinding
-import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.shared.UFragment
 
 class LoginFragment : UFragment() {
@@ -77,15 +77,17 @@ class LoginFragment : UFragment() {
 
         if (error) return
 
-        view?.findNavController()?.navigate(R.id.action_login_form_to_signing_in, bundleOf(
+        val extras = FragmentNavigatorExtras(binding.imageUnes to getString(R.string.user_image_transition))
+
+        findNavController().navigate(R.id.action_login_form_to_signing_in, bundleOf(
                 "username" to username,
                 "password" to password
-        ))
+        ), null, extras)
     }
 
     private fun toAbout() {
-        val intent = Intent(requireContext(), AboutActivity::class.java)
-        val bundle = ActivityOptions.makeSceneTransitionAnimation(requireActivity()).toBundle()
-        startActivity(intent, bundle)
+        val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
+        val extras = ActivityNavigator.Extras(bundle)
+        findNavController().navigate(R.id.action_login_open_about, null, null, extras)
     }
 }

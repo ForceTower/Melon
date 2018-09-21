@@ -27,10 +27,15 @@
 
 package com.forcetower.uefs.core.storage.network
 
+import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import com.forcetower.uefs.core.storage.resource.Resource
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
+import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface UService {
@@ -48,4 +53,7 @@ interface UService {
             @Field("cpf") cpf: String,
             @Field("appToken") token: String
     ): Call<AccessToken>
+
+    @GET("course")
+    fun getCourses(): LiveData<ApiResponse<List<Course>>>
 }

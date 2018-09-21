@@ -25,26 +25,25 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.shared
 
-import com.forcetower.uefs.LauncherActivity
-import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.home.HomeActivity
-import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import android.view.Window
+import androidx.fragment.app.DialogFragment
 
-@Module
-abstract class ActivityModule {
-    @ContributesAndroidInjector
-    abstract fun bindLauncherActivity(): LauncherActivity
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [SetupModule::class])
-    abstract fun bindSetupActivity(): SetupActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
+abstract class RoundedDialog: DialogFragment() {
+
+    final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val view = onChildCreateView(inflater, container, savedInstanceState)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        return view
+    }
+
+    abstract fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View?
 }
