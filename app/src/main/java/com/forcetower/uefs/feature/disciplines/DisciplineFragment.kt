@@ -52,7 +52,6 @@ class DisciplineFragment: UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.semesters.observe(this, Observer {
             adapter.submitList(it)
-            viewPager.offscreenPageLimit = it.size
         })
     }
 

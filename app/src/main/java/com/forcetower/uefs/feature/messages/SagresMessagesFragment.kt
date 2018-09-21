@@ -37,10 +37,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.vm.HomeViewModel
+import com.forcetower.uefs.core.vm.MessagesViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
@@ -53,6 +55,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
     private val adapter by lazy { SagresMessageAdapter()}
     private val manager by lazy { LinearLayoutManager(context) }
     private lateinit var binding: FragmentSagresMessagesBinding
+    private lateinit var viewModel: MessagesViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentSagresMessagesBinding.inflate(inflater, container, false)
@@ -75,7 +78,8 @@ class SagresMessagesFragment: UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        provideViewModel<HomeViewModel>(vmFactory).messages.observe(this, Observer { onMessagesChange(it) })
+        viewModel = provideActivityViewModel(vmFactory)
+        viewModel.messages.observe(this, Observer { onMessagesChange(it) })
     }
 
     private fun onMessagesChange(list: List<Message>) {
