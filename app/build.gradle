@@ -10,8 +10,9 @@ android {
         minSdkVersion sdkVersions.min
         targetSdkVersion sdkVersions.target
         multiDexEnabled true
-        versionCode buildVersion()
-        versionName version
+        def (code, name) = buildVersion()
+        versionCode code
+        versionName name
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
