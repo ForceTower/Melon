@@ -17,4 +17,32 @@ ext {
 
         (major * 100000) + (minor * 10000) + (patch * 100) + candidate
     }
+
+    buildVersion = {
+        def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+        def last_tag = 'git rev-list --tags --no-walk --max-count=1'.execute([], project.rootDir).text
+        if (last_tag.endsWith("\n")) last_tag = last_tag.substring(0, last_tag.size() - 1)
+        def newCommits = Integer.parseInt("git rev-list ${last_tag}..HEAD --count".execute([], project.rootDir).text.trim())
+
+        def prefix = false
+        def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
+        if (patch.endsWith("development")) {
+            patch = patch.replaceAll("[^0-9]","")
+            development = true
+        } else {
+            //If this is not a development build, create a tag for it
+            "git tag v${version}".execute([], project.rootDir)
+        }
+
+        name = "${major}.${minor}.${patch} "
+        if (development) {
+            name = name + "dev_"
+        }
+
+        name = name + "build ${gitSha.substring(0, 4)}.${newCommits}"
+        println(name)
+        code = (sdkVersions.min * 1000000) + (major * 10000) + (minor + 1000) + (patch * 100) + newCommits
+        println(code)
+        code
+    }
 }

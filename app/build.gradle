@@ -4,13 +4,13 @@ apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion sdkVersions.compile
     defaultConfig {
         applicationId "com.forcetower.uefs"
-        minSdkVersion 23
-        targetSdkVersion 28
+        minSdkVersion sdkVersions.min
+        targetSdkVersion sdkVersions.target
         multiDexEnabled true
-        versionCode buildVersionCode()
+        versionCode buildVersion()
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
