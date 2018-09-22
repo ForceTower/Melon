@@ -48,6 +48,7 @@ import android.graphics.BitmapFactory
 import android.graphics.Bitmap
 import android.net.Uri
 import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.uefs.core.util.VersionUtils
 
 
 class IntroductionFragment: UFragment(), Injectable {
@@ -94,23 +95,27 @@ class IntroductionFragment: UFragment(), Injectable {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
             REQUEST_SELECT_PICTURE -> {
-                if (resultCode == RESULT_OK && data != null) {
-                    val uri = data.data
+                if (resultCode == RESULT_OK && data != null && data.data != null) {
+                    val uri = data.data!!
 
-                    val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
-                    val ac = requireContext().getColor(R.color.colorAccent)
-                    CropImage.activity(uri)
-                            .setFixAspectRatio(true)
-                            .setAspectRatio(1, 1)
-                            .setCropShape(CropImageView.CropShape.OVAL)
-                            .setBackgroundColor(bg)
-                            .setBorderLineColor(ac)
-                            .setBorderCornerColor(ac)
-                            .setActivityMenuIconColor(ac)
-                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
-                            .setActivityTitle(getString(R.string.cut_profile_image))
-                            .setGuidelines(CropImageView.Guidelines.OFF)
-                            .start(requireContext(), this)
+                    if (!VersionUtils.isOreo()) {
+                        val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
+                        val ac = requireContext().getColor(R.color.colorAccent)
+                        CropImage.activity(uri)
+                                .setFixAspectRatio(true)
+                                .setAspectRatio(1, 1)
+                                .setCropShape(CropImageView.CropShape.OVAL)
+                                .setBackgroundColor(bg)
+                                .setBorderLineColor(ac)
+                                .setBorderCornerColor(ac)
+                                .setActivityMenuIconColor(ac)
+                                .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
+                                .setActivityTitle(getString(R.string.cut_profile_image))
+                                .setGuidelines(CropImageView.Guidelines.OFF)
+                                .start(requireContext(), this)
+                    } else {
+                        onImagePicked(uri)
+                    }
 
                 }
             }
