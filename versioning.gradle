@@ -1,29 +1,31 @@
 ext {
+    //noinspection SpellCheckingInspection
     buildVersion = {
         //Perform git commands
-        def gitSha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+        def git_sha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
+        def commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
         def last_tag = 'git rev-list --tags --no-walk --max-count=1'.execute([], project.rootDir).text.trim()
-        def newCommits = Integer.parseInt("git rev-list ${last_tag}..HEAD --count".execute([], project.rootDir).text.trim())
+        def new_commits = Integer.parseInt("git rev-list ${last_tag}..HEAD --count".execute([], project.rootDir).text.trim())
 
-        def prefix = ""
+        def postfix = "[release]"
         def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
-        if (patch.endsWith("development")) {
+        if (patch.endsWith("dev")) {
             patch = patch.replaceAll("[^0-9]","")
-            prefix = "dev_"
+            postfix = "[development]"
         } else {
-            if (patch.endsWith("candidate")) {
+            if (patch.endsWith("pr")) {
                 patch = patch.replaceAll("[^0-9]", "")
-                prefix = "rc_"
+                postfix = "[pre-release]"
             }
             //If this is not a development build, create a tag for it
-            "git tag v${version}".execute([], project.rootDir)
+            "git tag ${version} build ${commit_count}".execute([], project.rootDir)
         }
 
-        (major, minor, patch, newCommits) = [major, minor, patch, newCommits].collect{it.toInteger()}
+        (major, minor, patch, new_commits) = [major, minor, patch, new_commits].collect{it.toInteger()}
 
-        //For the version 12.7.4 will be generated the code: 21274CC
-        def name = "${major}.${minor}.${patch} ${prefix}build ${gitSha.substring(0, 4)}${newCommits}"
-        def code = (2 * 1000000) + (major * 10000) + (minor * 1000) + (patch * 100) + newCommits
+        //For the version 12.7.4 will be generated the code: 21COUNT and the name: [12.7.4 build hash post]
+        def name = "${major}.${minor}.${patch} build ${git_sha.toUpperCase()} ${postfix}"
+        def code = (21 * 100000) + commit_count
         return [code, name]
     }
 }
