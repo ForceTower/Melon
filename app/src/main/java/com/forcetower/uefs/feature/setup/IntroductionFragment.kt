@@ -29,14 +29,17 @@ package com.forcetower.uefs.feature.setup
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.graphics.BitmapFactory
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -44,11 +47,6 @@ import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import javax.inject.Inject
-import android.graphics.BitmapFactory
-import android.graphics.Bitmap
-import android.net.Uri
-import com.forcetower.uefs.core.util.ColorUtils
-import com.forcetower.uefs.core.util.VersionUtils
 
 
 class IntroductionFragment: UFragment(), Injectable {

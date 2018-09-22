@@ -28,6 +28,12 @@ allprojects {
     }
 }
 
+ext.sdkVersions = [
+    'compile'    : 28,
+    'min'        : 23,
+    'target'     : 28,
+]
+
 ext {
     //Android Components
     androidX = "1.0.0-rc02"
@@ -46,11 +52,6 @@ ext {
     firebase_auth = "16.0.3"
     firebase_messaging = "17.3.1"
     firebase_firestore = "17.1.0"
-}
-
-ext {
-    git_sha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
-    git_commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
 }
 
 task clean(type: Delete) {
