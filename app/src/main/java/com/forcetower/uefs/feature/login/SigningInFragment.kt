@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.feature.login
 
-import android.content.Intent
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -44,31 +43,43 @@ import androidx.lifecycle.Observer
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.vm.LoginViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSigningInBinding
-import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.provideViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
 import javax.inject.Inject
 
 class SigningInFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentSigningInBinding
     private lateinit var viewModel: LoginViewModel
     private lateinit var messages: Array<String>
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        firebaseAuth = FirebaseAuth.getInstance()
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentSigningInBinding.inflate(inflater, container, false).also {
@@ -115,6 +126,7 @@ class SigningInFragment : UFragment(), Injectable {
     override fun onStart() {
         super.onStart()
         displayRandomText()
+        firebaseAuthListener()
     }
 
     private fun displayRandomText() {
@@ -161,7 +173,7 @@ class SigningInFragment : UFragment(), Injectable {
             binding.textHelloUser.text = getString(R.string.login_hello_user, profile.name)
             binding.textHelloUser.fadeIn()
         }
-
+/*
         GlideApp.with(this)
                 .load(profile?.imageUrl)
                 .fallback(R.mipmap.ic_unes_large_image_512)
@@ -169,6 +181,7 @@ class SigningInFragment : UFragment(), Injectable {
                 .circleCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.imageCenter)
+                */
     }
 
     private fun completeLogin() {
@@ -185,8 +198,26 @@ class SigningInFragment : UFragment(), Injectable {
         }, 1000)
     }
 
+    private fun firebaseAuthListener() {
+        firebaseAuth.addAuthStateListener {
+            val current = it.currentUser
+            Timber.d("Auth State changed... User is ${current?.email}")
+            if (current != null) {
+                val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
+                GlideApp.with(requireContext())
+                        .load(reference)
+                        .fallback(R.mipmap.ic_unes_large_image_512)
+                        .placeholder(R.mipmap.ic_unes_large_image_512)
+                        .circleCrop()
+                        .transition(DrawableTransitionOptions.withCrossFade())
+                        .into(binding.imageCenter)
+            }
+        }
+    }
+
     private fun snackAndBack(string: String) {
         showSnack(string)
+        firebaseAuth.signOut()
         view?.findNavController()?.popBackStack()
     }
 }

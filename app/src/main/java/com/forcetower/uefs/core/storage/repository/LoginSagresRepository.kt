@@ -45,6 +45,7 @@ import com.forcetower.uefs.core.model.unes.*
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
+import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
 import java.io.IOException
 import javax.inject.Inject
@@ -55,6 +56,7 @@ class LoginSagresRepository @Inject constructor(
     private val executor: AppExecutors,
     private val database: UDatabase,
     private val service: UService,
+    private val firebaseAuthRepository: FirebaseAuthRepository,
     private val context: Context
 ) {
     private val appToken = context.getString(R.string.app_service_token)
@@ -97,7 +99,7 @@ class LoginSagresRepository @Inject constructor(
                 val score = SagresBasicParser.getScore(l.document)
                 Timber.d("Login Completed. Score parsed: $score")
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
-                me(data, score, username, password)
+                me(data, score)
             } else {
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
@@ -109,7 +111,7 @@ class LoginSagresRepository @Inject constructor(
         }
     }
 
-    private fun me(data: MediatorLiveData<Callback>, score: Double, username: String, password: String) {
+    private fun me(data: MediatorLiveData<Callback>, score: Double) {
         val me = SagresNavigator.instance.aMe()
         currentStep.value = createStep(R.string.step_finding_profile)
         data.addSource(me) {m ->
@@ -119,7 +121,7 @@ class LoginSagresRepository @Inject constructor(
                 val person = m.person
                 if (person != null) {
                     executor.diskIO().execute { database.profileDao().insert(person, score) }
-                    executor.networkIO().execute { loginToService(person, username, password) }
+                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person) }
                     messages(data, person.id)
                 } else {
                     Timber.d("SPerson is null")
@@ -289,27 +291,6 @@ class LoginSagresRepository @Inject constructor(
     private fun defineCalendar(calendar: List<SCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
-    }
-
-
-    private fun loginToService(person: SPerson, username: String, password: String) {
-        val login = service.loginOrCreate(username, password, person.email, person.name, person.cpf, appToken)
-        try {
-            val response = login.execute()
-            if (response.isSuccessful) {
-                val token = response.body()
-                if (token != null) {
-                    database.accessTokenDao().insert(token)
-                } else {
-                    Timber.d("Access Token is null")
-                }
-            } else {
-                Timber.d("Response is unsuccessful. The code is: ${response.code()}")
-            }
-        } catch (e: IOException) {
-            Timber.d("Request Failed")
-            e.printStackTrace()
-        }
     }
 
     companion object {

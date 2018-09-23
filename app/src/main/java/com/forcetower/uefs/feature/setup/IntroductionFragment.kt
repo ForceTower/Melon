@@ -35,27 +35,40 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.vm.SetupViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import timber.log.Timber
 import javax.inject.Inject
 
 
 class IntroductionFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentSetupIntroductionBinding
+    private lateinit var viewModel: SetupViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -75,6 +88,27 @@ class IntroductionFragment: UFragment(), Injectable {
         binding.imageUserImage.setOnClickListener {_ ->
             pickImage()
         }
+
+        binding.btnNext.setOnClickListener {_ ->
+            val user = firebaseAuth.currentUser
+            if (user != null) {
+                viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
+            } else {
+                Timber.d("Not connected to firebase. Write denied")
+            }
+        }
+
+        val current = firebaseAuth.currentUser
+        if (current != null) {
+            val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
+            GlideApp.with(requireContext())
+                    .load(reference)
+                    .fallback(R.mipmap.ic_unes_large_image_512)
+                    .placeholder(R.mipmap.ic_unes_large_image_512)
+                    .circleCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(binding.imageUserImage)
+        }
     }
 
     private fun pickImage() {
@@ -86,6 +120,7 @@ class IntroductionFragment: UFragment(), Injectable {
     private fun onImagePicked(uri: Uri) {
         val imageStream = requireActivity().contentResolver.openInputStream(uri)
         val bitmap = BitmapFactory.decodeStream(imageStream)
+        viewModel.setSelectedImage(uri)
         binding.imageUserImage.setImageBitmap(bitmap)
     }
 

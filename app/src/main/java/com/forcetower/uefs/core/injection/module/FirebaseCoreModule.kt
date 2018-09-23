@@ -25,20 +25,24 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs
+package com.forcetower.uefs.core.injection.module
 
-import android.content.Context
-import com.bumptech.glide.Glide
-import com.bumptech.glide.Registry
-import com.bumptech.glide.annotation.GlideModule
-import com.bumptech.glide.module.AppGlideModule
-import com.firebase.ui.storage.images.FirebaseImageLoader
-import com.google.firebase.storage.StorageReference
-import java.io.InputStream
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import dagger.Module
+import dagger.Provides
+import javax.inject.Singleton
 
-@GlideModule
-class UGlideModule : AppGlideModule() {
-    override fun registerComponents(context: Context, glide: Glide, registry: Registry) {
-        registry.append(StorageReference::class.java, InputStream::class.java, FirebaseImageLoader.Factory())
-    }
+
+@Module
+object FirebaseCoreModule {
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideAuth(): FirebaseAuth = FirebaseAuth.getInstance()
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance();
 }
