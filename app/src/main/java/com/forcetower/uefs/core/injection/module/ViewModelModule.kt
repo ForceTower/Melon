@@ -78,5 +78,10 @@ abstract class ViewModelModule {
     abstract fun bindCourseViewModel(vm: CourseViewModel): ViewModel
 
     @Binds
+    @IntoMap
+    @ViewModelKey(SetupViewModel::class)
+    abstract fun bindSetupViewModel(vm: SetupViewModel): ViewModel
+
+    @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
 }

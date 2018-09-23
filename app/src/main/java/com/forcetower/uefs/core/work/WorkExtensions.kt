@@ -40,6 +40,10 @@ fun OneTimeWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
     ).enqueue()
 }
 
+fun OneTimeWorkRequest.enqueue() {
+    WorkManager.getInstance().enqueue(this)
+}
+
 fun PeriodicWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
     WorkManager.getInstance().enqueueUniquePeriodicWork(
             name,

@@ -53,6 +53,7 @@ ext {
     firebase_auth = "16.0.3"
     firebase_messaging = "17.3.1"
     firebase_firestore = "17.1.0"
+    firebase_storage = "16.0.2"
 }
 
 task clean(type: Delete) {

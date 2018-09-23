@@ -35,14 +35,19 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppExecutors(private val diskIO: Executor, private val networkIO: Executor, private val mainThread: Executor, private val others: Executor) {
+class AppExecutors(
+    private val diskIO: Executor,
+    private val networkIO: Executor,
+    private val mainThread: Executor,
+    private val others: Executor
+) {
 
     @Inject
     constructor() : this(
             Executors.newFixedThreadPool(2),
             Executors.newFixedThreadPool(4),
             MainThreadExecutor(),
-            Executors.newFixedThreadPool(3)
+            Executors.newFixedThreadPool(5)
     )
 
     fun diskIO(): Executor {
