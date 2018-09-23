@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'com.github.triplet.play'
 
 android {
     compileSdkVersion sdkVersions.compile
@@ -13,7 +14,6 @@ android {
         def (code, name) = buildVersion()
         versionCode code
         versionName name
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
 
         javaCompileOptions {
             annotationProcessorOptions {
@@ -40,6 +40,11 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+}
+
+play {
+    jsonFile = file('google_play_console_auth.json')
+    track = "internal"
 }
 
 dependencies {
