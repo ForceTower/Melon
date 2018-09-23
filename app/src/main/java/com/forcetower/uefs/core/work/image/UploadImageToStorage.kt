@@ -49,12 +49,12 @@ class UploadImageToStorage(
         val tUri = inputData.getString(URI)?: return Result.FAILURE
         val tRef = inputData.getString(REFERENCE)?: return Result.FAILURE
 
-        val uri = Uri.decode(tUri)
+        val uri = Uri.parse(tUri)
         val storage = FirebaseStorage.getInstance()
         val ref = storage.getReference(tRef)
 
         val resolver = applicationContext.contentResolver
-        val image = BitmapFactory.decodeStream(resolver.openInputStream(Uri.parse(uri)))
+        val image = BitmapFactory.decodeStream(resolver.openInputStream(uri))
         image?: return Result.FAILURE
 
         val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
