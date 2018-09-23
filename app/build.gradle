@@ -21,8 +21,17 @@ android {
             }
         }
     }
+    signingConfigs {
+        release {
+            storeFile signFile
+            storePassword signKeystorePassword
+            keyAlias signKeyAlias
+            keyPassword signKeyPassword
+        }
+    }
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -43,7 +52,7 @@ android {
 }
 
 play {
-    jsonFile = file('google_play_console_auth.json')
+    jsonFile = file('../google_play_console_auth.json')
     track = "internal"
 }
 
