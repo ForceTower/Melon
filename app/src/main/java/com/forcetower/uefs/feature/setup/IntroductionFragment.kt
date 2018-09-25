@@ -126,10 +126,14 @@ class IntroductionFragment: UFragment(), Injectable {
     }
 
     private fun onImagePicked(uri: Uri) {
-        val imageStream = requireActivity().contentResolver.openInputStream(uri)
-        val bitmap = BitmapFactory.decodeStream(imageStream)
         viewModel.setSelectedImage(uri)
-        binding.imageUserImage.setImageBitmap(bitmap)
+        GlideApp.with(requireContext())
+                .load(uri)
+                .fallback(R.mipmap.ic_unes_large_image_512)
+                .placeholder(R.mipmap.ic_unes_large_image_512)
+                .circleCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(binding.imageUserImage)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
