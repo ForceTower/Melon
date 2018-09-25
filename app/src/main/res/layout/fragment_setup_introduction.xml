@@ -29,15 +29,6 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
-    <data>
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-        <variable
-            name="firebaseStorage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
-    </data>
-
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -85,8 +76,6 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_information_about"
             app:clipToCircle="@{true}"
-            app:firebaseUser="@{firebaseUser}"
-            app:firebaseStorage="@{firebaseStorage}"
             android:elevation="6dp"
             android:scaleType="centerCrop"
             android:src="@mipmap/ic_unes_large_image_512"
