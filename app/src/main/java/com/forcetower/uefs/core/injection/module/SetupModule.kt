@@ -27,8 +27,10 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.feature.setup.ConfigurationFragment
 import com.forcetower.uefs.feature.setup.IntroductionFragment
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
+import com.forcetower.uefs.feature.setup.SelectSyncDialog
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -37,5 +39,9 @@ abstract class SetupModule {
     @ContributesAndroidInjector
     abstract fun selectCourseDialog(): SelectCourseDialog
     @ContributesAndroidInjector
+    abstract fun selectSyncDialog(): SelectSyncDialog
+    @ContributesAndroidInjector
     abstract fun introductionFragment(): IntroductionFragment
+    @ContributesAndroidInjector
+    abstract fun configurationFragment(): ConfigurationFragment
 }

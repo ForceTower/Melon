@@ -36,5 +36,25 @@
         android:id="@+id/introduction"
         android:name="com.forcetower.uefs.feature.setup.IntroductionFragment"
         android:label="IntroductionFragment"
-        tools:layout="@layout/fragment_setup_introduction"/>
+        tools:layout="@layout/fragment_setup_introduction">
+        <action
+            android:id="@+id/action_introduction_to_configuration"
+            app:destination="@id/configuration" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/configuration"
+        android:name="com.forcetower.uefs.feature.setup.ConfigurationFragment"
+        android:label="ConfigurationFragment"
+        tools:layout="@layout/fragment_setup_configuration">
+        <action
+            android:id="@+id/action_configuration_to_home"
+            app:destination="@id/home" />
+    </fragment>
+
+    <activity
+        android:id="@+id/home"
+        android:name="com.forcetower.uefs.feature.home.HomeActivity"
+        android:label="HomeActivity"
+        tools:layout="@layout/activity_home"/>
 </navigation>

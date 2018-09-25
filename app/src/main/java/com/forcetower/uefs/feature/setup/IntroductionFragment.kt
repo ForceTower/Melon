@@ -35,6 +35,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
@@ -103,6 +104,7 @@ class IntroductionFragment: UFragment(), Injectable {
                 } else {
                     Timber.d("Not connected to firebase. Write would denied")
                 }
+                findNavController().navigate(R.id.action_introduction_to_configuration)
             }
         }
 

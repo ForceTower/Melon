@@ -192,6 +192,18 @@
     <string name="cancel">Cancelar</string>
     <string name="cut_profile_image">Cortar Imagem</string>
     <string name="error_select_a_course">Selecione um curso</string>
+    <string name="label_app_config">Configurações Gerais</string>
+    <string name="setup_configuration_information">Estas configurações controlam o comportamento geral do aplicativo. Você poderá altera-las depois</string>
+    <string name="setup_synchronization">Frequência de Sincronização</string>
+    <string name="setup_score">Score</string>
+    <string name="label_synchronization">Sincronização</string>
+    <string name="label_sync_selection_information">Controla a frequência que o UNES tentará se conectar ao Portal Sagres em busca de novas informações</string>
+    <string name="label_example_sync_freq">A cada 60 minutos</string>
+    <string name="at_every_time_minutes">A cada %1$d minutos</string>
+    <plurals name="at_every_time_hours">
+        <item quantity="one">A cada %d hora</item>
+        <item quantity="other">A cada %d horas</item>
+    </plurals>
 
     <plurals name="duration_hours">
         <item quantity="one">%s hora</item>

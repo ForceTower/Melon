@@ -79,6 +79,7 @@ class SyncMainWorker(
                     .build()
 
             request.enqueueUnique(NAME, replace)
+            if (replace) preferences.edit().putInt(PreferenceConstants.SYNC_FREQUENCY, period).apply()
             Timber.d("Main Sync Work Scheduled")
         }
 
