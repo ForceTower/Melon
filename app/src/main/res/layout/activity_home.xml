@@ -57,7 +57,7 @@
             android:background="@color/white"
             android:layout_gravity="bottom"
             app:elevation="12dp"
-            app:labelVisibilityMode="auto"
+            app:labelVisibilityMode="labeled"
             app:itemHorizontalTranslationEnabled="true"
             app:itemTextAppearanceActive="@style/UTheme.BottomNavigation.Active"
             app:itemTextAppearanceInactive="@style/UTheme.BottomNavigation.Active"
@@ -70,8 +70,7 @@
             android:layout_width="match_parent"
             android:layout_gravity="bottom"
             android:layout_height="48dp"
-            android:layout_marginBottom="112dp">
-        </androidx.coordinatorlayout.widget.CoordinatorLayout>
+            android:layout_marginBottom="112dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

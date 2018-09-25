@@ -101,7 +101,7 @@ class IntroductionFragment: UFragment(), Injectable {
                     viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
                     viewModel.updateCourse(course, user)
                 } else {
-                    Timber.d("Not connected to firebase. Write denied")
+                    Timber.d("Not connected to firebase. Write would denied")
                 }
             }
         }
