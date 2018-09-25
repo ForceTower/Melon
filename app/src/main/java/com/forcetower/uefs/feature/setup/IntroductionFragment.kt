@@ -71,9 +71,6 @@ class IntroductionFragment: UFragment(), Injectable {
         viewModel = provideActivityViewModel(factory)
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
-        }.apply {
-            firebaseStorage = this@IntroductionFragment.firebaseStorage
-            firebaseUser = firebaseAuth.currentUser
         }.root
     }
 
@@ -107,6 +104,18 @@ class IntroductionFragment: UFragment(), Injectable {
                     Timber.d("Not connected to firebase. Write denied")
                 }
             }
+        }
+
+        val current = firebaseAuth.currentUser
+        if (current != null) {
+            val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
+            GlideApp.with(requireContext())
+                    .load(reference)
+                    .fallback(R.mipmap.ic_unes_large_image_512)
+                    .placeholder(R.mipmap.ic_unes_large_image_512)
+                    .circleCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(binding.imageUserImage)
         }
     }
 
