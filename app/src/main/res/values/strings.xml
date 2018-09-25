@@ -191,6 +191,7 @@
     <string name="ok">OK</string>
     <string name="cancel">Cancelar</string>
     <string name="cut_profile_image">Cortar Imagem</string>
+    <string name="error_select_a_course">Selecione um curso</string>
 
     <plurals name="duration_hours">
         <item quantity="one">%s hora</item>

@@ -71,6 +71,9 @@ class IntroductionFragment: UFragment(), Injectable {
         viewModel = provideActivityViewModel(factory)
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
+        }.apply {
+            firebaseStorage = this@IntroductionFragment.firebaseStorage
+            firebaseUser = firebaseAuth.currentUser
         }.root
     }
 
@@ -79,6 +82,7 @@ class IntroductionFragment: UFragment(), Injectable {
             val dialog = SelectCourseDialog()
             dialog.setCallback(object: CourseSelectionCallback {
                 override fun onSelected(course: Course) {
+                    viewModel.setSelectedCourse(course)
                     binding.textSelectCourseInternal.setText(course.name)
                 }
             })
@@ -90,24 +94,19 @@ class IntroductionFragment: UFragment(), Injectable {
         }
 
         binding.btnNext.setOnClickListener {_ ->
-            val user = firebaseAuth.currentUser
-            if (user != null) {
-                viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
+            val course = viewModel.getSelectedCourse()
+            if (course == null) {
+                binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
             } else {
-                Timber.d("Not connected to firebase. Write denied")
+                binding.textSelectCourseInternal.error = null
+                val user = firebaseAuth.currentUser
+                if (user != null) {
+                    viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
+                    viewModel.updateCourse(course, user)
+                } else {
+                    Timber.d("Not connected to firebase. Write denied")
+                }
             }
-        }
-
-        val current = firebaseAuth.currentUser
-        if (current != null) {
-            val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
-            GlideApp.with(requireContext())
-                    .load(reference)
-                    .fallback(R.mipmap.ic_unes_large_image_512)
-                    .placeholder(R.mipmap.ic_unes_large_image_512)
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(binding.imageUserImage)
         }
     }
 
