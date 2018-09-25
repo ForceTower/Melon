@@ -136,4 +136,20 @@ class FirebaseAuthRepository @Inject constructor(
                     }
                 })
     }
+
+    fun updateFrequency(value: Int) {
+        val user = firebaseAuth.currentUser
+        user?: return
+
+        val data = mapOf("syncFrequency" to value)
+        userCollection.document(user.uid).set(data, SetOptions.merge())
+                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Timber.d("Completed setting frequency")
+                    } else {
+                        Timber.d("Failed to set frequency")
+                        Timber.d("Exception: ${task.exception}")
+                    }
+                })
+    }
 }

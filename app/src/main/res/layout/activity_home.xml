@@ -58,7 +58,7 @@
             android:layout_gravity="bottom"
             app:elevation="12dp"
             app:labelVisibilityMode="labeled"
-            app:itemHorizontalTranslationEnabled="true"
+            app:itemHorizontalTranslationEnabled="false"
             app:itemTextAppearanceActive="@style/UTheme.BottomNavigation.Active"
             app:itemTextAppearanceInactive="@style/UTheme.BottomNavigation.Active"
             app:menu="@menu/home_bottom_navigation"
