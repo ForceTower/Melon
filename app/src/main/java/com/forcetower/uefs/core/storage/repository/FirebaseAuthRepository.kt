@@ -29,56 +29,109 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import com.forcetower.sagres.database.model.SPerson
+import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.Profile
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class FirebaseAuthRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
-    private val context: Context,
-    private val executors: AppExecutors
+        private val firebaseAuth: FirebaseAuth,
+        @Named(Profile.COLLECTION) private val userCollection: CollectionReference,
+        private val context: Context,
+        private val executors: AppExecutors
 ){
     private val secret = context.getString(R.string.firebase_account_secret)
 
-    fun loginToFirebase(person: SPerson) {
-        attemptSignIn(person.email.trim(), "!!_${person.cpf.trim()}_##_${person.id}_**_$secret")
+    fun loginToFirebase(person: SPerson, access: Access) {
+        attemptSignIn(person.email.trim(), context.getString(R.string.firebase_password_pattern, access, person, secret), access, person)
     }
 
-    private fun attemptSignIn(email: String, password: String) {
+    private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
                     if (task.isSuccessful) {
-                        if (firebaseAuth.currentUser == null) {
-                            attemptCreateAccount(email, password)
+                        val user = firebaseAuth.currentUser
+                        if (user == null) {
+                            attemptCreateAccount(email, password, access, person)
                         } else {
-                            Timber.d("Connected! Your account is: ${firebaseAuth.currentUser}")
+                            Timber.d("Connected! Your account is: $user")
+                            connected(access, person, user.uid)
                         }
                     } else {
                         Timber.d("Failed to Sign In...")
                         Timber.d("Exception: ${task.exception}")
-                        attemptCreateAccount(email, password)
+                        attemptCreateAccount(email, password, access, person)
                     }
                 })
     }
 
-    private fun attemptCreateAccount(email: String, password: String) {
+    private fun attemptCreateAccount(email: String, password: String, access: Access, person: SPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
                     if (task.isSuccessful) {
-                        if (firebaseAuth.currentUser == null) {
+                        val user = firebaseAuth.currentUser
+                        if (user == null) {
                             Timber.d("Failed anyways")
                         } else {
-                            Timber.d("Connected! Your account is: ${firebaseAuth.currentUser}")
+                            Timber.d("Connected! Your account is: $user")
+                            connected(access, person, user.uid)
                         }
                     } else {
                         Timber.d("Failed to Create account...")
+                        Timber.d("Exception: ${task.exception}")
+                    }
+                })
+    }
+
+    private fun connected(access: Access, person: SPerson, uid: String) {
+        Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
+
+        val data = mapOf (
+                "name"      to WordUtils.capitalize(person.name.trim()),
+                "username"  to access.username,
+                "email"     to WordUtils.capitalize(person.email.trim()),
+                "cpf"       to person.cpf.trim(),
+                "sagresId"  to person.id,
+                "imageUrl"  to "/users/$uid/avatar.jpg"
+        )
+        userCollection.document(uid).set(data, SetOptions.merge())
+                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Timber.d("User data set!")
+
+                    } else {
+                        Timber.d("Failed to set data...")
+                        Timber.d("Exception: ${task.exception}")
+                    }
+                })
+    }
+
+    fun updateCourse(course: Course, user: FirebaseUser) {
+        val data = mapOf(
+                "courseId" to course.id,
+                "course" to course.name
+        )
+        userCollection.document(user.uid).set(data, SetOptions.merge())
+                .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
+                    if (task.isSuccessful) {
+                        Timber.d("User course data set!")
+
+                    } else {
+                        Timber.d("Failed to set course data...")
                         Timber.d("Exception: ${task.exception}")
                     }
                 })

@@ -25,42 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection
+package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.injection.module.*
-import com.forcetower.uefs.core.work.grades.GradesSagresWorker
-import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
-import com.forcetower.uefs.core.work.sync.SyncMainWorker
-import dagger.BindsInstance
-import dagger.Component
-import dagger.android.AndroidInjectionModule
-import dagger.android.AndroidInjector
-import dagger.android.support.AndroidSupportInjectionModule
-import javax.inject.Singleton
+import com.forcetower.uefs.core.model.unes.Profile
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.FirebaseFirestore
+import dagger.Module
+import dagger.Provides
+import dagger.Reusable
+import javax.inject.Named
 
-@Singleton
-@Component(
-    modules = [
-        AndroidInjectionModule::class,
-        AndroidSupportInjectionModule::class,
-        AppModule::class,
-        NetworkModule::class,
-        FirebaseCoreModule::class,
-        FirestoreModule::class,
-        ViewModelModule::class,
-        ActivityModule::class
-    ]
-)
-interface AppComponent {
-    @Component.Builder
-    interface Builder {
-        @BindsInstance fun application(app: UApplication): Builder
-        fun build(): AppComponent
-    }
+@Module
+object FirestoreModule {
+    @JvmStatic
+    @Provides
+    @Reusable
+    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    fun inject(app: UApplication)
-    fun inject(worker: SyncMainWorker)
-    fun inject(worker: SyncLinkedWorker)
-    fun inject(worker: GradesSagresWorker)
+    @JvmStatic
+    @Provides
+    @Reusable
+    @Named(Profile.COLLECTION)
+    fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
 }

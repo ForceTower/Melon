@@ -46,4 +46,8 @@ data class Profile(
     val sagresId: Long,
     val uuid: String = UUID.randomUUID().toString(),
     val me: Boolean = false
-)
+) {
+    companion object {
+        const val COLLECTION = "users"
+    }
+}
