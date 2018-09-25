@@ -37,6 +37,14 @@
         <variable
             name="profileViewModel"
             type="com.forcetower.uefs.core.vm.ProfileViewModel"/>
+
+        <variable
+            name="firebaseUser"
+            type="com.google.firebase.auth.FirebaseUser"/>
+
+        <variable
+            name="firebaseStorage"
+            type="com.google.firebase.storage.FirebaseStorage"/>
     </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
@@ -75,7 +83,8 @@
                     app:clipToCircle="@{true}"
                     android:padding="8dp"
                     android:src="@mipmap/ic_unes_large_image_512"
-                    app:profileImage="@{profileViewModel.profile.imageUrl}"
+                    app:firebaseUser="@{firebaseUser}"
+                    app:firebaseStorage="@{firebaseStorage}"
                     tools:src="@tools:sample/avatars"/>
             </FrameLayout>
 

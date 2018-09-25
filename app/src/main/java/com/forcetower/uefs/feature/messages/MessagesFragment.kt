@@ -44,12 +44,18 @@ import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import java.util.*
 import javax.inject.Inject
 
 class MessagesFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentAllMessagesBinding
     private lateinit var profileViewModel: ProfileViewModel
@@ -62,6 +68,8 @@ class MessagesFragment: UFragment(), Injectable {
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
             messagesViewModel = this@MessagesFragment.messagesViewModel
+            firebaseStorage = this@MessagesFragment.firebaseStorage
+            firebaseUser = this@MessagesFragment.firebaseAuth.currentUser
             setLifecycleOwner(this@MessagesFragment)
         }
 

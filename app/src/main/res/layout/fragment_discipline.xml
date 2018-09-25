@@ -27,12 +27,20 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
         <variable
             name="viewModel"
             type="com.forcetower.uefs.core.vm.DisciplineViewModel"/>
+        <variable
+            name="firebaseUser"
+            type="com.google.firebase.auth.FirebaseUser"/>
+
+        <variable
+            name="firebaseStorage"
+            type="com.google.firebase.storage.FirebaseStorage"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -61,6 +69,20 @@
                     android:minHeight="?actionBarSize"
                     android:text="@string/label_grades_disciplines_short"
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+
+                <ImageView
+                    android:id="@+id/image_user_picture"
+                    android:layout_width="?attr/actionBarSize"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_gravity="end|center_vertical"
+                    android:transitionName="@string/user_image_transition"
+                    android:contentDescription="@string/acc_user_image"
+                    app:clipToCircle="@{true}"
+                    app:firebaseUser="@{firebaseUser}"
+                    app:firebaseStorage="@{firebaseStorage}"
+                    android:padding="8dp"
+                    android:src="@mipmap/ic_unes_large_image_512"
+                    tools:src="@tools:sample/avatars"/>
             </FrameLayout>
 
             <com.google.android.material.tabs.TabLayout

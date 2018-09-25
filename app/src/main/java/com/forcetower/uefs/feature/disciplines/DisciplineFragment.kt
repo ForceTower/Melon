@@ -44,11 +44,18 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.makeSemester
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
 
 class DisciplineFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
+
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var binding: FragmentDisciplineBinding
 
@@ -65,6 +72,8 @@ class DisciplineFragment: UFragment(), Injectable {
         }.apply {
             setLifecycleOwner(this@DisciplineFragment)
             viewModel = this@DisciplineFragment.viewModel
+            firebaseStorage = this@DisciplineFragment.firebaseStorage
+            firebaseUser = this@DisciplineFragment.firebaseAuth.currentUser
         }.root
     }
 
