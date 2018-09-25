@@ -99,7 +99,7 @@ class LoginSagresRepository @Inject constructor(
                 val score = SagresBasicParser.getScore(l.document)
                 Timber.d("Login Completed. Score parsed: $score")
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
-                me(data, score)
+                me(data, score, Access(username = username, password = password))
             } else {
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
@@ -111,7 +111,7 @@ class LoginSagresRepository @Inject constructor(
         }
     }
 
-    private fun me(data: MediatorLiveData<Callback>, score: Double) {
+    private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access) {
         val me = SagresNavigator.instance.aMe()
         currentStep.value = createStep(R.string.step_finding_profile)
         data.addSource(me) {m ->
@@ -121,7 +121,7 @@ class LoginSagresRepository @Inject constructor(
                 val person = m.person
                 if (person != null) {
                     executor.diskIO().execute { database.profileDao().insert(person, score) }
-                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person) }
+                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
                     messages(data, person.id)
                 } else {
                     Timber.d("SPerson is null")

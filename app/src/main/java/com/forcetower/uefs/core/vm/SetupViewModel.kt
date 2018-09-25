@@ -29,13 +29,17 @@ package com.forcetower.uefs.core.vm
 
 import android.net.Uri
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
+import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
 
 class SetupViewModel @Inject constructor(
-
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ): ViewModel() {
     private var selectImageUri: Uri? = null
+    private var course: Course? = null
 
     fun uploadImageToStorage(reference: String) {
         val uri = selectImageUri
@@ -45,5 +49,15 @@ class SetupViewModel @Inject constructor(
 
     fun setSelectedImage(uri: Uri) {
         selectImageUri = uri
+    }
+
+    fun setSelectedCourse(course: Course) {
+        this.course = course
+    }
+
+    fun getSelectedCourse() = course
+
+    fun updateCourse(course: Course, user: FirebaseUser) {
+        firebaseAuthRepository.updateCourse(course, user)
     }
 }
