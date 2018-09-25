@@ -86,6 +86,10 @@ class SigningInFragment : UFragment(), Injectable {
             binding = it
             prepareSwitcher()
             prepareMessages()
+        }.apply {
+            firebaseStorage = this@SigningInFragment.firebaseStorage
+            firebaseUser = this@SigningInFragment.firebaseAuth.currentUser
+            executePendingBindings()
         }.root
     }
 
@@ -202,16 +206,19 @@ class SigningInFragment : UFragment(), Injectable {
         firebaseAuth.addAuthStateListener {
             val current = it.currentUser
             Timber.d("Auth State changed... User is ${current?.email}")
-            if (current != null) {
-                val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
-                GlideApp.with(requireContext())
-                        .load(reference)
-                        .fallback(R.mipmap.ic_unes_large_image_512)
-                        .placeholder(R.mipmap.ic_unes_large_image_512)
-                        .circleCrop()
-                        .transition(DrawableTransitionOptions.withCrossFade())
-                        .into(binding.imageCenter)
-            }
+            binding.firebaseUser = current
+            binding.executePendingBindings()
+
+//            if (current != null) {
+//                val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
+//                GlideApp.with(requireContext())
+//                        .load(reference)
+//                        .fallback(R.mipmap.ic_unes_large_image_512)
+//                        .placeholder(R.mipmap.ic_unes_large_image_512)
+//                        .circleCrop()
+//                        .transition(DrawableTransitionOptions.withCrossFade())
+//                        .into(binding.imageCenter)
+//            }
         }
     }
 

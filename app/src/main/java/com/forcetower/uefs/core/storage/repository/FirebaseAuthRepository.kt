@@ -103,7 +103,7 @@ class FirebaseAuthRepository @Inject constructor(
         val data = mapOf (
                 "name"      to WordUtils.capitalize(person.name.trim()),
                 "username"  to access.username,
-                "email"     to WordUtils.capitalize(person.email.trim()),
+                "email"     to person.email.trim().toLowerCase(),
                 "cpf"       to person.cpf.trim(),
                 "sagresId"  to person.id,
                 "imageUrl"  to "/users/$uid/avatar.jpg"
