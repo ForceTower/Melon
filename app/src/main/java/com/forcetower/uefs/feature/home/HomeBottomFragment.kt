@@ -42,11 +42,17 @@ import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
 
 class HomeBottomFragment: UFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: HomeBottomBinding
     private lateinit var viewModel: HomeViewModel
@@ -59,6 +65,8 @@ class HomeBottomFragment: UFragment(), Injectable {
         }.apply {
             setLifecycleOwner(this@HomeBottomFragment)
             viewModel = this@HomeBottomFragment.viewModel
+            firebaseStorage = this@HomeBottomFragment.firebaseStorage
+            firebaseUser = this@HomeBottomFragment.firebaseAuth.currentUser
         }.root
     }
 

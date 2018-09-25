@@ -44,12 +44,18 @@ import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
 import javax.inject.Inject
 
 class ScheduleFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var profileViewModel: ProfileViewModel
@@ -73,6 +79,8 @@ class ScheduleFragment: UFragment(), Injectable {
             binding = it
         }.apply {
             profileViewModel = this@ScheduleFragment.profileViewModel
+            firebaseStorage = this@ScheduleFragment.firebaseStorage
+            firebaseUser = this@ScheduleFragment.firebaseAuth.currentUser
             setLifecycleOwner(this@ScheduleFragment)
         }.root
     }
