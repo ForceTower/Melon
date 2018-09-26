@@ -32,25 +32,19 @@
         android:checkableBehavior="single">
 
         <item
-            android:id="@+id/dashboard"
-            android:title="@string/label_dashboard"
-            android:icon="@drawable/ic_dashboard_black_24dp"
-            android:checked="true"/>
+            android:id="@+id/profile"
+            android:title="@string/label_profile"
+            android:icon="@drawable/ic_account_black_24dp"/>
 
         <item
-            android:id="@+id/schedule"
-            android:title="@string/label_schedule"
-            android:icon="@drawable/ic_clock_black_24dp"/>
+            android:id="@+id/documents"
+            android:title="@string/label_documents"
+            android:icon="@drawable/ic_description_black_24dp"/>
 
         <item
-            android:id="@+id/messages"
-            android:title="@string/label_messages"
-            android:icon="@drawable/ic_message_black_24dp"/>
-
-        <item
-            android:id="@+id/grades_disciplines"
-            android:title="@string/label_grades_disciplines"
-            android:icon="@drawable/ic_discipline_black_24dp"/>
+            android:id="@+id/big_tray"
+            android:title="@string/label_big_tray"
+            android:icon="@drawable/ic_food_black_24dp"/>
 
         <item
             android:id="@+id/calendar"

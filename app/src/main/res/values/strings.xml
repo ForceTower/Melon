@@ -200,6 +200,9 @@
     <string name="label_sync_selection_information">Controla a frequência que o UNES tentará se conectar ao Portal Sagres em busca de novas informações</string>
     <string name="label_example_sync_freq">A cada 60 minutos</string>
     <string name="at_every_time_minutes">A cada %1$d minutos</string>
+    <string name="label_big_tray">Bandejão</string>
+    <string name="label_profile">Perfil</string>
+    <string name="label_documents">Documentos</string>
     <plurals name="at_every_time_hours">
         <item quantity="one">A cada %s hora</item>
         <item quantity="other">A cada %s horas</item>
