@@ -75,6 +75,7 @@ class ConfigurationFragment: UFragment(), Injectable {
         binding.btnNext.setOnClickListener {
             completeSetup()
             findNavController().navigate(R.id.action_configuration_to_home)
+            requireActivity().finishAfterTransition()
         }
     }
 

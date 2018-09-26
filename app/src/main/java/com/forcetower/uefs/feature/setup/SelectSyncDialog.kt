@@ -35,6 +35,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectCourseBinding
+import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import javax.inject.Inject
 
@@ -42,12 +43,12 @@ class SelectSyncDialog: RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
-    private lateinit var binding: DialogSelectCourseBinding
+    private lateinit var binding: DialogSelectSynchronizationBinding
     private var data: Array<Frequency>? = null
     private var callback: FrequencySelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return DialogSelectCourseBinding.inflate(inflater, container, false).also {
+        return DialogSelectSynchronizationBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener {_ -> dismiss()}
             it.btnOk.setOnClickListener {_ -> select() }
@@ -71,15 +72,15 @@ class SelectSyncDialog: RoundedDialog(), Injectable {
     private fun populateFrequency(data: List<Frequency>) {
         this.data = data.toTypedArray()
         val strings = data.map { it.name }.toTypedArray()
-        binding.pickerCourse.minValue = 1
-        binding.pickerCourse.maxValue = strings.size
-        binding.pickerCourse.displayedValues = strings
+        binding.pickerSync.minValue = 1
+        binding.pickerSync.maxValue = strings.size
+        binding.pickerSync.displayedValues = strings
     }
 
     private fun select() {
         val not = data ?: emptyArray()
         if (not.isNotEmpty()) {
-            callback?.onSelected(not[binding.pickerCourse.value - 1])
+            callback?.onSelected(not[binding.pickerSync.value - 1])
             dismiss()
         }
     }
