@@ -59,7 +59,8 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/spacing_normal"
+                android:paddingStart="@dimen/spacing_normal"
+                android:paddingEnd="@dimen/spacing_common"
                 app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
 
                 <TextView
