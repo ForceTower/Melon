@@ -53,14 +53,16 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppBar">
+            android:layout_height="?attr/actionBarSize"
+            android:elevation="0dp"
+            android:orientation="vertical"
+            android:background="@color/white">
 
             <FrameLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="@dimen/spacing_normal"
-                app:layout_scrollFlags="snap">
+                android:layout_height="?attr/actionBarSize"
+                android:paddingStart="@dimen/spacing_normal"
+                android:paddingEnd="@dimen/spacing_common">
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
@@ -103,7 +105,7 @@
         <FrameLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_marginTop="?attr/actionBarSize">
 
             <androidx.core.widget.NestedScrollView
                 android:id="@+id/layout_data"

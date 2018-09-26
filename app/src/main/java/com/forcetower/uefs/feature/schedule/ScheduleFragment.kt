@@ -32,6 +32,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.ViewGroup
+import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
@@ -42,6 +43,7 @@ import com.forcetower.uefs.core.vm.ScheduleViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -108,9 +110,21 @@ class ScheduleFragment: UFragment(), Injectable {
                     removeDuration = 100L
                 }
             }
+
+            layoutData.setOnScrollChangeListener { _, _, _, _, _ ->
+                if (layoutData.scrollY > 0)
+                    appBar.elevation = getPixelsFromDp(requireContext(), 4).toFloat()
+                else
+                    appBar.elevation = 0f
+            }
         }
 
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        binding.appBar.elevation = 0f
     }
 
     private fun populateInterface(locations: List<LocationWithGroup>) {
