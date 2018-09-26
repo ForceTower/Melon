@@ -201,8 +201,8 @@
     <string name="label_example_sync_freq">A cada 60 minutos</string>
     <string name="at_every_time_minutes">A cada %1$d minutos</string>
     <plurals name="at_every_time_hours">
-        <item quantity="one">A cada %d hora</item>
-        <item quantity="other">A cada %d horas</item>
+        <item quantity="one">A cada %s hora</item>
+        <item quantity="other">A cada %s horas</item>
     </plurals>
 
     <plurals name="duration_hours">
