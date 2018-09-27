@@ -34,7 +34,7 @@
         <item
             android:id="@+id/profile"
             android:title="@string/label_profile"
-            android:icon="@drawable/ic_account_black_24dp"/>
+            android:icon="@drawable/ic_face_black_24dp"/>
 
         <item
             android:id="@+id/documents"
@@ -63,7 +63,7 @@
             <item
                 android:id="@+id/reminders"
                 android:title="@string/label_reminders"
-                android:icon="@drawable/ic_reminder_black_24dp"/>
+                android:icon="@drawable/ic_loyalty_black_24dp"/>
 
             <item
                 android:id="@+id/adventure"
@@ -87,6 +87,11 @@
                 android:icon="@drawable/ic_settings_black_24dp"/>
 
             <item
+                android:id="@+id/bug_report"
+                android:title="@string/bug_report"
+                android:icon="@drawable/ic_bug_report__black_24dp"/>
+
+            <item
                 android:id="@+id/logout"
                 android:title="@string/label_logout"
                 android:icon="@drawable/ic_logout_black_24dp"/>
@@ -96,5 +101,6 @@
 
     <item
         android:id="@+id/open_source"
-        android:title="@string/label_open_source_libraries"/>
+        android:title="@string/label_open_source_libraries"
+        android:icon="@drawable/ic_copyright_black_24dp"/>
 </menu>
