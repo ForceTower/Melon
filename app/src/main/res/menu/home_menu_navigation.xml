@@ -89,7 +89,7 @@
             <item
                 android:id="@+id/bug_report"
                 android:title="@string/bug_report"
-                android:icon="@drawable/ic_bug_report__black_24dp"/>
+                android:icon="@drawable/ic_bug_report_black_24dp"/>
 
             <item
                 android:id="@+id/logout"
