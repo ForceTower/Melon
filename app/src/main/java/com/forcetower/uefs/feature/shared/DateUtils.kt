@@ -102,3 +102,33 @@ fun String.fromWeekDay(): Int {
         else -> 0
     }
 }
+
+fun Long.toCalendar(): Calendar {
+    val calendar = Calendar.getInstance()
+    calendar.timeInMillis = this
+    return calendar
+}
+
+fun Long.formatDateTime(): String {
+    return if (this.isToday()) {
+        this.formatTime()
+    } else {
+        this.formatDate()
+    }
+}
+
+fun Long.isToday(): Boolean {
+    val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
+    val date = dateFormat.format(this)
+    return date == dateFormat.format(System.currentTimeMillis())
+}
+
+fun Long.formatDate(): String {
+    val dateFormat = SimpleDateFormat("dd MMMM", Locale.getDefault())
+    return dateFormat.format(this)
+}
+
+fun Long.formatTime(): String {
+    val dateFormat = SimpleDateFormat("HH:mm:ss", Locale.getDefault())
+    return dateFormat.format(this)
+}
