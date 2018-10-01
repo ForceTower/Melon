@@ -55,5 +55,10 @@
         android:name="com.forcetower.uefs.feature.disciplines.DisciplineFragment"
         android:label="DisciplineFragment"
         tools:layout="@layout/fragment_discipline" />
+    <fragment
+        android:id="@+id/big_tray"
+        android:name="com.forcetower.uefs.feature.bigtray.BigTrayFragment"
+        android:label="BigTrayFragment"
+        tools:layout="@layout/fragment_big_tray"/>
 
 </navigation>
