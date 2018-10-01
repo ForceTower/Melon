@@ -39,5 +39,5 @@ class BigTrayViewModel @Inject constructor(
         repository.requesting = value
     }
 
-    val data = repository.data
+    fun data() = repository.data
 }
