@@ -40,8 +40,7 @@
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            android:layout_height="match_parent">
 
             <FrameLayout
                 android:id="@+id/chart_layout"
@@ -57,24 +56,51 @@
                     android:id="@+id/progress_amount"
                     android:layout_width="180dp"
                     android:layout_height="180dp"
+                    android:layout_gravity="center"
+                    app:backgroundThickness="2dp"
+                    app:foregroundThickness="4dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    android:layout_gravity="center"
-                    tools:progress="59"
-                    app:backgroundThickness="2dp"
-                    app:foregroundThickness="4dp"
-                    app:progressbarColor="@color/blue_accent"/>
+                    app:progressbarColor="@color/blue_accent"
+                    tools:progress="59" />
 
-                <TextView
-                    android:id="@+id/text_amount"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:textColor="@color/blue_accent"
-                    android:textSize="40sp"
-                    android:layout_gravity="center"
-                    tools:text="872" />
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <TextView
+                        android:id="@+id/text_amount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        android:textColor="@color/blue_accent"
+                        android:textSize="40sp"
+                        app:layout_constraintBottom_toTopOf="@+id/amount_name"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_chainStyle="packed"
+                        tools:text="872" />
+
+                    <TextView
+                        android:id="@+id/amount_name"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/text_amount"
+                        tools:text="restantes" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
             </FrameLayout>
 
             <TextView
@@ -83,23 +109,128 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
-                tools:text="Última atualização: 12:08:45"
+                android:textSize="12sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:textSize="12sp"/>
+                tools:text="Última atualização: 12:08:45" />
 
             <TextView
                 android:id="@+id/text_mean"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_big"
                 android:layout_marginStart="@dimen/spacing_common"
+                android:layout_marginTop="@dimen/spacing_big"
                 android:layout_marginEnd="@dimen/spacing_common"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/chart_layout"
-                tools:text="Provavelmente irá acabar às 13:32"
-                android:textSize="16sp"/>
+                tools:text="Provavelmente irá acabar às 13:32" />
+
+            <ImageView
+                android:id="@+id/ru_closed_image"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_food_black_24dp"
+                app:layout_constraintBottom_toTopOf="@+id/closed_message"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/closed_message"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/ru_is_closed_message"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/text_update"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/ru_closed_image" />
+
+            <TextView
+                android:id="@+id/text_loading_data"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/ru_loading_data"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/image_failed_load"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_cancel_outline_black_24dp"
+                app:layout_constraintBottom_toTopOf="@+id/text_failed_load"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <TextView
+                android:id="@+id/text_failed_load"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@string/ru_failed_load_data"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toTopOf="@+id/text_update"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image_failed_load" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_open"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="text_mean,chart_layout" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_closed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="ru_closed_image,closed_message" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_loading"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="text_loading_data" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/group_failed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="image_failed_load,text_failed_load" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

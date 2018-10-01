@@ -31,6 +31,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.annotation.ViewModelKey
 import com.forcetower.uefs.core.vm.*
+import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -81,6 +82,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SetupViewModel::class)
     abstract fun bindSetupViewModel(vm: SetupViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BigTrayViewModel::class)
+    abstract fun bindBigTrayViewModel(vm: BigTrayViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
