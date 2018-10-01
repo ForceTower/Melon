@@ -44,7 +44,9 @@
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/Widget.AppBar">
+        style="@style/Widget.AppBar"
+        app:elevation="0dp"
+        app:liftOnScroll="true">
 
         <FrameLayout
             android:layout_width="match_parent"

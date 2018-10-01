@@ -50,7 +50,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias=".2">
+                app:layout_constraintVertical_bias=".4">
 
                 <com.forcetower.uefs.widget.CircleProgressBar
                     android:id="@+id/progress_amount"
@@ -209,6 +209,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="text_mean,chart_layout" />
 
             <androidx.constraintlayout.widget.Group
@@ -223,6 +224,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="visible"
+                tools:visibility="gone"
                 app:constraint_referenced_ids="text_loading_data" />
 
             <androidx.constraintlayout.widget.Group

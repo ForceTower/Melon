@@ -77,7 +77,7 @@ class BigTrayFragment : UFragment(), Injectable {
     override fun onStart() {
         super.onStart()
         viewModel.requesting = true
-        viewModel.data.observe(this, Observer { onDataSnapshot(it) })
+        viewModel.data().observe(this, Observer { onDataSnapshot(it) })
     }
 
     private fun onDataSnapshot(data: BigTrayData?) {
@@ -91,6 +91,7 @@ class BigTrayFragment : UFragment(), Injectable {
             binding.groupFailed.visibility = GONE
             val percent = data.percentage()
             binding.progressAmount.setProgressWithAnimation(percent)
+            binding.textAmount.text = data.quota
             hasData = true
         } else if (!data.error) {
             binding.groupOpen.visibility = GONE

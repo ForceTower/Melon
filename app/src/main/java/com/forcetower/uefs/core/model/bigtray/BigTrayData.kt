@@ -48,7 +48,7 @@ data class BigTrayData(
         const val DINNER = 3
 
         fun error() = BigTrayData(false, "", true, System.currentTimeMillis(), "")
-        fun quotaExceeded() = BigTrayData(true, "0", false, System.currentTimeMillis(), "")
+        fun closed() = BigTrayData(false, "0", false, System.currentTimeMillis(), "")
         fun createData(values: List<String>) = BigTrayData(true, values[1], false, System.currentTimeMillis(), values[0])
     }
 }

@@ -74,7 +74,7 @@ class BigTrayRepository @Inject constructor(
             if (response.isSuccessful) {
                 val value = response.body()!!.string()
                 if (value.equals("false", ignoreCase = true)) {
-                    return BigTrayData.quotaExceeded()
+                    return BigTrayData.closed()
                 } else {
                     val values = value.split(";")
                     if (values.size == 2) {
