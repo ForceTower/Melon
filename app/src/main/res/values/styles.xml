@@ -172,7 +172,6 @@
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
         <item name="android:background">@color/white</item>
-        <item name="android:elevation">8dp</item>
         <item name="android:orientation">vertical</item>
     </style>
 
