@@ -49,7 +49,7 @@ data class BigTrayData(
 
         fun error() = BigTrayData(false, "", true, System.currentTimeMillis(), "")
         fun closed() = BigTrayData(false, "0", false, System.currentTimeMillis(), "")
-        fun createData(values: List<String>) = BigTrayData(true, values[1], false, System.currentTimeMillis(), values[0])
+        fun createData(values: List<String>) = BigTrayData(true, values[1].trim(), false, System.currentTimeMillis(), values[0].trim())
     }
 }
 
