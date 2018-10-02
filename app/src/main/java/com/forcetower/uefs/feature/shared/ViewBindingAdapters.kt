@@ -108,25 +108,3 @@ fun swipeRefreshing(refreshLayout: CustomSwipeRefreshLayout, refreshing: Boolean
 fun onSwipeRefresh(view: CustomSwipeRefreshLayout, function: SwipeRefreshLayout.OnRefreshListener) {
     view.setOnRefreshListener(function)
 }
-
-@BindingAdapter(requireAll = true, value = ["firebaseUser", "firebaseStorage"])
-fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
-    if (user != null) {
-        val reference = storage.getReference("users/${user.uid}/avatar.jpg")
-        GlideApp.with(iv.context)
-                .load(reference)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(iv)
-    } else {
-        GlideApp.with(iv.context)
-                .load(R.mipmap.ic_unes_large_image_512)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(iv)
-    }
-}
