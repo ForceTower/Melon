@@ -59,6 +59,8 @@
                     android:layout_gravity="center"
                     app:backgroundThickness="2dp"
                     app:foregroundThickness="4dp"
+                    app:max="100"
+                    app:min="0"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -98,7 +100,7 @@
                         app:layout_constraintHorizontal_bias="0.5"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/text_amount"
-                        tools:text="restantes" />
+                        android:text="@string/ru_remaining" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
             </FrameLayout>

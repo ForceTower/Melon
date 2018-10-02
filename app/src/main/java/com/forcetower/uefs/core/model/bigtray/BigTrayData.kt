@@ -116,7 +116,7 @@ fun BigTrayData.percentage(): Float {
             BigTrayData.LUNCH   -> 1450
             BigTrayData.DINNER  -> 490
             else -> 320
-        }, 0f, 1f)
+        }, 0f, 1f) * 100
     } catch (e: Exception) {
         Timber.d(e.message)
     }
