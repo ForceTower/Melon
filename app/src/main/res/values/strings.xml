@@ -208,6 +208,7 @@
     <string name="ru_is_closed_message">O bandejão está fechado</string>
     <string name="ru_loading_data">Carregando dados</string>
     <string name="ru_failed_load_data">Erro ao carregar dados</string>
+    <string name="ru_remaining">restantes</string>
     <plurals name="at_every_time_hours">
         <item quantity="one">A cada %s hora</item>
         <item quantity="other">A cada %s horas</item>
