@@ -209,6 +209,8 @@
     <string name="ru_loading_data">Carregando dados</string>
     <string name="ru_failed_load_data">Erro ao carregar dados</string>
     <string name="ru_remaining">restantes</string>
+    <string name="open_document">Ver documento</string>
+    <string name="download_document">Baixar documento</string>
     <plurals name="at_every_time_hours">
         <item quantity="one">A cada %s hora</item>
         <item quantity="other">A cada %s horas</item>

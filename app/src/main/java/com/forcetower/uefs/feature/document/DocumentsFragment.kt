@@ -31,4 +31,5 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
 
 class DocumentsFragment: UFragment(), Injectable {
+
 }
