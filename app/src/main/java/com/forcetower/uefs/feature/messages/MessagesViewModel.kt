@@ -25,19 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.messages
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import javax.inject.Inject
 
-class DisciplineViewModel @Inject constructor(
-    private val database: UDatabase
+class MessagesViewModel @Inject constructor(
+    val repository: MessagesRepository
 ): ViewModel() {
-    val semesters: LiveData<List<Semester>> by lazy { database.semesterDao().getParticipatingSemesters() }
-    fun classes(semesterId: Long) = database.classDao().getClassesWithGradesFromSemester(semesterId)
+    val messages by lazy { repository.getMessages() }
+
+    private val _refreshing = MediatorLiveData<Boolean>()
+    val refreshing: LiveData<Boolean>
+        get() = _refreshing
+
+    fun onRefresh() {
+        val fetchMessages = repository.fetchMessages()
+        _refreshing.value = true
+        _refreshing.addSource(fetchMessages) {
+            _refreshing.removeSource(fetchMessages)
+            _refreshing.value = false
+        }
+    }
 }

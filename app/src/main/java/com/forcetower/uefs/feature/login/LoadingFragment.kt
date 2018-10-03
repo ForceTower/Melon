@@ -44,7 +44,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.HtmlUtils
-import com.forcetower.uefs.core.vm.LoginViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentLoadingBinding
 import com.forcetower.uefs.feature.home.HomeActivity

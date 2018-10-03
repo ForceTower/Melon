@@ -33,7 +33,7 @@
     <data class="HomeBottomBinding">
         <variable
             name="viewModel"
-            type="com.forcetower.uefs.core.vm.HomeViewModel"/>
+            type="com.forcetower.uefs.feature.home.HomeViewModel"/>
 
         <variable
             name="firebaseUser"
