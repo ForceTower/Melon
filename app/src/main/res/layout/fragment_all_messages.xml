@@ -33,10 +33,10 @@
     <data>
         <variable
             name="messagesViewModel"
-            type="com.forcetower.uefs.core.vm.MessagesViewModel"/>
+            type="com.forcetower.uefs.feature.messages.MessagesViewModel"/>
         <variable
             name="profileViewModel"
-            type="com.forcetower.uefs.core.vm.ProfileViewModel"/>
+            type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
 
         <variable
             name="firebaseUser"

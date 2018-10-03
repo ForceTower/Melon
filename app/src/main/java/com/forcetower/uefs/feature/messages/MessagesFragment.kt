@@ -32,13 +32,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.vm.MessagesViewModel
-import com.forcetower.uefs.core.vm.ProfileViewModel
+import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment

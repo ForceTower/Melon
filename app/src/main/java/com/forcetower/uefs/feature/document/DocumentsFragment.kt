@@ -25,12 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.document
 
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.storage.database.UDatabase
-import javax.inject.Inject
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.shared.UFragment
 
-class ScheduleViewModel @Inject constructor(private val database: UDatabase): ViewModel() {
-    val scheduleSrc by lazy { database.classLocationDao().getCurrentSchedule() }
+class DocumentsFragment: UFragment(), Injectable {
 }

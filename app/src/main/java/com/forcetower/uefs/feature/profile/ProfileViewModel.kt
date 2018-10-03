@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.profile
 
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.ProfileRepository

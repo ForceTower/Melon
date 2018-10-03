@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.login
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData

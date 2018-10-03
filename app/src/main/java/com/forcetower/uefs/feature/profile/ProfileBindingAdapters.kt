@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.feature.profile
 
-import android.os.SystemClock
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -36,7 +35,6 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
-import timber.log.Timber
 
 @BindingAdapter("profileImage")
 fun profileImage(iv: ImageView, url: String?) {

@@ -30,16 +30,12 @@ package com.forcetower.uefs.feature.schedule
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
-import androidx.core.widget.NestedScrollView
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
-import com.forcetower.uefs.core.vm.ProfileViewModel
-import com.forcetower.uefs.core.vm.ScheduleViewModel
+import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -48,7 +44,6 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import timber.log.Timber
 import javax.inject.Inject
 
 class ScheduleFragment: UFragment(), Injectable {

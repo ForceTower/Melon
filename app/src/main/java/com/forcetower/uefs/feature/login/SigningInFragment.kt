@@ -43,17 +43,12 @@ import androidx.lifecycle.Observer
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
-import com.forcetower.uefs.core.vm.LoginViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment

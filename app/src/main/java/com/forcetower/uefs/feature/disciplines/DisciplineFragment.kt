@@ -37,7 +37,6 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.vm.DisciplineViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
 import com.forcetower.uefs.feature.shared.UFragment

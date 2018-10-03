@@ -36,12 +36,9 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.vm.DisciplineViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment

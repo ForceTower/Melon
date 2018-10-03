@@ -33,7 +33,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.forcetower.uefs.core.vm.DisciplineViewModel"/>
+            type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
         <variable
             name="firebaseUser"
             type="com.google.firebase.auth.FirebaseUser"/>

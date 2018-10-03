@@ -25,29 +25,23 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.home
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.storage.repository.MessagesRepository
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.repository.SagresDataRepository
+import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import javax.inject.Inject
 
-class MessagesViewModel @Inject constructor(
-    val repository: MessagesRepository
+class HomeViewModel
+@Inject constructor(
+        private val loginSagresRepository: LoginSagresRepository,
+        private val dataRepository: SagresDataRepository
 ): ViewModel() {
-    val messages by lazy { repository.getMessages() }
-
-    private val _refreshing = MediatorLiveData<Boolean>()
-    val refreshing: LiveData<Boolean>
-        get() = _refreshing
-
-    fun onRefresh() {
-        val fetchMessages = repository.fetchMessages()
-        _refreshing.value = true
-        _refreshing.addSource(fetchMessages) {
-            _refreshing.removeSource(fetchMessages)
-            _refreshing.value = false
-        }
-    }
+    val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
+    val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
+    val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
 }

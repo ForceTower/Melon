@@ -25,23 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.vm
+package com.forcetower.uefs.feature.disciplinedetail
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Access
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Profile
-import com.forcetower.uefs.core.storage.repository.SagresDataRepository
-import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
-import javax.inject.Inject
+import android.os.Bundle
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.UActivity
 
-class HomeViewModel
-@Inject constructor(
-        private val loginSagresRepository: LoginSagresRepository,
-        private val dataRepository: SagresDataRepository
-): ViewModel() {
-    val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
-    val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
-    val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
+class DisciplineDetailsActivity : UActivity() {
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_discipline_details)
+    }
 }

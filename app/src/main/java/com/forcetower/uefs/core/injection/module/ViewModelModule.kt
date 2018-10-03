@@ -32,6 +32,13 @@ import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.annotation.ViewModelKey
 import com.forcetower.uefs.core.vm.*
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
+import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.home.HomeViewModel
+import com.forcetower.uefs.feature.login.LoginViewModel
+import com.forcetower.uefs.feature.messages.MessagesViewModel
+import com.forcetower.uefs.feature.profile.ProfileViewModel
+import com.forcetower.uefs.feature.schedule.ScheduleViewModel
+import com.forcetower.uefs.feature.setup.SetupViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
