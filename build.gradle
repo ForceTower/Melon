@@ -39,8 +39,8 @@ ext {
     //Android Components
     androidX = "1.0.0"
     google_material = "1.0.0"
-    paging_version = "2.0.0-rc01"
-    room_version = "2.0.0-rc01"
+    paging_version = "2.0.0"
+    room_version = "2.0.0"
     lifecycle_version = "2.0.0"
     nav_version = "1.0.0-alpha06"
     work_version = "1.0.0-alpha09"
@@ -49,11 +49,11 @@ ext {
     dagger_version = "2.16"
 
     //Firebase
-    firebase_core = "16.0.3"
-    firebase_auth = "16.0.3"
-    firebase_messaging = "17.3.2"
-    firebase_firestore = "17.1.0"
-    firebase_storage = "16.0.2"
+    firebase_core = "16.0.4"
+    firebase_auth = "16.0.4"
+    firebase_messaging = "17.3.3"
+    firebase_firestore = "17.1.1"
+    firebase_storage = "16.0.3"
 }
 
 task clean(type: Delete) {

@@ -30,13 +30,11 @@ package com.forcetower.uefs.feature.home
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.vm.HomeViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity

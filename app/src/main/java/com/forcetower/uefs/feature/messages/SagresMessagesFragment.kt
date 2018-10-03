@@ -33,17 +33,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.vm.HomeViewModel
-import com.forcetower.uefs.core.vm.MessagesViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
-import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
 class SagresMessagesFragment: UFragment(), Injectable {
