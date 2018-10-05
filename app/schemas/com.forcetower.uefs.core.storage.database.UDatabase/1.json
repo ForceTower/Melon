@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "7856997bec02151930dedd8f5ed51bda",
+    "identityHash": "e1024ef7694a5d1c76a86ec4bc1a268d",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -1142,11 +1142,108 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "SyncRegistry",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `uuid` TEXT NOT NULL, `start` INTEGER NOT NULL, `end` INTEGER, `completed` INTEGER NOT NULL, `success` INTEGER NOT NULL, `error` INTEGER NOT NULL, `executor` TEXT NOT NULL, `message` TEXT NOT NULL, `networkType` INTEGER NOT NULL, `network` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "start",
+            "columnName": "start",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "end",
+            "columnName": "end",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "completed",
+            "columnName": "completed",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "success",
+            "columnName": "success",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "error",
+            "columnName": "error",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "executor",
+            "columnName": "executor",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "message",
+            "columnName": "message",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "networkType",
+            "columnName": "networkType",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "network",
+            "columnName": "network",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_SyncRegistry_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_SyncRegistry_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          },
+          {
+            "name": "index_SyncRegistry_start",
+            "unique": true,
+            "columnNames": [
+              "start"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_SyncRegistry_start` ON `${TABLE_NAME}` (`start`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7856997bec02151930dedd8f5ed51bda\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e1024ef7694a5d1c76a86ec4bc1a268d\")"
     ]
   }
 }

@@ -149,7 +149,7 @@
             android:drawableTint="@color/blue_accent"
             android:gravity="center"
             android:textColor="@color/text_primary_dark"
-            app:syncComplete="@{registry.complete}"
+            app:syncComplete="@{registry.completed}"
             app:syncStatus="@{registry.success}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
