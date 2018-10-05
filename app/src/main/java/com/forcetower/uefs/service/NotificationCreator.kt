@@ -35,34 +35,113 @@ import android.content.Context
 import android.net.Uri
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import androidx.core.util.rangeTo
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Message
-
+import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 
 object NotificationCreator {
 
     fun showSagresMessageNotification(message: Message, context: Context) {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        val notify = preferences.getBoolean("show_message_notification", true)
-        if (!notify && !VersionUtils.isOreo()) {
-            Timber.d("Skipped messages due to preferences")
+        if (!shouldShowNotification("show_message_notification", context)) {
+            return
         }
 
-        //TODO Show "UEFS" or teacher name
         //val pendingIntent = getPendingIntent(context, LoggedActivity::class.java, MESSAGES_FRAGMENT_SAGRES)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_MESSAGES_SAGRES_ID)
-                .setContentTitle(message.senderName)
+                .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.senderName)
                 .setContentText(message.content)
                 .setStyle(createBigText(message.content))
                 //.setContentIntent(pendingIntent)
-                .setColor(ContextCompat.getColor(context, R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
 
         addOptions(context, builder)
         showNotification(context, message.uid, builder)
     }
 
+    fun showSagresCreateGradesNotification(grade: GradeWithClassStudent, context: Context) {
+        if (!shouldShowNotification("show_create_grades_notification", context)) {
+            return
+        }
 
+        val message = context.getString(R.string.notification_grade_created, grade.grade.name)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
+            .setContentTitle(context.getString(R.string.notification_grade_created_title))
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
+            .setStyle(createBigText(message))
 
+        addOptions(context, builder)
+        showNotification(context, grade.grade.uid, builder)
+    }
+
+    fun showSagresChangeGradesNotification(grade: GradeWithClassStudent, context: Context) {
+        if (!shouldShowNotification("show_change_grades_notification", context)) {
+            return
+        }
+
+        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val message = context.getString(R.string.notification_grade_changed, grade.grade.name, discipline)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
+            .setContentTitle(context.getString(R.string.notification_grade_changed_title))
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
+            .setStyle(createBigText(message))
+
+        addOptions(context, builder)
+        showNotification(context, grade.grade.uid, builder)
+    }
+
+    fun showSagresDateGradesNotification(grade: GradeWithClassStudent, context: Context) {
+        if (!shouldShowNotification("show_date_grades_notification", context)) {
+            return
+        }
+
+        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val message = context.getString(R.string.notification_grade_date_change, grade.grade.name, discipline)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
+            .setContentTitle(context.getString(R.string.notification_grade_date_change_title))
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
+            .setStyle(createBigText(message))
+
+        addOptions(context, builder)
+        showNotification(context, grade.grade.uid, builder)
+    }
+
+    fun showSagresPostedGradesNotification(grade: GradeWithClassStudent, context: Context) {
+        if (!shouldShowNotification("show_posted_grades_notification", context)) {
+            return
+        }
+
+        val spoiler = getPreferences(context).getInt("notification_grade_spoiler_level", 0)
+        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val message = when (spoiler) {
+            1 -> {
+                val value = grade.grade.grade.trim().toDoubleOrNull()
+                if (value == null) context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+                else when (value) {
+                    in 0.0..6.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_bad, grade.grade.name, discipline)
+                    in 7.0..7.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_pass, grade.grade.name, discipline)
+                    in 8.0..9.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_good, grade.grade.name, discipline)
+                    10.0 -> context.getString(R.string.notification_grade_posted_message_lv_1_perfect, grade.grade.name, discipline)
+                    else -> context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+                }
+            }
+            2 -> context.getString(R.string.notification_grade_posted_message_lv_2, grade.grade.grade, discipline)
+            else -> context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+        }
+
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_POSTED_ID)
+            .setContentTitle(context.getString(R.string.notification_grade_posted_title))
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
+            .setStyle(createBigText(message))
+
+        addOptions(context, builder)
+        showNotification(context, grade.grade.uid, builder)
+    }
 
     private fun notificationBuilder(context: Context, groupId: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
@@ -93,4 +172,12 @@ object NotificationCreator {
             builder.setSound(ringtone)
         }
     }
+
+    private fun shouldShowNotification(value: String, context: Context): Boolean {
+        val preference = getPreferences(context)
+        val notify = preference.getBoolean(value, true)
+        return notify || VersionUtils.isOreo()
+    }
+
+    private fun getPreferences(context: Context) = PreferenceManager.getDefaultSharedPreferences(context)
 }

@@ -36,6 +36,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.uefs.core.model.unes.*
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.service.NotificationCreator
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -170,7 +171,17 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun gradesNotifications() {
-        //TODO Implement grades notifications
+        val posted = database.gradesDao().getPostedGradesDirect()
+        val create = database.gradesDao().getCreatedGradesDirect()
+        val change = database.gradesDao().getChangedGradesDirect()
+        val date   = database.gradesDao().getDateChangedGradesDirect()
+
+        database.gradesDao().markAllNotified()
+
+        posted.forEach { NotificationCreator.showSagresPostedGradesNotification(it, context) }
+        create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
+        change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
+        date.forEach   { NotificationCreator.showSagresDateGradesNotification  (it, context) }
     }
 
     @WorkerThread
