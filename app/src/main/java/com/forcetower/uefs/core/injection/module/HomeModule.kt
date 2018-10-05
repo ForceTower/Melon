@@ -36,6 +36,7 @@ import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
 import com.forcetower.uefs.feature.messages.UnesMessagesFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
+import com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -59,4 +60,6 @@ abstract class HomeModule {
     abstract fun bigTrayFragment(): BigTrayFragment
     @ContributesAndroidInjector
     abstract fun documentsFragment(): DocumentsFragment
+    @ContributesAndroidInjector
+    abstract fun syncRegistryFragment(): SyncRegistryFragment
 }

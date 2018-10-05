@@ -44,7 +44,7 @@ class SyncLinkedWorker(
 
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
-        repository.performSync()
+        repository.performSync("Linked")
 
         val period = inputData.getInt(PERIOD, 60)
         createWorker(period, false)

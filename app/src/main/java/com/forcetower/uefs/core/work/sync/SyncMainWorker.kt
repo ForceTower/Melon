@@ -50,7 +50,7 @@ class SyncMainWorker(
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
         Timber.d("Main Worker started")
-        repository.performSync()
+        repository.performSync("Principal")
         Timber.d("Main Worker completed")
         return Result.SUCCESS
     }

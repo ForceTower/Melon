@@ -49,7 +49,11 @@ import java.util.Arrays
 
 import androidx.viewpager.widget.ViewPager
 
-class InkPageIndicator @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null, defStyle: Int = 0) : View(context, attrs, defStyle), ViewPager.OnPageChangeListener, View.OnAttachStateChangeListener {
+class InkPageIndicator @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
+): View(context, attrs, defStyle), ViewPager.OnPageChangeListener, View.OnAttachStateChangeListener {
 
     // configurable attributes
     private val dotDiameter: Int

@@ -59,6 +59,16 @@
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>
     </style>
+    
+    <style name="Widget.ShadowedIcon" parent="@android:style/Widget" />
+    
+    <style name="Widget.ShadowedIcon.IconView">
+        <item name="constantShadowTranslationY">4dp</item>
+        <item name="variableShadowTranslationY">8dp</item>
+        <item name="scaleDown">0.85</item>
+        <item name="bigBlurRadius">25</item>
+        <item name="smallBlurRadius">8</item>
+    </style>
 
     <style name="UTheme.LightNav"/>
 

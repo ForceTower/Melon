@@ -40,6 +40,7 @@ import com.forcetower.uefs.feature.messages.MessagesViewModel
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.schedule.ScheduleViewModel
 import com.forcetower.uefs.feature.setup.SetupViewModel
+import com.forcetower.uefs.feature.syncregistry.SyncRegistryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -100,6 +101,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DocumentsViewModel::class)
     abstract fun bindDocumentsViewModel(vm: DocumentsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SyncRegistryViewModel::class)
+    abstract fun bindSyncRegistryViewModel(vm: SyncRegistryViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
