@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "a1f40f99ec14cb8e2dfb441f5caa756a",
+    "identityHash": "7856997bec02151930dedd8f5ed51bda",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -729,7 +729,7 @@
       },
       {
         "tableName": "ClassAbsence",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `profile_id` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `description` TEXT NOT NULL, `date` TEXT NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `profile_id` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `description` TEXT NOT NULL, `date` TEXT NOT NULL, `uuid` TEXT NOT NULL, `notified` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -771,6 +771,12 @@
             "fieldPath": "uuid",
             "columnName": "uuid",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "notified",
+            "columnName": "notified",
+            "affinity": "INTEGER",
             "notNull": true
           }
         ],
@@ -1140,7 +1146,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"a1f40f99ec14cb8e2dfb441f5caa756a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"7856997bec02151930dedd8f5ed51bda\")"
     ]
   }
 }
