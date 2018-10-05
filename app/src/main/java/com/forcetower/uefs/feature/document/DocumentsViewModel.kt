@@ -43,10 +43,20 @@ class DocumentsViewModel @Inject constructor(
     }
 
     override fun onDownload(document: SagresDocument) {
-        repository.downloadDocument(Document.valueOf(document.type))
+        val value = getDocumentValue(document)
+        repository.downloadDocument(value)
     }
 
     override fun onDelete(document: SagresDocument) {
-        repository.deleteDocument(Document.valueOf(document.type))
+        val value = getDocumentValue(document)
+        repository.deleteDocument(value)
+    }
+
+    private fun getDocumentValue(document: SagresDocument): Document {
+        return when (document.type) {
+            Document.ENROLLMENT.value -> Document.ENROLLMENT
+            Document.FLOWCHART.value -> Document.FLOWCHART
+            else -> Document.HISTORY
+        }
     }
 }

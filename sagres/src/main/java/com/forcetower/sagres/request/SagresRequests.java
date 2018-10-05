@@ -139,6 +139,10 @@ public class SagresRequests {
     @NonNull
     public static Request getPageRequest(@NotNull String url) {
         return new Request.Builder()
+                .addHeader("Accept", "*/*")
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36")
                 .url(url)
                 .build();
     }

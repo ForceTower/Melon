@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Update
@@ -37,7 +38,7 @@ import com.forcetower.uefs.core.model.unes.SagresDocument
 
 @Dao
 interface DocumentDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = IGNORE)
     fun insert(document: SagresDocument)
 
     @Update(onConflict = REPLACE)

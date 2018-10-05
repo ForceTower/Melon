@@ -213,8 +213,8 @@
     <string name="download_document">Baixar documento</string>
     <string name="enrollment_certificate">Guia de Matrícula</string>
     <plurals name="at_every_time_hours">
-        <item quantity="one">A cada %s hora</item>
-        <item quantity="other">A cada %s horas</item>
+        <item quantity="one">A cada %1$s hora</item>
+        <item quantity="other">A cada %1$s horas</item>
     </plurals>
 
     <plurals name="duration_hours">

@@ -35,6 +35,7 @@ import com.forcetower.sagres.request.SagresCalls
 import okhttp3.Call
 import okio.Okio
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.io.File
 import java.io.IOException
 import java.util.concurrent.Executor
@@ -69,15 +70,17 @@ class DocumentOperation(
     private fun onFirstResponse(document: Document) {
         val link = SagresLinkFinder.findLink(document)
         if (link == null) {
+            Timber.d("Link is null")
             publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(100).message("Link not found"))
         } else {
-            val call = SagresCalls.getPageCall(link)
-            downloadDocument(call)
+            Timber.d("Link found: $link")
+            downloadDocument(link)
         }
     }
 
-    private fun downloadDocument(call: Call) {
+    private fun downloadDocument(link: String) {
         try {
+            val call = SagresCalls.getPageCall(link)
             val response = call.execute()
             if (response.isSuccessful) {
                 if (file.exists()) file.delete()
@@ -86,7 +89,11 @@ class DocumentOperation(
                 val sink = Okio.buffer(Okio.sink(file))
                 sink.writeAll(response.body()!!.source())
                 sink.close()
+                Timber.d("Document downloaded")
                 publishProgress(DocumentCallback(Status.SUCCESS))
+            } else {
+                Timber.d("Response failed with code ${response.code()}.")
+                publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(response.code()).message("Error..."))
             }
         } catch (e: IOException) {
             publishProgress(DocumentCallback(Status.NETWORK_ERROR).message(e.message).throwable(e))
