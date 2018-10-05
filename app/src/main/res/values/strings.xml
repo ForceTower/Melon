@@ -227,11 +227,15 @@
     <string name="notification_grade_changed_title">A nota de uma avaliação mudou</string>
     <string name="notification_grade_date_change_title">A data de uma avaliação mudou</string>
     <string name="notification_grade_date_change">A data da avaliação %1$s da disciplina %2$s mudou</string>
-    <plurals name="at_every_time_hours">
-        <item quantity="one">A cada %1$s hora</item>
-        <item quantity="other">A cada %1$s horas</item>
-    </plurals>
-
+    <string name="at_every_time_hours">A cada %1$d horas</string>
+    <string name="at_every_time_hour">A cada 1 hora</string>
+    <string name="sync_start_time_label">Horário de Início</string>
+    <string name="sync_end_time_label">Horário de Término</string>
+    <string name="sync_completed">Concluído</string>
+    <string name="sync_incomplete">Incompleto</string>
+    <string name="sync_failed">Falhou</string>
+    <string name="label_sync_registry">Registro de Sincronização</string>
+    
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
         <item quantity="other">%1$s horas</item>
