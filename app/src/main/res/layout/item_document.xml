@@ -30,6 +30,18 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
+    <data>
+        <import type="android.view.View"/>
+        
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.document.DocumentActions"/>
+        
+        <variable
+            name="document"
+            type="com.forcetower.uefs.core.model.unes.SagresDocument"/>
+    </data>
+    
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -37,7 +49,8 @@
         android:layout_marginHorizontal="@dimen/spacing_common"
         android:layout_marginVertical="@dimen/spacing_small"
         tools:elevation="6dp"
-        android:stateListAnimator="@animator/default_card_raise">
+        android:stateListAnimator="@animator/default_card_raise"
+        android:onClick="@{() -> document.downloaded ? listener.onOpen(document) : listener.onDownload(document)}">
         
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -52,6 +65,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Guia de Matrícula"
+                android:text="@{document.name}"
                 android:textSize="20sp"
                 android:textColor="@color/text_primary_dark"/>
     
@@ -69,9 +83,11 @@
                 android:id="@+id/btn_see"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_common"
+                android:layout_marginHorizontal="@dimen/spacing_common"
                 android:text="@string/open_document"
+                android:visibility="@{document.downloaded ? View.VISIBLE : View.GONE}"
                 android:layout_marginBottom="@dimen/spacing_small"
+                android:onClick="@{() -> listener.onOpen(document)}"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -81,9 +97,10 @@
                 android:id="@+id/btn_download"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_common"
+                android:layout_marginHorizontal="@dimen/spacing_common"
                 android:layout_marginBottom="@dimen/spacing_small"
                 android:text="@string/download_document"
+                android:onClick="@{() -> listener.onDownload(document)}"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btn_see"
@@ -96,6 +113,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="@dimen/spacing_common"
                 android:layout_marginBottom="@dimen/spacing_small"
+                android:onClick="@{() -> listener.onDelete(document)}"
                 app:icon="@drawable/ic_delete_black_24dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -114,14 +132,16 @@
                 android:id="@+id/group_data"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="gone"
+                android:visibility="@{document.downloaded ? View.VISIBLE : View.GONE}"
+                tools:visibility="visible"
                 app:constraint_referenced_ids="btn_delete,text_download_date"/>
     
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_downloading"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="@{document.downloading ? View.VISIBLE : View.GONE}"
+                tools:visibility="gone"
                 app:constraint_referenced_ids="progress_downloading"/>
             
         </androidx.constraintlayout.widget.ConstraintLayout>

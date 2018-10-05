@@ -135,4 +135,11 @@ public class SagresRequests {
                 .addHeader("cache-control", "no-cache")
                 .build();
     }
+
+    @NonNull
+    public static Request getPageRequest(@NotNull String url) {
+        return new Request.Builder()
+                .url(url)
+                .build();
+    }
 }
