@@ -34,6 +34,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.SagresDocument
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -74,5 +76,10 @@ class DocumentsFragment: UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.documents.observe(this, Observer { adapter.documents = it?: emptyList() })
+        viewModel.openDocumentAction.observe(this, EventObserver { openDocument(it) })
+    }
+
+    private fun openDocument(document: SagresDocument) {
+        
     }
 }
