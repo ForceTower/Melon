@@ -44,6 +44,12 @@ abstract class ClassAbsenceDao {
     @Insert(onConflict = IGNORE)
     abstract fun insert(absence: ClassAbsence)
 
+    @Query("UPDATE ClassAbsence SET notified = 1")
+    abstract fun markAllNotified()
+
+    @Query("SELECT * FROM ClassAbsence WHERE notified = 0")
+    abstract fun getUnnotified()
+
     @Transaction
     open fun putAbsences(classes: List<SDisciplineMissedClass>) {
         val profile = getMeProfile()
@@ -61,14 +67,14 @@ abstract class ClassAbsenceDao {
                 if (groups.size == 1) {
                     val group = groups[0]
                     val cs = getClassStudent(group.uid, profile.uid)
-                    insert(ClassAbsence(classId = cs.uid, profileId = profile.uid, date = it.date, description = it.description, sequence = sequence))
+                    insert(ClassAbsence(classId = cs.uid, profileId = profile.uid, date = it.date, description = it.description, sequence = sequence, notified = false))
                 } else {
                     val value = groups.firstOrNull { g -> g.group.startsWith("T") }
                     if (value == null) {
                         Timber.e("<abs_no_T_found> :: This will be ignored forever ${it.disciplineCode}_${it.semester}_${profile.name} ")
                     } else {
                         val cs = getClassStudent(value.uid, profile.uid)
-                        insert(ClassAbsence(classId = cs.uid, profileId = profile.uid, date = it.date, description = it.description, sequence = sequence))
+                        insert(ClassAbsence(classId = cs.uid, profileId = profile.uid, date = it.date, description = it.description, sequence = sequence, notified = false))
                     }
                 }
             }

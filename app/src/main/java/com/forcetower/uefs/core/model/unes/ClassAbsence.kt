@@ -49,5 +49,6 @@ data class ClassAbsence(
     val sequence: Int,
     val description: String,
     val date: String,
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    val notified: Boolean
 )
