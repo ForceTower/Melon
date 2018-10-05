@@ -83,6 +83,7 @@ class DocumentOperation(
             val call = SagresCalls.getPageCall(link)
             val response = call.execute()
             if (response.isSuccessful) {
+                Timber.d("Will save document as: ${file.absolutePath}")
                 if (file.exists()) file.delete()
                 file.createNewFile()
 
@@ -96,6 +97,7 @@ class DocumentOperation(
                 publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(response.code()).message("Error..."))
             }
         } catch (e: IOException) {
+            Timber.d(e.message)
             publishProgress(DocumentCallback(Status.NETWORK_ERROR).message(e.message).throwable(e))
         }
     }

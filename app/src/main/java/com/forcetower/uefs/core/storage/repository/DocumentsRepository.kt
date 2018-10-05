@@ -51,15 +51,24 @@ class DocumentsRepository @Inject constructor(
     private val executor: AppExecutors,
     context: Context
 ) {
-    private val folder: File = context.filesDir
+    private val folder: File = File(context.getExternalFilesDir(null), "documents")
 
     init {
+        Timber.d("Folder Path: ${folder.absolutePath}")
         executor.diskIO().execute {
+            folder.mkdirs()
             if (database.documentDao().getDocumentsDirect().isEmpty()) {
                 database.documentDao().insert(SagresDocument.enrollment())
                 database.documentDao().insert(SagresDocument.flowchart())
                 database.documentDao().insert(SagresDocument.history())
             }
+
+            val enroll = File(folder, Document.ENROLLMENT.value).exists()
+            database.documentDao().updateDownloaded(enroll, Document.ENROLLMENT.value)
+            val flow = File(folder, Document.FLOWCHART.value).exists()
+            database.documentDao().updateDownloaded(flow, Document.FLOWCHART.value)
+            val hist = File(folder, Document.HISTORY.value).exists()
+            database.documentDao().updateDownloaded(hist, Document.HISTORY.value)
         }
     }
 
