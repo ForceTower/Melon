@@ -68,9 +68,7 @@ class DocumentsRepository @Inject constructor(
     @AnyThread
     fun downloadDocument(document: Document): LiveData<Resource<SagresDocument>> {
         val data = MutableLiveData<Resource<SagresDocument>>()
-        executor.networkIO().execute {
-            download(data, document)
-        }
+        executor.networkIO().execute { download(data, document) }
         return data
     }
 
