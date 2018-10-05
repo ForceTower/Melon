@@ -53,7 +53,8 @@ enum class Destination { LOGIN_ACTIVITY, HOME_ACTIVITY }
 
 //--------------------------------------------------------------------------
 open class Event<out T>(private val content: T) {
-    private var hasBeenHandled = false
+    var hasBeenHandled = false
+        private set
 
     fun getIfNotHandled(): T? {
         return if (hasBeenHandled) {
