@@ -212,6 +212,8 @@
     <string name="open_document">Ver documento</string>
     <string name="download_document">Baixar documento</string>
     <string name="enrollment_certificate">Guia de Matrícula</string>
+    <string name="open_file">Abrir arquivo</string>
+    <string name="no_pdf_reader">Nenhum Leitor de PDF instalado, por favor, instale algum disponível na PlayStore</string>
     <plurals name="at_every_time_hours">
         <item quantity="one">A cada %1$s hora</item>
         <item quantity="other">A cada %1$s horas</item>
