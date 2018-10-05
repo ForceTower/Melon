@@ -27,11 +27,15 @@
 
 package com.forcetower.uefs.feature.document
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.FileProvider
 import androidx.lifecycle.Observer
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.SagresDocument
@@ -42,6 +46,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import java.io.File
 import javax.inject.Inject
 
 class DocumentsFragment: UFragment(), Injectable {
@@ -79,7 +84,17 @@ class DocumentsFragment: UFragment(), Injectable {
         viewModel.openDocumentAction.observe(this, EventObserver { openDocument(it) })
     }
 
-    private fun openDocument(document: SagresDocument) {
-        
+    private fun openDocument(document: File) {
+        val intent = Intent(Intent.ACTION_VIEW)
+        val uri = FileProvider.getUriForFile(requireContext(), BuildConfig.APPLICATION_ID + ".fileprovider", document)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.setDataAndType(uri, "application/pdf")
+        intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY)
+        val choose = Intent.createChooser(intent, getString(R.string.open_file))
+        try {
+            startActivity(choose)
+        } catch (e: ActivityNotFoundException) {
+            showSnack(getString(R.string.no_pdf_reader))
+        }
     }
 }
