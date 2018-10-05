@@ -28,7 +28,6 @@
 package com.forcetower.uefs.feature.syncregistry
 
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.storage.repository.SyncRegistryRepository
 import javax.inject.Inject
 

@@ -44,4 +44,6 @@ class HomeViewModel
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
+
+    fun logout() = dataRepository.logout()
 }
