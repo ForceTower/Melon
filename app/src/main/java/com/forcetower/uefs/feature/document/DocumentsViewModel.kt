@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.storage.repository.DocumentsRepository
 import com.forcetower.uefs.core.vm.Event
+import java.io.File
 import javax.inject.Inject
 
 class DocumentsViewModel @Inject constructor(
@@ -41,12 +42,12 @@ class DocumentsViewModel @Inject constructor(
 ): ViewModel(), DocumentActions {
     val documents by lazy { repository.getDocuments() }
 
-    private val _openDocumentAction = MutableLiveData<Event<SagresDocument>>()
-    val openDocumentAction: LiveData<Event<SagresDocument>>
+    private val _openDocumentAction = MutableLiveData<Event<File>>()
+    val openDocumentAction: LiveData<Event<File>>
         get() = _openDocumentAction
 
     override fun onOpen(document: SagresDocument) {
-        _openDocumentAction.value = Event(document)
+        _openDocumentAction.value = Event(repository.getFileFrom(document))
     }
 
     override fun onDownload(document: SagresDocument) {

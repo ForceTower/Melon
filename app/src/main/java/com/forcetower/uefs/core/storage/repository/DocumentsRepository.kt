@@ -117,4 +117,6 @@ class DocumentsRepository @Inject constructor(
 
         }
     }
+
+    fun getFileFrom(document: SagresDocument) = File(folder, document.type)
 }
