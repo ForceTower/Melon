@@ -90,6 +90,11 @@
                 android:id="@+id/bug_report"
                 android:title="@string/bug_report"
                 android:icon="@drawable/ic_bug_report_black_24dp"/>
+    
+            <item
+                android:id="@+id/sync_registry"
+                android:title="@string/label_sync_registry"
+                android:icon="@drawable/ic_sync_black_24dp"/>
 
             <item
                 android:id="@+id/logout"

@@ -80,6 +80,10 @@ class HomeBottomFragment: UFragment(), Injectable {
                     AboutActivity.startActivity(requireActivity())
                     true
                 }
+                R.id.logout -> {
+                    viewModel.logout()
+                    true
+                }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }

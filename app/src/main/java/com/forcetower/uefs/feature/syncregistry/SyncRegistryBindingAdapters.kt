@@ -31,13 +31,13 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.NetworkType
-import com.forcetower.uefs.feature.shared.formatDate
+import com.forcetower.uefs.feature.shared.formatFullDate
 
 @BindingAdapter("syncTime")
 fun bindTime(tv: TextView, value: Long?) {
     if (value == null) tv.text = "..."
     else {
-        val date = value.formatDate()
+        val date = value.formatFullDate()
         tv.text = date
     }
 }

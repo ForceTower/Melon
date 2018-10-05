@@ -66,4 +66,7 @@ abstract class ProfileDao {
 
     @Query("UPDATE Profile SET name = :name, email = :email WHERE me = 1")
     abstract fun updateProfile(name: String, email: String)
+
+    @Query("DELETE FROM Profile WHERE me = 1")
+    abstract fun deleteMe()
 }

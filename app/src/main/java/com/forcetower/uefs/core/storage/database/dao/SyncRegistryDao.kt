@@ -48,5 +48,5 @@ interface SyncRegistryDao {
     fun getRegistryByStartDirect(start: Long): SyncRegistry
 
     @Query("SELECT * FROM SyncRegistry")
-    fun getRegistry(): DataSource.Factory<Long, SyncRegistry>
+    fun getRegistry(): DataSource.Factory<Int, SyncRegistry>
 }

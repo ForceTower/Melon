@@ -65,5 +65,10 @@
         android:name="com.forcetower.uefs.feature.document.DocumentsFragment"
         android:label="DocumentsFragment"
         tools:layout="@layout/fragment_documents"/>
+    <fragment
+        android:id="@+id/sync_registry"
+        android:name="com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment"
+        android:label="SyncRegistryFragment"
+        tools:layout="@layout/fragment_sync_registry"/>
 
 </navigation>
