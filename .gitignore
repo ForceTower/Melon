@@ -76,3 +76,6 @@ freeline_project_description.json
 /google_play_console_auth.json
 /signing.gradle
 /app/src/main/play
+/.idea/codeStyles/codeStyleConfig.xml
+/.idea/inspectionProfiles/ktlint.xml
+/.idea/inspectionProfiles/profiles_settings.xml
