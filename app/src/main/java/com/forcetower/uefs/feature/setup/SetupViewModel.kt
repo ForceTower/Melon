@@ -47,7 +47,7 @@ class SetupViewModel @Inject constructor(
 ): ViewModel() {
     private var selectImageUri: Uri? = null
     private var course: Course? = null
-    private var frequency: Frequency = Frequency(context.resources.getQuantityString(R.plurals.at_every_time_hours, 1), 60)
+    private var frequency: Frequency = Frequency(context.getString(R.string.at_every_time_hour), 60)
 
     fun uploadImageToStorage(reference: String) {
         val uri = selectImageUri

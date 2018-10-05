@@ -28,6 +28,10 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
+import android.telephony.TelephonyManager
 import androidx.annotation.WorkerThread
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.*
@@ -48,24 +52,71 @@ class SagresSyncRepository @Inject constructor(
 ) {
 
     @WorkerThread
-    fun performSync() {
+    fun performSync(executor: String) {
+        val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
         access?: Timber.d("Access is null, sync will not continue")
-        if (access != null) execute(access)
+        if (access != null) execute(access, registry)
+        else {
+            registry.completed = true
+            registry.error = -1
+            registry.success = false
+            registry.message = "Credenciais de acesso inválidas"
+            database.syncRegistryDao().insert(registry)
+        }
+    }
+
+    private fun createRegistry(executor: String): SyncRegistry {
+        val connectivity = context.getSystemService(ConnectivityManager::class.java)
+        val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
+        val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+        val network = if (wifi) {
+            val manager = context.getSystemService(WifiManager::class.java)
+            manager.connectionInfo.ssid
+        } else {
+            val manager = context.getSystemService(TelephonyManager::class.java)
+            manager.simOperatorName
+        }
+        Timber.d("Is on Wifi? $wifi. Network name: $network")
+
+        return SyncRegistry(executor = executor, network = network,
+            networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal)
     }
 
     @WorkerThread
-    private fun execute(access: Access) {
+    private fun execute(access: Access, registry: SyncRegistry) {
+        database.syncRegistryDao().insert(registry)
         val score = login(access)
-        score?: return
+        if (score == null) {
+            registry.completed = true
+            registry.error = -2
+            registry.success = false
+            registry.message = "Login falhou"
+            database.syncRegistryDao().update(registry)
+            return
+        }
 
         val person = me(score)
-        person?: return
+        if (person == null) {
+            registry.completed = true
+            registry.error = -3
+            registry.success = false
+            registry.message = "Busca de usuário falhou no Sagres"
+            database.syncRegistryDao().update(registry)
+            return
+        }
 
-        messages(person.id)
-        semesters(person.id)
-        startPage()
-        grades()
+        var result = 0
+        if (!messages(person.id))   result += 1 shl 1
+        if (!semesters(person.id))  result += 1 shl 2
+        if (!startPage())           result += 1 shl 3
+        if (!grades())              result += 1 shl 4
+
+        registry.completed = true
+        registry.error = result
+        registry.success = result == 0
+        registry.message = "Deve-se consultar as flags de erro"
+        database.syncRegistryDao().update(registry)
     }
 
     fun login(access: Access): Double? {
@@ -100,36 +151,44 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun messages(userId: Long) {
+    private fun messages(userId: Long): Boolean {
         val messages = SagresNavigator.instance.messages(userId)
-        when (messages.status) {
+        return when (messages.status) {
             Status.SUCCESS -> {
                 val values = messages.messages?.map { Message.fromMessage(it, false) }?: emptyList()
                 database.messageDao().insertIgnoring(values)
                 messagesNotifications()
                 Timber.d("Messages completed. Messages size is ${values.size}")
+                true
             }
-            else -> produceErrorMessage(messages)
+            else -> {
+                produceErrorMessage(messages)
+                false
+            }
         }
     }
 
     @WorkerThread
-    private fun semesters(userId: Long) {
+    private fun semesters(userId: Long): Boolean {
         val semesters = SagresNavigator.instance.semesters(userId)
-        when (semesters.status) {
+        return when (semesters.status) {
             Status.SUCCESS -> {
                 val values = semesters.getSemesters().map { Semester.fromSagres(it) }
                 database.semesterDao().insertIgnoring(values)
                 Timber.d("Semesters Completed with: ${semesters.getSemesters()}")
+                true
             }
-            else -> produceErrorMessage(semesters)
+            else -> {
+                produceErrorMessage(semesters)
+                false
+            }
         }
     }
 
     @WorkerThread
-    private fun startPage() {
+    private fun startPage(): Boolean {
         val start = SagresNavigator.instance.startPage()
-        when (start.status) {
+        return when (start.status) {
             Status.SUCCESS -> {
                 defineCalendar(start.calendar)
                 defineDisciplines(start.disciplines)
@@ -139,15 +198,19 @@ class SagresSyncRepository @Inject constructor(
                 Timber.d("Semesters: ${start.semesters}")
                 Timber.d("Disciplines:  ${start.disciplines}")
                 Timber.d("Calendar: ${start.calendar}")
+                true
             }
-            else -> produceErrorMessage(start)
+            else -> {
+                produceErrorMessage(start)
+                false
+            }
         }
     }
 
     @WorkerThread
-    private fun grades() {
+    private fun grades(): Boolean {
         val grades = SagresNavigator.instance.getCurrentGrades()
-        when (grades.status) {
+        return when (grades.status) {
             Status.SUCCESS -> {
                 defineSemesters(grades.semesters)
                 defineGrades(grades.grades)
@@ -161,8 +224,12 @@ class SagresSyncRepository @Inject constructor(
                 frequencyNotifications()
 
                 Timber.d("Completed!")
+                true
             }
-            else -> produceErrorMessage(grades)
+            else -> {
+                produceErrorMessage(grades)
+                false
+            }
         }
     }
 

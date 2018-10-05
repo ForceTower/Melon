@@ -60,11 +60,11 @@ class SelectSyncDialog: RoundedDialog(), Injectable {
         val array = arrayListOf(
                 Frequency(getString(R.string.at_every_time_minutes, 15), 15),
                 Frequency(getString(R.string.at_every_time_minutes, 30), 30),
-                Frequency(resources.getQuantityString(R.plurals.at_every_time_hours, 1), 60),
-                Frequency(resources.getQuantityString(R.plurals.at_every_time_hours, 2), 120),
-                Frequency(resources.getQuantityString(R.plurals.at_every_time_hours, 3), 180),
-                Frequency(resources.getQuantityString(R.plurals.at_every_time_hours, 6), 360),
-                Frequency(resources.getQuantityString(R.plurals.at_every_time_hours, 12), 720)
+                Frequency(getString(R.string.at_every_time_hour), 60),
+                Frequency(getString(R.string.at_every_time_hours, 2), 120),
+                Frequency(getString(R.string.at_every_time_hours, 3), 180),
+                Frequency(getString(R.string.at_every_time_hours, 6), 360),
+                Frequency(getString(R.string.at_every_time_hours, 12), 720)
         )
         populateFrequency(array)
     }
