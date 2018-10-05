@@ -41,8 +41,10 @@ import com.forcetower.sagres.operation.semester.SemesterCallback
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.operation.document.DocumentCallback
 import com.forcetower.sagres.operation.grades.GradesCallback
 import org.jsoup.nodes.Document
+import java.io.File
 
 abstract class SagresNavigator {
     abstract val database: SagresDatabase
@@ -91,6 +93,15 @@ abstract class SagresNavigator {
 
     @WorkerThread
     abstract fun getGradesFromSemester(semesterSagresId: Long, document: Document): GradesCallback
+
+    @WorkerThread
+    abstract fun downloadEnrollment(file: File): DocumentCallback
+
+    @WorkerThread
+    abstract fun downloadFlowchart(file: File): DocumentCallback
+
+    @WorkerThread
+    abstract fun downloadHistory(file: File): DocumentCallback
 
     abstract fun stopTags(tag: String)
 
