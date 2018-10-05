@@ -57,7 +57,7 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
                 .load(reference)
                 .fallback(R.mipmap.ic_unes_large_image_512)
                 .placeholder(R.mipmap.ic_unes_large_image_512)
-                .signature(ObjectKey(System.currentTimeMillis() ushr 17))
+                .signature(ObjectKey(System.currentTimeMillis() ushr 18))
                 .circleCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(iv)
