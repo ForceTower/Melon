@@ -70,6 +70,7 @@ class SagresGradesRepository @Inject constructor(
                 defineFrequency(semesterGrades.frequency)
                 Timber.d("[$semesterSagresId] Grades Part 02/02 Completed!")
                 Timber.d("[$semesterSagresId] Grades: ${semesterGrades.grades}")
+                database.gradesDao().markAllNotified()
                 SUCCESS
             } else {
                 ACTUAL_GRADES_CALL_FAILED
