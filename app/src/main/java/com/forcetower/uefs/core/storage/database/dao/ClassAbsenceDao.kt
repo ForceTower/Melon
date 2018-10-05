@@ -48,7 +48,7 @@ abstract class ClassAbsenceDao {
     abstract fun markAllNotified()
 
     @Query("SELECT * FROM ClassAbsence WHERE notified = 0")
-    abstract fun getUnnotified()
+    abstract fun getUnnotifiedDirect(): List<ClassAbsence>
 
     @Transaction
     open fun putAbsences(classes: List<SDisciplineMissedClass>) {
