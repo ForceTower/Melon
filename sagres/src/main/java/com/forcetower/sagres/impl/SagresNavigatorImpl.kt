@@ -55,6 +55,9 @@ import androidx.annotation.AnyThread
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.Constants
+import com.forcetower.sagres.operation.document.DocumentCallback
+import com.forcetower.sagres.operation.document.DocumentOperation
 import com.forcetower.sagres.operation.grades.GradesCallback
 import com.forcetower.sagres.operation.grades.GradesOperation
 import okhttp3.Call
@@ -62,6 +65,7 @@ import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
+import java.io.File
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -216,6 +220,21 @@ private constructor(context: Context) : SagresNavigator() {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun getGradesFromSemester(semesterSagresId: Long, document: Document): GradesCallback {
         return GradesOperation(semesterSagresId, document, null).finishedResult
+    }
+
+    @WorkerThread
+    override fun downloadEnrollment(file: File): DocumentCallback {
+        return DocumentOperation(file, Constants.SAGRES_ENROLL_CERT, null).finishedResult
+    }
+
+    @WorkerThread
+    override fun downloadFlowchart(file: File): DocumentCallback {
+        return DocumentOperation(file, Constants.SAGRES_FLOWCHART, null).finishedResult
+    }
+
+    @WorkerThread
+    override fun downloadHistory(file: File): DocumentCallback {
+        return DocumentOperation(file, Constants.SAGRES_HISTORY, null).finishedResult
     }
 
     companion object {

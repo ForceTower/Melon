@@ -232,7 +232,7 @@ class InkPageIndicator @JvmOverloads constructor(context: Context, attrs: Attrib
         val left = paddingLeft
         val top = paddingTop
         val right = width - paddingRight
-        val bottom = height - paddingBottom
+        //val bottom = height - paddingBottom
 
         val requiredWidth = requiredWidth
         val startLeft = left.toFloat() + ((right - left - requiredWidth) / 2).toFloat() + dotRadius
