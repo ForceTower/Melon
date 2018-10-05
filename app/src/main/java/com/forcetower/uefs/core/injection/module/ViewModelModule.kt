@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.injection.annotation.ViewModelKey
 import com.forcetower.uefs.core.vm.*
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.document.DocumentsViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.messages.MessagesViewModel
@@ -94,6 +95,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(BigTrayViewModel::class)
     abstract fun bindBigTrayViewModel(vm: BigTrayViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DocumentsViewModel::class)
+    abstract fun bindDocumentsViewModel(vm: DocumentsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

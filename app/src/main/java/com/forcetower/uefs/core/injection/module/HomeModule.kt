@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
+import com.forcetower.uefs.feature.document.DocumentsFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
@@ -56,4 +57,6 @@ abstract class HomeModule {
     abstract fun disciplineSemesterFragment(): DisciplineSemesterFragment
     @ContributesAndroidInjector
     abstract fun bigTrayFragment(): BigTrayFragment
+    @ContributesAndroidInjector
+    abstract fun documentsFragment(): DocumentsFragment
 }

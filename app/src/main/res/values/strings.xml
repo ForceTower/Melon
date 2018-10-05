@@ -209,9 +209,12 @@
     <string name="ru_loading_data">Carregando dados</string>
     <string name="ru_failed_load_data">Erro ao carregar dados</string>
     <string name="ru_remaining">restantes</string>
+    <string name="open_document">Ver documento</string>
+    <string name="download_document">Baixar documento</string>
+    <string name="enrollment_certificate">Guia de Matrícula</string>
     <plurals name="at_every_time_hours">
-        <item quantity="one">A cada %s hora</item>
-        <item quantity="other">A cada %s horas</item>
+        <item quantity="one">A cada %1$s hora</item>
+        <item quantity="other">A cada %1$s horas</item>
     </plurals>
 
     <plurals name="duration_hours">

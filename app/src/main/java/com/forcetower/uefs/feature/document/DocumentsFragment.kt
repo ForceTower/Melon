@@ -27,8 +27,52 @@
 
 package com.forcetower.uefs.feature.document
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.storage.FirebaseStorage
+import javax.inject.Inject
 
 class DocumentsFragment: UFragment(), Injectable {
+    @Inject
+    lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var firebaseStorage: FirebaseStorage
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
+
+    private lateinit var binding: FragmentDocumentsBinding
+    private lateinit var viewModel: DocumentsViewModel
+    private lateinit var adapter: DocumentsAdapter
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
+        return FragmentDocumentsBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        adapter = DocumentsAdapter(this@DocumentsFragment, viewModel)
+        binding.apply {
+            recyclerDocuments.adapter = adapter
+            incToolbar.textToolbarTitle.text = getString(R.string.label_documents)
+            incToolbar.firebaseUser = firebaseAuth.currentUser
+            incToolbar.firebaseStorage = firebaseStorage
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.documents.observe(this, Observer { adapter.documents = it?: emptyList() })
+    }
 }

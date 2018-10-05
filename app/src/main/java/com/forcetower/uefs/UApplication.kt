@@ -30,13 +30,11 @@ package com.forcetower.uefs
 import android.app.Activity
 import android.app.Application
 import androidx.fragment.app.Fragment
-import androidx.work.Worker
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.service.NotificationHelper
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.support.HasSupportFragmentInjector

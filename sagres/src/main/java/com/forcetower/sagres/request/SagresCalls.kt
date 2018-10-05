@@ -118,4 +118,8 @@ object SagresCalls {
 
         return getCall(request)
     }
+
+    fun getPageCall(url: String): Call {
+        return getCall(SagresRequests.getPageRequest(url))
+    }
 }
