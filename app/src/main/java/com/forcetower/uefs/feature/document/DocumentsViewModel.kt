@@ -46,6 +46,10 @@ class DocumentsViewModel @Inject constructor(
     val openDocumentAction: LiveData<Event<File>>
         get() = _openDocumentAction
 
+    private val _snackMessages = MutableLiveData<Event<String>>()
+    val snackMessages: LiveData<Event<String>>
+        get() = _snackMessages
+
     override fun onOpen(document: SagresDocument) {
         _openDocumentAction.value = Event(repository.getFileFrom(document))
     }
