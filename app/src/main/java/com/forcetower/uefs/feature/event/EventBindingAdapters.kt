@@ -60,7 +60,7 @@ fun eventStart(tv: TextView, value: Long) {
 }
 
 @BindingAdapter("eventPrice")
-fun eventPrice(tv: TextView, value: Long?) {
+fun eventPrice(tv: TextView, value: Double?) {
     val context = tv.context
     if (value != null) {
         tv.text = value.toString()

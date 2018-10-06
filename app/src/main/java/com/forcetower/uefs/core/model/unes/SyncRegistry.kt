@@ -51,7 +51,7 @@ data class SyncRegistry(
     val network: String
 )
 
-enum class NetworkType(value: Int) {
-    WIFI(0),
-    CELLULAR(1),
+enum class NetworkType {
+    WIFI,
+    CELLULAR,
 }
