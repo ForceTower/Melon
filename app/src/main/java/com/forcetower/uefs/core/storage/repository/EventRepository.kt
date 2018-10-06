@@ -25,34 +25,37 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.core.storage.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.model.unes.Profile
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
+import timber.log.Timber
+import javax.inject.Inject
 import javax.inject.Named
 
-@Module
-object FirestoreModule {
-    @JvmStatic
-    @Provides
-    @Reusable
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Profile.COLLECTION)
-    fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
-
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Event.COLLECTION)
-    fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
-
+class EventRepository @Inject constructor(
+    @Named(Event.COLLECTION) private val collection: CollectionReference
+) {
+    fun getCurrentEvents(): LiveData<List<Event>> {
+        val data = MutableLiveData<List<Event>>()
+        collection.whereEqualTo("approved", true).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val result = task.result
+                if (result == null) {
+                    Timber.d("Events Task result is null")
+                    data.postValue(emptyList())
+                } else {
+                    val list = result.documents.map { it.toObject(Event::class.java)!! }
+                    Timber.d("Event List: $list")
+                    data.postValue(list)
+                }
+            } else {
+                Timber.d("Unsuccessful task. Exception ${task.exception?.message}")
+                data.postValue(emptyList())
+            }
+        }
+        return data
+    }
 }

@@ -25,34 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.event
 
 import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.model.unes.Profile
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import javax.inject.Named
 
-@Module
-object FirestoreModule {
-    @JvmStatic
-    @Provides
-    @Reusable
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
-
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Profile.COLLECTION)
-    fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
-
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Event.COLLECTION)
-    fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
-
+interface EventActions {
+    fun onOpen(event: Event)
 }
