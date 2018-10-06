@@ -27,19 +27,16 @@
 
 package com.forcetower.uefs.service
 
-import com.forcetower.uefs.core.util.VersionUtils
-import android.preference.PreferenceManager
-import timber.log.Timber
 import android.app.NotificationManager
 import android.content.Context
 import android.net.Uri
+import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import androidx.core.util.rangeTo
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.util.VersionUtils
 
 object NotificationCreator {
 
@@ -65,7 +62,8 @@ object NotificationCreator {
             return
         }
 
-        val message = context.getString(R.string.notification_grade_created, grade.grade.name)
+        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val message = context.getString(R.string.notification_grade_created, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_created_title))
             .setContentText(message)
