@@ -240,10 +240,12 @@
     <string name="teacher_posted_material_label">Materiais de Apoio</string>
     <string name="discipline_classes_label">Aulas</string>
     <string name="see_all">Ver todos</string>
+    <string name="see_all_female">Ver todas</string>
     <string name="event_starts_at">Início: %1$s</string>
     <string name="event_free">Gratuito</string>
     <string name="event_featured">Em destaque</string>
     <string name="events_all">Todos</string>
+    <string name="teacher_headshot_transition" translatable="false">teacher_image_transition</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
