@@ -26,13 +26,38 @@
   ~ SOFTWARE.
   -->
 
-<TextView
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:minHeight="?actionBarSize"
-    android:paddingStart="@dimen/spacing_normal"
-    android:paddingEnd="@dimen/spacing_normal"
-    android:text="@string/discipline_classes_label"
-    android:textColor="@color/text_primary_dark"
-    android:gravity="start|center_vertical" />
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+    
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start|center_vertical"
+            android:minHeight="?actionBarSize"
+            android:paddingStart="@dimen/spacing_normal"
+            android:paddingEnd="@dimen/spacing_normal"
+            android:text="@string/teacher_posted_material_label"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    
+        <com.google.android.material.button.MaterialButton
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:letterSpacing="0"
+            android:layout_marginEnd="8dp"
+            android:text="@string/see_all_female"
+            app:layout_constraintBottom_toBottomOf="@+id/label"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

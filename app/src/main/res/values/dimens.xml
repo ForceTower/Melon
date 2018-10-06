@@ -63,4 +63,5 @@
     <dimen name="time_header_padding_top">16dp</dimen>
     <dimen name="discipline_header_size">60dp</dimen>
     <dimen name="rounded_dialog_corners">12dp</dimen>
+    <dimen name="headshot_teacher">40dp</dimen>
 </resources>
