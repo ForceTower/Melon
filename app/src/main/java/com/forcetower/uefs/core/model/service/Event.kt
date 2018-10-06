@@ -25,34 +25,30 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.core.model.service
 
-import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.model.unes.Profile
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import javax.inject.Named
+data class Event(
+    var id: String = "",
+    var name: String = "Sem nome",
+    var description: String = "Nada especificado",
+    var imageUrl: String? = null,
+    var creatorName: String? = null,
+    var creatorId: String? = null,
+    var offeredBy: String = "Ninguem",
+    var startDate: Long = 0,
+    var endDate: Long = 0,
+    var location: String = "Não especificado",
+    var price: Double? = null,
+    var certificateHours: Int? = null,
+    var courseId: Int? = null,
+    var featured: Boolean = false
+) {
 
-@Module
-object FirestoreModule {
-    @JvmStatic
-    @Provides
-    @Reusable
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+    override fun toString(): String {
+        return name
+    }
 
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Profile.COLLECTION)
-    fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
-
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Event.COLLECTION)
-    fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
-
+    companion object {
+        const val COLLECTION = "events"
+    }
 }
