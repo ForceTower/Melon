@@ -235,6 +235,15 @@
     <string name="sync_incomplete">Incompleto</string>
     <string name="sync_failed">Falhou</string>
     <string name="label_sync_registry">Registro de Sincronização</string>
+    <string name="discipline_detail_header_aspect" translatable="false">H,16:9</string>
+    <string name="discipline_teacher">Professor(a)</string>
+    <string name="teacher_posted_material_label">Materiais de Apoio</string>
+    <string name="discipline_classes_label">Aulas</string>
+    <string name="see_all">Ver todos</string>
+    <string name="event_starts_at">Início: %1$s</string>
+    <string name="event_free">Gratuito</string>
+    <string name="event_featured">Em destaque</string>
+    <string name="events_all">Todos</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

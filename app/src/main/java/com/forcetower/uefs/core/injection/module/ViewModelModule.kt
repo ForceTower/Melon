@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.vm.*
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
+import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.messages.MessagesViewModel
@@ -106,6 +107,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SyncRegistryViewModel::class)
     abstract fun bindSyncRegistryViewModel(vm: SyncRegistryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EventViewModel::class)
+    abstract fun bindEventViewModel(vm: EventViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

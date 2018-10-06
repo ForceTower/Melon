@@ -25,34 +25,21 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.event
 
+import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.model.unes.Profile
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.FirebaseFirestore
-import dagger.Module
-import dagger.Provides
-import dagger.Reusable
-import javax.inject.Named
+import com.forcetower.uefs.core.storage.repository.EventRepository
+import timber.log.Timber
+import javax.inject.Inject
 
-@Module
-object FirestoreModule {
-    @JvmStatic
-    @Provides
-    @Reusable
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+class EventViewModel @Inject constructor(
+    private val repository: EventRepository
+): ViewModel(), EventActions {
 
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Profile.COLLECTION)
-    fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
+    val events by lazy { repository.getCurrentEvents() }
 
-    @JvmStatic
-    @Provides
-    @Reusable
-    @Named(Event.COLLECTION)
-    fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
-
+    override fun onOpen(event: Event) {
+        Timber.d("Clicked on event id ${event.id} named ${event.name}")
+    }
 }
