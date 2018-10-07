@@ -45,6 +45,8 @@ import com.forcetower.uefs.core.storage.database.dao.*
     ClassStudent::class,
     ClassAbsence::class,
     ClassLocation::class,
+    ClassItem::class,
+    ClassMaterial::class,
     Grade::class,
     Course::class,
     SagresDocument::class,
