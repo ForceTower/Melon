@@ -120,11 +120,19 @@ sealed class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) 
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return when {
+            oldItem === FeatureHeader && newItem === FeatureHeader -> true
+            oldItem === CommonHeader && newItem === CommonHeader -> true
+            oldItem is Event && newItem is Event -> oldItem.id == newItem.id
+            else -> false
+        }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return when {
+            oldItem is Event && newItem is Event -> oldItem == newItem
+            else -> true
+        }
     }
 }
 
