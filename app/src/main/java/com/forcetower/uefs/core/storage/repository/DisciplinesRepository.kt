@@ -25,20 +25,24 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines
+package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
-import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class DisciplineViewModel @Inject constructor(
-    private val repository: DisciplinesRepository
-): ViewModel() {
-    val semesters by lazy { repository.getParticipatingSemesters() }
-    fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
+@Singleton
+class DisciplinesRepository @Inject constructor(
+    private val database: UDatabase
+) {
+    fun getParticipatingSemesters(): LiveData<List<Semester>> {
+        return database.semesterDao().getParticipatingSemesters()
+    }
+
+    fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>> {
+        return database.classDao().getClassesWithGradesFromSemester(semesterId)
+    }
 }

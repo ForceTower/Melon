@@ -25,20 +25,37 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines
+package com.forcetower.uefs.core.model.unes
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
-import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
-import javax.inject.Inject
+import androidx.annotation.Nullable
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.SET_NULL
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.util.UUID
 
-class DisciplineViewModel @Inject constructor(
-    private val repository: DisciplinesRepository
-): ViewModel() {
-    val semesters by lazy { repository.getParticipatingSemesters() }
-    fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
-}
+@Entity(foreignKeys = [
+    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = CASCADE, onUpdate = CASCADE),
+    ForeignKey(entity = ClassItem::class, parentColumns = ["uid"], childColumns = ["class_item_id"], onDelete = SET_NULL, onUpdate = CASCADE)
+], indices = [
+    Index(value = ["name"], unique = false),
+    Index(value = ["link"], unique = false),
+    Index(value = ["group_id"], unique = false),
+    Index(value = ["class_item_id"], unique = false),
+    Index(value = ["uuid"], unique = true)
+])
+data class ClassMaterial(
+    @PrimaryKey(autoGenerate = true)
+    val uid: Long = 0,
+    @ColumnInfo(name = "group_id")
+    val groupId: Long,
+    @Nullable
+    @ColumnInfo(name = "class_item_id")
+    val classItemId: Long?,
+    val name: String,
+    val link: String,
+    val uuid: String = UUID.randomUUID().toString()
+)

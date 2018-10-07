@@ -25,16 +25,33 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplinedetail
+package com.forcetower.uefs.core.model.unes
 
-import android.os.Bundle
-import com.forcetower.uefs.R
-import com.forcetower.uefs.feature.shared.UActivity
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
-class DisciplineDetailsActivity : UActivity() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_discipline_details)
-    }
-}
+@Entity(foreignKeys = [
+    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE)
+], indices = [
+    Index(value = ["group_id", "number"], unique = true),
+    Index(value = ["number_of_materials"], unique = false),
+    Index(value = ["situation"], unique = false),
+    Index(value = ["date"], unique = false)
+])
+data class ClassItem (
+    @PrimaryKey(autoGenerate = true)
+    val uid: Long = 0,
+    @ColumnInfo(name = "group_id")
+    val groupId: Long,
+    val number: Int,
+    val situation: String,
+    val subject: String,
+    val date: String,
+    @ColumnInfo(name = "number_of_materials")
+    val numberOfMaterials: String,
+    @ColumnInfo(name = "material_links")
+    val materialLinks: String
+)

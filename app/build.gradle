@@ -134,6 +134,8 @@ dependencies {
     //Image Utils
     implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
 
+    implementation 'com.cuieney.library:library:1.0.0'
+
     //Helper Projects
     implementation project(path: ':sagres')
     implementation project(':bypass')

@@ -118,7 +118,7 @@ sealed class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) 
     class EventHolder(val binding: ItemEventCollapsedBinding): EventViewHolder(binding.root)
 }
 
-object DiffCallback: DiffUtil.ItemCallback<Any>() {
+private object DiffCallback: DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
     }
@@ -128,5 +128,5 @@ object DiffCallback: DiffUtil.ItemCallback<Any>() {
     }
 }
 
-object FeatureHeader
-object CommonHeader
+private object FeatureHeader
+private object CommonHeader
