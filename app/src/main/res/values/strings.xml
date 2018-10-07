@@ -246,6 +246,7 @@
     <string name="event_featured">Em destaque</string>
     <string name="events_all">Todos</string>
     <string name="teacher_headshot_transition" translatable="false">teacher_image_transition</string>
+    <string name="discipline_missed_classes_detailed_label">Faltas detalhadas</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

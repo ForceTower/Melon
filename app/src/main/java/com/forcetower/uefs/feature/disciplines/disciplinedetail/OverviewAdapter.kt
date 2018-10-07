@@ -33,6 +33,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
@@ -78,7 +79,22 @@ class OverviewAdapter(
     override fun getItemCount() = differ.currentList.size
 
     override fun getItemViewType(position: Int): Int {
-
+        return when (differ.currentList[position]) {
+            is InfoHeader -> R.layout.item_discipline_info
+            is DraftDiscipline -> R.layout.item_discipline_draft_info
+            is TeacherSpace -> R.layout.item_discipline_teacher
+            is LoadingDiscipline -> R.layout.item_discipline_loading_info
+            is MaterialHeader -> R.layout.item_teacher_shared_material_header
+            is FrequencyHeader -> R.layout.item_discipline_frequency
+            is DisciplineClassHeader -> R.layout.item_discipline_classes_header
+            is NoMaterialPosted -> R.layout.item_discipline_no_material_posted
+            is NoMissedClasses -> R.layout.item_discipline_no_missed_classes
+            is NoClassRegistered -> R.layout.item_discipline_no_class_registered
+            is ClassMaterial -> R.layout.item_discipline_class_material
+            is ClassAbsence -> R.layout.item_discipline_missed_class
+            is ClassItem -> R.layout.item_discipline_class_item
+            else -> throw IllegalStateException("No view type defined for position $position")
+        }
     }
 
     private fun buildMergedList(
@@ -115,11 +131,31 @@ sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
-
+        return when {
+            oldItem === InfoHeader && newItem === InfoHeader -> true
+            oldItem === DraftDiscipline && newItem === DraftDiscipline -> true
+            oldItem === TeacherSpace && newItem === TeacherSpace -> true
+            oldItem === LoadingDiscipline && newItem === LoadingDiscipline -> true
+            oldItem === MaterialHeader && newItem === MaterialHeader -> true
+            oldItem === FrequencyHeader && newItem === FrequencyHeader -> true
+            oldItem === DisciplineClassHeader && newItem === DisciplineClassHeader -> true
+            oldItem === NoMaterialPosted && newItem === NoMaterialPosted -> true
+            oldItem === NoMissedClasses && newItem === NoMissedClasses -> true
+            oldItem === NoClassRegistered && newItem === NoClassRegistered -> true
+            oldItem is ClassMaterial && newItem is ClassMaterial -> oldItem.uid == newItem.uid
+            oldItem is ClassAbsence && newItem is ClassAbsence -> oldItem.uid == newItem.uid
+            oldItem is ClassItem && newItem is ClassItem -> oldItem.uid == newItem.uid
+            else -> false
+        }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-
+        return when {
+            oldItem is ClassMaterial && newItem is ClassMaterial -> oldItem == newItem
+            oldItem is ClassAbsence && newItem is ClassAbsence -> oldItem == newItem
+            oldItem is ClassItem && newItem is ClassItem -> oldItem == newItem
+            else -> true
+        }
     }
 }
 

@@ -103,6 +103,7 @@ abstract class SagresNavigator {
     @WorkerThread
     abstract fun downloadHistory(file: File): DocumentCallback
 
+    @AnyThread
     abstract fun stopTags(tag: String)
 
     companion object {
