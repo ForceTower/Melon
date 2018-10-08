@@ -70,18 +70,21 @@ class SagresSyncRepository @Inject constructor(
     private fun createRegistry(executor: String): SyncRegistry {
         val connectivity = context.getSystemService(ConnectivityManager::class.java)
         val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
-        val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-        val network = if (wifi) {
-            val manager = context.getSystemService(WifiManager::class.java)
-            manager.connectionInfo.ssid
+        return if (capabilities != null) {
+            val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            val network = if (wifi) {
+                val manager = context.getSystemService(WifiManager::class.java)
+                manager.connectionInfo.ssid
+            } else {
+                val manager = context.getSystemService(TelephonyManager::class.java)
+                manager.simOperatorName
+            }
+            Timber.d("Is on Wifi? $wifi. Network name: $network")
+            SyncRegistry(executor = executor, network = network,
+                networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal)
         } else {
-            val manager = context.getSystemService(TelephonyManager::class.java)
-            manager.simOperatorName
+            SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
         }
-        Timber.d("Is on Wifi? $wifi. Network name: $network")
-
-        return SyncRegistry(executor = executor, network = network,
-            networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal)
     }
 
     @WorkerThread

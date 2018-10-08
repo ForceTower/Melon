@@ -50,7 +50,7 @@ ext {
     work_version = "1.0.0-alpha09"
 
     //Dagger
-    dagger_version = "2.16"
+    dagger_version = "2.17"
 
     //Firebase
     firebase_core = "16.0.4"
