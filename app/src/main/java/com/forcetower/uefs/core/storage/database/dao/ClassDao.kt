@@ -79,7 +79,7 @@ abstract class ClassDao {
         var clazz = getClassDirect(dis.semester, dis.code)
         if (clazz == null) {
             val discipline = selectDisciplineDirect(dis.code)
-            val semester = selectSemesterDirect(dis.semester)
+            val semester = selectSemesterDirect(dis.semester.trim())
             clazz = Class(
                     disciplineId = discipline.uid,
                     semesterId = semester.uid
