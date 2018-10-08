@@ -5,12 +5,16 @@ buildscript {
     repositories {
         google()
         jcenter()
+        maven {
+            url 'https://maven.fabric.io/public'
+        }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:3.2.0'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.1.0"
         classpath 'com.github.triplet.gradle:play-publisher:1.2.2'
+        classpath 'io.fabric.tools:gradle:1.25.4'
     }
 }
 

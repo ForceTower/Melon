@@ -50,25 +50,30 @@
             android:id="@+id/calendar"
             android:title="@string/label_calendar"
             android:icon="@drawable/ic_calendar_black_24dp"/>
+        
+        <item
+            android:id="@+id/teacher_email"
+            android:title="@string/teachers_label"
+            android:icon="@drawable/ic_teach_black_24dp"/>
     </group>
 
     <item android:title="@string/label_services">
         <menu>
             <group android:checkableBehavior="single">
-            <item
-                android:id="@+id/events"
-                android:title="@string/label_events"
-                android:icon="@drawable/ic_event_black_24dp"/>
-
-            <item
-                android:id="@+id/reminders"
-                android:title="@string/label_reminders"
-                android:icon="@drawable/ic_loyalty_black_24dp"/>
-
-            <item
-                android:id="@+id/adventure"
-                android:title="@string/label_adventure"
-                android:icon="@drawable/ic_games_black_24dp"/>
+                <item
+                    android:id="@+id/events"
+                    android:title="@string/label_events"
+                    android:icon="@drawable/ic_event_black_24dp"/>
+    
+                <item
+                    android:id="@+id/reminders"
+                    android:title="@string/label_reminders"
+                    android:icon="@drawable/ic_loyalty_black_24dp"/>
+    
+                <item
+                    android:id="@+id/adventure"
+                    android:title="@string/label_adventure"
+                    android:icon="@drawable/ic_games_black_24dp"/>
             </group>
         </menu>
     </item>

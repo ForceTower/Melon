@@ -3,6 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.triplet.play'
+apply plugin: 'io.fabric'
 
 android {
     compileSdkVersion sdkVersions.compile
@@ -112,6 +113,11 @@ dependencies {
     implementation "com.google.firebase:firebase-firestore:$firebase_firestore"
     implementation "com.google.firebase:firebase-storage:$firebase_storage"
     implementation 'com.firebaseui:firebase-ui-storage:4.2.0'
+
+    //Crashlytics
+    implementation('com.crashlytics.sdk.android:crashlytics:2.9.1@aar') {
+        transitive = true
+    }
 
     //Internet / API Connection
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'

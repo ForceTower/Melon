@@ -62,6 +62,7 @@ class SagresSyncRepository @Inject constructor(
             registry.error = -1
             registry.success = false
             registry.message = "Credenciais de acesso inválidas"
+            registry.end = System.currentTimeMillis()
             database.syncRegistryDao().insert(registry)
         }
     }
@@ -92,6 +93,7 @@ class SagresSyncRepository @Inject constructor(
             registry.error = -2
             registry.success = false
             registry.message = "Login falhou"
+            registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
             return
         }
@@ -102,6 +104,7 @@ class SagresSyncRepository @Inject constructor(
             registry.error = -3
             registry.success = false
             registry.message = "Busca de usuário falhou no Sagres"
+            registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
             return
         }
@@ -116,6 +119,7 @@ class SagresSyncRepository @Inject constructor(
         registry.error = result
         registry.success = result == 0
         registry.message = "Deve-se consultar as flags de erro"
+        registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
     }
 
