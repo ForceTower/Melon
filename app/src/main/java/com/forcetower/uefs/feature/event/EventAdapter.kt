@@ -110,10 +110,13 @@ class EventAdapter(
             if (featured.isNotEmpty()) {
                 merged += FeatureHeader
                 merged.addAll(featured)
-                merged += CommonHeader
             }
 
-            merged.addAll(common)
+            if (common.isNotEmpty()) {
+                merged += CommonHeader
+                merged.addAll(common)
+            }
+
         } else {
             merged += NoEvents
         }
@@ -133,6 +136,7 @@ private object DiffCallback: DiffUtil.ItemCallback<Any>() {
         return when {
             oldItem === FeatureHeader && newItem === FeatureHeader -> true
             oldItem === CommonHeader && newItem === CommonHeader -> true
+            oldItem === NoEvents && newItem === NoEvents -> true
             oldItem is Event && newItem is Event -> oldItem.id == newItem.id
             else -> false
         }

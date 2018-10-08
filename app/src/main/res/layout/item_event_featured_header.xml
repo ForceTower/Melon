@@ -35,6 +35,5 @@
     android:gravity="start|center_vertical"
     android:paddingStart="16dp"
     android:paddingEnd="16dp"
-    android:textSize="20sp"
-    android:textColor="@color/text_primary_dark"
-    android:textStyle="bold"/>
+    android:textSize="18sp"
+    android:textColor="@color/text_primary_dark" />
