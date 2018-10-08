@@ -45,11 +45,11 @@ fun bindTime(tv: TextView, value: Long?) {
 @BindingAdapter(value = ["network", "networkType"], requireAll = true)
 fun bindNetwork(tv: TextView, network: String, networkType: Int) {
     val drawable = if (networkType == NetworkType.WIFI.ordinal)
-        tv.context.getDrawable(R.drawable.ic_network_wifi_black_24dp)
+        R.drawable.ic_network_wifi_black_24dp
     else
-        tv.context.getDrawable(R.drawable.ic_network_cell_black_24dp)
+        R.drawable.ic_network_cell_black_24dp
 
-    tv.setCompoundDrawables(drawable, null, null, null)
+    tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0)
     tv.text = network
 }
 
