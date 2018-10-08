@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "e1024ef7694a5d1c76a86ec4bc1a268d",
+    "identityHash": "1328039f60d9226f7e83e1d372f473fe",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -965,6 +965,228 @@
         ]
       },
       {
+        "tableName": "ClassItem",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `situation` TEXT NOT NULL, `subject` TEXT NOT NULL, `date` TEXT NOT NULL, `number_of_materials` TEXT NOT NULL, `material_links` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupId",
+            "columnName": "group_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "number",
+            "columnName": "number",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "situation",
+            "columnName": "situation",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "subject",
+            "columnName": "subject",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "date",
+            "columnName": "date",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "numberOfMaterials",
+            "columnName": "number_of_materials",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "materialLinks",
+            "columnName": "material_links",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_ClassItem_group_id_number",
+            "unique": true,
+            "columnNames": [
+              "group_id",
+              "number"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassItem_group_id_number` ON `${TABLE_NAME}` (`group_id`, `number`)"
+          },
+          {
+            "name": "index_ClassItem_number_of_materials",
+            "unique": false,
+            "columnNames": [
+              "number_of_materials"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassItem_number_of_materials` ON `${TABLE_NAME}` (`number_of_materials`)"
+          },
+          {
+            "name": "index_ClassItem_situation",
+            "unique": false,
+            "columnNames": [
+              "situation"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassItem_situation` ON `${TABLE_NAME}` (`situation`)"
+          },
+          {
+            "name": "index_ClassItem_date",
+            "unique": false,
+            "columnNames": [
+              "date"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassItem_date` ON `${TABLE_NAME}` (`date`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ClassGroup",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "group_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
+        "tableName": "ClassMaterial",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `class_item_id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`class_item_id`) REFERENCES `ClassItem`(`uid`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "groupId",
+            "columnName": "group_id",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "classItemId",
+            "columnName": "class_item_id",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "link",
+            "columnName": "link",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_ClassMaterial_name",
+            "unique": false,
+            "columnNames": [
+              "name"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassMaterial_name` ON `${TABLE_NAME}` (`name`)"
+          },
+          {
+            "name": "index_ClassMaterial_link",
+            "unique": false,
+            "columnNames": [
+              "link"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassMaterial_link` ON `${TABLE_NAME}` (`link`)"
+          },
+          {
+            "name": "index_ClassMaterial_group_id",
+            "unique": false,
+            "columnNames": [
+              "group_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassMaterial_group_id` ON `${TABLE_NAME}` (`group_id`)"
+          },
+          {
+            "name": "index_ClassMaterial_class_item_id",
+            "unique": false,
+            "columnNames": [
+              "class_item_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassMaterial_class_item_id` ON `${TABLE_NAME}` (`class_item_id`)"
+          },
+          {
+            "name": "index_ClassMaterial_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassMaterial_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          }
+        ],
+        "foreignKeys": [
+          {
+            "table": "ClassGroup",
+            "onDelete": "CASCADE",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "group_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "ClassItem",
+            "onDelete": "SET NULL",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "class_item_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          }
+        ]
+      },
+      {
         "tableName": "Grade",
         "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT NOT NULL, `grade` TEXT NOT NULL, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
@@ -1243,7 +1465,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e1024ef7694a5d1c76a86ec4bc1a268d\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1328039f60d9226f7e83e1d372f473fe\")"
     ]
   }
 }
