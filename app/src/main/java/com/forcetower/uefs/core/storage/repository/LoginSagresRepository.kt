@@ -35,19 +35,27 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.*
+import com.forcetower.sagres.database.model.SCalendar
+import com.forcetower.sagres.database.model.SDiscipline
+import com.forcetower.sagres.database.model.SDisciplineClassLocation
+import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SDisciplineMissedClass
+import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.*
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
-import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
-import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -229,7 +237,7 @@ class LoginSagresRepository @Inject constructor(
                     data.postValue(Callback.Builder(g.status).document(g.document).build())
                 }
             } else {
-                data.value = Callback.Builder(g.status)
+                data.value = Callback.Builder(Status.GRADES_FAILED)
                         .code(g.code)
                         .message(g.message)
                         .throwable(g.throwable)
