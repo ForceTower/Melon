@@ -253,6 +253,7 @@
     <string name="discipline_no_missed_classes">Você não tem faltas registradas nesta disciplina!</string>
     <string name="discipline_classes_not_registered">As aulas desta disciplina ainda não foram definidas</string>
     <string name="discipline_absence_item_format">%1$s - %2$s</string>
+    <string name="no_events_registered">Não existem eventos cadastrados</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
