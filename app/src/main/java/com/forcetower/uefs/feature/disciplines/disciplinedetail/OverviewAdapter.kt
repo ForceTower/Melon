@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.shared.inflater
 
 class OverviewAdapter(
     lifecycleOwner: LifecycleOwner,
@@ -69,7 +70,9 @@ class OverviewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
+        val inflater = parent.inflater()
         return when (viewType) {
+            R.layout.divider -> OverviewHolder.Divider(inflater.inflate(viewType, parent, false))
             else -> throw IllegalStateException("No view defined for viewType $viewType")
         }
     }
@@ -131,7 +134,7 @@ class OverviewAdapter(
 }
 
 sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-
+    class Divider(itemView: View): OverviewHolder(itemView)
 }
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {
