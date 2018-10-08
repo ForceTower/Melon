@@ -63,6 +63,9 @@ class EventAdapter(
             R.layout.item_event_common_header -> EventViewHolder.CommonHeaderHolder(
                 inflater.inflate(viewType, parent, false)
             )
+            R.layout.item_no_events -> EventViewHolder.NoEventHolder(
+                inflater.inflate(viewType, parent, false)
+            )
             R.layout.item_event_collapsed -> EventViewHolder.EventHolder(
                 ItemEventCollapsedBinding.inflate(inflater, parent, false)
             )
@@ -74,6 +77,7 @@ class EventAdapter(
         when (holder) {
             is EventViewHolder.FeaturedHeaderHolder -> Unit
             is EventViewHolder.CommonHeaderHolder -> Unit
+            is EventViewHolder.NoEventHolder -> Unit
             is EventViewHolder.EventHolder -> {
                 holder.binding.event = differ.currentList[position] as Event
                 holder.binding.setLifecycleOwner(lifecycleOwner)
@@ -89,6 +93,7 @@ class EventAdapter(
         return when (differ.currentList[position]) {
             FeatureHeader -> R.layout.item_event_featured_header
             CommonHeader -> R.layout.item_event_common_header
+            NoEvents -> R.layout.item_no_events
             is Event -> R.layout.item_event_collapsed
             else -> throw IllegalStateException("View type was not specified at position $position")
         }
@@ -98,16 +103,20 @@ class EventAdapter(
         events: List<Event> = currentEvents
     ): List<Any>? {
         val merged = mutableListOf<Any>()
-        val featured = events.filter {  it.featured }
-        val common   = events.filter { !it.featured }
+        if (events.isNotEmpty()) {
+            val featured = events.filter { it.featured }
+            val common = events.filter { !it.featured }
 
-        if (featured.isNotEmpty()) {
-            merged += FeatureHeader
-            merged.addAll(featured)
-            merged += CommonHeader
+            if (featured.isNotEmpty()) {
+                merged += FeatureHeader
+                merged.addAll(featured)
+                merged += CommonHeader
+            }
+
+            merged.addAll(common)
+        } else {
+            merged += NoEvents
         }
-
-        merged.addAll(common)
         return merged
     }
 }
@@ -115,6 +124,7 @@ class EventAdapter(
 sealed class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     class FeaturedHeaderHolder(view: View): EventViewHolder(view)
     class CommonHeaderHolder(view: View): EventViewHolder(view)
+    class NoEventHolder(view: View): EventViewHolder(view)
     class EventHolder(val binding: ItemEventCollapsedBinding): EventViewHolder(binding.root)
 }
 
@@ -138,3 +148,4 @@ private object DiffCallback: DiffUtil.ItemCallback<Any>() {
 
 private object FeatureHeader
 private object CommonHeader
+private object NoEvents
