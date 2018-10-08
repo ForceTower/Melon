@@ -55,20 +55,29 @@
         android:name="com.forcetower.uefs.feature.disciplines.DisciplineFragment"
         android:label="DisciplineFragment"
         tools:layout="@layout/fragment_discipline" />
+    
     <fragment
         android:id="@+id/big_tray"
         android:name="com.forcetower.uefs.feature.bigtray.BigTrayFragment"
         android:label="BigTrayFragment"
         tools:layout="@layout/fragment_big_tray"/>
+    
     <fragment
         android:id="@+id/documents"
         android:name="com.forcetower.uefs.feature.document.DocumentsFragment"
         android:label="DocumentsFragment"
         tools:layout="@layout/fragment_documents"/>
+    
     <fragment
         android:id="@+id/sync_registry"
         android:name="com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment"
         android:label="SyncRegistryFragment"
         tools:layout="@layout/fragment_sync_registry"/>
+    
+    <fragment
+        android:id="@+id/events"
+        android:name="com.forcetower.uefs.feature.event.EventFragment"
+        android:label="EventFragment"
+        tools:layout="@layout/fragment_events"/>
 
 </navigation>
