@@ -247,6 +247,12 @@
     <string name="events_all">Todos</string>
     <string name="teacher_headshot_transition" translatable="false">teacher_image_transition</string>
     <string name="discipline_missed_classes_detailed_label">Faltas detalhadas</string>
+    <string name="discipline_draft_info">Esta disciplina ainda não foi carregada</string>
+    <string name="discipline_loading_info">Carregando Informações</string>
+    <string name="discipline_no_file_posted">Não foram postados arquivos nesta turma</string>
+    <string name="discipline_no_missed_classes">Você não tem faltas registradas nesta disciplina!</string>
+    <string name="discipline_classes_not_registered">As aulas desta disciplina ainda não foram definidas</string>
+    <string name="discipline_absence_item_format">%1$s - %2$s</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
