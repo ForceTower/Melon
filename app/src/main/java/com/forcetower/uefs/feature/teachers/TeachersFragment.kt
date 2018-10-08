@@ -25,27 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.teachers
 
-import androidx.paging.DataSource
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import androidx.room.Update
-import com.forcetower.uefs.core.model.unes.SyncRegistry
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.shared.UFragment
 
-@Dao
-interface SyncRegistryDao {
-    @Insert(onConflict = REPLACE)
-    fun insert(data: SyncRegistry)
-
-    @Update(onConflict = REPLACE)
-    fun update(data: SyncRegistry)
-
-    @Query("SELECT * FROM SyncRegistry WHERE start = :start")
-    fun getRegistryByStartDirect(start: Long): SyncRegistry
-
-    @Query("SELECT * FROM SyncRegistry ORDER BY uid DESC")
-    fun getRegistry(): DataSource.Factory<Int, SyncRegistry>
+class TeachersFragment: UFragment(), Injectable {
 }

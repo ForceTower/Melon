@@ -32,6 +32,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -52,7 +54,7 @@ class SyncRegistryFragment: UFragment(), Injectable {
 
     private lateinit var binding: FragmentSyncRegistryBinding
     private lateinit var viewModel: SyncRegistryViewModel
-    private lateinit var adapter: SyncRegistryAdapter
+    private lateinit var syncAdapter: SyncRegistryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
@@ -68,12 +70,15 @@ class SyncRegistryFragment: UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = SyncRegistryAdapter()
-        binding.recyclerRegistry.adapter = adapter
+        syncAdapter = SyncRegistryAdapter()
+        binding.recyclerRegistry.apply {
+            adapter = syncAdapter
+            addItemDecoration(DividerItemDecoration(context, VERTICAL))
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.registry.observe(this, Observer { adapter.submitList(it) })
+        viewModel.registry.observe(this, Observer { syncAdapter.submitList(it) })
     }
 }
