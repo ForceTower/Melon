@@ -54,4 +54,5 @@ data class SyncRegistry(
 enum class NetworkType {
     WIFI,
     CELLULAR,
+    OTHER
 }
