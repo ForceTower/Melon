@@ -69,7 +69,9 @@ class OverviewAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
-
+        return when (viewType) {
+            else -> throw IllegalStateException("No view defined for viewType $viewType")
+        }
     }
 
     override fun onBindViewHolder(holder: OverviewHolder, position: Int) {
@@ -93,6 +95,7 @@ class OverviewAdapter(
             is ClassMaterial -> R.layout.item_discipline_class_material
             is ClassAbsence -> R.layout.item_discipline_missed_class
             is ClassItem -> R.layout.item_discipline_class_item
+            is Divider -> R.layout.divider
             else -> throw IllegalStateException("No view type defined for position $position")
         }
     }
@@ -104,15 +107,17 @@ class OverviewAdapter(
         items: List<ClassItem> = itemList
     ): List<Any> {
         val list = mutableListOf<Any>()
+        list += InfoHeader
         if (discipline != null) {
-            list += InfoHeader
             list += if (discipline.group().group.draft) DraftDiscipline else TeacherSpace
-        } else {
-            list += LoadingDiscipline
         }
 
-        list += MaterialHeader
-        list += if (material.isNotEmpty()) material[0] else NoMaterialPosted
+        if (material.isNotEmpty()) {
+            list += MaterialHeader
+            list += material[0]
+        } else {
+            list += NoMaterialPosted
+        }
 
         list += FrequencyHeader
         list += if (frequency.isNotEmpty()) frequency[0] else NoMissedClasses
@@ -142,6 +147,7 @@ private object DiffCallback: DiffUtil.ItemCallback<Any>() {
             oldItem === NoMaterialPosted && newItem === NoMaterialPosted -> true
             oldItem === NoMissedClasses && newItem === NoMissedClasses -> true
             oldItem === NoClassRegistered && newItem === NoClassRegistered -> true
+            oldItem === Divider && newItem === Divider -> true
             oldItem is ClassMaterial && newItem is ClassMaterial -> oldItem.uid == newItem.uid
             oldItem is ClassAbsence && newItem is ClassAbsence -> oldItem.uid == newItem.uid
             oldItem is ClassItem && newItem is ClassItem -> oldItem.uid == newItem.uid
@@ -169,3 +175,4 @@ private object NoMissedClasses
 private object NoMaterialPosted
 private object DisciplineClassHeader
 private object NoClassRegistered
+private object Divider

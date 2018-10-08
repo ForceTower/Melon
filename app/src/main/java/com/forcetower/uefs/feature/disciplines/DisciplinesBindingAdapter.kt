@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.disciplines
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.accessors.ClassGroupWithStudents
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
@@ -81,4 +82,9 @@ fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
             return students[0].student.finalScore
     }
     return null
+}
+
+@BindingAdapter(value = ["missedDescription", "missedDate"], requireAll = true)
+fun classAbsence(tv: TextView, desc: String, date: String) {
+    tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc, date)
 }
