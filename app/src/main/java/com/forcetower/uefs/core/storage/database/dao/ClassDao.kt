@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -71,8 +72,8 @@ abstract class ClassDao {
     @Query("SELECT * FROM Discipline WHERE code = :code")
     protected abstract fun selectDisciplineDirect(code: String): Discipline
 
-    @Query("SELECT * FROM Semester WHERE codename = :name")
-    protected abstract fun selectSemesterDirect(name: String): Semester
+    @Query("SELECT * FROM Semester WHERE LOWER(codename) = LOWER(:name)")
+    protected abstract fun selectSemesterDirect(name: String): Semester?
 
     @Transaction
     open fun insert(dis: SDiscipline) {
@@ -80,15 +81,21 @@ abstract class ClassDao {
         if (clazz == null) {
             val discipline = selectDisciplineDirect(dis.code)
             val semester = selectSemesterDirect(dis.semester.trim())
-            clazz = Class(
+            if (semester != null) {
+                clazz = Class(
                     disciplineId = discipline.uid,
                     semesterId = semester.uid
-            )
-            insert(clazz)
+                )
+                insert(clazz)
+            } else {
+                Crashlytics.logException(Throwable("Semester not found ${dis.semester.trim()}"))
+            }
         }
 
-        clazz.selectiveCopy(dis)
-        update(clazz)
+        if (clazz != null) {
+            clazz.selectiveCopy(dis)
+            update(clazz)
+        }
     }
 
     @Delete
