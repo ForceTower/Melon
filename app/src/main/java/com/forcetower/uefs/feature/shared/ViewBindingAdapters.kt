@@ -30,7 +30,9 @@ package com.forcetower.uefs.feature.shared
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.view.View
-import android.view.View.*
+import android.view.View.GONE
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.widget.ImageView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
@@ -38,13 +40,9 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
 
 @BindingAdapter("clipToCircle")
