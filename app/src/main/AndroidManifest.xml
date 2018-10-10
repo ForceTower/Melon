@@ -73,7 +73,8 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
-        <activity android:name="com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity" />
+        
+        <activity android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity" />
 
         <meta-data
             android:name="preloaded_fonts"
