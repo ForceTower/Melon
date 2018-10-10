@@ -89,7 +89,8 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun execute(access: Access, registry: SyncRegistry) {
-        database.syncRegistryDao().insert(registry)
+        val uid = database.syncRegistryDao().insert(registry)
+        registry.uid = uid
         val score = login(access)
         if (score == null) {
             registry.completed = true
@@ -97,7 +98,7 @@ class SagresSyncRepository @Inject constructor(
             registry.success = false
             registry.message = "Login falhou"
             registry.end = System.currentTimeMillis()
-            database.syncRegistryDao().insert(registry)
+            database.syncRegistryDao().update(registry)
             return
         }
 
@@ -108,7 +109,7 @@ class SagresSyncRepository @Inject constructor(
             registry.success = false
             registry.message = "Busca de usuário falhou no Sagres"
             registry.end = System.currentTimeMillis()
-            database.syncRegistryDao().insert(registry)
+            database.syncRegistryDao().update(registry)
             return
         }
 
@@ -123,7 +124,7 @@ class SagresSyncRepository @Inject constructor(
         registry.success = result == 0
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
-        database.syncRegistryDao().insert(registry)
+        database.syncRegistryDao().update(registry)
     }
 
     fun login(access: Access): Double? {

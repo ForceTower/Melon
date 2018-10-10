@@ -38,7 +38,7 @@ import com.forcetower.uefs.core.model.unes.SyncRegistry
 @Dao
 interface SyncRegistryDao {
     @Insert(onConflict = REPLACE)
-    fun insert(data: SyncRegistry)
+    fun insert(data: SyncRegistry): Long
 
     @Update(onConflict = REPLACE)
     fun update(data: SyncRegistry)
