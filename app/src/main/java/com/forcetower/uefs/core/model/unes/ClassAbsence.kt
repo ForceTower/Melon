@@ -36,7 +36,8 @@ import java.util.*
     ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["profile_id"]),
-    Index(value = ["class_id", "profile_id"], unique = false),
+    Index(value = ["class_id"], unique = false),
+    Index(value = ["class_id", "profile_id", "sequence"], unique = true),
     Index(value = ["uuid"], unique = true)
 ])
 data class ClassAbsence(
