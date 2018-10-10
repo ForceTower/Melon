@@ -1,2 +1,3 @@
-include ':app', ':sagres', ':bypass'
+include ':app', ':sagres', ':bypass', ':cropper'
 project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')
+project(':cropper').projectDir = new File(rootDir, 'third_party/cropper')

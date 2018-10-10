@@ -143,7 +143,7 @@ class IntroductionFragment: UFragment(), Injectable {
                 if (resultCode == RESULT_OK && data != null && data.data != null) {
                     val uri = data.data!!
 
-                    if (!VersionUtils.isOreo()) {
+                    //if (!VersionUtils.isOreo()) {
                         val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
                         val ac = requireContext().getColor(R.color.colorAccent)
                         CropImage.activity(uri)
@@ -158,9 +158,9 @@ class IntroductionFragment: UFragment(), Injectable {
                                 .setActivityTitle(getString(R.string.cut_profile_image))
                                 .setGuidelines(CropImageView.Guidelines.OFF)
                                 .start(requireContext(), this)
-                    } else {
-                        onImagePicked(uri)
-                    }
+//                    } else {
+//                        onImagePicked(uri)
+//                    }
 
                 }
             }
