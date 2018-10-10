@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "1328039f60d9226f7e83e1d372f473fe",
+    "identityHash": "c616dd41a0418a6a07dca21614c8727a",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -796,13 +796,22 @@
             "createSql": "CREATE  INDEX `index_ClassAbsence_profile_id` ON `${TABLE_NAME}` (`profile_id`)"
           },
           {
-            "name": "index_ClassAbsence_class_id_profile_id",
+            "name": "index_ClassAbsence_class_id",
             "unique": false,
             "columnNames": [
-              "class_id",
-              "profile_id"
+              "class_id"
             ],
-            "createSql": "CREATE  INDEX `index_ClassAbsence_class_id_profile_id` ON `${TABLE_NAME}` (`class_id`, `profile_id`)"
+            "createSql": "CREATE  INDEX `index_ClassAbsence_class_id` ON `${TABLE_NAME}` (`class_id`)"
+          },
+          {
+            "name": "index_ClassAbsence_class_id_profile_id_sequence",
+            "unique": true,
+            "columnNames": [
+              "class_id",
+              "profile_id",
+              "sequence"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassAbsence_class_id_profile_id_sequence` ON `${TABLE_NAME}` (`class_id`, `profile_id`, `sequence`)"
           },
           {
             "name": "index_ClassAbsence_uuid",
@@ -1465,7 +1474,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"1328039f60d9226f7e83e1d372f473fe\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c616dd41a0418a6a07dca21614c8727a\")"
     ]
   }
 }

@@ -36,17 +36,27 @@ import java.util.Locale;
 public interface Timestamped {
 
     default long getInMillis(String string) throws ParseException {
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
-        return formatter.parse(string.trim()).getTime();
+        try {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmX", Locale.getDefault());
+            return formatter.parse(string.trim()).getTime();
+        } catch (Exception e) {
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
+            return formatter.parse(string.trim()).getTime();
+        }
     }
 
     default long getInMillis(String string, long def) {
         try {
-            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
+            SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmX", Locale.getDefault());
             return formatter.parse(string.trim()).getTime();
         } catch (Exception e) {
-            Timber.e("Error while parsing data! Exception is %s", e.getMessage());
-            return def;
+            try {
+                SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
+                return formatter.parse(string.trim()).getTime();
+            } catch (Exception e1) {
+                Timber.e("Error while parsing data! Exception is %s", e.getMessage());
+                return def;
+            }
         }
     }
 }
