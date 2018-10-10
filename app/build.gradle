@@ -137,14 +137,12 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
-    //Image Utils
-    implementation 'com.theartofdev.edmodo:android-image-cropper:2.7.0'
-
     implementation 'com.airbnb.android:lottie:2.8.0'
 
     //Helper Projects
     implementation project(path: ':sagres')
     implementation project(':bypass')
+    implementation project(path: ':cropper')
 }
 
 apply from: "../artifacts.gradle"
