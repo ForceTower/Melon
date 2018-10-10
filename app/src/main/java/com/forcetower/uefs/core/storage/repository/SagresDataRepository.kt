@@ -30,18 +30,21 @@ package com.forcetower.uefs.core.storage.repository
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class SagresDataRepository @Inject constructor(
     private val database: UDatabase,
-    private val executor: AppExecutors
+    private val executor: AppExecutors,
+    private val firebaseAuth: FirebaseAuth
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
     fun logout() {
         executor.diskIO().execute {
+            firebaseAuth.signOut()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.profileDao().deleteMe()

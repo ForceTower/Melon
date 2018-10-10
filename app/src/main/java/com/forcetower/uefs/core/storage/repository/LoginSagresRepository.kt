@@ -85,7 +85,9 @@ class LoginSagresRepository @Inject constructor(
         if (deleteDatabase) {
             currentStep.value = createStep(R.string.step_delete_database)
             executor.diskIO().execute {
-                database.clearAllTables()
+                database.accessDao().deleteAll()
+                database.accessTokenDao().deleteAll()
+                database.profileDao().deleteMe()
                 executor.mainThread().execute{
                     login(signIn, username, password)
                 }
