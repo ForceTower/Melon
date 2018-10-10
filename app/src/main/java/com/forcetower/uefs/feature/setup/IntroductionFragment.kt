@@ -41,7 +41,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.util.ColorUtils
-import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -53,7 +52,6 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import timber.log.Timber
 import javax.inject.Inject
-
 
 class IntroductionFragment: UFragment(), Injectable {
     @Inject
@@ -143,24 +141,20 @@ class IntroductionFragment: UFragment(), Injectable {
                 if (resultCode == RESULT_OK && data != null && data.data != null) {
                     val uri = data.data!!
 
-                    //if (!VersionUtils.isOreo()) {
-                        val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
-                        val ac = requireContext().getColor(R.color.colorAccent)
-                        CropImage.activity(uri)
-                                .setFixAspectRatio(true)
-                                .setAspectRatio(1, 1)
-                                .setCropShape(CropImageView.CropShape.OVAL)
-                                .setBackgroundColor(bg)
-                                .setBorderLineColor(ac)
-                                .setBorderCornerColor(ac)
-                                .setActivityMenuIconColor(ac)
-                                .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
-                                .setActivityTitle(getString(R.string.cut_profile_image))
-                                .setGuidelines(CropImageView.Guidelines.OFF)
-                                .start(requireContext(), this)
-//                    } else {
-//                        onImagePicked(uri)
-//                    }
+                    val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
+                    val ac = requireContext().getColor(R.color.colorAccent)
+                    CropImage.activity(uri)
+                            .setFixAspectRatio(true)
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.OVAL)
+                            .setBackgroundColor(bg)
+                            .setBorderLineColor(ac)
+                            .setBorderCornerColor(ac)
+                            .setActivityMenuIconColor(ac)
+                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
+                            .setActivityTitle(getString(R.string.cut_profile_image))
+                            .setGuidelines(CropImageView.Guidelines.OFF)
+                            .start(requireContext(), this)
 
                 }
             }

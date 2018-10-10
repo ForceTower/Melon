@@ -34,6 +34,7 @@
         <item name="titleTextColor">@color/colorAccent</item>
         <item name="android:titleTextColor">@color/colorAccent</item>
         <item name="actionMenuTextColor">@color/colorAccent</item>
+        <item name="android:titleTextStyle">@style/CropTheme.ActionBar.Text</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
@@ -41,6 +42,11 @@
 
         <item name="android:windowLightStatusBar">true</item>
         <item name="android:statusBarColor">@color/white</item>
+    </style>
+    
+    <style name="CropTheme.ActionBar.Text" parent="@android:style/TextAppearance">
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textColor">@color/colorAccent</item>
     </style>
 
     <style name="CropTheme.Default"/>
