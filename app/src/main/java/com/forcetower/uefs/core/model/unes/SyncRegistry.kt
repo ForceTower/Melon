@@ -38,7 +38,7 @@ import java.util.UUID
 ])
 data class SyncRegistry(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
+    var uid: Long = 0,
     val uuid: String = UUID.randomUUID().toString(),
     val start: Long = System.currentTimeMillis(),
     var end: Long? = null,
