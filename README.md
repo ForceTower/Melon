@@ -1,4 +1,4 @@
-# \[ 🚧 🔧👷⛏ Trabalho em progresso ⛏👷🔧️ 🚧 \] UNES 2.0 
+# \[ 🚧 🔧 Trabalho em progresso ⛏ 👷 \] UNES 2.0 
 Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para Kotlin e utilizando o Material Design 2.0
 
 🛑 Versão altamente instável e com funções faltando 🛑
