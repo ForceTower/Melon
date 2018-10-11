@@ -235,6 +235,7 @@ class LoginSagresRepository @Inject constructor(
                     defineSemesters(g.semesters)
                     defineGrades(g.grades)
                     defineFrequency(g.frequency)
+                    database.gradesDao().markAllNotified()
                     defineGradesWorkers(g.semesters.map { pair -> pair.first })
                     data.postValue(Callback.Builder(g.status).document(g.document).build())
                 }

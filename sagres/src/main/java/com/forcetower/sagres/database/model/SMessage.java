@@ -27,6 +27,7 @@
 
 package com.forcetower.sagres.database.model;
 
+import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
@@ -43,11 +44,12 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     private String message;
     @SerializedName(value = "perfilRemetente")
     private int senderProfile;
+    @Nullable
     private String senderName;
     @SerializedName(value = "remetente")
     private SLinker sender;
 
-    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, String senderName) {
+    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName) {
         this.sagresId = sagresId;
         this.timestamp = timestamp;
         this.sender = sender;
@@ -88,11 +90,12 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
         this.senderProfile = senderProfile;
     }
 
+    @Nullable
     public String getSenderName() {
         return senderName;
     }
 
-    public void setSenderName(String senderName) {
+    public void setSenderName(@Nullable String senderName) {
         this.senderName = senderName;
     }
 

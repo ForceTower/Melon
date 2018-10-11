@@ -51,7 +51,7 @@ data class Message(
     @ColumnInfo(name = "sender_profile")
     val senderProfile: Int,
     @ColumnInfo(name = "sender_name")
-    val senderName: String,
+    val senderName: String?,
     val notified: Boolean = false,
     val uuid: String = UUID.randomUUID().toString()
 ) {

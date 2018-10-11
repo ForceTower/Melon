@@ -31,20 +31,44 @@ import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Message
 
 @Dao
-interface MessageDao {
+abstract class MessageDao {
+
+    fun insertIgnoring(messages: List<Message>) {
+        for (message in messages) {
+            if (message.senderName != null) {
+                val direct = getMessageDirect(message.sagresId)
+                if (direct != null && direct.senderName == null) {
+                    updateSenderName(message.sagresId, message.senderName)
+                }
+            }
+        }
+
+        insertIgnore(messages)
+    }
+
+    @Query("UPDATE Message SET sender_name = :senderName WHERE uid = :sagresId")
+    abstract fun updateSenderName(sagresId: Long, senderName: String)
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    fun insertIgnoring(messages: List<Message>)
+    abstract fun insertIgnore(messages: List<Message>)
+
+    @Insert(onConflict = REPLACE)
+    abstract fun insertReplace(messages: List<Message>)
+
+    @Query("SELECT * FROM Message WHERE sagres_id = :sagresId")
+    abstract fun getMessageDirect(sagresId: Long): Message?
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
-    fun getAllMessages(): LiveData<List<Message>>
+    abstract fun getAllMessages(): LiveData<List<Message>>
 
     @Query("SELECT * FROM Message WHERE notified = 0")
-    fun getNewMessages(): List<Message>
+    abstract fun getNewMessages(): List<Message>
 
     @Query("UPDATE Message SET notified = 1")
-    fun setAllNotified()
+    abstract fun setAllNotified()
 }

@@ -70,7 +70,7 @@ abstract class GradeDao {
     abstract fun markAllNotified()
 
     @Transaction
-    open fun putGrades(grades: List<SGrade>) {
+    open fun putGrades(grades: List<SGrade>, notified: Boolean = false) {
         val profile = getMeProfile()
 
         grades.forEach {
@@ -101,21 +101,21 @@ abstract class GradeDao {
                 if (groups.size == 1) {
                     val group = groups[0]
                     val cs = getClassStudent(group.uid, profile.uid)
-                    prepareInsertion(cs, it)
+                    prepareInsertion(cs, it, notified)
                 } else {
                     val value = groups.firstOrNull { g -> !g.group.startsWith("P") }
                     if (value == null) {
                         Timber.e("<grades_no_T_found> :: This will be ignored forever ${code}_${it.semesterId}_${profile.name} ")
                     } else {
                         val cs = getClassStudent(value.uid, profile.uid)
-                        prepareInsertion(cs, it)
+                        prepareInsertion(cs, it, notified)
                     }
                 }
             }
         }
     }
 
-    private fun prepareInsertion(cs: ClassStudent, it: SGrade) {
+    private fun prepareInsertion(cs: ClassStudent, it: SGrade, notify: Boolean) {
         val values = HashMap<String, SGradeInfo>()
         it.values.forEach {g ->
             var grade = values[g.name]
@@ -133,7 +133,7 @@ abstract class GradeDao {
             val grade = getNamedGradeDirect(cs.uid, i.name)
             if (grade == null) {
                 val notified = if (i.hasGrade()) 3 else 1
-                insert(Grade(classId = cs.uid, name = i.name, date = i.date, notified = notified, grade = i.grade))
+                insert(Grade(classId = cs.uid, name = i.name, date = i.date, notified = if (notify) notified else 0, grade = i.grade))
             } else {
                 if (grade.hasGrade() && i.hasGrade() && grade.grade != i.grade) {
                     grade.notified = 4
@@ -149,6 +149,7 @@ abstract class GradeDao {
                 } else {
                     Timber.d("No changes detected between $grade and $i")
                 }
+                grade.notified = if (notify) grade.notified else 0
                 update(grade)
             }
         }

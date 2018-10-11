@@ -70,7 +70,6 @@ class SagresGradesRepository @Inject constructor(
                 defineFrequency(semesterGrades.frequency)
                 Timber.d("[$semesterSagresId] Grades Part 02/02 Completed!")
                 Timber.d("[$semesterSagresId] Grades: ${semesterGrades.grades}")
-                database.gradesDao().markAllNotified()
                 SUCCESS
             } else {
                 ACTUAL_GRADES_CALL_FAILED
@@ -89,7 +88,7 @@ class SagresGradesRepository @Inject constructor(
 
     @WorkerThread
     private fun defineGrades(grades: List<SGrade>) {
-        database.gradesDao().putGrades(grades)
+        database.gradesDao().putGrades(grades, notified = true)
     }
 
     @WorkerThread

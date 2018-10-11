@@ -53,14 +53,16 @@ fun profileImage(iv: ImageView, url: String?) {
 fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
     if (user != null) {
         val reference = storage.getReference("users/${user.uid}/avatar.jpg")
-        GlideApp.with(iv.context)
+        try {
+            GlideApp.with(iv.context)
                 .load(reference)
                 .fallback(R.mipmap.ic_unes_large_image_512)
                 .placeholder(R.mipmap.ic_unes_large_image_512)
-                .signature(ObjectKey(System.currentTimeMillis() ushr 18))
+                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
                 .circleCrop()
                 .transition(DrawableTransitionOptions.withCrossFade())
                 .into(iv)
+        } catch (ignored: Throwable) {}
     } else {
         GlideApp.with(iv.context)
                 .load(R.mipmap.ic_unes_large_image_512)

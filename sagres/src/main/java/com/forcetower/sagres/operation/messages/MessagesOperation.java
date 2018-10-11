@@ -84,8 +84,12 @@ public class MessagesOperation extends Operation<MessagesCallback> {
             SPerson person = getPerson(message.getSender());
             if (person != null)
                 message.setSenderName(person.getName());
-            else
+            else {
+                if (message.getSenderProfile() == 3) {
+                    message.setSenderName(".UEFS.");
+                }
                 System.out.println("SPerson is Invalid");
+            }
         }
 
         publishProgress(new MessagesCallback(Status.SUCCESS).messages(items));
