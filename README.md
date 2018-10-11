@@ -16,6 +16,13 @@ Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para 
 Esta nova versão não oferecerá suporte para dispositivos com Android inferior ao 5.0
 Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
 
+### Compilando o Melon
+Para compilar o Melon você precisa seguir uns passos iniciais já que alguns arquivos não podem ser commitados no Git :)
+
+* Crie um projeto no Firebase com qualquer nome e coloque o arquivo .json na pasta do módulo principal do aplicativo.
+* Crie e atualize o arquivo signing.gradle com suas informações de acordo com o exemplo
+* Algumas strings secretas tambem precisam ser criadas então na pasta values do módulo principal crie o arquivo service_strings.xml (ou outro nome que você desejar), e atribua valores para suas strings como mostrado no exemplo.
+
 ### Sobre o Aplicativo
 Este aplicativo mostra notificações quando algo novo é detectado no Sagres.
 Ele tambem tenta aproximar todo o conteúdo do Sagres em um aplicativo cujas ações podem ser feitas offline e então quando houver internet elas serão sincronizadas com o portal online. Também espera-se que possua algumas funcionalidades aleatórias que forem julgadas interessantes :)
