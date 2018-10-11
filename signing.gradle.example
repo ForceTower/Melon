@@ -1,0 +1,6 @@
+ext {
+    signFile = file("PATH_TO_YOUR_KEYSTORE")
+    signKeystorePassword = "YOUR_KEYSTORE_PASSWORD"
+    signKeyAlias = "YOUR_KEY_ALIAS"
+    signKeyPassword = "YOUR_KEY_PASSWORD"
+}
