@@ -88,3 +88,14 @@ fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
 fun classAbsence(tv: TextView, desc: String, date: String) {
     tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc, date)
 }
+
+@BindingAdapter(value = ["absences", "credits"], requireAll = true)
+fun totalAbscence(tv: TextView, absences: Int, credits: Int?) {
+    val context = tv.context
+    if (credits == null || credits == 0) {
+        tv.text = context.getString(R.string.discipline_credits_undefined)
+    } else {
+        val left = (credits/4) - absences
+        tv.text = context.getString(R.string.discipline_absence_left, left)
+    }
+}

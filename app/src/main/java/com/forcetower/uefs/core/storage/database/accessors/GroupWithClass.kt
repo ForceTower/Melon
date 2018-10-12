@@ -39,4 +39,5 @@ class GroupWithClass {
     lateinit var classes: List<ClassWithDiscipline>
 
     fun singleClass() = classes[0]
+    fun clazz() = classes[0]
 }

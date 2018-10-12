@@ -38,12 +38,17 @@ import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
+import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
+import com.forcetower.uefs.databinding.ItemDisciplineInfoBinding
+import com.forcetower.uefs.databinding.ItemDisciplineMissedClassBinding
+import com.forcetower.uefs.databinding.ItemTeacherBinding
+import com.forcetower.uefs.databinding.ItemTeacherSharedMaterialHeaderBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.inflater
 
 class OverviewAdapter(
-    lifecycleOwner: LifecycleOwner,
-    viewModel: DisciplineViewModel
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: DisciplineViewModel
 ): RecyclerView.Adapter<OverviewHolder>() {
     var currentDiscipline: ClassStudentWithGroup? = null
     set(value) {
@@ -72,13 +77,35 @@ class OverviewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()
         return when (viewType) {
-            R.layout.divider -> OverviewHolder.Divider(inflater.inflate(viewType, parent, false))
-            else -> throw IllegalStateException("No view defined for viewType $viewType")
+            R.layout.item_discipline_info -> OverviewHolder.InfoHolder(
+                ItemDisciplineInfoBinding.inflate(inflater, parent, false)
+            )
+            R.layout.item_discipline_class_material -> OverviewHolder.MaterialHolder(
+                ItemTeacherSharedMaterialHeaderBinding.inflate(inflater, parent, false)
+            )
+            R.layout.item_discipline_missed_class -> OverviewHolder.AbsenceHolder(
+                ItemDisciplineMissedClassBinding.inflate(inflater, parent, false)
+            )
+            R.layout.item_discipline_class_item -> OverviewHolder.ClassHolder(
+                ItemDisciplineClassItemBinding.inflate(inflater, parent, false)
+            )
+            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(
+                ItemTeacherBinding.inflate(inflater, parent, false)
+            )
+            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: OverviewHolder, position: Int) {
-
+        when (holder) {
+            is OverviewHolder.SimpleHolder -> Unit
+            is OverviewHolder.InfoHolder -> holder.binding.apply {
+                setLifecycleOwner(this@OverviewAdapter.lifecycleOwner)
+                viewModel = this@OverviewAdapter.viewModel
+                executePendingBindings()
+            }
+            else -> Unit
+        }
     }
 
     override fun getItemCount() = differ.currentList.size
@@ -134,7 +161,12 @@ class OverviewAdapter(
 }
 
 sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    class Divider(itemView: View): OverviewHolder(itemView)
+    class SimpleHolder(itemView: View): OverviewHolder(itemView)
+    class MaterialHolder(val binding: ItemTeacherSharedMaterialHeaderBinding): OverviewHolder(binding.root)
+    class AbsenceHolder(val binding: ItemDisciplineMissedClassBinding): OverviewHolder(binding.root)
+    class ClassHolder(val binding: ItemDisciplineClassItemBinding): OverviewHolder(binding.root)
+    class InfoHolder(val binding: ItemDisciplineInfoBinding): OverviewHolder(binding.root)
+    class TeacherHolder(val binding: ItemTeacherBinding): OverviewHolder(binding.root)
 }
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {
