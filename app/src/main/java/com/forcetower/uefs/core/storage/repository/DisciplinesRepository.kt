@@ -28,9 +28,11 @@
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -44,5 +46,13 @@ class DisciplinesRepository @Inject constructor(
 
     fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>> {
         return database.classDao().getClassesWithGradesFromSemester(semesterId)
+    }
+
+    fun getClassGroup(classGroupId: Long): LiveData<GroupWithClass?> {
+        return database.classGroupDao().getWithRelations(classGroupId)
+    }
+
+    fun getMyAbsencesFromGroup(classGroupId: Long): LiveData<List<ClassAbsence>> {
+        return database.classAbsenceDao().getMyAbsenceFromGroup(classGroupId)
     }
 }

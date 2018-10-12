@@ -255,6 +255,8 @@
     <string name="discipline_absence_item_format">%1$s - %2$s</string>
     <string name="no_events_registered">Não existem eventos cadastrados</string>
     <string name="teachers_label">Professores</string>
+    <string name="discipline_credits_undefined">Carga horária desconhecida o_o</string>
+    <string name="discipline_absence_left">Ainda restam %1$d faltas</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

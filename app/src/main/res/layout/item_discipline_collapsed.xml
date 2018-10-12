@@ -86,7 +86,6 @@
                 app:layout_constraintEnd_toStartOf="@+id/guide_image_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:src="@drawable/ic_atom_black_470dp"
                 android:tint="@color/dis_04"/>
 
             <TextView

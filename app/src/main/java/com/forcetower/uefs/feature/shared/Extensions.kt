@@ -27,9 +27,29 @@
 
 package com.forcetower.uefs.feature.shared
 
+import android.app.Activity
+import androidx.core.view.postDelayed
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 
 fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
     return Transformations.map(this, body)
+}
+
+inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
+    beginTransaction().func().commit()
+}
+
+fun <T> MutableLiveData<T>.setValueIfNew(newValue: T) {
+    if (this.value != newValue) value = newValue
+}
+
+fun Activity.postponeEnterTransition(timeout: Long) {
+    postponeEnterTransition()
+    window.decorView.postDelayed(timeout) {
+        startPostponedEnterTransition()
+    }
 }

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "c616dd41a0418a6a07dca21614c8727a",
+    "identityHash": "4e6a5ee6600854d45d62b84e6ffa7158",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -232,7 +232,7 @@
       },
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT NOT NULL, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -268,7 +268,7 @@
             "fieldPath": "senderName",
             "columnName": "sender_name",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "notified",
@@ -1474,7 +1474,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"c616dd41a0418a6a07dca21614c8727a\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4e6a5ee6600854d45d62b84e6ffa7158\")"
     ]
   }
 }

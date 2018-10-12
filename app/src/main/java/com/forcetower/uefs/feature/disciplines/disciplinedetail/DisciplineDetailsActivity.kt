@@ -37,4 +37,8 @@ class DisciplineDetailsActivity : UActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_discipline_details)
     }
+
+    companion object {
+        val CLASS_ID = "discipline_class_id"
+    }
 }

@@ -76,7 +76,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:importantForAccessibility="no"
-                android:scaleType="centerCrop"
                 tools:src="@mipmap/school_items"
                 app:loadImage="@{event.imageUrl}" />
         </androidx.cardview.widget.CardView>

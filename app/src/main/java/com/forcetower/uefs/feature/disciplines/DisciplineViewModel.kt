@@ -28,12 +28,13 @@
 package com.forcetower.uefs.feature.disciplines
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.model.unes.ClassAbsence
+import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.feature.shared.setValueIfNew
 import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
@@ -41,4 +42,45 @@ class DisciplineViewModel @Inject constructor(
 ): ViewModel() {
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
+
+    private val classGroupId = MutableLiveData<Long?>()
+
+    private val _group = MediatorLiveData<GroupWithClass?>()
+    val group: LiveData<GroupWithClass?>
+        get() = _group
+
+    private val _absences = MediatorLiveData<List<ClassAbsence>>()
+    val absences: LiveData<List<ClassAbsence>>
+        get() = _absences
+
+    init {
+        _group.addSource(classGroupId) {
+            refreshGroup(it)
+        }
+        _absences.addSource(classGroupId) {
+            refreshAbsences(it)
+        }
+    }
+
+    private fun refreshAbsences(classGroupId: Long?) {
+        if (classGroupId != null) {
+            val source = repository.getMyAbsencesFromGroup(classGroupId)
+            _absences.addSource(source) { value ->
+                _absences.value = value
+            }
+        }
+    }
+
+    private fun refreshGroup(classGroupId: Long?) {
+        if (classGroupId != null) {
+            val source = repository.getClassGroup(classGroupId)
+            _group.addSource(source) { value ->
+                _group.value = value
+            }
+        }
+    }
+
+    fun setClassGroupId(classGroupId: Long?) {
+        this.classGroupId.setValueIfNew(classGroupId)
+    }
 }
