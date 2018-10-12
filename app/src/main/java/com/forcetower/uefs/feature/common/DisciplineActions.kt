@@ -27,8 +27,8 @@
 
 package com.forcetower.uefs.feature.common
 
-import com.forcetower.uefs.core.model.unes.Class
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 
 interface DisciplineActions {
-    fun classClicked(clazz: Class)
+    fun classClicked(clazz: ClassWithGroups)
 }

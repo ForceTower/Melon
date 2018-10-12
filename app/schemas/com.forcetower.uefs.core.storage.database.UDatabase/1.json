@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "4e6a5ee6600854d45d62b84e6ffa7158",
+    "identityHash": "927b493f48fb389643ebf1d568128bc0",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -544,7 +544,7 @@
       },
       {
         "tableName": "ClassGroup",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `group` TEXT NOT NULL, `teacher` TEXT, `credits` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `draft` INTEGER NOT NULL, `ignored` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `group` TEXT NOT NULL, `teacher` TEXT, `credits` INTEGER NOT NULL, `uuid` TEXT NOT NULL, `draft` INTEGER NOT NULL, `ignored` INTEGER NOT NULL, `teacher_id` INTEGER, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`teacher_id`) REFERENCES `Teacher`(`uid`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -593,6 +593,12 @@
             "columnName": "ignored",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "teacherId",
+            "columnName": "teacher_id",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -618,6 +624,14 @@
               "uuid"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_ClassGroup_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          },
+          {
+            "name": "index_ClassGroup_teacher_id",
+            "unique": false,
+            "columnNames": [
+              "teacher_id"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassGroup_teacher_id` ON `${TABLE_NAME}` (`teacher_id`)"
           }
         ],
         "foreignKeys": [
@@ -627,6 +641,17 @@
             "onUpdate": "CASCADE",
             "columns": [
               "class_id"
+            ],
+            "referencedColumns": [
+              "uid"
+            ]
+          },
+          {
+            "table": "Teacher",
+            "onDelete": "SET NULL",
+            "onUpdate": "CASCADE",
+            "columns": [
+              "teacher_id"
             ],
             "referencedColumns": [
               "uid"
@@ -975,7 +1000,7 @@
       },
       {
         "tableName": "ClassItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `situation` TEXT NOT NULL, `subject` TEXT NOT NULL, `date` TEXT NOT NULL, `number_of_materials` TEXT NOT NULL, `material_links` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `situation` TEXT NOT NULL, `subject` TEXT NOT NULL, `date` TEXT NOT NULL, `number_of_materials` TEXT NOT NULL, `material_links` TEXT NOT NULL, `is_new` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -1024,6 +1049,18 @@
             "columnName": "material_links",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "is_new",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -1065,6 +1102,22 @@
               "date"
             ],
             "createSql": "CREATE  INDEX `index_ClassItem_date` ON `${TABLE_NAME}` (`date`)"
+          },
+          {
+            "name": "index_ClassItem_is_new",
+            "unique": false,
+            "columnNames": [
+              "is_new"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassItem_is_new` ON `${TABLE_NAME}` (`is_new`)"
+          },
+          {
+            "name": "index_ClassItem_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassItem_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": [
@@ -1083,7 +1136,7 @@
       },
       {
         "tableName": "ClassMaterial",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `class_item_id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`class_item_id`) REFERENCES `ClassItem`(`uid`) ON UPDATE CASCADE ON DELETE SET NULL )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `class_item_id` INTEGER, `name` TEXT NOT NULL, `link` TEXT NOT NULL, `is_new` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`class_item_id`) REFERENCES `ClassItem`(`uid`) ON UPDATE CASCADE ON DELETE SET NULL )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -1113,6 +1166,12 @@
             "fieldPath": "link",
             "columnName": "link",
             "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "isNew",
+            "columnName": "is_new",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1168,6 +1227,14 @@
               "uuid"
             ],
             "createSql": "CREATE UNIQUE INDEX `index_ClassMaterial_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          },
+          {
+            "name": "index_ClassMaterial_is_new",
+            "unique": false,
+            "columnNames": [
+              "is_new"
+            ],
+            "createSql": "CREATE  INDEX `index_ClassMaterial_is_new` ON `${TABLE_NAME}` (`is_new`)"
           }
         ],
         "foreignKeys": [
@@ -1470,11 +1537,64 @@
           }
         ],
         "foreignKeys": []
+      },
+      {
+        "tableName": "Teacher",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `sagresId` INTEGER, `department` TEXT, `uuid` TEXT NOT NULL)",
+        "fields": [
+          {
+            "fieldPath": "uid",
+            "columnName": "uid",
+            "affinity": "INTEGER",
+            "notNull": true
+          },
+          {
+            "fieldPath": "name",
+            "columnName": "name",
+            "affinity": "TEXT",
+            "notNull": true
+          },
+          {
+            "fieldPath": "sagresId",
+            "columnName": "sagresId",
+            "affinity": "INTEGER",
+            "notNull": false
+          },
+          {
+            "fieldPath": "department",
+            "columnName": "department",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "uuid",
+            "columnName": "uuid",
+            "affinity": "TEXT",
+            "notNull": true
+          }
+        ],
+        "primaryKey": {
+          "columnNames": [
+            "uid"
+          ],
+          "autoGenerate": true
+        },
+        "indices": [
+          {
+            "name": "index_Teacher_uuid",
+            "unique": true,
+            "columnNames": [
+              "uuid"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_Teacher_uuid` ON `${TABLE_NAME}` (`uuid`)"
+          }
+        ],
+        "foreignKeys": []
       }
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"4e6a5ee6600854d45d62b84e6ffa7158\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"927b493f48fb389643ebf1d568128bc0\")"
     ]
   }
 }

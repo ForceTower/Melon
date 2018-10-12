@@ -35,15 +35,19 @@ import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.map
 import com.forcetower.uefs.feature.shared.setValueIfNew
 import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository
-): ViewModel() {
+): ViewModel(), DisciplineActions {
+
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
@@ -68,6 +72,11 @@ class DisciplineViewModel @Inject constructor(
     private val _classItems = MediatorLiveData<List<ClassItem>>()
     val classItems: LiveData<List<ClassItem>>
         get() = _classItems
+
+
+    private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
+    val navigateToDisciplineAction: LiveData<Event<ClassWithGroups>>
+        get() = _navigateToDisciplineAction
 
     init {
         _classStudent.addSource(classGroupId) {
@@ -122,5 +131,9 @@ class DisciplineViewModel @Inject constructor(
 
     fun setClassGroupId(classGroupId: Long?) {
         this.classGroupId.setValueIfNew(classGroupId)
+    }
+
+    override fun classClicked(clazz: ClassWithGroups) {
+        _navigateToDisciplineAction.value = Event(clazz)
     }
 }
