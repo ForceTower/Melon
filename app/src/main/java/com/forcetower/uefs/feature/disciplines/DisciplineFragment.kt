@@ -110,7 +110,7 @@ class DisciplineFragment: UFragment(), Injectable {
     }
 
     private fun showGroupDialog(it: ClassWithGroups) {
-        Timber.d("Not implemented yet")
+        homeViewModel.showSnack("A quantidade de grupos desta disciplina é ${it.groups.size}. NotImplementedException")
     }
 
     private inner class SemesterAdapter(fm: FragmentManager):  FragmentPagerAdapter(fm) {
