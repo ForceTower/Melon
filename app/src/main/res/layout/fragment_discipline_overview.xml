@@ -35,6 +35,7 @@
         android:layout_height="match_parent"
         android:paddingBottom="?actionBarSize"
         android:scrollbars="vertical"
+        android:clipToPadding="false"
         app:hasFixedSize="@{true}"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 </layout>

@@ -50,7 +50,6 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineFragment: UFragment(), Injectable {
@@ -104,7 +103,7 @@ class DisciplineFragment: UFragment(), Injectable {
     private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
         when {
             it.groups.isEmpty() -> homeViewModel.showSnack(getString(R.string.no_class_groups))
-            it.groups.size == 1 -> DisciplineDetailsActivity.startIntent(requireContext(), it.groups[0].group.uid)
+            it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.groups[0].group.uid))
             else -> showGroupDialog(it)
         }
     }
