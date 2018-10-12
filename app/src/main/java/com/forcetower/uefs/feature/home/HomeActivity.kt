@@ -44,6 +44,7 @@ import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.config
 import com.forcetower.uefs.feature.shared.provideViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -55,6 +56,8 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
     lateinit var vmFactory: UViewModelFactory
+    @Inject
+    lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: ActivityHomeBinding
@@ -87,6 +90,7 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
     private fun onAccessUpdate(access: Access?) {
         if (access == null) {
             Timber.d("Access Invalidated")
+            firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)

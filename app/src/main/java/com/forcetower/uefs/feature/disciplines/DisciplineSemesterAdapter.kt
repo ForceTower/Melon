@@ -35,9 +35,6 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.databinding.ItemDisciplineCollapsedBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-private const val DISCIPLINE: Int = 0
-private const val GRADE: Int = 1
-
 class DisciplineSemesterAdapter (
     val viewModel: DisciplineViewModel
 ): ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
