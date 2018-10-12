@@ -37,7 +37,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineOverviewBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity.Companion.CLASS_ID
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity.Companion.CLASS_GROUP_ID
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
@@ -51,7 +51,7 @@ class OverviewFragment: UFragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
-        viewModel.setClassGroupId(requireNotNull(arguments).getLong(CLASS_ID))
+        viewModel.setClassGroupId(requireNotNull(arguments).getLong(CLASS_GROUP_ID))
         return FragmentDisciplineOverviewBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -78,7 +78,7 @@ class OverviewFragment: UFragment(), Injectable {
     companion object {
         fun newInstance(classId: Long): OverviewFragment {
             return OverviewFragment().apply {
-                arguments = bundleOf(CLASS_ID to classId)
+                arguments = bundleOf(CLASS_GROUP_ID to classId)
             }
         }
     }

@@ -36,6 +36,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.login.LoginActivity
@@ -80,6 +81,7 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
 
     private fun setupUserData() {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
+        viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
     }
 
     private fun onAccessUpdate(access: Access?) {

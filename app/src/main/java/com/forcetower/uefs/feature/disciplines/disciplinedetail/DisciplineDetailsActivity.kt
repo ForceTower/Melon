@@ -27,18 +27,52 @@
 
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.ActivityDisciplineDetailsBinding
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.config
+import com.forcetower.uefs.feature.shared.inTransaction
+import com.google.android.material.snackbar.Snackbar
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class DisciplineDetailsActivity : UActivity() {
+class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    private lateinit var binding: ActivityDisciplineDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_discipline_details)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_discipline_details)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                val classGroupId = intent.getLongExtra(CLASS_GROUP_ID, 1)
+                add(R.id.fragment_container, OverviewFragment.newInstance(classGroupId))
+            }
+        }
     }
 
+    override fun showSnack(string: String) {
+        val snack = Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT)
+        snack.config()
+        snack.show()
+    }
+
+    override fun supportFragmentInjector() = fragmentInjector
+
     companion object {
-        val CLASS_ID = "discipline_class_id"
+        const val CLASS_GROUP_ID = "class_group_id"
+        fun startIntent(context: Context, classGroupId: Long): Intent {
+            return Intent(context, DisciplineDetailsActivity::class.java).apply {
+                putExtra(CLASS_GROUP_ID, classGroupId)
+            }
+        }
     }
 }

@@ -35,16 +35,22 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
+import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.makeSemester
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineFragment: UFragment(), Injectable {
@@ -56,6 +62,7 @@ class DisciplineFragment: UFragment(), Injectable {
     lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var viewModel: DisciplineViewModel
+    private lateinit var homeViewModel: HomeViewModel
     private lateinit var binding: FragmentDisciplineBinding
 
     private lateinit var viewPager: ViewPager
@@ -64,6 +71,7 @@ class DisciplineFragment: UFragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
+        homeViewModel = provideActivityViewModel(factory)
         return FragmentDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
             viewPager = it.pagerSemester
@@ -88,6 +96,21 @@ class DisciplineFragment: UFragment(), Injectable {
         viewModel.semesters.observe(this, Observer {
             adapter.submitList(it)
         })
+        viewModel.navigateToDisciplineAction.observe(this, EventObserver {
+            handleNavigateToDisciplineDetails(it)
+        })
+    }
+
+    private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
+        when {
+            it.groups.isEmpty() -> homeViewModel.showSnack(getString(R.string.no_class_groups))
+            it.groups.size == 1 -> DisciplineDetailsActivity.startIntent(requireContext(), it.groups[0].group.uid)
+            else -> showGroupDialog(it)
+        }
+    }
+
+    private fun showGroupDialog(it: ClassWithGroups) {
+        Timber.d("Not implemented yet")
     }
 
     private inner class SemesterAdapter(fm: FragmentManager):  FragmentPagerAdapter(fm) {

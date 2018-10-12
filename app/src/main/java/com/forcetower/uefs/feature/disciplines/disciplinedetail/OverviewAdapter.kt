@@ -42,7 +42,7 @@ import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
 import com.forcetower.uefs.databinding.ItemDisciplineClassMaterialBinding
 import com.forcetower.uefs.databinding.ItemDisciplineInfoBinding
 import com.forcetower.uefs.databinding.ItemDisciplineMissedClassBinding
-import com.forcetower.uefs.databinding.ItemTeacherBinding
+import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.inflater
 
@@ -90,7 +90,7 @@ class OverviewAdapter(
                 ItemDisciplineClassItemBinding.inflate(inflater, parent, false)
             )
             R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(
-                ItemTeacherBinding.inflate(inflater, parent, false)
+                ItemDisciplineTeacherBinding.inflate(inflater, parent, false)
             )
             else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false))
         }
@@ -121,6 +121,7 @@ class OverviewAdapter(
             }
             is OverviewHolder.TeacherHolder -> holder.binding.apply {
                 setLifecycleOwner(lifecycleOwner)
+                viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
         }
@@ -184,7 +185,7 @@ sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     class AbsenceHolder(val binding: ItemDisciplineMissedClassBinding): OverviewHolder(binding.root)
     class ClassHolder(val binding: ItemDisciplineClassItemBinding): OverviewHolder(binding.root)
     class InfoHolder(val binding: ItemDisciplineInfoBinding): OverviewHolder(binding.root)
-    class TeacherHolder(val binding: ItemTeacherBinding): OverviewHolder(binding.root)
+    class TeacherHolder(val binding: ItemDisciplineTeacherBinding): OverviewHolder(binding.root)
 }
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {

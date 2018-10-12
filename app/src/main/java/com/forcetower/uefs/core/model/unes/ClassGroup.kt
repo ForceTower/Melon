@@ -29,14 +29,17 @@ package com.forcetower.uefs.core.model.unes
 
 import androidx.room.*
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.ForeignKey.SET_NULL
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import java.util.*
 
 @Entity(foreignKeys = [
-    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onDelete = CASCADE, onUpdate = CASCADE)
+    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onDelete = CASCADE, onUpdate = CASCADE),
+    ForeignKey(entity = Teacher::class, parentColumns = ["uid"], childColumns = ["teacher_id"], onDelete = SET_NULL, onUpdate = CASCADE)
 ], indices = [
     Index(value = ["class_id", "group"], unique = true),
-    Index(value = ["uuid"], unique = true)
+    Index(value = ["uuid"], unique = true),
+    Index(value = ["teacher_id"], unique = false)
 ])
 data class ClassGroup(
     @PrimaryKey(autoGenerate = true)
@@ -48,7 +51,9 @@ data class ClassGroup(
     var credits: Int = 0,
     val uuid: String = UUID.randomUUID().toString(),
     var draft: Boolean = true,
-    var ignored: Boolean = false
+    var ignored: Boolean = false,
+    @ColumnInfo(name = "teacher_id")
+    var teacherId: Long? = null
 ) {
 
     fun selectiveCopy(grp: SDisciplineGroup) {

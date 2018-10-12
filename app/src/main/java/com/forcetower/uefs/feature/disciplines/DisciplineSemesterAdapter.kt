@@ -46,18 +46,16 @@ class DisciplineSemesterAdapter (
         return ClassHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: ClassHolder, position: Int) = holder.bind(getItem(position))
-}
-
-class ClassHolder(
-    val binding: ItemDisciplineCollapsedBinding
-): RecyclerView.ViewHolder(binding.root) {
-
-    fun bind(item: ClassWithGroups) {
-        binding.clazzGroup = item
-        binding.executePendingBindings()
+    override fun onBindViewHolder(holder: ClassHolder, position: Int) {
+        holder.binding.apply {
+            clazzGroup = getItem(position)
+            listener = viewModel
+            executePendingBindings()
+        }
     }
 }
+
+class ClassHolder(val binding: ItemDisciplineCollapsedBinding): RecyclerView.ViewHolder(binding.root)
 
 object ClassDiff: DiffUtil.ItemCallback<ClassWithGroups>() {
     override fun areItemsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem.clazz.uid == newItem.clazz.uid

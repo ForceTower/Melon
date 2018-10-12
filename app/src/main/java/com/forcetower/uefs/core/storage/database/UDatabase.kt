@@ -50,7 +50,8 @@ import com.forcetower.uefs.core.storage.database.dao.*
     Grade::class,
     Course::class,
     SagresDocument::class,
-    SyncRegistry::class
+    SyncRegistry::class,
+    Teacher::class
 ], version = 1, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
