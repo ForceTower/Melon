@@ -32,6 +32,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineOverviewBinding
@@ -67,6 +68,11 @@ class OverviewFragment: UFragment(), Injectable {
                 removeDuration = 100L
             }
         }
+
+        viewModel.classStudent.observe(this, Observer { overviewAdapter.currentDiscipline = it })
+        viewModel.absences.observe(this, Observer { overviewAdapter.frequencyList = it })
+        viewModel.materials.observe(this, Observer { overviewAdapter.materialList = it })
+        viewModel.classItems.observe(this, Observer { overviewAdapter.itemList = it })
     }
 
     companion object {

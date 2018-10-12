@@ -28,6 +28,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
+    </data>
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,6 +69,7 @@
             android:layout_marginStart="@dimen/spacing_normal"
             tools:text="João Batista Rocha Junior"
             android:textColor="?android:textColorPrimary"
+            android:text="@{viewModel.group.group.teacher}"
             android:layout_marginTop="@dimen/spacing_common"
             app:layout_constraintBottom_toTopOf="@id/speaker_item_company"
             app:layout_constraintEnd_toEndOf="parent"

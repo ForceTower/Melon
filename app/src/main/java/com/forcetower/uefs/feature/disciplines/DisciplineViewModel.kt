@@ -32,8 +32,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.ClassAbsence
+import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.model.unes.ClassMaterial
+import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.feature.shared.map
 import com.forcetower.uefs.feature.shared.setValueIfNew
 import javax.inject.Inject
 
@@ -45,20 +49,56 @@ class DisciplineViewModel @Inject constructor(
 
     private val classGroupId = MutableLiveData<Long?>()
 
-    private val _group = MediatorLiveData<GroupWithClass?>()
-    val group: LiveData<GroupWithClass?>
-        get() = _group
+    private val _classStudent = MediatorLiveData<ClassStudentWithGroup?>()
+    val classStudent: LiveData<ClassStudentWithGroup?>
+        get() = _classStudent
+
+    val group: LiveData<GroupWithClass?> = classStudent.map {
+        it?.group()
+    }
 
     private val _absences = MediatorLiveData<List<ClassAbsence>>()
     val absences: LiveData<List<ClassAbsence>>
         get() = _absences
 
+    private val _materials = MediatorLiveData<List<ClassMaterial>>()
+    val materials: LiveData<List<ClassMaterial>>
+        get() = _materials
+
+    private val _classItems = MediatorLiveData<List<ClassItem>>()
+    val classItems: LiveData<List<ClassItem>>
+        get() = _classItems
+
     init {
-        _group.addSource(classGroupId) {
-            refreshGroup(it)
+        _classStudent.addSource(classGroupId) {
+            refreshClassStudent(it)
         }
         _absences.addSource(classGroupId) {
             refreshAbsences(it)
+        }
+        _materials.addSource(classGroupId) {
+            refreshMaterials(it)
+        }
+        _classItems.addSource(classGroupId) {
+            refreshClassItems(it)
+        }
+    }
+
+    private fun refreshClassItems(classGroupId: Long?) {
+        if (classGroupId != null) {
+            val source = repository.getClassItemsFromGroup(classGroupId)
+            _classItems.addSource(source) { value ->
+                _classItems.value = value
+            }
+        }
+    }
+
+    private fun refreshMaterials(classGroupId: Long?) {
+        if (classGroupId != null) {
+            val source = repository.getMaterialsFromGroup(classGroupId)
+            _materials.addSource(source) { value ->
+                _materials.value = value
+            }
         }
     }
 
@@ -71,11 +111,11 @@ class DisciplineViewModel @Inject constructor(
         }
     }
 
-    private fun refreshGroup(classGroupId: Long?) {
+    private fun refreshClassStudent(classGroupId: Long?) {
         if (classGroupId != null) {
-            val source = repository.getClassGroup(classGroupId)
-            _group.addSource(source) { value ->
-                _group.value = value
+            val source = repository.getClassStudent(classGroupId)
+            _classStudent.addSource(source) { value ->
+                _classStudent.value = value
             }
         }
     }

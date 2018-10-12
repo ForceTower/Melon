@@ -25,39 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.ForeignKey
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import java.util.UUID
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Query
+import com.forcetower.uefs.core.model.unes.ClassMaterial
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE)
-], indices = [
-    Index(value = ["group_id", "number"], unique = true),
-    Index(value = ["number_of_materials"], unique = false),
-    Index(value = ["situation"], unique = false),
-    Index(value = ["date"], unique = false),
-    Index(value = ["is_new"], unique = false),
-    Index(value = ["uuid"], unique = true)
-])
-data class ClassItem (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    @ColumnInfo(name = "group_id")
-    val groupId: Long,
-    val number: Int,
-    val situation: String,
-    val subject: String,
-    val date: String,
-    @ColumnInfo(name = "number_of_materials")
-    val numberOfMaterials: String,
-    @ColumnInfo(name = "material_links")
-    val materialLinks: String,
-    @ColumnInfo(name = "is_new")
-    val isNew: Boolean,
-    val uuid: String = UUID.randomUUID().toString()
-)
+@Dao
+abstract class ClassMaterialDao {
+
+    @Query("SELECT * FROM ClassMaterial WHERE group_id = :classGroupId")
+    abstract fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>>
+}
