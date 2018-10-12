@@ -29,6 +29,13 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
+    </data>
+    
     <androidx.constraintlayout.widget.ConstraintLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
@@ -75,6 +82,7 @@
             android:paddingTop="72dp"
             android:gravity="start|bottom"
             android:breakStrategy="balanced"
+            android:text="@{viewModel.group.clazz().discipline().name}"
             app:layout_constraintBottom_toBottomOf="@+id/discipline_image"
             app:layout_constraintEnd_toEndOf="@id/guideline_title_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -95,6 +103,7 @@
             android:id="@+id/department"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.group.clazz().discipline().department}"
             tools:text="Departamento de Tecnologia"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
@@ -106,6 +115,8 @@
             android:layout_marginTop="4dp"
             android:layout_height="wrap_content"
             tools:text="Ainda restam 22 faltas"
+            app:absences="@{viewModel.absences.size}"
+            app:credits="@{viewModel.group.clazz().discipline().credits}"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/department" />

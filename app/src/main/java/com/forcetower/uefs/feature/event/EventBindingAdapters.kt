@@ -41,6 +41,7 @@ fun loadImage(iv: ImageView, url: String) {
     GlideApp.with(iv.context)
         .load(url)
         .placeholder(R.mipmap.ic_unes_large_image_512)
+        .centerCrop()
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(iv)
 }

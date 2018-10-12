@@ -41,4 +41,5 @@ data class ClassWithDiscipline(
     constructor(): this(null, ArrayList())
 
     fun singleDiscipline() = disciplines[0]
+    fun discipline() = disciplines[0]
 }
