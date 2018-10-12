@@ -45,7 +45,8 @@ import java.util.UUID
     Index(value = ["link"], unique = false),
     Index(value = ["group_id"], unique = false),
     Index(value = ["class_item_id"], unique = false),
-    Index(value = ["uuid"], unique = true)
+    Index(value = ["uuid"], unique = true),
+    Index(value = ["is_new"], unique = false)
 ])
 data class ClassMaterial(
     @PrimaryKey(autoGenerate = true)
@@ -57,5 +58,7 @@ data class ClassMaterial(
     val classItemId: Long?,
     val name: String,
     val link: String,
+    @ColumnInfo(name = "is_new")
+    val isNew: Boolean,
     val uuid: String = UUID.randomUUID().toString()
 )
