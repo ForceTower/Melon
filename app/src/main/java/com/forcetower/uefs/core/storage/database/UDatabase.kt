@@ -69,4 +69,6 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun courseDao(): CourseDao
     abstract fun documentDao(): DocumentDao
     abstract fun syncRegistryDao(): SyncRegistryDao
+    abstract fun classMaterialDao(): ClassMaterialDao
+    abstract fun classItemDao(): ClassItemDao
 }

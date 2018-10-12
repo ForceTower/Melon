@@ -39,10 +39,10 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
+import com.forcetower.uefs.databinding.ItemDisciplineClassMaterialBinding
 import com.forcetower.uefs.databinding.ItemDisciplineInfoBinding
 import com.forcetower.uefs.databinding.ItemDisciplineMissedClassBinding
 import com.forcetower.uefs.databinding.ItemTeacherBinding
-import com.forcetower.uefs.databinding.ItemTeacherSharedMaterialHeaderBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.inflater
 
@@ -81,7 +81,7 @@ class OverviewAdapter(
                 ItemDisciplineInfoBinding.inflate(inflater, parent, false)
             )
             R.layout.item_discipline_class_material -> OverviewHolder.MaterialHolder(
-                ItemTeacherSharedMaterialHeaderBinding.inflate(inflater, parent, false)
+                ItemDisciplineClassMaterialBinding.inflate(inflater, parent, false)
             )
             R.layout.item_discipline_missed_class -> OverviewHolder.AbsenceHolder(
                 ItemDisciplineMissedClassBinding.inflate(inflater, parent, false)
@@ -100,11 +100,29 @@ class OverviewAdapter(
         when (holder) {
             is OverviewHolder.SimpleHolder -> Unit
             is OverviewHolder.InfoHolder -> holder.binding.apply {
-                setLifecycleOwner(this@OverviewAdapter.lifecycleOwner)
+                setLifecycleOwner(lifecycleOwner)
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
-            else -> Unit
+            is OverviewHolder.MaterialHolder -> holder.binding.apply {
+                setLifecycleOwner(lifecycleOwner)
+                material = materialList.lastOrNull()
+                executePendingBindings()
+            }
+            is OverviewHolder.AbsenceHolder -> holder.binding.apply {
+                setLifecycleOwner(lifecycleOwner)
+                absence = frequencyList.lastOrNull()
+                executePendingBindings()
+            }
+            is OverviewHolder.ClassHolder -> holder.binding.apply {
+                setLifecycleOwner(lifecycleOwner)
+                classItem = itemList.lastOrNull()
+                executePendingBindings()
+            }
+            is OverviewHolder.TeacherHolder -> holder.binding.apply {
+                setLifecycleOwner(lifecycleOwner)
+                executePendingBindings()
+            }
         }
     }
 
@@ -162,7 +180,7 @@ class OverviewAdapter(
 
 sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     class SimpleHolder(itemView: View): OverviewHolder(itemView)
-    class MaterialHolder(val binding: ItemTeacherSharedMaterialHeaderBinding): OverviewHolder(binding.root)
+    class MaterialHolder(val binding: ItemDisciplineClassMaterialBinding): OverviewHolder(binding.root)
     class AbsenceHolder(val binding: ItemDisciplineMissedClassBinding): OverviewHolder(binding.root)
     class ClassHolder(val binding: ItemDisciplineClassItemBinding): OverviewHolder(binding.root)
     class InfoHolder(val binding: ItemDisciplineInfoBinding): OverviewHolder(binding.root)

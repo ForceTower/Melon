@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
@@ -35,11 +36,16 @@ import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassStudent
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 
 @Dao
 abstract class ClassStudentDao {
     @Insert(onConflict = IGNORE)
     abstract fun insert(clazz: ClassStudent)
+
+    @Transaction
+    @Query("SELECT cs.* FROM ClassStudent cs, Profile p WHERE cs.group_id = :classGroupId AND cs.profile_id = p.uid AND p.me = 1")
+    abstract fun getMeFromGroup(classGroupId: Long): LiveData<ClassStudentWithGroup?>
 
     @Transaction
     open fun joinGroups(groups: List<ClassGroup>) {
