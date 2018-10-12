@@ -46,7 +46,7 @@
         android:layout_marginVertical="@dimen/spacing_small"
         app:cardCornerRadius="6dp"
         android:stateListAnimator="@animator/default_card_raise"
-        android:onClick="@{() -> listener.classClicked(clazzGroup.clazz)}">
+        android:onClick="@{() -> listener.classClicked(clazzGroup)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

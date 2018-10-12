@@ -28,22 +28,33 @@
 package com.forcetower.uefs.feature.home
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 
-class HomeViewModel
-@Inject constructor(
-        private val loginSagresRepository: LoginSagresRepository,
-        private val dataRepository: SagresDataRepository
+class HomeViewModel @Inject constructor(
+    private val loginSagresRepository: LoginSagresRepository,
+    private val dataRepository: SagresDataRepository
 ): ViewModel() {
+    private val _snackbar = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>>
+        get() = _snackbar
+
+
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
 
     fun logout() = dataRepository.logout()
+
+    //TODO Make this more personalized and extract to a different view model
+    fun showSnack(message: String) {
+        _snackbar.value = Event(message)
+    }
 }

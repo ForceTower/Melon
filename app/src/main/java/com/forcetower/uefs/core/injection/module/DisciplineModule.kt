@@ -27,27 +27,12 @@
 
 package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.LauncherActivity
-import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
-import com.forcetower.uefs.feature.home.HomeActivity
-import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.OverviewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class ActivityModule {
+abstract class DisciplineModule {
     @ContributesAndroidInjector
-    abstract fun bindLauncherActivity(): LauncherActivity
-    @ContributesAndroidInjector(modules = [LoginModule::class])
-    abstract fun bindLoginActivity(): LoginActivity
-    @ContributesAndroidInjector(modules = [SetupModule::class])
-    abstract fun bindSetupActivity(): SetupActivity
-    @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
-    @ContributesAndroidInjector(modules = [AboutModule::class])
-    abstract fun bindAboutActivity(): AboutActivity
-    @ContributesAndroidInjector(modules = [DisciplineModule::class])
-    abstract fun bindDisciplineDetailsActivity(): DisciplineDetailsActivity
+    abstract fun overviewFragment(): OverviewFragment
 }
