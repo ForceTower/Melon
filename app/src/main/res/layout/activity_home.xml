@@ -68,8 +68,8 @@
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/snack"
             android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:layout_gravity="bottom"
-            android:layout_height="48dp"
             android:layout_marginBottom="112dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
