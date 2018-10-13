@@ -27,6 +27,10 @@
 
 package com.forcetower.sagres.database.model;
 
+import androidx.annotation.Nullable;
+
+import java.util.List;
+
 import static com.forcetower.sagres.utils.WordUtils.validString;
 
 public class SDisciplineGroup {
@@ -40,14 +44,19 @@ public class SDisciplineGroup {
     private int ignored = 0;
     private String semester;
     private String code;
+    @Nullable
+    private List<SDisciplineClassLocation> locations;
+    @Nullable
+    private List<SDisciplineClassItem> classItems;
 
-    public SDisciplineGroup(String teacher, String group, int credits, int missLimit, String classPeriod, String department) {
+    public SDisciplineGroup(String teacher, String group, int credits, int missLimit, String classPeriod, String department, List<SDisciplineClassLocation> locations) {
         this.teacher = teacher;
         this.group = group;
         this.credits = credits;
         this.missLimit = missLimit;
         this.classPeriod = classPeriod;
         this.department = department;
+        this.locations = locations;
     }
 
     public String getTeacher() {
@@ -126,8 +135,12 @@ public class SDisciplineGroup {
         if (validString(other.group)        || group == null)       group       = other.group;
         if (validString(other.classPeriod)  || classPeriod == null) classPeriod = other.classPeriod;
         if (validString(other.department)   || department == null)  department  = other.department;
-        if (other.credits > 0   || credits == 0)    credits     = other.credits;
-        if (other.missLimit > 0 || missLimit == 0)  missLimit   = other.missLimit;
+        if (other.credits > 0               || credits == 0)        credits     = other.credits;
+        if (other.missLimit > 0             || missLimit == 0)      missLimit   = other.missLimit;
+    }
+
+    public List<SDisciplineClassLocation> getLocations() {
+        return locations;
     }
 
     @Override
@@ -141,5 +154,13 @@ public class SDisciplineGroup {
 
     public void setIgnored(int ignored) {
         this.ignored = ignored;
+    }
+
+    public List<SDisciplineClassItem> getClassItems() {
+        return classItems;
+    }
+
+    public void setClassItems(List<SDisciplineClassItem> classItems) {
+        this.classItems = classItems;
     }
 }
