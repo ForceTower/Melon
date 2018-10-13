@@ -34,6 +34,7 @@ import org.jsoup.nodes.Document
 
 import androidx.annotation.RestrictTo
 import okhttp3.Call
+import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.Response
 
@@ -121,5 +122,19 @@ object SagresCalls {
 
     fun getPageCall(url: String): Call {
         return getCall(SagresRequests.getPageRequest(url))
+    }
+
+    fun getDisciplinePageFromInitial(form: FormBody.Builder): Call {
+        return getCall(SagresRequests.postAtStudentPage(form))
+    }
+
+    fun getDisciplinePageWithParams(params: FormBody.Builder): Call {
+        return getCall(SagresRequests.getDisciplinePageWithParams(params))
+    }
+
+    fun getDisciplineMaterials(encoded: String, document: Document): Call {
+        val body = SagresForms.makeFormBodyForDisciplineMaterials(document, encoded)
+        val request = SagresRequests.getDisciplinePageWithParams(body)
+        return getCall(request)
     }
 }

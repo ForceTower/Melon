@@ -27,7 +27,7 @@
 
 package com.forcetower.sagres.database.model
 
-class SDisciplineClassLocation(
+data class SDisciplineClassLocation(
     var startTime: String,
     var endTime: String,
     var day: String,
@@ -36,7 +36,8 @@ class SDisciplineClassLocation(
     var modulo: String?,
     var className: String,
     var classCode: String,
-    var classGroup: String)
+    var classGroup: String,
+    var fromDisciplineParser: Boolean)
 : Comparable<SDisciplineClassLocation> {
 
     override fun compareTo(other: SDisciplineClassLocation): Int {

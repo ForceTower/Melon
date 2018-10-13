@@ -31,15 +31,17 @@ import androidx.room.Embedded
 import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Semester
 
-data class ClassWithDiscipline(
+class ClassWithDiscipline{
     @Embedded
-    var clazz: Class?,
+    lateinit var clazz: Class
     @Relation(parentColumn = "discipline_id", entityColumn = "uid")
-    var disciplines: List<Discipline>
-) {
-    constructor(): this(null, ArrayList())
+    lateinit var disciplines: List<Discipline>
+    @Relation(parentColumn = "semester_id", entityColumn = "uid")
+    lateinit var semesters: List<Semester>
 
     fun singleDiscipline() = disciplines[0]
     fun discipline() = disciplines[0]
+    fun semester() = semesters[0]
 }

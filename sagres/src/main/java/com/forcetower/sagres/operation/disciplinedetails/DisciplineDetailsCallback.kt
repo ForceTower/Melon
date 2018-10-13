@@ -25,9 +25,25 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.operation;
+package com.forcetower.sagres.operation.disciplinedetails
 
-public enum Status {
-    STARTED, LOADING, INVALID_LOGIN, APPROVING, NETWORK_ERROR, RESPONSE_FAILED, SUCCESS, APPROVAL_ERROR, GRADES_FAILED,
-    UNKNOWN_FAILURE, COMPLETED
+import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.operation.BaseCallback
+import com.forcetower.sagres.operation.Status
+
+class DisciplineDetailsCallback(status: Status): BaseCallback<DisciplineDetailsCallback>(status) {
+    private var groups: List<SDisciplineGroup>? = null
+    fun getGroups() = groups
+
+    fun groups(groups: List<SDisciplineGroup>?): DisciplineDetailsCallback {
+        this.groups = groups
+        return this
+    }
+
+    companion object {
+        fun copyFrom(callback: BaseCallback<*>): DisciplineDetailsCallback {
+            return DisciplineDetailsCallback(callback.status).message(callback.message).code(callback.code).throwable(
+                callback.throwable).document(callback.document)
+        }
+    }
 }

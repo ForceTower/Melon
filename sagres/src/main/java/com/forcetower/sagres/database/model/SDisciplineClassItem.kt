@@ -25,9 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.operation;
+package com.forcetower.sagres.database.model
 
-public enum Status {
-    STARTED, LOADING, INVALID_LOGIN, APPROVING, NETWORK_ERROR, RESPONSE_FAILED, SUCCESS, APPROVAL_ERROR, GRADES_FAILED,
-    UNKNOWN_FAILURE, COMPLETED
-}
+data class SDisciplineClassItem (
+    var number: Int = 0,
+    var situation: String? = null,
+    var subject: String? = null,
+    var date: String? = null,
+    val numberOfMaterials: Int,
+    val materialLink: String,
+    var materials: List<SMaterialLink> = listOf()
+)
