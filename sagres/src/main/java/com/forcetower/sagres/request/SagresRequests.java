@@ -31,6 +31,7 @@ import com.forcetower.sagres.Constants;
 import com.forcetower.sagres.database.model.SLinker;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -144,6 +145,26 @@ public class SagresRequests {
                 .addHeader("cache-control", "no-cache")
                 .addHeader("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.92 Safari/537.36")
                 .url(url)
+                .build();
+    }
+
+    @NotNull
+    public static Request postAtStudentPage(@NotNull FormBody.Builder builder) {
+        return new Request.Builder()
+                .url(Constants.SAGRES_DIARY_PAGE)
+                .post(builder.build())
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
+
+    @NotNull
+    public static Request getDisciplinePageWithParams(@NotNull FormBody.Builder params) {
+        return new Request.Builder()
+                .url(Constants.SAGRES_CLASS_PAGE)
+                .post(params.build())
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
                 .build();
     }
 }

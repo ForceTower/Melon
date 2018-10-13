@@ -25,9 +25,9 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.operation;
+package com.forcetower.sagres.database.model
 
-public enum Status {
-    STARTED, LOADING, INVALID_LOGIN, APPROVING, NETWORK_ERROR, RESPONSE_FAILED, SUCCESS, APPROVAL_ERROR, GRADES_FAILED,
-    UNKNOWN_FAILURE, COMPLETED
-}
+data class SMaterialLink(
+    val name: String,
+    val link: String
+)

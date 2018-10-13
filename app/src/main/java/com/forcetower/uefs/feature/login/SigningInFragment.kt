@@ -165,6 +165,8 @@ class SigningInFragment : UFragment(), Injectable {
             Status.SUCCESS -> completeLogin()
             Status.APPROVAL_ERROR -> snackAndBack(getString(R.string.error_network_error))
             Status.GRADES_FAILED -> completeLogin()
+            Status.UNKNOWN_FAILURE -> snackAndBack(getString(R.string.unknown_error))
+            Status.COMPLETED -> completeLogin()
         }
     }
 

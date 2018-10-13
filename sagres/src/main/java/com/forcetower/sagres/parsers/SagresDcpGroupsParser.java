@@ -68,12 +68,12 @@ public class SagresDcpGroupsParser {
                     int refGroupPos = type.lastIndexOf("(");
                     type = type.substring(0, refGroupPos).trim();
 
-                    SDisciplineGroup group = new SDisciplineGroup(null, type, 0, 0, null, null);
+                    SDisciplineGroup group = new SDisciplineGroup(null, type, 0, 0, null, null, null);
                     group.setDisciplineCodeAndSemester(code, semester);
                     groups.add(group);
                 }
             } else {
-                SDisciplineGroup group = new SDisciplineGroup(null, null, toInteger(credits), 0, null, null);
+                SDisciplineGroup group = new SDisciplineGroup(null, null, toInteger(credits), 0, null, null, null);
                 group.setDisciplineCodeAndSemester(code, semester);
                 groups.add(group);
             }

@@ -28,6 +28,8 @@
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.SagresNavigator
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
@@ -41,7 +43,8 @@ import javax.inject.Singleton
 
 @Singleton
 class DisciplinesRepository @Inject constructor(
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val executors: AppExecutors
 ) {
     fun getParticipatingSemesters(): LiveData<List<Semester>> {
         return database.semesterDao().getParticipatingSemesters()
@@ -69,5 +72,11 @@ class DisciplinesRepository @Inject constructor(
 
     fun getClassItemsFromGroup(classGroupId: Long): LiveData<List<ClassItem>> {
         return database.classItemDao().getClassItemsFromGroup(classGroupId)
+    }
+
+    fun loadClassDetails(semester: String, code: String, group: String) {
+        executors.networkIO().execute {
+            SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
+        }
     }
 }

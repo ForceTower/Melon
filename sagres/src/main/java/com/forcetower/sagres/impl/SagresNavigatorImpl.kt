@@ -56,6 +56,8 @@ import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.Constants
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsOperation
 import com.forcetower.sagres.operation.document.DocumentCallback
 import com.forcetower.sagres.operation.document.DocumentOperation
 import com.forcetower.sagres.operation.grades.GradesCallback
@@ -70,6 +72,7 @@ import java.io.File
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)
 private constructor(context: Context) : SagresNavigator() {
+
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     val client: OkHttpClient
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -235,6 +238,11 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     override fun downloadHistory(file: File): DocumentCallback {
         return DocumentOperation(file, Constants.SAGRES_HISTORY, null).finishedResult
+    }
+
+    @WorkerThread
+    override fun loadDisciplineDetails(semester: String, code: String, group: String): DisciplineDetailsCallback {
+        return DisciplineDetailsOperation(semester, code, group, null).finishedResult
     }
 
     companion object {
