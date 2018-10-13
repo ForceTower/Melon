@@ -1,5 +1,6 @@
 # \[ 🚧 🔧 Trabalho em progresso ⛏ 👷 \] UNES 2.0 
 Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para Kotlin e utilizando o Material Design 2.0
+O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
 🛑 Versão altamente instável e com funções faltando 🛑
 
