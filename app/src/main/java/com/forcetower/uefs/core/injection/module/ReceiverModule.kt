@@ -25,14 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.operation.calendar;
+package com.forcetower.uefs.core.injection.module
 
-import androidx.annotation.NonNull;
-import com.forcetower.sagres.operation.BaseCallback;
-import com.forcetower.sagres.operation.Status;
+import com.forcetower.uefs.core.receiver.OnUpgradeReceiver
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-public class CalendarCallback extends BaseCallback<CalendarCallback> {
-    public CalendarCallback(@NonNull Status status) {
-        super(status);
-    }
+@Module
+abstract class ReceiverModule {
+    @ContributesAndroidInjector
+    abstract fun onUpgradeReceiver(): OnUpgradeReceiver
 }

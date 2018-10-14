@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.injection.module.AppModule
 import com.forcetower.uefs.core.injection.module.FirebaseCoreModule
 import com.forcetower.uefs.core.injection.module.FirestoreModule
 import com.forcetower.uefs.core.injection.module.NetworkModule
+import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
@@ -49,6 +50,7 @@ import javax.inject.Singleton
         AndroidInjectionModule::class,
         AndroidSupportInjectionModule::class,
         AppModule::class,
+        ReceiverModule::class,
         NetworkModule::class,
         FirebaseCoreModule::class,
         FirestoreModule::class,

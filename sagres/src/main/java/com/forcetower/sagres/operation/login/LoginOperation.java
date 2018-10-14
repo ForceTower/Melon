@@ -27,6 +27,11 @@
 
 package com.forcetower.sagres.operation.login;
 
+import androidx.annotation.AnyThread;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.annotation.RestrictTo;
+import androidx.lifecycle.MediatorLiveData;
 import com.forcetower.sagres.database.SagresDatabase;
 import com.forcetower.sagres.database.model.SAccess;
 import com.forcetower.sagres.impl.SagresNavigatorImpl;
@@ -34,21 +39,14 @@ import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
 import com.forcetower.sagres.parsers.SagresBasicParser;
 import com.forcetower.sagres.request.SagresCalls;
-
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
-import java.util.concurrent.Executor;
-
-import androidx.annotation.AnyThread;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import androidx.annotation.RestrictTo;
-import androidx.lifecycle.MediatorLiveData;
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
+import org.jsoup.nodes.Document;
 import timber.log.Timber;
+
+import java.io.IOException;
+import java.util.concurrent.Executor;
 
 import static com.forcetower.sagres.Utils.createDocument;
 

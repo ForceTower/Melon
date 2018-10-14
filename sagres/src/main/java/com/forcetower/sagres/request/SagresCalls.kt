@@ -27,16 +27,14 @@
 
 package com.forcetower.sagres.request
 
+import androidx.annotation.RestrictTo
 import com.forcetower.sagres.database.model.SLinker
 import com.forcetower.sagres.impl.SagresNavigatorImpl
-
-import org.jsoup.nodes.Document
-
-import androidx.annotation.RestrictTo
 import okhttp3.Call
 import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.Response
+import org.jsoup.nodes.Document
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 object SagresCalls {

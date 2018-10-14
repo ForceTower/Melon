@@ -27,13 +27,10 @@
 
 package com.forcetower.sagres.operation.login;
 
+import androidx.annotation.NonNull;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
-
 import org.jsoup.nodes.Document;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class LoginCallback extends BaseCallback<LoginCallback> {
     public LoginCallback(@NonNull Status status) {

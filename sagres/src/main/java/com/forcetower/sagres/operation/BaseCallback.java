@@ -26,10 +26,10 @@
  */
 
 package com.forcetower.sagres.operation;
-import org.jsoup.nodes.Document;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import org.jsoup.nodes.Document;
 
 @SuppressWarnings("unchecked")
 public abstract class BaseCallback<T extends BaseCallback> {

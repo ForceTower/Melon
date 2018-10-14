@@ -28,19 +28,16 @@
 package com.forcetower.sagres.parsers;
 
 import android.util.SparseArray;
-
+import androidx.annotation.NonNull;
 import com.forcetower.sagres.database.model.SDisciplineClassLocation;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import timber.log.Timber;
 
 import static com.forcetower.sagres.utils.DateUtils.getDayOfWeek;
 

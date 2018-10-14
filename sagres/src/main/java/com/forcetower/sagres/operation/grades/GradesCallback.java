@@ -27,16 +27,15 @@
 
 package com.forcetower.sagres.operation.grades;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.model.SDisciplineMissedClass;
 import com.forcetower.sagres.database.model.SGrade;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
+import kotlin.Pair;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
-import kotlin.Pair;
 
 public class GradesCallback extends BaseCallback<GradesCallback> {
     @Nullable

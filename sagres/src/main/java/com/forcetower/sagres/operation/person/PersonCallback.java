@@ -27,12 +27,11 @@
 
 package com.forcetower.sagres.operation.person;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.model.SPerson;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class PersonCallback extends BaseCallback<PersonCallback> {
     @Nullable

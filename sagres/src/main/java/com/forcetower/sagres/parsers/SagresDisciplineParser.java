@@ -30,7 +30,6 @@ package com.forcetower.sagres.parsers;
 import com.forcetower.sagres.database.model.SDiscipline;
 import com.forcetower.sagres.utils.ValueUtils;
 import com.forcetower.sagres.utils.WordUtils;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

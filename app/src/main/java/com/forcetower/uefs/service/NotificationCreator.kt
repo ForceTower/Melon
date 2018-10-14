@@ -141,6 +141,17 @@ object NotificationCreator {
         showNotification(context, grade.grade.uid, builder)
     }
 
+    fun showUpgradeNotification(title: String, content: String, context: Context) {
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setColor(ContextCompat.getColor(context, R.color.colorAccent))
+            .setStyle(createBigText(content))
+
+        addOptions(context, builder)
+        showNotification(context, content.hashCode().toLong(), builder)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(true)

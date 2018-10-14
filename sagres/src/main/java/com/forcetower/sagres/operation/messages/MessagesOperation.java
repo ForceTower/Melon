@@ -27,6 +27,7 @@
 
 package com.forcetower.sagres.operation.messages;
 
+import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.model.SLinker;
 import com.forcetower.sagres.database.model.SMessage;
 import com.forcetower.sagres.database.model.SPerson;
@@ -36,6 +37,8 @@ import com.forcetower.sagres.operation.Status;
 import com.forcetower.sagres.request.SagresCalls;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import okhttp3.Call;
+import okhttp3.Response;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
@@ -43,10 +46,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.Executor;
-
-import androidx.annotation.Nullable;
-import okhttp3.Call;
-import okhttp3.Response;
 
 public class MessagesOperation extends Operation<MessagesCallback> {
     private final long userId;
