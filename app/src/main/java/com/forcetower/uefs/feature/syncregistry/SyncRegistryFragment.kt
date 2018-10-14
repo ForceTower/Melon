@@ -40,17 +40,11 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSyncRegistryBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
 
 class SyncRegistryFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentSyncRegistryBinding
     private lateinit var viewModel: SyncRegistryViewModel
@@ -63,8 +57,6 @@ class SyncRegistryFragment: UFragment(), Injectable {
         }.apply {
             incToolbar.apply {
                 textToolbarTitle.text = getString(R.string.label_sync_registry)
-                firebaseStorage = this@SyncRegistryFragment.firebaseStorage
-                firebaseUser = firebaseAuth.currentUser
             }
         }.root
     }

@@ -41,13 +41,10 @@ import android.util.AttributeSet
 import android.util.Log
 import android.view.View
 import android.view.animation.Interpolator
-
+import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.AnimUtils
-
 import java.util.Arrays
-
-import androidx.viewpager.widget.ViewPager
 
 class InkPageIndicator @JvmOverloads constructor(
     context: Context,

@@ -38,17 +38,11 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventsBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
 
 class EventFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var storage: FirebaseStorage
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var viewModel: EventViewModel
     private lateinit var binding: FragmentEventsBinding
@@ -59,8 +53,6 @@ class EventFragment: UFragment(), Injectable {
             binding = it
         }.apply {
             incToolbar.apply {
-                firebaseUser = firebaseAuth.currentUser
-                firebaseStorage = this@EventFragment.storage
                 textToolbarTitle.text = getString(R.string.label_events)
             }
         }.root

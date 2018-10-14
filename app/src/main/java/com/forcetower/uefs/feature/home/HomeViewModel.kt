@@ -33,8 +33,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
-import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 

@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.widget
 
+import android.animation.ObjectAnimator
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
@@ -34,13 +35,9 @@ import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
+import android.view.animation.DecelerateInterpolator
 import com.forcetower.uefs.R
 import kotlin.math.min
-import android.view.animation.DecelerateInterpolator
-import android.animation.ObjectAnimator
-
-
-
 
 class CircleProgressBar(ctx: Context, private val attrs: AttributeSet): View(ctx, attrs) {
     private var foregroundStrokeWidth = 4f

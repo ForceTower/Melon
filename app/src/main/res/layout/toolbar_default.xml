@@ -64,20 +64,6 @@
                 android:minHeight="?actionBarSize"
                 tools:text="Title"
                 android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
-
-            <ImageView
-                android:id="@+id/image_user_picture"
-                android:layout_width="?attr/actionBarSize"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_gravity="end|center_vertical"
-                android:transitionName="@string/user_image_transition"
-                android:contentDescription="@string/acc_user_image"
-                app:clipToCircle="@{true}"
-                android:padding="8dp"
-                android:src="@mipmap/ic_unes_large_image_512"
-                app:firebaseUser="@{firebaseUser}"
-                app:firebaseStorage="@{firebaseStorage}"
-                tools:src="@tools:sample/avatars"/>
         </FrameLayout>
     </com.google.android.material.appbar.AppBarLayout>
 </layout>

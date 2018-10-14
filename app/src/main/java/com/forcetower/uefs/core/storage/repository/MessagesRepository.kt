@@ -33,7 +33,6 @@ import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.defineInDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
 import javax.inject.Inject

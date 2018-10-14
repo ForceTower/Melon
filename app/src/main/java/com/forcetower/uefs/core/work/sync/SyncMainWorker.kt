@@ -31,7 +31,13 @@ import android.content.Context
 import android.preference.PreferenceManager
 import androidx.annotation.IntRange
 import androidx.annotation.WorkerThread
-import androidx.work.*
+import androidx.work.BackoffPolicy
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
+import androidx.work.Worker
+import androidx.work.WorkerParameters
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository

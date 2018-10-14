@@ -42,11 +42,9 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import javax.inject.Inject
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
-
-
+import javax.inject.Inject
 
 class HomeBottomFragment: UFragment(), Injectable {
     @Inject

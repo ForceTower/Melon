@@ -27,11 +27,15 @@
 
 package com.forcetower.uefs.core.model.unes
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.SET_NULL
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SDisciplineGroup
-import java.util.*
+import java.util.UUID
 
 @Entity(foreignKeys = [
     ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onDelete = CASCADE, onUpdate = CASCADE),

@@ -28,14 +28,18 @@
 package com.forcetower.uefs.core.injection
 
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.injection.module.*
+import com.forcetower.uefs.core.injection.module.ActivityModule
+import com.forcetower.uefs.core.injection.module.AppModule
+import com.forcetower.uefs.core.injection.module.FirebaseCoreModule
+import com.forcetower.uefs.core.injection.module.FirestoreModule
+import com.forcetower.uefs.core.injection.module.NetworkModule
+import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
-import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 

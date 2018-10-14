@@ -41,7 +41,6 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
 import timber.log.Timber
 import java.io.File
-import java.lang.Exception
 import javax.inject.Inject
 import javax.inject.Singleton
 

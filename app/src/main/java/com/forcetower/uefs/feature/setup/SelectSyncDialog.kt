@@ -34,7 +34,6 @@ import android.view.ViewGroup
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.DialogSelectCourseBinding
 import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import javax.inject.Inject

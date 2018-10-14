@@ -29,8 +29,43 @@ package com.forcetower.uefs.core.storage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
-import com.forcetower.uefs.core.model.unes.*
-import com.forcetower.uefs.core.storage.database.dao.*
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.model.unes.Class
+import com.forcetower.uefs.core.model.unes.ClassAbsence
+import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.model.unes.ClassLocation
+import com.forcetower.uefs.core.model.unes.ClassMaterial
+import com.forcetower.uefs.core.model.unes.ClassStudent
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.SagresDocument
+import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.SyncRegistry
+import com.forcetower.uefs.core.model.unes.Teacher
+import com.forcetower.uefs.core.storage.database.dao.AccessDao
+import com.forcetower.uefs.core.storage.database.dao.AccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.CalendarDao
+import com.forcetower.uefs.core.storage.database.dao.ClassAbsenceDao
+import com.forcetower.uefs.core.storage.database.dao.ClassDao
+import com.forcetower.uefs.core.storage.database.dao.ClassGroupDao
+import com.forcetower.uefs.core.storage.database.dao.ClassItemDao
+import com.forcetower.uefs.core.storage.database.dao.ClassLocationDao
+import com.forcetower.uefs.core.storage.database.dao.ClassMaterialDao
+import com.forcetower.uefs.core.storage.database.dao.ClassStudentDao
+import com.forcetower.uefs.core.storage.database.dao.CourseDao
+import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
+import com.forcetower.uefs.core.storage.database.dao.DocumentDao
+import com.forcetower.uefs.core.storage.database.dao.GradeDao
+import com.forcetower.uefs.core.storage.database.dao.MessageDao
+import com.forcetower.uefs.core.storage.database.dao.ProfileDao
+import com.forcetower.uefs.core.storage.database.dao.SemesterDao
+import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
 
 @Database(entities = [
     AccessToken::class,
