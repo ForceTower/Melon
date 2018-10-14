@@ -44,7 +44,6 @@ import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
-import java.lang.IllegalStateException
 import javax.inject.Inject
 
 class DisciplineSemesterFragment: UFragment(), Injectable {

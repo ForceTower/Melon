@@ -75,26 +75,11 @@
                     android:text="@string/label_schedule"
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
 
-                <ImageView
-                    android:id="@+id/image_user_picture"
-                    android:layout_width="?attr/actionBarSize"
-                    android:layout_height="?attr/actionBarSize"
-                    android:layout_gravity="end|center_vertical"
-                    android:transitionName="@string/user_image_transition"
-                    android:contentDescription="@string/acc_user_image"
-                    app:clipToCircle="@{true}"
-                    app:firebaseUser="@{firebaseUser}"
-                    app:firebaseStorage="@{firebaseStorage}"
-                    android:padding="8dp"
-                    android:src="@mipmap/ic_unes_large_image_512"
-                    tools:src="@tools:sample/avatars"/>
-
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_reload"
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="end"
-                    android:layout_marginEnd="?attr/actionBarSize"
                     app:icon="@drawable/ic_refresh_black_24dp"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     app:iconTint="@color/blue_accent"

@@ -33,8 +33,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.databinding.ActivityLoginBinding
+import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.config
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjector

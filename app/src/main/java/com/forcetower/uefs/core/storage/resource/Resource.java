@@ -27,10 +27,9 @@
 
 package com.forcetower.uefs.core.storage.resource;
 
-import com.forcetower.uefs.core.storage.network.adapter.ActionError;
-
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import com.forcetower.uefs.core.storage.network.adapter.ActionError;
 
 public class Resource<T> {
     @NonNull

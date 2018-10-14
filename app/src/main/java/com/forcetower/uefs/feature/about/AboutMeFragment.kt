@@ -29,22 +29,21 @@ package com.forcetower.uefs.feature.about
 
 import `in`.uncod.android.bypass.Bypass
 import android.os.Bundle
+import android.text.Layout
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.TextUtils
+import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.databinding.FragmentAboutMeBinding
-import com.forcetower.uefs.feature.shared.UFragment
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.Layout
-import android.text.style.AlignmentSpan
-import android.text.TextUtils
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.util.HtmlUtils
-
+import com.forcetower.uefs.databinding.FragmentAboutMeBinding
+import com.forcetower.uefs.feature.shared.UFragment
 
 class AboutMeFragment: UFragment(), Injectable {
     private lateinit var binding: FragmentAboutMeBinding

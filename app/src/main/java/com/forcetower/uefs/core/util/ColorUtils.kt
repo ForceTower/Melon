@@ -27,10 +27,9 @@
 
 package com.forcetower.uefs.core.util
 
-import androidx.annotation.ColorInt
 import androidx.annotation.CheckResult
+import androidx.annotation.ColorInt
 import androidx.annotation.IntRange
-
 
 object ColorUtils {
     @CheckResult

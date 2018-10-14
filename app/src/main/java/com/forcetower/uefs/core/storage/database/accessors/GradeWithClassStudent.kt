@@ -29,7 +29,6 @@ package com.forcetower.uefs.core.storage.database.accessors
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassStudent
 import com.forcetower.uefs.core.model.unes.Grade
 

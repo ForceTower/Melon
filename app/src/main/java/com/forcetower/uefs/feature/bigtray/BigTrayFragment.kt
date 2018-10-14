@@ -41,18 +41,14 @@ import com.forcetower.uefs.core.model.bigtray.isOpen
 import com.forcetower.uefs.core.model.bigtray.percentage
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentBigTrayBinding
-import com.forcetower.uefs.feature.shared.*
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
+import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.formatDateTime
+import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
 class BigTrayFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var viewModel: BigTrayViewModel
     private lateinit var binding: FragmentBigTrayBinding
@@ -68,8 +64,6 @@ class BigTrayFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.incToolbar.apply {
             textToolbarTitle.text = getString(R.string.label_big_tray)
-            firebaseStorage = this@BigTrayFragment.firebaseStorage
-            firebaseUser = this@BigTrayFragment.firebaseAuth.currentUser
             appBar.elevation = 0f
         }
     }

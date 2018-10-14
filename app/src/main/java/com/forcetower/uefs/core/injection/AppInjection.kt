@@ -35,7 +35,6 @@ import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.FragmentManager
 import com.forcetower.uefs.UApplication
 import dagger.android.AndroidInjection
-import dagger.android.AndroidInjector
 import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 

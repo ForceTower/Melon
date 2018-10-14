@@ -27,8 +27,11 @@
 
 package com.forcetower.uefs.core.model.unes
 
-import androidx.room.*
-import java.util.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(indices = [
     Index(value = ["sagres_id"], unique = true),

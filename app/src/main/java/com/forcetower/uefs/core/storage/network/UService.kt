@@ -31,7 +31,6 @@ import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
-import com.forcetower.uefs.core.storage.resource.Resource
 import retrofit2.Call
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded

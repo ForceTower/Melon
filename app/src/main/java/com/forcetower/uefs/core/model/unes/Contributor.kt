@@ -30,7 +30,7 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.*
+import java.util.UUID
 
 @Entity(indices = [
     Index(value = ["uuid"], unique = true)

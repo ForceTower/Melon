@@ -28,15 +28,14 @@
 package com.forcetower.uefs.service
 
 import android.annotation.TargetApi
+import android.app.NotificationChannel
 import android.app.NotificationChannelGroup
 import android.app.NotificationManager
 import android.content.Context
 import android.content.ContextWrapper
+import android.os.Build
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
-import android.app.NotificationChannel
-import android.os.Build
-
 
 class NotificationHelper(val context: Context): ContextWrapper(context) {
 

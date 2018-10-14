@@ -28,8 +28,13 @@
 package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Delete
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Class

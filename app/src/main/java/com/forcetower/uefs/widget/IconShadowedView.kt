@@ -16,7 +16,7 @@ package com.forcetower.uefs.widget
 
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.Bitmap.Config.*
+import android.graphics.Bitmap.Config.ARGB_8888
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.ColorMatrix

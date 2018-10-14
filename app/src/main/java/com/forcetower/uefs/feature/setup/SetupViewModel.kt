@@ -36,7 +36,6 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
-import com.forcetower.uefs.feature.setup.Frequency
 import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
 

@@ -29,14 +29,19 @@ package com.forcetower.uefs.widget
 
 import android.content.Context
 import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Color
+import android.graphics.Paint
+import android.graphics.PorterDuff
+import android.graphics.PorterDuffXfermode
+import android.graphics.Rect
 import android.text.TextPaint
 import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.ViewUtils
-
 
 class CutoutTextView(ctx: Context, attrs: AttributeSet): View(ctx, attrs) {
     private val textPaint: TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)

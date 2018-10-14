@@ -32,11 +32,9 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.text.TextUtils
-
-import java.util.ArrayList
-
 import androidx.browser.customtabs.CustomTabsService
 import timber.log.Timber
+import java.util.ArrayList
 
 object CustomTabsHelper {
     private const val STABLE_PACKAGE = "com.android.chrome"

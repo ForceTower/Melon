@@ -36,13 +36,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.util.ColorUtils
-import com.forcetower.uefs.databinding.*
+import com.forcetower.uefs.databinding.ItemScheduleBlockClassBinding
+import com.forcetower.uefs.databinding.ItemScheduleBlockHeadNotBinding
+import com.forcetower.uefs.databinding.ItemScheduleBlockHeaderBinding
+import com.forcetower.uefs.databinding.ItemScheduleBlockNothingBinding
+import com.forcetower.uefs.databinding.ItemScheduleBlockTimeBinding
+import com.forcetower.uefs.databinding.ItemScheduleDayBinding
+import com.forcetower.uefs.databinding.ItemScheduleLineClassBinding
+import com.forcetower.uefs.databinding.ItemScheduleLineDayBinding
 import com.forcetower.uefs.feature.shared.inflater
 import com.forcetower.uefs.feature.shared.positionOf
 import com.forcetower.uefs.feature.shared.toLongWeekDay
 import com.forcetower.uefs.feature.shared.toWeekDay
-import java.util.*
-import kotlin.collections.ArrayList
+import java.util.HashMap
 
 //---------------------------------------- Schedule Line -------------------------------------------
 
