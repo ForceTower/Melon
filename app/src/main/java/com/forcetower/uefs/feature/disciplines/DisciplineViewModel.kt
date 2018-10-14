@@ -73,8 +73,9 @@ class DisciplineViewModel @Inject constructor(
     val classItems: LiveData<List<ClassItem>>
         get() = _classItems
 
-    private val _loadClassDetails = MediatorLiveData<Unit>()
-
+    private val _loadClassDetails = MediatorLiveData<Long>()
+    val loadClassDetails: LiveData<Long>
+        get() = _loadClassDetails
 
     private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
     val navigateToDisciplineAction: LiveData<Event<ClassWithGroups>>
@@ -92,6 +93,9 @@ class DisciplineViewModel @Inject constructor(
         }
         _classItems.addSource(classGroupId) {
             refreshClassItems(it)
+        }
+        _loadClassDetails.addSource(classGroupId) {
+            if (it != null) repository.loadClassDetails(it)
         }
     }
 
@@ -127,14 +131,6 @@ class DisciplineViewModel @Inject constructor(
             val source = repository.getClassStudent(classGroupId)
             _classStudent.addSource(source) { value ->
                 _classStudent.value = value
-                if (value != null) {
-                    val clazz = value.group().clazz()
-                    val semester = clazz.semester().name
-                    val code = clazz.discipline().code
-                    val group = value.group().group.group
-
-                    repository.loadClassDetails(semester, code, group)
-                }
             }
         }
     }

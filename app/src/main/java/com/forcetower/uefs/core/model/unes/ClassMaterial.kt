@@ -35,6 +35,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.SET_NULL
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.forcetower.sagres.database.model.SMaterialLink
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -46,7 +47,8 @@ import java.util.UUID
     Index(value = ["group_id"], unique = false),
     Index(value = ["class_item_id"], unique = false),
     Index(value = ["uuid"], unique = true),
-    Index(value = ["is_new"], unique = false)
+    Index(value = ["is_new"], unique = false),
+    Index(value = ["name", "link", "group_id"], unique = true)
 ])
 data class ClassMaterial(
     @PrimaryKey(autoGenerate = true)
@@ -61,4 +63,16 @@ data class ClassMaterial(
     @ColumnInfo(name = "is_new")
     val isNew: Boolean,
     val uuid: String = UUID.randomUUID().toString()
-)
+) {
+    companion object {
+        fun createFromSagres(groupId: Long, classId: Long?, material: SMaterialLink): ClassMaterial {
+            return ClassMaterial(
+                groupId = groupId,
+                classItemId = classId,
+                name = material.name,
+                link = material.link,
+                isNew = true
+            )
+        }
+    }
+}

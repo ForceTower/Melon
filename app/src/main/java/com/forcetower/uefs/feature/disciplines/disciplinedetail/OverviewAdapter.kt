@@ -45,6 +45,7 @@ import com.forcetower.uefs.databinding.ItemDisciplineMissedClassBinding
 import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.inflater
+import timber.log.Timber
 
 class OverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -59,6 +60,8 @@ class OverviewAdapter(
     var frequencyList: List<ClassAbsence> = emptyList()
     set(value) {
         field = value
+        Timber.d("Size of list is ${frequencyList.size}")
+        Timber.d("Elements are $frequencyList")
         differ.submitList(buildMergedList(frequency = value))
     }
 
