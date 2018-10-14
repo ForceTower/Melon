@@ -53,7 +53,7 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
         const val SEMESTER_DATABASE_ID = "unes_database_id"
 
         fun newInstance(semester: Semester): DisciplineSemesterFragment {
-            val args = bundleOf(SEMESTER_SAGRES_ID to semester.uid, SEMESTER_DATABASE_ID to semester.uid)
+            val args = bundleOf(SEMESTER_SAGRES_ID to semester.sagresId, SEMESTER_DATABASE_ID to semester.uid)
             return DisciplineSemesterFragment().apply { arguments = args }
         }
     }
@@ -61,6 +61,11 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
     private val semesterId: Long by lazy {
         val args = arguments?: throw IllegalStateException("Arguments are null")
         args.getLong(SEMESTER_DATABASE_ID)
+    }
+
+    private val semesterSagresId: Long by lazy {
+        val args = arguments?: throw IllegalStateException("Arguments are null")
+        args.getLong(SEMESTER_SAGRES_ID)
     }
 
     @Inject
@@ -97,8 +102,7 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
             }
         }
         swipeRefreshLayout.setOnRefreshListener {
-            swipeRefreshLayout.isRefreshing = true
-            viewModel.updateGradesFromSemester(semesterId)
+            viewModel.updateGradesFromSemester(semesterSagresId)
         }
 
         viewModel.refreshing.observe(this, Observer { swipeRefreshLayout.isRefreshing = it })
