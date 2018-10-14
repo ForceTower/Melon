@@ -114,7 +114,7 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     public long getTimeStampInMillis() {
         try {
             return getInMillis(getTimestamp());
-        } catch (ParseException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return -1;

@@ -202,10 +202,12 @@ class SigningInFragment : UFragment(), Injectable {
 
     private fun firebaseAuthListener() {
         firebaseAuth.addAuthStateListener {
-            val current = it.currentUser
-            Timber.d("Auth State changed... User is ${current?.email}")
-            binding.firebaseUser = current
-            binding.executePendingBindings()
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                val current = it.currentUser
+                Timber.d("Auth State changed... User is ${current?.email}")
+                binding.firebaseUser = current
+                binding.executePendingBindings()
+            }
 
 //            if (current != null) {
 //                val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
