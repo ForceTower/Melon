@@ -35,12 +35,18 @@
             name="viewModel"
             type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
     </data>
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/disciplines_recycler"
+    
+    <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+        android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_discipline_collapsed"
-        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-    </androidx.recyclerview.widget.RecyclerView>
+        app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/disciplines_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_discipline_collapsed"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+        </androidx.recyclerview.widget.RecyclerView>
+    </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
 </layout>

@@ -102,17 +102,12 @@
                 app:tabTextAppearance="@style/TextAppearanceTabLayout"
                 app:tabIndicator="@drawable/tab_indicator"/>
         </com.google.android.material.appbar.AppBarLayout>
-
-        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
-            android:id="@+id/swipe_refresh"
+        
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager_semester"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/pager_semester"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

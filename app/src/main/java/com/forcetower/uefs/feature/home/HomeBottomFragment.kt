@@ -93,6 +93,8 @@ class HomeBottomFragment: UFragment(), Injectable {
                         .withActivityStyle(Libs.ActivityStyle.LIGHT)
                         .withAboutIconShown(true)
                         .withAboutVersionShown(true)
+                        .withAboutDescription(getString(R.string.about_description))
+                        .withActivityTheme(R.style.CropTheme)
                         .start(requireContext())
                     true
                 }

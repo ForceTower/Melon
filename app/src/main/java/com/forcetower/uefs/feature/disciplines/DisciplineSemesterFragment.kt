@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
@@ -67,6 +68,7 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DisciplineSemesterAdapter
+    private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
@@ -75,6 +77,7 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
             viewModel = this@DisciplineSemesterFragment.viewModel
         }.also {
             recyclerView = it.disciplinesRecycler
+            swipeRefreshLayout = it.swipeRefresh
         }
 
         return binding.root
@@ -93,6 +96,12 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
                 removeDuration = 120L
             }
         }
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshLayout.isRefreshing = true
+            viewModel.updateGradesFromSemester(semesterId)
+        }
+
+        viewModel.refreshing.observe(this, Observer { swipeRefreshLayout.isRefreshing = it })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -38,14 +38,17 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.map
 import com.forcetower.uefs.feature.shared.setValueIfNew
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
-    private val repository: DisciplinesRepository
+    private val repository: DisciplinesRepository,
+    private val grades: SagresGradesRepository
 ): ViewModel(), DisciplineActions {
 
     val semesters by lazy { repository.getParticipatingSemesters() }
@@ -80,6 +83,10 @@ class DisciplineViewModel @Inject constructor(
     private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
     val navigateToDisciplineAction: LiveData<Event<ClassWithGroups>>
         get() = _navigateToDisciplineAction
+
+    private val _refreshing = MediatorLiveData<Boolean>()
+    val refreshing: LiveData<Boolean>
+        get() = _refreshing
 
     init {
         _classStudent.addSource(classGroupId) {
@@ -141,5 +148,18 @@ class DisciplineViewModel @Inject constructor(
 
     override fun classClicked(clazz: ClassWithGroups) {
         _navigateToDisciplineAction.value = Event(clazz)
+    }
+
+    fun updateGradesFromSemester(semesterId: Long) {
+        if (_refreshing.value != null && _refreshing.value == false) {
+            val result = grades.getGradesAsync(semesterId, true)
+            _refreshing.addSource(result) {
+                _refreshing.removeSource(result)
+                if (it == SagresGradesRepository.SUCCESS) {
+                    Timber.d("Completed!")
+                }
+                _refreshing.value = false
+            }
+        }
     }
 }
