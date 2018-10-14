@@ -27,11 +27,8 @@
 
 package com.forcetower.sagres.parsers
 
-import com.forcetower.sagres.database.model.SLinker
 import com.forcetower.sagres.database.model.SMessage
-
 import org.jsoup.nodes.Document
-
 import java.util.ArrayList
 
 /**

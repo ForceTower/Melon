@@ -27,18 +27,13 @@
 
 package com.forcetower.sagres.operation.start_page;
 
-import com.forcetower.sagres.database.model.SDiscipline;
-import com.forcetower.sagres.database.model.SDisciplineClassLocation;
-import com.forcetower.sagres.database.model.SDisciplineGroup;
-import com.forcetower.sagres.database.model.SCalendar;
-import com.forcetower.sagres.database.model.SSemester;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import com.forcetower.sagres.database.model.*;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class StartPageCallback extends BaseCallback<StartPageCallback> {
     @Nullable

@@ -262,6 +262,9 @@
     <string name="unknown_error">Erro desconhecido o_O</string>
     <string name="discipline_classes_header">Aulas</string>
     <string name="about_description">Esta versão ainda está em desenvolvimento :)</string>
+    <string name="upgrade_unes_the_second">O aplicativo está de cara nova! [Em desenvolvimento]</string>
+    <string name="upgrade_unes_second_title">Nova geração do UNES</string>
+    <string name="label_library">Biblioteca [Em breve]</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

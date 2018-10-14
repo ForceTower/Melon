@@ -29,23 +29,28 @@ package com.forcetower.uefs
 
 import android.app.Activity
 import android.app.Application
+import android.content.BroadcastReceiver
 import androidx.fragment.app.Fragment
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.service.NotificationHelper
+import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
+import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjector {
+class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjector, HasBroadcastReceiverInjector {
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var receiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
 
     lateinit var component: AppComponent
 
@@ -91,4 +96,5 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
 
     override fun activityInjector() = activityInjector
     override fun supportFragmentInjector() = fragmentInjector
+    override fun broadcastReceiverInjector() = receiverInjector
 }

@@ -27,13 +27,12 @@
 
 package com.forcetower.sagres.database.model;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
 import java.text.ParseException;
-
-import androidx.annotation.NonNull;
 
 public class SMessage implements Comparable<SMessage>, Timestamped {
     @SerializedName("id")

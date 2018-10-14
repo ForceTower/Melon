@@ -27,13 +27,12 @@
 
 package com.forcetower.sagres.database.model;
 
+import androidx.annotation.NonNull;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.Collections;
 import java.util.List;
-
-import androidx.annotation.NonNull;
 
 public class SSemester implements Comparable<SSemester>, Timestamped {
     @SerializedName("id")

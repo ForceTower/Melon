@@ -28,14 +28,24 @@
 package com.forcetower.sagres.impl
 
 import android.content.Context
-
+import androidx.annotation.AnyThread
+import androidx.annotation.RestrictTo
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.SagresDatabase
 import com.forcetower.sagres.executor.SagresTaskExecutor
 import com.forcetower.sagres.operation.calendar.CalendarCallback
 import com.forcetower.sagres.operation.calendar.CalendarOperation
-import com.forcetower.sagres.operation.login.LoginOperation
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsOperation
+import com.forcetower.sagres.operation.document.DocumentCallback
+import com.forcetower.sagres.operation.document.DocumentOperation
+import com.forcetower.sagres.operation.grades.GradesCallback
+import com.forcetower.sagres.operation.grades.GradesOperation
 import com.forcetower.sagres.operation.login.LoginCallback
+import com.forcetower.sagres.operation.login.LoginOperation
 import com.forcetower.sagres.operation.messages.MessagesCallback
 import com.forcetower.sagres.operation.messages.MessagesOperation
 import com.forcetower.sagres.operation.person.PersonCallback
@@ -47,27 +57,14 @@ import com.forcetower.sagres.operation.start_page.StartPageOperation
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
-
-import java.util.ArrayList
-import java.util.concurrent.TimeUnit
-
-import androidx.annotation.AnyThread
-import androidx.annotation.RestrictTo
-import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import com.forcetower.sagres.Constants
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsOperation
-import com.forcetower.sagres.operation.document.DocumentCallback
-import com.forcetower.sagres.operation.document.DocumentOperation
-import com.forcetower.sagres.operation.grades.GradesCallback
-import com.forcetower.sagres.operation.grades.GradesOperation
 import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
 import java.io.File
+import java.util.ArrayList
+import java.util.concurrent.TimeUnit
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)

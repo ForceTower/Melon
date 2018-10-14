@@ -27,14 +27,13 @@
 
 package com.forcetower.sagres.operation.messages;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.model.SMessage;
 import com.forcetower.sagres.operation.BaseCallback;
 import com.forcetower.sagres.operation.Status;
 
 import java.util.List;
-
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 
 public class MessagesCallback extends BaseCallback<MessagesCallback> {
     @Nullable private List<SMessage> messages;

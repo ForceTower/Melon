@@ -27,17 +27,15 @@
 
 package com.forcetower.sagres.operation;
 
-import com.google.gson.Gson;
-
-import org.jetbrains.annotations.NotNull;
-
-import java.util.concurrent.Executor;
-
 import androidx.annotation.AnyThread;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.lifecycle.MediatorLiveData;
+import com.google.gson.Gson;
+import org.jetbrains.annotations.NotNull;
 import timber.log.Timber;
+
+import java.util.concurrent.Executor;
 
 public abstract class Operation<Result extends BaseCallback> {
     @NonNull protected final Gson gson;

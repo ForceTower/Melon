@@ -27,29 +27,19 @@
 
 package com.forcetower.sagres.operation.start_page;
 
-import com.forcetower.sagres.database.model.SDiscipline;
-import com.forcetower.sagres.database.model.SDisciplineClassLocation;
-import com.forcetower.sagres.database.model.SDisciplineGroup;
-import com.forcetower.sagres.database.model.SCalendar;
-import com.forcetower.sagres.database.model.SSemester;
+import androidx.annotation.Nullable;
+import com.forcetower.sagres.database.model.*;
 import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
-import com.forcetower.sagres.parsers.SagresCalendarParser;
-import com.forcetower.sagres.parsers.SagresDcpGroupsParser;
-import com.forcetower.sagres.parsers.SagresDisciplineParser;
-import com.forcetower.sagres.parsers.SagresScheduleParser;
-import com.forcetower.sagres.parsers.SagresSemesterParser;
+import com.forcetower.sagres.parsers.*;
 import com.forcetower.sagres.request.SagresCalls;
-
+import okhttp3.Call;
+import okhttp3.Response;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.Executor;
-
-import androidx.annotation.Nullable;
-import okhttp3.Call;
-import okhttp3.Response;
 
 import static com.forcetower.sagres.Utils.createDocument;
 

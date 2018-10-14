@@ -27,19 +27,16 @@
 
 package com.forcetower.sagres.request;
 
+import androidx.annotation.NonNull;
 import com.forcetower.sagres.Constants;
 import com.forcetower.sagres.database.model.SLinker;
-
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.annotations.Nullable;
-import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.select.Elements;
-
-import androidx.annotation.NonNull;
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 
 public class SagresRequests {
     public static final String BASE_URL = "http://academico2.uefs.br/Api/SagresApi";
