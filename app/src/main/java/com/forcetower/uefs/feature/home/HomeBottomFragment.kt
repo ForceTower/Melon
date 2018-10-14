@@ -43,6 +43,10 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
+import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.LibsBuilder
+
+
 
 class HomeBottomFragment: UFragment(), Injectable {
     @Inject
@@ -82,6 +86,14 @@ class HomeBottomFragment: UFragment(), Injectable {
                 }
                 R.id.logout -> {
                     viewModel.logout()
+                    true
+                }
+                R.id.open_source -> {
+                    LibsBuilder()
+                        .withActivityStyle(Libs.ActivityStyle.LIGHT)
+                        .withAboutIconShown(true)
+                        .withAboutVersionShown(true)
+                        .start(requireContext())
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())

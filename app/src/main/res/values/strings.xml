@@ -43,12 +43,12 @@
     <string name="label_dashboard">Painel de Controle</string>
     <string name="label_messages">Mensagens</string>
     <string name="label_grades_disciplines">Notas e Disciplinas</string>
-    <string name="label_calendar">Calendário Acadêmico</string>
+    <string name="label_calendar">Calendário Acadêmico [Em breve]</string>
     <string name="label_events">Eventos</string>
     <string name="label_services">Serviços</string>
-    <string name="label_reminders">Lembretes</string>
-    <string name="label_adventure">Aventura</string>
-    <string name="label_settings">Configurações</string>
+    <string name="label_reminders">Lembretes [Em breve]</string>
+    <string name="label_adventure">Aventura [Em breve]</string>
+    <string name="label_settings">Configurações [Em breve]</string>
     <string name="label_about_app">Sobre o Aplicativo</string>
     <string name="label_definitions">Definições</string>
     <string name="label_logout">Sair</string>
@@ -201,9 +201,9 @@
     <string name="label_example_sync_freq">A cada 60 minutos</string>
     <string name="at_every_time_minutes">A cada %1$d minutos</string>
     <string name="label_big_tray">Bandejão</string>
-    <string name="label_profile">Perfil</string>
+    <string name="label_profile">Perfil [Em breve]</string>
     <string name="label_documents">Documentos</string>
-    <string name="bug_report">Reportar erros</string>
+    <string name="bug_report">Reportar erros [Em breve]</string>
     <string name="ru_last_update">Última atualização: %1$s</string>
     <string name="ru_is_closed_message">O bandejão está fechado</string>
     <string name="ru_loading_data">Carregando dados</string>
@@ -254,7 +254,7 @@
     <string name="discipline_classes_not_registered">As aulas desta disciplina ainda não foram definidas</string>
     <string name="discipline_absence_item_format">%1$s - %2$s</string>
     <string name="no_events_registered">Não existem eventos cadastrados</string>
-    <string name="teachers_label">Professores</string>
+    <string name="teachers_label">Professores [Em breve]</string>
     <string name="discipline_credits_undefined">Carga horária desconhecida o_o</string>
     <string name="discipline_absence_left">Ainda restam %1$d faltas</string>
     <string name="no_class_groups">Não há turmas nesta disciplina, isso pode ser um erro</string>
