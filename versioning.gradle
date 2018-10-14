@@ -18,7 +18,7 @@ ext {
                 postfix = "[pre-release]"
             }
             //If this is not a development build, create a tag for it
-            "git tag ${version} build ${commit_count}".execute([], project.rootDir)
+            "git tag ${version}_build_${commit_count}".execute([], project.rootDir)
         }
 
         (major, minor, patch, new_commits) = [major, minor, patch, new_commits].collect{it.toInteger()}
