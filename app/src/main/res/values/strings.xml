@@ -261,6 +261,7 @@
     <string name="not_registed">Não registrado</string>
     <string name="unknown_error">Erro desconhecido o_O</string>
     <string name="discipline_classes_header">Aulas</string>
+    <string name="about_description">Esta versão ainda está em desenvolvimento :)</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

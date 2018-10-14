@@ -27,19 +27,34 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SDisciplineMissedClass
 import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.operation.Status
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import timber.log.Timber
 import javax.inject.Inject
 
 class SagresGradesRepository @Inject constructor(
-    val database: UDatabase
+    val database: UDatabase,
+    val executors: AppExecutors
 ) {
+    @AnyThread
+    fun getGradesAsync(semesterId: Long, needLogin: Boolean): LiveData<Int> {
+        val data = MutableLiveData<Int>()
+        executors.networkIO().execute {
+            val result = getGrades(semesterId, needLogin)
+            data.postValue(result)
+        }
+        return data
+    }
+
     @WorkerThread
     fun getGrades(semesterSagresId: Long, needLogin: Boolean = true): Int {
         val access = database.accessDao().getAccessDirect()
