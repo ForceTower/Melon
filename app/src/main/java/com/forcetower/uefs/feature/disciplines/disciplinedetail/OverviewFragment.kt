@@ -73,6 +73,7 @@ class OverviewFragment: UFragment(), Injectable {
         viewModel.absences.observe(this, Observer { overviewAdapter.frequencyList = it })
         viewModel.materials.observe(this, Observer { overviewAdapter.materialList = it })
         viewModel.classItems.observe(this, Observer { overviewAdapter.itemList = it })
+        viewModel.loadClassDetails.observe(this, Observer { Unit })
     }
 
     companion object {

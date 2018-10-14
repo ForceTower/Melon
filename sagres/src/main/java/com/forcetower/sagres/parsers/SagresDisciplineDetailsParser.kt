@@ -112,6 +112,7 @@ object SagresDisciplineDetailsParser {
         val created = SDisciplineGroup(teacher, refGroup, credits, maxMiss, classPeriod, department, locations)
         created.setDisciplineCodeAndSemester(code, semesterByName)
         created.classItems = extractClassItems(document)
+        created.isDraft = false
         return created
     }
 

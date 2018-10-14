@@ -81,6 +81,7 @@ class DisciplineDetailsOperation (
                     val group = processGroup(discipline)
                     if (group != null) {
                         downloadMaterials(discipline, group)
+                        groups.add(group)
                     } else {
                         Timber.d("Processed group was null")
                     }

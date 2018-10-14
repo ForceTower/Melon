@@ -232,7 +232,7 @@ class InkPageIndicator @JvmOverloads constructor(
         requestLayout()
     }
 
-    private fun calculateDotPositions(width: Int, height: Int) {
+    private fun calculateDotPositions(width: Int/*, height: Int*/) {
         val left = paddingLeft
         val top = paddingTop
         val right = width - paddingRight
@@ -295,7 +295,7 @@ class InkPageIndicator @JvmOverloads constructor(
             else -> desiredWidth
         }
         setMeasuredDimension(width, height)
-        calculateDotPositions(width, height)
+        calculateDotPositions(width/*, height*/)
     }
 
     override fun onViewAttachedToWindow(view: View) {

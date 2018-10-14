@@ -60,6 +60,7 @@ data class ClassGroup(
         if (!grp.group.isNullOrBlank()) group = grp.group
         if (!grp.teacher.isNullOrBlank()) teacher = grp.teacher
         if (grp.credits > 0) credits = grp.credits
+        if (draft) draft = grp.isDraft
     }
 
     override fun toString(): String {

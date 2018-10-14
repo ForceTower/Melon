@@ -25,7 +25,7 @@
   ~ SOFTWARE.
   -->
 
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <style name="CropTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -190,6 +190,22 @@
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">vertical</item>
+    </style>
+    
+    <style name="Widget.Melon" parent="@android:style/Widget" />
+    
+    <style name="Widget.Melon.DisciplineDetailTitle">
+        <item name="android:gravity">start|bottom</item>
+        <item name="android:textAppearance">@style/TextAppearance.Melon.DisciplineTitle.Display</item>
+        <item name="android:breakStrategy" tools:targetApi="m">balanced</item>
+        <item name="android:lineSpacingMultiplier">1</item>
+        <item name="autoSizeTextType">uniform</item>
+        <item name="autoSizeMaxTextSize">34sp</item>
+    </style>
+    
+    <style name="TextAppearance.Melon.DisciplineTitle.Display" parent="@style/TextAppearance.AppCompat.Display1">
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textColor">@color/text_primary_dark</item>
     </style>
 
     <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />

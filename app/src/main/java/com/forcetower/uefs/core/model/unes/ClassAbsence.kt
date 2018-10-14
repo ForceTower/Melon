@@ -52,4 +52,8 @@ data class ClassAbsence(
     val date: String,
     val uuid: String = UUID.randomUUID().toString(),
     val notified: Boolean
-)
+) {
+    override fun toString(): String {
+        return "[sequence: $sequence]"
+    }
+}

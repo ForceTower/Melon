@@ -91,6 +91,8 @@ class SagresSyncRepository @Inject constructor(
     private fun execute(access: Access, registry: SyncRegistry) {
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
+        database.gradesDao().markAllNotified()
+        database.messageDao().setAllNotified()
         val score = login(access)
         if (score == null) {
             registry.completed = true

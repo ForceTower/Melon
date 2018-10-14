@@ -80,17 +80,12 @@
             android:layout_height="0dp"
             android:paddingBottom="@dimen/spacing_normal"
             android:paddingTop="72dp"
-            android:gravity="start|bottom"
-            android:breakStrategy="balanced"
+            style="@style/Widget.Melon.DisciplineDetailTitle"
             android:text="@{viewModel.group.clazz().discipline().name}"
             app:layout_constraintBottom_toBottomOf="@+id/discipline_image"
             app:layout_constraintEnd_toEndOf="@id/guideline_title_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="@id/discipline_image"
-            android:lineSpacingMultiplier="1"
-            android:autoSizeTextType="uniform"
-            android:autoSizeMaxTextSize="34sp"
-            android:textColor="@color/text_primary_dark"
             tools:text="Eletrônica para Processamento Digital de Sinais" />
     
         <Space

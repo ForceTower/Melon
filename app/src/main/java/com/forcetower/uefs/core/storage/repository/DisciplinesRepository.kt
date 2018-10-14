@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
@@ -38,6 +39,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -77,6 +79,32 @@ class DisciplinesRepository @Inject constructor(
     fun loadClassDetails(semester: String, code: String, group: String) {
         executors.networkIO().execute {
             SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
+        }
+    }
+
+    fun loadClassDetails(groupId: Long) {
+        executors.networkIO().execute {
+            val value = database.classStudentDao().getMeFromGroupDirect(groupId)
+            if (value == null) {
+                Timber.d("Class Group with ID: $groupId was not found")
+            } else {
+                val clazz = value.group().clazz()
+                val semester = clazz.semester().name
+                val code = clazz.discipline().code
+                val group = value.group().group.group
+
+                val callback = SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
+                if (callback.status == Status.COMPLETED) {
+                    val groups = callback.getGroups()
+                    if (groups != null) {
+                        database.classGroupDao().defineGroups(groups)
+                    } else {
+                        Timber.d("It says it's completed but groups were null...")
+                    }
+                } else {
+                    Timber.d("Load group has failed along the way")
+                }
+            }
         }
     }
 }

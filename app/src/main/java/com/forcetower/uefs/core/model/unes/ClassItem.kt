@@ -32,6 +32,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
+import com.forcetower.sagres.database.model.SDisciplineClassItem
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -50,14 +51,29 @@ data class ClassItem (
     @ColumnInfo(name = "group_id")
     val groupId: Long,
     val number: Int,
-    val situation: String,
-    val subject: String,
-    val date: String,
+    val situation: String?,
+    val subject: String?,
+    val date: String?,
     @ColumnInfo(name = "number_of_materials")
-    val numberOfMaterials: String,
+    val numberOfMaterials: Int,
     @ColumnInfo(name = "material_links")
     val materialLinks: String,
     @ColumnInfo(name = "is_new")
     val isNew: Boolean,
     val uuid: String = UUID.randomUUID().toString()
-)
+) {
+    companion object {
+        fun createFromSagres(group: Long, value: SDisciplineClassItem): ClassItem {
+            return ClassItem(
+                groupId = group,
+                number = value.number,
+                situation = value.situation,
+                subject = value.subject,
+                date = value.date,
+                numberOfMaterials = value.numberOfMaterials,
+                materialLinks = value.materialLink,
+                isNew = true
+            )
+        }
+    }
+}
