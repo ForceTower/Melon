@@ -136,7 +136,11 @@ dependencies {
     implementation 'com.github.bumptech.glide:glide:4.8.0'
     kapt 'com.github.bumptech.glide:compiler:4.8.0'
 
+    //Lottie Animations!
     implementation 'com.airbnb.android:lottie:2.8.0'
+
+    //Open Source Licenses
+    implementation "com.mikepenz:aboutlibraries:6.2.0"
 
     //Helper Projects
     implementation project(path: ':sagres')

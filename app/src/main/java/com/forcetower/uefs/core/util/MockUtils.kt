@@ -33,10 +33,13 @@ object MockUtils {
 
     @JvmStatic
     fun contributors(): List<Contributor> {
-        val c1 = Contributor(1, "João Paulo Sena", "Programação do núcleo", "https://avatars.githubusercontent.com/ForceTower", "http://facebook.com/ForceTower")
-        val c2 = Contributor(2, "Alberto Junior", "Muitas Idéias Geniais", "https://avatars.githubusercontent.com/AlbertoJunior", "http://facebook.com/alberto.junior.995")
-        val c3 = Contributor(3, "Galuber Silva", "Tradução dos Textos (en)", "https://avatars.githubusercontent.com/sglauber", "http://facebook.com/Gss.14")
-        return listOf(c1, c2, c3)
+        val c1 = Contributor(1, "Lokisley \"Lokisssss\" Oliveira", "Icone do Aplicativo", "https://avatars.githubusercontent.com/Lokisley", "https://www.facebook.com/Lokisley")
+        val c2 = Contributor(2, "Marcus \"Kuchuki\" Aldrey", "Jogador de Gnar", "https://avatars.githubusercontent.com/MarcusAldrey", "https://www.facebook.com/marcus.aldrey")
+        val c3 = Contributor(3, "Matheus Teixeira", "Nome do Aplicativo", "https://i.imgur.com/VikWE5N.jpg", "https://www.facebook.com/teixeirista")
+        val c4 = Contributor(4, "Alberto \"Da Pesada\" Junior", "Muitas idéias geniais", "https://avatars.githubusercontent.com/AlbertoJunior", "http://facebook.com/alberto.junior.995")
+        val c5 = Contributor(5, "Emerson Souza", "Muitas idéias geniais", "https://avatars.githubusercontent.com/EmersonBrSouza", "https://www.facebook.com/emerson.souza.fsa")
+        val c6 = Contributor(6, "Galuber Silva", "Tradução dos Textos (en)", "https://avatars.githubusercontent.com/sglauber", "http://facebook.com/Gss.14")
+        return listOf(c1, c2, c3, c4, c5, c6)
     }
 
 }
