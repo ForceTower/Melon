@@ -28,22 +28,20 @@
 package com.forcetower.sagres
 
 import android.content.Context
-
-import com.forcetower.sagres.database.SagresDatabase
-import com.forcetower.sagres.impl.SagresNavigatorImpl
-import com.forcetower.sagres.operation.calendar.CalendarCallback
-import com.forcetower.sagres.operation.login.LoginCallback
-import com.forcetower.sagres.operation.messages.MessagesCallback
-import com.forcetower.sagres.operation.person.PersonCallback
-import com.forcetower.sagres.operation.start_page.StartPageCallback
-import com.forcetower.sagres.operation.semester.SemesterCallback
-
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.database.SagresDatabase
+import com.forcetower.sagres.impl.SagresNavigatorImpl
+import com.forcetower.sagres.operation.calendar.CalendarCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.document.DocumentCallback
 import com.forcetower.sagres.operation.grades.GradesCallback
+import com.forcetower.sagres.operation.login.LoginCallback
+import com.forcetower.sagres.operation.messages.MessagesCallback
+import com.forcetower.sagres.operation.person.PersonCallback
+import com.forcetower.sagres.operation.semester.SemesterCallback
+import com.forcetower.sagres.operation.start_page.StartPageCallback
 import org.jsoup.nodes.Document
 import java.io.File
 

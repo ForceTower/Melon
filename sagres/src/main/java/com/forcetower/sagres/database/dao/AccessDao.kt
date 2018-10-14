@@ -27,12 +27,11 @@
 
 package com.forcetower.sagres.database.dao
 
-import com.forcetower.sagres.database.model.SAccess
-
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.Query
+import com.forcetower.sagres.database.model.SAccess
 
 @Dao
 interface AccessDao {

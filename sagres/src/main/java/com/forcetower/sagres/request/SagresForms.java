@@ -27,15 +27,13 @@
 
 package com.forcetower.sagres.request;
 
+import androidx.annotation.NonNull;
 import com.forcetower.sagres.Constants;
-
+import okhttp3.FormBody;
+import okhttp3.RequestBody;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
-
-import androidx.annotation.NonNull;
-import okhttp3.FormBody;
-import okhttp3.RequestBody;
 
 import java.util.HashMap;
 import java.util.Map;

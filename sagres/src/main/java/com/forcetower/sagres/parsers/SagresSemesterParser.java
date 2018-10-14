@@ -28,15 +28,13 @@
 package com.forcetower.sagres.parsers;
 
 import com.forcetower.sagres.database.model.SSemester;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import timber.log.Timber;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import timber.log.Timber;
 
 public class SagresSemesterParser {
 

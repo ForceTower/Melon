@@ -28,7 +28,6 @@
 package com.forcetower.sagres.parsers;
 
 import com.forcetower.sagres.database.model.SDisciplineGroup;
-
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;

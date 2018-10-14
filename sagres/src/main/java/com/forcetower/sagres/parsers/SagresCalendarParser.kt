@@ -28,12 +28,9 @@
 package com.forcetower.sagres.parsers
 
 import com.forcetower.sagres.database.model.SCalendar
-
 import org.jsoup.nodes.Document
-import org.jsoup.nodes.Element
-
-import java.util.ArrayList
 import timber.log.Timber
+import java.util.ArrayList
 
 /**
  * Created by João Paulo on 06/03/2018.

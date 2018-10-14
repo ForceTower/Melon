@@ -32,7 +32,6 @@ import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresLinkFinder
 import com.forcetower.sagres.request.SagresCalls
-import okhttp3.Call
 import okio.Okio
 import org.jsoup.nodes.Document
 import timber.log.Timber
