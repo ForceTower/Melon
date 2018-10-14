@@ -35,7 +35,7 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
-import java.util.*
+import java.util.UUID
 
 @Entity(indices = [
     Index(value = ["sagres_id"], unique = true),

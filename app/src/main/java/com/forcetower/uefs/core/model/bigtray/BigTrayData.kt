@@ -30,8 +30,7 @@ package com.forcetower.uefs.core.model.bigtray
 import androidx.core.math.MathUtils.clamp
 import com.forcetower.uefs.feature.shared.toCalendar
 import timber.log.Timber
-import java.lang.Exception
-import java.util.*
+import java.util.Calendar
 import java.util.Calendar.SATURDAY
 import java.util.Calendar.SUNDAY
 

@@ -27,11 +27,9 @@
 
 package com.forcetower.uefs.core.util
 
+import android.text.TextPaint
 import android.util.DisplayMetrics
 import android.util.TypedValue
-import android.text.TextPaint
-
-
 
 object ViewUtils {
     @JvmStatic

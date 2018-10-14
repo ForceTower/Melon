@@ -31,7 +31,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
 import java.text.SimpleDateFormat
-import java.util.*
+import java.util.Calendar
+import java.util.Date
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 
 @BindingAdapter(value = ["timestamped"])

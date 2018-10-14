@@ -27,7 +27,11 @@
 
 package com.forcetower.uefs.core.work
 
-import androidx.work.*
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
+import androidx.work.OneTimeWorkRequest
+import androidx.work.PeriodicWorkRequest
+import androidx.work.WorkManager
 
 fun OneTimeWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
     WorkManager.getInstance().beginUniqueWork(

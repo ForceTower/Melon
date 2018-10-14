@@ -35,24 +35,18 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
-import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
+import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import javax.inject.Inject
 
 class ScheduleFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var profileViewModel: ProfileViewModel
@@ -76,8 +70,6 @@ class ScheduleFragment: UFragment(), Injectable {
             binding = it
         }.apply {
             profileViewModel = this@ScheduleFragment.profileViewModel
-            firebaseStorage = this@ScheduleFragment.firebaseStorage
-            firebaseUser = this@ScheduleFragment.firebaseAuth.currentUser
             setLifecycleOwner(this@ScheduleFragment)
         }.root
     }

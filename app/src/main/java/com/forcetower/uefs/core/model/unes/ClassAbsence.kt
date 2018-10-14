@@ -27,9 +27,13 @@
 
 package com.forcetower.uefs.core.model.unes
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
-import java.util.*
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity(foreignKeys = [
     ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE),

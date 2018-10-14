@@ -33,8 +33,12 @@ import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.SystemClock
-import androidx.core.graphics.scale
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.Worker
+import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.forcetower.uefs.core.work.enqueue
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber

@@ -38,24 +38,17 @@ import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import java.io.File
 import javax.inject.Inject
 
 class DocumentsFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var binding: FragmentDocumentsBinding
     private lateinit var viewModel: DocumentsViewModel
@@ -73,8 +66,6 @@ class DocumentsFragment: UFragment(), Injectable {
         binding.apply {
             recyclerDocuments.adapter = adapter
             incToolbar.textToolbarTitle.text = getString(R.string.label_documents)
-            incToolbar.firebaseUser = firebaseAuth.currentUser
-            incToolbar.firebaseStorage = firebaseStorage
         }
     }
 

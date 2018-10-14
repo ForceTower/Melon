@@ -39,7 +39,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectCourseBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
 
 class SelectCourseDialog: RoundedDialog(), Injectable {
