@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 1,
-    "identityHash": "927b493f48fb389643ebf1d568128bc0",
+    "identityHash": "0b7c69d153a3905c42279c5c884bdcf6",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -1000,7 +1000,7 @@
       },
       {
         "tableName": "ClassItem",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `situation` TEXT NOT NULL, `subject` TEXT NOT NULL, `date` TEXT NOT NULL, `number_of_materials` TEXT NOT NULL, `material_links` TEXT NOT NULL, `is_new` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `group_id` INTEGER NOT NULL, `number` INTEGER NOT NULL, `situation` TEXT, `subject` TEXT, `date` TEXT, `number_of_materials` INTEGER NOT NULL, `material_links` TEXT NOT NULL, `is_new` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -1024,24 +1024,24 @@
             "fieldPath": "situation",
             "columnName": "situation",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "subject",
             "columnName": "subject",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "date",
             "columnName": "date",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "numberOfMaterials",
             "columnName": "number_of_materials",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -1235,6 +1235,16 @@
               "is_new"
             ],
             "createSql": "CREATE  INDEX `index_ClassMaterial_is_new` ON `${TABLE_NAME}` (`is_new`)"
+          },
+          {
+            "name": "index_ClassMaterial_name_link_group_id",
+            "unique": true,
+            "columnNames": [
+              "name",
+              "link",
+              "group_id"
+            ],
+            "createSql": "CREATE UNIQUE INDEX `index_ClassMaterial_name_link_group_id` ON `${TABLE_NAME}` (`name`, `link`, `group_id`)"
           }
         ],
         "foreignKeys": [
@@ -1594,7 +1604,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"927b493f48fb389643ebf1d568128bc0\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"0b7c69d153a3905c42279c5c884bdcf6\")"
     ]
   }
 }

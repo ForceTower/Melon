@@ -41,7 +41,7 @@
             android:minHeight="?actionBarSize"
             android:paddingStart="@dimen/spacing_normal"
             android:paddingEnd="@dimen/spacing_normal"
-            android:text="@string/teacher_posted_material_label"
+            android:text="@string/discipline_classes_header"
             android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"

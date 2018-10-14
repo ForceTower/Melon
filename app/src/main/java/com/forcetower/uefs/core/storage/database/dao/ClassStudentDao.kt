@@ -48,6 +48,10 @@ abstract class ClassStudentDao {
     abstract fun getMeFromGroup(classGroupId: Long): LiveData<ClassStudentWithGroup?>
 
     @Transaction
+    @Query("SELECT cs.* FROM ClassStudent cs, Profile p WHERE cs.group_id = :classGroupId AND cs.profile_id = p.uid AND p.me = 1")
+    abstract fun getMeFromGroupDirect(classGroupId: Long): ClassStudentWithGroup?
+
+    @Transaction
     open fun joinGroups(groups: List<ClassGroup>) {
         val profile = getMeProfile()
         groups.forEach {

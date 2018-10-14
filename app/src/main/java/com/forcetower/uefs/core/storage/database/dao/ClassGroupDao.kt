@@ -28,11 +28,17 @@
 package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import timber.log.Timber
@@ -43,13 +49,31 @@ abstract class ClassGroupDao {
     abstract fun insert(group: ClassGroup): Long
 
     @Transaction
+    open fun defineGroups(groups: List<SDisciplineGroup>) {
+        for (group in groups) {
+            val inserted = insert(group)
+            Timber.d("Group id: ${inserted.uid}")
+            for (classItem in group.classItems) {
+                val item = ClassItem.createFromSagres(inserted.uid, classItem)
+                insert(item)
+                for (classMaterial in classItem.materials) {
+                    val material = ClassMaterial.createFromSagres(inserted.uid, null, classMaterial)
+                    insert(material)
+                }
+            }
+        }
+    }
+
+    @Transaction
     open fun insert(grp: SDisciplineGroup): ClassGroup {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code)
         var group = selectGroupDirect(grp.semester, grp.code, sgr)
         val grops = selectGroupsDirect(grp.semester, grp.code)
 
-        if (grp.group == null && grops.isNotEmpty()) {
+        if (grops.isNotEmpty() && grops[0].group.equals("unique", ignoreCase = true)) {
+            group = grops[0]
+        } else if (grp.group == null && grops.isNotEmpty()) {
             group = grops[0]
         } else if (group == null) {
             val clazz = selectClassDirect(grp.semester, grp.code)
@@ -74,6 +98,12 @@ abstract class ClassGroupDao {
     @Transaction
     @Query("SELECT * FROM ClassGroup WHERE uid = :classGroupId")
     abstract fun getWithRelations(classGroupId: Long): LiveData<GroupWithClass?>
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insert(item: ClassItem)
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insert(material: ClassMaterial)
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND d.code = :code AND g.`group` = :group")
     protected abstract fun selectGroupDirect(semester: String, code: String, group: String): ClassGroup?
