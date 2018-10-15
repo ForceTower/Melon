@@ -80,6 +80,7 @@ abstract class ClassLocationDao {
                 }
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
+
             }
         }
     }

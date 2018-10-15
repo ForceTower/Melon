@@ -50,7 +50,7 @@ public class SagresScheduleParser {
     private static SparseArray<String> iterationPerDay;
     private static HashMap<String, SagresClass> codePerLessons;
 
-    public static List<SDisciplineClassLocation> getSchedule(@NonNull Document document) {
+    public synchronized static List<SDisciplineClassLocation> getSchedule(@NonNull Document document) {
         Element schedule = document.selectFirst("table[class=\"meus-horarios\"]");
         Element subtitle = document.selectFirst("table[class=\"meus-horarios-legenda\"]");
 
@@ -68,7 +68,7 @@ public class SagresScheduleParser {
         return convertToNewType(classDay);
     }
 
-    private static List<SDisciplineClassLocation> convertToNewType(HashMap<String, List<SagresClassDay>> hashMap) {
+    private synchronized static List<SDisciplineClassLocation> convertToNewType(HashMap<String, List<SagresClassDay>> hashMap) {
         List<SDisciplineClassLocation> disciplineClassLocations = new ArrayList<>();
         for (String key : hashMap.keySet()) {
             List<SagresClassDay> classDays = hashMap.get(key);
@@ -97,7 +97,7 @@ public class SagresScheduleParser {
         return disciplineClassLocations;
     }
 
-    private static void findSchedule(Element schedule) {
+    private synchronized static void findSchedule(Element schedule) {
         Elements trs = schedule.select("tr");
 
         for (int i = 0; i < trs.size(); i++) {
@@ -146,7 +146,7 @@ public class SagresScheduleParser {
         }
     }
 
-    private static void findDetails(Element subtitle) {
+    private synchronized static void findDetails(Element subtitle) {
         Elements trs = subtitle.select("tr");
 
         String currentCode = "undef";
@@ -174,6 +174,8 @@ public class SagresScheduleParser {
                             Timber.d("Something wrong is happening here...");
                         }
                     }
+                } else {
+                    Timber.d("Something smells fishy");
                 }
             } else {
                 int splitPos = value.indexOf("-");
@@ -192,7 +194,7 @@ public class SagresScheduleParser {
         }
     }
 
-    private static HashMap<String, List<SagresClassDay>> getSchedule(HashMap<String, SagresClass> classes) {
+    private synchronized static HashMap<String, List<SagresClassDay>> getSchedule(HashMap<String, SagresClass> classes) {
         HashMap<String, List<SagresClassDay>> classPerDay = new HashMap<>();
 
         if (classes.isEmpty())
@@ -230,18 +232,18 @@ public class SagresScheduleParser {
             days = new ArrayList<>();
         }
 
-        public String getName() {
+        public synchronized String getName() {
             return name;
         }
 
-        public void setName(String name) {
+        public synchronized void setName(String name) {
             this.name = name;
             for (SagresClassDay classDay : days) {
                 classDay.setClassName(name);
             }
         }
 
-        public String getCode() {
+        public synchronized String getCode() {
             return code;
         }
 
@@ -251,16 +253,16 @@ public class SagresScheduleParser {
                 this.classes.add(aClass);
         }
 
-        void addStartEndTime(String start, String finish, String day, String classType) {
+        synchronized void addStartEndTime(String start, String finish, String day, String classType) {
             SagresClassDay classDay = new SagresClassDay(start, finish, day, classType, this);
             days.add(classDay);
         }
 
-        private boolean containsClazz(String clazz) {
+        private synchronized boolean containsClazz(String clazz) {
             return classes.contains(clazz);
         }
 
-        void addAtToAllClasses(String type, String at) {
+        synchronized void addAtToAllClasses(String type, String at) {
             String[] parts = at.split(",");
 
             for (int i = 0; i < parts.length; i++) {
@@ -298,7 +300,7 @@ public class SagresScheduleParser {
             Timber.d("End of all add ---------");
         }
 
-        void addAtToSpecificClass(String at, String day, String type) {
+        synchronized void addAtToSpecificClass(String at, String day, String type) {
             String[] parts = at.split(",");
 
             for (int i = 0; i < parts.length; i++) {
@@ -335,7 +337,7 @@ public class SagresScheduleParser {
             Timber.d("End of specific -------");
         }
 
-        private String removeRoomName(String part) {
+        private synchronized String removeRoomName(String part) {
             if (part.startsWith("Sala")) {
                 part = part.substring(4);
             }
@@ -359,32 +361,32 @@ public class SagresScheduleParser {
         private String class_code;
         private String class_name;
 
-        String getClassType() {
+        synchronized String getClassType() {
             return class_type;
         }
 
-        String getDay() {
+        synchronized String getDay() {
             return day;
         }
 
-        public String getRoom() {
+        public synchronized String getRoom() {
             return room;
         }
 
-        public void setRoom(String room) {
+        public synchronized void setRoom(String room) {
             Timber.d("Room of %s set to %s from %s", class_code, room, this.room);
             this.room = room;
         }
 
-        void setCampus(String campus) {
+        synchronized void setCampus(String campus) {
             this.campus = campus;
         }
 
-        void setModulo(String modulo) {
+        synchronized void setModulo(String modulo) {
             this.modulo = modulo;
         }
 
-        void setClassName(String class_name) {
+        synchronized void setClassName(String class_name) {
             this.class_name = class_name;
         }
 

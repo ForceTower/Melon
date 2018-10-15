@@ -74,15 +74,17 @@ private constructor(context: Context) : SagresNavigator() {
     val client: OkHttpClient
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     override val database: SagresDatabase = SagresDatabase.create(context)
+    private lateinit var cookieJar: PersistentCookieJar
 
     init {
         this.client = createClient(context)
     }
 
     private fun createClient(context: Context): OkHttpClient {
+        cookieJar = createCookieJar(context)
         return OkHttpClient.Builder()
                 .followRedirects(true)
-                .cookieJar(createCookieJar(context))
+                .cookieJar(cookieJar)
                 .addInterceptor(createInterceptor())
                 .connectTimeout(1, TimeUnit.MINUTES)
                 .readTimeout(1, TimeUnit.MINUTES)
@@ -130,6 +132,19 @@ private constructor(context: Context) : SagresNavigator() {
                 call.cancel()
             }
         }
+    }
+
+    @AnyThread
+    override fun aLogout() {
+        SagresTaskExecutor.getIOThreadExecutor().execute {
+            logout()
+        }
+    }
+
+    @WorkerThread
+    override fun logout() {
+        database.clearAllTables()
+        cookieJar.clear()
     }
 
     @AnyThread

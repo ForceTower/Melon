@@ -108,6 +108,12 @@ abstract class SagresNavigator {
     @AnyThread
     abstract fun stopTags(tag: String)
 
+    @AnyThread
+    abstract fun aLogout()
+
+    @WorkerThread
+    abstract fun logout()
+
     companion object {
         val instance: SagresNavigator
             get() = SagresNavigatorImpl.instance
