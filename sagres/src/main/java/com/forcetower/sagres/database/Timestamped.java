@@ -40,17 +40,14 @@ public interface Timestamped {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmX", Locale.getDefault());
             return formatter.parse(string.trim()).getTime();
         } catch (Exception e) {
-            Timber.e(e);
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
                 return formatter.parse(string.trim()).getTime();
             } catch (Exception e1) {
-                Timber.e(e1);
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
                     return formatter.parse(string.trim()).getTime();
                 } catch (Exception e2) {
-                    Timber.e(e2);
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
                     return formatter.parse(string.trim()).getTime();
                 }
@@ -63,22 +60,18 @@ public interface Timestamped {
             SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmX", Locale.getDefault());
             return formatter.parse(string.trim()).getTime();
         } catch (Exception e) {
-            Timber.e(e);
             try {
                 SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssX", Locale.getDefault());
                 return formatter.parse(string.trim()).getTime();
             } catch (Exception e1) {
-                Timber.e(e1);
                 try {
                     SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ", Locale.getDefault());
                     return formatter.parse(string.trim()).getTime();
                 } catch (Exception e2) {
-                    Timber.e(e2);
                     try {
                         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssZ", Locale.getDefault());
                         return formatter.parse(string.trim()).getTime();
                     } catch (Exception e3) {
-                        Timber.e(e3);
                         Timber.e("Error while parsing data! Exception is %s", e.getMessage());
                         return def;
                     }
