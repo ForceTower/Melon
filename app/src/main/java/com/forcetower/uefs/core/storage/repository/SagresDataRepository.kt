@@ -48,7 +48,7 @@ class SagresDataRepository @Inject constructor(
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.profileDao().deleteMe()
-            SagresNavigator.instance.database.clearAllTables()
+            SagresNavigator.instance.logout()
         }
     }
 }
