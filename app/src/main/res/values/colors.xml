@@ -125,4 +125,15 @@
         <item>@color/dis_14</item>
         <item>@color/dis_15</item>
     </array>
+    
+    <!-- Games -->
+    <color name="background1">#232528</color>
+    <color name="background3">#111111</color>
+    <color name="bordercolor1">#222222</color>
+    <color name="text_white">#f9f6f2</color>
+    <color name="text_shadow">#212121</color>
+    <color name="text_brown">#d6cdc4</color>
+    <color name="myoteal">#00bcdd</color>
+    <color name="myoblack">#1e242b</color>
+    <color name="background">#f8f8f8</color>
 </resources>

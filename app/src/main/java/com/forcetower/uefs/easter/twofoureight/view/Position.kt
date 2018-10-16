@@ -25,26 +25,33 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.easter.twofoureight.view
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+open class Position(x: Int, y: Int) {
+    var x: Int = 0
+        internal set
+    var y: Int = 0
+        internal set
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
+    init {
+        this.x = x
+        this.y = y
+    }
 
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
+    companion object {
 
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
+        fun equal(first: Position, second: Position): Boolean {
+            return first.x == second.x && first.y == second.y
+        }
 
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+        fun getVector(direction: Int): Position {
+            val map = arrayOf(
+                Position(0, -1), // up
+                Position(1, 0), // right
+                Position(0, 1), // down
+                Position(-1, 0)  // left
+            )
+            return map[direction]
+        }
+    }
 }

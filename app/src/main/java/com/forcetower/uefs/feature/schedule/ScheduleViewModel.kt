@@ -27,10 +27,24 @@
 
 package com.forcetower.uefs.feature.schedule
 
+import android.view.View
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
+import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import javax.inject.Inject
 
-class ScheduleViewModel @Inject constructor(private val database: UDatabase): ViewModel() {
+class ScheduleViewModel @Inject constructor(
+    private val database: UDatabase
+): ViewModel(), ScheduleActions {
     val scheduleSrc by lazy { database.classLocationDao().getCurrentSchedule() }
+
+    override fun onLongClick(view: View): Boolean {
+        Game2048Activity.startActivity(view.context)
+        return false
+    }
+
+    override fun onClick(group: GroupWithClass) {
+
+    }
 }

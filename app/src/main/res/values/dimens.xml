@@ -64,4 +64,5 @@
     <dimen name="discipline_header_size">60dp</dimen>
     <dimen name="rounded_dialog_corners">12dp</dimen>
     <dimen name="headshot_teacher">40dp</dimen>
+    <dimen name="profile_head_size">80dp</dimen>
 </resources>

@@ -25,26 +25,39 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.profile
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
+import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.ActivityProfileBinding
+import com.forcetower.uefs.feature.shared.UActivity
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
+class ProfileActivity: UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
+    private lateinit var binding: ActivityProfileBinding
 
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
+    }
 
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+    override fun supportFragmentInjector() = fragmentInjector
+
+    companion object {
+        const val PROFILE_ID = "profile_id_local"
+        fun startIntent(context: Context, profileId: Long): Intent {
+            return Intent(context, ProfileActivity::class.java).apply {
+                putExtra(PROFILE_ID, profileId)
+            }
+        }
+    }
 }
