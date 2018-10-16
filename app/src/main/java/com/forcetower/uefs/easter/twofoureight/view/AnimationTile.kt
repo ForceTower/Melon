@@ -25,26 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.easter.twofoureight.view
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+internal class AnimationTile(
+    x: Int,
+    y: Int,
+    val animationType: Int,
+    private val mAnimationTime: Long,
+    private val mDelayTime: Long,
+    val extras: IntArray?
+) : Position(x, y) {
+    private var mTimeElapsed: Long = 0
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
+    val percentageDone: Double
+        get() = Math.max(0.0, 1.0 * (mTimeElapsed - mDelayTime) / mAnimationTime)
 
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
+    val isActive: Boolean
+        get() = mTimeElapsed >= mDelayTime
 
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
+    fun tick(timeElapsed: Long) {
+        this.mTimeElapsed = this.mTimeElapsed + timeElapsed
+    }
 
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+    fun animationDone(): Boolean {
+        return mAnimationTime + mDelayTime < mTimeElapsed
+    }
 }

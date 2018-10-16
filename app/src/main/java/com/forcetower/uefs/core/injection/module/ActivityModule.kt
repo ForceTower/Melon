@@ -32,6 +32,7 @@ import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
+import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.setup.SetupActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -50,4 +51,6 @@ abstract class ActivityModule {
     abstract fun bindAboutActivity(): AboutActivity
     @ContributesAndroidInjector(modules = [DisciplineModule::class])
     abstract fun bindDisciplineDetailsActivity(): DisciplineDetailsActivity
+    @ContributesAndroidInjector(modules = [ProfileModule::class])
+    abstract fun bindProfileActivity(): ProfileActivity
 }

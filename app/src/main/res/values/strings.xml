@@ -67,7 +67,7 @@
     <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
-
+    
     <string-array name="login_random_messages">
         <item>Preparando Foguetes</item>
         <item>Iniciando Sincronização</item>
@@ -128,12 +128,12 @@
         <item>Encaixando todas as peças</item>
         <item>Ficando de olhos abertos</item>
     </string-array>
-
+    
     <string name="message_received_date_format">Mensagem recebida %1$s</string>
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
-    <string name="label_grades_disciplines_short">Disciplinas</string>
-
+    <string name="label_grades_disciplines_short">Turmas</string>
+    
     <string name="data_step_format">Passo %1$d de %2$d: %3$s</string>
     <string name="step_delete_database">Apagando dados</string>
     <string name="step_logging_in">Fazendo login</string>
@@ -142,10 +142,10 @@
     <string name="step_fetching_semesters">Buscando semestres</string>
     <string name="step_moving_to_start_page">Movendo para página inicial</string>
     <string name="step_fetching_grades">Buscando notas</string>
-
+    
     <string name="label_terms_and_conditions_p1">Ao continuar, você concorda com os</string>
     <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md)</string>
-
+    
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
     <string name="about_unes_2">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
@@ -154,7 +154,7 @@
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com código ou ideias</string>
-
+    
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
     <string name="label_schedule_not_found">Horário não foi encontrado</string>
@@ -265,6 +265,20 @@
     <string name="upgrade_unes_the_second">O aplicativo está de cara nova! [Em desenvolvimento]</string>
     <string name="upgrade_unes_second_title">Nova geração do UNES</string>
     <string name="label_library">Biblioteca [Em breve]</string>
+    <string name="label_disciplines_count">Disciplinas</string>
+    <string name="label_hours_count">Horas</string>
+    <string name="label_friends_count">Colegas</string>
+    <string name="label_achievements_count">Conquistas</string>
+    <string name="game2048">2048</string>
+    <string name="unes_edition">Edição UNES</string>
+    <string name="score">Pontuação</string>
+    <string name="zero">0</string>
+    <string name="high_score">Maior</string>
+    <string name="reset">Reiniciar</string>
+    <string name="undo">Desfazer</string>
+    <string name="you_win">Você venceu</string>
+    <string name="game_over">Fim de Jogo</string>
+    <string name="start_new_game">Iniciar Novo</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
