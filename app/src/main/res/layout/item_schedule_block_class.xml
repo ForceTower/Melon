@@ -28,6 +28,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    
+    <data>
+        <variable
+            name="scheduleActions"
+            type="com.forcetower.uefs.feature.schedule.ScheduleActions"/>
+        <variable
+            name="group"
+            type="com.forcetower.uefs.core.storage.database.accessors.GroupWithClass"/>
+    </data>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_root"
@@ -36,7 +45,9 @@
         android:layout_margin="2dp"
         app:cardCornerRadius="4dp"
         app:strokeWidth="1dp"
-        app:strokeColor="@color/blue_accent">
+        app:strokeColor="@color/blue_accent"
+        android:onClick="@{() -> scheduleActions.onClick(group)}"
+        android:onLongClick="@{(view) -> scheduleActions.onLongClick(view)}">
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"

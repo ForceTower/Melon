@@ -29,6 +29,7 @@ package com.forcetower.uefs.feature.schedule
 
 import android.content.Context
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -144,6 +145,8 @@ data class ScheduleDay(
 
 class ScheduleBlockAdapter(
     private val pool: RecyclerView.RecycledViewPool,
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: ScheduleViewModel,
     context: Context
 ): RecyclerView.Adapter<DayBlockHolder>() {
     private val list = ArrayList<ArrayList<InnerLocation>>()
@@ -151,7 +154,7 @@ class ScheduleBlockAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayBlockHolder {
         val binding = ItemScheduleDayBinding.inflate(parent.inflater(), parent, false)
-        return DayBlockHolder(binding, pool, colors)
+        return DayBlockHolder(binding, pool, colors, lifecycleOwner, viewModel)
     }
 
     override fun onBindViewHolder(holder: DayBlockHolder, position: Int) = holder.bind(list[position])
@@ -219,7 +222,11 @@ private const val NOTHING: Int = 3
 private const val HEAD_N: Int = 4
 private const val DAY: Int = 5
 
-class ScheduleBlockClassAdapter(private val colors: IntArray) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+class ScheduleBlockClassAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: ScheduleViewModel,
+    private val colors: IntArray
+): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<InnerLocation>()
 
     fun submitList(list: List<InnerLocation>) {
@@ -243,7 +250,12 @@ class ScheduleBlockClassAdapter(private val colors: IntArray) : RecyclerView.Ada
         when(getItemViewType(position)) {
             HEADER -> (holder as BHeaderHolder).bind(element)
             TIME   -> (holder as BTimeHolder)  .bind(element)
-            CLASS  -> (holder as BClassHolder) .bind(element, colors)
+            CLASS  -> (holder as BClassHolder) .bind(element, colors).also {
+                holder.binding.setLifecycleOwner(lifecycleOwner)
+                holder.binding.scheduleActions = viewModel
+                holder.binding.group = element.location!!.singleGroup()
+                holder.binding.executePendingBindings()
+            }
         }
     }
 
@@ -262,11 +274,13 @@ class ScheduleBlockClassAdapter(private val colors: IntArray) : RecyclerView.Ada
 }
 
 class DayBlockHolder(
-        binding: ItemScheduleDayBinding,
-        pool: RecyclerView.RecycledViewPool,
-        colors: IntArray
+    binding: ItemScheduleDayBinding,
+    pool: RecyclerView.RecycledViewPool,
+    colors: IntArray,
+    lifecycleOwner: LifecycleOwner,
+    scheduleViewModel: ScheduleViewModel
 ): RecyclerView.ViewHolder(binding.root) {
-    private val adapter by lazy { ScheduleBlockClassAdapter(colors) }
+    private val adapter by lazy { ScheduleBlockClassAdapter(lifecycleOwner, scheduleViewModel, colors) }
     init {
         binding.recyclerDay.setRecycledViewPool(pool)
         binding.recyclerDay.adapter = adapter
@@ -296,7 +310,7 @@ class BTimeHolder(
 }
 
 class BClassHolder(
-    private val binding: ItemScheduleBlockClassBinding
+    val binding: ItemScheduleBlockClassBinding
 ): RecyclerView.ViewHolder(binding.root) {
 
     fun bind(inner: InnerLocation, colors: IntArray) {

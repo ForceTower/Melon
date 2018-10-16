@@ -55,7 +55,7 @@ class ScheduleFragment: UFragment(), Injectable {
     private val linePool = RecyclerView.RecycledViewPool()
     private val lineAdapter by lazy { ScheduleLineAdapter(linePool) }
     private val blockPool = RecyclerView.RecycledViewPool()
-    private val blockAdapter by lazy { ScheduleBlockAdapter(blockPool, requireContext()) }
+    private val blockAdapter by lazy { ScheduleBlockAdapter(blockPool, this, viewModel, requireContext()) }
 
     init {
         linePool.setMaxRecycledViews(1, 4)

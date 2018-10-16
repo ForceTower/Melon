@@ -25,26 +25,22 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.profile
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.feature.shared.UFragment
+import javax.inject.Inject
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
+class ProfileFragment: UFragment(), Injectable {
+    @Inject
+    lateinit var factory: UViewModelFactory
 
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
-
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
-
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 }

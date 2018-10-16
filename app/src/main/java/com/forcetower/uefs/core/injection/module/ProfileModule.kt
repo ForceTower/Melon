@@ -25,26 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.core.injection.module
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.feature.profile.ProfileFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
-
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
-
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
-
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+@Module
+abstract class ProfileModule {
+    @ContributesAndroidInjector
+    abstract fun profileFragment(): ProfileFragment
 }

@@ -25,26 +25,12 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.schedule
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import com.forcetower.uefs.core.model.unes.Semester
+import android.view.View
+import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 
-@Dao
-interface SemesterDao {
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semesters: List<Semester>)
-
-    @Insert(onConflict = IGNORE)
-    fun insertIgnoring(semester: Semester)
-
-    @Query("SELECT * FROM Semester")
-    fun getParticipatingSemesters(): LiveData<List<Semester>>
-
-    @Query("DELETE FROM Semester")
-    fun deleteAll()
+interface ScheduleActions {
+    fun onLongClick(view: View): Boolean
+    fun onClick(group: GroupWithClass)
 }
