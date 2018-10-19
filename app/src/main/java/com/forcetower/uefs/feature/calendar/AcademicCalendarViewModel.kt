@@ -25,32 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.calendar
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import androidx.room.Transaction
+import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.storage.repository.AcademicCalendarRepository
+import javax.inject.Inject
 
-@Dao
-abstract class CalendarDao {
-    @Insert(onConflict = REPLACE)
-    abstract fun insert(items: List<CalendarItem>)
+class AcademicCalendarViewModel @Inject constructor(
+    private val repository: AcademicCalendarRepository
+): ViewModel() {
 
-    @Transaction
-    open fun deleteAndInsert(items: List<CalendarItem>?) {
-        if (items != null && items.isNotEmpty()) {
-            delete()
-            insert(items)
-        }
-    }
-
-    @Query("DELETE FROM CalendarItem")
-    abstract fun delete()
-
-    @Query("SELECT * FROM CalendarItem")
-    abstract fun getCalendar(): LiveData<List<CalendarItem>>
+    val calendar: LiveData<List<CalendarItem>> by lazy { repository.getAcademicCalendar() }
 }
