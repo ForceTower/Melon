@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
+import com.forcetower.uefs.feature.calendar.CalendarFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.uefs.feature.document.DocumentsFragment
@@ -65,4 +66,6 @@ abstract class HomeModule {
     abstract fun syncRegistryFragment(): SyncRegistryFragment
     @ContributesAndroidInjector
     abstract fun eventFragment(): EventFragment
+    @ContributesAndroidInjector
+    abstract fun calendarFragment(): CalendarFragment
 }

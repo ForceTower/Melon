@@ -25,32 +25,30 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package com.forcetower.uefs.feature.calendar
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
-import androidx.room.Transaction
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.databinding.ItemAcademicEventBinding
+import com.forcetower.uefs.feature.shared.inflater
 
-@Dao
-abstract class CalendarDao {
-    @Insert(onConflict = REPLACE)
-    abstract fun insert(items: List<CalendarItem>)
-
-    @Transaction
-    open fun deleteAndInsert(items: List<CalendarItem>?) {
-        if (items != null && items.isNotEmpty()) {
-            delete()
-            insert(items)
-        }
+class CalendarAdapter: ListAdapter<CalendarItem, CalendarHolder>(DiffCalendar) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarHolder {
+        return CalendarHolder(ItemAcademicEventBinding.inflate(parent.inflater(), parent, false))
     }
 
-    @Query("DELETE FROM CalendarItem")
-    abstract fun delete()
+    override fun onBindViewHolder(holder: CalendarHolder, position: Int) {
+        holder.binding.event = getItem(position)
+        holder.binding.executePendingBindings()
+    }
+}
 
-    @Query("SELECT * FROM CalendarItem")
-    abstract fun getCalendar(): LiveData<List<CalendarItem>>
+class CalendarHolder(val binding: ItemAcademicEventBinding): RecyclerView.ViewHolder(binding.root)
+
+private object DiffCalendar: DiffUtil.ItemCallback<CalendarItem>() {
+    override fun areItemsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem.uid == newItem.uid
+    override fun areContentsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem == newItem
 }
