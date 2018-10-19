@@ -23,8 +23,8 @@ ext {
 
         (major, minor, patch, new_commits) = [major, minor, patch, new_commits].collect{it.toInteger()}
 
-        //For the version 12.7.4 will be generated the code: 21COUNT and the name: [12.7.4 build hash post]
-        def name = "${major}.${minor}.${patch} build ${git_sha.toUpperCase()} ${postfix}"
+        //For the version 12.7.4 will be generated the code: 21COUNT and the name: [12.7.4 build COUNT post]
+        def name = "${major}.${minor}.${patch} build ${commit_count} ${postfix}"
         def code = (21 * 100000) + commit_count
         return [code, name]
     }
