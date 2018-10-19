@@ -79,7 +79,7 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/image_profile"
                 app:layout_constraintVertical_chainStyle="packed"
-                tools:text="Alberto Manoel dos Santos Silva Junior" />
+                tools:text="João Paulo Santos Sena" />
     
             <TextView
                 android:id="@+id/text_user_course"

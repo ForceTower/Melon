@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
+import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
@@ -114,6 +115,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EventViewModel::class)
     abstract fun bindEventViewModel(vm: EventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(AcademicCalendarViewModel::class)
+    abstract fun bindAcademicCalendarViewModel(vm: AcademicCalendarViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
