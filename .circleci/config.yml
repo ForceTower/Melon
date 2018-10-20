@@ -15,9 +15,9 @@ jobs:
     
     steps:
       - run: 
-        name: Downloading Dependencies
-        command: |
-          ./gradlew dependencies
+          name: Downloading Dependencies
+          command: |
+            ./gradlew dependencies
 
       - run:
           name: Build debug APK
