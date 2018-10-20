@@ -75,48 +75,7 @@ android {
 }
 
 afterEvaluate {
-    assembleRelease.doLast {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    assembleDebug.doLast {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    generateDebugSources.doLast {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    compileDebugJavaWithJavac.doFirst {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    compileReleaseJavaWithJavac.doFirst {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    processReleaseGoogleServices.doLast {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
-    processDebugGoogleServices.doLast {
-        try {
-            "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored) {
-        }
-    }
+
 }
 
 play {
