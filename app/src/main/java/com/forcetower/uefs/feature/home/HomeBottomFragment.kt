@@ -38,6 +38,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
+import com.forcetower.uefs.feature.reminders.RemindersActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
@@ -97,6 +98,10 @@ class HomeBottomFragment: UFragment(), Injectable {
                 }
                 R.id.profile -> {
                     viewModel.onMeProfileClicked()
+                    true
+                }
+                R.id.reminders -> {
+                    startActivity(RemindersActivity.startIntent(requireContext()))
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())

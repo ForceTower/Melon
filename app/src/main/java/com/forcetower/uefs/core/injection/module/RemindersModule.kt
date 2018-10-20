@@ -25,21 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.event
+package com.forcetower.uefs.core.injection.module
 
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.storage.repository.EventRepository
-import timber.log.Timber
-import javax.inject.Inject
+import com.forcetower.uefs.feature.reminders.RemindersFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-class EventViewModel @Inject constructor(
-    private val repository: EventRepository
-): ViewModel(), EventActions {
-
-    val events by lazy { repository.getEvents() }
-
-    override fun onOpen(event: Event) {
-        Timber.d("Clicked on event id ${event.id} named ${event.name}")
-    }
+@Module
+abstract class RemindersModule {
+    @ContributesAndroidInjector
+    abstract fun remindersFragment(): RemindersFragment
 }
