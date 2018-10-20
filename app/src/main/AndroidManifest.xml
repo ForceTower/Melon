@@ -74,6 +74,17 @@
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
         <activity android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity" />
+    
+        <activity
+            android:name=".feature.profile.ProfileActivity"
+            android:theme="@style/UTheme.LightNav"/>
+        
+        <activity
+            android:name=".easter.twofoureight.Game2048Activity" />
+        
+        <activity
+            android:name=".feature.reminders.RemindersActivity"
+            android:theme="@style/UTheme.LightNav"/>
         
         <meta-data
             android:name="preloaded_fonts"
@@ -97,10 +108,6 @@
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
-        
-        <activity android:name=".feature.profile.ProfileActivity" />
-        <activity android:name=".easter.twofoureight.Game2048Activity" />
-        <activity android:name=".feature.reminders.RemindersActivity"></activity>
     </application>
 
 </manifest>
