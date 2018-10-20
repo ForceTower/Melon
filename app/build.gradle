@@ -32,15 +32,24 @@ android {
         release {
             storeFile signFile
             try {
-                String contents = new File('keystore_auth').text
+                String contents = new File('../keystore_auth').text
                 String[] values = contents.split(";")
                 storePassword values[0]
                 keyAlias values[1]
                 keyPassword values[2]
             } catch (Throwable ignored) {
-                storePassword "123456"
-                keyAlias "alias"
-                keyPassword "123456"
+                try {
+                    String contents = new File('keystore_auth').text
+                    String[] values = contents.split(";")
+                    storePassword values[0]
+                    keyAlias values[1]
+                    keyPassword values[2]
+                } catch (Throwable ignored2) {
+                    println ignored2.message
+                    storePassword "123456"
+                    keyAlias "alias"
+                    keyPassword "123456"
+                }
             }
         }
     }
@@ -69,23 +78,51 @@ afterEvaluate {
     assembleRelease.doLast {
         try {
             "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored){}
+        } catch (Throwable ignored) {
+        }
     }
     assembleDebug.doLast {
-        try{
+        try {
             "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored){}
+        } catch (Throwable ignored) {
+        }
     }
     generateDebugSources.doLast {
         try {
             "git checkout app/google-services.json".execute([], project.rootDir)
-        } catch (Throwable ignored){}
+        } catch (Throwable ignored) {
+        }
+    }
+    compileDebugJavaWithJavac.doFirst {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored) {
+        }
+    }
+    compileReleaseJavaWithJavac.doFirst {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored) {
+        }
+    }
+    processReleaseGoogleServices.doLast {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored) {
+        }
+    }
+    processDebugGoogleServices.doLast {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored) {
+        }
     }
 }
 
 play {
-    jsonFile = file('../google_play_console_auth.json')
+    serviceAccountCredentials = file('../google_play_console_auth.json')
     track = "internal"
+    defaultToAppBundles = true
 }
 
 dependencies {
