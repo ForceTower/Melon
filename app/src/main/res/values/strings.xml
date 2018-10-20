@@ -46,7 +46,7 @@
     <string name="label_calendar">Calendário Acadêmico</string>
     <string name="label_events">Eventos</string>
     <string name="label_services">Serviços</string>
-    <string name="label_reminders">Lembretes [Em breve]</string>
+    <string name="label_reminders">Lembretes</string>
     <string name="label_adventure">Aventura [Em breve]</string>
     <string name="label_settings">Configurações [Em breve]</string>
     <string name="label_about_app">Sobre o Aplicativo</string>
@@ -54,7 +54,7 @@
     <string name="label_logout">Sair</string>
     <string name="label_open_source_libraries">Licenças de Código Aberto</string>
     <string name="label_today_schedule">Aulas de Hoje</string>
-    <string name="discipline_icon">ìcone da disciplina</string>
+    <string name="discipline_icon">Ícone da disciplina</string>
     <string name="label_recent_messages">Mensagens</string>
     <string name="login_no_account_message">Ainda não tem uma conta? Passe no vestibular</string>
     <string name="there_is_no_vestibular_anymore">\"Mas não tem vestibular\"\nEntão faça o ENEM, você entendeu</string>
@@ -282,6 +282,7 @@
     
     <string name="integer_format">%1$d</string>
     <string name="screen_under_development">Esta página está em construção</string>
+    <string name="tasks_completed_label">Concluídas</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

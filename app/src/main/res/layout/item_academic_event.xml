@@ -69,7 +69,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="spread"
             tools:text="12/10 até 15/10"
-            android:textSize="15sp"/>
+            android:textSize="13sp"/>
     
         <TextView
             android:id="@+id/text_message"
@@ -79,7 +79,7 @@
             android:layout_marginBottom="8dp"
             android:text="@{event.message}"
             android:textColor="@color/text_primary_dark"
-            android:textSize="17sp"
+            android:textSize="15sp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintHorizontal_bias="0.5"
