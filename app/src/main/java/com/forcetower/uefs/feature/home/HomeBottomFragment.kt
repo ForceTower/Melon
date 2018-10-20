@@ -95,6 +95,10 @@ class HomeBottomFragment: UFragment(), Injectable {
                         .start(requireContext())
                     true
                 }
+                R.id.profile -> {
+                    viewModel.onMeProfileClicked()
+                    true
+                }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }

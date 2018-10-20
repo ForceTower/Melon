@@ -35,6 +35,7 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityProfileBinding
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.inTransaction
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
@@ -48,15 +49,19 @@ class ProfileActivity: UActivity(), HasSupportFragmentInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
+        supportFragmentManager.inTransaction {
+            val profileId = intent.getStringExtra(EXTRA_PROFILE_ID)
+            add(R.id.fragment_container, ProfileFragment.newInstance(profileId))
+        }
     }
 
     override fun supportFragmentInjector() = fragmentInjector
 
     companion object {
-        const val PROFILE_ID = "profile_id_local"
-        fun startIntent(context: Context, profileId: Long): Intent {
+        const val EXTRA_PROFILE_ID = "profile_id_local"
+        fun startIntent(context: Context, profileId: String): Intent {
             return Intent(context, ProfileActivity::class.java).apply {
-                putExtra(PROFILE_ID, profileId)
+                putExtra(EXTRA_PROFILE_ID, profileId)
             }
         }
     }

@@ -27,12 +27,87 @@
 
 package com.forcetower.uefs.feature.profile
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
+import com.forcetower.uefs.feature.shared.setValueIfNew
+import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     val repository: ProfileRepository
 ): ViewModel(){
-    fun getProfile() = repository.getMeProfile()
+    private val profileId = MutableLiveData<String?>()
+
+    private val _profile = MediatorLiveData<Profile?>()
+    val profile: LiveData<Profile?>
+        get() = _profile
+
+    private val _course = MediatorLiveData<Course>()
+    val course: LiveData<Course>
+        get() = _course
+
+    private val _disciplineCount = MutableLiveData<Int>()
+    val disciplineCount: LiveData<Int>
+        get() = _disciplineCount
+
+    private val _hoursCount = MutableLiveData<Int>()
+    val hoursCount: LiveData<Int>
+        get() = _hoursCount
+
+    init {
+        _profile.addSource(profileId) {
+            refreshProfile(it)
+        }
+    }
+
+    private fun refreshProfile(profileId: String?) {
+        if (profileId != null) {
+            Timber.d("ProfileId changed, refreshing")
+            val source = repository.loadProfile(profileId)
+            _profile.addSource(source) {
+                _profile.value = it
+                Timber.d("Updating profile information with $it")
+
+                if (it != null) {
+                    updateCourse(it)
+                    updateDisciplines(it)
+                }
+            }
+        } else {
+            Timber.d("No profile information available")
+        }
+    }
+
+    private fun updateCourse(profile: Profile) {
+        val course = profile.course
+        if (course != null) {
+            val source = repository.getCourse(profile.course)
+            _course.addSource(source) {
+                _course.value = it
+            }
+        }
+    }
+
+    private fun updateDisciplines(@Suppress("UNUSED_PARAMETER") profile: Profile) {
+        val source = repository.getProfileClasses()
+        _profile.addSource(source) { values ->
+            Timber.d("Discipline List")
+            val hours = values.asSequence().map { it.singleDiscipline().credits }.sum()
+            val size = values.size
+
+            _hoursCount.value = hours
+            _disciplineCount.value = size
+        }
+    }
+
+    fun getMeProfile() = repository.getMeProfile()
+
+    fun setProfileId(newProfileId: String?) {
+        profileId.setValueIfNew(newProfileId)
+    }
 }

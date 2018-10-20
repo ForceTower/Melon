@@ -40,6 +40,7 @@ import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithDiscipline
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 
 @Dao
@@ -106,4 +107,10 @@ abstract class ClassDao {
     @Delete
     abstract fun delete(clazz: Class)
 
+    @Query("DELETE FROM Class")
+    abstract fun deleteAll()
+
+    @Transaction
+    @Query("SELECT * FROM Class")
+    abstract fun getAll(): LiveData<List<ClassWithDiscipline>>
 }
