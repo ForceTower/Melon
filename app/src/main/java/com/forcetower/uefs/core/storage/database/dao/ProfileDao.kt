@@ -69,4 +69,10 @@ abstract class ProfileDao {
 
     @Query("DELETE FROM Profile WHERE me = 1")
     abstract fun deleteMe()
+
+    @Query("SELECT * FROM Profile WHERE uuid = :profileUUID LIMIT 1")
+    abstract fun selectProfileByUUID(profileUUID: String): LiveData<Profile?>
+
+    @Query("UPDATE Profile SET course = :courseId WHERE me = 1")
+    abstract fun updateCourse(courseId: Long)
 }

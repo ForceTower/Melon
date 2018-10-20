@@ -41,4 +41,7 @@ interface CourseDao {
 
     @Query("SELECT * FROM Course ORDER BY name")
     fun selectAll(): LiveData<List<Course>>
+
+    @Query("SELECT * FROM Course WHERE id = :course")
+    fun getCourse(course: Long): LiveData<Course?>
 }
