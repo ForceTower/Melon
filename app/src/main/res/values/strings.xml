@@ -201,7 +201,7 @@
     <string name="label_example_sync_freq">A cada 60 minutos</string>
     <string name="at_every_time_minutes">A cada %1$d minutos</string>
     <string name="label_big_tray">Bandejão</string>
-    <string name="label_profile">Perfil [Em breve]</string>
+    <string name="label_profile">Perfil</string>
     <string name="label_documents">Documentos</string>
     <string name="bug_report">Reportar erros [Em breve]</string>
     <string name="ru_last_update">Última atualização: %1$s</string>
@@ -279,6 +279,9 @@
     <string name="you_win">Você venceu</string>
     <string name="game_over">Fim de Jogo</string>
     <string name="start_new_game">Iniciar Novo</string>
+    
+    <string name="integer_format">%1$d</string>
+    <string name="screen_under_development">Esta página está em construção</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

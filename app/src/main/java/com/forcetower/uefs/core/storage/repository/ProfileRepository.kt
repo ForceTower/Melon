@@ -27,13 +27,27 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.database.UDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ProfileRepository @Inject constructor(
-    val database: UDatabase
+    val database: UDatabase,
+    val executors: AppExecutors
 ) {
     fun getMeProfile() = database.profileDao().selectMe()
+    fun loadProfile(profileId: String) = database.profileDao().selectProfileByUUID(profileId)
+
+    fun getCourse(course: Long) = database.courseDao().getCourse(course)
+
+    fun getProfileClasses() = database.classDao().getAll()
+
+    fun updateUserCourse(course: Course) {
+        executors.diskIO().execute {
+            database.profileDao().updateCourse(course.id)
+        }
+    }
 }
