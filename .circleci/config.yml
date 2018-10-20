@@ -2,10 +2,10 @@ version: 2
 references:
   config_android: &config_android
     docker:
-      -image: circleci/android:api-28-alpha
-    working_directory: ~/melon
+      - image: circleci/android:api-28-alpha
+    working_directory: ~/unes
     enviroment:
-      JVM_OPTS: -Xmx3200m
+      JVM_OPTS: -Xmx1536m
       GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=2"
       TERM: dumb
 
