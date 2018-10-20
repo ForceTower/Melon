@@ -69,12 +69,10 @@ freeline_project_description.json
 /app/src/main/res/values/ids.xml
 /.idea/navEditor.xml
 /app/release/
-/app/src/main/res/values/service_strings.xml
 /.idea/copyright/profiles_settings.xml
 /.idea/copyright/UNES.xml
 
 /google_play_console_auth.json
-/signing.gradle
 /app/src/main/play
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/inspectionProfiles/ktlint.xml
