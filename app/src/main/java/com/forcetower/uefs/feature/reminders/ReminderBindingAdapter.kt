@@ -25,21 +25,21 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.event
+package com.forcetower.uefs.feature.reminders
 
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.storage.repository.EventRepository
-import timber.log.Timber
-import javax.inject.Inject
+import android.graphics.Paint
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.forcetower.uefs.feature.shared.formatSimpleDay
 
-class EventViewModel @Inject constructor(
-    private val repository: EventRepository
-): ViewModel(), EventActions {
+@BindingAdapter("strikeText")
+fun strikeText(tv: TextView, strike: Boolean) {
+    if (strike) tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    else tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+}
 
-    val events by lazy { repository.getEvents() }
-
-    override fun onOpen(event: Event) {
-        Timber.d("Clicked on event id ${event.id} named ${event.name}")
-    }
+@BindingAdapter("reminderDate")
+fun reminderDate(tv: TextView, date: Long?) {
+    if (date == null) return
+    tv.text = date.formatSimpleDay()
 }
