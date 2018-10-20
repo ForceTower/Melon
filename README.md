@@ -4,10 +4,12 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 
 🛑 Versão altamente instável e com funções faltando 🛑
 
+[![CircleCI](https://circleci.com/gh/ForceTower/Melon/tree/development.svg?style=shield)](https://circleci.com/gh/ForceTower/Melon/tree/development)
+
 ### Objetivos
 * Diminuir o tempo de carregamento do aplicativo quando está abrindo
 * Utilizar os novos componentes do Android
-* Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal (cof, cof Processo da Oracle cof, cof)
+* Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal
 * Corrigir o deadlock raro durante a sincronização
 * Corrigir o erro que afeta alguns estudantes que tem 2 cursos em 1 (????)
 * Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO
@@ -29,7 +31,7 @@ Para compilar o Melon você precisa seguir uns passos iniciais já que alguns ar
 
 ### Sobre o Aplicativo
 Este aplicativo mostra notificações quando algo novo é detectado no Sagres.
-Ele tambem tenta aproximar todo o conteúdo do Sagres em um aplicativo cujas ações podem ser feitas offline e então quando houver internet elas serão sincronizadas com o portal online. Também espera-se que possua algumas funcionalidades aleatórias que forem julgadas interessantes :)
+Ele tambem tenta aproximar os conteúdos do Sagres em um aplicativo cujas ações podem ser feitas offline e então quando houver internet elas serão sincronizadas com o portal online. Também espera-se que possua algumas funcionalidades aleatórias que forem julgadas interessantes :)
 
 ### Aviso
 Este aplicativo não é licenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantem o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.

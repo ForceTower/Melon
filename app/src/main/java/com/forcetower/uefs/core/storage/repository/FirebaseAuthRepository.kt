@@ -56,7 +56,7 @@ class FirebaseAuthRepository @Inject constructor(
 
     fun loginToFirebase(person: SPerson, access: Access) {
         val email = context.getString(R.string.email_unes_format, access.username)
-        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, access, person, secret), access, person)
+        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, access.password, person.cpf, secret), access, person)
     }
 
     private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
