@@ -31,11 +31,17 @@ android {
     signingConfigs {
         release {
             storeFile signFile
-            String contents = new File('keystore_auth').text
-            String[] values = contents.split(";")
-            storePassword values[0]
-            keyAlias values[1]
-            keyPassword values[2]
+            try {
+                String contents = new File('keystore_auth').text
+                String[] values = contents.split(";")
+                storePassword values[0]
+                keyAlias values[1]
+                keyPassword values[2]
+            } catch (Throwable ignored) {
+                storePassword "123456"
+                keyAlias "alias"
+                keyPassword "123456"
+            }
         }
     }
     buildTypes {
