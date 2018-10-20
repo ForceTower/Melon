@@ -25,21 +25,37 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.event
+package com.forcetower.uefs.feature.reminders
 
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.storage.repository.EventRepository
-import timber.log.Timber
+import android.content.Context
+import android.content.Intent
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.inTransaction
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-class EventViewModel @Inject constructor(
-    private val repository: EventRepository
-): ViewModel(), EventActions {
+class RemindersActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    val events by lazy { repository.getEvents() }
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_reminders)
 
-    override fun onOpen(event: Event) {
-        Timber.d("Clicked on event id ${event.id} named ${event.name}")
+        supportFragmentManager.inTransaction {
+            add(R.id.fragment_container, RemindersFragment())
+        }
+    }
+
+    override fun supportFragmentInjector() = fragmentInjector
+
+    companion object {
+        fun startIntent(context: Context): Intent {
+            return Intent(context, RemindersActivity::class.java)
+        }
     }
 }

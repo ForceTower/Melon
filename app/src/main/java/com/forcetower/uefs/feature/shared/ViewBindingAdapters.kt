@@ -92,6 +92,11 @@ fun goneIf(view: View, gone: Boolean) {
     view.visibility = if (gone) GONE else VISIBLE
 }
 
+@BindingAdapter("goneUnless")
+fun goneUnless(view: View, condition: Boolean) {
+    view.visibility = if (condition) VISIBLE else GONE
+}
+
 @BindingAdapter("pageMargin")
 fun pageMargin(viewPager: ViewPager, pageMargin: Float) {
     viewPager.pageMargin = pageMargin.toInt()
