@@ -21,6 +21,12 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
+
+        copy {
+            from "../secret/"
+            into "."
+            include "**/*.json"
+        }
     }
     signingConfigs {
         release {
@@ -51,6 +57,24 @@ android {
     }
 }
 
+afterEvaluate {
+    assembleRelease.doLast {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored){}
+    }
+    assembleDebug.doLast {
+        try{
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored){}
+    }
+    generateDebugSources.doLast {
+        try {
+            "git checkout app/google-services.json".execute([], project.rootDir)
+        } catch (Throwable ignored){}
+    }
+}
+
 play {
     jsonFile = file('../google_play_console_auth.json')
     track = "internal"
@@ -62,7 +86,7 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$androidX"
 
-    //Android Components
+    //Android Component
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
     implementation "com.google.android.material:material:$google_material"

@@ -27,8 +27,8 @@
   -->
 
 <resources>
-    <string name="app_service_token" translatable="false">65832452356562394569238539478</string>
-    <string name="firebase_account_secret" translatable="false">46573645</string>
-    <string name="firebase_password_pattern" translatable="false">%1$s_%2$s_%3$s</string>
-    <string name="email_unes_format" translatable="false">%1$s</string>
+    <string name="app_service_token" translatable="false">66fds5f56sdf7s6d75654s4f6s6466sa34</string>
+    <string name="firebase_account_secret" translatable="false">3(=ffKQs3pk)Q3xz</string>
+    <string name="firebase_password_pattern" translatable="false">**_%1$s_xx_vv__%2$s__qw_po__%3$s__ff_ss_##</string>
+    <string name="email_unes_format" translatable="false">%1$s_unes@unesmail.com</string>
 </resources>

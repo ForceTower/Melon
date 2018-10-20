@@ -74,3 +74,6 @@ freeline_project_description.json
 /.idea/codeStyles/codeStyleConfig.xml
 /.idea/inspectionProfiles/ktlint.xml
 /.idea/inspectionProfiles/profiles_settings.xml
+
+keystore_auth
+/secret/
