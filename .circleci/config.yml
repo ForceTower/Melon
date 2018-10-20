@@ -16,11 +16,13 @@ jobs:
     steps:
       - run: 
         name: Downloading Dependencies
-        command: ./gradlew dependencies
+        command: |
+          ./gradlew dependencies
 
       - run:
           name: Build debug APK
-          command: ./gradlew :app:assembleDebug
+          command: |
+            ./gradlew :app:assembleDebug
 
 
       - store_artifacts:
