@@ -30,6 +30,20 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
     
+    <data>
+        <variable
+            name="storage"
+            type="com.google.firebase.storage.FirebaseStorage"/>
+        
+        <variable
+            name="firebaseUser"
+            type="com.google.firebase.auth.FirebaseUser"/>
+        
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
+    </data>
+    
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -54,10 +68,12 @@
                 android:layout_width="@dimen/profile_head_size"
                 android:layout_height="@dimen/profile_head_size"
                 android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
+                android:layout_marginEnd="16dp"
                 android:layout_marginBottom="8dp"
                 android:importantForAccessibility="no"
                 app:clipToCircle="@{true}"
+                app:firebaseStorage="@{storage}"
+                app:firebaseUser="@{firebaseUser}"
                 app:layout_constraintBottom_toBottomOf="@id/guideline_top_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -73,6 +89,7 @@
                 android:textSize="20sp"
                 android:textColor="@color/text_primary_dark"
                 android:maxLines="2"
+                android:text="@{viewModel.profile.name}"
                 app:layout_constraintBottom_toTopOf="@+id/text_user_course"
                 app:layout_constraintEnd_toStartOf="@+id/image_profile"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -89,6 +106,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:textSize="12sp"
+                android:text="@{viewModel.course.name}"
                 app:layout_constraintBottom_toBottomOf="@+id/image_profile"
                 app:layout_constraintEnd_toStartOf="@+id/image_profile"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -105,6 +123,7 @@
                 android:layout_marginStart="16dp"
                 android:textColor="@color/text_primary_dark"
                 android:textSize="17sp"
+                android:text="@{@string/integer_format(safeUnbox(viewModel.disciplineCount))}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/guideline_top_info"
                 tools:text="48" />
@@ -136,6 +155,7 @@
                 android:layout_marginStart="24dp"
                 android:textColor="@color/text_primary_dark"
                 android:textSize="17sp"
+                android:text="@{@string/integer_format(safeUnbox(viewModel.hoursCount))}"
                 app:layout_constraintStart_toEndOf="@+id/discipline_count_barrier"
                 app:layout_constraintTop_toTopOf="@+id/guideline_top_info"
                 tools:text="2850" />
@@ -165,9 +185,9 @@
                 android:layout_marginStart="36dp"
                 android:textColor="@color/text_primary_dark"
                 android:textSize="17sp"
+                android:text="@string/zero"
                 app:layout_constraintStart_toEndOf="@+id/hours_count_barrier"
-                app:layout_constraintTop_toTopOf="@+id/guideline_top_info"
-                tools:text="340" />
+                app:layout_constraintTop_toTopOf="@+id/guideline_top_info" />
     
             <TextView
                 android:id="@+id/label_friends_count"
@@ -185,8 +205,24 @@
                 app:barrierDirection="end"
                 app:constraint_referenced_ids="text_friends_count,label_friends_count"
                 app:layout_constraintStart_toStartOf="parent" />
-    
+            
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/account_stats_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="bottom"
+                app:constraint_referenced_ids="label_disciplines_count,label_friends_count,label_hours_count"/>
+            
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:text="@string/screen_under_development"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/account_stats_barrier" />
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </ScrollView>
 </layout>
