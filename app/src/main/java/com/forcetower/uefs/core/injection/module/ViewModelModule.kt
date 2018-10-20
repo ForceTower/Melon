@@ -42,6 +42,7 @@ import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.messages.MessagesViewModel
 import com.forcetower.uefs.feature.profile.ProfileViewModel
+import com.forcetower.uefs.feature.reminders.RemindersViewModel
 import com.forcetower.uefs.feature.schedule.ScheduleViewModel
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryViewModel
@@ -120,6 +121,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AcademicCalendarViewModel::class)
     abstract fun bindAcademicCalendarViewModel(vm: AcademicCalendarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(RemindersViewModel::class)
+    abstract fun bindRemindersViewModel(vm: RemindersViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

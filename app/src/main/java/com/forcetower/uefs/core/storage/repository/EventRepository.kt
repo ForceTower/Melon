@@ -47,13 +47,30 @@ class EventRepository @Inject constructor(
                     Timber.d("Events Task result is null")
                     data.postValue(emptyList())
                 } else {
-                    val list = result.documents.map { it.toObject(Event::class.java)!! }
+                    val list = result.documents.map { it.toObject(Event::class.java)!!.apply { id = it.id } }
                     Timber.d("Event List: $list")
                     data.postValue(list)
                 }
             } else {
                 Timber.d("Unsuccessful task. Exception ${task.exception?.message}")
                 data.postValue(emptyList())
+            }
+        }
+        return data
+    }
+
+    fun getEvents(): LiveData<List<Event>> {
+        val data = MutableLiveData<List<Event>>()
+        collection.whereEqualTo("approved", true).addSnapshotListener { snapshot, exception ->
+            if (exception != null) {
+                Timber.d("Exception on document read")
+            } else {
+                if (snapshot != null) {
+                    val list = snapshot.documents.map { it.toObject(Event::class.java)!! }
+                    data.postValue(list)
+                } else {
+                    data.postValue(emptyList())
+                }
             }
         }
         return data
