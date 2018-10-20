@@ -140,3 +140,9 @@ fun Long.formatFullDate(): String {
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
     return format.format(date)
 }
+
+fun Long.formatSimpleDay(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+    return format.format(date)
+}

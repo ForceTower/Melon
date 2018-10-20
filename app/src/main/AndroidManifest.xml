@@ -98,8 +98,9 @@
             </intent-filter>
         </receiver>
         
-        <activity android:name=".feature.profile.ProfileActivity"/>
-        <activity android:name=".easter.twofoureight.Game2048Activity"/>
+        <activity android:name=".feature.profile.ProfileActivity" />
+        <activity android:name=".easter.twofoureight.Game2048Activity" />
+        <activity android:name=".feature.reminders.RemindersActivity"></activity>
     </application>
 
 </manifest>

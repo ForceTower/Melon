@@ -25,21 +25,28 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.event
+package com.forcetower.uefs.feature.reminders
 
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.Event
-import com.forcetower.uefs.core.storage.repository.EventRepository
+import com.forcetower.uefs.core.model.service.Reminder
+import com.forcetower.uefs.core.storage.repository.RemindersRepository
 import timber.log.Timber
 import javax.inject.Inject
 
-class EventViewModel @Inject constructor(
-    private val repository: EventRepository
-): ViewModel(), EventActions {
+class RemindersViewModel @Inject constructor(
+    private val repository: RemindersRepository
+): ViewModel(), ReminderActions {
+    val reminders by lazy { repository.getReminders() }
 
-    val events by lazy { repository.getEvents() }
+    override fun onCheck(reminder: Reminder?) {
+        Timber.d("Check the reminder ${reminder?.title}")
+        if (reminder != null) {
+            val next = !reminder.completed
+            repository.updateReminderCompleteStatus(reminder, next)
+        }
+    }
 
-    override fun onOpen(event: Event) {
-        Timber.d("Clicked on event id ${event.id} named ${event.name}")
+    override fun onClick(reminder: Reminder?) {
+        Timber.d("Clicked the reminder ${reminder?.title}")
     }
 }
