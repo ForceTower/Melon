@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.home
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
@@ -46,6 +47,10 @@ class HomeViewModel @Inject constructor(
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
 
+    private val _openProfileCase = MediatorLiveData<Event<String>>()
+    val openProfileCase: LiveData<Event<String>>
+        get() = _openProfileCase
+
 
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
@@ -56,5 +61,12 @@ class HomeViewModel @Inject constructor(
     //TODO Make this more personalized and extract to a different view model
     fun showSnack(message: String) {
         _snackbar.value = Event(message)
+    }
+
+    fun onMeProfileClicked() {
+        _openProfileCase.addSource(profile) {
+            _openProfileCase.removeSource(profile)
+            _openProfileCase.value = Event(it.uuid)
+        }
     }
 }

@@ -41,6 +41,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.login.LoginActivity
+import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.config
 import com.forcetower.uefs.feature.shared.provideViewModel
@@ -86,6 +87,11 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
     private fun setupUserData() {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
+        viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
+    }
+
+    private fun openProfile(profileId: String) {
+        startActivity(ProfileActivity.startIntent(this, profileId))
     }
 
     private fun onAccessUpdate(access: Access?) {
