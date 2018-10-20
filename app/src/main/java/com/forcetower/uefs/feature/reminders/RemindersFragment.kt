@@ -66,10 +66,10 @@ class RemindersFragment: UFragment(), Injectable {
         binding.recyclerReminders.apply {
             adapter = reminderAdapter
             itemAnimator?.apply {
-                addDuration = 120L
-                moveDuration = 120L
-                changeDuration = 120L
-                removeDuration = 100L
+                addDuration = 220L
+                moveDuration = 220L
+                changeDuration = 220L
+                removeDuration = 200L
             }
         }
 

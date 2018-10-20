@@ -68,6 +68,8 @@ class HomeBottomFragment: UFragment(), Injectable {
             viewModel = this@HomeBottomFragment.viewModel
             firebaseStorage = this@HomeBottomFragment.firebaseStorage
             firebaseUser = this@HomeBottomFragment.firebaseAuth.currentUser
+            executePendingBindings()
+            imageUserPicture.setOnClickListener { this@HomeBottomFragment.viewModel.onMeProfileClicked() }
         }.root
     }
 
