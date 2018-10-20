@@ -17,8 +17,6 @@ ext {
                 patch = patch.replaceAll("[^0-9]", "")
                 postfix = "[pre-release]"
             }
-            //If this is not a development build, create a tag for it
-            "git tag ${version}_build_${commit_count}".execute([], project.rootDir)
         }
 
         (major, minor, patch, new_commits) = [major, minor, patch, new_commits].collect{it.toInteger()}
