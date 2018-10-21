@@ -25,31 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.architecture.receiver
 
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import androidx.annotation.LayoutRes
-import androidx.databinding.DataBindingUtil
-import androidx.databinding.ViewDataBinding
-import androidx.recyclerview.widget.RecyclerView
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
+import com.forcetower.uefs.R
+import com.forcetower.uefs.service.NotificationCreator
+import dagger.android.AndroidInjection
+import javax.inject.Inject
 
-fun View.inflater() : LayoutInflater = LayoutInflater.from(context)
+class OnUpgradeReceiver: BroadcastReceiver() {
+    @Inject
+    lateinit var preferences: SharedPreferences
 
-inline fun <reified T: ViewDataBinding> ViewGroup.inflate(@LayoutRes res: Int, attachToParent: Boolean = false): T {
-    val inflater = inflater()
-    return DataBindingUtil.inflate(inflater, res, this, attachToParent)
-}
+    override fun onReceive(context: Context, intent: Intent) {
+        if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
+        AndroidInjection.inject(this, context)
 
-inline fun <reified T: ViewDataBinding> LayoutInflater.inflate(@LayoutRes res: Int): T {
-    return DataBindingUtil.inflate(this, res, null, false)
-}
-
-fun RecyclerView.clearDecorations() {
-    if (itemDecorationCount > 0) {
-        for (i in itemDecorationCount - 1 downTo 0) {
-            removeItemDecorationAt(i)
+        val v2 = preferences.getBoolean("upgrade_msg_unes_v2", false)
+        if (!v2) {
+            NotificationCreator.showUpgradeNotification(context.getString(R.string.upgrade_unes_second_title), context.getString(R.string.upgrade_unes_the_second), context)
+            preferences.edit().putBoolean("upgrade_msg_unes_v2", true).apply()
         }
     }
 }

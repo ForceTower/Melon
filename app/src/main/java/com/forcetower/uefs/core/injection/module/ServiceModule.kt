@@ -25,29 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.receiver
+package com.forcetower.uefs.core.injection.module
 
-import android.content.BroadcastReceiver
-import android.content.Context
-import android.content.Intent
-import android.content.SharedPreferences
-import com.forcetower.uefs.R
-import com.forcetower.uefs.service.NotificationCreator
-import dagger.android.AndroidInjection
-import javax.inject.Inject
+import com.forcetower.uefs.architecture.service.FirebaseActionsService
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-class OnUpgradeReceiver: BroadcastReceiver() {
-    @Inject
-    lateinit var preferences: SharedPreferences
-
-    override fun onReceive(context: Context, intent: Intent) {
-        if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
-        AndroidInjection.inject(this, context)
-
-        val v2 = preferences.getBoolean("upgrade_msg_unes_v2", false)
-        if (!v2) {
-            NotificationCreator.showUpgradeNotification(context.getString(R.string.upgrade_unes_second_title), context.getString(R.string.upgrade_unes_the_second), context)
-            preferences.edit().putBoolean("upgrade_msg_unes_v2", true).apply()
-        }
-    }
+@Module
+abstract class ServiceModule {
+    @ContributesAndroidInjector
+    abstract fun bindFirebaseActionsService(): FirebaseActionsService
 }
