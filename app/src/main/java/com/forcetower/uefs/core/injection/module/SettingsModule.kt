@@ -25,10 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.core.injection.module
 
-import android.content.Context
-import android.util.TypedValue
+import com.forcetower.uefs.feature.reminders.RemindersFragment
+import com.forcetower.uefs.feature.settings.SettingsFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-fun getPixelsFromDp(context: Context, dp: Int): Float =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+@Module
+abstract class SettingsModule {
+    @ContributesAndroidInjector
+    abstract fun settingsFragment(): SettingsFragment
+    @ContributesAndroidInjector
+    abstract fun remindersFragment(): RemindersFragment
+}
