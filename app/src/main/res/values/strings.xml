@@ -291,6 +291,93 @@
     <string name="label_reminder_deadline">Prazo</string>
     <string name="reminder_title_empty">O título não pode ser vazio</string>
     <string name="create_new_reminder">Criar novo lembrete</string>
+    <string name="settings_account_label">Conta</string>
+    <string name="settings_account_info_label">Quais informações devem ser mostradas</string>
+    <string name="settings_notification_label">Notificações</string>
+    <string name="settings_notification_info_label">Sobre o que você deseja ser alertado</string>
+    <string name="settings_synchronization_label">Sincronização</string>
+    <string name="settings_synchronization_info_label">Controle a frequência e uso de dados</string>
+    <string name="settings_application_label">Aplicativo</string>
+    <string name="settings_application_info_label">Funções básicas e recursos de teste</string>
+    <string name="settings_sync_type_label">Tipo de Sincronizador</string>
+    <string name="settings_sync_type_info_label">Escolha como os dados são atualizados</string>
+    <string name="settings_sync_frequency_label">Frequência</string>
+    <string name="settings_sync_frequency_info_label">Define a frequência de atualização dos dados</string>
+    <string name="settings_sync_auto_proxy_label">UEFS Proxy</string>
+    <string name="settings_sync_auto_proxy_info_label">Detectar a rede da UEFS automaticamente para utilizar o proxy</string>
+    <string name="settings_proxy_label">Proxy</string>
+    <string name="settings_proxy_info_label">Defina o proxy a ser utilizado</string>
+    <string name="settings_ntf_message_teacher">Recados</string>
+    <string name="settings_ntf_message_teacher_info">Notificar quando um professor postar um recado</string>
+    <string name="settings_ntf_message_uefs">Avisos</string>
+    <string name="settings_ntf_message_uefs_info">Notificar quando receber um aviso da UEFS</string>
+    <string name="settings_ntf_grade_create">Avaliação Criada</string>
+    <string name="settings_notification_messages_label">Notificações de Mensagens</string>
+    <string name="settings_notification_grades_label">Notificações de Nota</string>
+    <string name="settings_ntf_grade_create_info">Avaliação postada sem nota definida</string>
+    <string name="settings_ntf_grade_date">Data da Avaliação</string>
+    <string name="settings_ntf_grade_date_info">Data da avaliação alterada pelo professor</string>
+    <string name="settings_ntf_grade_change">Nota Alterada</string>
+    <string name="settings_ntf_grade_change_info">Nota foi modificada pelo professor</string>
+    <string name="settings_ntf_grade_posted">Nota Divulgada</string>
+    <string name="settings_ntf_grade_posted_info">Resultado da avaliação está disponível</string>
+    <string name="settings_ntf_grade_spoiler">Spoiler da Nota</string>
+    <string name="settings_ntf_grade_spoiler_info">Cuidado, spoilers podem ser cruéis</string>
+    <string name="settings_ntf_event_created">Eventos</string>
+    <string name="settings_ntf_event_created_info">Um evento foi criado</string>
+    <string name="settings_ntf_reminder_near">Lembretes</string>
+    <string name="settings_ntf_reminder_near_info">Faltam 2 dias para o lembrete!!</string>
+    <string name="settings_notification_general_label">Notificações Gerais</string>
+    <string name="settings_acc_semester">Semestre</string>
+    <string name="settings_acc_semester_info">Mostrar o semestre pode ser ofensivo</string>
+    <string name="settings_acc_score">Score</string>
+    <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
+    
+    <string-array name="settings_sync_type_titles">
+        <item>Periódico</item>
+        <item>Encadeado</item>
+    </string-array>
+    
+    <string-array name="settings_sync_type_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+    <string-array name="settings_sync_frequency_titles">
+        <item>5 minutos [Encadeado]</item>
+        <item>10 minutos [Encadeado]</item>
+        <item>15 minutos</item>
+        <item>30 minutos</item>
+        <item>1 hora</item>
+        <item>2 horas</item>
+        <item>3 horas</item>
+        <item>6 horas</item>
+        <item>12 horas</item>
+    </string-array>
+    
+    <string-array name="settings_sync_frequency_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+        <item>360</item>
+        <item>720</item>
+    </string-array>
+    
+    <string-array name="settings_ntf_grade_spoiler_titles">
+        <item>Nenhum</item>
+        <item>Moderado</item>
+        <item>Completo</item>
+    </string-array>
+    
+    <string-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

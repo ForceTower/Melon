@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.android.AndroidInjection
+import timber.log.Timber
 import javax.inject.Inject
 
 class FirebaseActionsService: FirebaseMessagingService() {
@@ -43,11 +44,13 @@ class FirebaseActionsService: FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage?) {
+        Timber.d("Message received: $message")
         message?: return
         repository.onMessageReceived(message)
     }
 
     override fun onNewToken(token: String?) {
+        Timber.d("On Token received: $token")
         token?: return
         repository.onNewToken(token)
     }

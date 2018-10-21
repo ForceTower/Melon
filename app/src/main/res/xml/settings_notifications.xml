@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018.
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the MIT License
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <PreferenceCategory
+        android:title="@string/settings_notification_messages_label">
+        
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_message_teacher"
+            android:summary="@string/settings_ntf_message_teacher_info"
+            android:title="@string/settings_ntf_message_teacher"/>
+    
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_message_uefs"
+            android:summary="@string/settings_ntf_message_uefs_info"
+            android:title="@string/settings_ntf_message_uefs"/>
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="@string/settings_notification_grades_label">
+    
+        <ListPreference
+            android:defaultValue="1"
+            android:key="stg_ntf_grade_spoiler"
+            android:title="@string/settings_ntf_grade_spoiler"
+            android:summary="@string/settings_ntf_grade_spoiler_info"
+            android:entries="@array/settings_ntf_grade_spoiler_titles"
+            android:entryValues="@array/settings_ntf_grade_spoiler_values"/>
+        
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="stg_ntf_grade_create"
+            android:title="@string/settings_ntf_grade_create"
+            android:summary="@string/settings_ntf_grade_create_info" />
+    
+        <SwitchPreference
+            android:defaultValue="false"
+            android:key="stg_ntf_grade_date"
+            android:title="@string/settings_ntf_grade_date"
+            android:summary="@string/settings_ntf_grade_date_info" />
+    
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_grade_change"
+            android:title="@string/settings_ntf_grade_change"
+            android:summary="@string/settings_ntf_grade_change_info" />
+    
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_grade_posted"
+            android:title="@string/settings_ntf_grade_posted"
+            android:summary="@string/settings_ntf_grade_posted_info" />
+    </PreferenceCategory>
+    
+    <PreferenceCategory
+        android:title="@string/settings_notification_general_label">
+    
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_event_created"
+            android:title="@string/settings_ntf_event_created"
+            android:summary="@string/settings_ntf_event_created_info" />
+        
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_reminder_near"
+            android:title="@string/settings_ntf_reminder_near"
+            android:summary="@string/settings_ntf_reminder_near_info" />
+    </PreferenceCategory>
+</PreferenceScreen>
