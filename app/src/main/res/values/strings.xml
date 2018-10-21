@@ -67,6 +67,7 @@
     <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
+    <string name="default_firebase_notification_channel_id" translatable="false">com.forcetower.uefs.GENERAL.REMOTE</string>
     
     <string-array name="login_random_messages">
         <item>Preparando Foguetes</item>
@@ -283,6 +284,13 @@
     <string name="integer_format">%1$d</string>
     <string name="screen_under_development">Esta página está em construção</string>
     <string name="tasks_completed_label">Concluídas</string>
+    <string name="label_create_reminder">Criar Lembrete</string>
+    <string name="label_create_reminder_information">Não se esqueça das suas atividades! Elas são grande parte da criação do seu conhecimento</string>
+    <string name="label_reminder_title">Título</string>
+    <string name="label_reminder_description">Descrição</string>
+    <string name="label_reminder_deadline">Prazo</string>
+    <string name="reminder_title_empty">O título não pode ser vazio</string>
+    <string name="create_new_reminder">Criar novo lembrete</string>
     
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>

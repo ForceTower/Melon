@@ -102,10 +102,6 @@ class HomeBottomFragment: UFragment(), Injectable {
                     viewModel.onMeProfileClicked()
                     true
                 }
-                R.id.reminders -> {
-                    startActivity(RemindersActivity.startIntent(requireContext()))
-                    true
-                }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }

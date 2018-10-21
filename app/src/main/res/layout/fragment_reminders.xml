@@ -44,30 +44,19 @@
             android:layout_height="match_parent"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            tools:listitem="@layout/item_reminder" />
-    
-        <com.google.android.material.bottomappbar.BottomAppBar
-            android:id="@+id/bottomAppBar"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentBottom="true"
-            android:elevation="4dp"
-            app:layout_anchor="@+id/recycler_reminders"
-            app:layout_anchorGravity="bottom|center" />
+            tools:listitem="@layout/item_reminder"
+            android:paddingBottom="72dp"
+            android:clipToPadding="false"/>
     
         <com.google.android.material.button.MaterialButton
             android:id="@+id/fab"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="24dp"
-            android:elevation="6dp"
+            android:layout_marginBottom="16dp"
             android:paddingStart="20dp"
             android:paddingEnd="20dp"
-            android:text="Criar novo lembrete"
+            android:text="@string/create_new_reminder"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="14sp"
@@ -76,9 +65,9 @@
             app:icon="@drawable/ic_add_black_24dp"
             app:iconPadding="12dp"
             app:iconSize="24dp"
+            android:elevation="4dp"
             app:iconTint="@android:color/white"
-            app:layout_anchor="@+id/bottomAppBar"
-            app:layout_anchorGravity="top|center" />
+            android:layout_gravity="bottom|center" />
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

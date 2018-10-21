@@ -27,7 +27,7 @@
 
 package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.core.receiver.OnUpgradeReceiver
+import com.forcetower.uefs.architecture.receiver.OnUpgradeReceiver
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

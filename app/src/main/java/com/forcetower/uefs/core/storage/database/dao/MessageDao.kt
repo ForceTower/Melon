@@ -71,4 +71,7 @@ abstract class MessageDao {
 
     @Query("UPDATE Message SET notified = 1")
     abstract fun setAllNotified()
+
+    @Insert(onConflict = REPLACE)
+    abstract fun insert(message: Message): Long
 }

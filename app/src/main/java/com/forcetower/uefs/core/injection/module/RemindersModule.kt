@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.feature.reminders.CreateReminderDialog
 import com.forcetower.uefs.feature.reminders.RemindersFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -35,4 +36,6 @@ import dagger.android.ContributesAndroidInjector
 abstract class RemindersModule {
     @ContributesAndroidInjector
     abstract fun remindersFragment(): RemindersFragment
+    @ContributesAndroidInjector
+    abstract fun createReminderDialog(): CreateReminderDialog
 }
