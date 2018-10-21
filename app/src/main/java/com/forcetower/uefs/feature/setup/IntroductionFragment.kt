@@ -36,6 +36,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
@@ -108,12 +109,13 @@ class IntroductionFragment: UFragment(), Injectable {
         if (current != null) {
             val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
             GlideApp.with(requireContext())
-                    .load(reference)
-                    .fallback(R.mipmap.ic_unes_large_image_512)
-                    .placeholder(R.mipmap.ic_unes_large_image_512)
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(binding.imageUserImage)
+                .load(reference)
+                .fallback(R.mipmap.ic_unes_large_image_512)
+                .placeholder(R.mipmap.ic_unes_large_image_512)
+                .circleCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
+                .into(binding.imageUserImage)
         }
     }
 
@@ -151,7 +153,7 @@ class IntroductionFragment: UFragment(), Injectable {
                             .setBorderLineColor(ac)
                             .setBorderCornerColor(ac)
                             .setActivityMenuIconColor(ac)
-                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
+                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
                             .setActivityTitle(getString(R.string.cut_profile_image))
                             .setGuidelines(CropImageView.Guidelines.OFF)
                             .start(requireContext(), this)

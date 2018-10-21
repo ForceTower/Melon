@@ -25,10 +25,18 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.settings
 
-import android.content.Context
-import android.util.TypedValue
+import android.os.Bundle
+import androidx.preference.PreferenceFragmentCompat
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.injection.Injectable
 
-fun getPixelsFromDp(context: Context, dp: Int): Float =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+class SettingsFragment: PreferenceFragmentCompat(), Injectable {
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        addPreferencesFromResource(R.xml.settings_synchronization)
+        addPreferencesFromResource(R.xml.settings_notifications)
+        addPreferencesFromResource(R.xml.settings_account)
+    }
+}
