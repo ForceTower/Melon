@@ -100,4 +100,22 @@ class RemindersRepository @Inject constructor(
             Timber.d("Not connected")
         }
     }
+
+    fun deleteReminder(reminder: Reminder) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            profileReference.document(user.uid).collection(Reminder.COLLECTION).document(reminder.id)
+                .delete()
+                .addOnCompleteListener { task ->
+                    if (task.isSuccessful) {
+                        Timber.d("Deleted reminder")
+                    } else {
+                        Timber.d("Reminder was not deleted")
+                        Timber.d("Exception message: ${task.exception?.message}")
+                    }
+                }
+        } else {
+            Timber.d("Not connected")
+        }
+    }
 }

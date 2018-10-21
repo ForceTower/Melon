@@ -131,7 +131,7 @@ class ProfileFragment: UFragment(), Injectable {
                         .setBorderLineColor(ac)
                         .setBorderCornerColor(ac)
                         .setActivityMenuIconColor(ac)
-                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2).toFloat())
+                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
                         .setActivityTitle(getString(R.string.cut_profile_image))
                         .setGuidelines(CropImageView.Guidelines.OFF)
                         .start(requireContext(), this)

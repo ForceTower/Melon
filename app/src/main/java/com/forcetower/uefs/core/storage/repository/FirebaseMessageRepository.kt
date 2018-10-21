@@ -49,7 +49,8 @@ class FirebaseMessageRepository @Inject constructor(
     @Named(Profile.COLLECTION) private val profileCollection: CollectionReference,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
-    private val context: Context
+    private val context: Context,
+    private val syncRepository: SagresSyncRepository
 ) {
     fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
@@ -66,8 +67,13 @@ class FirebaseMessageRepository @Inject constructor(
             "teacher" -> teacherNotification(data)
             "remote_database" -> promoteDatabase(data)
             "service" -> serviceNotification(data)
+            "synchronize" -> universalSync(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun universalSync(@Suppress("UNUSED_PARAMETER") data: Map<String, String>) {
+        syncRepository.performSync("Universal")
     }
 
     private fun teacherNotification(data: Map<String, String>) {

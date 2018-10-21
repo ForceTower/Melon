@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018.
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the MIT License
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<PreferenceScreen
+    android:key="settings_general"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    
+    <PreferenceCategory
+        android:title="@string/settings_synchronization_label">
+        
+        <ListPreference
+            android:title="Tipo de Sincronizador"/>
+        
+    </PreferenceCategory>
+    
+    <PreferenceScreen
+        android:key="settings_synchronization"
+        android:title="@string/settings_synchronization_label"
+        android:summary="@string/settings_synchronization_info_label"
+        android:icon="@drawable/ic_sync_black_24dp">
+    </PreferenceScreen>
+    
+    <PreferenceScreen
+        android:key="settings_notifications"
+        android:title="@string/settings_notification_label"
+        android:summary="@string/settings_notification_info_label"
+        android:icon="@drawable/ic_notifications_active_24px">
+    </PreferenceScreen>
+    
+    <PreferenceScreen
+        android:key="settings_account"
+        android:title="@string/settings_account_label"
+        android:summary="@string/settings_account_info_label"
+        android:icon="@drawable/ic_account_black_24dp">
+    </PreferenceScreen>
+
+</PreferenceScreen>
