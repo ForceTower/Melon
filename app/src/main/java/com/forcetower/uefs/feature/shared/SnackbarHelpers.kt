@@ -38,12 +38,12 @@ fun Snackbar.config(bottomPadding: Int = 12) {
     val context = view.context
     val params = view.layoutParams as ViewGroup.MarginLayoutParams
 
-    val px12 = getPixelsFromDp(context, 12)
+    val px12 = getPixelsFromDp(context, 12).toInt()
     val px6  = getPixelsFromDp(context, 6)
-    val pxB  = getPixelsFromDp(context, bottomPadding)
+    val pxB  = getPixelsFromDp(context, bottomPadding).toInt()
 
     params.setMargins(px12, px12, px12, pxB)
-    view.elevation = px6.toFloat()
+    view.elevation = px6
 
     view.layoutParams = params
 
