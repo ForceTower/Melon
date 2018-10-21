@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.SetOptions
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,7 +53,7 @@ class RemindersRepository @Inject constructor(
         val data = MutableLiveData<List<Reminder>>()
         val user = firebaseAuth.currentUser
         if (user != null) {
-            profileReference.document(user.uid).collection(Reminder.COLLECTION).addSnapshotListener { snapshot, _ ->
+            profileReference.document(user.uid).collection(Reminder.COLLECTION).orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, _ ->
                 if (snapshot != null) {
                     val list = snapshot.documents.map { it.toObject(Reminder::class.java)!!.apply { id = it.id } }
                     data.postValue(list)

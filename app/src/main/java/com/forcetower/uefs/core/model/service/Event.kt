@@ -27,6 +27,9 @@
 
 package com.forcetower.uefs.core.model.service
 
+import com.google.firebase.Timestamp
+import com.google.firebase.firestore.ServerTimestamp
+
 data class Event(
     var id: String = "",
     var name: String = "Sem nome",
@@ -41,7 +44,9 @@ data class Event(
     var price: Double? = null,
     var certificateHours: Int? = null,
     var courseId: Int? = null,
-    var featured: Boolean = false
+    var featured: Boolean = false,
+    @ServerTimestamp
+    var createdAt: Timestamp? = null
 ) {
 
     override fun toString(): String {
