@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.model.service.Event
 import com.forcetower.uefs.core.model.unes.Profile
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FirebaseFirestoreSettings
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -41,7 +42,13 @@ object FirestoreModule {
     @JvmStatic
     @Provides
     @Reusable
-    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
+    fun provideFirestore(): FirebaseFirestore {
+        val settings = FirebaseFirestoreSettings.Builder().setTimestampsInSnapshotsEnabled(true).build()
+        return FirebaseFirestore.getInstance().apply {
+            firestoreSettings = settings
+        }
+
+    }
 
     @JvmStatic
     @Provides
