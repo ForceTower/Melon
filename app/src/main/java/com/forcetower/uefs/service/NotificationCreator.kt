@@ -33,14 +33,16 @@ import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
+import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
+import timber.log.Timber
 
 object NotificationCreator {
 
-    fun showSagresMessageNotification(message: Message, context: Context) {
+    fun showSagresMessageNotification(message: Message, context: Context, uid: Long = message.uid) {
         if (!shouldShowNotification("show_message_notification", context)) {
             return
         }
@@ -54,7 +56,7 @@ object NotificationCreator {
                 .setColor(ContextCompat.getColor(context, R.color.blue_accent))
 
         addOptions(context, builder)
-        showNotification(context, message.uid, builder)
+        showNotification(context, uid, builder)
     }
 
     fun showSagresCreateGradesNotification(grade: GradeWithClassStudent, context: Context) {
@@ -152,6 +154,37 @@ object NotificationCreator {
         showNotification(context, content.hashCode().toLong(), builder)
     }
 
+    fun showEventNotification(context: Context, id: String, title: String, description: String, image: String?) {
+        if (!shouldShowNotification("show_event_notifications", context)) return
+        showDefaultImageNotification(context, NotificationHelper.CHANNEL_EVENTS_GENERAL_ID, id.hashCode().toLong(), title, description, image)
+    }
+
+    fun showServiceMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
+        showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, id, title, description, image)
+    }
+
+    private fun showDefaultImageNotification(context: Context, channel: String, id: Long, title: String, content: String, image: String?) {
+        var style = createBigText(content)
+        if (image != null) {
+            val other = createBigImage(context, image)
+            if (other != null) style = other
+        }
+
+        val builder = notificationBuilder(context, channel)
+            .setContentTitle(title)
+            .setContentText(content)
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .setStyle(style)
+
+        addOptions(context, builder)
+        showNotification(context, id.hashCode().toLong(), builder)
+    }
+
+    fun showSimpleNotification(context: Context, title: String, content: String) {
+        if (!shouldShowNotification("show_notification_remote", context)) return
+        showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, content.hashCode().toLong(), title, content, null)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(true)
@@ -159,8 +192,18 @@ object NotificationCreator {
         return builder
     }
 
-    private fun createBigText(message: String): NotificationCompat.BigTextStyle {
+    private fun createBigText(message: String): NotificationCompat.Style {
         return NotificationCompat.BigTextStyle().bigText(message)
+    }
+
+    private fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
+        return try {
+            val bitmap = GlideApp.with(context).asBitmap().load(image).submit().get()
+            NotificationCompat.BigPictureStyle().bigPicture(bitmap)
+        } catch (t: Throwable) {
+            Timber.d("Error happened at image load: ${t.message}")
+            null
+        }
     }
 
     private fun showNotification(context: Context, id: Long, builder: NotificationCompat.Builder): Boolean {
@@ -168,7 +211,6 @@ object NotificationCreator {
         notificationManager.notify(id.toInt(), builder.build())
         return true
     }
-
 
     private fun addOptions(context: Context, builder: NotificationCompat.Builder) {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)

@@ -137,7 +137,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:importantForAccessibility="no"
-                android:src="@drawable/ic_food_black_24dp"
+                android:src="@mipmap/fine_meal"
                 app:layout_constraintBottom_toTopOf="@+id/closed_message"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

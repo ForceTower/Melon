@@ -160,6 +160,9 @@ dependencies {
     //Cookie Handler
     implementation 'com.github.franmontiel:PersistentCookieJar:v1.0.1'
 
+    //Charts
+    implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
+
     //Debug Use
     implementation "com.jakewharton.timber:timber:4.7.0"
 

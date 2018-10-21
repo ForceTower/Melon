@@ -37,6 +37,7 @@ class RemindersViewModel @Inject constructor(
     private val repository: RemindersRepository
 ): ViewModel(), ReminderActions {
     val reminders by lazy { repository.getReminders() }
+    var currentDeadline: Long? = null
 
     override fun onCheck(reminder: Reminder?) {
         Timber.d("Check the reminder ${reminder?.title}")
@@ -48,5 +49,10 @@ class RemindersViewModel @Inject constructor(
 
     override fun onClick(reminder: Reminder?) {
         Timber.d("Clicked the reminder ${reminder?.title}")
+    }
+
+    fun createReminder(title: String, description: String?) {
+        val reminder = Reminder(title = title, description = description, date = currentDeadline)
+        repository.createReminder(reminder)
     }
 }
