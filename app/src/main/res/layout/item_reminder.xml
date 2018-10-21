@@ -44,6 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
+        android:background="@color/white"
         android:onClick="@{() -> listener.onClick(reminder)}">
     
         <androidx.appcompat.widget.AppCompatRadioButton
