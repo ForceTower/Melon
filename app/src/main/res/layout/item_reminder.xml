@@ -45,17 +45,17 @@
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
         android:onClick="@{() -> listener.onClick(reminder)}">
-        
+    
         <androidx.appcompat.widget.AppCompatRadioButton
             android:id="@+id/check_task"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginTop="16dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
             android:checked="@{reminder.completed}"
-            android:onClick="@{() -> listener.onCheck(reminder)}"/>
+            android:onClick="@{() -> listener.onCheck(reminder)}"
+            app:layout_constraintBottom_toBottomOf="@+id/text_task_name"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/text_task_name" />
     
         <TextView
             android:id="@+id/text_task_name"
@@ -103,7 +103,7 @@
             android:layout_marginBottom="8dp"
             android:textColor="@color/blue_accent"
             android:textSize="12sp"
-            app:goneUnless="@{reminder.date != null}"
+            app:goneUnless="@{reminder.date != null &amp;&amp; !reminder.completed}"
             app:reminderDate="@{reminder.date}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
