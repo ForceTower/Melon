@@ -34,6 +34,7 @@ import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.reminders.RemindersActivity
+import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.setup.SetupActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -56,4 +57,6 @@ abstract class ActivityModule {
     abstract fun bindProfileActivity(): ProfileActivity
     @ContributesAndroidInjector(modules = [RemindersModule::class])
     abstract fun bindRemindersActivity(): RemindersActivity
+    @ContributesAndroidInjector(modules = [SettingsModule::class])
+    abstract fun bindSettingsActivity(): SettingsActivity
 }
