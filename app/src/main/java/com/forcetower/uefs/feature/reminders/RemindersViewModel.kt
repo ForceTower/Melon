@@ -55,4 +55,8 @@ class RemindersViewModel @Inject constructor(
         val reminder = Reminder(title = title, description = description, date = currentDeadline)
         repository.createReminder(reminder)
     }
+
+    fun deleteReminder(reminder: Reminder) {
+        repository.deleteReminder(reminder)
+    }
 }

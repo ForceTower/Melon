@@ -65,4 +65,5 @@
     <dimen name="rounded_dialog_corners">12dp</dimen>
     <dimen name="headshot_teacher">40dp</dimen>
     <dimen name="profile_head_size">80dp</dimen>
+    <dimen name="delete_margin">24dp</dimen>
 </resources>
