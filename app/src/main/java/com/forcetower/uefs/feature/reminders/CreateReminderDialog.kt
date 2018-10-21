@@ -66,7 +66,7 @@ class CreateReminderDialog: RoundedDialog(), Injectable {
         val title = binding.textInputTitle.text?.toString()
         var description = binding.textInputDescription.text?.toString()
 
-        if (title == null) {
+        if (title == null || title.isBlank()) {
             binding.textInputTitle.error = getString(R.string.reminder_title_empty)
             binding.textInputTitle.requestFocus()
             return

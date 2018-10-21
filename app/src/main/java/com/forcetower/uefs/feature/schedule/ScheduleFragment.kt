@@ -100,7 +100,7 @@ class ScheduleFragment: UFragment(), Injectable {
 
             layoutData.setOnScrollChangeListener { _, _, _, _, _ ->
                 if (layoutData.scrollY > 0)
-                    appBar.elevation = getPixelsFromDp(requireContext(), 4).toFloat()
+                    appBar.elevation = getPixelsFromDp(requireContext(), 4)
                 else
                     appBar.elevation = 0f
             }
