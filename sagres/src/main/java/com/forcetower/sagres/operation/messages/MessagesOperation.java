@@ -75,23 +75,28 @@ public class MessagesOperation extends Operation<MessagesCallback> {
     }
 
     private void successMeasures(String body) {
-        Type type = new TypeToken<Dumb<ArrayList<SMessage>>>(){}.getType();
-        Dumb<List<SMessage>> dMessages = new Gson().fromJson(body, type);
-        List<SMessage> items = dMessages.getItems();
-        Collections.sort(items);
-        for (SMessage message : items) {
-            SPerson person = getPerson(message.getSender());
-            if (person != null)
-                message.setSenderName(person.getName());
-            else {
-                if (message.getSenderProfile() == 3) {
-                    message.setSenderName(".UEFS.");
+        try {
+            Type type = new TypeToken<Dumb<ArrayList<SMessage>>>() {
+            }.getType();
+            Dumb<List<SMessage>> dMessages = new Gson().fromJson(body, type);
+            List<SMessage> items = dMessages.getItems();
+            Collections.sort(items);
+            for (SMessage message : items) {
+                SPerson person = getPerson(message.getSender());
+                if (person != null)
+                    message.setSenderName(person.getName());
+                else {
+                    if (message.getSenderProfile() == 3) {
+                        message.setSenderName(".UEFS.");
+                    }
+                    System.out.println("SPerson is Invalid");
                 }
-                System.out.println("SPerson is Invalid");
             }
-        }
 
-        publishProgress(new MessagesCallback(Status.SUCCESS).messages(items));
+            publishProgress(new MessagesCallback(Status.SUCCESS).messages(items));
+        } catch (Throwable t) {
+            publishProgress(new MessagesCallback(Status.UNKNOWN_FAILURE).throwable(t).message(body));
+        }
     }
 
     private SPerson getPerson(SLinker linker) {

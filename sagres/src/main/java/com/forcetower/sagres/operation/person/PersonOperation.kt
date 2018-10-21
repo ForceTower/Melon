@@ -31,8 +31,6 @@ import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.request.SagresCalls
-
-import java.io.IOException
 import java.util.concurrent.Executor
 
 class PersonOperation(private val userId: Long?, executor: Executor?) : Operation<PersonCallback>(executor) {
@@ -52,9 +50,9 @@ class PersonOperation(private val userId: Long?, executor: Executor?) : Operatio
             } else {
                 publishProgress(PersonCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            publishProgress(PersonCallback(Status.NETWORK_ERROR).throwable(e))
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            publishProgress(PersonCallback(Status.NETWORK_ERROR).throwable(t))
         }
 
     }
