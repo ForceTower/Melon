@@ -37,7 +37,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentRemindersBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
 class RemindersFragment: UFragment(), Injectable {
@@ -48,7 +48,7 @@ class RemindersFragment: UFragment(), Injectable {
     private lateinit var binding: FragmentRemindersBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
+        viewModel = provideViewModel(factory)
         return FragmentRemindersBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -58,7 +58,8 @@ class RemindersFragment: UFragment(), Injectable {
     }
 
     private fun openAddReminder() {
-
+        val create = CreateReminderDialog()
+        create.show(childFragmentManager, "create_reminder")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

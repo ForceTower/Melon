@@ -85,5 +85,11 @@
         android:name="com.forcetower.uefs.feature.calendar.CalendarFragment"
         android:label="CalendarFragment"
         tools:layout="@layout/fragment_calendar"/>
+    
+    <fragment
+        android:id="@+id/reminders"
+        android:name="com.forcetower.uefs.feature.reminders.RemindersFragment"
+        android:label="RemindersFragment"
+        tools:layout="@layout/fragment_reminders"/>
 
 </navigation>

@@ -36,6 +36,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.Reminder
 import com.forcetower.uefs.databinding.ItemReminderBinding
+import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.inflater
 
 class RemindersAdapter(
@@ -52,9 +53,7 @@ class RemindersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderHolder {
         return when (viewType) {
-            R.layout.item_reminder -> ReminderHolder.ItemHolder(
-                ItemReminderBinding.inflate(parent.inflater(), parent, false)
-            )
+            R.layout.item_reminder -> ReminderHolder.ItemHolder(parent.inflate(viewType))
             R.layout.item_reminders_completed_header -> ReminderHolder.CompletedHeaderHolder(
                 parent.inflater().inflate(viewType, parent, false)
             )

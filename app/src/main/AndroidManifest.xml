@@ -89,6 +89,16 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+    
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_icon"
+            android:resource="@drawable/ic_unes_colored" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_color"
+            android:resource="@color/blue_accent" />
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="@string/default_firebase_notification_channel_id" />
         
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -101,13 +111,21 @@
         </provider>
         
         <receiver
-            android:name=".core.receiver.OnUpgradeReceiver"
+            android:name="com.forcetower.uefs.architecture.receiver.OnUpgradeReceiver"
             android:enabled="true"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
         </receiver>
+    
+        <service
+            android:name=".architecture.service.FirebaseActionsService"
+            android:permission="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+            </intent-filter>
+        </service>
     </application>
 
 </manifest>
