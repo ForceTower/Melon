@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.shared
 
 import android.app.Activity
+import android.os.Parcel
 import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -53,3 +54,7 @@ fun Activity.postponeEnterTransition(timeout: Long) {
         startPostponedEnterTransition()
     }
 }
+
+fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
+
+fun Parcel.readBoolean() = readInt() != 0
