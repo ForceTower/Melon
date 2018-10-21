@@ -32,7 +32,7 @@ import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class ServiceModule {
+abstract class ServicesModule {
     @ContributesAndroidInjector
     abstract fun bindFirebaseActionsService(): FirebaseActionsService
 }
