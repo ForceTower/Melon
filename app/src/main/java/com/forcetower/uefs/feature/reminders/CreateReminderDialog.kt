@@ -64,13 +64,16 @@ class CreateReminderDialog: RoundedDialog(), Injectable {
 
     private fun createReminder() {
         val title = binding.textInputTitle.text?.toString()
-        val description = binding.textInputDescription.text?.toString()
+        var description = binding.textInputDescription.text?.toString()
 
         if (title == null) {
             binding.textInputTitle.error = getString(R.string.reminder_title_empty)
             binding.textInputTitle.requestFocus()
             return
         }
+
+        if (description != null && description.isBlank())
+            description = null
 
         viewModel.createReminder(title, description)
         dismiss()

@@ -27,17 +27,17 @@
 
 package com.forcetower.uefs.core.model.service
 
-import com.google.firebase.Timestamp
+import com.google.firebase.firestore.Exclude
 import com.google.firebase.firestore.ServerTimestamp
+import java.util.Date
 
 data class Reminder(
-    var id: String = "",
+    @Exclude var id: String = "",
     var title: String = "",
     var description: String? = null,
     var date: Long? = null,
     var completed: Boolean = false,
-    @ServerTimestamp
-    var createdAt: Timestamp? = null
+    @ServerTimestamp var createdAt: Date? = null
 ) {
     override fun toString(): String {
         return title
