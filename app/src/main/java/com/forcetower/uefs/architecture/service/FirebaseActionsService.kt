@@ -27,26 +27,13 @@
 
 package com.forcetower.uefs.architecture.service
 
-import android.content.SharedPreferences
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.android.AndroidInjection
-import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 class FirebaseActionsService: FirebaseMessagingService() {
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject @Named(Profile.COLLECTION)
-    lateinit var profileCollection: CollectionReference
-    @Inject
-    lateinit var preferences: SharedPreferences
     @Inject
     lateinit var repository: FirebaseMessageRepository
 
@@ -62,20 +49,6 @@ class FirebaseActionsService: FirebaseMessagingService() {
 
     override fun onNewToken(token: String?) {
         token?: return
-        val user = firebaseAuth.currentUser
-        if (user != null) {
-            val data = mapOf("firebaseToken" to token)
-            profileCollection.document(user.uid).set(data, SetOptions.merge()).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Timber.d("Completed")
-                } else {
-                    Timber.d("Failed with exception message: ${task.exception?.message}")
-                }
-            }
-        } else {
-            Timber.d("Disconnected")
-        }
-
-        preferences.edit().putString("current_firebase_token", token).apply()
+        repository.onNewToken(token)
     }
 }

@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
@@ -47,10 +48,11 @@ import javax.inject.Singleton
 
 @Singleton
 class FirebaseAuthRepository @Inject constructor(
-        private val firebaseAuth: FirebaseAuth,
-        @Named(Profile.COLLECTION) private val userCollection: CollectionReference,
-        private val context: Context,
-        private val executors: AppExecutors
+    private val firebaseAuth: FirebaseAuth,
+    @Named(Profile.COLLECTION) private val userCollection: CollectionReference,
+    private val context: Context,
+    private val executors: AppExecutors,
+    private val preferences: SharedPreferences
 ){
     private val secret = context.getString(R.string.firebase_account_secret)
 
@@ -101,7 +103,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun connected(access: Access, person: SPerson, uid: String) {
         Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
 
-        val data = mapOf (
+        val data = mutableMapOf (
                 "name"      to WordUtils.capitalize(person.name.trim()),
                 "username"  to access.username,
                 "email"     to person.email.trim().toLowerCase(),
@@ -109,6 +111,12 @@ class FirebaseAuthRepository @Inject constructor(
                 "sagresId"  to person.id,
                 "imageUrl"  to "/users/$uid/avatar.jpg"
         )
+
+        val token = preferences.getString("current_firebase_token", null)
+        if (token != null) {
+            data["firebaseToken"] = token
+        }
+        
         userCollection.document(uid).set(data, SetOptions.merge())
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
                     if (task.isSuccessful) {
