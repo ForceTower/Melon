@@ -31,15 +31,22 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
+    private val firebaseAuth: FirebaseAuth,
+    @Named(Profile.COLLECTION) private val profileCollection: CollectionReference,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val context: Context
@@ -155,5 +162,22 @@ class FirebaseMessageRepository @Inject constructor(
         NotificationCreator.showSimpleNotification(context, title, content)
 
 
+    }
+
+    fun onNewToken(token: String) {
+        val user = firebaseAuth.currentUser
+        if (user != null) {
+            val data = mapOf("firebaseToken" to token)
+            profileCollection.document(user.uid).set(data, SetOptions.merge()).addOnCompleteListener { task ->
+                if (task.isSuccessful) {
+                    Timber.d("Completed")
+                } else {
+                    Timber.d("Failed with exception message: ${task.exception?.message}")
+                }
+            }
+        } else {
+            Timber.d("Disconnected")
+        }
+        preferences.edit().putString("current_firebase_token", token).apply()
     }
 }
