@@ -74,14 +74,11 @@ abstract class GradeDao {
     abstract fun markAllNotified()
 
     @Transaction
-    open fun putGrades(grades: List<SGrade>, notified: Boolean = false) {
+    open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
         val profile = getMeProfile()
 
         grades.forEach {
             val code = it.discipline.split("-")[0].trim()
-            if (code.startsWith("FIS")) {
-                Timber.d("We are doing it with the value: ${it.finalScore}")
-            }
 
             val groups = getClassGroup(code, it.semesterId, profile.uid)
             if (groups.isEmpty()) Timber.d("<grades_group_404> :: Groups not found for ${code}_${it.semesterId}_${profile.name}")
@@ -105,14 +102,14 @@ abstract class GradeDao {
                 if (groups.size == 1) {
                     val group = groups[0]
                     val cs = getClassStudent(group.uid, profile.uid)
-                    prepareInsertion(cs, it, notified)
+                    prepareInsertion(cs, it, notify)
                 } else {
                     val value = groups.firstOrNull { g -> !g.group.startsWith("P") }
                     if (value == null) {
                         Timber.e("<grades_no_T_found> :: This will be ignored forever ${code}_${it.semesterId}_${profile.name} ")
                     } else {
                         val cs = getClassStudent(value.uid, profile.uid)
-                        prepareInsertion(cs, it, notified)
+                        prepareInsertion(cs, it, notify)
                     }
                 }
             }
