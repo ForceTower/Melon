@@ -162,13 +162,13 @@ private constructor(context: Context) : SagresNavigator() {
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun aMe(): LiveData<PersonCallback> {
-        return PersonOperation(null, SagresTaskExecutor.getNetworkThreadExecutor()).result
+        return PersonOperation(null, SagresTaskExecutor.getNetworkThreadExecutor(), false).result
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun me(): PersonCallback {
-        return PersonOperation(null, null).finishedResult
+        return PersonOperation(null, null, false).finishedResult
     }
 
     @AnyThread

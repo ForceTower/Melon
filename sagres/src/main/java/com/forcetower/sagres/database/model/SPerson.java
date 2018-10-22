@@ -27,9 +27,21 @@
 
 package com.forcetower.sagres.database.model;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Index;
+import androidx.room.PrimaryKey;
 import com.google.gson.annotations.SerializedName;
 
+@Entity(indices = {
+    @Index(value = "sagres_id", unique = true),
+    @Index(value = "cpf"),
+    @Index(value = "email")
+})
 public class SPerson {
+    @PrimaryKey(autoGenerate = true)
     private long id;
     @SerializedName(value = "nome")
     private String name;
@@ -37,6 +49,9 @@ public class SPerson {
     private String exhibitionName;
     private String cpf;
     private String email;
+    @ColumnInfo(name = "sagres_id")
+    @Nullable
+    private String sagresId;
 
     public SPerson(long id, String name, String exhibitionName, String cpf, String email) {
         this.id = id;
@@ -89,7 +104,17 @@ public class SPerson {
     }
 
     @Override
+    @NonNull
     public String toString() {
         return "ID: " + getId() + " - Name: " + getName();
+    }
+
+    @Nullable
+    public String getSagresId() {
+        return sagresId;
+    }
+
+    public void setSagresId(@Nullable String sagresId) {
+        this.sagresId = sagresId;
     }
 }
