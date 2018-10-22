@@ -27,34 +27,17 @@
 
 package com.forcetower.sagres.database
 
-import android.content.Context
-import androidx.annotation.RestrictTo
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.forcetower.sagres.database.dao.AccessDao
-import com.forcetower.sagres.database.dao.PersonDao
-import com.forcetower.sagres.database.model.SAccess
-import com.forcetower.sagres.database.model.SPerson
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Database(entities = [
-    SAccess::class,
-    SPerson::class
-], version = 2, exportSchema = true)
-abstract class SagresDatabase : RoomDatabase() {
-    abstract fun accessDao(): AccessDao
-    abstract fun personDao(): PersonDao
-
-    companion object {
-        private const val DB_NAME = "unesx_sagres_database.db"
-
-        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-        fun create(context: Context): SagresDatabase {
-            return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
-                .addMigrations(Migrations.MIGRATION_1_2)
-                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build()
+object Migrations {
+    object MIGRATION_1_2: Migration(1, 2) {
+        override fun migrate(database: SupportSQLiteDatabase) {
+            val tableName = "SPerson"
+            database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `exhibitionName` TEXT, `cpf` TEXT, `email` TEXT, `sagres_id` TEXT)")
+            database.execSQL("CREATE UNIQUE INDEX `index_SPerson_sagres_id` ON `$tableName` (`sagres_id`)")
+            database.execSQL("CREATE  INDEX `index_SPerson_cpf` ON `$tableName` (`cpf`)")
+            database.execSQL("CREATE  INDEX `index_SPerson_email` ON `$tableName` (`email`)")
         }
     }
 }
