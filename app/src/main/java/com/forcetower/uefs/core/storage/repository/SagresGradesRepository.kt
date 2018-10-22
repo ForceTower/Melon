@@ -103,7 +103,7 @@ class SagresGradesRepository @Inject constructor(
 
     @WorkerThread
     private fun defineGrades(grades: List<SGrade>) {
-        database.gradesDao().putGrades(grades, notified = true)
+        database.gradesDao().putGrades(grades, notify = false)
     }
 
     @WorkerThread
