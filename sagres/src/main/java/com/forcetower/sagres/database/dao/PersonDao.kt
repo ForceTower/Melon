@@ -25,36 +25,19 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database
+package com.forcetower.sagres.database.dao
 
-import android.content.Context
-import androidx.annotation.RestrictTo
-import androidx.room.Database
-import androidx.room.Room
-import androidx.room.RoomDatabase
-import com.forcetower.sagres.database.dao.AccessDao
-import com.forcetower.sagres.database.dao.PersonDao
-import com.forcetower.sagres.database.model.SAccess
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
 import com.forcetower.sagres.database.model.SPerson
 
-@Database(entities = [
-    SAccess::class,
-    SPerson::class
-], version = 2, exportSchema = true)
-abstract class SagresDatabase : RoomDatabase() {
-    abstract fun accessDao(): AccessDao
-    abstract fun personDao(): PersonDao
+@Dao
+interface PersonDao {
+    @Insert(onConflict = REPLACE)
+    fun insert(person: SPerson)
 
-    companion object {
-        private const val DB_NAME = "unesx_sagres_database.db"
-
-        @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
-        fun create(context: Context): SagresDatabase {
-            return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
-                .addMigrations(Migrations.MIGRATION_1_2)
-                .fallbackToDestructiveMigration()
-                .allowMainThreadQueries()
-                .build()
-        }
-    }
+    @Query("SELECT * FROM SPerson WHERE sagres_id = :sagresId LIMIT 1")
+    fun getPersonDirect(sagresId: String): SPerson?
 }

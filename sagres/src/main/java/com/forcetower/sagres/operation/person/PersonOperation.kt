@@ -27,19 +27,33 @@
 
 package com.forcetower.sagres.operation.person
 
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.request.SagresCalls
 import java.util.concurrent.Executor
 
-class PersonOperation(private val userId: Long?, executor: Executor?) : Operation<PersonCallback>(executor) {
+class PersonOperation(
+    private val userId: Long?,
+    executor: Executor?,
+    private val cached: Boolean = true
+): Operation<PersonCallback>(executor) {
     init {
         this.perform()
     }
 
     override fun execute() {
         publishProgress(PersonCallback(Status.STARTED))
+        if (cached) {
+            val person = SagresNavigator.instance.database.personDao().getPersonDirect(userId.toString())
+            if (person != null) {
+                successMeasures(person)
+                return
+            }
+        }
+
+
         val call = if (userId == null) SagresCalls.me else SagresCalls.getPerson(userId)
         try {
             val response = call.execute()
@@ -58,6 +72,7 @@ class PersonOperation(private val userId: Long?, executor: Executor?) : Operatio
     }
 
     private fun successMeasures(user: SPerson) {
+        SagresNavigator.instance.database.personDao().insert(user)
         publishProgress(PersonCallback(Status.SUCCESS).person(user))
     }
 }
