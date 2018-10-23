@@ -42,7 +42,7 @@ abstract class MessageDao {
         for (message in messages) {
             if (message.senderName != null) {
                 val direct = getMessageDirect(message.sagresId)
-                if (direct != null && direct.senderName == null) {
+                if (direct != null && direct.senderName.isNullOrBlank()) {
                     updateSenderName(message.sagresId, message.senderName)
                 }
             }
