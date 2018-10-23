@@ -332,6 +332,8 @@
     <string name="settings_acc_semester_info">Mostrar o semestre pode ser ofensivo</string>
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
+    <string name="unable_to_open_url">Não foi possível abrir este link :(</string>
+    <string name="open_multiple_links">Ainda não é possivel abrir mensagens com vários links</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
