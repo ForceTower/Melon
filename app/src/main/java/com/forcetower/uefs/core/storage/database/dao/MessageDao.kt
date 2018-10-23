@@ -51,7 +51,7 @@ abstract class MessageDao {
         insertIgnore(messages)
     }
 
-    @Query("UPDATE Message SET sender_name = :senderName WHERE uid = :sagresId")
+    @Query("UPDATE Message SET sender_name = :senderName WHERE sagres_id = :sagresId")
     abstract fun updateSenderName(sagresId: Long, senderName: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)

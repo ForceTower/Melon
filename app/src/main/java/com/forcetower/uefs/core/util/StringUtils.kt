@@ -25,40 +25,21 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.messages
+package com.forcetower.uefs.core.util
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.storage.repository.MessagesRepository
-import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
+import android.util.Patterns
+import java.util.ArrayList
 
-class MessagesViewModel @Inject constructor(
-    val repository: MessagesRepository
-): ViewModel(), MessagesActions {
-    val messages by lazy { repository.getMessages() }
+fun String.getLinks(): List<String> {
+    val matcher = Patterns.WEB_URL.matcher(this)
+    val links = ArrayList<String>()
 
-    private val _refreshing = MediatorLiveData<Boolean>()
-    val refreshing: LiveData<Boolean>
-        get() = _refreshing
+    if (this.isNotBlank()) return links
 
-    private val _messageClick = MutableLiveData<Event<Message>>()
-    val messageClick: LiveData<Event<Message>>
-        get() = _messageClick
-
-    fun onRefresh() {
-        val fetchMessages = repository.fetchMessages()
-        _refreshing.value = true
-        _refreshing.addSource(fetchMessages) {
-            _refreshing.removeSource(fetchMessages)
-            _refreshing.value = false
-        }
+    while (matcher.find()) {
+        val matchStart = matcher.start(1)
+        val matchEnd = matcher.end()
+        links.add(this.substring(matchStart, matchEnd))
     }
-
-    override fun onMessageClick(message: Message) {
-        _messageClick.value = Event(message)
-    }
+    return links
 }
