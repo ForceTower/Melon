@@ -83,6 +83,8 @@ class SagresMessagesFragment: UFragment(), Injectable {
 
     private fun openLink(message: Message) {
         val links = message.content.getLinks()
+        if (links.isEmpty()) return
+
         if (links.size == 1) {
             try {
                 requireContext().openURL(links[0])
