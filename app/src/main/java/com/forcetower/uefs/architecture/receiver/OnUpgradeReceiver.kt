@@ -32,6 +32,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.storage.repository.UpgradeRepository
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.android.AndroidInjection
 import javax.inject.Inject
@@ -39,10 +40,14 @@ import javax.inject.Inject
 class OnUpgradeReceiver: BroadcastReceiver() {
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var repository: UpgradeRepository
 
     override fun onReceive(context: Context, intent: Intent) {
         if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
         AndroidInjection.inject(this, context)
+
+        repository.onUpgrade()
 
         val v2 = preferences.getBoolean("upgrade_msg_unes_v2", false)
         if (!v2) {
