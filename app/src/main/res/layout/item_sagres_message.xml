@@ -33,6 +33,9 @@
         <variable
             name="message"
             type="com.forcetower.uefs.core.model.unes.Message"/>
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.messages.MessagesActions"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -42,8 +45,7 @@
         app:strokeColor="@color/messages_stroke"
         app:strokeWidth="1dp"
         android:layout_marginBottom="8dp"
-        android:clickable="true"
-        android:focusable="true"
+        android:onClick="@{() -> listener.onMessageClick(message)}"
         android:stateListAnimator="@animator/default_card_raise">
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -72,7 +74,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 tools:text="@sample/messages.json/data/message"
-                android:text="@{message.content}"
+                app:messageContent="@{message.content}"
                 android:textColor="@color/text_primary_dark"
                 android:textSize="14sp"
                 app:layout_constraintEnd_toEndOf="parent"
