@@ -334,6 +334,7 @@
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
     <string name="unable_to_open_url">Não foi possível abrir este link :(</string>
     <string name="open_multiple_links">Ainda não é possivel abrir mensagens com vários links</string>
+    <string name="select_a_link">Selecione um link</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

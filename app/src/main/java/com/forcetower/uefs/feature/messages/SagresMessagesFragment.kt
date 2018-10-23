@@ -31,6 +31,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.forcetower.uefs.R
@@ -92,7 +94,20 @@ class SagresMessagesFragment: UFragment(), Injectable {
                 homeViewModel.showSnack(getString(R.string.unable_to_open_url))
             }
         } else {
-            homeViewModel.showSnack(getString(R.string.open_multiple_links))
+            val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item)
+            adapter.addAll(links)
+
+            val dialog = AlertDialog.Builder(requireContext())
+                .setIcon(R.drawable.ic_http_accent_30dp)
+                .setTitle(R.string.select_a_link)
+                .setAdapter(adapter) { dialog, position ->
+                    val url = adapter.getItem(position)
+                    dialog.dismiss()
+                    if (url != null) requireContext().openURL(url)
+                }
+                .create()
+
+            dialog.show()
         }
     }
 
