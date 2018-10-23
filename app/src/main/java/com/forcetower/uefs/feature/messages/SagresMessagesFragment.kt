@@ -105,6 +105,7 @@ class SagresMessagesFragment: UFragment(), Injectable {
                     dialog.dismiss()
                     if (url != null) requireContext().openURL(url)
                 }
+                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .create()
 
             dialog.show()
