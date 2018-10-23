@@ -27,38 +27,14 @@
 
 package com.forcetower.uefs.feature.messages
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.storage.repository.MessagesRepository
-import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
+import android.text.SpannableString
+import android.text.util.Linkify
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
 
-class MessagesViewModel @Inject constructor(
-    val repository: MessagesRepository
-): ViewModel(), MessagesActions {
-    val messages by lazy { repository.getMessages() }
-
-    private val _refreshing = MediatorLiveData<Boolean>()
-    val refreshing: LiveData<Boolean>
-        get() = _refreshing
-
-    private val _messageClick = MutableLiveData<Event<Message>>()
-    val messageClick: LiveData<Event<Message>>
-        get() = _messageClick
-
-    fun onRefresh() {
-        val fetchMessages = repository.fetchMessages()
-        _refreshing.value = true
-        _refreshing.addSource(fetchMessages) {
-            _refreshing.removeSource(fetchMessages)
-            _refreshing.value = false
-        }
-    }
-
-    override fun onMessageClick(message: Message) {
-        _messageClick.value = Event(message)
-    }
+@BindingAdapter("messageContent")
+fun messageContent(tv: TextView, content: String) {
+    val spannable = SpannableString(content)
+    Linkify.addLinks(spannable, Linkify.WEB_URLS)
+    tv.text = spannable
 }

@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.messages
 
 import android.view.ViewGroup
+import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -35,7 +36,10 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.databinding.ItemSagresMessageBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-class SagresMessageAdapter: ListAdapter<Message, MessageHolder>(MessagesDiff) {
+class SagresMessageAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: MessagesViewModel
+): ListAdapter<Message, MessageHolder>(MessagesDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val binding = ItemSagresMessageBinding.inflate(parent.inflater(), parent, false)
@@ -43,16 +47,16 @@ class SagresMessageAdapter: ListAdapter<Message, MessageHolder>(MessagesDiff) {
     }
 
     override fun onBindViewHolder(holder: MessageHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.binding.apply {
+            message = getItem(position)
+            listener = viewModel
+            setLifecycleOwner(lifecycleOwner)
+            executePendingBindings()
+        }
     }
 }
 
-class MessageHolder(val binding: ItemSagresMessageBinding) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(message: Message) {
-        binding.message = message
-        binding.executePendingBindings()
-    }
-}
+class MessageHolder(val binding: ItemSagresMessageBinding) : RecyclerView.ViewHolder(binding.root)
 
 object MessagesDiff: DiffUtil.ItemCallback<Message>() {
     override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
