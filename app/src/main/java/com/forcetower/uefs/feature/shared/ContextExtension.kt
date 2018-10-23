@@ -28,11 +28,28 @@
 package com.forcetower.uefs.feature.shared
 
 import android.content.Context
-
+import android.content.Intent
+import android.net.Uri
 
 fun Context.isNavBarOnBottom(): Boolean {
     val config = resources.configuration
     val dm = resources.displayMetrics
     val canMove = dm.widthPixels != dm.heightPixels && config.smallestScreenWidthDp < 600
     return !canMove || dm.widthPixels < dm.heightPixels
+}
+
+fun Context.openURL(url: String) {
+    var fixed = url
+    if (!url.startsWith("http://")
+        && !url.startsWith("HTTP://")
+        && !url.startsWith("HTTPS://")
+        && !url.startsWith("https://")
+        && !url.contains("//")
+    ) {
+        fixed = "http://$url"
+    }
+
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.data = Uri.parse(fixed)
+    this.startActivity(intent)
 }

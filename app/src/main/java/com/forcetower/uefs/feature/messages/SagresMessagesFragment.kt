@@ -33,11 +33,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.util.getLinks
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
+import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
@@ -47,18 +52,20 @@ class SagresMessagesFragment: UFragment(), Injectable {
 
     init { displayName = "Sagres" }
 
-    private val adapter by lazy { SagresMessageAdapter()}
     private val manager by lazy { LinearLayoutManager(context) }
     private lateinit var binding: FragmentSagresMessagesBinding
     private lateinit var viewModel: MessagesViewModel
+    private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(vmFactory)
+        homeViewModel = provideActivityViewModel(vmFactory)
         binding = FragmentSagresMessagesBinding.inflate(inflater, container, false)
-        setupRecycler()
         return binding.root
     }
 
-    private fun setupRecycler() {
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val adapter = SagresMessageAdapter(this, viewModel)
         binding.apply {
             recyclerSagresMessages.adapter = adapter
             recyclerSagresMessages.layoutManager = manager
@@ -69,15 +76,22 @@ class SagresMessagesFragment: UFragment(), Injectable {
                 removeDuration = 100L
             }
         }
+
+        viewModel.messages.observe(this, Observer { adapter.submitList(it) })
+        viewModel.messageClick.observe(this, EventObserver { openLink(it) })
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel = provideActivityViewModel(vmFactory)
-        viewModel.messages.observe(this, Observer { onMessagesChange(it) })
+    private fun openLink(message: Message) {
+        val links = message.content.getLinks()
+        if (links.size == 1) {
+            try {
+                requireContext().openURL(links[0])
+            } catch (ignored: Throwable) {
+                homeViewModel.showSnack(getString(R.string.unable_to_open_url))
+            }
+        } else {
+            homeViewModel.showSnack(getString(R.string.open_multiple_links))
+        }
     }
 
-    private fun onMessagesChange(list: List<Message>) {
-        adapter.submitList(list)
-    }
 }
