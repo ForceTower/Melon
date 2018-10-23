@@ -34,7 +34,7 @@ fun String.getLinks(): List<String> {
     val matcher = Patterns.WEB_URL.matcher(this)
     val links = ArrayList<String>()
 
-    if (this.isNotBlank()) return links
+    if (this.isBlank()) return links
 
     while (matcher.find()) {
         val matchStart = matcher.start(1)
