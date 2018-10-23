@@ -103,7 +103,11 @@ class SagresMessagesFragment: UFragment(), Injectable {
                 .setAdapter(adapter) { dialog, position ->
                     val url = adapter.getItem(position)
                     dialog.dismiss()
-                    if (url != null) requireContext().openURL(url)
+                    try {
+                        if (url != null) requireContext().openURL(url)
+                    } catch (ignored: Throwable) {
+                        homeViewModel.showSnack(getString(R.string.unable_to_open_url))
+                    }
                 }
                 .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
                 .create()
