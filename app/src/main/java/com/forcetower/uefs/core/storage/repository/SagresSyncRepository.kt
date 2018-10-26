@@ -70,7 +70,10 @@ class SagresSyncRepository @Inject constructor(
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
         access?: Timber.d("Access is null, sync will not continue")
-        if (access != null) execute(access, registry)
+        if (access != null) {
+            //Only one sync may be active at a time
+            synchronized(S_LOCK) { execute(access, registry) }
+        }
         else {
             registry.completed = true
             registry.error = -1
@@ -332,6 +335,10 @@ class SagresSyncRepository @Inject constructor(
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
+    }
+
+    companion object {
+        private val S_LOCK = Any()
     }
 
 }
