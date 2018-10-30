@@ -28,8 +28,10 @@
 package com.forcetower.uefs.feature.demand
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.ActivityDemandBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.inTransaction
 import dagger.android.DispatchingAndroidInjector
@@ -39,12 +41,16 @@ import javax.inject.Inject
 class DemandActivity: UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    private lateinit var binding: ActivityDemandBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_demand)
 
-        supportFragmentManager.inTransaction {
-            add(R.id.fragment_container, DemandOffersFragment())
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.fragment_container, DemandOffersFragment())
+            }
         }
     }
 

@@ -25,17 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.demand
 
-import com.forcetower.uefs.feature.demand.DemandOffersFragment
-import com.forcetower.uefs.feature.demand.DemandOverviewFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.shared.UFragment
 
-@Module
-abstract class DemandModule {
-    @ContributesAndroidInjector
-    abstract fun demandOffersFragment(): DemandOffersFragment
-    @ContributesAndroidInjector
-    abstract fun demandOverviewFragment(): DemandOverviewFragment
+class DemandOverviewFragment: UFragment(), Injectable {
 }

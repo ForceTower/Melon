@@ -70,6 +70,7 @@
     <color name="navigation_grey">#757575</color>
     <color name="messages_stroke">#a9a9a9</color>
     <color name="schedule_divider">#1E000000</color>
+    <color name="dark_gray">#ff808080</color>
 
     <color name="highlight_light">#33ffffff</color>
 
@@ -125,6 +126,13 @@
         <item>@color/dis_14</item>
         <item>@color/dis_15</item>
     </array>
+    
+    <color name="demand_case_bugged">#bd7cff</color>
+    <color name="demand_case_completed">#4CAF50</color>
+    <color name="demand_case_unavailable">#ff4e4e</color>
+    <color name="demand_case_selected">#4768fd</color>
+    <color name="demand_case_current">#b9f9ac</color>
+    <color name="demand_case_available">#ffcf0e</color>
     
     <!-- Games -->
     <color name="background1">#232528</color>

@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2018. 
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the MIT License
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    
+    <!--android:background="@drawable/rounded_bottom_sheet_background"-->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/demand_overview_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:clickable="true"
+        android:elevation="@dimen/bottom_sheet_elevation"
+        tools:elevation="0dp"
+        android:focusable="true"
+        android:orientation="vertical"
+        android:background="@drawable/rounded_bottom_sheet_background"
+        tools:ignore="Overdraw">
+    
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_peek_height"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="@dimen/bottom_sheet_peek_height" />
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_left"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guide_right"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+    
+        <View
+            android:id="@+id/sheet_header_shadow"
+            android:layout_width="0dp"
+            android:layout_height="4dp"
+            android:alpha="0"
+            android:background="@drawable/rounded_sheet_header_shadow"
+            android:stateListAnimator="@animator/active_alpha"
+            app:layout_constraintTop_toBottomOf="@id/guide_peek_height" />
+    
+        <!-- Header -->
+        <TextView
+            android:id="@+id/text_selected_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="@color/text_primary_dark"
+            app:layout_constraintBottom_toTopOf="@id/guide_peek_height"
+            app:layout_constraintEnd_toStartOf="@+id/text_selected_amount"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintHorizontal_chainStyle="packed"
+            app:layout_constraintStart_toStartOf="@+id/guide_left"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.5"
+            android:text="@string/demand_selected_disciplines_label" />
+    
+        <TextView
+            android:id="@+id/text_selected_amount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/blue_accent"
+            android:textSize="23sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_selected_label"
+            app:layout_constraintEnd_toStartOf="@+id/guide_right"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/text_selected_label"
+            tools:text="8" />
+    
+        <ImageButton
+            android:id="@+id/collapse_arrow"
+            android:layout_width="@dimen/a11y_min_touch_target"
+            android:layout_height="@dimen/a11y_min_touch_target"
+            android:layout_marginEnd="@dimen/margin_small"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/collapse_demand_overview_sheet"
+            android:scaleType="center"
+            android:tint="@color/dark_gray"
+            app:layout_constraintBottom_toTopOf="@id/guide_peek_height"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_chevron_collapse_black_24dp" />
+        
+        <!-- Content -->
+        
+        <TextView
+            android:id="@+id/text_selected_hours_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total de Horas:"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="15sp"
+            android:layout_marginTop="16dp"
+            app:layout_constraintStart_toEndOf="@id/guide_left"
+            app:layout_constraintTop_toBottomOf="@id/guide_peek_height"/>
+    
+        <TextView
+            android:id="@+id/text_hours_selected"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/yellow_pr"
+            android:textSize="20sp"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_selected_hours_label"
+            app:layout_constraintStart_toEndOf="@+id/text_selected_hours_label"
+            app:layout_constraintTop_toBottomOf="@id/guide_peek_height"
+            tools:text="480" />
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/confirm_button"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/demand_confirm_button"
+            android:textAllCaps="false"
+            android:textSize="16sp"
+            android:textStyle="bold"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintBaseline_toBaselineOf="@id/text_selected_hours_label"
+            app:layout_constraintStart_toEndOf="@+id/text_hours_selected"
+            app:layout_constraintTop_toBottomOf="@id/guide_peek_height" />
+        
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/information_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="confirm_button, text_hours_selected, text_selected_hours_label"/>
+        
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:orientation="vertical"
+            android:scrollbarStyle="outsideOverlay"
+            android:scrollbars="vertical"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintRight_toRightOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/information_barrier"
+            tools:listitem="@layout/item_demand_offer"
+            tools:targetApi="o"/>
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
