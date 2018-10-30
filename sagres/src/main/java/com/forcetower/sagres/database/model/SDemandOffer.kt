@@ -49,16 +49,4 @@ data class SDemandOffer (
     override fun toString(): String {
         return name
     }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
-        }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
 }
