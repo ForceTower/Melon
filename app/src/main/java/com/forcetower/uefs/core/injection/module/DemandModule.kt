@@ -25,40 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.injection.module
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import com.forcetower.uefs.feature.demand.DemandOffersFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
-    }
-
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
-        }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+@Module
+abstract class DemandModule {
+    @ContributesAndroidInjector
+    abstract fun demandOffersFragment(): DemandOffersFragment
 }

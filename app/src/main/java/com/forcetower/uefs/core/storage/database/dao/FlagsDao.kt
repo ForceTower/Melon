@@ -25,40 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.forcetower.uefs.core.model.unes.SagresFlags
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
-    }
+@Dao
+interface FlagsDao {
+    @Insert(onConflict = REPLACE)
+    fun insertFlags(flag: SagresFlags)
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
-        }
-    }
+    @Query("SELECT * FROM SagresFlags LIMIT 1")
+    fun getFlags(): LiveData<SagresFlags?>
 
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+    @Query("UPDATE SagresFlags SET demand_open = :demandOpen")
+    fun updateDemand(demandOpen: Boolean)
+
+    @Query("SELECT * FROM SagresFlags LIMIT 1")
+    fun getFlagsDirect() : SagresFlags?
 }

@@ -32,16 +32,24 @@ import org.jsoup.nodes.Document
 
 object SagresDemandParser {
     @JvmStatic
-    fun getOffers(document: Document): List<SDemandOffer> {
+    fun getOffers(document: Document): List<SDemandOffer>? {
         val list = mutableListOf<SDemandOffer>()
 
         //Each element represents a column full of disciplines for the semester
         val elements = document.select("div[class=\"demanda-coluna\"]")
+        //If no elements is found, the demand is not available
+        if (elements.size == 0) return null
+
+        //We iterate over each "semester"
         for (element in elements) {
+            //Get the semester title
             val title = element.selectFirst("span").text().trim()
 
-            val disciplines = element.select("div[qtcredito]")
+            //Find the objects that represents the disciplines
+            val disciplines = element.select("div[qtcredito][nomeatividade][codigoatividade][qthoras]")
+            //And iterate over it
             for (discipline in disciplines) {
+                //Extract the attributes
                 val id = discipline.selectFirst("input[type=\"hidden\"]").attr("name").trim()
                 val selected = discipline.selectFirst("input[type=\"hidden\"]").attr("value").trim()
                 val name = discipline.attr("nomeatividade").trim()
@@ -75,7 +83,8 @@ object SagresDemandParser {
                     e.printStackTrace()
                 }
 
-                val offer = SDemandOffer(id, code, name, bSelected, title, iHours, co, av, cu, se, un)
+                //Adds it to the offers
+                val offer = SDemandOffer(0, id, code, name, bSelected, title, iHours, co, av, cu, se, un)
                 list.add(offer)
             }
         }
