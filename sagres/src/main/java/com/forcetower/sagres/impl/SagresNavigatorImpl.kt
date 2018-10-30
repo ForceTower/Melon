@@ -35,9 +35,12 @@ import androidx.lifecycle.LiveData
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.SagresDatabase
+import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.sagres.executor.SagresTaskExecutor
 import com.forcetower.sagres.operation.calendar.CalendarCallback
 import com.forcetower.sagres.operation.calendar.CalendarOperation
+import com.forcetower.sagres.operation.demand.CreateDemandOperation
+import com.forcetower.sagres.operation.demand.DemandCreatorCallback
 import com.forcetower.sagres.operation.demand.DemandOffersCallback
 import com.forcetower.sagres.operation.demand.LoadDemandOffersOperation
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
@@ -271,7 +274,13 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun loadDemandOffers(): DemandOffersCallback {
-        return LoadDemandOffersOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+        return LoadDemandOffersOperation(null).finishedResult
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun createDemandOffer(offers: List<SDemandOffer>): DemandCreatorCallback {
+        return CreateDemandOperation(offers, null).finishedResult
     }
 
     companion object {

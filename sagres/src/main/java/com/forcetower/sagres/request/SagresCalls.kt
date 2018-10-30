@@ -28,6 +28,7 @@
 package com.forcetower.sagres.request
 
 import androidx.annotation.RestrictTo
+import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.sagres.database.model.SLinker
 import com.forcetower.sagres.impl.SagresNavigatorImpl
 import okhttp3.Call
@@ -138,5 +139,11 @@ object SagresCalls {
 
     fun getDemandPage(): Call {
         return getCall(SagresRequests.getDemandPage())
+    }
+
+    fun createDemand(list: List<SDemandOffer>, document: Document): Call {
+        val body = SagresForms.makeFormBodyForDemand(list, document)
+        val request = SagresRequests.createDemandWithParams(body)
+        return getCall(request)
     }
 }
