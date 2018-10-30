@@ -25,34 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.sagres.operation.demand
 
-data class SDemandOffer (
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
-    }
+import com.forcetower.sagres.operation.BaseCallback
+import com.forcetower.sagres.operation.Status
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
+class DemandCreatorCallback(status: Status): BaseCallback<DemandCreatorCallback>(status) {
+    companion object {
+        fun copyFrom(callback: BaseCallback<*>): DemandCreatorCallback {
+            return DemandCreatorCallback(callback.status).message(callback.message).code(callback.code).throwable(
+                callback.throwable).document(callback.document)
         }
-    }
-
-    override fun hashCode(): Int {
-        return super.hashCode()
     }
 }
