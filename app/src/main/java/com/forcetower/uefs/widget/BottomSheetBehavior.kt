@@ -54,7 +54,6 @@ import kotlin.math.absoluteValue
 /**
  * Copy of material lib's BottomSheetBehavior that includes some bug fixes.
  */
-// TODO remove when a fixed version in material lib is released.
 class BottomSheetBehavior<V : View> : Behavior<V> {
 
     companion object {
