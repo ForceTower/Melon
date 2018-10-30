@@ -38,6 +38,8 @@ import com.forcetower.sagres.database.SagresDatabase
 import com.forcetower.sagres.executor.SagresTaskExecutor
 import com.forcetower.sagres.operation.calendar.CalendarCallback
 import com.forcetower.sagres.operation.calendar.CalendarOperation
+import com.forcetower.sagres.operation.demand.DemandOffersCallback
+import com.forcetower.sagres.operation.demand.LoadDemandOffersOperation
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsOperation
 import com.forcetower.sagres.operation.document.DocumentCallback
@@ -69,7 +71,6 @@ import java.util.concurrent.TimeUnit
 @RestrictTo(RestrictTo.Scope.LIBRARY)
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)
 private constructor(context: Context) : SagresNavigator() {
-
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     val client: OkHttpClient
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -238,23 +239,39 @@ private constructor(context: Context) : SagresNavigator() {
     }
 
     @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadEnrollment(file: File): DocumentCallback {
         return DocumentOperation(file, Constants.SAGRES_ENROLL_CERT, null).finishedResult
     }
 
     @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadFlowchart(file: File): DocumentCallback {
         return DocumentOperation(file, Constants.SAGRES_FLOWCHART, null).finishedResult
     }
 
     @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadHistory(file: File): DocumentCallback {
         return DocumentOperation(file, Constants.SAGRES_HISTORY, null).finishedResult
     }
 
     @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun loadDisciplineDetails(semester: String, code: String, group: String): DisciplineDetailsCallback {
         return DisciplineDetailsOperation(semester, code, group, null).finishedResult
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aLoadDemandOffers(): LiveData<DemandOffersCallback> {
+        return LoadDemandOffersOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun loadDemandOffers(): DemandOffersCallback {
+        return LoadDemandOffersOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
     }
 
     companion object {
