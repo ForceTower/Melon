@@ -32,6 +32,7 @@ import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityDemandBinding
+import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.inTransaction
 import dagger.android.DispatchingAndroidInjector
@@ -42,6 +43,7 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     private lateinit var binding: ActivityDemandBinding
+    private lateinit var currentFragment: NavigationFragment
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,10 +51,18 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
-                add(R.id.fragment_container, DemandOffersFragment())
+                val fragment = DemandOffersFragment()
+                currentFragment = fragment
+                add(R.id.fragment_container, fragment)
             }
         }
     }
 
     override fun supportFragmentInjector() = fragmentInjector
+
+    override fun onBackPressed() {
+        if (!currentFragment.onBackPressed()) {
+            super.onBackPressed()
+        }
+    }
 }

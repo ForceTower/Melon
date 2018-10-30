@@ -28,7 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.feature.demand.DemandOffersFragment
-import com.forcetower.uefs.feature.demand.DemandOverviewFragment
+import com.forcetower.uefs.feature.demand.overview.DemandOverviewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 

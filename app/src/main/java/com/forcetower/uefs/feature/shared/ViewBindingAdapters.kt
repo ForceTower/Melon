@@ -111,3 +111,8 @@ fun swipeRefreshing(refreshLayout: CustomSwipeRefreshLayout, refreshing: Boolean
 fun onSwipeRefresh(view: CustomSwipeRefreshLayout, function: SwipeRefreshLayout.OnRefreshListener) {
     view.setOnRefreshListener(function)
 }
+
+@BindingAdapter("swipeEnabled")
+fun swipeEnabled(view: CustomSwipeRefreshLayout, enabled: Boolean) {
+    view.isEnabled = enabled
+}

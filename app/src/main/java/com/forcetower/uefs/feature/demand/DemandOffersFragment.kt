@@ -27,8 +27,68 @@
 
 package com.forcetower.uefs.feature.demand
 
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.lifecycle.Observer
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.FragmentDemandOffersBinding
+import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.widget.BottomSheetBehavior
+import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_COLLAPSED
+import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_EXPANDED
+import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_HIDDEN
+import javax.inject.Inject
 
-class DemandOffersFragment: UFragment(), Injectable {
+class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
+    @Inject
+    lateinit var factory: UViewModelFactory
+
+    private lateinit var viewModel: DemandViewModel
+    private lateinit var binding: FragmentDemandOffersBinding
+    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
+        binding = FragmentDemandOffersBinding.inflate(inflater, container, false).apply {
+            viewModel = this@DemandOffersFragment.viewModel
+            setLifecycleOwner(this@DemandOffersFragment)
+            incToolbar.textToolbarTitle.text = getString(R.string.label_demand_title)
+        }
+        return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.demand_overview_sheet))
+
+        val offersAdapter = DemandOffersAdapter(this, viewModel)
+        binding.offersRecycler.apply {
+            adapter = offersAdapter
+            itemAnimator?.run {
+                addDuration = 120L
+                moveDuration = 120L
+                changeDuration = 120L
+                removeDuration = 100L
+            }
+        }
+        viewModel.offers.observe(this, Observer { offersAdapter.currentList = it.data!! })
+    }
+
+    override fun onBackPressed(): Boolean {
+        if (::bottomSheetBehavior.isInitialized && bottomSheetBehavior.state == STATE_EXPANDED) {
+            if (bottomSheetBehavior.isHideable && bottomSheetBehavior.skipCollapsed) {
+                bottomSheetBehavior.state = STATE_HIDDEN
+            } else {
+                bottomSheetBehavior.state = STATE_COLLAPSED
+            }
+            return true
+        }
+        return super.onBackPressed()
+    }
+
 }
