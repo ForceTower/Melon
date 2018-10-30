@@ -25,40 +25,28 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.feature.demand
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.inTransaction
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
-    }
+class DemandActivity: UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        supportFragmentManager.inTransaction {
+            add(R.id.fragment_container, DemandOffersFragment())
         }
     }
 
-    override fun hashCode(): Int {
-        return super.hashCode()
-    }
+    override fun supportFragmentInjector() = fragmentInjector
 }

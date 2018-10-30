@@ -59,7 +59,11 @@ class LoadDemandOffersOperation(executor: Executor?): Operation<DemandOffersCall
         Timber.d("Connected for load demand offers")
         val document = demandPage()?: return
         val offers = SagresDemandParser.getOffers(document)
-        publishProgress(DemandOffersCallback(Status.SUCCESS).offers(offers).document(document))
+        if (offers != null) {
+            publishProgress(DemandOffersCallback(Status.SUCCESS).offers(offers).document(document))
+        } else {
+            publishProgress(DemandOffersCallback(Status.APPROVAL_ERROR).message("Not able to find the demand object").document(document))
+        }
     }
 
     private fun demandPage(): Document? {

@@ -25,40 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import androidx.room.Transaction
+import com.forcetower.sagres.database.model.SDemandOffer
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
-    }
+@Dao
+abstract class DemandOfferDao {
+    @Insert(onConflict = REPLACE)
+    protected abstract fun insert(offers: List<SDemandOffer>)
 
-    override fun equals(other: Any?): Boolean {
-        return if (other is SDemandOffer) {
-            return code == other.code
-        } else {
-            false
-        }
-    }
+    @Query("DELETE FROM SDemandOffer")
+    protected abstract fun deleteAll()
 
-    override fun hashCode(): Int {
-        return super.hashCode()
+    @Transaction
+    open fun defineDemandOffers(offers: List<SDemandOffer>) {
+        deleteAll()
+        insert(offers)
     }
 }
