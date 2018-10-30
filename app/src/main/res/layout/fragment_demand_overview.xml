@@ -30,6 +30,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     
+    <data>
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.feature.demand.DemandViewModel"/>
+        <variable
+            name="headerAlpha"
+            type="androidx.databinding.ObservableFloat"/>
+    </data>
+    
     <!--android:background="@drawable/rounded_bottom_sheet_background"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/demand_overview_sheet"
@@ -100,6 +109,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guide_right"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/text_selected_label"
+            android:text="@{viewModel.selectedCount}"
             tools:text="8" />
     
         <ImageButton
@@ -107,6 +117,8 @@
             android:layout_width="@dimen/a11y_min_touch_target"
             android:layout_height="@dimen/a11y_min_touch_target"
             android:layout_marginEnd="@dimen/margin_small"
+            android:clickable="@{headerAlpha > 0f}"
+            android:alpha="@{headerAlpha}"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/collapse_demand_overview_sheet"
             android:scaleType="center"
@@ -139,6 +151,7 @@
             app:layout_constraintBaseline_toBaselineOf="@id/text_selected_hours_label"
             app:layout_constraintStart_toEndOf="@+id/text_selected_hours_label"
             app:layout_constraintTop_toBottomOf="@id/guide_peek_height"
+            android:text="@{viewModel.selectedHours}"
             tools:text="480" />
     
         <com.google.android.material.button.MaterialButton
@@ -165,6 +178,7 @@
             app:constraint_referenced_ids="confirm_button, text_hours_selected, text_selected_hours_label"/>
         
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/selected_recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"

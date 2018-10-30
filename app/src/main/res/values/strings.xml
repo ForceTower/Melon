@@ -341,6 +341,12 @@
     <string name="demand_discipline_locked">Disciplina bloqueada</string>
     <string name="demand_discipline_status">Estado atual da disciplina</string>
     <string name="demand_category_label">Categoria:</string>
+    <string name="label_demand_title">Demanda Web</string>
+    <string name="demand_status_bugged">Erros de processamento</string>
+    <string name="demand_status_available">Disponíveis</string>
+    <string name="demand_status_current">Cursando</string>
+    <string name="demand_status_completed">Completas</string>
+    <string name="demand_status_locked">Bloqueadas</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

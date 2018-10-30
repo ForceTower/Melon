@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -41,6 +42,9 @@ abstract class DemandOfferDao {
 
     @Query("DELETE FROM SDemandOffer")
     protected abstract fun deleteAll()
+
+    @Query("SELECT * FROM SDemandOffer")
+    abstract fun getAll(): LiveData<List<SDemandOffer>>
 
     @Transaction
     open fun defineDemandOffers(offers: List<SDemandOffer>) {

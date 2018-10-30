@@ -34,6 +34,10 @@
         <variable
             name="offer"
             type="com.forcetower.sagres.database.model.SDemandOffer"/>
+        
+        <variable
+            name="actions"
+            type="com.forcetower.uefs.feature.demand.OfferActions"/>
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
