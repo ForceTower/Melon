@@ -135,4 +135,8 @@ object SagresCalls {
         val request = SagresRequests.getDisciplinePageWithParams(body)
         return getCall(request)
     }
+
+    fun getDemandPage(): Call {
+        return getCall(SagresRequests.getDemandPage())
+    }
 }
