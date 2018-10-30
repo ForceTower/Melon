@@ -90,4 +90,17 @@ object SagresBasicParser {
         }
         return -1.0
     }
+
+    @JvmStatic
+    fun isDemandOpen(document: Document): Boolean {
+        try {
+            val elements = document.select("div[class=\"menu-item\"]")
+            for (element in elements) {
+                val first = element.selectFirst("a[href]")
+                if (first != null && first.text().equals("Demanda", ignoreCase = true))
+                    return true
+            }
+        } catch (ignored: Throwable) {}
+        return false
+    }
 }

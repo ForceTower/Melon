@@ -221,6 +221,7 @@ class SagresSyncRepository @Inject constructor(
                 defineDisciplines(start.disciplines)
                 defineDisciplineGroups(start.groups)
                 defineSchedule(start.locations)
+                defineDemand(start.isDemandOpen)
 
                 Timber.d("Semesters: ${start.semesters}")
                 Timber.d("Disciplines:  ${start.disciplines}")
@@ -331,6 +332,10 @@ class SagresSyncRepository @Inject constructor(
     private fun defineCalendar(calendar: List<SCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
+    }
+
+    private fun defineDemand(demandOpen: Boolean) {
+        //TODO
     }
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
