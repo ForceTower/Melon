@@ -27,27 +27,76 @@
 
 package com.forcetower.uefs.feature.demand
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.uefs.core.storage.repository.DemandRepository
+import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.storage.resource.Status
+import timber.log.Timber
 import javax.inject.Inject
 
 class DemandViewModel @Inject constructor(
-
+    private val repository: DemandRepository
 ): ViewModel(), OfferActions {
+    private var loaded = false
+
+    private val _loading = MutableLiveData<Boolean>()
+    val loading: LiveData<Boolean>
+        get() = _loading
+
+    private val _offers = MediatorLiveData<Resource<List<SDemandOffer>>>()
+    val offers: LiveData<Resource<List<SDemandOffer>>>
+        get() {
+            if (!loaded) { initLoad() }
+            return _offers
+        }
+
+    private val _selectedCount = MutableLiveData<Int>()
+    val selectedCount: LiveData<Int>
+        get() = _selectedCount
+
+    private val _selectedHours = MutableLiveData<Int>()
+    val selectedHours: LiveData<Int>
+        get() = _selectedHours
+
+    private fun initLoad() {
+        loaded = true
+        _loading.value = true
+        val source = repository.loadDemand()
+        _offers.addSource(source) {
+            _offers.value = it
+            val raw = it.data
+            if (raw != null) {
+                _selectedHours.value = raw.sumBy { h -> h.hours }
+                _selectedCount.value = raw.size
+            }
+
+            if (it.status == Status.SUCCESS || it.status == Status.ERROR) {
+                _loading.value = false
+            }
+        }
+    }
+
+    init {
+
+    }
 
     override fun onOfferClick(offer: SDemandOffer) {
-
+        Timber.d("Offer clicked: ${offer.code}")
     }
 
     override fun onOfferLongClick(offer: SDemandOffer) {
-
+        Timber.d("Offer long clicked: ${offer.code}")
     }
 
     override fun onConfirmOffers() {
-
+        Timber.d("Confirm offers!")
     }
 
     override fun onClearOffers() {
-
+        Timber.d("Clear all offers")
     }
 }

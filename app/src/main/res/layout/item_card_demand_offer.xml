@@ -32,6 +32,9 @@
         <variable
             name="offer"
             type="com.forcetower.sagres.database.model.SDemandOffer"/>
+        <variable
+            name="actions"
+            type="com.forcetower.uefs.feature.demand.OfferActions"/>
     </data>
     
     <com.google.android.material.card.MaterialCardView
@@ -46,6 +49,7 @@
         <include
             android:id="@+id/inc_offer_layout"
             layout="@layout/item_demand_offer"
-            app:offer="@{offer}"/>
+            app:offer="@{offer}"
+            app:actions="@{actions}"/>
     </com.google.android.material.card.MaterialCardView>
 </layout>

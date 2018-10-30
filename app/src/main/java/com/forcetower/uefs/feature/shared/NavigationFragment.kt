@@ -25,10 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.demand
+package com.forcetower.uefs.feature.shared
 
-import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.feature.shared.UFragment
-
-class DemandOverviewFragment: UFragment(), Injectable {
+interface NavigationFragment {
+    fun onBackPressed(): Boolean {
+        return false
+    }
 }
