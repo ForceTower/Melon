@@ -87,6 +87,8 @@ public class SPerson {
     }
 
     public String getCpf() {
+        if (cpf == null) return null;
+
         cpf = cpf.trim();
         return cpf;
     }

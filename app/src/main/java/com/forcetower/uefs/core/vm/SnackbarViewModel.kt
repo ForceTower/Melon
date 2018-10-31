@@ -25,28 +25,19 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.vm
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
+class SnackbarViewModel @Inject constructor(): ViewModel() {
+    private val _snackbar = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>>
+        get() = _snackbar
+
+    fun showSnack(message: String) {
+        _snackbar.value = Event(message)
     }
 }

@@ -52,6 +52,11 @@
             android:icon="@drawable/ic_calendar_black_24dp"/>
         
         <item
+            android:id="@+id/demand"
+            android:title="@string/label_demand_title"
+            android:icon="@drawable/ic_category_black_24dp"/>
+        
+        <item
             android:id="@+id/teacher_email"
             android:title="@string/teachers_label"
             android:icon="@drawable/ic_teach_black_24dp"/>
