@@ -347,6 +347,8 @@
     <string name="demand_status_current">Cursando</string>
     <string name="demand_status_completed">Completas</string>
     <string name="demand_status_locked">Bloqueadas</string>
+    <string name="demand_total_hours_label">Total de Horas:</string>
+    <string name="demand_notification_title">Resultado da demanda</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

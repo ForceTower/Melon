@@ -87,14 +87,23 @@ class DemandViewModel @Inject constructor(
 
     override fun onOfferClick(offer: SDemandOffer) {
         Timber.d("Offer clicked: ${offer.code}")
+        if (!offer.selectable || offer.completed || offer.unavailable) {
+            Timber.d("Select something valid")
+            return
+        }
+
+        val select = !offer.selected
+        repository.updateOfferSelection(offer, select)
     }
 
-    override fun onOfferLongClick(offer: SDemandOffer) {
+    override fun onOfferLongClick(offer: SDemandOffer): Boolean {
         Timber.d("Offer long clicked: ${offer.code}")
+        return true
     }
 
     override fun onConfirmOffers() {
         Timber.d("Confirm offers!")
+        repository.confirmOptions()
     }
 
     override fun onClearOffers() {

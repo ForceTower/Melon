@@ -51,4 +51,10 @@ abstract class DemandOfferDao {
         deleteAll()
         insert(offers)
     }
+
+    @Query("UPDATE SDemandOffer SET selected = :select WHERE uid = :uid")
+    abstract fun updateOfferSelection(uid: Long, select: Boolean)
+
+    @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
+    abstract fun getAllDirect(): List<SDemandOffer>
 }

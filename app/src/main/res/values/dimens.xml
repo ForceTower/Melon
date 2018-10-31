@@ -28,6 +28,7 @@
 
 <resources>
     <dimen name="bottom_sheet_corner_radius">24dp</dimen>
+    <dimen name="bottom_sheet_corner_radius_common">16dp</dimen>
     <dimen name="bottom_sheet_top_padding">8dp</dimen>
     <dimen name="nav_header_keyline">80dp</dimen>
     <dimen name="nav_header_size">56dp</dimen>
