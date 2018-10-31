@@ -216,6 +216,20 @@
     </style>
 
     <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+    
+    <style name="Widget.Melon.BorderlessButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?colorAccent</item>
+        <item name="android:letterSpacing">0.025</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:paddingLeft">16dp</item>
+        <item name="android:paddingRight">16dp</item>
+        <item name="android:paddingTop">@dimen/padding_borderless_button</item>
+        <item name="android:paddingBottom">@dimen/padding_borderless_button</item>
+    </style>
 
     <style name="Widget.Schedule" parent="@android:style/Widget" />
+    
+    <dimen name="padding_borderless_button">16dp</dimen>
 </resources>

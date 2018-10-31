@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
+import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
@@ -335,7 +336,10 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun defineDemand(demandOpen: Boolean) {
-        //TODO
+        val flags = database.flagsDao().getFlagsDirect()
+        if (flags == null) database.flagsDao().insertFlags(SagresFlags())
+
+        database.flagsDao().updateDemand(demandOpen)
     }
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {

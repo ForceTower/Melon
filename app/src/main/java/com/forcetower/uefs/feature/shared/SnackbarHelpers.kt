@@ -30,20 +30,20 @@ package com.forcetower.uefs.feature.shared
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.ViewCompat
 import com.forcetower.uefs.R
 import com.google.android.material.snackbar.Snackbar
 
-fun Snackbar.config(bottomPadding: Int = 12) {
+fun Snackbar.config(bottomPadding: Int = 12, pxElevation: Int = 6) {
     val context = view.context
     val params = view.layoutParams as ViewGroup.MarginLayoutParams
 
     val px12 = getPixelsFromDp(context, 12).toInt()
-    val px6  = getPixelsFromDp(context, 6)
+    val px6  = getPixelsFromDp(context, pxElevation)
     val pxB  = getPixelsFromDp(context, bottomPadding).toInt()
 
     params.setMargins(px12, px12, px12, pxB)
     view.elevation = px6
+    view.bringToFront()
 
     view.layoutParams = params
 
@@ -57,6 +57,4 @@ fun Snackbar.config(bottomPadding: Int = 12) {
         val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
         at.typeface = font
     } catch (ignored: Exception) {}
-
-    ViewCompat.setElevation(this.view, 6f)
 }
