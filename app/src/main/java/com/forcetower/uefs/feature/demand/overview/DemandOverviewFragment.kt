@@ -47,6 +47,7 @@ import com.forcetower.uefs.widget.BottomSheetBehavior
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_COLLAPSED
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_EXPANDED
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_HIDDEN
+import timber.log.Timber
 import javax.inject.Inject
 
 class DemandOverviewFragment: UFragment(), Injectable {
@@ -75,23 +76,19 @@ class DemandOverviewFragment: UFragment(), Injectable {
         return binding.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         behavior = BottomSheetBehavior.from(binding.demandOverviewSheet)
 
         val offersAdapter = OffersOverviewAdapter(this, viewModel)
         binding.selectedRecycler.apply {
             adapter = offersAdapter
             setHasFixedSize(true)
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    binding.sheetHeaderShadow.isActivated = recyclerView.canScrollVertically(-1)
-                }
-            })
         }
 
         viewModel.offers.observe(this, Observer {
             when (it.status) {
-                Status.SUCCESS -> offersAdapter.submitList(it.data!!)
+                Status.SUCCESS -> offersAdapter.submitList(it.data!!.filter { d -> d.selected })
                 Status.ERROR -> Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
                 Status.LOADING -> {
                     val data = it.data
@@ -107,7 +104,7 @@ class DemandOverviewFragment: UFragment(), Injectable {
         })
 
         binding.collapseArrow.setOnClickListener {
-            behavior.state = if (behavior.skipCollapsed) STATE_HIDDEN else STATE_COLLAPSED
+            behavior.state = STATE_COLLAPSED
         }
 
         binding.demandOverviewSheet.doOnLayout {

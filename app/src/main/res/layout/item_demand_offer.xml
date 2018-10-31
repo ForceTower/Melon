@@ -85,8 +85,8 @@
             tools:text="Metodologia do Trabalho Científico em Engenharia de Computação" />
     
         <ImageView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="16dp"
@@ -94,6 +94,7 @@
             tools:src="@drawable/ic_lock_black_24dp"
             android:contentDescription="@string/demand_discipline_status"
             app:disciplineIcon="@{offer}"
+            android:scaleType="fitCenter"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_discipline_name"

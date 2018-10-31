@@ -38,6 +38,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ItemCardDemandOfferBinding
 import com.forcetower.uefs.databinding.ItemDemandHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
+import timber.log.Timber
 
 class DemandOffersAdapter(
     val lifecycleOwner: LifecycleOwner,
@@ -92,8 +93,12 @@ class DemandOffersAdapter(
         val list = mutableListOf<Any>()
         val copy = offers.toMutableList()
 
+        Timber.d("List size: ${offers.size}")
+
         val bugged = copy.filter { !it.selectable }
         copy -= bugged
+        
+        Timber.d("Bugged size: ${bugged.size}")
 
         val current = copy.filter { it.current }
         copy -= current

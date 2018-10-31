@@ -32,17 +32,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDemandOffersBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
-import com.forcetower.uefs.widget.BottomSheetBehavior
-import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_COLLAPSED
-import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_EXPANDED
-import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_HIDDEN
 import javax.inject.Inject
 
 class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
@@ -51,7 +49,6 @@ class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
 
     private lateinit var viewModel: DemandViewModel
     private lateinit var binding: FragmentDemandOffersBinding
-    private lateinit var bottomSheetBehavior: BottomSheetBehavior<*>
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
@@ -64,7 +61,6 @@ class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        bottomSheetBehavior = BottomSheetBehavior.from(view.findViewById(R.id.demand_overview_sheet))
 
         val offersAdapter = DemandOffersAdapter(this, viewModel)
         binding.offersRecycler.apply {
@@ -75,20 +71,16 @@ class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
                 changeDuration = 120L
                 removeDuration = 100L
             }
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    binding.incToolbar.appBar.elevation = if (recyclerView.canScrollVertically(-1)) getPixelsFromDp(requireContext(), 6) else 0f
+                }
+            })
         }
-        viewModel.offers.observe(this, Observer { offersAdapter.currentList = it.data!! })
-    }
-
-    override fun onBackPressed(): Boolean {
-        if (::bottomSheetBehavior.isInitialized && bottomSheetBehavior.state == STATE_EXPANDED) {
-            if (bottomSheetBehavior.isHideable && bottomSheetBehavior.skipCollapsed) {
-                bottomSheetBehavior.state = STATE_HIDDEN
-            } else {
-                bottomSheetBehavior.state = STATE_COLLAPSED
-            }
-            return true
-        }
-        return super.onBackPressed()
+        viewModel.offers.observe(this, Observer {
+            val data = it.data
+            if (data != null) offersAdapter.currentList = it.data
+        })
     }
 
 }
