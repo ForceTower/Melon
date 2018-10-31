@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.CalendarItem
@@ -45,6 +46,7 @@ import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresDocument
+import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.Teacher
@@ -59,8 +61,10 @@ import com.forcetower.uefs.core.storage.database.dao.ClassLocationDao
 import com.forcetower.uefs.core.storage.database.dao.ClassMaterialDao
 import com.forcetower.uefs.core.storage.database.dao.ClassStudentDao
 import com.forcetower.uefs.core.storage.database.dao.CourseDao
+import com.forcetower.uefs.core.storage.database.dao.DemandOfferDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
+import com.forcetower.uefs.core.storage.database.dao.FlagsDao
 import com.forcetower.uefs.core.storage.database.dao.GradeDao
 import com.forcetower.uefs.core.storage.database.dao.MessageDao
 import com.forcetower.uefs.core.storage.database.dao.ProfileDao
@@ -86,8 +90,10 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     Course::class,
     SagresDocument::class,
     SyncRegistry::class,
-    Teacher::class
-], version = 1, exportSchema = true)
+    Teacher::class,
+    SDemandOffer::class,
+    SagresFlags::class
+], version = 2, exportSchema = true)
 abstract class UDatabase: RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -107,4 +113,6 @@ abstract class UDatabase: RoomDatabase() {
     abstract fun syncRegistryDao(): SyncRegistryDao
     abstract fun classMaterialDao(): ClassMaterialDao
     abstract fun classItemDao(): ClassItemDao
+    abstract fun demandOfferDao(): DemandOfferDao
+    abstract fun flagsDao(): FlagsDao
 }

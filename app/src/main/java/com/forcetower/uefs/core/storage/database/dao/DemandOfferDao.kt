@@ -25,28 +25,36 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import androidx.room.Transaction
+import com.forcetower.sagres.database.model.SDemandOffer
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
+@Dao
+abstract class DemandOfferDao {
+    @Insert(onConflict = REPLACE)
+    protected abstract fun insert(offers: List<SDemandOffer>)
+
+    @Query("DELETE FROM SDemandOffer")
+    protected abstract fun deleteAll()
+
+    @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
+    abstract fun getAll(): LiveData<List<SDemandOffer>>
+
+    @Transaction
+    open fun defineDemandOffers(offers: List<SDemandOffer>) {
+        deleteAll()
+        insert(offers)
     }
+
+    @Query("UPDATE SDemandOffer SET selected = :select WHERE uid = :uid")
+    abstract fun updateOfferSelection(uid: Long, select: Boolean)
+
+    @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
+    abstract fun getAllDirect(): List<SDemandOffer>
 }

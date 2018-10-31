@@ -25,28 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.database.model
+package com.forcetower.uefs.core.storage.database
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.migration.Migration
+import androidx.sqlite.db.SupportSQLiteDatabase
 
-@Entity
-data class SDemandOffer (
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val id: String,
-    val code: String,
-    val name: String,
-    var selected: Boolean,
-    val category: String,
-    val hours: Int,
-    val completed: Boolean,
-    val available: Boolean,
-    val current: Boolean,
-    val selectable: Boolean,
-    val unavailable: Boolean
-) {
-    override fun toString(): String {
-        return name
+object M1TO2: Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val sagresFlagsTable = "SagresFlags"
+        val demandOfferTable = "SDemandOffer"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$sagresFlagsTable` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `demand_open` INTEGER NOT NULL)")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$demandOfferTable` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `id` TEXT NOT NULL, `code` TEXT NOT NULL, `name` TEXT NOT NULL, `selected` INTEGER NOT NULL, `category` TEXT NOT NULL, `hours` INTEGER NOT NULL, `completed` INTEGER NOT NULL, `available` INTEGER NOT NULL, `current` INTEGER NOT NULL, `selectable` INTEGER NOT NULL, `unavailable` INTEGER NOT NULL)")
+        database.execSQL("INSERT INTO `$sagresFlagsTable` (`uid`, `demand_open`) VALUES (1, 0)")
     }
 }
