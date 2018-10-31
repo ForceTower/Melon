@@ -76,7 +76,7 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
     override fun supportFragmentInjector() = fragmentInjector
 
     override fun onBackPressed() {
-        if (!currentFragment.onBackPressed()) {
+        if (!::currentFragment.isInitialized || !currentFragment.onBackPressed()) {
             super.onBackPressed()
         }
     }
