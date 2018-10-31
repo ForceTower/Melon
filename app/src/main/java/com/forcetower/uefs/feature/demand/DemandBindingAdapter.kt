@@ -50,7 +50,7 @@ fun disciplineIcon(iv: ImageView, offer: SDemandOffer?) {
         else -> R.drawable.ic_bug_report_black_24dp
     }
 
-    GlideApp.with(iv.context).load(drawable).into(iv)
+    GlideApp.with(iv.context).load(drawable).fitCenter().into(iv)
 }
 
 @BindingAdapter(value = ["animatedStrokeColor"])
@@ -73,15 +73,17 @@ fun strokeColor(cardView: MaterialCardView, offer: SDemandOffer?) {
     val tgt = ctx.getColor(next)
     if (tgt == old) return
 
-    val animation = ValueAnimator()
-    animation.setIntValues(old, tgt)
-    animation.setEvaluator(ArgbEvaluator())
-    animation.duration = 500
-    animation.repeatCount = 1
+    cardView.strokeColor = tgt
 
-    animation.addUpdateListener {
-        cardView.strokeColor = it.animatedValue as Int
-    }
-
-    animation.start()
+//    val animation = ValueAnimator()
+//    animation.setIntValues(old, tgt)
+//    animation.setEvaluator(ArgbEvaluator())
+//    animation.duration = 500
+//    animation.repeatCount = 1
+//
+//    animation.addUpdateListener {
+//        cardView.strokeColor = it.animatedValue as Int
+//    }
+//
+//    animation.start()
 }

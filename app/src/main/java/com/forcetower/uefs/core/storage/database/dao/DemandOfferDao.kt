@@ -43,7 +43,7 @@ abstract class DemandOfferDao {
     @Query("DELETE FROM SDemandOffer")
     protected abstract fun deleteAll()
 
-    @Query("SELECT * FROM SDemandOffer")
+    @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
     abstract fun getAll(): LiveData<List<SDemandOffer>>
 
     @Transaction

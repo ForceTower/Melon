@@ -75,7 +75,7 @@
             app:layout_behavior="com.forcetower.uefs.widget.BottomSheetBehavior"
             app:behavior_peekHeight="@dimen/bottom_sheet_peek_height"
             app:behavior_skipCollapsed="true"
-            app:behavior_hideable="true"
+            app:behavior_hideable="false"
             tools:layout="@layout/fragment_demand_overview"/>
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
