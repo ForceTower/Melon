@@ -32,6 +32,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.annotation.ViewModelKey
 import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
+import com.forcetower.uefs.core.vm.SnackbarViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
@@ -132,6 +133,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DemandViewModel::class)
     abstract fun bindDemandViewModel(vm: DemandViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SnackbarViewModel::class)
+    abstract fun bindSnackbarViewModel(vm: SnackbarViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
