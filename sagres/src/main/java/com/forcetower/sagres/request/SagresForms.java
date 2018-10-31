@@ -29,13 +29,16 @@ package com.forcetower.sagres.request;
 
 import androidx.annotation.NonNull;
 import com.forcetower.sagres.Constants;
+import com.forcetower.sagres.database.model.SDemandOffer;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
+import org.jetbrains.annotations.NotNull;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class SagresForms {
@@ -99,5 +102,33 @@ public class SagresForms {
         }
 
         return builderIn;
+    }
+
+    @NotNull
+    public static RequestBody makeFormBodyForDemand(@NotNull List<SDemandOffer> list, @NotNull Document document) {
+        FormBody.Builder form = new FormBody.Builder();
+
+        for (SDemandOffer offer : list) {
+            form.add(offer.getId(), Boolean.toString(offer.getSelected()));
+        }
+
+        Elements elements = document.select("input[value][type=\"hidden\"]");
+        for (Element element : elements) {
+            String key = element.attr("id");
+            String value = element.attr("value");
+
+            if (value.trim().isEmpty() && !key.equalsIgnoreCase("__EVENTTARGET") && !key.equalsIgnoreCase("__EVENTARGUMENT") && !key.equalsIgnoreCase("__VIEWSTATE")) {
+                value = "eyJfcmVhbFR5cGUiOnRydWV9";
+            }
+
+            if (!key.endsWith("hfChecked")) {
+                form.add(key, value);
+            }
+        }
+
+        form.add("ctl00$smpManager", "ctl00$MasterPlaceHolder$UpdatePanel1|ctl00$MasterPlaceHolder$btnSalvar");
+        form.add("__ASYNCPOST", "false");
+        form.add("ctl00$MasterPlaceHolder$btnSalvar", "Salvar");
+        return form.build();
     }
 }

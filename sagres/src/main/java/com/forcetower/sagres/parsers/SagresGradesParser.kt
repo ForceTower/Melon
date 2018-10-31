@@ -53,7 +53,6 @@ object SagresGradesParser {
             }
             return list
         } else {
-            //TODO place crashlytics here
             return list
         }
     }

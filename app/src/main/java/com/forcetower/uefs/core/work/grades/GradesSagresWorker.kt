@@ -42,7 +42,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GradesSagresWorker(
-        context : Context, params : WorkerParameters
+    context : Context, params : WorkerParameters
 ): Worker(context, params) {
     @Inject
     lateinit var repository: SagresGradesRepository
