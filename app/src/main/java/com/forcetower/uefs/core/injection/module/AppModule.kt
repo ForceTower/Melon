@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.storage.database.M1TO2
 import com.forcetower.uefs.core.storage.database.UDatabase
 import dagger.Module
 import dagger.Provides
@@ -57,7 +58,8 @@ object AppModule {
     @JvmStatic
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
-                    .fallbackToDestructiveMigration()
-                    .build()
+                .addMigrations(M1TO2)
+                .fallbackToDestructiveMigration()
+                .build()
 
 }
