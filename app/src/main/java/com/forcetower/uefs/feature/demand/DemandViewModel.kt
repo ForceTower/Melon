@@ -27,21 +27,30 @@
 
 package com.forcetower.uefs.feature.demand
 
+import android.content.Context
+import android.widget.Toast
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.Event
 import timber.log.Timber
 import javax.inject.Inject
 
 class DemandViewModel @Inject constructor(
-    private val repository: DemandRepository
+    private val repository: DemandRepository,
+    private val context: Context
 ): ViewModel(), OfferActions {
     private var loaded = false
+
+    private val _snackbar = MutableLiveData<Event<String>>()
+    val snackbarMessage: LiveData<Event<String>>
+        get() = _snackbar
 
     private val _loading = MutableLiveData<Boolean>()
     val loading: LiveData<Boolean>
@@ -89,6 +98,8 @@ class DemandViewModel @Inject constructor(
         Timber.d("Offer clicked: ${offer.code}")
         if (!offer.selectable || offer.completed || offer.unavailable) {
             Timber.d("Select something valid")
+            Toast.makeText(context, context.getString(R.string.demand_select_valid_discipline), Toast.LENGTH_SHORT).show()
+            //showSnack(context.getString(R.string.demand_select_valid_discipline))
             return
         }
 
@@ -104,9 +115,15 @@ class DemandViewModel @Inject constructor(
     override fun onConfirmOffers() {
         Timber.d("Confirm offers!")
         repository.confirmOptions()
+        Toast.makeText(context, context.getString(R.string.demand_will_be_created_notification), Toast.LENGTH_SHORT).show()
+        //showSnack(context.getString(R.string.demand_will_be_created_notification))
     }
 
     override fun onClearOffers() {
         Timber.d("Clear all offers")
+    }
+
+    fun showSnack(message: String) {
+        _snackbar.value = Event(message)
     }
 }

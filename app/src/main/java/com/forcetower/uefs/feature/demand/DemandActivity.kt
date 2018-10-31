@@ -33,23 +33,34 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.EventObserver
+import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityDemandBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.config
 import com.forcetower.uefs.feature.shared.inTransaction
+import com.forcetower.uefs.feature.shared.provideViewModel
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import timber.log.Timber
 import javax.inject.Inject
 
 class DemandActivity: UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var factory: UViewModelFactory
+
     private lateinit var binding: ActivityDemandBinding
     private lateinit var currentFragment: NavigationFragment
+    private lateinit var viewModel: DemandViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_demand)
+        viewModel = provideViewModel(factory)
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
@@ -58,6 +69,8 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
                 add(R.id.fragment_container, fragment)
             }
         }
+
+        viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
     }
 
     override fun supportFragmentInjector() = fragmentInjector
@@ -66,6 +79,13 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
         if (!currentFragment.onBackPressed()) {
             super.onBackPressed()
         }
+    }
+
+    override fun showSnack(string: String) {
+        Timber.d("Show snack called on activity")
+        val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
+        snack.config(pxElevation = 8)
+        snack.show()
     }
 
     companion object {
