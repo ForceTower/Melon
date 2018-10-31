@@ -349,6 +349,8 @@
     <string name="demand_status_locked">Bloqueadas</string>
     <string name="demand_total_hours_label">Total de Horas:</string>
     <string name="demand_notification_title">Resultado da demanda</string>
+    <string name="demand_select_valid_discipline">Selecione uma disciplina válida</string>
+    <string name="demand_will_be_created_notification">Uma notificação será mostrada com o resultado em breve</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

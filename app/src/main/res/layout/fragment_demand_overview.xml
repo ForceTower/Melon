@@ -186,6 +186,7 @@
             android:orientation="vertical"
             android:scrollbarStyle="outsideOverlay"
             android:scrollbars="vertical"
+            android:paddingBottom="36dp"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
