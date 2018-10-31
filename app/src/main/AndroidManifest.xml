@@ -90,6 +90,9 @@
             android:name=".feature.settings.SettingsActivity"
             android:theme="@style/UTheme.LightNav"/>
         
+        <activity android:name=".feature.demand.DemandActivity"
+            android:theme="@style/UTheme.LightNav"/>
+        
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />

@@ -61,7 +61,7 @@ data class Class(
 ) {
 
     fun selectiveCopy(dis: SDiscipline) {
-        if (!dis.nextClass.isNullOrBlank()) nextClass = dis.nextClass;
+        if (!dis.nextClass.isNullOrBlank()) nextClass = dis.nextClass
         if (!dis.lastClass.isNullOrBlank()) lastClass = dis.lastClass
         if (dis.missedClasses >= 0) missedClasses = dis.missedClasses
         if (!dis.situation.isNullOrBlank()) status = dis.situation

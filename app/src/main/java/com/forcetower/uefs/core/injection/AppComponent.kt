@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.injection
 
+import com.forcetower.sagres.operation.demand.CreateDemandOperation
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.injection.module.ActivityModule
 import com.forcetower.uefs.core.injection.module.AppModule
@@ -36,6 +37,7 @@ import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
@@ -71,4 +73,5 @@ interface AppComponent {
     fun inject(worker: SyncMainWorker)
     fun inject(worker: SyncLinkedWorker)
     fun inject(worker: GradesSagresWorker)
+    fun inject(worker: CreateDemandWorker)
 }

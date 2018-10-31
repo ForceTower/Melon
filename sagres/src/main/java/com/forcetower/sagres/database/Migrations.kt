@@ -30,14 +30,12 @@ package com.forcetower.sagres.database
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-object Migrations {
-    object MIGRATION_1_2: Migration(1, 2) {
-        override fun migrate(database: SupportSQLiteDatabase) {
-            val tableName = "SPerson"
-            database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `exhibitionName` TEXT, `cpf` TEXT, `email` TEXT, `sagres_id` TEXT)")
-            database.execSQL("CREATE UNIQUE INDEX `index_SPerson_sagres_id` ON `$tableName` (`sagres_id`)")
-            database.execSQL("CREATE  INDEX `index_SPerson_cpf` ON `$tableName` (`cpf`)")
-            database.execSQL("CREATE  INDEX `index_SPerson_email` ON `$tableName` (`email`)")
-        }
+object M1TO2: Migration(1, 2) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val tableName = "SPerson"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `exhibitionName` TEXT, `cpf` TEXT, `email` TEXT, `sagres_id` TEXT)")
+        database.execSQL("CREATE UNIQUE INDEX `index_SPerson_sagres_id` ON `$tableName` (`sagres_id`)")
+        database.execSQL("CREATE  INDEX `index_SPerson_cpf` ON `$tableName` (`cpf`)")
+        database.execSQL("CREATE  INDEX `index_SPerson_email` ON `$tableName` (`email`)")
     }
 }
