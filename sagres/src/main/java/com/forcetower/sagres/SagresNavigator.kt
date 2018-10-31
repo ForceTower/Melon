@@ -32,8 +32,11 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.database.SagresDatabase
+import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.sagres.impl.SagresNavigatorImpl
 import com.forcetower.sagres.operation.calendar.CalendarCallback
+import com.forcetower.sagres.operation.demand.DemandCreatorCallback
+import com.forcetower.sagres.operation.demand.DemandOffersCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.document.DocumentCallback
 import com.forcetower.sagres.operation.grades.GradesCallback
@@ -104,6 +107,15 @@ abstract class SagresNavigator {
 
     @WorkerThread
     abstract fun loadDisciplineDetails(semester: String, code: String, group: String): DisciplineDetailsCallback
+
+    @AnyThread
+    abstract fun aLoadDemandOffers(): LiveData<DemandOffersCallback>
+
+    @WorkerThread
+    abstract fun loadDemandOffers(): DemandOffersCallback
+
+    @WorkerThread
+    abstract fun createDemandOffer(offers: List<SDemandOffer>): DemandCreatorCallback
 
     @AnyThread
     abstract fun stopTags(tag: String)

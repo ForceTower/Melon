@@ -51,7 +51,7 @@ abstract class SagresDatabase : RoomDatabase() {
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun create(context: Context): SagresDatabase {
             return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
-                .addMigrations(Migrations.MIGRATION_1_2)
+                .addMigrations(M1TO2)
                 .fallbackToDestructiveMigration()
                 .allowMainThreadQueries()
                 .build()

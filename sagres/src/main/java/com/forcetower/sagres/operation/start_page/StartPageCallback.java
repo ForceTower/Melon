@@ -43,6 +43,7 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
     private List<SDisciplineGroup> groups;
     @Nullable
     private List<SDisciplineClassLocation> locations;
+    private boolean demandOpen = false;
 
     public StartPageCallback(@NonNull Status status) {
         super(status);
@@ -73,6 +74,11 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
         return this;
     }
 
+    public StartPageCallback demandOpen(boolean demandOpen) {
+        this.demandOpen = demandOpen;
+        return this;
+    }
+
     @Nullable
     public List<SCalendar> getCalendar() {
         return calendar;
@@ -93,5 +99,9 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
     @Nullable
     public List<SDisciplineClassLocation> getLocations() {
         return locations;
+    }
+
+    public boolean isDemandOpen() {
+        return demandOpen;
     }
 }

@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
+import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
@@ -70,7 +71,10 @@ class SagresSyncRepository @Inject constructor(
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
         access?: Timber.d("Access is null, sync will not continue")
-        if (access != null) execute(access, registry)
+        if (access != null) {
+            //Only one sync may be active at a time
+            synchronized(S_LOCK) { execute(access, registry) }
+        }
         else {
             registry.completed = true
             registry.error = -1
@@ -218,6 +222,7 @@ class SagresSyncRepository @Inject constructor(
                 defineDisciplines(start.disciplines)
                 defineDisciplineGroups(start.groups)
                 defineSchedule(start.locations)
+                defineDemand(start.isDemandOpen)
 
                 Timber.d("Semesters: ${start.semesters}")
                 Timber.d("Disciplines:  ${start.disciplines}")
@@ -330,8 +335,19 @@ class SagresSyncRepository @Inject constructor(
         database.calendarDao().deleteAndInsert(values)
     }
 
+    private fun defineDemand(demandOpen: Boolean) {
+        val flags = database.flagsDao().getFlagsDirect()
+        if (flags == null) database.flagsDao().insertFlags(SagresFlags())
+
+        database.flagsDao().updateDemand(demandOpen)
+    }
+
     private fun produceErrorMessage(callback: BaseCallback<*>) {
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
+    }
+
+    companion object {
+        private val S_LOCK = Any()
     }
 
 }

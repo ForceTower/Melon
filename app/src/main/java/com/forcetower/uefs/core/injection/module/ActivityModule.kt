@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.LauncherActivity
 import com.forcetower.uefs.feature.about.AboutActivity
+import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
@@ -59,4 +60,6 @@ abstract class ActivityModule {
     abstract fun bindRemindersActivity(): RemindersActivity
     @ContributesAndroidInjector(modules = [SettingsModule::class])
     abstract fun bindSettingsActivity(): SettingsActivity
+    @ContributesAndroidInjector(modules = [DemandModule::class])
+    abstract fun bindDemandActivity(): DemandActivity
 }

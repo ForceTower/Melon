@@ -68,14 +68,13 @@ object SagresMessageParser {
         return messages
     }
 
-    //private fun extractInfoArticle(article: String): SMessage? {
+//    private fun extractInfoArticle(article: String): SMessage? {
 //        val clazz = extractArticleForm1(MESSAGE_CLASS_RECEIVED, article)
 //        val date = extractArticleForm1(MESSAGE_DATE_RECEIVED, article)
 //        val message = extractArticleForm2(MESSAGE_MESSAGE_RECEIVED, article)
 //        val from = extractArticleForm2(MESSAGE_FROM_RECEIVED, article)
-        //TODO Figure this out
-        //return null
-    //}
+//        return null
+//    }
 
     private fun extractArticleForm2(regex: String, article: String): String? {
         val startRRE = article.indexOf(regex)

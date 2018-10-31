@@ -164,4 +164,22 @@ public class SagresRequests {
                 .addHeader("cache-control", "no-cache")
                 .build();
     }
+
+    @NotNull
+    public static Request getDemandPage() {
+        return new Request.Builder()
+                .url(Constants.SAGRES_DEMAND_OFFERS)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
+
+    @NotNull
+    public static Request createDemandWithParams(@NotNull RequestBody body) {
+        return new Request.Builder()
+                .url(Constants.SAGRES_DEMAND_OFFERS)
+                .post(body)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .build();
+    }
 }
