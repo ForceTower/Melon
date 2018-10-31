@@ -27,6 +27,8 @@
 
 package com.forcetower.uefs.feature.demand
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -63,6 +65,12 @@ class DemandActivity: UActivity(), HasSupportFragmentInjector {
     override fun onBackPressed() {
         if (!currentFragment.onBackPressed()) {
             super.onBackPressed()
+        }
+    }
+
+    companion object {
+        fun startIntent(context: Context): Intent {
+            return Intent(context, DemandActivity::class.java)
         }
     }
 }
