@@ -31,7 +31,7 @@ import com.forcetower.sagres.database.model.SDemandOffer
 
 interface OfferActions {
     fun onOfferClick(offer: SDemandOffer)
-    fun onOfferLongClick(offer: SDemandOffer)
+    fun onOfferLongClick(offer: SDemandOffer): Boolean
     fun onConfirmOffers()
     fun onClearOffers()
 }

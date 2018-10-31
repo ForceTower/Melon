@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.work.grades
+package com.forcetower.uefs.core.work.demand
 
 import android.content.Context
 import androidx.work.BackoffPolicy
@@ -34,49 +34,40 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
+import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class GradesSagresWorker(
+class CreateDemandWorker (
     context : Context, params : WorkerParameters
 ): Worker(context, params) {
     @Inject
-    lateinit var repository: SagresGradesRepository
+    lateinit var repository: DemandRepository
+
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
-        val semesterId = inputData.getLong(SEMESTER_ID, 0)
-        val result = repository.getGrades(semesterId)
-        return when {
-            result >=  0 -> Result.SUCCESS
-            result >= -2 -> Result.FAILURE
-            else -> Result.RETRY
-        }
+        repository.executeCreateDemand()
+        return Result.SUCCESS
     }
 
     companion object {
-        private const val TAG = "grades_download_worker"
-        private const val NAME = "worker_grades_downloader_"
-        private const val SEMESTER_ID = "worker_semester_id"
+        private const val TAG = "create_demand_worker"
+        private const val NAME = "demand_worker"
 
-        fun createWorker(semesterId: Long) {
+        fun createWorker() {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
-            val data = workDataOf(SEMESTER_ID to semesterId)
+            val request = OneTimeWorkRequestBuilder<CreateDemandWorker>()
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
 
-            val request = OneTimeWorkRequestBuilder<GradesSagresWorker>()
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .addTag(TAG)
-                    .build()
-
-            request.enqueueUnique(NAME + semesterId, true)
+            request.enqueueUnique(NAME, true)
         }
     }
 }

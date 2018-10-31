@@ -39,7 +39,6 @@
             type="androidx.databinding.ObservableFloat"/>
     </data>
     
-    <!--android:background="@drawable/rounded_bottom_sheet_background"-->
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/demand_overview_sheet"
         android:layout_width="match_parent"
@@ -134,7 +133,7 @@
             android:id="@+id/text_selected_hours_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Total de Horas:"
+            android:text="@string/demand_total_hours_label"
             android:textColor="@color/text_primary_dark"
             android:textSize="15sp"
             android:layout_marginTop="16dp"
@@ -156,6 +155,7 @@
     
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm_button"
+            android:onClick="@{() -> viewModel.onConfirmOffers()}"
             style="@style/Widget.MaterialComponents.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
