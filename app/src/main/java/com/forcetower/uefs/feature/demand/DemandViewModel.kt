@@ -98,7 +98,6 @@ class DemandViewModel @Inject constructor(
         Timber.d("Offer clicked: ${offer.code}")
         if (!offer.selectable || offer.completed || offer.unavailable) {
             Timber.d("Select something valid")
-            Toast.makeText(context, context.getString(R.string.demand_select_valid_discipline), Toast.LENGTH_SHORT).show()
             showSnack(context.getString(R.string.demand_select_valid_discipline))
             return
         }
@@ -115,7 +114,6 @@ class DemandViewModel @Inject constructor(
     override fun onConfirmOffers() {
         Timber.d("Confirm offers!")
         repository.confirmOptions()
-        Toast.makeText(context, context.getString(R.string.demand_will_be_created_notification), Toast.LENGTH_SHORT).show()
         showSnack(context.getString(R.string.demand_will_be_created_notification))
     }
 
