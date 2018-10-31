@@ -351,6 +351,8 @@
     <string name="demand_notification_title">Resultado da demanda</string>
     <string name="demand_select_valid_discipline">Selecione uma disciplina válida</string>
     <string name="demand_will_be_created_notification">Uma notificação será mostrada com o resultado em breve</string>
+    <string name="demand_update_title">Demanda Web!</string>
+    <string name="demand_update_content">A demanda web agora pode ser feita através do aplicativo. Está em fase beta, então é possível encontrar erros</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
