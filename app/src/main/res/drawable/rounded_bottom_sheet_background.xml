@@ -30,8 +30,8 @@
     android:shape="rectangle">
     
     <corners
-        android:topLeftRadius="@dimen/bottom_sheet_corner_radius"
-        android:topRightRadius="@dimen/bottom_sheet_corner_radius" />
+        android:topLeftRadius="@dimen/bottom_sheet_corner_radius_common"
+        android:topRightRadius="@dimen/bottom_sheet_corner_radius_common" />
     
     <solid android:color="@color/white" />
 
