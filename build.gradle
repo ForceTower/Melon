@@ -46,7 +46,7 @@ ext {
     paging_version = "2.0.0"
     room_version = "2.0.0"
     lifecycle_version = "2.0.0"
-    nav_version = "1.0.0-alpha06"
+    nav_version = "1.0.0-alpha07"
     work_version = "1.0.0-alpha10"
 
     //Dagger
