@@ -36,6 +36,8 @@ public class WordUtils {
         if (givenString == null)
             return null;
 
+        givenString = givenString.toLowerCase();
+
         String[] arr = givenString.split(" ");
         StringBuilder sb = new StringBuilder();
 
