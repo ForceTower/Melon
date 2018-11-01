@@ -53,7 +53,7 @@
             android:layout_height="wrap_content">
 
             <TextView
-                android:id="@+id/text_message_sender"
+                android:id="@+id/text_message_discipline"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
@@ -61,25 +61,36 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="UEFS"
-                android:text="@{message.senderName}"
+                tools:text="Métodologia do Trabalho Cientifico"
+                app:disciplineText="@{message}"
                 android:textColor="?attr/colorAccent"/>
-
-
+    
+            <TextView
+                android:id="@+id/text_message_sender"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                app:senderName="@{message}"
+                android:textColor="@color/text_secondary_dark"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_message_discipline"
+                tools:text="Rosária da Paixão Trindade"/>
+            
             <TextView
                 android:id="@+id/text_message_content"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
-                tools:text="@sample/messages.json/data/message"
-                app:messageContent="@{message.content}"
+                android:layout_marginTop="8dp"
                 android:textColor="@color/text_primary_dark"
-                android:textSize="14sp"
+                android:textSize="15sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_message_sender" />
+                app:layout_constraintTop_toBottomOf="@+id/text_message_sender"
+                app:messageContent="@{message.content}"
+                tools:text="@sample/messages.json/data/message" />
 
             <TextView
                 android:id="@+id/text_message_received_at"

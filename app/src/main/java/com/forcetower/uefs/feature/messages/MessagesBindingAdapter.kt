@@ -29,12 +29,43 @@ package com.forcetower.uefs.feature.messages
 
 import android.text.SpannableString
 import android.text.util.Linkify
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.forcetower.sagres.utils.WordUtils
+import com.forcetower.uefs.core.model.unes.Message
 
 @BindingAdapter("messageContent")
 fun messageContent(tv: TextView, content: String) {
     val spannable = SpannableString(content)
     Linkify.addLinks(spannable, Linkify.WEB_URLS)
     tv.text = spannable
+}
+
+@BindingAdapter("disciplineText")
+fun disciplineText(tv: TextView, message: Message?) {
+    message?: return
+    var discipline = message.discipline
+    if (discipline == null && message.senderProfile == 3) discipline = "UEFS"
+
+    val text = discipline?: message.senderName
+    val title = WordUtils.toTitleCase(text)
+    tv.text = title
+}
+
+@BindingAdapter("senderName")
+fun senderText(tv: TextView, message: Message?) {
+    message?: return
+    var discipline = message.discipline
+    if (discipline == null && message.senderProfile == 3) discipline = "UEFS"
+
+    if (discipline == null) {
+        tv.visibility = GONE
+    } else {
+        tv.visibility = VISIBLE
+        val text = message.senderName
+        val title = WordUtils.toTitleCase(text)
+        tv.text = title?: "::unknown::"
+    }
 }
