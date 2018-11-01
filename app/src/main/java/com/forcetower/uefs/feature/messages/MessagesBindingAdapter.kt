@@ -47,7 +47,7 @@ fun messageContent(tv: TextView, content: String) {
 fun disciplineText(tv: TextView, message: Message?) {
     message?: return
     var discipline = message.discipline
-    if (discipline == null && message.senderProfile == 3) discipline = "UEFS"
+    if (discipline == null && message.senderProfile == 3) discipline = "Secretaria Acadêmica"
 
     val text = discipline?: message.senderName
     val title = WordUtils.toTitleCase(text)
@@ -58,7 +58,7 @@ fun disciplineText(tv: TextView, message: Message?) {
 fun senderText(tv: TextView, message: Message?) {
     message?: return
     var discipline = message.discipline
-    if (discipline == null && message.senderProfile == 3) discipline = "UEFS"
+    if (discipline == null && message.senderProfile == 3) discipline = "Secretaria Acadêmica"
 
     if (discipline == null) {
         tv.visibility = GONE
