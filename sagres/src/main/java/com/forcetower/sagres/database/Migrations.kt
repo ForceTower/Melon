@@ -39,3 +39,19 @@ object M1TO2: Migration(1, 2) {
         database.execSQL("CREATE  INDEX `index_SPerson_email` ON `$tableName` (`email`)")
     }
 }
+
+object M2TO3: Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val messageScopeTable = "SMessageScope"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$messageScopeTable` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sagres_id` TEXT, `clazz_link` TEXT)")
+        database.execSQL("CREATE UNIQUE INDEX `index_SMessageScope_sagres_id` ON `$messageScopeTable` (`sagres_id`)")
+
+        val classTable = "SClass"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$classTable` (`id` INTEGER NOT NULL, `description` TEXT, `kind` TEXT, `link` TEXT, `discipline_link` TEXT, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE UNIQUE INDEX `index_SClass_link` ON `$classTable` (`link`)")
+
+        val disciplineResumedTable = "SDisciplineResumed"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$disciplineResumedTable` (`id` INTEGER NOT NULL, `code` TEXT, `name` TEXT, `resumed_name` TEXT, `objective` TEXT, `department_link` TEXT, `link` TEXT, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE UNIQUE INDEX `index_SDisciplineResumed_link` ON `$disciplineResumedTable` (`link`)")
+    }
+}
