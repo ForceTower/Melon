@@ -223,6 +223,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
                 val department = disciplined.department
                 if (department != null) {
                     disciplined.departmentLink = department.link
+                    disciplined.link = link
                     SagresNavigator.instance.database.disciplineDao().insert(disciplined)
                 }
                 return disciplined
