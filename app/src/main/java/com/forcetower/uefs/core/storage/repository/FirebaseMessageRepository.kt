@@ -79,9 +79,10 @@ class FirebaseMessageRepository @Inject constructor(
     private fun teacherNotification(data: Map<String, String>) {
         val message = data["message"]
         val teacher = data["teacher"]
+        val discipline = data["discipline"]
         val timestamp = data["timestamp"]
 
-        if (message == null || teacher == null || timestamp == null) {
+        if (message == null || teacher == null || timestamp == null || discipline == null) {
             Crashlytics.log("Invalid notification received. No message, teacher or timestamp")
             return
         }
@@ -92,7 +93,7 @@ class FirebaseMessageRepository @Inject constructor(
             return
         }
 
-        val default = Message(content = message, sagresId = System.currentTimeMillis(), notified = true, senderName = teacher, senderProfile = -2, timestamp = sent)
+        val default = Message(content = message, sagresId = System.currentTimeMillis(), notified = true, senderName = teacher, senderProfile = -2, timestamp = sent, discipline = discipline)
         val uid = database.messageDao().insert(default)
         NotificationCreator.showSagresMessageNotification(default, context, uid)
     }
