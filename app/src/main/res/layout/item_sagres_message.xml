@@ -61,7 +61,7 @@
                 android:textSize="20sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Métodologia do Trabalho Cientifico"
+                tools:text="Métodologia do Trabalho Científico"
                 app:disciplineText="@{message}"
                 android:textColor="?attr/colorAccent"/>
     
