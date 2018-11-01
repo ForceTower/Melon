@@ -32,8 +32,6 @@ import androidx.annotation.Nullable;
 import com.forcetower.sagres.database.Timestamped;
 import com.google.gson.annotations.SerializedName;
 
-import java.text.ParseException;
-
 public class SMessage implements Comparable<SMessage>, Timestamped {
     @SerializedName("id")
     private long sagresId;
@@ -45,16 +43,21 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     private int senderProfile;
     @Nullable
     private String senderName;
+    @Nullable
+    private String discipline;
     @SerializedName(value = "remetente")
     private SLinker sender;
+    @SerializedName(value = "escopos")
+    private SLinker scopes;
 
-    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName) {
+    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName, SLinker scopes) {
         this.sagresId = sagresId;
         this.timestamp = timestamp;
         this.sender = sender;
         this.message = message;
         this.senderProfile = senderProfile;
         this.senderName = senderName;
+        this.scopes = scopes;
     }
 
     public long getSagresId() {
@@ -122,6 +125,24 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
 
     @Override
     public String toString() {
-        return getSenderName();
+        String name = getSenderName();
+        return name == null ? "null" : name;
+    }
+
+    public SLinker getScopes() {
+        return scopes;
+    }
+
+    public void setScopes(SLinker scopes) {
+        this.scopes = scopes;
+    }
+
+    @Nullable
+    public String getDiscipline() {
+        return discipline;
+    }
+
+    public void setDiscipline(@Nullable String discipline) {
+        this.discipline = discipline;
     }
 }

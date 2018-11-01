@@ -39,3 +39,9 @@ object M1TO2: Migration(1, 2) {
         database.execSQL("INSERT INTO `$sagresFlagsTable` (`uid`, `demand_open`) VALUES (1, 0)")
     }
 }
+
+object M2TO3: Migration(2, 3) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Message ADD COLUMN discipline TEXT DEFAULT NULL")
+    }
+}

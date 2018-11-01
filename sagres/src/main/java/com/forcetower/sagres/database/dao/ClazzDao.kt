@@ -25,41 +25,19 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.sagres.database.dao
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.preference.PreferenceManager
-import androidx.room.Room
-import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.storage.database.M1TO2
-import com.forcetower.uefs.core.storage.database.M2TO3
-import com.forcetower.uefs.core.storage.database.UDatabase
-import dagger.Module
-import dagger.Provides
-import javax.inject.Singleton
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.forcetower.sagres.database.model.SClass
 
-@Module
-object AppModule {
+@Dao
+interface ClazzDao {
+    @Insert(onConflict = REPLACE)
+    fun insert(clazz: SClass)
 
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun provideContext(application: UApplication): Context = application.applicationContext
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun provideSharedPreferences(context: Context): SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context)
-
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun provideDatabase(context: Context): UDatabase =
-            Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
-                .addMigrations(M1TO2, M2TO3)
-                .build()
-
+    @Query("SELECT * FROM SClass WHERE link = :link")
+    fun getClazzDirect(link: String): SClass?
 }
