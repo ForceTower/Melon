@@ -54,11 +54,15 @@
 
             <TextView
                 android:id="@+id/text_message_discipline"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
-                android:textSize="20sp"
+                android:layout_marginEnd="16dp"
+                android:textColor="?attr/colorAccent"
+                android:textSize="18sp"
+                app:disciplineText="@{message}"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Métodologia do Trabalho Científico"
@@ -67,15 +71,18 @@
     
             <TextView
                 android:id="@+id/text_message_sender"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                app:senderName="@{message}"
+                android:layout_marginEnd="16dp"
+                android:layout_marginTop="4dp"
                 android:textColor="@color/text_secondary_dark"
-                android:textSize="14sp"
+                android:textSize="13sp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_message_discipline"
-                tools:text="Rosária da Paixão Trindade"/>
+                app:senderName="@{message}"
+                tools:text="Rosária da Paixão Trindade" />
             
             <TextView
                 android:id="@+id/text_message_content"
