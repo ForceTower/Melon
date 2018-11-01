@@ -28,7 +28,10 @@
 package com.forcetower.uefs.service
 
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.Context
+import android.content.Intent
 import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
@@ -38,6 +41,8 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.feature.home.HomeActivity
+import com.forcetower.uefs.feature.shared.toTitleCase
 import timber.log.Timber
 
 object NotificationCreator {
@@ -47,13 +52,12 @@ object NotificationCreator {
             return
         }
 
-        //val pendingIntent = getPendingIntent(context, LoggedActivity::class.java, MESSAGES_FRAGMENT_SAGRES)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_MESSAGES_SAGRES_ID)
-                .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.senderName)
-                .setContentText(message.content)
-                .setStyle(createBigText(message.content))
-                //.setContentIntent(pendingIntent)
-                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
+            .setContentText(message.content)
+            .setStyle(createBigText(message.content))
+            .setContentIntent(createMessagesIntent(context))
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
 
         addOptions(context, builder)
         showNotification(context, uid, builder)
@@ -69,6 +73,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_created_title))
             .setContentText(message)
+            .setContentIntent(createGradesIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
             .setStyle(createBigText(message))
 
@@ -86,6 +91,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_changed_title))
             .setContentText(message)
+            .setContentIntent(createGradesIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
             .setStyle(createBigText(message))
 
@@ -103,6 +109,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_date_change_title))
             .setContentText(message)
+            .setContentIntent(createGradesIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
             .setStyle(createBigText(message))
 
@@ -136,6 +143,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_POSTED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_posted_title))
             .setContentText(message)
+            .setContentIntent(createGradesIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.yellow_pr))
             .setStyle(createBigText(message))
 
@@ -147,6 +155,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID)
             .setContentTitle(title)
             .setContentText(content)
+            .setContentIntent(createOpenIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.colorAccent))
             .setStyle(createBigText(content))
 
@@ -173,6 +182,7 @@ object NotificationCreator {
         val builder = notificationBuilder(context, channel)
             .setContentTitle(title)
             .setContentText(content)
+            .setContentIntent(createOpenIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.blue_accent))
             .setStyle(style)
 
@@ -222,6 +232,37 @@ object NotificationCreator {
             val ringtone = Uri.parse(preferences.getString("notifications_new_message_ringtone", "content://settings/system/notification_sound"))
             builder.setSound(ringtone)
         }
+    }
+
+    private fun createGradesIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_GRADES_DIRECTION)
+        }
+
+        return TaskStackBuilder.create(ctx)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createMessagesIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
+        }
+
+        return TaskStackBuilder.create(ctx)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createOpenIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java)
+
+        return TaskStackBuilder.create(ctx)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun shouldShowNotification(value: String, context: Context): Boolean {

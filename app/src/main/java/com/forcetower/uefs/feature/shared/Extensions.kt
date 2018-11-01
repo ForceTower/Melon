@@ -28,7 +28,14 @@
 package com.forcetower.uefs.feature.shared
 
 import android.app.Activity
+import android.content.Context
+import android.content.Intent
+import android.content.pm.ShortcutInfo
+import android.graphics.drawable.Icon
+import android.os.Build
 import android.os.Parcel
+import androidx.annotation.DrawableRes
+import androidx.annotation.RequiresApi
 import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
@@ -58,3 +65,13 @@ fun Activity.postponeEnterTransition(timeout: Long) {
 fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
 
 fun Parcel.readBoolean() = readInt() != 0
+
+
+@RequiresApi(Build.VERSION_CODES.N_MR1)
+fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: String): ShortcutInfo {
+    return ShortcutInfo.Builder(ctx, id)
+        .setShortLabel(name)
+        .setIcon(Icon.createWithResource(ctx, icon))
+        .setIntent(this)
+        .build()
+}
