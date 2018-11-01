@@ -40,10 +40,18 @@ abstract class MessageDao {
 
     fun insertIgnoring(messages: List<Message>) {
         for (message in messages) {
-            if (message.senderName != null) {
-                val direct = getMessageDirect(message.sagresId)
-                if (direct != null && direct.senderName.isNullOrBlank()) {
-                    updateSenderName(message.sagresId, message.senderName)
+            val direct = getMessageDirect(message.sagresId)
+            if (direct != null) {
+                if (message.senderName != null) {
+                    if (direct.senderName.isNullOrBlank()) {
+                        updateSenderName(message.sagresId, message.senderName)
+                    }
+                }
+
+                if (message.discipline != null) {
+                    if (direct.discipline.isNullOrBlank()) {
+                        updateDisciplineName(message.sagresId, message.discipline)
+                    }
                 }
             }
         }
@@ -51,14 +59,17 @@ abstract class MessageDao {
         insertIgnore(messages)
     }
 
+    @Query("UPDATE Message SET discipline = :discipline WHERE sagres_id = :sagresId")
+    protected abstract fun updateDisciplineName(sagresId: Long, discipline: String)
+
     @Query("UPDATE Message SET sender_name = :senderName WHERE sagres_id = :sagresId")
-    abstract fun updateSenderName(sagresId: Long, senderName: String)
+    protected abstract fun updateSenderName(sagresId: Long, senderName: String)
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
-    abstract fun insertIgnore(messages: List<Message>)
+    protected abstract fun insertIgnore(messages: List<Message>)
 
     @Insert(onConflict = REPLACE)
-    abstract fun insertReplace(messages: List<Message>)
+    protected abstract fun insertReplace(messages: List<Message>)
 
     @Query("SELECT * FROM Message WHERE sagres_id = :sagresId")
     abstract fun getMessageDirect(sagresId: Long): Message?

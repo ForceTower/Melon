@@ -95,6 +95,13 @@ object SagresCalls {
 
     @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
+    fun getLink(href: String): Call {
+        val request = SagresRequests.link(href)
+        return getCall(request)
+    }
+
+    @JvmStatic
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getMessages(userId: Long): Call {
         val request = SagresRequests.messages(userId)
         return getCall(request)

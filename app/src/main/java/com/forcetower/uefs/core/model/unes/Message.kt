@@ -53,11 +53,12 @@ data class Message(
     @ColumnInfo(name = "sender_name")
     val senderName: String?,
     val notified: Boolean = false,
+    val discipline: String? = null,
     val uuid: String = UUID.randomUUID().toString()
 ) {
 
     companion object {
-        fun fromMessage(me: SMessage, notified: Boolean) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis, notified = notified)
+        fun fromMessage(me: SMessage, notified: Boolean) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis, notified = notified, discipline = me.discipline)
     }
 }
 

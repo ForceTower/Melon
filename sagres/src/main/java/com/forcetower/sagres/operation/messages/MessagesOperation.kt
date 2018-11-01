@@ -28,8 +28,11 @@
 package com.forcetower.sagres.operation.messages
 
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.database.model.SClass
+import com.forcetower.sagres.database.model.SDisciplineResumed
 import com.forcetower.sagres.database.model.SLinker
 import com.forcetower.sagres.database.model.SMessage
+import com.forcetower.sagres.database.model.SMessageScope
 import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.operation.Dumb
 import com.forcetower.sagres.operation.Operation
@@ -66,7 +69,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
 
     private fun successMeasures(body: String) {
         try {
-            val type = object : TypeToken<Dumb<ArrayList<SMessage>>>() {}.type
+            val type = object: TypeToken<Dumb<ArrayList<SMessage>>>() {}.type
             val dMessages = Gson().fromJson<Dumb<ArrayList<SMessage>>>(body, type)
             val items = dMessages.items
             items.sort()
@@ -79,6 +82,21 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
                         message.senderName = ".UEFS."
                     }
                     Timber.d("SPerson is Invalid")
+                }
+
+                //Message is from a teacher
+                if (message.senderProfile == 2) {
+                    val scope = getScope(message.scopes)
+                    if (scope != null) {
+                        val clazz = getClazz(scope)
+                        if (clazz != null) {
+                            val discipline = getDiscipline(clazz)
+                            if (discipline != null) {
+                                Timber.d("Setting up the discipline name: ${discipline.name}")
+                                message.discipline = discipline.name
+                            }
+                        }
+                    }
                 }
             }
 
@@ -109,7 +127,101 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
                 return value
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Timber.e(e)
+        }
+
+        return null
+    }
+
+    private fun getScope(scopes: SLinker): SMessageScope? {
+        val link = scopes.link
+        val scope = SagresNavigator.instance.database.messageScopeDao().getMessageScopeDirect(link)
+
+        if (scope != null) {
+            Timber.d("Returned scope from cache")
+            return scope
+        }
+
+        val call = SagresCalls.getLink(scopes)
+
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()!!.string()
+                val scoped = gson.fromJson(body, SMessageScope::class.java)
+                val linker = scoped.clazzLinker
+                if (linker != null) {
+                    scoped.clazzLink = linker.link
+                    scoped.sagresId = link
+                    SagresNavigator.instance.database.messageScopeDao().insert(scoped)
+                } else {
+                    Timber.d("Scope linker was null")
+                }
+                return scoped
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+
+        return null
+    }
+
+    private fun getClazz(scope: SMessageScope): SClass? {
+        val link = scope.clazzLink?: return null
+
+        val clazz = SagresNavigator.instance.database.clazzDao().getClazzDirect(link)
+        if (clazz != null) {
+            Timber.d("Returning clazz from cache")
+            return clazz
+        }
+
+        val call = SagresCalls.getLink(link)
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()!!.string()
+                val clazzed = gson.fromJson(body, SClass::class.java)
+                if (clazzed.discipline != null) {
+                    clazzed.disciplineLink = clazzed.discipline.link
+                    clazzed.link = link
+                    SagresNavigator.instance.database.clazzDao().insert(clazzed)
+                } else {
+                    Timber.d("Clazz linker was null")
+                }
+                return clazzed
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
+        }
+
+        return null
+    }
+
+    private fun getDiscipline(clazz: SClass): SDisciplineResumed? {
+        val link = clazz.disciplineLink?: return null
+
+        val discipline = SagresNavigator.instance.database.disciplineDao().getDisciplineDirect(link)
+        if (discipline != null) {
+            Timber.d("Returned discipline from cache")
+            return discipline
+        }
+
+        val call = SagresCalls.getLink(link)
+        try {
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()!!.string()
+                val disciplined = gson.fromJson(body, SDisciplineResumed::class.java)
+
+                val department = disciplined.department
+                if (department != null) {
+                    disciplined.departmentLink = department.link
+                    SagresNavigator.instance.database.disciplineDao().insert(disciplined)
+                }
+                return disciplined
+            }
+        } catch (e: Exception) {
+            Timber.e(e)
         }
 
         return null
