@@ -135,6 +135,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
 
     private fun getScope(scopes: SLinker): SMessageScope? {
         val link = scopes.link
+        Timber.d("Link -> $link")
         val scope = SagresNavigator.instance.database.messageScopeDao().getMessageScopeDirect(link)
 
         if (scope != null) {
@@ -148,16 +149,22 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
             val response = call.execute()
             if (response.isSuccessful) {
                 val body = response.body()!!.string()
-                val scoped = gson.fromJson(body, SMessageScope::class.java)
-                val linker = scoped.clazzLinker
-                if (linker != null) {
-                    scoped.clazzLink = linker.link
-                    scoped.sagresId = link
-                    SagresNavigator.instance.database.messageScopeDao().insert(scoped)
-                } else {
-                    Timber.d("Scope linker was null")
+                Timber.d("Scope body: $body")
+                val token = object: TypeToken<Dumb<ArrayList<SMessageScope>>>(){}.type
+                val scoping = gson.fromJson<Dumb<ArrayList<SMessageScope>>>(body, token)
+                val items = scoping.items
+                if (items.isNotEmpty()) {
+                    val scoped = items[0]
+                    val linker = scoped.clazzLinker
+                    if (linker != null) {
+                        scoped.clazzLink = linker.link
+                        scoped.sagresId = link
+                        SagresNavigator.instance.database.messageScopeDao().insert(scoped)
+                    } else {
+                        Timber.d("Scope linker was null")
+                    }
+                    return scoped
                 }
-                return scoped
             }
         } catch (e: Exception) {
             Timber.e(e)
