@@ -59,13 +59,13 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="16dp"
-                android:textColor="?attr/colorAccent"
                 android:textSize="18sp"
-                app:disciplineText="@{message}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Métodologia do Trabalho Cientifico" />
+                tools:text="Métodologia do Trabalho Científico"
+                app:disciplineText="@{message}"
+                android:textColor="?attr/colorAccent"/>
     
             <TextView
                 android:id="@+id/text_message_sender"
