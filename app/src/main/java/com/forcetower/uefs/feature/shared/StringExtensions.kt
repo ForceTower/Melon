@@ -27,6 +27,8 @@
 
 package com.forcetower.uefs.feature.shared
 
+import com.forcetower.sagres.utils.WordUtils
+
 fun String.makeSemester(): String {
     return if (this.length > 4) {
         this.substring(0, 4) + "." + this.substring(4)
@@ -34,3 +36,5 @@ fun String.makeSemester(): String {
         this
     }
 }
+
+fun String?.toTitleCase(): String? = WordUtils.toTitleCase(this)
