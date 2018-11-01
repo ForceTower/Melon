@@ -33,17 +33,29 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.forcetower.sagres.database.dao.AccessDao
+import com.forcetower.sagres.database.dao.ClazzDao
+import com.forcetower.sagres.database.dao.DisciplineResumedDao
+import com.forcetower.sagres.database.dao.MessageScopeDao
 import com.forcetower.sagres.database.dao.PersonDao
 import com.forcetower.sagres.database.model.SAccess
+import com.forcetower.sagres.database.model.SClass
+import com.forcetower.sagres.database.model.SDisciplineResumed
+import com.forcetower.sagres.database.model.SMessageScope
 import com.forcetower.sagres.database.model.SPerson
 
 @Database(entities = [
     SAccess::class,
-    SPerson::class
-], version = 2, exportSchema = true)
+    SPerson::class,
+    SMessageScope::class,
+    SClass::class,
+    SDisciplineResumed::class
+], version = 3, exportSchema = true)
 abstract class SagresDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun personDao(): PersonDao
+    abstract fun messageScopeDao(): MessageScopeDao
+    abstract fun clazzDao(): ClazzDao
+    abstract fun disciplineDao(): DisciplineResumedDao
 
     companion object {
         private const val DB_NAME = "unesx_sagres_database.db"
@@ -51,8 +63,7 @@ abstract class SagresDatabase : RoomDatabase() {
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun create(context: Context): SagresDatabase {
             return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
-                .addMigrations(M1TO2)
-                .fallbackToDestructiveMigration()
+                .addMigrations(M1TO2, M2TO3)
                 .allowMainThreadQueries()
                 .build()
         }

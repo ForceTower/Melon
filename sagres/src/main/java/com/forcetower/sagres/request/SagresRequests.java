@@ -74,6 +74,11 @@ public class SagresRequests {
         return new Request.Builder().url(url).build();
     }
 
+    public static Request link(String href) {
+        String url = BASE_URL + (href.startsWith("/") ? href : "/" + href);
+        return new Request.Builder().url(url).build();
+    }
+
     public static Request getPerson(long userId) {
         String url = BASE_URL + "/registro/pessoas/" + userId;
         return new Request.Builder().url(url).build();
