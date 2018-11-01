@@ -68,6 +68,8 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.jsoup.nodes.Document
 import java.io.File
+import java.net.InetSocketAddress
+import java.net.Proxy
 import java.util.ArrayList
 import java.util.concurrent.TimeUnit
 
@@ -79,9 +81,14 @@ private constructor(context: Context) : SagresNavigator() {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     override val database: SagresDatabase = SagresDatabase.create(context)
     private lateinit var cookieJar: PersistentCookieJar
+    @get:RestrictTo(RestrictTo.Scope.LIBRARY)
+    val proxyClient: OkHttpClient
 
     init {
         this.client = createClient(context)
+        this.proxyClient = client.newBuilder()
+            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("10.65.16.2", 3128)))
+            .build()
     }
 
     private fun createClient(context: Context): OkHttpClient {
