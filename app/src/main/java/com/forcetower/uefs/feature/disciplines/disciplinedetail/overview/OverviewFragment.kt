@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines.disciplinedetail
+package com.forcetower.uefs.feature.disciplines.disciplinedetail.overview
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -56,7 +56,8 @@ class OverviewFragment: UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val overviewAdapter = OverviewAdapter(this, viewModel)
+        val overviewAdapter =
+            OverviewAdapter(this, viewModel)
         binding.recyclerOverview.apply {
             adapter = overviewAdapter
             itemAnimator?.run {

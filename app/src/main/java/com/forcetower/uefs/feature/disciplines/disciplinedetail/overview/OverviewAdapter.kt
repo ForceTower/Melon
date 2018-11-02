@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines.disciplinedetail
+package com.forcetower.uefs.feature.disciplines.disciplinedetail.overview
 
 import android.view.View
 import android.view.ViewGroup
@@ -61,10 +61,18 @@ class OverviewAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()
         return when (viewType) {
-            R.layout.item_discipline_short -> OverviewHolder.ShortHolder(parent.inflate(viewType))
-            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(parent.inflate(viewType))
-            R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(parent.inflate(viewType))
-            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false)) /* Draft or Statistics */
+            R.layout.item_discipline_short -> OverviewHolder.ShortHolder(
+                parent.inflate(viewType)
+            )
+            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(
+                parent.inflate(viewType)
+            )
+            R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(
+                parent.inflate(viewType)
+            )
+            else -> OverviewHolder.SimpleHolder(
+                inflater.inflate(viewType, parent, false)
+            ) /* Draft or Statistics */
         }
     }
 
@@ -130,7 +138,9 @@ class OverviewAdapter(
         return list
     }
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer<Any>(this,
+        DiffCallback
+    )
 }
 
 sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {

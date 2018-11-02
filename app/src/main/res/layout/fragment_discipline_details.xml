@@ -45,7 +45,6 @@
             android:id="@+id/image_discipline"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fitsSystemWindows="true"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:src="#2196F3"
@@ -59,7 +58,6 @@
             android:id="@+id/image_gradient"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:fitsSystemWindows="true"
             android:importantForAccessibility="no"
             android:scaleType="centerCrop"
             android:background="@drawable/gradient_bottom_top"
@@ -224,5 +222,16 @@
             app:layout_constraintTop_toTopOf="parent"
             android:tint="@color/white"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+    
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:maxLines="1"
+            android:text="@string/discipline_details_toolbar_label"
+            android:textSize="16sp"
+            android:textColor="@color/white"
+            app:layout_constraintBottom_toBottomOf="@+id/up"
+            app:layout_constraintStart_toEndOf="@+id/up"
+            app:layout_constraintTop_toTopOf="@+id/up" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
