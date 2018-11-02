@@ -82,6 +82,7 @@ class DisciplinesRepository @Inject constructor(
         }
     }
 
+    //TODO create a observable here
     fun loadClassDetails(groupId: Long) {
         executors.networkIO().execute {
             val value = database.classStudentDao().getMeFromGroupDirect(groupId)

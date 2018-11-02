@@ -25,26 +25,19 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.ClassesFragment
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsFragment
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.GradesFragment
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.MaterialsFragment
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.OverviewFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.core.os.bundleOf
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.shared.UFragment
 
-@Module
-abstract class DisciplineModule {
-    @ContributesAndroidInjector
-    abstract fun overviewFragment(): OverviewFragment
-    @ContributesAndroidInjector
-    abstract fun disciplineDetailsFragment(): DisciplineDetailsFragment
-    @ContributesAndroidInjector
-    abstract fun materialsFragment(): MaterialsFragment
-    @ContributesAndroidInjector
-    abstract fun classesFragment(): ClassesFragment
-    @ContributesAndroidInjector
-    abstract fun gradesFragment(): GradesFragment
+class MaterialsFragment: UFragment(), Injectable {
+
+    companion object {
+        fun newInstance(classId: Long): MaterialsFragment {
+            return MaterialsFragment().apply {
+                arguments = bundleOf(DisciplineDetailsActivity.CLASS_GROUP_ID to classId)
+            }
+        }
+    }
 }
