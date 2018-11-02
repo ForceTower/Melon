@@ -101,3 +101,8 @@ fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
         tv.text = context.getString(R.string.discipline_absence_left, left)
     }
 }
+
+@BindingAdapter(value = ["disciplineCredits"])
+fun credits(tv: TextView, credits: Int?) {
+    tv.text = credits?.toString()?.plus("h")?: "??h"
+}

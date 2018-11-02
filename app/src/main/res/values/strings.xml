@@ -128,6 +128,11 @@
         <item>Entendendo tudo agora</item>
         <item>Encaixando todas as peças</item>
         <item>Ficando de olhos abertos</item>
+        <item>Quebrando a melancia</item>
+        <item>Mas é 15 conto..</item>
+        <item>You front!! You front!!!</item>
+        <item>I\'m dono do jogo, drop helmet</item>
+        <item>Observe a velocidade do bote</item>
     </string-array>
     
     <string name="message_received_date_format">Mensagem recebida %1$s</string>
@@ -333,7 +338,7 @@
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
     <string name="unable_to_open_url">Não foi possível abrir este link :(</string>
-    <string name="open_multiple_links">Ainda não é possivel abrir mensagens com vários links</string>
+    <string name="open_multiple_links">Ainda não é possível abrir mensagens com vários links</string>
     <string name="select_a_link">Selecione um link</string>
     <string name="demand_selected_disciplines_label">Disciplinas selecionadas:</string>
     <string name="collapse_demand_overview_sheet">Abaixar disciplinas selecionadas</string>
@@ -353,6 +358,12 @@
     <string name="demand_will_be_created_notification">Uma notificação será mostrada com o resultado em breve</string>
     <string name="demand_update_title">Demanda Web!</string>
     <string name="demand_update_content">A demanda web agora pode ser feita através do aplicativo. Está em fase beta, então é possível encontrar erros</string>
+    <string name="missed_classes_label">faltas</string>
+    <string name="navigate_up">Voltar</string>
+    <string name="discipline_details_overview">Visão Geral</string>
+    <string name="discipline_details_grades">Notas</string>
+    <string name="discipline_details_classes">Aulas</string>
+    <string name="discipline_details_materials">Anexos</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

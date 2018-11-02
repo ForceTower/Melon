@@ -104,7 +104,7 @@ class DisciplineFragment: UFragment(), Injectable {
         homeViewModel.showSnack("A quantidade de grupos desta disciplina é ${it.groups.size}. NotImplementedException")
     }
 
-    private inner class SemesterAdapter(fm: FragmentManager):  FragmentPagerAdapter(fm) {
+    private inner class SemesterAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
         private val semesters: MutableList<Semester> = ArrayList()
 
         fun submitList(list: List<Semester>) {
