@@ -29,6 +29,7 @@ package com.forcetower.sagres.parsers
 
 import okhttp3.FormBody
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.util.ArrayList
 
 object SagresDisciplineDetailsFetcherParser {
@@ -66,7 +67,10 @@ object SagresDisciplineDetailsFetcherParser {
                     val refGroupPos = type.lastIndexOf("(")
                     type = type.substring(0, refGroupPos).trim { it <= ' ' }
 
-                    if (classSemester == null || period.equals(classSemester, ignoreCase = true)) {
+                    val fixedSemester = classSemester?.replace(".", "")
+                    val fixedPeriod = period.replace(".", "")
+
+                    if (fixedSemester == null || fixedPeriod.equals(fixedSemester, ignoreCase = true)) {
                         if (classCode == null || code.equals(classCode, ignoreCase = true)) {
                             if (classGroup == null || classGroup.equals("unique", ignoreCase = true) || type.equals(classGroup, ignoreCase = true)) {
                                 val builderIn = FormBody.Builder()
@@ -102,7 +106,11 @@ object SagresDisciplineDetailsFetcherParser {
                     if (!key.equals("__EVENTTARGET", ignoreCase = true))
                         builder.add(key, value)
                 }
-                if (classSemester == null || period.equals(classSemester, ignoreCase = true)) {
+
+                val fixedSemester = classSemester?.replace(".", "")
+                val fixedPeriod = period.replace(".", "")
+
+                if (fixedSemester == null || fixedPeriod.equals(fixedSemester, ignoreCase = true)) {
                     if (classCode == null || code.equals(classCode, ignoreCase = true)) {
                         builders.add(builder to period)
                     }

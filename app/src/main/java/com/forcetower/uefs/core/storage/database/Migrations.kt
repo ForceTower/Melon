@@ -45,3 +45,10 @@ object M2TO3: Migration(2, 3) {
         database.execSQL("ALTER TABLE Message ADD COLUMN discipline TEXT DEFAULT NULL")
     }
 }
+
+object M3TO4: Migration(3, 4) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DELETE FROM ClassMaterial")
+        database.execSQL("UPDATE ClassGroup SET draft = 1")
+    }
+}
