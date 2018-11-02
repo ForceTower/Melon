@@ -88,8 +88,8 @@ public class SagresScheduleParser {
                         classDay.class_type,
                         false
                 );
-                Timber.d("Class Code %s, Class Name: %s, Room %s", classDay.class_code, classDay.class_name, classDay.room);
-                Timber.d("Class type: %s", classDay.class_type);
+//                Timber.d("Class Code %s, Class Name: %s, Room %s", classDay.class_code, classDay.class_name, classDay.room);
+//                Timber.d("Class type: %s", classDay.class_type);
                 disciplineClassLocations.add(location);
             }
         }
@@ -288,16 +288,16 @@ public class SagresScheduleParser {
             }
 
 
-            Timber.d("All add -----------");
+            //Timber.d("All add -----------");
             for (SagresClassDay classDay : days) {
                 if (classDay.getClassType().equalsIgnoreCase(type)) {
-                    Timber.d("Kappa");
+                    //Timber.d("Kappa");
                     classDay.setRoom(allocatedRoom);
                     classDay.setCampus(campus);
                     classDay.setModulo(place);
                 }
             }
-            Timber.d("End of all add ---------");
+            //Timber.d("End of all add ---------");
         }
 
         synchronized void addAtToSpecificClass(String at, String day, String type) {
@@ -325,16 +325,16 @@ public class SagresScheduleParser {
                 place = "";
             }
 
-            Timber.d("Specific add ------");
+            //Timber.d("Specific add ------");
             for (SagresClassDay classDay : days) {
                 if (classDay.getDay().equals(day) && classDay.getClassType().equals(type)) {
-                    Timber.d("%s %s %s", classDay.class_code, classDay.class_type, allocatedRoom);
+                    //Timber.d("%s %s %s", classDay.class_code, classDay.class_type, allocatedRoom);
                     classDay.setRoom(allocatedRoom);
                     classDay.setCampus(campus);
                     classDay.setModulo(place);
                 }
             }
-            Timber.d("End of specific -------");
+            //Timber.d("End of specific -------");
         }
 
         private synchronized String removeRoomName(String part) {
@@ -374,7 +374,7 @@ public class SagresScheduleParser {
         }
 
         public synchronized void setRoom(String room) {
-            Timber.d("Room of %s set to %s from %s", class_code, room, this.room);
+            //Timber.d("Room of %s set to %s from %s", class_code, room, this.room);
             this.room = room;
         }
 

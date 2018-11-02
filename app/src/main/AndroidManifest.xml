@@ -73,7 +73,9 @@
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
-        <activity android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity" />
+        <activity
+            android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
+            android:theme="@style/UTheme.LightNav"/>
     
         <activity
             android:name=".feature.profile.ProfileActivity"
