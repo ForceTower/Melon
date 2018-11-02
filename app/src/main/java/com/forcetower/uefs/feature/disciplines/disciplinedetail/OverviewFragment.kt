@@ -27,54 +27,16 @@
 
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.FragmentDisciplineOverviewBinding
-import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity.Companion.CLASS_GROUP_ID
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
 class OverviewFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: DisciplineViewModel
-    private lateinit var binding: FragmentDisciplineOverviewBinding
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        viewModel.setClassGroupId(requireNotNull(arguments).getLong(CLASS_GROUP_ID))
-        return FragmentDisciplineOverviewBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.root
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val overviewAdapter = OverviewAdapter(this, viewModel)
-        binding.recyclerOverview.apply {
-            adapter = overviewAdapter
-            itemAnimator?.run {
-                addDuration = 120L
-                moveDuration = 120L
-                changeDuration = 120L
-                removeDuration = 100L
-            }
-        }
-
-        viewModel.classStudent.observe(this, Observer { overviewAdapter.currentDiscipline = it })
-        viewModel.absences.observe(this, Observer { overviewAdapter.frequencyList = it })
-        viewModel.materials.observe(this, Observer { overviewAdapter.materialList = it })
-        viewModel.classItems.observe(this, Observer { overviewAdapter.itemList = it })
-        viewModel.loadClassDetails.observe(this, Observer { Unit })
-    }
 
     companion object {
         fun newInstance(classId: Long): OverviewFragment {
