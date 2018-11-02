@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.model.unes
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
@@ -45,6 +46,9 @@ data class Discipline(
     val code: String,
     val credits: Int,
     var department: String? = null,
+    var resume: String? = null,
+    @ColumnInfo(name = "short_text")
+    var shortText: String? = null,
     val uuid: String = UUID.randomUUID().toString()
 ) {
 

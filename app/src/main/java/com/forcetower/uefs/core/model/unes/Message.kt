@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.model.unes
 import android.content.Context
 import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SMessage
@@ -54,11 +55,26 @@ data class Message(
     val senderName: String?,
     val notified: Boolean = false,
     val discipline: String? = null,
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    @ColumnInfo(name = "code_discipline")
+    val codeDiscipline: String? = null,
+    @Ignore
+    val disciplineResume: String? = null
 ) {
 
     companion object {
-        fun fromMessage(me: SMessage, notified: Boolean) = Message(content = me.message, sagresId = me.sagresId, senderName = me.senderName, senderProfile = me.senderProfile, timestamp = me.timeStampInMillis, notified = notified, discipline = me.discipline)
+        fun fromMessage(me: SMessage, notified: Boolean) =
+            Message(
+                content = me.message,
+                sagresId = me.sagresId,
+                senderName = me.senderName,
+                senderProfile = me.senderProfile,
+                timestamp = me.timeStampInMillis,
+                notified = notified,
+                discipline = me.discipline,
+                codeDiscipline = me.disciplineCode,
+                disciplineResume = me.objective
+            )
     }
 }
 

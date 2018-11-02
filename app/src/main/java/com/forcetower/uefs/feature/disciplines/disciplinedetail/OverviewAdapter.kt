@@ -34,18 +34,13 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.ClassAbsence
-import com.forcetower.uefs.core.model.unes.ClassItem
-import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
-import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
-import com.forcetower.uefs.databinding.ItemDisciplineClassMaterialBinding
-import com.forcetower.uefs.databinding.ItemDisciplineInfoBinding
-import com.forcetower.uefs.databinding.ItemDisciplineMissedClassBinding
+import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
+import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
 import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.inflater
-import timber.log.Timber
 
 class OverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
@@ -57,72 +52,36 @@ class OverviewAdapter(
         differ.submitList(buildMergedList(discipline = value))
     }
 
-    var frequencyList: List<ClassAbsence> = emptyList()
-    set(value) {
-        field = value
-        Timber.d("Size of list is ${frequencyList.size}")
-        Timber.d("Elements are $frequencyList")
-        differ.submitList(buildMergedList(frequency = value))
-    }
-
-    var materialList: List<ClassMaterial> = emptyList()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(material = value))
-    }
-
-    var itemList: List<ClassItem> = emptyList()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(items = value))
-    }
+//    var currentLocations: List<LocationWithGroup>? = listOf()
+//    set(value) {
+//        field = value
+//        differ.submitList(buildMergedList(locations = value))
+//    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()
         return when (viewType) {
-            R.layout.item_discipline_info -> OverviewHolder.InfoHolder(
-                ItemDisciplineInfoBinding.inflate(inflater, parent, false)
-            )
-            R.layout.item_discipline_class_material -> OverviewHolder.MaterialHolder(
-                ItemDisciplineClassMaterialBinding.inflate(inflater, parent, false)
-            )
-            R.layout.item_discipline_missed_class -> OverviewHolder.AbsenceHolder(
-                ItemDisciplineMissedClassBinding.inflate(inflater, parent, false)
-            )
-            R.layout.item_discipline_class_item -> OverviewHolder.ClassHolder(
-                ItemDisciplineClassItemBinding.inflate(inflater, parent, false)
-            )
-            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(
-                ItemDisciplineTeacherBinding.inflate(inflater, parent, false)
-            )
-            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false))
+            R.layout.item_discipline_short -> OverviewHolder.ShortHolder(parent.inflate(viewType))
+            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(parent.inflate(viewType))
+            R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(parent.inflate(viewType))
+            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false)) /* Draft or Statistics */
         }
     }
 
     override fun onBindViewHolder(holder: OverviewHolder, position: Int) {
         when (holder) {
             is OverviewHolder.SimpleHolder -> Unit
-            is OverviewHolder.InfoHolder -> holder.binding.apply {
+            is OverviewHolder.ShortHolder -> holder.binding.apply {
                 setLifecycleOwner(lifecycleOwner)
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
-            is OverviewHolder.MaterialHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
-                material = materialList.lastOrNull()
-                executePendingBindings()
-            }
-            is OverviewHolder.AbsenceHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
-                absence = frequencyList.lastOrNull()
-                executePendingBindings()
-            }
-            is OverviewHolder.ClassHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
-                classItem = itemList.lastOrNull()
-                executePendingBindings()
-            }
             is OverviewHolder.TeacherHolder -> holder.binding.apply {
+                setLifecycleOwner(lifecycleOwner)
+                viewModel = this@OverviewAdapter.viewModel
+                executePendingBindings()
+            }
+            is OverviewHolder.ResumeHolder -> holder.binding.apply {
                 setLifecycleOwner(lifecycleOwner)
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
@@ -134,48 +93,40 @@ class OverviewAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is InfoHeader -> R.layout.item_discipline_info
-            is DraftDiscipline -> R.layout.item_discipline_draft_info
-            is TeacherSpace -> R.layout.item_discipline_teacher
-            is LoadingDiscipline -> R.layout.item_discipline_loading_info
-            is MaterialHeader -> R.layout.item_teacher_shared_material_header
-            is FrequencyHeader -> R.layout.item_discipline_frequency
-            is DisciplineClassHeader -> R.layout.item_discipline_classes_header
-            is NoMaterialPosted -> R.layout.item_discipline_no_material_posted
-            is NoMissedClasses -> R.layout.item_discipline_no_missed_classes
-            is NoClassRegistered -> R.layout.item_discipline_no_class_registered
-            is ClassMaterial -> R.layout.item_discipline_class_material
-            is ClassAbsence -> R.layout.item_discipline_missed_class
-            is ClassItem -> R.layout.item_discipline_class_item
-            is Divider -> R.layout.divider
+            is DisciplineDraft -> R.layout.item_discipline_draft_info
+            is DisciplineShort -> R.layout.item_discipline_short
+            is DisciplineTeacher -> R.layout.item_discipline_teacher
+            is DisciplineResume -> R.layout.item_discipline_goals
+            is Statistics -> R.layout.item_discipline_statistics_short
             else -> throw IllegalStateException("No view type defined for position $position")
         }
     }
 
     private fun buildMergedList(
-        discipline: ClassStudentWithGroup? = currentDiscipline,
-        frequency: List<ClassAbsence> = frequencyList,
-        material: List<ClassMaterial> = materialList,
-        items: List<ClassItem> = itemList
+        discipline: ClassStudentWithGroup? = currentDiscipline
     ): List<Any> {
         val list = mutableListOf<Any>()
-        list += InfoHeader
         if (discipline != null) {
-            list += if (discipline.group().group.draft) DraftDiscipline else TeacherSpace
+
+            if (discipline.group().group.draft) {
+                list += DisciplineDraft
+            }
+
+            if (discipline.group().clazz().discipline().shortText != null) {
+                list += DisciplineShort
+            }
+
+            if (discipline.group().group.teacher != null) {
+                list += DisciplineTeacher
+            }
+
+            if (discipline.group().clazz().discipline().resume != null) {
+                list += DisciplineResume
+            }
+
+            list += Statistics
+
         }
-
-        if (material.isNotEmpty()) {
-            list += MaterialHeader
-            list += material[0]
-        } else {
-            list += NoMaterialPosted
-        }
-
-        list += FrequencyHeader
-        list += if (frequency.isNotEmpty()) frequency[0] else NoMissedClasses
-
-        list += DisciplineClassHeader
-        list += if (items.isNotEmpty()) items[0] else NoClassRegistered
         return list
     }
 
@@ -184,52 +135,30 @@ class OverviewAdapter(
 
 sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
     class SimpleHolder(itemView: View): OverviewHolder(itemView)
-    class MaterialHolder(val binding: ItemDisciplineClassMaterialBinding): OverviewHolder(binding.root)
-    class AbsenceHolder(val binding: ItemDisciplineMissedClassBinding): OverviewHolder(binding.root)
-    class ClassHolder(val binding: ItemDisciplineClassItemBinding): OverviewHolder(binding.root)
-    class InfoHolder(val binding: ItemDisciplineInfoBinding): OverviewHolder(binding.root)
+    class ShortHolder(val binding: ItemDisciplineShortBinding): OverviewHolder(binding.root)
     class TeacherHolder(val binding: ItemDisciplineTeacherBinding): OverviewHolder(binding.root)
+    class ResumeHolder(val binding: ItemDisciplineGoalsBinding): OverviewHolder(binding.root)
 }
 
 private object DiffCallback: DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
-            oldItem === InfoHeader && newItem === InfoHeader -> true
-            oldItem === DraftDiscipline && newItem === DraftDiscipline -> true
-            oldItem === TeacherSpace && newItem === TeacherSpace -> true
-            oldItem === LoadingDiscipline && newItem === LoadingDiscipline -> true
-            oldItem === MaterialHeader && newItem === MaterialHeader -> true
-            oldItem === FrequencyHeader && newItem === FrequencyHeader -> true
-            oldItem === DisciplineClassHeader && newItem === DisciplineClassHeader -> true
-            oldItem === NoMaterialPosted && newItem === NoMaterialPosted -> true
-            oldItem === NoMissedClasses && newItem === NoMissedClasses -> true
-            oldItem === NoClassRegistered && newItem === NoClassRegistered -> true
-            oldItem === Divider && newItem === Divider -> true
-            oldItem is ClassMaterial && newItem is ClassMaterial -> oldItem.uid == newItem.uid
-            oldItem is ClassAbsence && newItem is ClassAbsence -> oldItem.uid == newItem.uid
-            oldItem is ClassItem && newItem is ClassItem -> oldItem.uid == newItem.uid
+            oldItem === DisciplineDraft && newItem === DisciplineDraft -> true
+            oldItem === DisciplineShort && newItem === DisciplineShort -> true
+            oldItem === DisciplineTeacher && newItem === DisciplineTeacher -> true
+            oldItem === DisciplineResume && newItem === DisciplineResume -> true
+            oldItem === Statistics && newItem === Statistics -> true
             else -> false
         }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return when {
-            oldItem is ClassMaterial && newItem is ClassMaterial -> oldItem == newItem
-            oldItem is ClassAbsence && newItem is ClassAbsence -> oldItem == newItem
-            oldItem is ClassItem && newItem is ClassItem -> oldItem == newItem
-            else -> true
-        }
+        return true
     }
 }
 
-private object LoadingDiscipline
-private object InfoHeader
-private object TeacherSpace
-private object FrequencyHeader
-private object MaterialHeader
-private object DraftDiscipline
-private object NoMissedClasses
-private object NoMaterialPosted
-private object DisciplineClassHeader
-private object NoClassRegistered
-private object Divider
+private object DisciplineDraft
+private object DisciplineShort
+private object DisciplineTeacher
+private object DisciplineResume
+private object Statistics
