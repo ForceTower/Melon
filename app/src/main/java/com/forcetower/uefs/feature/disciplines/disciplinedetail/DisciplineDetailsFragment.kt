@@ -41,6 +41,8 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
@@ -67,6 +69,7 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         adapter = DetailsAdapter(childFragmentManager)
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
+        viewPager.offscreenPageLimit = 4
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

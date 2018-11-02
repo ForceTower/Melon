@@ -25,19 +25,32 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines.disciplinedetail
+package com.forcetower.uefs.feature.disciplines.disciplinedetail.classes
 
-import androidx.core.os.bundleOf
-import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.feature.shared.UFragment
+import android.view.ViewGroup
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
+import com.forcetower.uefs.feature.shared.inflate
 
-class ClassesFragment: UFragment(), Injectable {
+class ClassesAdapter: ListAdapter<ClassItem, ClassesAdapter.ClassHolder>(DiffCallback) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
+        ClassHolder(parent.inflate(R.layout.item_discipline_class_item))
 
-    companion object {
-        fun newInstance(classId: Long): ClassesFragment {
-            return ClassesFragment().apply {
-                arguments = bundleOf(DisciplineDetailsActivity.CLASS_GROUP_ID to classId)
-            }
+    override fun onBindViewHolder(holder: ClassHolder, position: Int) {
+        holder.binding.apply {
+            classItem = getItem(position)
+            executePendingBindings()
         }
+    }
+
+    inner class ClassHolder(val binding: ItemDisciplineClassItemBinding): RecyclerView.ViewHolder(binding.root)
+
+    object DiffCallback: DiffUtil.ItemCallback<ClassItem>() {
+        override fun areItemsTheSame(oldItem: ClassItem, newItem: ClassItem) = oldItem.uid == newItem.uid
+        override fun areContentsTheSame(oldItem: ClassItem, newItem: ClassItem) = oldItem == newItem
     }
 }
