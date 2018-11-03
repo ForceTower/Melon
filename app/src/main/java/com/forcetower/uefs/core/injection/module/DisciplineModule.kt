@@ -27,7 +27,11 @@
 
 package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.OverviewFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.GradesFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -35,4 +39,12 @@ import dagger.android.ContributesAndroidInjector
 abstract class DisciplineModule {
     @ContributesAndroidInjector
     abstract fun overviewFragment(): OverviewFragment
+    @ContributesAndroidInjector
+    abstract fun disciplineDetailsFragment(): DisciplineDetailsFragment
+    @ContributesAndroidInjector
+    abstract fun materialsFragment(): MaterialsFragment
+    @ContributesAndroidInjector
+    abstract fun classesFragment(): ClassesFragment
+    @ContributesAndroidInjector
+    abstract fun gradesFragment(): GradesFragment
 }

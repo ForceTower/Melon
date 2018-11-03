@@ -44,6 +44,7 @@ import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineSemesterFragment: UFragment(), Injectable {
@@ -110,33 +111,7 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.classes(semesterId).observe(this, Observer {
-            //A unique list of class with groups
-            val mapped = ArrayList<ClassWithGroups>()
-            //This observer gets a list of class with groups at every change
-            //Since a discipline have many groups whe group it by discipline
-            //Now we got a discipline with all of it's groups in a single list
-            //We iterate at every entry [Discipline, List<ClassWithGroups>]
-            it.groupBy { cg -> cg.discipline() }.entries.forEach { e ->
-                var added = false
-                //Gets the List
-                e.value.forEach { cg ->
-                    //Gets the reference to the actual groups list
-                    val grs = cg.groups
-                    if (grs.isNotEmpty()) {
-                        //Gets the reference to the student that represents the current student
-                        val std = grs[0].students
-                        if (std.isNotEmpty()) {
-                            val grd = std[0].grades
-                            if (grd.isNotEmpty()) {
-                                mapped.add(cg)
-                                added = true
-                            }
-                        }
-                    }
-                }
-                if (e.value.isNotEmpty() && !added) mapped.add(e.value[0])
-            }
-            populateInterface(mapped)
+            populateInterface(it)
         })
     }
 

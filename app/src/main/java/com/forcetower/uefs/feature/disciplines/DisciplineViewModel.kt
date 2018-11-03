@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.disciplines
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,15 +43,16 @@ import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.map
+import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
-    private val grades: SagresGradesRepository
-): ViewModel(), DisciplineActions {
-
+    private val grades: SagresGradesRepository,
+    private val context: Context
+): ViewModel(), DisciplineActions, MaterialActions {
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
@@ -164,5 +166,10 @@ class DisciplineViewModel @Inject constructor(
                 _refreshing.value = false
             }
         }
+    }
+
+    override fun onMaterialClick(material: ClassMaterial?) {
+        material?: return
+        context.openURL(material.link)
     }
 }

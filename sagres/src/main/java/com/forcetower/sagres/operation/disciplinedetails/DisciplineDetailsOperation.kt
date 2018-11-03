@@ -85,10 +85,14 @@ class DisciplineDetailsOperation (
                     } else {
                         Timber.d("Processed group was null")
                     }
+                } else {
+                    Timber.d("Discipline from params was null")
                 }
+            } else {
+                Timber.d("Document from initial was null")
             }
         }
-        Timber.d("Completed")
+        Timber.d("Completed ${forms.size} -- $semester $code $group")
         publishProgress(DisciplineDetailsCallback(Status.COMPLETED).groups(groups))
     }
 

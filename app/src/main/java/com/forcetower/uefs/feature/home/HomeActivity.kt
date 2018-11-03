@@ -28,6 +28,8 @@
 package com.forcetower.uefs.feature.home
 
 import android.content.Intent
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.pm.ShortcutManager
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -44,7 +46,9 @@ import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.config
+import com.forcetower.uefs.feature.shared.isNougatMR1
 import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.toShortcut
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
@@ -54,6 +58,12 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class HomeActivity : UActivity(), HasSupportFragmentInjector {
+    companion object {
+        const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
+        const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
+        const val EXTRA_GRADES_DIRECTION = "grades"
+    }
+
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
@@ -74,6 +84,50 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
         }
         setupBottomNav()
         setupUserData()
+
+        if (savedInstanceState == null) {
+            onActivityStart()
+        }
+    }
+
+    private fun onActivityStart() {
+        initShortcuts()
+        moveToTask()
+    }
+
+    private fun moveToTask() {
+        val directions = intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)
+        val direction = when (directions) {
+            EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
+            EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
+            else -> null
+        }
+
+        direction?: return
+        findNavController(R.id.home_nav_host).navigate(direction)
+    }
+
+    private fun initShortcuts() {
+        if (!isNougatMR1()) return
+
+        val manager = getSystemService(ShortcutManager::class.java)
+
+        val messages = Intent(this, HomeActivity::class.java).apply {
+            putExtra(EXTRA_FRAGMENT_DIRECTIONS, EXTRA_MESSAGES_SAGRES_DIRECTION)
+            action = "android.intent.action.VIEW"
+            addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+        }
+
+        val grades = Intent(this, HomeActivity::class.java).apply {
+            putExtra(EXTRA_FRAGMENT_DIRECTIONS, EXTRA_GRADES_DIRECTION)
+            action = "android.intent.action.VIEW"
+            addFlags(FLAG_ACTIVITY_CLEAR_TASK)
+        }
+
+        val messagesShort = messages.toShortcut(this, "messages_sagres", R.drawable.ic_shortcut_message, getString(R.string.label_messages))
+        val gradesShort = grades.toShortcut(this, "grades", R.drawable.ic_shortcut_school, getString(R.string.label_grades_disciplines))
+
+        manager.addDynamicShortcuts(listOf(gradesShort, messagesShort))
     }
 
     private fun setupBottomNav() {
