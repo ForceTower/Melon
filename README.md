@@ -7,7 +7,7 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon/tree/development.svg?style=shield)](https://circleci.com/gh/ForceTower/Melon/tree/development)
 
 ### Objetivos
-* Diminuir o tempo de carregamento do aplicativo quando está abrindo
+* ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
 * Utilizar os novos componentes do Android
 * Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal
 * ~~Demanda Web direto no App~~ [Completo]
@@ -21,12 +21,7 @@ Esta nova versão não oferecerá suporte para dispositivos com Android inferior
 Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
 
 ### Compilando o Melon
-Para compilar o Melon você precisa seguir uns passos iniciais já que alguns arquivos não podem ser commitados no Git :)
-
-* Se quiser que tudo funcione, crie um projeto no Firebase com qualquer nome e coloque o arquivo .json na pasta do módulo principal do aplicativo.
-* Se você não quiser utilizar o lançamento automático no Google Play (provavelmente não quer), você pode apagar a seção "play" assim como o apply plugin: 'com.github.triplet.play' do build.gradle em nível de aplicativo. E apagar o classpath 'com.github.triplet.gradle:play-publisher:*' do build.gradle a nível de projeto.
-
-* O Projeto Melon utiliza o ktlint para ser de acordo com as convenções do Kotlin, a utilização dele é opcional, mas se quiser fazer um pull request seria legal se o código tambem seguisse este padrão :)
+Para um guia sobre como compilar o aplicativo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon)
 
 ### Sobre o Aplicativo
 Este aplicativo mostra notificações quando algo novo é detectado no Sagres.
