@@ -40,6 +40,6 @@
         android:layout_marginVertical="8dp"
         android:layout_marginHorizontal="24dp"
         android:textColor="@color/text_primary_dark"
-        android:text="@{viewModel.group.group().clazz().discipline().shortText}"
+        android:text="@{viewModel.group.clazz().discipline().shortText}"
         tools:text="Condicionamento e transmissão de sinais e a preparação de sistemas capazes de processa-los."/>
 </layout>
