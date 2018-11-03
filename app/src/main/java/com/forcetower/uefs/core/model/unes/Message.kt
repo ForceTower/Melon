@@ -57,10 +57,10 @@ data class Message(
     val discipline: String? = null,
     val uuid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "code_discipline")
-    val codeDiscipline: String? = null,
-    @Ignore
-    val disciplineResume: String? = null
+    val codeDiscipline: String? = null
 ) {
+    @Ignore
+    var disciplineResume: String? = null
 
     companion object {
         fun fromMessage(me: SMessage, notified: Boolean) =
@@ -72,9 +72,8 @@ data class Message(
                 timestamp = me.timeStampInMillis,
                 notified = notified,
                 discipline = me.discipline,
-                codeDiscipline = me.disciplineCode,
-                disciplineResume = me.objective
-            )
+                codeDiscipline = me.disciplineCode
+            ).apply { disciplineResume = me.objective }
     }
 }
 
