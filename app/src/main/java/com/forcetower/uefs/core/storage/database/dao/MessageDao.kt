@@ -54,10 +54,19 @@ abstract class MessageDao {
                     }
                 }
             }
+            val resume = message.disciplineResume?.trim()
+            val code = message.codeDiscipline?.trim()
+            if (!resume.isNullOrBlank() && !code.isNullOrBlank()) {
+                updateDisciplineResume(code, resume)
+            }
         }
 
         insertIgnore(messages)
     }
+
+
+    @Query("UPDATE Discipline SET resume = :resume WHERE LOWER(code) = LOWER(:code)")
+    protected abstract fun updateDisciplineResume(code: String, resume: String)
 
     @Query("UPDATE Message SET discipline = :discipline WHERE sagres_id = :sagresId")
     protected abstract fun updateDisciplineName(sagresId: Long, discipline: String)

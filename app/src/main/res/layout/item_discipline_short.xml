@@ -25,21 +25,21 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <androidx.coordinatorlayout.widget.CoordinatorLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:context=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity">
-        
-        <FrameLayout
-            android:fitsSystemWindows="true"
-            android:id="@+id/fragment_container"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+    <data>
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
+    </data>
     
-    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginVertical="8dp"
+        android:layout_marginHorizontal="24dp"
+        android:textColor="@color/text_primary_dark"
+        android:text="@{viewModel.group.group().clazz().discipline().shortText}"
+        tools:text="Condicionamento e transmissão de sinais e a preparação de sistemas capazes de processa-los."/>
 </layout>

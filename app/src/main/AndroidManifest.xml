@@ -75,7 +75,7 @@
             android:theme="@style/CropTheme.Default" />
         <activity
             android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
-            android:theme="@style/UTheme.LightNav"/>
+            android:theme="@style/UTheme.TransparentStatus"/>
     
         <activity
             android:name=".feature.profile.ProfileActivity"
