@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.shared
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
 
 fun Context.isNavBarOnBottom(): Boolean {
     val config = resources.configuration
@@ -52,4 +53,8 @@ fun Context.openURL(url: String) {
     val intent = Intent(Intent.ACTION_VIEW)
     intent.data = Uri.parse(fixed)
     this.startActivity(intent)
+}
+
+fun isNougatMR1(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
 }

@@ -43,44 +43,48 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/spacing_common"
+        android:layout_marginVertical="@dimen/margin_small"
         android:onClick="@{() -> listener.onMaterialClick(material)}">
     
         <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/guideline"
+            android:id="@+id/guideline_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="48dp" />
+            app:layout_constraintGuide_begin="@dimen/margin_big" />
     
-        <ImageView
-            android:id="@+id/icon"
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:importantForAccessibility="no"
-            android:src="@drawable/ic_file_copy_black_24dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_big" />
     
         <TextView
             android:id="@+id/name"
             android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:layout_marginEnd="8dp"
-            android:text="@{material.name}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/guideline"
-            app:layout_constraintTop_toTopOf="parent"
+            android:layout_height="wrap_content"
             android:gravity="center_vertical"
-            tools:text="Material sobre Sinais e Sistemas super importante"
-            android:textColor="@color/text_primary_dark"/>
+            android:maxLines="2"
+            android:text="@{material.name}"
+            android:textColor="@color/text_primary_dark"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Link para matéria super importante sobre a vida pós moderna sobre a visão de Jericho" />
+        
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            tools:text="https://www.uefs.br/files/secrets/dope_pics/obscure/dolphins.jpg"
+            android:ellipsize="middle"
+            android:singleLine="true"
+            android:autoLink="web"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/name"/>
         
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

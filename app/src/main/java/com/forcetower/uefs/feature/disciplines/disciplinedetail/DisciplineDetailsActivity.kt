@@ -54,7 +54,7 @@ class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
                 val classGroupId = intent.getLongExtra(CLASS_GROUP_ID, 1)
-                add(R.id.fragment_container, OverviewFragment.newInstance(classGroupId))
+                add(R.id.fragment_container, DisciplineDetailsFragment.newInstance(classGroupId))
             }
         }
     }

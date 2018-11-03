@@ -72,7 +72,7 @@ abstract class ClassDao {
     abstract fun getClassesFromSemester(semester: String): LiveData<List<Class>>
 
     @Transaction
-    @Query("SELECT c.* FROM Class c, ClassGroup cg, Profile p, ClassStudent cs WHERE c.semester_id = :semesterId AND c.uid = cg.class_id AND cg.uid = cs.group_id AND cs.profile_id = p.uid AND p.me = 1")
+    @Query("select Class.* from Class where Class.semester_id = :semesterId AND Class.uid IN (select ClassGroup.class_id FROM ClassGroup WHERE ClassGroup.uid IN (SELECT ClassStudent.group_id FROM ClassStudent WHERE ClassStudent.profile_id = (SELECT Profile.uid FROM Profile WHERE Profile.me = 1)))")
     abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>>
 
     @Query("SELECT * FROM Discipline WHERE code = :code")
