@@ -62,7 +62,7 @@ class MaterialsFragment: UFragment(), Injectable {
         val materialsAdapter = MaterialAdapter(this, viewModel)
         binding.attachmentsRecycler.apply {
             adapter = materialsAdapter
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
             itemAnimator?.run {
                 addDuration = 120L
                 moveDuration = 120L
