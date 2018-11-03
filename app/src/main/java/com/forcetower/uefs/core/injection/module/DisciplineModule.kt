@@ -30,7 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.GradesFragment
-import com.forcetower.uefs.feature.disciplines.disciplinedetail.MaterialsFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector

@@ -42,6 +42,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel

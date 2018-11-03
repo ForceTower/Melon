@@ -25,10 +25,11 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.disciplines.disciplinedetail
+package com.forcetower.uefs.feature.disciplines.disciplinedetail.materials
 
 import androidx.core.os.bundleOf
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 
 class MaterialsFragment: UFragment(), Injectable {
