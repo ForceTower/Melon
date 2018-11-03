@@ -67,7 +67,7 @@ class ClassesFragment: UFragment(), Injectable {
                 changeDuration = 120L
                 removeDuration = 100L
             }
-            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
+            addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
         viewModel.classItems.observe(this, Observer {
