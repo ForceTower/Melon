@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.disciplines
 
 import android.graphics.Paint
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
