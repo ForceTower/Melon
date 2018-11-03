@@ -27,19 +27,106 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
             name="classItem"
             type="com.forcetower.uefs.core.model.unes.ClassItem"/>
     </data>
-    <TextView
+    
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/spacing_common"
-        android:paddingStart="@dimen/spacing_normal"
-        android:paddingEnd="@dimen/spacing_normal"
-        android:textColor="@color/text_primary_dark"
-        android:text="@{classItem.subject}"
-        tools:text="Impossível resistir a este resistor absurdo"/>
+        android:layout_marginVertical="@dimen/spacing_small"
+        android:paddingBottom="8dp">
+        
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/margin_big"/>
+    
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_big"/>
+    
+        <TextView
+            android:id="@+id/text_subject"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            app:classSubject="@{classItem.subject}"
+            app:classSituation="@{classItem.situation}"
+            android:textColor="@color/text_primary_dark"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Impossível resistir a este resistor absurdo" />
+    
+        <TextView
+            android:id="@+id/text_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            app:somethingOrQuestions="@{classItem.date}"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/ic_status"
+            app:layout_constraintTop_toBottomOf="@id/text_subject"
+            tools:text="24/06/2018 Segunda-feira" />
+        
+        <ImageView
+            android:id="@+id/ic_status"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="5dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_calendar_black_24dp"
+            app:layout_constraintTop_toBottomOf="@id/text_subject"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"/>
+        
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/date_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="end"
+            app:constraint_referenced_ids="text_status"/>
+    
+        <TextView
+            android:id="@+id/text_materials"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
+            android:text="@{@string/integer_format(classItem.numberOfMaterials)}"
+            android:textSize="12sp"
+            app:layout_constraintStart_toEndOf="@id/ic_materials"
+            app:layout_constraintTop_toBottomOf="@id/text_subject"
+            tools:text="3" />
+    
+        <ImageView
+            android:id="@+id/ic_materials"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginTop="5dp"
+            android:layout_marginStart="16dp"
+            android:importantForAccessibility="no"
+            android:src="@drawable/ic_attach_file_black_24dp"
+            app:layout_constraintTop_toBottomOf="@id/text_subject"
+            app:layout_constraintStart_toEndOf="@id/date_barrier"
+            android:tint="@color/dis_01"/>
+        
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/grp_mat"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="ic_materials,text_materials"/>
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+    
 </layout>
