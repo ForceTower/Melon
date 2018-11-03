@@ -94,6 +94,8 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
                             if (discipline != null) {
                                 Timber.d("Setting up the discipline name: ${discipline.name}")
                                 message.discipline = discipline.name
+                                message.disciplineCode = discipline.code
+                                message.objective = discipline.objective
                             }
                         }
                     }

@@ -37,4 +37,7 @@ abstract class ClassMaterialDao {
 
     @Query("SELECT * FROM ClassMaterial WHERE group_id = :classGroupId")
     abstract fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>>
+
+    @Query("DELETE FROM ClassMaterial")
+    abstract fun deleteAll()
 }

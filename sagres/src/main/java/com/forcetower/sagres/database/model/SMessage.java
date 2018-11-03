@@ -50,6 +50,11 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     @SerializedName(value = "escopos")
     private SLinker scopes;
 
+    @Nullable
+    private String disciplineCode;
+    @Nullable
+    private String objective;
+
     public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName, SLinker scopes) {
         this.sagresId = sagresId;
         this.timestamp = timestamp;
@@ -144,5 +149,23 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
 
     public void setDiscipline(@Nullable String discipline) {
         this.discipline = discipline;
+    }
+
+    @Nullable
+    public String getDisciplineCode() {
+        return disciplineCode;
+    }
+
+    public void setDisciplineCode(@Nullable String disciplineCode) {
+        this.disciplineCode = disciplineCode;
+    }
+
+    @Nullable
+    public String getObjective() {
+        return objective;
+    }
+
+    public void setObjective(@Nullable String objective) {
+        this.objective = objective;
     }
 }

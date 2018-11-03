@@ -63,16 +63,7 @@ object SagresMaterialsParser {
         val a = element.selectFirst("a") ?: return
 
         val link = if (a.attr("href").isEmpty()) a.attr("href") else a.attr("HREF")
-        var name = "Arquivo"
-
-        var parent: Element? = element.parent()
-        if (parent != null) {
-            parent = parent.parent()
-            if (parent != null) {
-                val elName = parent.selectFirst("td")
-                name = elName.text()
-            }
-        }
+        val name = element.parent()?.parent()?.parent()?.parent()?.parent()?.parent()?.selectFirst("td")?.text() ?: "Arquivo"
         Timber.d("Defined new material $name at $link")
 
         materials.add(SMaterialLink(name, link))

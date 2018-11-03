@@ -51,7 +51,7 @@ abstract class ClassAbsenceDao {
     @Query("SELECT * FROM ClassAbsence WHERE notified = 0")
     abstract fun getUnnotifiedDirect(): List<ClassAbsence>
 
-    @Query("SELECT ca.* FROM ClassAbsence ca INNER JOIN ClassStudent cs ON (ca.class_id = cs.uid AND cs.group_id = :classGroupId) INNER JOIN Profile p on ca.profile_id = p.uid AND p.me = 1")
+    @Query("SELECT ClassAbsence.* FROM ClassAbsence WHERE ClassAbsence.class_id IN (SELECT ClassStudent.uid FROM ClassStudent WHERE ClassStudent.profile_id = (SELECT Profile.uid FROM Profile WHERE Profile.me = 1) AND ClassStudent.group_id IN (SELECT ClassGroup.uid FROM ClassGroup WHERE ClassGroup.class_id = (SELECT ClassGroup.class_id WHERE ClassGroup.uid = :classGroupId)))")
     abstract fun getMyAbsenceFromGroup(classGroupId: Long): LiveData<List<ClassAbsence>>
 
     @Transaction
