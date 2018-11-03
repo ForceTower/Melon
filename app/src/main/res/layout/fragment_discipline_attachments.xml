@@ -39,7 +39,8 @@
             android:layout_height="wrap_content"
             android:paddingBottom="16dp"
             android:clipToPadding="false"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_discipline_class_material">
         </androidx.recyclerview.widget.RecyclerView>
         
         <LinearLayout
@@ -54,7 +55,7 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             tools:ignore="UseCompoundDrawables"
-            android:visibility="visible">
+            android:visibility="gone">
             
             <ImageView
                 android:layout_width="match_parent"

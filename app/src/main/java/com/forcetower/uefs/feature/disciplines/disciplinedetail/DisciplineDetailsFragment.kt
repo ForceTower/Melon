@@ -88,10 +88,10 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
     private fun createFragments() {
         val group = requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID)
         val overview = getString(R.string.discipline_details_overview) to OverviewFragment.newInstance(group)
-        val grades = getString(R.string.discipline_details_grades) to GradesFragment.newInstance(group)
+        //val grades = getString(R.string.discipline_details_grades) to GradesFragment.newInstance(group)
         val classes = getString(R.string.discipline_details_classes) to ClassesFragment.newInstance(group)
         val materials = getString(R.string.discipline_details_materials) to MaterialsFragment.newInstance(group)
-        val list = listOf<Pair<String, Fragment>>(overview, grades, classes, materials)
+        val list = listOf<Pair<String, Fragment>>(overview,/* grades,*/ classes, materials)
         adapter.submitList(list)
     }
 
