@@ -35,6 +35,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
@@ -77,6 +78,7 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideActivityViewModel(factory)
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
+        viewModel.loadClassDetails.observe(this, Observer { Unit })
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             setLifecycleOwner(this@DisciplineDetailsFragment)
