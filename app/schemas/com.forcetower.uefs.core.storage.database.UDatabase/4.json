@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "359c07ba0eeb49b00a6919602fdbe95f",
+    "identityHash": "e0642c20b3954d8fbd4b57180bb918a6",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -232,7 +232,7 @@
       },
       {
         "tableName": "Message",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT, `notified` INTEGER NOT NULL, `discipline` TEXT, `uuid` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `content` TEXT NOT NULL, `sagres_id` INTEGER NOT NULL, `timestamp` INTEGER NOT NULL, `sender_profile` INTEGER NOT NULL, `sender_name` TEXT, `notified` INTEGER NOT NULL, `discipline` TEXT, `uuid` TEXT NOT NULL, `code_discipline` TEXT)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -287,6 +287,12 @@
             "columnName": "uuid",
             "affinity": "TEXT",
             "notNull": true
+          },
+          {
+            "fieldPath": "codeDiscipline",
+            "columnName": "code_discipline",
+            "affinity": "TEXT",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -364,7 +370,7 @@
       },
       {
         "tableName": "Discipline",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `code` TEXT NOT NULL, `credits` INTEGER NOT NULL, `department` TEXT, `uuid` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `code` TEXT NOT NULL, `credits` INTEGER NOT NULL, `department` TEXT, `resume` TEXT, `short_text` TEXT, `uuid` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -393,6 +399,18 @@
           {
             "fieldPath": "department",
             "columnName": "department",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "resume",
+            "columnName": "resume",
+            "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "shortText",
+            "columnName": "short_text",
             "affinity": "TEXT",
             "notNull": false
           },
@@ -1722,7 +1740,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"359c07ba0eeb49b00a6919602fdbe95f\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e0642c20b3954d8fbd4b57180bb918a6\")"
     ]
   }
 }

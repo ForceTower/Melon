@@ -27,31 +27,54 @@
 
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.target.Target
+import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
+import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.widget.DividerItemDecorator
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.firestore.CollectionReference
+import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 class DisciplineDetailsFragment: UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    @field:Named(Discipline.COLLECTION)
+    lateinit var firestore: CollectionReference
+
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var binding: FragmentDisciplineDetailsBinding
     private lateinit var tabs: TabLayout
@@ -59,6 +82,7 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
     private lateinit var adapter: DetailsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
         binding = FragmentDisciplineDetailsBinding.inflate(inflater, container, false).also {
             viewPager = it.viewPager
             tabs = it.tabs
@@ -71,18 +95,71 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
         viewPager.offscreenPageLimit = 4
+
+        val menuAdapter = ItemsDisciplineAdapter()
+        binding.recyclerDisciplineItems.apply {
+            adapter = menuAdapter
+            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.HORIZONTAL))
+        }
+
+        binding.up.setOnClickListener {
+            activity?.finishAfterTransition()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = provideActivityViewModel(factory)
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
+        viewModel.loadClassDetails.observe(this, Observer { Unit })
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             setLifecycleOwner(this@DisciplineDetailsFragment)
         }
 
         createFragments()
+        prepareImage()
+    }
+
+    private fun prepareImage() {
+        viewModel.group.observe(this, Observer {
+            binding.imageGradient.visibility = GONE
+            val code = it?.clazz()?.discipline()?.code
+            if (code != null) {
+                firestore.document(code.toLowerCase()).addSnapshotListener { snapshot, _ ->
+                    val picture = snapshot?.getString("picture")
+                    if (picture != null) {
+                        Timber.d("new picture: $picture")
+                        GlideApp.with(context!!)
+                            .load(picture)
+                            .addListener(object: RequestListener<Drawable> {
+                                override fun onLoadFailed(
+                                    e: GlideException?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    binding.imageGradient.visibility = GONE
+                                    Timber.d("Failed")
+                                    return true
+                                }
+
+                                override fun onResourceReady(
+                                    resource: Drawable?,
+                                    model: Any?,
+                                    target: Target<Drawable>?,
+                                    dataSource: DataSource?,
+                                    isFirstResource: Boolean
+                                ): Boolean {
+                                    binding.imageGradient.visibility = VISIBLE
+                                    Timber.d("Completed")
+                                    return false
+                                }
+                            })
+                            .into(binding.imageDiscipline)
+                    }
+                }
+            }
+        })
     }
 
     private fun createFragments() {
@@ -114,5 +191,40 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
                 arguments = bundleOf(DisciplineDetailsActivity.CLASS_GROUP_ID to classId)
             }
         }
+    }
+
+    private inner class ItemsDisciplineAdapter: RecyclerView.Adapter<ItemHolder>() {
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
+            return when (viewType) {
+                0 -> ItemHolder.HoursHolder(parent.inflate(R.layout.ext_item_discipline_hours))
+                1 -> ItemHolder.MissedHolder(parent.inflate(R.layout.ext_item_missed_classes))
+                else -> throw IllegalStateException("Invalid State of views")
+            }
+        }
+
+        override fun onBindViewHolder(holder: ItemHolder, position: Int) {
+            if (::viewModel.isInitialized) {
+                when (holder) {
+                    is ItemHolder.HoursHolder -> holder.binding.apply {
+                        viewModel = this@DisciplineDetailsFragment.viewModel
+                        setLifecycleOwner(this@DisciplineDetailsFragment)
+                        executePendingBindings()
+                    }
+                    is ItemHolder.MissedHolder -> holder.binding.apply {
+                        viewModel = this@DisciplineDetailsFragment.viewModel
+                        setLifecycleOwner(this@DisciplineDetailsFragment)
+                        executePendingBindings()
+                    }
+                }
+            }
+        }
+
+        override fun getItemCount() = 2
+        override fun getItemViewType(position: Int) = position
+    }
+
+    private sealed class ItemHolder(item: View): RecyclerView.ViewHolder(item) {
+        class HoursHolder(val binding: ExtItemDisciplineHoursBinding): ItemHolder(binding.root)
+        class MissedHolder(val binding: ExtItemMissedClassesBinding): ItemHolder(binding.root)
     }
 }

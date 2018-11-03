@@ -53,6 +53,8 @@ data class Discipline(
 ) {
 
     companion object {
+        const val COLLECTION = "disciplines"
+
         fun fromSagres(discipline: SDiscipline)
                 = Discipline(name = discipline.name, code = discipline.code, credits = discipline.credits)
     }
