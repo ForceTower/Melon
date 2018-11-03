@@ -37,11 +37,13 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineAttachmentsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
@@ -82,6 +84,7 @@ class MaterialsFragment: UFragment(), Injectable {
             }
         })
 
+        viewModel.materialClick.observe(this, EventObserver { requireContext().openURL(it.link) })
     }
 
     companion object {
