@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.disciplines
 
+import android.graphics.Paint
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -100,4 +101,26 @@ fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
         val left = (credits/4) - absences
         tv.text = context.getString(R.string.discipline_absence_left, left)
     }
+}
+
+@BindingAdapter(value = ["disciplineCredits"])
+fun credits(tv: TextView, credits: Int?) {
+    tv.text = credits?.toString()?.plus("h")?: "??h"
+}
+
+@BindingAdapter(value = ["somethingOrQuestions"])
+fun somethingOrQuestions(tv: TextView, something: String?) {
+    val text = something ?: "????"
+    tv.text = text
+}
+
+@BindingAdapter(value = ["classSubject", "classSituation"], requireAll = true)
+fun classSubject(tv: TextView, subject: String?, situation: String?) {
+    val text = subject ?: "????"
+    tv.text = text
+
+    val strike = situation?.trim()?.equals("realizada", ignoreCase = true)
+
+    if (strike == true) tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    else tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
 }
