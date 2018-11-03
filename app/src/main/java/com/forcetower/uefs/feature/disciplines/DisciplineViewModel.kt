@@ -50,8 +50,7 @@ import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
-    private val grades: SagresGradesRepository,
-    private val context: Context
+    private val grades: SagresGradesRepository
 ): ViewModel(), DisciplineActions, MaterialActions {
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
@@ -89,6 +88,10 @@ class DisciplineViewModel @Inject constructor(
     private val _refreshing = MediatorLiveData<Boolean>()
     val refreshing: LiveData<Boolean>
         get() = _refreshing
+
+    private val _materialClick = MutableLiveData<Event<ClassMaterial>>()
+    val materialClick: LiveData<Event<ClassMaterial>>
+        get() = _materialClick
 
     init {
         _classStudent.addSource(classGroupId) {
@@ -170,6 +173,6 @@ class DisciplineViewModel @Inject constructor(
 
     override fun onMaterialClick(material: ClassMaterial?) {
         material?: return
-        context.openURL(material.link)
+        _materialClick.value = Event(material)
     }
 }
