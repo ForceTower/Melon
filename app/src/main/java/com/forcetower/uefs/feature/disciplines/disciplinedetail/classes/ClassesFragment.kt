@@ -70,7 +70,16 @@ class ClassesFragment: UFragment(), Injectable {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.HORIZONTAL))
         }
 
-        viewModel.classItems.observe(this, Observer { classesAdapter.submitList(it) })
+        viewModel.classItems.observe(this, Observer {
+            classesAdapter.submitList(it)
+            if (it.isEmpty()) {
+                binding.layoutNoData.visibility = View.VISIBLE
+                binding.classesRecycler.visibility = View.GONE
+            } else {
+                binding.layoutNoData.visibility = View.GONE
+                binding.classesRecycler.visibility = View.VISIBLE
+            }
+        })
     }
 
     companion object {
