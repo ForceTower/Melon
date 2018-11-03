@@ -30,5 +30,5 @@ package com.forcetower.uefs.feature.disciplines
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 
 interface MaterialActions {
-    fun onMaterialClick(material: ClassMaterial)
+    fun onMaterialClick(material: ClassMaterial?)
 }
