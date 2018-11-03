@@ -38,7 +38,6 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
@@ -107,10 +106,10 @@ class HomeBottomFragment: UFragment(), Injectable {
                     startActivity(SettingsActivity.startIntent(requireContext()))
                     true
                 }
-                R.id.demand -> {
-                    startActivity(DemandActivity.startIntent(requireContext()))
-                    true
-                }
+//                R.id.demand -> {
+//                    startActivity(DemandActivity.startIntent(requireContext()))
+//                    true
+//                }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }
