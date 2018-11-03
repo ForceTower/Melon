@@ -43,7 +43,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/margin_small"
+        android:paddingVertical="@dimen/margin_small"
+        android:background="?selectableItemBackground"
         android:onClick="@{() -> listener.onMaterialClick(material)}">
     
         <androidx.constraintlayout.widget.Guideline
@@ -77,8 +78,9 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:text="@{material.link}"
             tools:text="https://www.uefs.br/files/secrets/dope_pics/obscure/dolphins.jpg"
-            android:ellipsize="middle"
+            android:ellipsize="end"
             android:singleLine="true"
             android:autoLink="web"
             app:layout_constraintBottom_toBottomOf="parent"
