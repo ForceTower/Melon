@@ -40,31 +40,31 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
     
-        <ImageView
-            android:id="@+id/image_discipline"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            app:layout_constraintBottom_toTopOf="@+id/view_pager"
-            app:layout_constraintDimensionRatio="H16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--<ImageView-->
+            <!--android:id="@+id/image_discipline"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:importantForAccessibility="no"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--app:layout_constraintBottom_toTopOf="@+id/view_pager"-->
+            <!--app:layout_constraintDimensionRatio="H16:9"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
     
-        <ImageView
-            android:id="@+id/image_gradient"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
-            android:importantForAccessibility="no"
-            android:scaleType="centerCrop"
-            android:requiresFadingEdge=""
-            android:background="@drawable/gradient_bottom_top"
-            app:layout_constraintBottom_toTopOf="@+id/view_pager"
-            app:layout_constraintDimensionRatio="H16:9"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        <!--<ImageView-->
+            <!--android:id="@+id/image_gradient"-->
+            <!--android:layout_width="0dp"-->
+            <!--android:layout_height="0dp"-->
+            <!--android:importantForAccessibility="no"-->
+            <!--android:scaleType="centerCrop"-->
+            <!--android:requiresFadingEdge=""-->
+            <!--android:background="@drawable/gradient_bottom_top"-->
+            <!--app:layout_constraintBottom_toTopOf="@+id/view_pager"-->
+            <!--app:layout_constraintDimensionRatio="H16:9"-->
+            <!--app:layout_constraintEnd_toEndOf="parent"-->
+            <!--app:layout_constraintStart_toStartOf="parent"-->
+            <!--app:layout_constraintTop_toTopOf="parent" />-->
     
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_discipline_header"
@@ -173,12 +173,10 @@
             android:id="@+id/up"
             android:layout_width="?actionBarSize"
             android:layout_height="?actionBarSize"
-            android:layout_marginTop="24dp"
             android:background="?selectableItemBackground"
             android:contentDescription="@string/navigate_up"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:tint="@color/white"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
     
         <TextView
@@ -187,7 +185,7 @@
             android:maxLines="1"
             android:text="@string/discipline_details_toolbar_label"
             android:textSize="16sp"
-            android:textColor="@color/white"
+            android:textColor="@color/text_primary_dark"
             app:layout_constraintBottom_toBottomOf="@+id/up"
             app:layout_constraintStart_toEndOf="@+id/up"
             app:layout_constraintTop_toTopOf="@+id/up" />
