@@ -1,6 +1,6 @@
 ---
 name: Erro encontrado
-about: 'Avise sobre erros para melhorar o '
+about: Avise erros
 
 ---
 
