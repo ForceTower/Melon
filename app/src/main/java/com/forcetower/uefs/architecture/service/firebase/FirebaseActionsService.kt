@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.architecture.service
+package com.forcetower.uefs.architecture.service.firebase
 
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.google.firebase.messaging.FirebaseMessagingService

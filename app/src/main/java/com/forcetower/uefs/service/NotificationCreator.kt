@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.service
 
+import android.app.Notification
 import android.app.NotificationManager
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
@@ -38,6 +39,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
@@ -195,9 +197,36 @@ object NotificationCreator {
         showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, content.hashCode().toLong(), title, content, null)
     }
 
-    private fun notificationBuilder(context: Context, groupId: String): NotificationCompat.Builder {
+    fun showBigTrayNotification(context: Context, data: BigTrayData?, close: PendingIntent): Notification {
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_BIGTRAY_ID, false)
+                .setOngoing(true)
+                .setContentTitle(context.getString(R.string.label_big_tray))
+                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+                .setContentIntent(createBigTrayIntent(context))
+                .addAction(R.drawable.ic_close_black_24dp, context.getString(R.string.ru_close_notification), close)
+
+        val content = when {
+            data == null -> context.getString(R.string.ru_loading_data)
+            data.open -> {
+                val number = data.quota.toIntOrNull()
+                if (number == null || number == 0) {
+                    context.getString(R.string.ru_quota_exceeded)
+                } else {
+                    context.getString(R.string.ru_quota_remaining, data.quota)
+                }
+            }
+            !data.open -> context.getString(R.string.ru_is_closed_message)
+            else -> context.getString(R.string.ru_failed_load_data)
+        }
+
+        builder.setContentText(content)
+
+        return builder.build()
+    }
+
+    private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
-        builder.setAutoCancel(true)
+        builder.setAutoCancel(autoCancel)
         builder.setSmallIcon(R.drawable.ic_unes_colored)
         return builder
     }
@@ -254,6 +283,17 @@ object NotificationCreator {
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createBigTrayIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_BIGTRAY_DIRECTION)
+        }
+
+        return TaskStackBuilder.create(ctx)
+                .addParentStack(HomeActivity::class.java)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun createOpenIntent(ctx: Context): PendingIntent {

@@ -27,7 +27,8 @@
 
 package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.architecture.service.FirebaseActionsService
+import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
+import com.forcetower.uefs.architecture.service.firebase.FirebaseActionsService
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -35,4 +36,6 @@ import dagger.android.ContributesAndroidInjector
 abstract class ServicesModule {
     @ContributesAndroidInjector
     abstract fun bindFirebaseActionsService(): FirebaseActionsService
+    @ContributesAndroidInjector
+    abstract fun binfBigTrayService(): BigTrayService
 }
