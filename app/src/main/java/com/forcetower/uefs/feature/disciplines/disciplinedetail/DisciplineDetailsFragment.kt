@@ -118,53 +118,53 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         }
 
         createFragments()
-        prepareImage()
+        //prepareImage()
     }
 
-    private fun prepareImage() {
-        viewModel.group.observe(this, Observer {
-            binding.imageGradient.visibility = GONE
-            val code = it?.clazz()?.discipline()?.code
-            if (code != null) {
-                firestore.document(code.toLowerCase()).addSnapshotListener { snapshot, _ ->
-                    val picture = snapshot?.getString("picture")
-                    if (picture != null) {
-                        Timber.d("new picture: $picture")
-                        val ctx = context
-                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && ctx != null) {
-                            GlideApp.with(ctx)
-                                .load(picture)
-                                .addListener(object : RequestListener<Drawable> {
-                                    override fun onLoadFailed(
-                                        e: GlideException?,
-                                        model: Any?,
-                                        target: Target<Drawable>?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        binding.imageGradient.visibility = GONE
-                                        Timber.d("Failed")
-                                        return true
-                                    }
-
-                                    override fun onResourceReady(
-                                        resource: Drawable?,
-                                        model: Any?,
-                                        target: Target<Drawable>?,
-                                        dataSource: DataSource?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        binding.imageGradient.visibility = VISIBLE
-                                        Timber.d("Completed")
-                                        return false
-                                    }
-                                })
-                                .into(binding.imageDiscipline)
-                        }
-                    }
-                }
-            }
-        })
-    }
+//    private fun prepareImage() {
+//        viewModel.group.observe(this, Observer {
+//            binding.imageGradient.visibility = GONE
+//            val code = it?.clazz()?.discipline()?.code
+//            if (code != null) {
+//                firestore.document(code.toLowerCase()).addSnapshotListener { snapshot, _ ->
+//                    val picture = snapshot?.getString("picture")
+//                    if (picture != null) {
+//                        Timber.d("new picture: $picture")
+//                        val ctx = context
+//                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && ctx != null) {
+//                            GlideApp.with(ctx)
+//                                .load(picture)
+//                                .addListener(object : RequestListener<Drawable> {
+//                                    override fun onLoadFailed(
+//                                        e: GlideException?,
+//                                        model: Any?,
+//                                        target: Target<Drawable>?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        binding.imageGradient.visibility = GONE
+//                                        Timber.d("Failed")
+//                                        return true
+//                                    }
+//
+//                                    override fun onResourceReady(
+//                                        resource: Drawable?,
+//                                        model: Any?,
+//                                        target: Target<Drawable>?,
+//                                        dataSource: DataSource?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        binding.imageGradient.visibility = VISIBLE
+//                                        Timber.d("Completed")
+//                                        return false
+//                                    }
+//                                })
+//                                .into(binding.imageDiscipline)
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     private fun createFragments() {
         val group = requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID)
