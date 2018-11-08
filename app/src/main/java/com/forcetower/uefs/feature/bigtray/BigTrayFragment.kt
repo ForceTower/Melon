@@ -35,6 +35,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
+import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.bigtray.isOpen
@@ -66,6 +67,7 @@ class BigTrayFragment : UFragment(), Injectable {
             textToolbarTitle.text = getString(R.string.label_big_tray)
             appBar.elevation = 0f
         }
+        binding.btnNotification.setOnClickListener { BigTrayService.startService(context!!) }
     }
 
     override fun onStart() {
