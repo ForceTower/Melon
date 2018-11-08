@@ -27,27 +27,18 @@
 
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.target.Target
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -65,7 +56,6 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.DividerItemDecorator
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.CollectionReference
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -118,53 +108,53 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         }
 
         createFragments()
-        prepareImage()
+        //prepareImage()
     }
 
-    private fun prepareImage() {
-        viewModel.group.observe(this, Observer {
-            binding.imageGradient.visibility = GONE
-            val code = it?.clazz()?.discipline()?.code
-            if (code != null) {
-                firestore.document(code.toLowerCase()).addSnapshotListener { snapshot, _ ->
-                    val picture = snapshot?.getString("picture")
-                    if (picture != null) {
-                        Timber.d("new picture: $picture")
-                        val ctx = context
-                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && ctx != null) {
-                            GlideApp.with(ctx)
-                                .load(picture)
-                                .addListener(object : RequestListener<Drawable> {
-                                    override fun onLoadFailed(
-                                        e: GlideException?,
-                                        model: Any?,
-                                        target: Target<Drawable>?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        binding.imageGradient.visibility = GONE
-                                        Timber.d("Failed")
-                                        return true
-                                    }
-
-                                    override fun onResourceReady(
-                                        resource: Drawable?,
-                                        model: Any?,
-                                        target: Target<Drawable>?,
-                                        dataSource: DataSource?,
-                                        isFirstResource: Boolean
-                                    ): Boolean {
-                                        binding.imageGradient.visibility = VISIBLE
-                                        Timber.d("Completed")
-                                        return false
-                                    }
-                                })
-                                .into(binding.imageDiscipline)
-                        }
-                    }
-                }
-            }
-        })
-    }
+//    private fun prepareImage() {
+//        viewModel.group.observe(this, Observer {
+//            binding.imageGradient.visibility = GONE
+//            val code = it?.clazz()?.discipline()?.code
+//            if (code != null) {
+//                firestore.document(code.toLowerCase()).addSnapshotListener { snapshot, _ ->
+//                    val picture = snapshot?.getString("picture")
+//                    if (picture != null) {
+//                        Timber.d("new picture: $picture")
+//                        val ctx = context
+//                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && ctx != null) {
+//                            GlideApp.with(ctx)
+//                                .load(picture)
+//                                .addListener(object : RequestListener<Drawable> {
+//                                    override fun onLoadFailed(
+//                                        e: GlideException?,
+//                                        model: Any?,
+//                                        target: Target<Drawable>?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        binding.imageGradient.visibility = GONE
+//                                        Timber.d("Failed")
+//                                        return true
+//                                    }
+//
+//                                    override fun onResourceReady(
+//                                        resource: Drawable?,
+//                                        model: Any?,
+//                                        target: Target<Drawable>?,
+//                                        dataSource: DataSource?,
+//                                        isFirstResource: Boolean
+//                                    ): Boolean {
+//                                        binding.imageGradient.visibility = VISIBLE
+//                                        Timber.d("Completed")
+//                                        return false
+//                                    }
+//                                })
+//                                .into(binding.imageDiscipline)
+//                        }
+//                    }
+//                }
+//            }
+//        })
+//    }
 
     private fun createFragments() {
         val group = requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID)
