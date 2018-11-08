@@ -38,6 +38,7 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
@@ -129,33 +130,36 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
                     val picture = snapshot?.getString("picture")
                     if (picture != null) {
                         Timber.d("new picture: $picture")
-                        GlideApp.with(context!!)
-                            .load(picture)
-                            .addListener(object: RequestListener<Drawable> {
-                                override fun onLoadFailed(
-                                    e: GlideException?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    binding.imageGradient.visibility = GONE
-                                    Timber.d("Failed")
-                                    return true
-                                }
+                        val ctx = context
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && ctx != null) {
+                            GlideApp.with(ctx)
+                                .load(picture)
+                                .addListener(object : RequestListener<Drawable> {
+                                    override fun onLoadFailed(
+                                        e: GlideException?,
+                                        model: Any?,
+                                        target: Target<Drawable>?,
+                                        isFirstResource: Boolean
+                                    ): Boolean {
+                                        binding.imageGradient.visibility = GONE
+                                        Timber.d("Failed")
+                                        return true
+                                    }
 
-                                override fun onResourceReady(
-                                    resource: Drawable?,
-                                    model: Any?,
-                                    target: Target<Drawable>?,
-                                    dataSource: DataSource?,
-                                    isFirstResource: Boolean
-                                ): Boolean {
-                                    binding.imageGradient.visibility = VISIBLE
-                                    Timber.d("Completed")
-                                    return false
-                                }
-                            })
-                            .into(binding.imageDiscipline)
+                                    override fun onResourceReady(
+                                        resource: Drawable?,
+                                        model: Any?,
+                                        target: Target<Drawable>?,
+                                        dataSource: DataSource?,
+                                        isFirstResource: Boolean
+                                    ): Boolean {
+                                        binding.imageGradient.visibility = VISIBLE
+                                        Timber.d("Completed")
+                                        return false
+                                    }
+                                })
+                                .into(binding.imageDiscipline)
+                        }
                     }
                 }
             }
