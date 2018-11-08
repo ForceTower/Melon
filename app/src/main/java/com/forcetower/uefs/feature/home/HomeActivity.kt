@@ -61,6 +61,7 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
     companion object {
         const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
         const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
+        const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
         const val EXTRA_GRADES_DIRECTION = "grades"
     }
 
@@ -100,6 +101,7 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
         val direction = when (directions) {
             EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
             EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
+            EXTRA_BIGTRAY_DIRECTION -> R.id.big_tray
             else -> null
         }
 

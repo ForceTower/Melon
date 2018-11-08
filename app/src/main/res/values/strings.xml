@@ -215,6 +215,7 @@
     <string name="ru_loading_data">Carregando dados</string>
     <string name="ru_failed_load_data">Erro ao carregar dados</string>
     <string name="ru_remaining">restantes</string>
+    <string name="ru_quota_remaining">%1$s cotas restantes</string>
     <string name="open_document">Ver documento</string>
     <string name="download_document">Baixar documento</string>
     <string name="enrollment_certificate">Guia de Matrícula</string>
@@ -367,7 +368,12 @@
     <string name="discipline_summary_label">Ementa</string>
     <string name="no_stats_for_discipline">Não existem estatísticas sobre esta disciplina :(</string>
     <string name="discipline_details_toolbar_label">Detalhes</string>
-    
+    <string name="big_tray_show_as_notification">Mostrar como notificação</string>
+    <string name="channel_big_tray_quota">Bandejão</string>
+    <string name="big_tray_connection_error">Erro de conexão</string>
+    <string name="ru_quota_exceeded">As cotas acabaram</string>
+    <string name="ru_close_notification">Fechar</string>
+
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
         <item>Encadeado</item>
