@@ -18,6 +18,7 @@ import javax.inject.Inject
 class BigTrayService: LifecycleService(), LifecycleOwner {
     companion object {
         private const val NOTIFICATION_BIG_TRAY = 187745
+        private const val START_SERVICE_ACTION = "com.forcetower.uefs.bigtray.START_FOREGROUND_SERVICE"
         private const val STOP_SERVICE_ACTION = "com.forcetower.uefs.bigtray.STOP_FOREGROUND_SERVICE"
 
         @JvmStatic
@@ -40,27 +41,32 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
         super.onStartCommand(intent, flags, startId)
 
         when {
-            intent == null -> {
-                if (!running) {
-                    running = true
-                    Timber.d("No intent received!! Start action!")
-                    startForeground(NOTIFICATION_BIG_TRAY, createNotification())
-                    repository.data.observe(this, Observer {
-                        startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
-                    })
-                } else {
-                    Timber.d("Ignored new run attempt while it's already running")
-                }
-            }
-            intent.action == STOP_SERVICE_ACTION -> {
-                Timber.d("Stop service action")
-                running = false
-                stopForeground(true)
-                stopSelf()
-            }
+            intent?.action == START_SERVICE_ACTION -> startComponent()
+            intent?.action == STOP_SERVICE_ACTION -> stopComponent()
+            else -> startComponent()
         }
 
         return Service.START_STICKY
+    }
+
+    private fun stopComponent() {
+        Timber.d("Stop service action")
+        running = false
+        stopForeground(true)
+        stopSelf()
+    }
+
+    private fun startComponent() {
+        if (!running) {
+            running = true
+            Timber.d("Start action!")
+            startForeground(NOTIFICATION_BIG_TRAY, createNotification())
+            repository.data.observe(this, Observer {
+                startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+            })
+        } else {
+            Timber.d("Ignored new run attempt while it's already running")
+        }
     }
 
     override fun onDestroy() {
@@ -69,7 +75,9 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
     }
 
     private fun createNotification(data: BigTrayData? = null): Notification {
-        val intent = Intent(this, BigTrayService::class.java)
+        val intent = Intent(this, BigTrayService::class.java).apply {
+            action = STOP_SERVICE_ACTION
+        }
         val pending = PendingIntent.getService(this, 0, intent, 0)
         return NotificationCreator.showBigTrayNotification(this, data, pending)
     }
