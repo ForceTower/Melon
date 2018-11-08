@@ -47,7 +47,7 @@ ext {
     room_version = "2.0.0"
     lifecycle_version = "2.0.0"
     nav_version = "1.0.0-alpha07"
-    work_version = "1.0.0-alpha10"
+    work_version = "1.0.0-alpha11"
 
     //Dagger
     dagger_version = "2.16"
