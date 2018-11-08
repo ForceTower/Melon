@@ -58,6 +58,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         val remote      = createChannel(CHANNEL_GENERAL_REMOTE_ID, getString(R.string.remote), NotificationManager.IMPORTANCE_DEFAULT)
         val eventGen    = createChannel(CHANNEL_EVENTS_GENERAL_ID, getString(R.string.channel_events_general), NotificationManager.IMPORTANCE_DEFAULT)
         val dceMsg      = createChannel(CHANNEL_MESSAGES_DCE_ID, getString(R.string.channel_messages_dce), NotificationManager.IMPORTANCE_DEFAULT)
+        val bigTray     = createChannel(CHANNEL_GENERAL_BIGTRAY_ID, getString(R.string.channel_big_tray_quota), NotificationManager.IMPORTANCE_DEFAULT)
 
         messages.group = CHANNEL_GROUP_MESSAGES_ID
         posted.group = CHANNEL_GROUP_GRADES_ID
@@ -67,6 +68,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         remote.group = CHANNEL_GROUP_GENERAL_ID
         eventGen.group = CHANNEL_GROUP_EVENTS_ID
         dceMsg.group = CHANNEL_GROUP_MESSAGES_ID
+        bigTray.group = CHANNEL_GROUP_GENERAL_ID
 
         manager.createNotificationChannel(messages)
         manager.createNotificationChannel(posted)
@@ -76,6 +78,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         manager.createNotificationChannel(remote)
         manager.createNotificationChannel(eventGen)
         manager.createNotificationChannel(dceMsg)
+        manager.createNotificationChannel(bigTray)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -105,6 +108,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         const val CHANNEL_GRADES_CHANGED_ID     = "com.forcetower.uefs.GRADES.CHANGE"
         const val CHANNEL_GENERAL_WARNINGS_ID   = "com.forcetower.uefs.GENERAL.WARNINGS"
         const val CHANNEL_GENERAL_REMOTE_ID     = "com.forcetower.uefs.GENERAL.REMOTE"
+        const val CHANNEL_GENERAL_BIGTRAY_ID   = "com.forcetower.uefs.GENERAL.BIGTRAY"
         const val CHANNEL_EVENTS_GENERAL_ID     = "com.forcetower.uefs.EVENTS.GENERAL"
     }
 }
