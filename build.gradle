@@ -10,7 +10,7 @@ buildscript {
         }
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.3.0-beta03'
+        classpath 'com.android.tools.build:gradle:3.2.1'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.2.0"
         classpath "com.github.triplet.gradle:play-publisher:2.0.0-rc1"
@@ -48,7 +48,7 @@ ext {
     preference = "1.0.0"
     annotation = "1.0.0"
     androidX = "1.0.2"
-    google_material = "1.1.0-alpha01"
+    google_material = "1.0.0"
     paging_version = "2.0.0"
     room_version = "2.0.0"
     lifecycle_version = "2.0.0"
@@ -56,7 +56,7 @@ ext {
     work_version = "1.0.0-alpha11"
 
     //Dagger
-    dagger_version = "2.18"
+    dagger_version = "2.16"
 
     //Firebase
     firebase_core = "16.0.5"
