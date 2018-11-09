@@ -20,6 +20,6 @@ android {
 
 dependencies {
     api "androidx.appcompat:appcompat:$androidX"
-    implementation "androidx.exifinterface:exifinterface:$androidX"
+    implementation "androidx.exifinterface:exifinterface:$exifinterface"
 }
 
