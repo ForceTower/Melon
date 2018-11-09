@@ -63,6 +63,5 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         })
     }
 
-
     override fun supportFragmentInjector() = fragmentInjector
 }

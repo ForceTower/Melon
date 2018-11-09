@@ -74,15 +74,12 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var binding: ActivityHomeBinding
-    private val bottomFragment: HomeBottomFragment by lazy { HomeBottomFragment() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         setupViewModel()
-        DataBindingUtil.setContentView<ActivityHomeBinding>(this, R.layout.activity_home).also { it ->
-            binding = it
-        }
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
 
