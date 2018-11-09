@@ -54,6 +54,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            ext.enableCrashlytics = false
+        }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
