@@ -54,6 +54,9 @@ android {
         }
     }
     buildTypes {
+        debug {
+            ext.enableCrashlytics = false
+        }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
@@ -88,15 +91,15 @@ dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     //Kotlin Dependencies
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "androidx.core:core-ktx:$androidX"
+    implementation "androidx.core:core-ktx:$ktx"
 
     //Android Component
     implementation "androidx.appcompat:appcompat:$androidX"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.palette:palette:$androidX"
-    implementation "androidx.browser:browser:$androidX"
-    implementation "androidx.preference:preference:$androidX"
+    implementation "androidx.palette:palette:$pallete"
+    implementation "androidx.browser:browser:$browser"
+    implementation "androidx.preference:preference:$preference"
     implementation "com.google.android:flexbox:0.3.2"
 
     //Lifecycle Extensions
