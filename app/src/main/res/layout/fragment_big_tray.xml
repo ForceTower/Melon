@@ -132,6 +132,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_notification"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+                android:textColor="@color/blue_accent"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -220,20 +221,25 @@
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/image_failed_load" />
-
+    
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_open"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
                 android:visibility="gone"
-                tools:visibility="visible"
-                app:constraint_referenced_ids="text_mean,chart_layout" />
+                app:constraint_referenced_ids="text_mean,chart_layout"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:visibility="visible" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/group_closed"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:constraint_referenced_ids="ru_closed_image,closed_message" />
 
             <androidx.constraintlayout.widget.Group
@@ -242,6 +248,8 @@
                 android:layout_height="wrap_content"
                 android:visibility="visible"
                 tools:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:constraint_referenced_ids="text_loading_data" />
 
             <androidx.constraintlayout.widget.Group
@@ -249,6 +257,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
                 app:constraint_referenced_ids="image_failed_load,text_failed_load" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
