@@ -94,4 +94,7 @@ abstract class MessageDao {
 
     @Insert(onConflict = REPLACE)
     abstract fun insert(message: Message): Long
+
+    @Query("DELETE FROM Message")
+    abstract fun deleteAll()
 }

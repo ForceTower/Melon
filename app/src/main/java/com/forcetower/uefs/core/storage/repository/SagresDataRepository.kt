@@ -50,6 +50,7 @@ class SagresDataRepository @Inject constructor(
             database.profileDao().deleteMe()
             database.classDao().deleteAll()
             database.semesterDao().deleteAll()
+            database.messageDao().deleteAll()
             SagresNavigator.instance.logout()
         }
     }
