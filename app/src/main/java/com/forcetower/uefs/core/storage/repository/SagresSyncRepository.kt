@@ -267,17 +267,19 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun gradesNotifications() {
-        val posted = database.gradesDao().getPostedGradesDirect()
-        val create = database.gradesDao().getCreatedGradesDirect()
-        val change = database.gradesDao().getChangedGradesDirect()
-        val date   = database.gradesDao().getDateChangedGradesDirect()
+        database.gradesDao().run {
+            val posted = getPostedGradesDirect()
+            val create = getCreatedGradesDirect()
+            val change = getChangedGradesDirect()
+            val date   = getDateChangedGradesDirect()
 
-        database.gradesDao().markAllNotified()
+            markAllNotified()
 
-        posted.forEach { NotificationCreator.showSagresPostedGradesNotification(it, context) }
-        create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
-        change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
-        date.forEach   { NotificationCreator.showSagresDateGradesNotification  (it, context) }
+            posted.forEach { NotificationCreator.showSagresPostedGradesNotification(it, context) }
+            create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
+            change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
+            date.forEach   { NotificationCreator.showSagresDateGradesNotification  (it, context) }
+        }
     }
 
     @WorkerThread

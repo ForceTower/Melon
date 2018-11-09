@@ -31,6 +31,7 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
     @Inject
     lateinit var repository: BigTrayRepository
     private var running = false
+    private var trayData: BigTrayData? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -61,8 +62,10 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
             running = true
             Timber.d("Start action!")
             startForeground(NOTIFICATION_BIG_TRAY, createNotification())
-            repository.data.observe(this, Observer {
-                startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+            repository.beginWith(7000).observe(this, Observer {
+                if (trayData != it) {
+                    startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                }
             })
         } else {
             Timber.d("Ignored new run attempt while it's already running")
