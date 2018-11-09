@@ -36,6 +36,7 @@ import android.content.Intent
 import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
@@ -199,11 +200,12 @@ object NotificationCreator {
 
     fun showBigTrayNotification(context: Context, data: BigTrayData?, close: PendingIntent): Notification {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_BIGTRAY_ID, false)
-                .setOngoing(true)
-                .setContentTitle(context.getString(R.string.label_big_tray))
-                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
-                .setContentIntent(createBigTrayIntent(context))
-                .addAction(R.drawable.ic_close_black_24dp, context.getString(R.string.ru_close_notification), close)
+            .setOngoing(true)
+            .setContentTitle(context.getString(R.string.label_big_tray))
+            .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .setContentIntent(createBigTrayIntent(context))
+            .addAction(R.drawable.ic_close_black_24dp, context.getString(R.string.ru_close_notification), close)
 
         val content = when {
             data == null -> context.getString(R.string.ru_loading_data)
@@ -215,12 +217,11 @@ object NotificationCreator {
                     context.getString(R.string.ru_quota_remaining, data.quota)
                 }
             }
-            !data.open -> context.getString(R.string.ru_is_closed_message)
+            !data.open && !data.error -> context.getString(R.string.ru_is_closed_message)
             else -> context.getString(R.string.ru_failed_load_data)
         }
 
         builder.setContentText(content)
-
         return builder.build()
     }
 
