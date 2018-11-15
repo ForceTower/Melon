@@ -51,18 +51,24 @@ class BigTrayRepository @Inject constructor(
             return _data
         }
 
-    private fun beginRequests() {
+    fun beginWith(delay: Long = 3500): LiveData<BigTrayData> {
         requesting = true
-        loop()
+        loop(delay)
+        return _data
     }
 
-    private fun loop() {
+    private fun beginRequests(delay: Long = 3500) {
+        requesting = true
+        loop(delay)
+    }
+
+    private fun loop(delay: Long) {
         val handler = Handler(Looper.getMainLooper())
         if (requesting) {
             executors.networkIO().execute {
                 val data = performRequest()
                 _data.postValue(data)
-                handler.postDelayed({ this.loop() }, 3500)
+                handler.postDelayed({ this.loop(delay) }, delay)
             }
         }
     }
