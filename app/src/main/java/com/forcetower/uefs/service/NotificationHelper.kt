@@ -115,7 +115,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         const val CHANNEL_GRADES_CHANGED_ID     = "com.forcetower.uefs.GRADES.CHANGE"
         const val CHANNEL_GENERAL_WARNINGS_ID   = "com.forcetower.uefs.GENERAL.WARNINGS"
         const val CHANNEL_GENERAL_REMOTE_ID     = "com.forcetower.uefs.GENERAL.REMOTE"
-        const val CHANNEL_GENERAL_BIGTRAY_ID   = "com.forcetower.uefs.GENERAL.BIGTRAY"
+        const val CHANNEL_GENERAL_BIGTRAY_ID    = "com.forcetower.uefs.GENERAL.BIGTRAY"
         const val CHANNEL_EVENTS_GENERAL_ID     = "com.forcetower.uefs.EVENTS.GENERAL"
     }
 }
