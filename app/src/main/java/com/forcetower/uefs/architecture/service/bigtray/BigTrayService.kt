@@ -5,7 +5,6 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
@@ -15,7 +14,7 @@ import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
 
-class BigTrayService: LifecycleService(), LifecycleOwner {
+class BigTrayService: LifecycleService() {
     companion object {
         private const val NOTIFICATION_BIG_TRAY = 187745
         private const val START_SERVICE_ACTION = "com.forcetower.uefs.bigtray.START_FOREGROUND_SERVICE"
@@ -31,6 +30,7 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
     @Inject
     lateinit var repository: BigTrayRepository
     private var running = false
+    private var trayData: BigTrayData? = null
 
     override fun onCreate() {
         super.onCreate()
@@ -61,8 +61,11 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
             running = true
             Timber.d("Start action!")
             startForeground(NOTIFICATION_BIG_TRAY, createNotification())
-            repository.data.observe(this, Observer {
-                startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+            repository.beginWith(7000).observe(this, Observer {
+                if (trayData != it) {
+                    trayData = it
+                    startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                }
             })
         } else {
             Timber.d("Ignored new run attempt while it's already running")
@@ -72,6 +75,7 @@ class BigTrayService: LifecycleService(), LifecycleOwner {
     override fun onDestroy() {
         super.onDestroy()
         repository.requesting = false
+        running = false
     }
 
     private fun createNotification(data: BigTrayData? = null): Notification {

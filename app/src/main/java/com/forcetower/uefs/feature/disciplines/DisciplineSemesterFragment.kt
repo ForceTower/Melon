@@ -44,7 +44,6 @@ import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
-import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineSemesterFragment: UFragment(), Injectable {
@@ -100,6 +99,10 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
                 changeDuration = 160L
                 removeDuration = 120L
             }
+            setRecycledViewPool(RecyclerView.RecycledViewPool().apply {
+                setMaxRecycledViews(4, 7)
+                setMaxRecycledViews(8, 15)
+            })
         }
         swipeRefreshLayout.setOnRefreshListener {
             viewModel.updateGradesFromSemester(semesterSagresId)
