@@ -35,7 +35,7 @@ import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.databinding.ItemGradeBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-private const val GRADE = 3
+private const val GRADE = 8
 
 class ClassGroupGradesAdapter: ListAdapter<Grade, GradesHolder>(GradesDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradesHolder {
@@ -56,7 +56,7 @@ class GradesHolder(
     }
 }
 
-object GradesDiff: DiffUtil.ItemCallback<Grade>() {
+private object GradesDiff: DiffUtil.ItemCallback<Grade>() {
     override fun areItemsTheSame(oldItem: Grade, newItem: Grade) = oldItem.uid == newItem.uid
     override fun areContentsTheSame(oldItem: Grade, newItem: Grade) = oldItem == newItem
 

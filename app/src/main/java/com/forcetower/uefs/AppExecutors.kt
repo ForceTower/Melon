@@ -43,11 +43,11 @@ class AppExecutors(
 ) {
 
     @Inject
-    constructor() : this(
-            Executors.newFixedThreadPool(2),
-            Executors.newFixedThreadPool(4),
-            MainThreadExecutor(),
-            Executors.newFixedThreadPool(5)
+    constructor(): this(
+        Executors.newFixedThreadPool(2),
+        Executors.newFixedThreadPool(4),
+        MainThreadExecutor(),
+        Executors.newFixedThreadPool(5)
     )
 
     fun diskIO(): Executor {

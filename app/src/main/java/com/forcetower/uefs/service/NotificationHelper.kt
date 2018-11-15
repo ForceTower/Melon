@@ -58,7 +58,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         val remote      = createChannel(CHANNEL_GENERAL_REMOTE_ID, getString(R.string.remote), NotificationManager.IMPORTANCE_DEFAULT)
         val eventGen    = createChannel(CHANNEL_EVENTS_GENERAL_ID, getString(R.string.channel_events_general), NotificationManager.IMPORTANCE_DEFAULT)
         val dceMsg      = createChannel(CHANNEL_MESSAGES_DCE_ID, getString(R.string.channel_messages_dce), NotificationManager.IMPORTANCE_DEFAULT)
-        val bigTray     = createChannel(CHANNEL_GENERAL_BIGTRAY_ID, getString(R.string.channel_big_tray_quota), NotificationManager.IMPORTANCE_DEFAULT)
+        val bigTray     = createChannel(CHANNEL_GENERAL_BIGTRAY_ID, getString(R.string.channel_big_tray_quota), NotificationManager.IMPORTANCE_LOW)
 
         messages.group = CHANNEL_GROUP_MESSAGES_ID
         posted.group = CHANNEL_GROUP_GRADES_ID
@@ -82,11 +82,18 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private fun createChannel(channelId: String, name: CharSequence, importance: Int): NotificationChannel {
+    private fun createChannel(
+        channelId: String,
+        name: CharSequence,
+        importance: Int,
+        vibration: LongArray = longArrayOf(150, 300, 150, 300),
+        showBadge: Boolean = true,
+        enableLights: Boolean =  true
+    ): NotificationChannel {
         val channel = NotificationChannel(channelId, name, importance)
-        channel.enableLights(true)
-        channel.setShowBadge(true)
-        channel.vibrationPattern = longArrayOf(150, 300, 150, 300)
+        channel.enableLights(enableLights)
+        channel.setShowBadge(showBadge)
+        channel.vibrationPattern = vibration
         return channel
     }
 
@@ -108,7 +115,7 @@ class NotificationHelper(val context: Context): ContextWrapper(context) {
         const val CHANNEL_GRADES_CHANGED_ID     = "com.forcetower.uefs.GRADES.CHANGE"
         const val CHANNEL_GENERAL_WARNINGS_ID   = "com.forcetower.uefs.GENERAL.WARNINGS"
         const val CHANNEL_GENERAL_REMOTE_ID     = "com.forcetower.uefs.GENERAL.REMOTE"
-        const val CHANNEL_GENERAL_BIGTRAY_ID   = "com.forcetower.uefs.GENERAL.BIGTRAY"
+        const val CHANNEL_GENERAL_BIGTRAY_ID    = "com.forcetower.uefs.GENERAL.BIGTRAY"
         const val CHANNEL_EVENTS_GENERAL_ID     = "com.forcetower.uefs.EVENTS.GENERAL"
     }
 }
