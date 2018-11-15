@@ -33,6 +33,7 @@ import timber.log.Timber
 import java.util.Calendar
 import java.util.Calendar.SATURDAY
 import java.util.Calendar.SUNDAY
+import java.util.Objects
 
 data class BigTrayData(
     val open: Boolean,
@@ -49,6 +50,20 @@ data class BigTrayData(
         fun error() = BigTrayData(false, "", true, System.currentTimeMillis(), "")
         fun closed() = BigTrayData(false, "0", false, System.currentTimeMillis(), "")
         fun createData(values: List<String>) = BigTrayData(true, values[1].trim(), false, System.currentTimeMillis(), values[0].trim())
+    }
+
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other == null || javaClass != other.javaClass) return false
+        val that = other as BigTrayData? ?: return false
+        return open == that.open
+            && quota == that.quota
+            && error == that.error
+            && type == that.type
+    }
+
+    override fun hashCode(): Int {
+        return Objects.hash(open, quota, error, type, time)
     }
 }
 
