@@ -25,12 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.common
+package com.forcetower.uefs.core.util
 
-import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.google.gson.Gson
 
-interface DisciplineActions {
-    fun classClicked(clazz: ClassWithGroups)
-    fun groupSelected(clazz: ClassGroup)
+fun Any.toJson(): String {
+    val gson = Gson()
+    return gson.toJson(this)
+}
+
+inline fun <reified T> String.fromJson(): T {
+    val gson = Gson()
+    return gson.fromJson(this, T::class.java)
 }

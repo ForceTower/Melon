@@ -27,12 +27,12 @@
 
 package com.forcetower.uefs.feature.disciplines
 
-import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.ClassAbsence
+import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
@@ -43,7 +43,6 @@ import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.map
-import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
@@ -84,6 +83,10 @@ class DisciplineViewModel @Inject constructor(
     private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
     val navigateToDisciplineAction: LiveData<Event<ClassWithGroups>>
         get() = _navigateToDisciplineAction
+
+    private val _navigateToGroupAction = MutableLiveData<Event<ClassGroup>>()
+    val navigateToGroupAction: LiveData<Event<ClassGroup>>
+        get() = _navigateToGroupAction
 
     private val _refreshing = MediatorLiveData<Boolean>()
     val refreshing: LiveData<Boolean>
@@ -153,6 +156,10 @@ class DisciplineViewModel @Inject constructor(
 
     override fun classClicked(clazz: ClassWithGroups) {
         _navigateToDisciplineAction.value = Event(clazz)
+    }
+
+    override fun groupSelected(clazz: ClassGroup) {
+        _navigateToGroupAction.value = Event(clazz)
     }
 
     fun updateGradesFromSemester(semesterId: Long) {

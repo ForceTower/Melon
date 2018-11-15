@@ -73,7 +73,7 @@ class IntroductionFragment: UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.textSelectCourseInternal.setOnClickListener {_ ->
+        binding.textSelectCourseInternal.setOnClickListener {
             val dialog = SelectCourseDialog()
             dialog.setCallback(object: CourseSelectionCallback {
                 override fun onSelected(course: Course) {
@@ -84,11 +84,11 @@ class IntroductionFragment: UFragment(), Injectable {
             dialog.show(childFragmentManager, "dialog_course")
         }
 
-        binding.imageUserImage.setOnClickListener {_ ->
+        binding.imageUserImage.setOnClickListener {
             pickImage()
         }
 
-        binding.btnNext.setOnClickListener {_ ->
+        binding.btnNext.setOnClickListener {
             val course = viewModel.getSelectedCourse()
             if (course == null) {
                 binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
