@@ -31,6 +31,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
@@ -39,9 +40,11 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
+import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
@@ -88,8 +91,13 @@ class DisciplineFragment: UFragment(), Injectable {
         viewModel.semesters.observe(this, Observer {
             adapter.submitList(it)
         })
+
         viewModel.navigateToDisciplineAction.observe(this, EventObserver {
             handleNavigateToDisciplineDetails(it)
+        })
+        
+        viewModel.navigateToGroupAction.observe(this, EventObserver {
+            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.uid))
         })
     }
 
@@ -102,7 +110,10 @@ class DisciplineFragment: UFragment(), Injectable {
     }
 
     private fun showGroupDialog(it: ClassWithGroups) {
-        homeViewModel.showSnack("A quantidade de grupos desta disciplina é ${it.groups.size}. NotImplementedException")
+        val dialog = SelectGroupDialog().apply {
+            arguments = bundleOf("groups" to it.toJson())
+        }
+        dialog.show(childFragmentManager, "select_discipline_group")
     }
 
     private inner class SemesterAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {

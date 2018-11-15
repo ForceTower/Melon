@@ -31,6 +31,7 @@ import com.forcetower.uefs.feature.bigtray.BigTrayFragment
 import com.forcetower.uefs.feature.calendar.CalendarFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
+import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.document.DocumentsFragment
 import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
@@ -74,4 +75,6 @@ abstract class HomeModule {
     abstract fun remindersFragment(): RemindersFragment
     @ContributesAndroidInjector
     abstract fun createReminderDialog(): CreateReminderDialog
+    @ContributesAndroidInjector
+    abstract fun selectGroupDialog(): SelectGroupDialog
 }
