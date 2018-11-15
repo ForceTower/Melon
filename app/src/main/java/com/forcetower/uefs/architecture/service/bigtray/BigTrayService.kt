@@ -63,6 +63,7 @@ class BigTrayService: LifecycleService() {
             startForeground(NOTIFICATION_BIG_TRAY, createNotification())
             repository.beginWith(7000).observe(this, Observer {
                 if (trayData != it) {
+                    trayData = it
                     startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
                 }
             })
@@ -74,6 +75,7 @@ class BigTrayService: LifecycleService() {
     override fun onDestroy() {
         super.onDestroy()
         repository.requesting = false
+        running = false
     }
 
     private fun createNotification(data: BigTrayData? = null): Notification {
