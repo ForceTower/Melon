@@ -373,7 +373,9 @@
     <string name="big_tray_connection_error">Erro de conexão</string>
     <string name="ru_quota_exceeded">As cotas acabaram</string>
     <string name="ru_close_notification">Fechar</string>
-
+    <string name="select_discipline_group_label">Selecione uma turma</string>
+    <string name="label_select_discipline_group_info">Seleciona uma das turmas disponíveis da disciplina %1$s</string>
+    
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
         <item>Encadeado</item>
