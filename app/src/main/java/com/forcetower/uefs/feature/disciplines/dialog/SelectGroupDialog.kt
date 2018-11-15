@@ -25,70 +25,47 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.setup
+package com.forcetower.uefs.feature.disciplines.dialog
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.vm.CourseViewModel
+import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.util.fromJson
 import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.DialogSelectCourseBinding
+import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
+import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class SelectCourseDialog: RoundedDialog(), Injectable {
+class SelectGroupDialog: RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: CourseViewModel
-    private lateinit var binding: DialogSelectCourseBinding
-    private var courses: Array<Course>? = null
-    private var callback: CourseSelectionCallback? = null
+    private lateinit var viewModel: DisciplineViewModel
+    private lateinit var binding: DialogSelectDisciplineGroupBinding
+    private lateinit var value: ClassWithGroups
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
-        return DialogSelectCourseBinding.inflate(inflater, container, false).also {
+        value = requireNotNull(arguments).getString("groups")?.fromJson() ?: throw IllegalStateException("Argument groups was not defined")
+        return DialogSelectDisciplineGroupBinding.inflate(inflater, container, false).also {
             binding = it
-            it.btnCancel.setOnClickListener { dismiss()}
-            it.btnOk.setOnClickListener { select() }
+        }.apply {
+            clazzGroups = value
+            executePendingBindings()
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.courses.observe(this, Observer {
-            if (it.data != null && it.data.isNotEmpty()) {
-                populateCourses(it.data)
-            }
-        })
-    }
-
-    private fun populateCourses(data: List<Course>) {
-        courses = data.toTypedArray()
-        val strings = data.map { it.name }.toTypedArray()
-        binding.pickerCourse.minValue = 1
-        binding.pickerCourse.maxValue = strings.size
-        binding.pickerCourse.displayedValues = strings
-    }
-
-    private fun select() {
-        val not = courses ?: emptyArray()
-        if (not.isNotEmpty()) {
-            callback?.onSelected(not[binding.pickerCourse.value - 1])
-            dismiss()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val list = value.groups.map { it.group }
+        val groupsAdapter = DisciplineGroupsAdapter(this, viewModel)
+        binding.recyclerGroups.apply {
+            adapter = groupsAdapter
         }
+        groupsAdapter.submitList(list)
     }
-
-    fun setCallback(callback: CourseSelectionCallback) {
-        this.callback = callback
-    }
-}
-
-interface CourseSelectionCallback {
-    fun onSelected(course: Course)
 }
