@@ -21,6 +21,7 @@ Esta nova versão não oferecerá suporte para dispositivos com Android inferior
 Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
 
 Durante a fase de testes, o aplicativo será configurado para executar apenas no Android 6.0 ou acima por causa da compatibilidade com o JobScheduler e o bug conhecido na versão 5.x.x
+
 Quando a fase de testes terminar, uma migração que envolva o 5.x.x será avaliada :)
 
 ### Compilando o Melon
