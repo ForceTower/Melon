@@ -32,6 +32,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.preference.Preference
+import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivitySettingsBinding
 import com.forcetower.uefs.feature.shared.UActivity
@@ -41,7 +43,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class SettingsActivity: UActivity(), HasSupportFragmentInjector {
+class SettingsActivity: UActivity(), HasSupportFragmentInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
@@ -60,6 +62,10 @@ class SettingsActivity: UActivity(), HasSupportFragmentInjector {
             val dy = scrollY - oldScrollY
             Timber.d("Scroll delta: $dy")
         }
+    }
+
+    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
+        return false
     }
 
     override fun supportFragmentInjector() = fragmentInjector
