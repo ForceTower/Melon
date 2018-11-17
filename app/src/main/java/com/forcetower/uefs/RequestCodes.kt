@@ -25,18 +25,6 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.settings
+package com.forcetower.uefs
 
-import android.os.Bundle
-import androidx.preference.PreferenceFragmentCompat
-import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
-
-class SettingsFragment: PreferenceFragmentCompat(), Injectable {
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        addPreferencesFromResource(R.xml.settings_synchronization)
-        addPreferencesFromResource(R.xml.settings_notifications)
-        addPreferencesFromResource(R.xml.settings_account)
-    }
-}
+const val RC_LOCATION_PERMISSION = 1000
