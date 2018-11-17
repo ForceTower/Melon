@@ -28,45 +28,41 @@
 
 <PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android">
+        
+    <ListPreference
+        android:key="stg_sync_worker_type"
+        android:defaultValue="0"
+        android:title="@string/settings_sync_type_label"
+        android:summary="@string/settings_sync_type_info_label"
+        android:icon="@drawable/ic_group_work_accent_30dp"
+        android:entries="@array/settings_sync_type_titles"
+        android:entryValues="@array/settings_sync_type_values"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"/>
     
-    <PreferenceCategory
-        android:title="@string/settings_synchronization_label">
-        
-        <ListPreference
-            android:key="stg_sync_worker_type"
-            android:defaultValue="0"
-            android:title="@string/settings_sync_type_label"
-            android:summary="@string/settings_sync_type_info_label"
-            android:icon="@drawable/ic_group_work_accent_30dp"
-            android:entries="@array/settings_sync_type_titles"
-            android:entryValues="@array/settings_sync_type_values"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"/>
-        
-        <ListPreference
-            android:key="stg_sync_frequency"
-            android:defaultValue="60"
-            android:title="@string/settings_sync_frequency_label"
-            android:summary="@string/settings_sync_frequency_info_label"
-            android:icon="@drawable/ic_sync_accent_30dp"
-            android:entries="@array/settings_sync_frequency_titles"
-            android:entryValues="@array/settings_sync_frequency_values"
-            android:negativeButtonText="@null"
-            android:positiveButtonText="@null"/>
-        
-        <SwitchPreference
-            android:key="stg_sync_auto_proxy"
-            android:title="@string/settings_sync_auto_proxy_label"
-            android:summary="@string/settings_sync_auto_proxy_info_label"
-            android:icon="@drawable/ic_parking_accent_30dp"
-            android:enabled="false"
-            android:defaultValue="false" />
-        
-        <EditTextPreference
-            android:key="stg_sync_proxy"
-            android:defaultValue="10.65.16.2:3128"
-            android:title="@string/settings_proxy_label"
-            android:summary="@string/settings_proxy_info_label"
-            android:icon="@drawable/ic_http_accent_30dp"/>
-    </PreferenceCategory>
+    <ListPreference
+        android:key="stg_sync_frequency"
+        android:defaultValue="60"
+        android:title="@string/settings_sync_frequency_label"
+        android:summary="@string/settings_sync_frequency_info_label"
+        android:icon="@drawable/ic_sync_accent_30dp"
+        android:entries="@array/settings_sync_frequency_titles"
+        android:entryValues="@array/settings_sync_frequency_values"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"/>
+    
+    <SwitchPreference
+        android:key="stg_sync_auto_proxy"
+        android:title="@string/settings_sync_auto_proxy_label"
+        android:summary="@string/settings_sync_auto_proxy_info_label"
+        android:icon="@drawable/ic_parking_accent_30dp"
+        android:enabled="false"
+        android:defaultValue="false" />
+    
+    <EditTextPreference
+        android:key="stg_sync_proxy"
+        android:defaultValue="10.65.16.2:3128"
+        android:title="@string/settings_proxy_label"
+        android:summary="@string/settings_proxy_info_label"
+        android:icon="@drawable/ic_http_accent_30dp"/>
 </PreferenceScreen>

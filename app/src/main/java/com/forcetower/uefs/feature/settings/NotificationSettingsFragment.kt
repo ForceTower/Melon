@@ -25,17 +25,15 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.settings
 
-import com.forcetower.uefs.feature.reminders.RemindersFragment
-import com.forcetower.uefs.feature.settings.RootSettingsFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.os.Bundle
+import androidx.preference.PreferenceFragmentCompat
+import com.forcetower.uefs.R
 
-@Module
-abstract class SettingsModule {
-    @ContributesAndroidInjector
-    abstract fun settingsFragment(): RootSettingsFragment
-    @ContributesAndroidInjector
-    abstract fun remindersFragment(): RemindersFragment
+class NotificationSettingsFragment: PreferenceFragmentCompat() {
+
+    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
+        setPreferencesFromResource(R.xml.settings_notifications, rootKey)
+    }
 }
