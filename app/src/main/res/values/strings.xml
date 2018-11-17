@@ -381,11 +381,6 @@
         <item>Encadeado</item>
     </string-array>
     
-    <string-array name="settings_sync_type_values">
-        <item>0</item>
-        <item>1</item>
-    </string-array>
-    
     <string-array name="settings_sync_frequency_titles">
         <item>5 minutos [Encadeado]</item>
         <item>10 minutos [Encadeado]</item>
@@ -398,28 +393,10 @@
         <item>12 horas</item>
     </string-array>
     
-    <string-array name="settings_sync_frequency_values">
-        <item>5</item>
-        <item>10</item>
-        <item>15</item>
-        <item>30</item>
-        <item>60</item>
-        <item>120</item>
-        <item>180</item>
-        <item>360</item>
-        <item>720</item>
-    </string-array>
-    
     <string-array name="settings_ntf_grade_spoiler_titles">
         <item>Nenhum</item>
         <item>Moderado</item>
         <item>Completo</item>
-    </string-array>
-    
-    <string-array name="settings_ntf_grade_spoiler_values">
-        <item>0</item>
-        <item>1</item>
-        <item>2</item>
     </string-array>
     
     <plurals name="duration_hours">
