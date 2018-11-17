@@ -26,31 +26,28 @@
   ~ SOFTWARE.
   -->
 
-<PreferenceScreen android:key="settings_general"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
+    <integer-array name="settings_sync_frequency_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+        <item>360</item>
+        <item>720</item>
+    </integer-array>
     
-    <PreferenceScreen
-        android:key="settings_synchronization"
-        android:title="@string/settings_synchronization_label"
-        android:summary="@string/settings_synchronization_info_label"
-        android:icon="@drawable/ic_sync_black_24dp"
-        android:fragment="com.forcetower.uefs.feature.settings.SyncSettingsFragment">
-    </PreferenceScreen>
+    <integer-array name="settings_sync_type_values">
+        <item>0</item>
+        <item>1</item>
+    </integer-array>
     
-    <PreferenceScreen
-        android:key="settings_notifications"
-        android:title="@string/settings_notification_label"
-        android:summary="@string/settings_notification_info_label"
-        android:icon="@drawable/ic_notifications_active_24px"
-        android:fragment="com.forcetower.uefs.feature.settings.NotificationSettingsFragment">
-    </PreferenceScreen>
+    <integer-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </integer-array>
     
-    <PreferenceScreen
-        android:key="settings_account"
-        android:title="@string/settings_account_label"
-        android:summary="@string/settings_account_info_label"
-        android:icon="@drawable/ic_account_black_24dp"
-        android:fragment="com.forcetower.uefs.feature.settings.AccountSettingsFragment">
-    </PreferenceScreen>
-
-</PreferenceScreen>
+</resources>

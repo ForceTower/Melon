@@ -52,7 +52,7 @@ class SettingsActivity: UActivity(), HasSupportFragmentInjector {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         supportFragmentManager.inTransaction {
-            add(R.id.fragment_container, SettingsFragment())
+            add(R.id.fragment_container, RootSettingsFragment())
         }
 
         binding.incToolbar.textToolbarTitle.text = getString(R.string.label_settings)
