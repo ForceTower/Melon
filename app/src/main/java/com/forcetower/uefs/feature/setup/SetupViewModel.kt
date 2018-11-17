@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
+import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.google.firebase.auth.FirebaseUser
 import javax.inject.Inject
@@ -81,6 +82,7 @@ class SetupViewModel @Inject constructor(
 
     fun setFrequencyAndComplete(frequency: Frequency) {
         firebaseAuthRepository.updateFrequency(frequency.value)
+        SyncLinkedWorker.stopWorker()
         SyncMainWorker.createWorker(context, frequency.value)
     }
 }

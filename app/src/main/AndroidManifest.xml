@@ -103,6 +103,7 @@
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_firebase_notification_channel_id" />
+        <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

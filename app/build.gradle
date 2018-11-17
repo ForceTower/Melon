@@ -55,7 +55,7 @@ android {
     }
     buildTypes {
         debug {
-            ext.enableCrashlytics = false
+            //ext.enableCrashlytics = false
         }
         release {
             signingConfig signingConfigs.release
@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktx"
 
     //Android Component
-    implementation "androidx.appcompat:appcompat:$androidX"
+    implementation "androidx.appcompat:appcompat:$appcompat"
     implementation "androidx.constraintlayout:constraintlayout:1.1.3"
     implementation "com.google.android.material:material:$google_material"
     implementation "androidx.palette:palette:$pallete"
@@ -179,6 +179,9 @@ dependencies {
 
     //Open Source Licenses
     implementation "com.mikepenz:aboutlibraries:6.2.0"
+
+    //Permissions Helper
+    implementation 'pub.devrel:easypermissions:0.3.0'
 
     //Helper Projects
     implementation project(path: ':sagres')

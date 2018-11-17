@@ -41,13 +41,14 @@ ext.sdkVersions = [
 
 ext {
     //Android Components
+    androidXcore = "1.1.0-alpha01"
     ktx = "1.0.1"
     exifinterface = "1.0.0"
     pallete = "1.0.0"
     browser = "1.0.0"
-    preference = "1.0.0"
+    preference = "1.1.0-alpha01"
     annotation = "1.0.0"
-    androidX = "1.0.2"
+    appcompat = "1.0.2"
     google_material = "1.0.0"
     paging_version = "2.0.0"
     room_version = "2.0.0"
