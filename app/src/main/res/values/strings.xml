@@ -375,6 +375,9 @@
     <string name="ru_close_notification">Fechar</string>
     <string name="select_discipline_group_label">Selecione uma turma</string>
     <string name="label_select_discipline_group_info">Seleciona uma das turmas disponíveis da disciplina %1$s</string>
+    <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da UEFS e na rede UEFS_VISITANTES</string>
+    <string name="settings_proxy_invalid">O proxy especificado é inválido. O proxy deve seguir o padrão IP:porta</string>
+    <string name="settings_proxy_changed">O proxy foi modificado, feche o aplicativo para a configuração ser aplicada</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -397,6 +400,29 @@
         <item>Nenhum</item>
         <item>Moderado</item>
         <item>Completo</item>
+    </string-array>
+    
+    <string-array name="settings_sync_frequency_values">
+        <item>5</item>
+        <item>10</item>
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>120</item>
+        <item>180</item>
+        <item>360</item>
+        <item>720</item>
+    </string-array>
+    
+    <string-array name="settings_sync_type_values">
+        <item>0</item>
+        <item>1</item>
+    </string-array>
+    
+    <string-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
     </string-array>
     
     <plurals name="duration_hours">
