@@ -40,6 +40,7 @@ import androidx.work.workDataOf
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
+import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -54,22 +55,25 @@ class SyncLinkedWorker(
         repository.performSync("Linked")
 
         val period = inputData.getInt(PERIOD, 60)
-        createWorker(period, false)
+        val count = inputData.getInt(COUNT, 0)
+        val other = if (count == 2) 1 else 2
+        createWorker(period, true, other)
         return Result.SUCCESS
     }
 
     companion object {
         private const val PERIOD = "linked_work_period"
+        private const val COUNT = "linked_work_count"
 
         private const val TAG = "linked_sagres_sync_worker"
         private const val NAME = "worker_sagres_linked"
 
-        fun createWorker(@IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true) {
+        fun createWorker(@IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true, count: Int = 0) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
 
-            val data = workDataOf(PERIOD to period)
+            val data = workDataOf(PERIOD to period, COUNT to count)
 
             val request = OneTimeWorkRequestBuilder<SyncLinkedWorker>()
                     .setInputData(data)
@@ -79,7 +83,10 @@ class SyncLinkedWorker(
                     .setConstraints(constraints)
                     .build()
 
-            request.enqueueUnique(NAME, replace)
+            request.enqueueUnique("${NAME}_$count", replace)
+            if (replace) {
+                Timber.d("Scheduled linked worker on a $period period")
+            }
         }
 
         fun stopWorker() {

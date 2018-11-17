@@ -25,16 +25,6 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.settings
+package com.forcetower.uefs
 
-import android.os.Bundle
-import androidx.preference.PreferenceFragmentCompat
-import com.forcetower.uefs.R
-
-class RootSettingsFragment: PreferenceFragmentCompat() {
-
-    override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
-        setPreferencesFromResource(R.xml.settings_start, rootKey)
-    }
-
-}
+const val RC_LOCATION_PERMISSION = 1000
