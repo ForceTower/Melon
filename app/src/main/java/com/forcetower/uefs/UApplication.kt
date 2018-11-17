@@ -32,6 +32,9 @@ import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
 import androidx.fragment.app.Fragment
+import androidx.preference.PreferenceManager
+import com.crashlytics.android.Crashlytics
+import com.crashlytics.android.core.CrashlyticsCore
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
@@ -42,6 +45,7 @@ import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
 import dagger.android.HasServiceInjector
 import dagger.android.support.HasSupportFragmentInjector
+import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -61,10 +65,27 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     private var injected = false
 
     override fun onCreate() {
+        initCrashlytics()
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         injectApplicationIfNecessary()
         super.onCreate()
-        SyncMainWorker.createWorker(this, 15)
+        defineWorker()
+    }
+
+    private fun defineWorker() {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+        val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull()?: 0
+        val period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull()?: 60
+        when (worker) {
+            0 -> SyncMainWorker.createWorker(this, period)
+            1 -> Unit //SyncLinkedWorker.createWorker(period, false)
+        }
+    }
+
+    private fun initCrashlytics() {
+        val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
+        val kit = Crashlytics.Builder().core(core).build()
+        Fabric.with(this, kit)
     }
 
     private fun createApplicationInjector() = AppInjection.create(this)

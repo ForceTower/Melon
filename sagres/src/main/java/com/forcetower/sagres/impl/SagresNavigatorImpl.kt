@@ -28,6 +28,10 @@
 package com.forcetower.sagres.impl
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.net.wifi.WifiManager
+import android.preference.PreferenceManager
 import androidx.annotation.AnyThread
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
@@ -77,17 +81,45 @@ import java.util.concurrent.TimeUnit
 class SagresNavigatorImpl @RestrictTo(RestrictTo.Scope.LIBRARY)
 private constructor(context: Context) : SagresNavigator() {
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
-    val client: OkHttpClient
+    val defaultClient: OkHttpClient
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     override val database: SagresDatabase = SagresDatabase.create(context)
     private lateinit var cookieJar: PersistentCookieJar
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     val proxyClient: OkHttpClient
+    private val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
+    private val wifiManager = context.getSystemService(WifiManager::class.java)
+
+    val client: OkHttpClient
+        get() {
+            if (proxyConfigured && shouldUseProxy())
+                return proxyClient
+            return defaultClient
+        }
+
+    var proxyConfigured = false
 
     init {
-        this.client = createClient(context)
-        this.proxyClient = client.newBuilder()
-            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress("10.65.16.2", 3128)))
+        this.defaultClient = createClient(context)
+        this.proxyClient = createProxyClient(context, defaultClient)
+    }
+
+    private fun createProxyClient(context: Context, parentClient: OkHttpClient): OkHttpClient {
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        proxyConfigured = preferences.getBoolean("stg_sync_auto_proxy", true) //TODO Activated for testing
+        val proxy = preferences.getString("stg_sync_proxy", "10.65.16.2:3128")!!
+        val splits = proxy.split(":")
+
+        var ip = "10.65.16.2"
+        var gate = 3128
+
+        if (splits.size == 2) {
+            ip = splits[0]
+            gate = splits[1].toIntOrNull()?: 3128
+        }
+
+        return parentClient.newBuilder()
+            .proxy(Proxy(Proxy.Type.HTTP, InetSocketAddress(ip, gate)))
             .build()
     }
 
@@ -131,6 +163,22 @@ private constructor(context: Context) : SagresNavigator() {
 
     private fun createCookieJar(context: Context): PersistentCookieJar {
         return PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+    }
+
+    private fun shouldUseProxy(): Boolean {
+        val connectivity = connectivityManager
+        val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
+        if (capabilities != null) {
+            val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+            if (wifi) {
+                val manager = wifiManager
+                val ssid = manager.connectionInfo.ssid
+                if (Constants.WIFI_PROXY_NAMES.contains(ssid)) {
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     override fun stopTags(tag: String) {
