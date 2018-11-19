@@ -74,15 +74,15 @@ class SyncMainWorker(
 
             //The Sync Worker requires internet connection
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             //This worker is periodic
             val request = PeriodicWorkRequestBuilder<SyncMainWorker>(period.toLong(), TimeUnit.MINUTES)
-                    .addTag(TAG)
-                    .setConstraints(constraints)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .build()
+                .addTag(TAG)
+                .setConstraints(constraints)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .build()
 
             request.enqueueUnique(NAME, replace)
             if (replace) preferences.edit().putInt(PreferenceConstants.SYNC_FREQUENCY, period).apply()

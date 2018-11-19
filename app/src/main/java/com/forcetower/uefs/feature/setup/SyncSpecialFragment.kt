@@ -25,26 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.setup
 
-import com.forcetower.uefs.feature.setup.ConfigurationFragment
-import com.forcetower.uefs.feature.setup.IntroductionFragment
-import com.forcetower.uefs.feature.setup.SelectCourseDialog
-import com.forcetower.uefs.feature.setup.SelectSyncDialog
-import com.forcetower.uefs.feature.setup.SyncSpecialFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.feature.shared.UFragment
 
-@Module
-abstract class SetupModule {
-    @ContributesAndroidInjector
-    abstract fun selectCourseDialog(): SelectCourseDialog
-    @ContributesAndroidInjector
-    abstract fun selectSyncDialog(): SelectSyncDialog
-    @ContributesAndroidInjector
-    abstract fun introductionFragment(): IntroductionFragment
-    @ContributesAndroidInjector
-    abstract fun configurationFragment(): ConfigurationFragment
-    @ContributesAndroidInjector
-    abstract fun syncSpecialFragment(): SyncSpecialFragment
+class SyncSpecialFragment: UFragment(), Injectable {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return super.onCreateView(inflater, container, savedInstanceState)
+    }
 }
