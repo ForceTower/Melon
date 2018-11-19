@@ -65,7 +65,20 @@ class SettingsActivity: UActivity(), HasSupportFragmentInjector, PreferenceFragm
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
-        return false
+        val key = pref?.key ?: return false
+        when (key) {
+            "settings_synchronization" -> navigateTo(SyncSettingsFragment())
+            "settings_notifications" -> navigateTo(NotificationSettingsFragment())
+            "settings_account" -> navigateTo(AccountSettingsFragment())
+        }
+        return true
+    }
+
+    private fun navigateTo(fragment: Fragment) {
+        supportFragmentManager.inTransaction {
+            replace(R.id.fragment_container, fragment)
+            addToBackStack(null)
+        }
     }
 
     override fun supportFragmentInjector() = fragmentInjector
