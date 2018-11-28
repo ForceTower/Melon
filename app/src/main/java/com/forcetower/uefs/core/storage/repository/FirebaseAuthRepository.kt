@@ -104,12 +104,14 @@ class FirebaseAuthRepository @Inject constructor(
         Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
 
         val data = mutableMapOf (
-                "name"      to WordUtils.capitalize(person.name.trim()),
-                "username"  to access.username,
-                "email"     to person.email.trim().toLowerCase(),
-                "cpf"       to person.cpf.trim(),
-                "sagresId"  to person.id,
-                "imageUrl"  to "/users/$uid/avatar.jpg"
+                "name"          to WordUtils.capitalize(person.name.trim()),
+                "username"      to access.username,
+                "email"         to person.email.trim().toLowerCase(),
+                "cpf"           to person.cpf.trim(),
+                "sagresId"      to person.id,
+                "imageUrl"      to "/users/$uid/avatar.jpg",
+                "manufacturer"  to android.os.Build.MANUFACTURER,
+                "model"         to android.os.Build.MODEL
         )
 
         val token = preferences.getString("current_firebase_token", null)

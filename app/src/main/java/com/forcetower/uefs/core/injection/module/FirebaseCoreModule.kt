@@ -44,5 +44,5 @@ object FirebaseCoreModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance();
+    fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 }
