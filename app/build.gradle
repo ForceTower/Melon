@@ -5,6 +5,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'io.fabric'
 
+configurations {
+    ktlint
+}
+
 android {
     compileSdkVersion sdkVersions.compile
     defaultConfig {
