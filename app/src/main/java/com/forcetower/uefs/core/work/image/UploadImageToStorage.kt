@@ -33,6 +33,7 @@ import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
 import android.os.SystemClock
+import androidx.annotation.WorkerThread
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -48,6 +49,7 @@ class UploadImageToStorage(
     context : Context, params : WorkerParameters
 ): Worker(context, params) {
 
+    @WorkerThread
     override fun doWork(): Result {
         Timber.d("Started picture upload")
         val tUri = inputData.getString(URI)?: return Result.FAILURE
@@ -101,10 +103,11 @@ class UploadImageToStorage(
             val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
             OneTimeWorkRequestBuilder<UploadImageToStorage>()
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .build()
-                    .enqueue()
+                .setInputData(data)
+                .addTag(TAG)
+                .setConstraints(constraints)
+                .build()
+                .enqueue()
         }
     }
 }
