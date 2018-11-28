@@ -56,10 +56,10 @@ data class BigTrayData(
         if (this === other) return true
         if (other == null || javaClass != other.javaClass) return false
         val that = other as BigTrayData? ?: return false
-        return open == that.open
-            && quota == that.quota
-            && error == that.error
-            && type == that.type
+        return open == that.open &&
+            quota == that.quota &&
+            error == that.error &&
+            type == that.type
     }
 
     override fun hashCode(): Int {
@@ -79,7 +79,6 @@ fun BigTrayData.getNextMealType(): Int {
         account < 20 * 60 -> BigTrayData.DINNER
         else -> BigTrayData.COFFEE
     }
-
 }
 
 fun BigTrayData.getPrice(): String {
@@ -126,9 +125,9 @@ fun BigTrayData.percentage(): Float {
         val amount = quota.toFloat()
         val type = getNextMealType()
 
-        return clamp(amount/when(type) {
-            BigTrayData.LUNCH   -> 1450
-            BigTrayData.DINNER  -> 490
+        return clamp(amount / when (type) {
+            BigTrayData.LUNCH -> 1450
+            BigTrayData.DINNER -> 490
             else -> 320
         }, 0f, 1f) * 100
     } catch (e: Exception) {

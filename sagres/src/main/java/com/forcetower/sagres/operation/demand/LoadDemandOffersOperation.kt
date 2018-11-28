@@ -39,7 +39,7 @@ import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.concurrent.Executor
 
-class LoadDemandOffersOperation(executor: Executor?): Operation<DemandOffersCallback>(executor) {
+class LoadDemandOffersOperation(executor: Executor?) : Operation<DemandOffersCallback>(executor) {
     init {
         perform()
     }
@@ -55,9 +55,9 @@ class LoadDemandOffersOperation(executor: Executor?): Operation<DemandOffersCall
     }
 
     private fun executeSteps(access: SAccess) {
-        login(access)?: return
+        login(access) ?: return
         Timber.d("Connected for load demand offers")
-        val document = demandPage()?: return
+        val document = demandPage() ?: return
         val offers = SagresDemandParser.getOffers(document)
         if (offers != null) {
             publishProgress(DemandOffersCallback(Status.SUCCESS).offers(offers).document(document))

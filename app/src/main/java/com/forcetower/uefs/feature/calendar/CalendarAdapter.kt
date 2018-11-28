@@ -35,7 +35,7 @@ import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.databinding.ItemAcademicEventBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-class CalendarAdapter: ListAdapter<CalendarItem, CalendarHolder>(DiffCalendar) {
+class CalendarAdapter : ListAdapter<CalendarItem, CalendarHolder>(DiffCalendar) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CalendarHolder {
         return CalendarHolder(ItemAcademicEventBinding.inflate(parent.inflater(), parent, false))
     }
@@ -46,9 +46,9 @@ class CalendarAdapter: ListAdapter<CalendarItem, CalendarHolder>(DiffCalendar) {
     }
 }
 
-class CalendarHolder(val binding: ItemAcademicEventBinding): RecyclerView.ViewHolder(binding.root)
+class CalendarHolder(val binding: ItemAcademicEventBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object DiffCalendar: DiffUtil.ItemCallback<CalendarItem>() {
+private object DiffCalendar : DiffUtil.ItemCallback<CalendarItem>() {
     override fun areItemsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem.uid == newItem.uid
     override fun areContentsTheSame(oldItem: CalendarItem, newItem: CalendarItem) = oldItem == newItem
 }

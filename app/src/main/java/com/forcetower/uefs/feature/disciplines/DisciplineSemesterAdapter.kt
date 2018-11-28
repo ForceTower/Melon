@@ -37,9 +37,9 @@ import com.forcetower.uefs.feature.shared.inflater
 
 private const val DISCIPLINE = 4
 
-class DisciplineSemesterAdapter (
+class DisciplineSemesterAdapter(
     val viewModel: DisciplineViewModel
-): ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
+) : ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassHolder {
         val binding = ItemDisciplineCollapsedBinding.inflate(parent.inflater(), parent, false)
         return ClassHolder(binding)
@@ -56,11 +56,10 @@ class DisciplineSemesterAdapter (
     override fun getItemViewType(position: Int) = DISCIPLINE
 }
 
-class ClassHolder(val binding: ItemDisciplineCollapsedBinding): RecyclerView.ViewHolder(binding.root)
+class ClassHolder(val binding: ItemDisciplineCollapsedBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object ClassDiff: DiffUtil.ItemCallback<ClassWithGroups>() {
+private object ClassDiff : DiffUtil.ItemCallback<ClassWithGroups>() {
     override fun areItemsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem.clazz.uid == newItem.clazz.uid && oldItem.discipline().uid == newItem.discipline().uid
     override fun areContentsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem == newItem
 }
-
 

@@ -31,7 +31,7 @@ import androidx.core.os.bundleOf
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
 
-class GradesFragment: UFragment(), Injectable {
+class GradesFragment : UFragment(), Injectable {
     companion object {
         fun newInstance(classId: Long): GradesFragment {
             return GradesFragment().apply {

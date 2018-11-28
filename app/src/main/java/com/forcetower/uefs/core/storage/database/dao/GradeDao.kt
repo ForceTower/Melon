@@ -83,7 +83,7 @@ abstract class GradeDao {
             val groups = getClassGroup(code, it.semesterId, profile.uid)
             if (groups.isEmpty()) Timber.d("<grades_group_404> :: Groups not found for ${code}_${it.semesterId}_${profile.name}")
             else {
-                //Sets the final score to this discipline in every class the student is in.
+                // Sets the final score to this discipline in every class the student is in.
                 try {
                     val finalScore = it.finalScore
                             .replace(",", ".")
@@ -98,7 +98,7 @@ abstract class GradeDao {
                     }
                 } catch (ignored: Throwable) {}
 
-                //Insert the Grades on Classes
+                // Insert the Grades on Classes
                 if (groups.size == 1) {
                     val group = groups[0]
                     val cs = getClassStudent(group.uid, profile.uid)
@@ -118,10 +118,9 @@ abstract class GradeDao {
 
     private fun prepareInsertion(cs: ClassStudent, it: SGrade, notify: Boolean) {
         val values = HashMap<String, SGradeInfo>()
-        it.values.forEach {g ->
+        it.values.forEach { g ->
             var grade = values[g.name]
-            if (grade == null) { grade = g }
-            else {
+            if (grade == null) { grade = g } else {
                 if (g.hasGrade()) grade = g
                 else if (g.hasDate() && grade.hasDate() && g.date != grade.date) grade = g
                 else Timber.d("This grade was ignored ${g.name}_${g.grade}")
@@ -130,7 +129,7 @@ abstract class GradeDao {
             values[g.name] = grade
         }
 
-        values.values.forEach{ i ->
+        values.values.forEach { i ->
             val grade = getNamedGradeDirect(cs.uid, i.name)
             if (grade == null) {
                 val notified = if (i.hasGrade()) 3 else 1

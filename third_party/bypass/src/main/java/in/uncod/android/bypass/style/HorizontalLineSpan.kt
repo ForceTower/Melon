@@ -42,7 +42,12 @@ class HorizontalLineSpan(color: Int, private val mLineHeight: Int, private val m
     }
 
     override fun getSize(
-            paint: Paint, text: CharSequence, start: Int, end: Int, fm: Paint.FontMetricsInt?): Int {
+        paint: Paint,
+        text: CharSequence,
+        start: Int,
+        end: Int,
+        fm: Paint.FontMetricsInt?
+    ): Int {
         if (fm != null) {
             fm.ascent = -mLineHeight - mTopBottomPadding
             fm.descent = 0
@@ -56,7 +61,16 @@ class HorizontalLineSpan(color: Int, private val mLineHeight: Int, private val m
     }
 
     override fun draw(
-            canvas: Canvas, text: CharSequence, start: Int, end: Int, x: Float, top: Int, y: Int, bottom: Int, paint: Paint) {
+        canvas: Canvas,
+        text: CharSequence,
+        start: Int,
+        end: Int,
+        x: Float,
+        top: Int,
+        y: Int,
+        bottom: Int,
+        paint: Paint
+    ) {
         val middle = (top + bottom) / 2
         val halfLineHeight = mLineHeight / 2
         canvas.drawRect(x, (middle - halfLineHeight).toFloat(), Integer.MAX_VALUE.toFloat(), (middle + halfLineHeight).toFloat(), mPaint)

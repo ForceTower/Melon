@@ -102,7 +102,7 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
             else -> null
         }
 
-        direction?: return
+        direction ?: return
         findNavController(R.id.home_nav_host).navigate(direction)
     }
 

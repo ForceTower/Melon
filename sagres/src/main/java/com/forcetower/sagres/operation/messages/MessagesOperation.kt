@@ -69,7 +69,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
 
     private fun successMeasures(body: String) {
         try {
-            val type = object: TypeToken<Dumb<ArrayList<SMessage>>>() {}.type
+            val type = object : TypeToken<Dumb<ArrayList<SMessage>>>() {}.type
             val dMessages = Gson().fromJson<Dumb<ArrayList<SMessage>>>(body, type)
             val items = dMessages.items
             items.sort()
@@ -84,7 +84,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
                     Timber.d("SPerson is Invalid")
                 }
 
-                //Message is from a teacher
+                // Message is from a teacher
                 if (message.senderProfile == 2) {
                     val scope = getScope(message.scopes)
                     if (scope != null) {
@@ -152,7 +152,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
             if (response.isSuccessful) {
                 val body = response.body()!!.string()
                 Timber.d("Scope body: $body")
-                val token = object: TypeToken<Dumb<ArrayList<SMessageScope>>>(){}.type
+                val token = object : TypeToken<Dumb<ArrayList<SMessageScope>>>() {}.type
                 val scoping = gson.fromJson<Dumb<ArrayList<SMessageScope>>>(body, token)
                 val items = scoping.items
                 if (items.isNotEmpty()) {
@@ -176,7 +176,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
     }
 
     private fun getClazz(scope: SMessageScope): SClass? {
-        val link = scope.clazzLink?: return null
+        val link = scope.clazzLink ?: return null
 
         val clazz = SagresNavigator.instance.database.clazzDao().getClazzDirect(link)
         if (clazz != null) {
@@ -207,7 +207,7 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
     }
 
     private fun getDiscipline(clazz: SClass): SDisciplineResumed? {
-        val link = clazz.disciplineLink?: return null
+        val link = clazz.disciplineLink ?: return null
 
         val discipline = SagresNavigator.instance.database.disciplineDao().getDisciplineDirect(link)
         if (discipline != null) {

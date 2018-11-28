@@ -39,7 +39,7 @@ import javax.inject.Inject
 
 class DocumentsViewModel @Inject constructor(
     private val repository: DocumentsRepository
-): ViewModel(), DocumentActions {
+) : ViewModel(), DocumentActions {
     val documents by lazy { repository.getDocuments() }
 
     private val _openDocumentAction = MutableLiveData<Event<File>>()

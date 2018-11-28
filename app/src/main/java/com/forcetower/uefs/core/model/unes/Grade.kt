@@ -62,13 +62,13 @@ data class Grade(
     val uuid: String = UUID.randomUUID().toString()
 ) {
     fun hasGrade(): Boolean {
-        return (!grade.trim().isEmpty()
-                && !grade.trim().equals("Não Divulgada", ignoreCase = true)
-                && !grade.trim().equals("-", ignoreCase = true)
-                && !grade.trim().equals("--", ignoreCase = true)
-                && !grade.trim().equals("*", ignoreCase = true)
-                && !grade.trim().equals("**", ignoreCase = true)
-                && !grade.trim().equals("-1", ignoreCase = true))
+        return (!grade.trim().isEmpty() &&
+                !grade.trim().equals("Não Divulgada", ignoreCase = true) &&
+                !grade.trim().equals("-", ignoreCase = true) &&
+                !grade.trim().equals("--", ignoreCase = true) &&
+                !grade.trim().equals("*", ignoreCase = true) &&
+                !grade.trim().equals("**", ignoreCase = true) &&
+                !grade.trim().equals("-1", ignoreCase = true))
     }
 
     override fun toString(): String = "${name}_${grade}_${date}_$notified"

@@ -50,7 +50,7 @@ import javax.inject.Inject
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
     private val grades: SagresGradesRepository
-): ViewModel(), DisciplineActions, MaterialActions {
+) : ViewModel(), DisciplineActions, MaterialActions {
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
@@ -179,7 +179,7 @@ class DisciplineViewModel @Inject constructor(
     }
 
     override fun onMaterialClick(material: ClassMaterial?) {
-        material?: return
+        material ?: return
         _materialClick.value = Event(material)
     }
 }

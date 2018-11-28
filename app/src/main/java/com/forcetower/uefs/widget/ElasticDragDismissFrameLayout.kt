@@ -41,8 +41,12 @@ import com.forcetower.uefs.feature.shared.isNavBarOnBottom
 
 import java.util.ArrayList
 
-class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, attrs: AttributeSet? = null,
-                                                              defStyleAttr: Int = 0, defStyleRes: Int = 0) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
+class ElasticDragDismissFrameLayout @JvmOverloads constructor(
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0,
+    defStyleRes: Int = 0
+) : FrameLayout(context, attrs, defStyleAttr, defStyleRes) {
 
     // configurable attribs
     private var dragDismissDistance = java.lang.Float.MAX_VALUE
@@ -87,23 +91,26 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, 
         /**
          * Called for each drag event.
          *
-         * @param elasticOffset       Indicating the drag offset with elasticity applied i.e. may
+         * @param elasticOffset Indicating the drag offset with elasticity applied i.e. may
          * exceed 1.
          * @param elasticOffsetPixels The elastically scaled drag distance in pixels.
-         * @param rawOffset           Value from [0, 1] indicating the raw drag offset i.e.
+         * @param rawOffset Value from [0, 1] indicating the raw drag offset i.e.
          * without elasticity applied. A value of 1 indicates that the
          * dismiss distance has been reached.
-         * @param rawOffsetPixels     The raw distance the user has dragged
+         * @param rawOffsetPixels The raw distance the user has dragged
          */
-        internal open fun onDrag(elasticOffset: Float, elasticOffsetPixels: Float,
-                                 rawOffset: Float, rawOffsetPixels: Float) {
+        internal open fun onDrag(
+            elasticOffset: Float,
+            elasticOffsetPixels: Float,
+            rawOffset: Float,
+            rawOffsetPixels: Float
+        ) {
         }
 
         /**
          * Called when dragging is released and has exceeded the threshold dismiss distance.
          */
         internal open fun onDragDismissed() {}
-
     }
 
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
@@ -118,8 +125,13 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, 
         }
     }
 
-    override fun onNestedScroll(target: View, dxConsumed: Int, dyConsumed: Int,
-                                dxUnconsumed: Int, dyUnconsumed: Int) {
+    override fun onNestedScroll(
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int
+    ) {
         dragScale(dyUnconsumed)
     }
 
@@ -213,8 +225,12 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, 
                 Math.min(1f, Math.abs(totalDrag) / dragDismissDistance), totalDrag)
     }
 
-    private fun dispatchDragCallback(elasticOffset: Float, elasticOffsetPixels: Float,
-                                     rawOffset: Float, rawOffsetPixels: Float) {
+    private fun dispatchDragCallback(
+        elasticOffset: Float,
+        elasticOffsetPixels: Float,
+        rawOffset: Float,
+        rawOffsetPixels: Float
+    ) {
         if (callbacks != null && !callbacks!!.isEmpty()) {
             for (callback in callbacks!!) {
                 callback.onDrag(elasticOffset, elasticOffsetPixels,
@@ -241,8 +257,12 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, 
         private val navBarAlpha: Int = Color.alpha(activity.window.navigationBarColor)
         private val fadeNavBar: Boolean = activity.isNavBarOnBottom()
 
-        public override fun onDrag(elasticOffset: Float, elasticOffsetPixels: Float,
-                                   rawOffset: Float, rawOffsetPixels: Float) {
+        public override fun onDrag(
+            elasticOffset: Float,
+            elasticOffsetPixels: Float,
+            rawOffset: Float,
+            rawOffsetPixels: Float
+        ) {
             if (elasticOffsetPixels > 0) {
                 // dragging downward, fade the status bar in proportion
                 activity.window.statusBarColor = ColorUtils.modifyAlpha(activity.window
@@ -264,5 +284,4 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(context: Context, 
             activity.finishAfterTransition()
         }
     }
-
 }

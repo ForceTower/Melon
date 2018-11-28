@@ -43,7 +43,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class SettingsActivity: UActivity(), HasSupportFragmentInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 

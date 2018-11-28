@@ -77,7 +77,7 @@ class BigTrayFragment : UFragment(), Injectable {
     }
 
     private fun onDataSnapshot(data: BigTrayData?) {
-        data?: return
+        data ?: return
         binding.groupLoading.visibility = GONE
         binding.textUpdate.text = getString(R.string.ru_last_update, data.time.formatDateTime())
 
@@ -94,7 +94,7 @@ class BigTrayFragment : UFragment(), Injectable {
             binding.groupClosed.visibility = VISIBLE
             binding.groupFailed.visibility = GONE
             hasData = true
-        } else if (!hasData){
+        } else if (!hasData) {
             binding.groupOpen.visibility = GONE
             binding.groupClosed.visibility = GONE
             binding.groupFailed.visibility = VISIBLE
@@ -105,5 +105,4 @@ class BigTrayFragment : UFragment(), Injectable {
         super.onStop()
         viewModel.requesting = false
     }
-
 }

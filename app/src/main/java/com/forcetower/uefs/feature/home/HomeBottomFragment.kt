@@ -47,7 +47,7 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
 
-class HomeBottomFragment: UFragment(), Injectable {
+class HomeBottomFragment : UFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: UViewModelFactory
     @Inject
@@ -113,6 +113,6 @@ class HomeBottomFragment: UFragment(), Injectable {
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }
-        //NavigationUI.setupWithNavController(binding.navigationView, findNavController())
+        // NavigationUI.setupWithNavController(binding.navigationView, findNavController())
     }
 }

@@ -37,7 +37,8 @@ data class SDisciplineClassLocation(
     var className: String,
     var classCode: String,
     var classGroup: String,
-    var fromDisciplineParser: Boolean)
+    var fromDisciplineParser: Boolean
+)
 : Comparable<SDisciplineClassLocation> {
 
     override fun compareTo(other: SDisciplineClassLocation): Int {

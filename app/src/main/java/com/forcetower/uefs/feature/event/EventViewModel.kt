@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 class EventViewModel @Inject constructor(
     private val repository: EventRepository
-): ViewModel(), EventActions {
+) : ViewModel(), EventActions {
 
     val events by lazy { repository.getEvents() }
 

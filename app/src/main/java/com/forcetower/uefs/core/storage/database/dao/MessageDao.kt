@@ -64,7 +64,6 @@ abstract class MessageDao {
         insertIgnore(messages)
     }
 
-
     @Query("UPDATE Discipline SET resume = :resume WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun updateDisciplineResume(code: String, resume: String)
 

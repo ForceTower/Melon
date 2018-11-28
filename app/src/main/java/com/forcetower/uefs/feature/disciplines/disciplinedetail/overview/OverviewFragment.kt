@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class OverviewFragment: UFragment(), Injectable {
+class OverviewFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var binding: FragmentDisciplineOverviewBinding
@@ -66,7 +66,6 @@ class OverviewFragment: UFragment(), Injectable {
                 changeDuration = 120L
                 removeDuration = 100L
             }
-
         }
 
         viewModel.classStudent.observe(this, Observer { overviewAdapter.currentDiscipline = it })

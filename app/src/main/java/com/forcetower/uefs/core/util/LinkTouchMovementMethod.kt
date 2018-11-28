@@ -92,7 +92,6 @@ class LinkTouchMovementMethod : LinkMovementMethod() {
 
     companion object {
 
-
         private var instance: LinkTouchMovementMethod? = null
 
         fun getInstance(): MovementMethod {
@@ -102,5 +101,4 @@ class LinkTouchMovementMethod : LinkMovementMethod() {
             return instance!!
         }
     }
-
 }

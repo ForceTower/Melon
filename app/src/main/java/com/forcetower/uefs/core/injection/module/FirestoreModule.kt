@@ -48,7 +48,6 @@ object FirestoreModule {
         return FirebaseFirestore.getInstance().apply {
             firestoreSettings = settings
         }
-
     }
 
     @JvmStatic
@@ -63,11 +62,9 @@ object FirestoreModule {
     @Named(Event.COLLECTION)
     fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
 
-
     @JvmStatic
     @Provides
     @Reusable
     @Named(Discipline.COLLECTION)
     fun provideDisciplineCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Discipline.COLLECTION)
-
 }

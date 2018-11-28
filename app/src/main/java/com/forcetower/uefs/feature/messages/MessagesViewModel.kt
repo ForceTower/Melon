@@ -38,7 +38,7 @@ import javax.inject.Inject
 
 class MessagesViewModel @Inject constructor(
     val repository: MessagesRepository
-): ViewModel(), MessagesActions {
+) : ViewModel(), MessagesActions {
     val messages by lazy { repository.getMessages() }
 
     private val _refreshing = MediatorLiveData<Boolean>()
