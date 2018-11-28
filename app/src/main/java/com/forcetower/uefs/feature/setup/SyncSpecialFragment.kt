@@ -27,15 +27,60 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.content.ComponentName
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
 class SyncSpecialFragment: UFragment(), Injectable {
+    private lateinit var binding: FragmentSetupSpecialConfigBinding
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return super.onCreateView(inflater, container, savedInstanceState)
+        return FragmentSetupSpecialConfigBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.btnNext.setOnClickListener {
+            findNavController().navigate(R.id.action_configuration_to_home)
+            requireActivity().finishAfterTransition()
+        }
+
+        binding.btnConfig.setOnClickListener {
+            val manufacturer = Build.MANUFACTURER.toLowerCase()
+            val intent = Intent()
+            when (manufacturer) {
+                "xiaomi" -> intent.component = ComponentName(
+                    "com.miui.securitycenter",
+                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
+                )
+                "oppo" -> intent.component = ComponentName(
+                    "com.coloros.safecenter",
+                    "com.coloros.safecenter.permission.startup.StartupAppListActivity"
+                )
+                "vivo" -> intent.component = ComponentName(
+                    "com.vivo.permissionmanager",
+                    "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
+                )
+                else -> intent.action = android.provider.Settings.ACTION_SETTINGS
+            }
+
+            val list = requireContext().packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
+            if (list.size > 0) {
+                requireContext().startActivity(intent)
+            } else {
+                showSnack(getString(R.string.open_settings_failed))
+            }
+        }
     }
 }
