@@ -8,8 +8,8 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 
 ### Objetivos
 * ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
-* Utilizar os novos componentes do Android
-* Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal
+* ~~Utilizar os novos componentes do Android~~
+* ~~Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal~~
 * ~~Demanda Web direto no App~~ [Completo]
 * ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
 * Matrícula no App
