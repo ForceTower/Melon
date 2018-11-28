@@ -79,10 +79,11 @@
         <ImageView
             android:id="@+id/image_configuration"
             android:layout_width="0dp"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:layout_marginTop="8dp"
             android:importantForAccessibility="no"
             android:src="@mipmap/books_and_stuff"
+            android:scaleType="centerCrop"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
             app:layout_constraintTop_toBottomOf="@+id/label_information_about" />
@@ -91,25 +92,15 @@
             android:id="@+id/label_required_permissions"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="8dp"
+            android:textAlignment="center"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
             app:layout_constraintTop_toBottomOf="@+id/image_configuration"
             android:textColor="@color/text_primary_dark"
             android:textSize="15sp"
             android:text="@string/unes_required_permissions_label"/>
-    
-        <TextView
-            android:id="@+id/label_auto_start_info"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
-            app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
-            app:layout_constraintTop_toBottomOf="@+id/label_required_permissions"
-            android:textColor="@color/text_secondary_dark"
-            android:textSize="14sp"
-            android:text="@string/auto_start_info"/>
+        
     
         <TextView
             android:id="@+id/label_auto_start_path"
@@ -118,10 +109,21 @@
             android:layout_marginTop="2dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
-            app:layout_constraintTop_toBottomOf="@+id/label_auto_start_info"
+            app:layout_constraintTop_toBottomOf="@+id/label_required_permissions"
             android:textColor="@color/text_secondary_dark"
             android:textSize="14sp"
             android:text="@string/auto_start_path"/>
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_config"
+            style="@style/UTheme.MaterialButton.Outline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/open_configuration"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
+            app:layout_constraintTop_toBottomOf="@+id/label_auto_start_path" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_next"
@@ -129,10 +131,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/spacing_normal"
-            android:text="@string/setup_next"
+            android:text="@string/setup_continue"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
-            app:layout_constraintTop_toBottomOf="@+id/setup_sync"
             app:layout_constraintVertical_bias="1.0" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
