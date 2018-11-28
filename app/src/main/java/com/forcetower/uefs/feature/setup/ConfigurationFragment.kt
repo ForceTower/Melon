@@ -85,6 +85,8 @@ class ConfigurationFragment : UFragment(), Injectable {
             "oppo" -> findNavController().navigate(R.id.action_configuration_to_special)
             "vivo" -> findNavController().navigate(R.id.action_configuration_to_special)
             "lenovo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "honor" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "huawei" -> findNavController().navigate(R.id.action_configuration_to_special)
             else -> {
                 findNavController().navigate(R.id.action_configuration_to_home)
                 requireActivity().finishAfterTransition()
