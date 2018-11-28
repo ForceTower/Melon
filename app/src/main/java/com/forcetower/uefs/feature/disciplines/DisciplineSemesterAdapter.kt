@@ -35,8 +35,6 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.databinding.ItemDisciplineCollapsedBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-private const val DISCIPLINE = 4
-
 class DisciplineSemesterAdapter(
     val viewModel: DisciplineViewModel
 ) : ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
@@ -54,6 +52,10 @@ class DisciplineSemesterAdapter(
     }
 
     override fun getItemViewType(position: Int) = DISCIPLINE
+
+    companion object {
+        private const val DISCIPLINE = 4
+    }
 }
 
 class ClassHolder(val binding: ItemDisciplineCollapsedBinding) : RecyclerView.ViewHolder(binding.root)
