@@ -41,7 +41,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
-class SyncSpecialFragment: UFragment(), Injectable {
+class SyncSpecialFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentSetupSpecialConfigBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -71,6 +71,10 @@ class SyncSpecialFragment: UFragment(), Injectable {
                 "vivo" -> intent.component = ComponentName(
                     "com.vivo.permissionmanager",
                     "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
+                )
+                "honor" -> intent.component = ComponentName(
+                    "com.huawei.systemmanager",
+                    "com.huawei.systemmanager.optimize.process.ProtectActivity"
                 )
                 else -> intent.action = android.provider.Settings.ACTION_SETTINGS
             }
