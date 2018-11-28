@@ -64,4 +64,3 @@ private object ClassDiff : DiffUtil.ItemCallback<ClassWithGroups>() {
     override fun areItemsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem.clazz.uid == newItem.clazz.uid && oldItem.discipline().uid == newItem.discipline().uid
     override fun areContentsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem == newItem
 }
-
