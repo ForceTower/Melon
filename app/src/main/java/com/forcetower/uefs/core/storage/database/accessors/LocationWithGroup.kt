@@ -32,7 +32,7 @@ import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
 
-class LocationWithGroup: Comparable<LocationWithGroup> {
+class LocationWithGroup : Comparable<LocationWithGroup> {
     override fun compareTo(other: LocationWithGroup): Int {
         return location.compareTo(other.location)
     }

@@ -45,12 +45,12 @@ interface UService {
     @POST("login_create")
     @FormUrlEncoded
     fun loginOrCreate(
-            @Field("username") username: String,
-            @Field("password") password: String,
-            @Field("name") name: String,
-            @Field("email") email: String,
-            @Field("cpf") cpf: String,
-            @Field("appToken") token: String
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("name") name: String,
+        @Field("email") email: String,
+        @Field("cpf") cpf: String,
+        @Field("appToken") token: String
     ): Call<AccessToken>
 
     @GET("course")

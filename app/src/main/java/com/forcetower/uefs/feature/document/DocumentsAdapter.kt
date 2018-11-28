@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class DocumentsAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DocumentsViewModel
-): RecyclerView.Adapter<DocumentViewHolder>() {
+) : RecyclerView.Adapter<DocumentViewHolder>() {
     var documents: List<SagresDocument> = emptyList()
         set(value) {
             field = value
@@ -56,7 +56,7 @@ class DocumentsAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DocumentViewHolder {
         val inflater = parent.inflater()
-        return when(viewType) {
+        return when (viewType) {
             R.layout.item_document -> DocumentViewHolder.DocumentHolder(
                 ItemDocumentBinding.inflate(inflater, parent, false).apply {
                     listener = viewModel
@@ -73,7 +73,7 @@ class DocumentsAdapter(
     override fun getItemCount() = differ.currentList.size
 
     override fun onBindViewHolder(holder: DocumentViewHolder, position: Int) {
-        when(holder) {
+        when (holder) {
             is DocumentViewHolder.DocumentHolder -> holder.bind(differ.currentList[position] as SagresDocument)
             is DocumentViewHolder.HeaderHolder -> Unit
         }
@@ -89,7 +89,7 @@ class DocumentsAdapter(
 
     private fun buildMergedList(
         list: List<SagresDocument> = documents
-    ):List<Any> {
+    ): List<Any> {
         val merged = mutableListOf<Any>(DocumentHeader)
         if (list.isNotEmpty()) {
             merged.addAll(list)
@@ -98,10 +98,10 @@ class DocumentsAdapter(
     }
 }
 
-sealed class DocumentViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
+sealed class DocumentViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     class DocumentHolder(
         private val binding: ItemDocumentBinding
-    ): DocumentViewHolder(binding.root) {
+    ) : DocumentViewHolder(binding.root) {
 
         fun bind(document: SagresDocument) {
             binding.document = document
@@ -111,13 +111,13 @@ sealed class DocumentViewHolder(itemView: View): RecyclerView.ViewHolder(itemVie
 
     class HeaderHolder(
         binding: ItemDocumentHeaderBinding
-    ): DocumentViewHolder(binding.root)
+    ) : DocumentViewHolder(binding.root)
 }
 
 object DocumentHeader
 
-object DocumentDiff: DiffUtil.ItemCallback<Any>() {
-    override fun areItemsTheSame(oldItem: Any, newItem: Any):Boolean {
+object DocumentDiff : DiffUtil.ItemCallback<Any>() {
+    override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem === DocumentHeader && newItem === DocumentHeader -> true
             oldItem is SagresDocument && newItem is SagresDocument -> oldItem.uid == newItem.uid
@@ -131,4 +131,3 @@ object DocumentDiff: DiffUtil.ItemCallback<Any>() {
         }
     }
 }
-

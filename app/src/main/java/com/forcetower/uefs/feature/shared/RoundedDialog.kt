@@ -36,7 +36,7 @@ import android.view.ViewGroup
 import android.view.Window
 import androidx.fragment.app.DialogFragment
 
-abstract class RoundedDialog: DialogFragment() {
+abstract class RoundedDialog : DialogFragment() {
 
     final override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val view = onChildCreateView(inflater, container, savedInstanceState)

@@ -35,8 +35,8 @@ import android.view.MotionEvent
 import androidx.appcompat.widget.AppCompatTextView
 
 class HtmlTextView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null
+    context: Context,
+    attrs: AttributeSet? = null
 ) : AppCompatTextView(context, attrs) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {

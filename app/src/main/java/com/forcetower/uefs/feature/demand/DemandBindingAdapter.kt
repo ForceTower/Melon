@@ -27,8 +27,6 @@
 
 package com.forcetower.uefs.feature.demand
 
-import android.animation.ArgbEvaluator
-import android.animation.ValueAnimator
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.database.model.SDemandOffer
@@ -38,7 +36,7 @@ import com.google.android.material.card.MaterialCardView
 
 @BindingAdapter(value = ["disciplineIcon"])
 fun disciplineIcon(iv: ImageView, offer: SDemandOffer?) {
-    offer?: return
+    offer ?: return
 
     val drawable = when {
         !offer.selectable -> R.drawable.ic_bug_report_black_24dp
@@ -55,7 +53,7 @@ fun disciplineIcon(iv: ImageView, offer: SDemandOffer?) {
 
 @BindingAdapter(value = ["animatedStrokeColor"])
 fun strokeColor(cardView: MaterialCardView, offer: SDemandOffer?) {
-    offer?: return
+    offer ?: return
 
     val ctx = cardView.context
     val old = cardView.strokeColor

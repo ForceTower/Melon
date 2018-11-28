@@ -27,7 +27,7 @@
 
 package com.forcetower.sagres.database.model
 
-data class SDisciplineClassItem (
+data class SDisciplineClassItem(
     var number: Int = 0,
     var situation: String? = null,
     var subject: String? = null,

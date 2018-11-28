@@ -42,7 +42,7 @@ class SwipeDeleteHandler(
     private val onDelete: (RecyclerView.ViewHolder) -> Unit,
     direction: Int = ItemTouchHelper.LEFT,
     private val ignored: List<Class<*>> = emptyList()
-): ItemTouchHelper.SimpleCallback(0, direction) {
+) : ItemTouchHelper.SimpleCallback(0, direction) {
     private val background = ColorDrawable(Color.WHITE)
     private val xMark = ContextCompat.getDrawable(context, R.drawable.ic_delete_black_24dp)?.apply {
         setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP)

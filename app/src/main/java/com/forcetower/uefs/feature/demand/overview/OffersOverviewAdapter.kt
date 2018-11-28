@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class OffersOverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DemandViewModel
-): ListAdapter<SDemandOffer, DemandHolder>(DiffCallback) {
+) : ListAdapter<SDemandOffer, DemandHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemandHolder {
         return DemandHolder(parent.inflate(R.layout.item_demand_offer))
     }
@@ -56,9 +56,9 @@ class OffersOverviewAdapter(
     }
 }
 
-class DemandHolder(val binding: ItemDemandOfferBinding): RecyclerView.ViewHolder(binding.root)
+class DemandHolder(val binding: ItemDemandOfferBinding) : RecyclerView.ViewHolder(binding.root)
 
-object DiffCallback: DiffUtil.ItemCallback<SDemandOffer>() {
+object DiffCallback : DiffUtil.ItemCallback<SDemandOffer>() {
     override fun areItemsTheSame(oldItem: SDemandOffer, newItem: SDemandOffer) = oldItem.uid == newItem.uid
     override fun areContentsTheSame(oldItem: SDemandOffer, newItem: SDemandOffer) = oldItem == newItem
 }

@@ -50,7 +50,7 @@ class InkPageIndicator @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyle: Int = 0
-): View(context, attrs, defStyle), ViewPager.OnPageChangeListener, View.OnAttachStateChangeListener {
+) : View(context, attrs, defStyle), ViewPager.OnPageChangeListener, View.OnAttachStateChangeListener {
 
     // configurable attributes
     private val dotDiameter: Int
@@ -233,7 +233,7 @@ class InkPageIndicator @JvmOverloads constructor(
         val left = paddingLeft
         val top = paddingTop
         val right = width - paddingRight
-        //val bottom = height - paddingBottom
+        // val bottom = height - paddingBottom
 
         val requiredWidth = requiredWidth
         val startLeft = left.toFloat() + ((right - left - requiredWidth) / 2).toFloat() + dotRadius
@@ -350,24 +350,26 @@ class InkPageIndicator @JvmOverloads constructor(
      * @param page
      * @return
      */
-    private fun getUnselectedPath(page: Int,
-                                  centerX: Float,
-                                  nextCenterX: Float,
-                                  joiningFraction: Float,
-                                  dotRevealFraction: Float): Path {
+    private fun getUnselectedPath(
+        page: Int,
+        centerX: Float,
+        nextCenterX: Float,
+        joiningFraction: Float,
+        dotRevealFraction: Float
+    ): Path {
 
         unselectedDotPath.rewind()
 
-        if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION)
-                && dotRevealFraction == 0f
-                && !(page == currentPage && selectedDotInPosition == true)) {
+        if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION) &&
+                dotRevealFraction == 0f &&
+                !(page == currentPage && selectedDotInPosition == true)) {
 
             // case #1 – At rest
             unselectedDotPath.addCircle(dotCenterX!![page], dotCenterY, dotRadius, Path.Direction.CW)
         }
 
-        if (joiningFraction > 0f && joiningFraction <= 0.5f
-                && retreatingJoinX1 == INVALID_FRACTION) {
+        if (joiningFraction > 0f && joiningFraction <= 0.5f &&
+                retreatingJoinX1 == INVALID_FRACTION) {
 
             // case #2 – Joining neighbour, still separate
 
@@ -439,8 +441,8 @@ class InkPageIndicator @JvmOverloads constructor(
             unselectedDotPath.op(unselectedDotRightPath, Path.Op.UNION)
         }
 
-        if (joiningFraction > 0.5f && joiningFraction < 1f
-                && retreatingJoinX1 == INVALID_FRACTION) {
+        if (joiningFraction > 0.5f && joiningFraction < 1f &&
+                retreatingJoinX1 == INVALID_FRACTION) {
 
             // case #3 – Joining neighbour, combined curved
 
@@ -558,7 +560,11 @@ class InkPageIndicator @JvmOverloads constructor(
     }
 
     private fun createMoveSelectedAnimator(
-            moveTo: Float, was: Int, now: Int, steps: Int): ValueAnimator {
+        moveTo: Float,
+        was: Int,
+        now: Int,
+        steps: Int
+    ): ValueAnimator {
 
         // create the actual move animator
         val moveSelected = ValueAnimator.ofFloat(selectedDotX, moveTo)
@@ -772,7 +778,6 @@ class InkPageIndicator @JvmOverloads constructor(
     abstract inner class StartPredicate(protected var thresholdValue: Float) {
 
         internal abstract fun shouldStart(currentValue: Float): Boolean
-
     }
 
     /**
@@ -801,8 +806,8 @@ class InkPageIndicator @JvmOverloads constructor(
         private const val DEFAULT_DOT_SIZE = 8                      // dp
         private const val DEFAULT_GAP = 12                          // dp
         private const val DEFAULT_ANIM_DURATION = 400               // ms
-        private const val DEFAULT_UNSELECTED_COLOUR = -0x7f000001    // 50% white
-        private const val DEFAULT_SELECTED_COLOUR = -0x1      // 100% white
+        private const val DEFAULT_UNSELECTED_COLOUR = -0x7f000001 // 50% white
+        private const val DEFAULT_SELECTED_COLOUR = -0x1 // 100% white
 
         // constants
         private const val INVALID_FRACTION = -1f

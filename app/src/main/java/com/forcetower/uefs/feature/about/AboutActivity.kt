@@ -44,7 +44,6 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-
 class AboutActivity : UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -57,7 +56,7 @@ class AboutActivity : UActivity(), HasSupportFragmentInjector {
             binding = it
         }
 
-        binding.draggableFrame.addListener(object: ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
+        binding.draggableFrame.addListener(object : ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
             override fun onDragDismissed() {
                 if (binding.draggableFrame.translationY > 0) {
                     window.returnTransition = TransitionInflater.from(this@AboutActivity)

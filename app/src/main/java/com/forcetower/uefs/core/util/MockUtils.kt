@@ -41,5 +41,4 @@ object MockUtils {
         val c6 = Contributor(6, "Galuber Silva", "Tradução dos Textos (en)", "https://avatars.githubusercontent.com/sglauber", "http://facebook.com/Gss.14")
         return listOf(c1, c2, c3, c4, c5, c6)
     }
-
 }

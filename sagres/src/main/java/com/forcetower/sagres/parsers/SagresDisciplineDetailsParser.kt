@@ -116,9 +116,8 @@ object SagresDisciplineDetailsParser {
         return created
     }
 
-
     @JvmStatic
-    fun extractClassItems(document: Document): List<SDisciplineClassItem>{
+    fun extractClassItems(document: Document): List<SDisciplineClassItem> {
         val items = ArrayList<SDisciplineClassItem>()
 
         val trs = document.select("tr[class]")
@@ -150,7 +149,7 @@ object SagresDisciplineDetailsParser {
                 Timber.d("Has $materials materials at $description")
             }
 
-            //Download Material section
+            // Download Material section
             var element = tds[5]
             element = element.selectFirst("a")
             var href = element.attr("HREF")

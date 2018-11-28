@@ -44,7 +44,7 @@ import com.google.android.material.tabs.TabLayout
 import java.util.Arrays
 import javax.inject.Inject
 
-class MessagesFragment: UFragment(), Injectable {
+class MessagesFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -78,12 +78,12 @@ class MessagesFragment: UFragment(), Injectable {
         binding.pagerMessage.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
         val sagres = SagresMessagesFragment()
-        val unes   = UnesMessagesFragment()
+        val unes = UnesMessagesFragment()
 
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, Arrays.asList(sagres, unes))
     }
 
-    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>): FragmentPagerAdapter(fm) {
+    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>) : FragmentPagerAdapter(fm) {
         override fun getCount() = fragments.size
         override fun getItem(position: Int) = fragments[position]
         override fun getPageTitle(position: Int) = fragments[position].displayName

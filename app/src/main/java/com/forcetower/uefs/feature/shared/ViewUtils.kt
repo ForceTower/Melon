@@ -35,14 +35,14 @@ import androidx.databinding.DataBindingUtil
 import androidx.databinding.ViewDataBinding
 import androidx.recyclerview.widget.RecyclerView
 
-fun View.inflater() : LayoutInflater = LayoutInflater.from(context)
+fun View.inflater(): LayoutInflater = LayoutInflater.from(context)
 
-inline fun <reified T: ViewDataBinding> ViewGroup.inflate(@LayoutRes res: Int, attachToParent: Boolean = false): T {
+inline fun <reified T : ViewDataBinding> ViewGroup.inflate(@LayoutRes res: Int, attachToParent: Boolean = false): T {
     val inflater = inflater()
     return DataBindingUtil.inflate(inflater, res, this, attachToParent)
 }
 
-inline fun <reified T: ViewDataBinding> LayoutInflater.inflate(@LayoutRes res: Int): T {
+inline fun <reified T : ViewDataBinding> LayoutInflater.inflate(@LayoutRes res: Int): T {
     return DataBindingUtil.inflate(this, res, null, false)
 }
 

@@ -33,7 +33,7 @@ import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
 
-class ClassWithDiscipline{
+class ClassWithDiscipline {
     @Embedded
     lateinit var clazz: Class
     @Relation(parentColumn = "discipline_id", entityColumn = "uid")

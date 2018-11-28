@@ -22,7 +22,7 @@ jobs:
             ./gradlew dependencies
             
       - run:
-          name: Run JVM Tests Checks & Lint
+          name: Run JVM Checks & Lint
           command: |
             ./gradlew check
 

@@ -45,7 +45,7 @@ import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
-class RemindersFragment: UFragment(), Injectable {
+class RemindersFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -79,7 +79,7 @@ class RemindersFragment: UFragment(), Injectable {
             }
         }
 
-        binding.recyclerReminders.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+        binding.recyclerReminders.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 val manager = binding.recyclerReminders.layoutManager as? LinearLayoutManager
                 if (manager != null) {

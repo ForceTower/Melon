@@ -30,7 +30,7 @@ package com.forcetower.sagres.operation.demand
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
-class DemandCreatorCallback(status: Status): BaseCallback<DemandCreatorCallback>(status) {
+class DemandCreatorCallback(status: Status) : BaseCallback<DemandCreatorCallback>(status) {
     companion object {
         fun copyFrom(callback: BaseCallback<*>): DemandCreatorCallback {
             return DemandCreatorCallback(callback.status).message(callback.message).code(callback.code).throwable(

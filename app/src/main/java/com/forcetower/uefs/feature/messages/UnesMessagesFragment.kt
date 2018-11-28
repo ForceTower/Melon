@@ -34,7 +34,7 @@ import android.view.ViewGroup
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UFragment
 
-class UnesMessagesFragment: UFragment() {
+class UnesMessagesFragment : UFragment() {
     init { displayName = "UNES" }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

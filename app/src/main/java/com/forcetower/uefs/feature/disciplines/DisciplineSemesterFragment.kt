@@ -46,7 +46,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import javax.inject.Inject
 
-class DisciplineSemesterFragment: UFragment(), Injectable {
+class DisciplineSemesterFragment : UFragment(), Injectable {
     companion object {
         const val SEMESTER_SAGRES_ID = "unes_sagres_id"
         const val SEMESTER_DATABASE_ID = "unes_database_id"
@@ -58,12 +58,12 @@ class DisciplineSemesterFragment: UFragment(), Injectable {
     }
 
     private val semesterId: Long by lazy {
-        val args = arguments?: throw IllegalStateException("Arguments are null")
+        val args = arguments ?: throw IllegalStateException("Arguments are null")
         args.getLong(SEMESTER_DATABASE_ID)
     }
 
     private val semesterSagresId: Long by lazy {
-        val args = arguments?: throw IllegalStateException("Arguments are null")
+        val args = arguments ?: throw IllegalStateException("Arguments are null")
         args.getLong(SEMESTER_SAGRES_ID)
     }
 

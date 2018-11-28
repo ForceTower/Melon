@@ -30,7 +30,7 @@ package com.forcetower.sagres.database
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-object M1TO2: Migration(1, 2) {
+object M1TO2 : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         val tableName = "SPerson"
         database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT, `exhibitionName` TEXT, `cpf` TEXT, `email` TEXT, `sagres_id` TEXT)")
@@ -40,7 +40,7 @@ object M1TO2: Migration(1, 2) {
     }
 }
 
-object M2TO3: Migration(2, 3) {
+object M2TO3 : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         val messageScopeTable = "SMessageScope"
         database.execSQL("CREATE TABLE IF NOT EXISTS `$messageScopeTable` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `sagres_id` TEXT, `clazz_link` TEXT)")

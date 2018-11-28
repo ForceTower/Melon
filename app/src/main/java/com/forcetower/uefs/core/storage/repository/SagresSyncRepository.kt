@@ -70,12 +70,11 @@ class SagresSyncRepository @Inject constructor(
     fun performSync(executor: String) {
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
-        access?: Timber.d("Access is null, sync will not continue")
+        access ?: Timber.d("Access is null, sync will not continue")
         if (access != null) {
-            //Only one sync may be active at a time
+            // Only one sync may be active at a time
             synchronized(S_LOCK) { execute(access, registry) }
-        }
-        else {
+        } else {
             registry.completed = true
             registry.error = -1
             registry.success = false
@@ -134,10 +133,10 @@ class SagresSyncRepository @Inject constructor(
         }
 
         var result = 0
-        if (!messages(person.id))   result += 1 shl 1
-        if (!semesters(person.id))  result += 1 shl 2
-        if (!startPage())           result += 1 shl 3
-        if (!grades())              result += 1 shl 4
+        if (!messages(person.id)) result += 1 shl 1
+        if (!semesters(person.id)) result += 1 shl 2
+        if (!startPage()) result += 1 shl 3
+        if (!grades()) result += 1 shl 4
 
         registry.completed = true
         registry.error = result
@@ -183,7 +182,7 @@ class SagresSyncRepository @Inject constructor(
         val messages = SagresNavigator.instance.messages(userId)
         return when (messages.status) {
             Status.SUCCESS -> {
-                val values = messages.messages?.map { Message.fromMessage(it, false) }?: emptyList()
+                val values = messages.messages?.map { Message.fromMessage(it, false) } ?: emptyList()
                 database.messageDao().insertIgnoring(values)
                 messagesNotifications()
                 Timber.d("Messages completed. Messages size is ${values.size}")
@@ -263,7 +262,7 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun frequencyNotifications() {
-        //TODO Implement frequency notifications
+        // TODO Implement frequency notifications
     }
 
     private fun gradesNotifications() {
@@ -271,14 +270,14 @@ class SagresSyncRepository @Inject constructor(
             val posted = getPostedGradesDirect()
             val create = getCreatedGradesDirect()
             val change = getChangedGradesDirect()
-            val date   = getDateChangedGradesDirect()
+            val date = getDateChangedGradesDirect()
 
             markAllNotified()
 
             posted.forEach { NotificationCreator.showSagresPostedGradesNotification(it, context) }
             create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
             change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
-            date.forEach   { NotificationCreator.showSagresDateGradesNotification  (it, context) }
+            date.forEach { NotificationCreator.showSagresDateGradesNotification(it, context) }
         }
     }
 
@@ -351,5 +350,4 @@ class SagresSyncRepository @Inject constructor(
     companion object {
         private val S_LOCK = Any()
     }
-
 }

@@ -35,8 +35,8 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repository: LoginSagresRepository): ViewModel() {
-    private var loginSrc : MediatorLiveData<Callback> = MediatorLiveData()
+class LoginViewModel @Inject constructor(private val repository: LoginSagresRepository) : ViewModel() {
+    private var loginSrc: MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
     private var connected: Boolean = false
 

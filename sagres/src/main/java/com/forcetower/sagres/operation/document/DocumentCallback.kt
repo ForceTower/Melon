@@ -30,4 +30,4 @@ package com.forcetower.sagres.operation.document
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
-class DocumentCallback(status: Status): BaseCallback<DocumentCallback>(status)
+class DocumentCallback(status: Status) : BaseCallback<DocumentCallback>(status)

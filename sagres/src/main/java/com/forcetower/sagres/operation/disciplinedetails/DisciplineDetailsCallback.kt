@@ -31,7 +31,7 @@ import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
-class DisciplineDetailsCallback(status: Status): BaseCallback<DisciplineDetailsCallback>(status) {
+class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetailsCallback>(status) {
     private var groups: List<SDisciplineGroup>? = null
     fun getGroups() = groups
 

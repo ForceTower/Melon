@@ -88,7 +88,7 @@ class LoginSagresRepository @Inject constructor(
                 database.accessDao().deleteAll()
                 database.accessTokenDao().deleteAll()
                 database.profileDao().deleteMe()
-                executor.mainThread().execute{
+                executor.mainThread().execute {
                     login(signIn, username, password)
                 }
             }
@@ -124,7 +124,7 @@ class LoginSagresRepository @Inject constructor(
     private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access) {
         val me = SagresNavigator.instance.aMe()
         currentStep.value = createStep(R.string.step_finding_profile)
-        data.addSource(me) {m ->
+        data.addSource(me) { m ->
             if (m.status == Status.SUCCESS) {
                 data.removeSource(me)
                 Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
@@ -172,7 +172,7 @@ class LoginSagresRepository @Inject constructor(
     private fun semesters(data: MediatorLiveData<Callback>, userId: Long) {
         val semesters = SagresNavigator.instance.aSemesters(userId)
         currentStep.value = createStep(R.string.step_fetching_semesters)
-        data.addSource(semesters) {s ->
+        data.addSource(semesters) { s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(semesters)
                 val values = s.getSemesters().map { Semester.fromSagres(it) }
@@ -194,7 +194,7 @@ class LoginSagresRepository @Inject constructor(
     private fun startPage(data: MediatorLiveData<Callback>) {
         val start = SagresNavigator.instance.aStartPage()
         currentStep.value = createStep(R.string.step_moving_to_start_page)
-        data.addSource(start){s ->
+        data.addSource(start) { s ->
             if (s.status == Status.SUCCESS) {
                 data.removeSource(start)
 
@@ -224,7 +224,7 @@ class LoginSagresRepository @Inject constructor(
     private fun grades(data: MediatorLiveData<Callback>) {
         val grades = SagresNavigator.instance.aGetCurrentGrades()
         currentStep.value = createStep(R.string.step_fetching_grades)
-        data.addSource(grades){g ->
+        data.addSource(grades) { g ->
             if (g.status == Status.SUCCESS) {
                 data.removeSource(grades)
 

@@ -33,7 +33,7 @@ import javax.inject.Inject
 
 class SyncRegistryViewModel @Inject constructor(
     private val repository: SyncRegistryRepository
-): ViewModel() {
+) : ViewModel() {
 
     val registry by lazy { repository.getSyncRegistry() }
 }

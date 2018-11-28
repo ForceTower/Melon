@@ -60,7 +60,7 @@ abstract class ClassLocationDao {
         if (locations.isEmpty()) return
 
         val semester = selectCurrentSemesterDirect()
-        val profile  = getMeProfile()
+        val profile = getMeProfile()
         wipeScheduleProfile(profile.uid)
 
         locations.forEach {
@@ -80,7 +80,6 @@ abstract class ClassLocationDao {
                 }
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
-
             }
         }
     }
@@ -113,7 +112,7 @@ abstract class ClassLocationDao {
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC LIMIT 1")
     protected abstract fun selectCurrentSemesterDirect(): Semester
 
-    //TODO Find a better way to wipe current locations
+    // TODO Find a better way to wipe current locations
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
     protected abstract fun wipeScheduleProfile(profileId: Long)
 }

@@ -31,7 +31,7 @@ import android.os.Bundle
 import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
 
-class NotificationSettingsFragment: PreferenceFragmentCompat() {
+class NotificationSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_notifications, rootKey)

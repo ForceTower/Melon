@@ -45,7 +45,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class OverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DisciplineViewModel
-): RecyclerView.Adapter<OverviewHolder>() {
+) : RecyclerView.Adapter<OverviewHolder>() {
     var currentDiscipline: ClassStudentWithGroup? = null
     set(value) {
         field = value
@@ -133,7 +133,6 @@ class OverviewAdapter(
             }
 
             list += Statistics
-
         }
         return list
     }
@@ -143,14 +142,14 @@ class OverviewAdapter(
     )
 }
 
-sealed class OverviewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    class SimpleHolder(itemView: View): OverviewHolder(itemView)
-    class ShortHolder(val binding: ItemDisciplineShortBinding): OverviewHolder(binding.root)
-    class TeacherHolder(val binding: ItemDisciplineTeacherBinding): OverviewHolder(binding.root)
-    class ResumeHolder(val binding: ItemDisciplineGoalsBinding): OverviewHolder(binding.root)
+sealed class OverviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class SimpleHolder(itemView: View) : OverviewHolder(itemView)
+    class ShortHolder(val binding: ItemDisciplineShortBinding) : OverviewHolder(binding.root)
+    class TeacherHolder(val binding: ItemDisciplineTeacherBinding) : OverviewHolder(binding.root)
+    class ResumeHolder(val binding: ItemDisciplineGoalsBinding) : OverviewHolder(binding.root)
 }
 
-private object DiffCallback: DiffUtil.ItemCallback<Any>() {
+private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem === DisciplineDraft && newItem === DisciplineDraft -> true

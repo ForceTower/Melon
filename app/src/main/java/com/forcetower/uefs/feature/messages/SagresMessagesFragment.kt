@@ -48,7 +48,7 @@ import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class SagresMessagesFragment: UFragment(), Injectable {
+class SagresMessagesFragment : UFragment(), Injectable {
     @Inject
     lateinit var vmFactory: UViewModelFactory
 
@@ -115,5 +115,4 @@ class SagresMessagesFragment: UFragment(), Injectable {
             dialog.show()
         }
     }
-
 }

@@ -38,7 +38,7 @@ class PersonOperation(
     private val userId: Long?,
     executor: Executor?,
     private val cached: Boolean = true
-): Operation<PersonCallback>(executor) {
+) : Operation<PersonCallback>(executor) {
     init {
         this.perform()
     }
@@ -52,7 +52,6 @@ class PersonOperation(
                 return
             }
         }
-
 
         val call = if (userId == null) SagresCalls.me else SagresCalls.getPerson(userId)
         try {
@@ -68,7 +67,6 @@ class PersonOperation(
             t.printStackTrace()
             publishProgress(PersonCallback(Status.NETWORK_ERROR).throwable(t))
         }
-
     }
 
     private fun successMeasures(user: SPerson) {

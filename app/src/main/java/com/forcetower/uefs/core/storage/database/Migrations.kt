@@ -30,7 +30,7 @@ package com.forcetower.uefs.core.storage.database
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
 
-object M1TO2: Migration(1, 2) {
+object M1TO2 : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
         val sagresFlagsTable = "SagresFlags"
         val demandOfferTable = "SDemandOffer"
@@ -40,13 +40,13 @@ object M1TO2: Migration(1, 2) {
     }
 }
 
-object M2TO3: Migration(2, 3) {
+object M2TO3 : Migration(2, 3) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE Message ADD COLUMN discipline TEXT DEFAULT NULL")
     }
 }
 
-object M3TO4: Migration(3, 4) {
+object M3TO4 : Migration(3, 4) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("DELETE FROM ClassMaterial")
         database.execSQL("UPDATE ClassGroup SET draft = 1")

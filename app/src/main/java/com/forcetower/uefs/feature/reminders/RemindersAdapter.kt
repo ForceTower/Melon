@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class RemindersAdapter(
     val lifecycleOwner: LifecycleOwner,
     val viewModel: RemindersViewModel
-): RecyclerView.Adapter<ReminderHolder>() {
+) : RecyclerView.Adapter<ReminderHolder>() {
     var currentReminders: List<Reminder> = emptyList()
         set(value) {
             field = value
@@ -76,7 +76,7 @@ class RemindersAdapter(
     }
 
     override fun getItemViewType(position: Int): Int {
-        return when(differ.currentList[position]) {
+        return when (differ.currentList[position]) {
             Header -> R.layout.item_reminders_completed_header
             is Reminder -> R.layout.item_reminder
             else -> throw IllegalStateException("View type was not specified at position $position")
@@ -100,12 +100,12 @@ class RemindersAdapter(
     override fun getItemCount() = differ.currentList.size
 }
 
-sealed class ReminderHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    class ItemHolder(val binding: ItemReminderBinding): ReminderHolder(binding.root)
-    class CompletedHeaderHolder(itemView: View): ReminderHolder(itemView)
+sealed class ReminderHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class ItemHolder(val binding: ItemReminderBinding) : ReminderHolder(binding.root)
+    class CompletedHeaderHolder(itemView: View) : ReminderHolder(itemView)
 }
 
-private object DiffCallback: DiffUtil.ItemCallback<Any>() {
+private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem === Header && newItem === Header -> true

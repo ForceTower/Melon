@@ -46,14 +46,15 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 
 class UploadImageToStorage(
-    context : Context, params : WorkerParameters
-): Worker(context, params) {
+    context: Context,
+    params: WorkerParameters
+) : Worker(context, params) {
 
     @WorkerThread
     override fun doWork(): Result {
         Timber.d("Started picture upload")
-        val tUri = inputData.getString(URI)?: return Result.FAILURE
-        val tRef = inputData.getString(REFERENCE)?: return Result.FAILURE
+        val tUri = inputData.getString(URI) ?: return Result.FAILURE
+        val tRef = inputData.getString(REFERENCE) ?: return Result.FAILURE
 
         val uri = Uri.parse(tUri)
         val storage = FirebaseStorage.getInstance()
@@ -61,7 +62,7 @@ class UploadImageToStorage(
 
         val resolver = applicationContext.contentResolver
         val image = BitmapFactory.decodeStream(resolver.openInputStream(uri))
-        image?: return Result.FAILURE
+        image ?: return Result.FAILURE
 
         val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
 
@@ -73,7 +74,7 @@ class UploadImageToStorage(
         var completed = false
         var success = false
 
-        ref.putBytes(data).addOnCompleteListener {task ->
+        ref.putBytes(data).addOnCompleteListener { task ->
             if (task.isSuccessful) {
                 success = true
                 Timber.d("Image Uploaded!")
@@ -94,9 +95,9 @@ class UploadImageToStorage(
     }
 
     companion object {
-        private const val URI       = "image_uri"
+        private const val URI = "image_uri"
         private const val REFERENCE = "storage_reference"
-        private const val TAG       = "upload_profile_image"
+        private const val TAG = "upload_profile_image"
 
         fun createWorker(uri: Uri, reference: String) {
             val data = workDataOf(URI to uri.toString(), REFERENCE to reference)

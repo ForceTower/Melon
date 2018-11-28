@@ -28,8 +28,6 @@
 package com.forcetower.uefs.core.util
 import android.widget.TextView
 
-
-
 object HtmlUtils {
     @JvmStatic
     fun setTextWithNiceLinks(textView: TextView, input: CharSequence) {

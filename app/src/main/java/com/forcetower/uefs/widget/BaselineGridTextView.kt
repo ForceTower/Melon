@@ -37,10 +37,10 @@ import androidx.appcompat.widget.AppCompatTextView
 import com.forcetower.uefs.R
 
 class BaselineGridTextView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyleAttr: Int = android.R.attr.textViewStyle
-): AppCompatTextView(context, attrs, defStyleAttr) {
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = android.R.attr.textViewStyle
+) : AppCompatTextView(context, attrs, defStyleAttr) {
 
     private val fourDp: Float
     private var lineHeightMultiplierHint = 1f

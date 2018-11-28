@@ -45,8 +45,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class SyncLinkedWorker(
-    context : Context, params : WorkerParameters
-): Worker(context, params) {
+    context: Context,
+    params: WorkerParameters
+) : Worker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
 

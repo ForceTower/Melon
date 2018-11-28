@@ -31,7 +31,6 @@ import android.content.Context
 import timber.log.Timber
 
 import java.util.ArrayList
-import java.util.Collections
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -223,7 +222,7 @@ class Game(private val mContext: Context) {
                         tile.updatePosition(positions[1])
 
                         val extras = intArrayOf(xx, yy)
-                        //Direction: 0 = MOVING MERGED
+                        // Direction: 0 = MOVING MERGED
                         mView!!.moveTile(merged.x, merged.y, extras)
                         mView!!.mergeTile(merged.x, merged.y)
 
@@ -242,7 +241,7 @@ class Game(private val mContext: Context) {
                     } else {
                         moveTile(tile, positions[0])
                         val extras = intArrayOf(xx, yy, 0)
-                        //Direction: 1 = MOVING NO MERGE
+                        // Direction: 1 = MOVING NO MERGE
                         mView!!.moveTile(positions[0].x, positions[0].y, extras)
                     }
 

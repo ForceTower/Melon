@@ -49,7 +49,7 @@ open class Position(x: Int, y: Int) {
                 Position(0, -1), // up
                 Position(1, 0), // right
                 Position(0, 1), // down
-                Position(-1, 0)  // left
+                Position(-1, 0) // left
             )
             return map[direction]
         }

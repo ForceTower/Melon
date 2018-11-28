@@ -35,7 +35,7 @@ import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.databinding.ItemSyncRegistryBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-class SyncRegistryAdapter: PagedListAdapter<SyncRegistry, SyncRegistryHolder>(SyncDiff) {
+class SyncRegistryAdapter : PagedListAdapter<SyncRegistry, SyncRegistryHolder>(SyncDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SyncRegistryHolder {
         return SyncRegistryHolder(
             ItemSyncRegistryBinding.inflate(parent.inflater(), parent, false)
@@ -47,12 +47,11 @@ class SyncRegistryAdapter: PagedListAdapter<SyncRegistry, SyncRegistryHolder>(Sy
     }
 }
 
-
 class SyncRegistryHolder(
     val binding: ItemSyncRegistryBinding
-): RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.ViewHolder(binding.root)
 
-object SyncDiff: DiffUtil.ItemCallback<SyncRegistry>() {
+object SyncDiff : DiffUtil.ItemCallback<SyncRegistry>() {
     override fun areItemsTheSame(oldItem: SyncRegistry, newItem: SyncRegistry): Boolean {
         return oldItem.uid == newItem.uid
     }

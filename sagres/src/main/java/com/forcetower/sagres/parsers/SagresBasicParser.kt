@@ -41,7 +41,6 @@ object SagresBasicParser {
 
         approval = document.selectFirst("input[value=\"Acessar o SAGRES Portal\"]")
         return approval != null
-
     }
 
     @JvmStatic

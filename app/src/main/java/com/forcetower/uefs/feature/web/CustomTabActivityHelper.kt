@@ -72,7 +72,7 @@ class CustomTabActivityHelper {
                 mClient = client
                 mClient!!.warmup(0L)
                 if (mConnectionCallback != null) mConnectionCallback!!.onCustomTabsConnected()
-                //Initialize a session as soon as possible.
+                // Initialize a session as soon as possible.
                 session
             }
 
@@ -154,5 +154,4 @@ class CustomTabActivityHelper {
             }
         }
     }
-
 }

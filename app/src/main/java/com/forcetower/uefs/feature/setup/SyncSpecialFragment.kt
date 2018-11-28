@@ -34,7 +34,7 @@ import android.view.ViewGroup
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
 
-class SyncSpecialFragment: UFragment(), Injectable {
+class SyncSpecialFragment : UFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return super.onCreateView(inflater, container, savedInstanceState)
     }

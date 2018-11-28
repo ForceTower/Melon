@@ -37,26 +37,30 @@ import androidx.annotation.ColorInt
 /**
  * A quote span with a nicer presentation
  */
-class FancyQuoteSpan(private val lineWidth: Int,
-                     private val gapWidth: Int,
-                     @param:ColorInt private val lineColor: Int) : LeadingMarginSpan {
+class FancyQuoteSpan(
+    private val lineWidth: Int,
+    private val gapWidth: Int,
+    @param:ColorInt private val lineColor: Int
+) : LeadingMarginSpan {
 
     override fun getLeadingMargin(first: Boolean): Int {
         return lineWidth + gapWidth
     }
 
-    override fun drawLeadingMargin(c: Canvas,
-                                   p: Paint,
-                                   x: Int,
-                                   dir: Int,
-                                   top: Int,
-                                   baseline: Int,
-                                   bottom: Int,
-                                   text: CharSequence,
-                                   start: Int,
-                                   end: Int,
-                                   first: Boolean,
-                                   layout: Layout) {
+    override fun drawLeadingMargin(
+        c: Canvas,
+        p: Paint,
+        x: Int,
+        dir: Int,
+        top: Int,
+        baseline: Int,
+        bottom: Int,
+        text: CharSequence,
+        start: Int,
+        end: Int,
+        first: Boolean,
+        layout: Layout
+    ) {
         val prevStyle = p.style
         val prevColor = p.color
         p.style = Paint.Style.FILL

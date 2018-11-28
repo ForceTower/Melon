@@ -46,5 +46,5 @@ interface FlagsDao {
     fun updateDemand(demandOpen: Boolean)
 
     @Query("SELECT * FROM SagresFlags LIMIT 1")
-    fun getFlagsDirect() : SagresFlags?
+    fun getFlagsDirect(): SagresFlags?
 }

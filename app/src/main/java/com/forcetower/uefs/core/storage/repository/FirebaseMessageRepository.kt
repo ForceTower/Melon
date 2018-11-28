@@ -125,9 +125,9 @@ class FirebaseMessageRepository @Inject constructor(
         NotificationCreator.showEventNotification(context, id, title, description, image)
     }
 
-    //This call is by far the most dangerous call that the hole code may have
-    //Call allows the server to perform an update in the database at any moment
-    //It will also be extremely helpful when something wrong happens and the server will be able to fix everyone at once
+    // This call is by far the most dangerous call that the hole code may have
+    // Call allows the server to perform an update in the database at any moment
+    // It will also be extremely helpful when something wrong happens and the server will be able to fix everyone at once
     private fun promoteDatabase(data: Map<String, String>) {
         val query = data["query"]
         val unique = data["unique"]
@@ -148,7 +148,6 @@ class FirebaseMessageRepository @Inject constructor(
             Timber.d("Failed executing database promotion. ${t.message}")
             Crashlytics.logException(t)
         }
-
     }
 
     private fun onSimpleMessageReceived(message: RemoteMessage) {
@@ -167,8 +166,6 @@ class FirebaseMessageRepository @Inject constructor(
         }
 
         NotificationCreator.showSimpleNotification(context, title, content)
-
-
     }
 
     fun onNewToken(token: String) {

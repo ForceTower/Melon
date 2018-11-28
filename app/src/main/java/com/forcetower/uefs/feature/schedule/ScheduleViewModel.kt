@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class ScheduleViewModel @Inject constructor(
     private val database: UDatabase
-): ViewModel(), ScheduleActions {
+) : ViewModel(), ScheduleActions {
     val scheduleSrc by lazy { database.classLocationDao().getCurrentSchedule() }
 
     override fun onLongClick(view: View): Boolean {
@@ -45,6 +45,5 @@ class ScheduleViewModel @Inject constructor(
     }
 
     override fun onClick(group: GroupWithClass) {
-
     }
 }

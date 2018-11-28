@@ -42,7 +42,7 @@ import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 
-class SyncSettingsFragment: PreferenceFragmentCompat() {
+class SyncSettingsFragment : PreferenceFragmentCompat() {
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         Timber.d("Shared preferences detected change at $key")
         onPreferenceChange(shared, key)
@@ -80,9 +80,9 @@ class SyncSettingsFragment: PreferenceFragmentCompat() {
     }
 
     private fun changeWorkerType(intValue: Int?): Boolean {
-        intValue?: return false
+        intValue ?: return false
         Timber.d("Changing worker type to $intValue")
-        var period = getSharedPreferences().getString("stg_sync_frequency", "60")?.toIntOrNull()?: 60
+        var period = getSharedPreferences().getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
         when (intValue) {
             0 -> {
                 SyncLinkedWorker.stopWorker()
@@ -101,8 +101,8 @@ class SyncSettingsFragment: PreferenceFragmentCompat() {
     }
 
     private fun changeSyncFrequency(period: Int?): Boolean {
-        period?: return false
-        val worker = getSharedPreferences().getString("stg_sync_worker_type", "0")?.toIntOrNull()?: 0
+        period ?: return false
+        val worker = getSharedPreferences().getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
         if (period >= 15) {
             when (worker) {
                 0 -> {

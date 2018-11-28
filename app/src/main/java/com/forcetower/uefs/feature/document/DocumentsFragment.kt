@@ -46,7 +46,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import java.io.File
 import javax.inject.Inject
 
-class DocumentsFragment: UFragment(), Injectable {
+class DocumentsFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -71,7 +71,7 @@ class DocumentsFragment: UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.documents.observe(this, Observer { adapter.documents = it?: emptyList() })
+        viewModel.documents.observe(this, Observer { adapter.documents = it ?: emptyList() })
         viewModel.openDocumentAction.observe(this, EventObserver { openDocument(it) })
     }
 

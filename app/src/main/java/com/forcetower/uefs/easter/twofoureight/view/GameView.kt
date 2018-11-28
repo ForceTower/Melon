@@ -45,7 +45,7 @@ class GameView : View {
 
     private val mPaint = Paint()
 
-    //Layout variables
+    // Layout variables
     private var mCellSize = 0
     private var mTextSize = 0f
     private var mCellTextSize = 0f
@@ -55,7 +55,7 @@ class GameView : View {
     private var mEndingX: Int = 0
     private var mEndingY: Int = 0
 
-    //Assets
+    // Assets
     private var mBackgroundRectangle: Drawable? = null
     private lateinit var mCellRectangle: Array<Drawable?>
     private lateinit var mBitmapCell: Array<BitmapDrawable?>
@@ -94,7 +94,7 @@ class GameView : View {
             mBitmapCell = arrayOfNulls(Game.DEFAULT_TILE_TYPES)
 
             updateGrid(GameGrid(4, 4))
-            //Getting assets
+            // Getting assets
             mBackgroundRectangle = context.getDrawable(R.drawable.background_rectangle)
             mCellRectangle[0] = context.getDrawable(R.drawable.cell_rectangle)
             mCellRectangle[1] = context.getDrawable(R.drawable.cell_rectangle_2)
@@ -150,16 +150,16 @@ class GameView : View {
     }
 
     public override fun onDraw(canvas: Canvas) {
-        //Reset the transparency of the screen
+        // Reset the transparency of the screen
         canvas.drawBitmap(mBackground!!, 0f, 0f, mPaint)
         drawTiles(canvas)
 
-        //Refresh the screen if there is still an animation running
+        // Refresh the screen if there is still an animation running
         if (mAnimationGrid.isAnimationActive) {
-            //invalidate(mStartingX, mStartingY, mEndingX, mEndingY)
+            // invalidate(mStartingX, mStartingY, mEndingX, mEndingY)
             invalidate()
             tick()
-            //Refresh one last time on game end.
+            // Refresh one last time on game end.
         } else if (!(mGameState != Game.State.WON && mGameState != Game.State.LOST) && mRefreshLastTime) {
             invalidate()
             mRefreshLastTime = false
@@ -197,7 +197,7 @@ class GameView : View {
 
         mGameOverTextSize = mTextSize * 2
 
-        //Grid Dimensions
+        // Grid Dimensions
         val halfNumSquaresX = mNumberOfSquaresX / 2.0
         val halfNumSquaresY = mNumberOfSquaresY / 2.0
 
@@ -261,16 +261,16 @@ class GameView : View {
 
                 val currentTile = mGameGrid!!.getCellContent(xx, yy)
                 if (currentTile != null) {
-                    //Get and represent the value of the tile
+                    // Get and represent the value of the tile
                     val value = currentTile.value
                     val index = log2(value)
 
-                    //Check for any active animations
+                    // Check for any active animations
                     val aArray = mAnimationGrid.getAnimationCell(xx, yy)
                     var animated = false
                     for (i in aArray.indices.reversed()) {
                         val aCell = aArray[i]
-                        //If this animation is not active, skip it
+                        // If this animation is not active, skip it
                         if (aCell.animationType == SPAWN_ANIMATION) {
                             animated = true
                         }
@@ -293,8 +293,8 @@ class GameView : View {
                             mBitmapCell[index]!!.draw(canvas)
                         } else if (aCell.animationType == MERGE_ANIMATION) { // Merging Animation
                             val percentDone = aCell.percentageDone
-                            val textScaleSize = (1.0 + INITIAL_VELOCITY * percentDone
-                                + MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2).toFloat()
+                            val textScaleSize = (1.0 + INITIAL_VELOCITY * percentDone +
+                                MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2).toFloat()
                             mPaint.textSize = mTextSize * textScaleSize
 
                             val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
@@ -305,7 +305,7 @@ class GameView : View {
                                 (eY - cellScaleSize).toInt()
                             )
                             mBitmapCell[index]!!.draw(canvas)
-                        } else if (aCell.animationType == MOVE_ANIMATION) {  // Moving animation
+                        } else if (aCell.animationType == MOVE_ANIMATION) { // Moving animation
                             val percentDone = aCell.percentageDone
                             var tempIndex = index
                             if (aArray.size >= 2) {
@@ -325,7 +325,7 @@ class GameView : View {
                         animated = true
                     }
 
-                    //No active animations? Just draw the cell
+                    // No active animations? Just draw the cell
                     if (!animated) {
                         mBitmapCell[index]!!.setBounds(sX, sY, eX, eY)
                         mBitmapCell[index]!!.draw(canvas)
@@ -388,7 +388,7 @@ class GameView : View {
         mAnimationGrid.startAnimation(
             tile.x, tile.y, SPAWN_ANIMATION,
             SPAWN_ANIMATION_TIME, MOVE_ANIMATION_TIME, null
-        ) //Direction: -1 = EXPANDING
+        ) // Direction: -1 = EXPANDING
     }
 
     fun cancelAnimations() {

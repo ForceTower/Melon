@@ -42,7 +42,7 @@ import timber.log.Timber
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<ClassGroupWithStudents>) {
     val list = generateGradesList(classes)
-    recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter?: ClassGroupGradesAdapter()).apply {
+    recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter ?: ClassGroupGradesAdapter()).apply {
         submitList(list)
     }
 }
@@ -88,7 +88,7 @@ fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
 
 @BindingAdapter(value = ["missedDescription", "missedDate"], requireAll = true)
 fun classAbsence(tv: TextView, desc: String?, date: String?) {
-    tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc?: tv.context.getString(R.string.not_registed), date?: tv.context.getString(R.string.not_registed))
+    tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc ?: tv.context.getString(R.string.not_registed), date ?: tv.context.getString(R.string.not_registed))
 }
 
 @BindingAdapter(value = ["absences", "credits"], requireAll = true)
@@ -98,14 +98,14 @@ fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
         tv.text = context.getString(R.string.discipline_credits_undefined)
     } else {
         Timber.d("Credits: $credits __ Absence: $absences")
-        val left = (credits/4) - absences
+        val left = (credits / 4) - absences
         tv.text = context.getString(R.string.discipline_absence_left, left)
     }
 }
 
 @BindingAdapter(value = ["disciplineCredits"])
 fun credits(tv: TextView, credits: Int?) {
-    tv.text = credits?.toString()?.plus("h")?: "??h"
+    tv.text = credits?.toString()?.plus("h") ?: "??h"
 }
 
 @BindingAdapter(value = ["somethingOrQuestions"])
