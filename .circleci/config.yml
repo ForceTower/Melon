@@ -20,9 +20,14 @@ jobs:
           name: Downloading Dependencies
           command: |
             ./gradlew dependencies
+            
+      - run:
+          name: Run JVM Tests Checks & Lint
+          command: |
+            ./gradlew check
 
       - run:
-          name: Build debug APK
+          name: Build Debug APK
           command: |
             ./gradlew :app:assembleDebug
 
