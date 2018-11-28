@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,8 +73,22 @@ class ConfigurationFragment : UFragment(), Injectable {
 
         binding.btnNext.setOnClickListener {
             completeSetup()
-            findNavController().navigate(R.id.action_configuration_to_home)
-            requireActivity().finishAfterTransition()
+            decideNext()
+        }
+    }
+
+    private fun decideNext() {
+        val manufacturer = Build.MANUFACTURER.toLowerCase()
+
+        when (manufacturer) {
+            "xiaomi" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "oppo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "vivo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "lenovo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            else -> {
+                findNavController().navigate(R.id.action_configuration_to_home)
+                requireActivity().finishAfterTransition()
+            }
         }
     }
 
