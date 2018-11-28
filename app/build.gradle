@@ -95,6 +95,7 @@ dependencies {
     //Kotlin Dependencies
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$ktx"
+    ktlint 'com.github.shyiko:ktlint:0.29.0'
 
     //Android Component
     implementation "androidx.appcompat:appcompat:$appcompat"
@@ -190,6 +191,20 @@ dependencies {
     implementation project(path: ':sagres')
     implementation project(':bypass')
     implementation project(path: ':cropper')
+}
+
+task ktlint(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
 }
 
 apply from: "../artifacts.gradle"

@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
-class ConfigurationFragment: UFragment(), Injectable {
+class ConfigurationFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -61,7 +61,7 @@ class ConfigurationFragment: UFragment(), Injectable {
         binding.textSetupSync.setText(viewModel.getSelectedFrequency().name)
         binding.textSetupSync.setOnClickListener {
             val dialog = SelectSyncDialog()
-            dialog.setCallback(object: FrequencySelectionCallback {
+            dialog.setCallback(object : FrequencySelectionCallback {
                 override fun onSelected(frequency: Frequency) {
                     viewModel.setSelectedFrequency(frequency)
                     binding.textSetupSync.setText(frequency.name)

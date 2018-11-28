@@ -59,7 +59,7 @@ import com.google.firebase.firestore.CollectionReference
 import javax.inject.Inject
 import javax.inject.Named
 
-class DisciplineDetailsFragment: UFragment(), Injectable {
+class DisciplineDetailsFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -113,14 +113,14 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
     private fun createFragments() {
         val group = requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID)
         val overview = getString(R.string.discipline_details_overview) to OverviewFragment.newInstance(group)
-        //val grades = getString(R.string.discipline_details_grades) to GradesFragment.newInstance(group)
+        // val grades = getString(R.string.discipline_details_grades) to GradesFragment.newInstance(group)
         val classes = getString(R.string.discipline_details_classes) to ClassesFragment.newInstance(group)
         val materials = getString(R.string.discipline_details_materials) to MaterialsFragment.newInstance(group)
-        val list = listOf<Pair<String, Fragment>>(overview,/* grades,*/ classes, materials)
+        val list = listOf<Pair<String, Fragment>>(overview, /* grades,*/ classes, materials)
         adapter.submitList(list)
     }
 
-    private inner class DetailsAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+    private inner class DetailsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         private val tabs = mutableListOf<Pair<String, Fragment>>()
         override fun getItem(position: Int) = tabs[position].second
         override fun getCount() = tabs.size
@@ -132,7 +132,6 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         }
     }
 
-
     companion object {
         fun newInstance(classId: Long): DisciplineDetailsFragment {
             return DisciplineDetailsFragment().apply {
@@ -141,7 +140,7 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         }
     }
 
-    private inner class ItemsDisciplineAdapter: RecyclerView.Adapter<ItemHolder>() {
+    private inner class ItemsDisciplineAdapter : RecyclerView.Adapter<ItemHolder>() {
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemHolder {
             return when (viewType) {
                 0 -> ItemHolder.HoursHolder(parent.inflate(R.layout.ext_item_discipline_hours))
@@ -171,8 +170,8 @@ class DisciplineDetailsFragment: UFragment(), Injectable {
         override fun getItemViewType(position: Int) = position
     }
 
-    private sealed class ItemHolder(item: View): RecyclerView.ViewHolder(item) {
-        class HoursHolder(val binding: ExtItemDisciplineHoursBinding): ItemHolder(binding.root)
-        class MissedHolder(val binding: ExtItemMissedClassesBinding): ItemHolder(binding.root)
+    private sealed class ItemHolder(item: View) : RecyclerView.ViewHolder(item) {
+        class HoursHolder(val binding: ExtItemDisciplineHoursBinding) : ItemHolder(binding.root)
+        class MissedHolder(val binding: ExtItemMissedClassesBinding) : ItemHolder(binding.root)
     }
 }

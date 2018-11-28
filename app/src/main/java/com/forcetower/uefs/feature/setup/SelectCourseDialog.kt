@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class SelectCourseDialog: RoundedDialog(), Injectable {
+class SelectCourseDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -54,7 +54,7 @@ class SelectCourseDialog: RoundedDialog(), Injectable {
         viewModel = provideActivityViewModel(factory)
         return DialogSelectCourseBinding.inflate(inflater, container, false).also {
             binding = it
-            it.btnCancel.setOnClickListener { dismiss()}
+            it.btnCancel.setOnClickListener { dismiss() }
             it.btnOk.setOnClickListener { select() }
         }.root
     }

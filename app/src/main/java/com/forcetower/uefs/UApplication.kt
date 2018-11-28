@@ -74,11 +74,11 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
 
     private fun defineWorker() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-        val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull()?: 0
-        val period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull()?: 60
+        val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
+        val period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
         when (worker) {
             0 -> SyncMainWorker.createWorker(this, period)
-            1 -> Unit //SyncLinkedWorker.createWorker(period, false)
+            1 -> Unit // SyncLinkedWorker.createWorker(period, false)
         }
     }
 

@@ -33,6 +33,6 @@ import javax.inject.Inject
 
 class CourseViewModel @Inject constructor(
     private val repository: CourseRepository
-): ViewModel() {
+) : ViewModel() {
     val courses by lazy { repository.getCourses() }
 }

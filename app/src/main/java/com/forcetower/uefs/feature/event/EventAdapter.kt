@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class EventAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: EventViewModel
-): RecyclerView.Adapter<EventViewHolder>() {
+) : RecyclerView.Adapter<EventViewHolder>() {
     var currentEvents: List<Event> = emptyList()
     set(value) {
         field = value
@@ -116,7 +116,6 @@ class EventAdapter(
                 merged += CommonHeader
                 merged.addAll(common)
             }
-
         } else {
             merged += NoEvents
         }
@@ -124,14 +123,14 @@ class EventAdapter(
     }
 }
 
-sealed class EventViewHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    class FeaturedHeaderHolder(view: View): EventViewHolder(view)
-    class CommonHeaderHolder(view: View): EventViewHolder(view)
-    class NoEventHolder(view: View): EventViewHolder(view)
-    class EventHolder(val binding: ItemEventCollapsedBinding): EventViewHolder(binding.root)
+sealed class EventViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class FeaturedHeaderHolder(view: View) : EventViewHolder(view)
+    class CommonHeaderHolder(view: View) : EventViewHolder(view)
+    class NoEventHolder(view: View) : EventViewHolder(view)
+    class EventHolder(val binding: ItemEventCollapsedBinding) : EventViewHolder(binding.root)
 }
 
-private object DiffCallback: DiffUtil.ItemCallback<Any>() {
+private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem === FeatureHeader && newItem === FeatureHeader -> true

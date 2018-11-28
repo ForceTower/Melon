@@ -54,7 +54,6 @@ object AppModule {
     fun provideSharedPreferences(context: Context): SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context)
 
-
     @Provides
     @Singleton
     @JvmStatic
@@ -62,5 +61,4 @@ object AppModule {
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
                 .addMigrations(M1TO2, M2TO3, M3TO4)
                 .build()
-
 }

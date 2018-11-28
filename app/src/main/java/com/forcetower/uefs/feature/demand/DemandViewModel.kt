@@ -44,7 +44,7 @@ import javax.inject.Inject
 class DemandViewModel @Inject constructor(
     private val repository: DemandRepository,
     private val context: Context
-): ViewModel(), OfferActions {
+) : ViewModel(), OfferActions {
     private var loaded = false
 
     private val _snackbar = MutableLiveData<Event<String>>()
@@ -90,7 +90,6 @@ class DemandViewModel @Inject constructor(
     }
 
     init {
-
     }
 
     override fun onOfferClick(offer: SDemandOffer) {

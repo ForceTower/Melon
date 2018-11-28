@@ -151,11 +151,11 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun onStep(step: LoginSagresRepository.Step) {
-        binding.contentLoading.setProgressWithAnimation(step.step.toFloat()*100/step.count)
+        binding.contentLoading.setProgressWithAnimation(step.step.toFloat()*100 / step.count)
     }
 
     private fun onLoginProgress(callback: Callback) {
-        when(callback.status) {
+        when (callback.status) {
             Status.STARTED -> Timber.d("Status: Started")
             Status.LOADING -> Timber.d("Status: Loading")
             Status.INVALID_LOGIN -> snackAndBack(getString(R.string.error_invalid_credentials))

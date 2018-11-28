@@ -36,7 +36,7 @@ import com.google.gson.reflect.TypeToken
 import java.io.IOException
 import java.util.concurrent.Executor
 
-class SemesterOperation(executor: Executor?, private val userId: Long): Operation<SemesterCallback>(executor) {
+class SemesterOperation(executor: Executor?, private val userId: Long) : Operation<SemesterCallback>(executor) {
     init {
         this.perform()
     }
@@ -58,7 +58,7 @@ class SemesterOperation(executor: Executor?, private val userId: Long): Operatio
     }
 
     private fun successMeasures(body: String) {
-        val type = object: TypeToken<Dumb<MutableList<SSemester>>>(){}.type
+        val type = object : TypeToken<Dumb<MutableList<SSemester>>>() {}.type
         val dSemesters = gson.fromJson<Dumb<MutableList<SSemester>>>(body, type)
         val semesters = dSemesters.items
         semesters.forEach {

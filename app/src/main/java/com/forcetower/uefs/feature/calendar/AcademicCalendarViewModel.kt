@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 class AcademicCalendarViewModel @Inject constructor(
     private val repository: AcademicCalendarRepository
-): ViewModel() {
+) : ViewModel() {
 
     val calendar: LiveData<List<CalendarItem>> by lazy { repository.getAcademicCalendar() }
 }

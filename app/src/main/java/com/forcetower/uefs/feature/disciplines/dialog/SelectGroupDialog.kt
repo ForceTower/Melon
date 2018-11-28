@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class SelectGroupDialog: RoundedDialog(), Injectable {
+class SelectGroupDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel

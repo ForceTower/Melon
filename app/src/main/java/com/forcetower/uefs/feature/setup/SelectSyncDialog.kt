@@ -38,7 +38,7 @@ import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import javax.inject.Inject
 
-class SelectSyncDialog: RoundedDialog(), Injectable {
+class SelectSyncDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -49,8 +49,8 @@ class SelectSyncDialog: RoundedDialog(), Injectable {
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DialogSelectSynchronizationBinding.inflate(inflater, container, false).also {
             binding = it
-            it.btnCancel.setOnClickListener {_ -> dismiss()}
-            it.btnOk.setOnClickListener {_ -> select() }
+            it.btnCancel.setOnClickListener { _ -> dismiss() }
+            it.btnOk.setOnClickListener { _ -> select() }
         }.root
     }
 
@@ -89,7 +89,7 @@ class SelectSyncDialog: RoundedDialog(), Injectable {
     }
 }
 
-data class Frequency (
+data class Frequency(
     val name: String,
     val value: Int
 )

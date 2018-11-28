@@ -53,7 +53,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 
-class DisciplineFragment: UFragment(), Injectable {
+class DisciplineFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -95,7 +95,7 @@ class DisciplineFragment: UFragment(), Injectable {
         viewModel.navigateToDisciplineAction.observe(this, EventObserver {
             handleNavigateToDisciplineDetails(it)
         })
-        
+
         viewModel.navigateToGroupAction.observe(this, EventObserver {
             startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.uid))
         })
@@ -116,7 +116,7 @@ class DisciplineFragment: UFragment(), Injectable {
         dialog.show(childFragmentManager, "select_discipline_group")
     }
 
-    private inner class SemesterAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         private val semesters: MutableList<Semester> = ArrayList()
 
         fun submitList(list: List<Semester>) {

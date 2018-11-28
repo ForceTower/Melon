@@ -35,7 +35,7 @@ import javax.inject.Inject
 
 class RemindersViewModel @Inject constructor(
     private val repository: RemindersRepository
-): ViewModel(), ReminderActions {
+) : ViewModel(), ReminderActions {
     val reminders by lazy { repository.getReminders() }
     var currentDeadline: Long? = null
 

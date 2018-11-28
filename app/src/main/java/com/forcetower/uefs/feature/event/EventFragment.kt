@@ -40,7 +40,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
-class EventFragment: UFragment(), Injectable {
+class EventFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 

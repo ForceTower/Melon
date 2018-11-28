@@ -97,7 +97,7 @@ object SagresGradesParser {
             for (element in elements) {
                 try {
                     val uefsId = element.attr("value").toLong()
-                    val name   = element.text().trim()
+                    val name = element.text().trim()
                     courses.add(SCourseVariant(uefsId, name))
                     Timber.d("Added variant id: $uefsId with name: $name")
                 } catch (e: Exception) {}
@@ -121,7 +121,7 @@ object SagresGradesParser {
     fun extractGrades(document: Document, semesterId: Long): List<SGrade> {
         val grades: MutableList<SGrade> = ArrayList()
         val bulletin = document.selectFirst("div[id=\"divBoletins\"]")
-        val classes  = bulletin.select("div[class=\"boletim-container\"]")
+        val classes = bulletin.select("div[class=\"boletim-container\"]")
 
         for (clazz in classes) {
             try {
@@ -133,7 +133,7 @@ object SagresGradesParser {
 
                 val gradeInfo = clazz.selectFirst("div[class=\"boletim-notas\"]")
                 val table = gradeInfo.selectFirst("table")
-                val body  = table.selectFirst("tbody")
+                val body = table.selectFirst("tbody")
 
                 if (body != null) {
                     val trs = body.select("tr")
