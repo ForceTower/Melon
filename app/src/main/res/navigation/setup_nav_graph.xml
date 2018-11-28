@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_configuration_to_home"
             app:destination="@id/home" />
+        <action
+            android:id="@+id/action_configuration_to_special"
+            app:destination="@id/sync_special" />
     </fragment>
 
     <activity
@@ -57,4 +60,14 @@
         android:name="com.forcetower.uefs.feature.home.HomeActivity"
         android:label="HomeActivity"
         tools:layout="@layout/activity_home"/>
+    
+    <fragment
+        android:id="@+id/sync_special"
+        android:name="com.forcetower.uefs.feature.setup.SyncSpecialFragment"
+        android:label="SyncSpecialFragment"
+        tools:layout="@layout/fragment_setup_special_config">
+        <action
+            android:id="@+id/action_special_to_home"
+            app:destination="@id/home" />
+    </fragment>
 </navigation>
