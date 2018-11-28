@@ -378,6 +378,14 @@
     <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da UEFS e na rede UEFS_VISITANTES</string>
     <string name="settings_proxy_invalid">O proxy especificado é inválido. O proxy deve seguir o padrão IP:porta</string>
     <string name="settings_proxy_changed">O proxy foi modificado, feche o aplicativo para a configuração ser aplicada</string>
+    <string name="label_app_special_config">Configurações Especiais</string>
+    <string name="setup_special_config_information">A marca do seu smartphone pode precisar de permissões especiais para que o UNES consiga te notificar corretamente</string>
+    <string name="unes_required_permissions_label">Em algumas marcas a inicialização automática em segundo plano é bloqueada</string>
+    <string name="auto_start_info">O UNES precisa de permissões especiais para executar corretamente no seu smartphone</string>
+    <string name="auto_start_path"><![CDATA[[Configurações > Aplicativos Instalados > Permissões > Iniciar automaticamente > Permita o UNES]]]></string>
+    <string name="open_configuration">Abrir Configurações</string>
+    <string name="setup_continue">Continuar</string>
+    <string name="open_settings_failed">Falhou ao abrir configurações</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
