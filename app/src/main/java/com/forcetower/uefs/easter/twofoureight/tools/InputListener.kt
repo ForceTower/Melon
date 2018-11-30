@@ -79,8 +79,8 @@ class InputListener : View.OnTouchListener {
                 y = event.y
                 if (mGame!!.isGameOnGoing) {
                     val dx = x - previousX
-                    if (Math.abs(lastdx + dx) < Math.abs(lastdx) + Math.abs(dx) && Math.abs(dx) > RESET_STARTING
-                        && Math.abs(x - startingX) > SWIPE_MIN_DISTANCE
+                    if (Math.abs(lastdx + dx) < Math.abs(lastdx) + Math.abs(dx) && Math.abs(dx) > RESET_STARTING &&
+                        Math.abs(x - startingX) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x
                         startingY = y
@@ -91,8 +91,8 @@ class InputListener : View.OnTouchListener {
                         lastdx = dx
                     }
                     val dy = y - previousY
-                    if (Math.abs(lastdy + dy) < Math.abs(lastdy) + Math.abs(dy) && Math.abs(dy) > RESET_STARTING
-                        && Math.abs(y - startingY) > SWIPE_MIN_DISTANCE
+                    if (Math.abs(lastdy + dy) < Math.abs(lastdy) + Math.abs(dy) && Math.abs(dy) > RESET_STARTING &&
+                        Math.abs(y - startingY) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x
                         startingY = y
@@ -104,7 +104,7 @@ class InputListener : View.OnTouchListener {
                     }
                     if (pathMoved() > SWIPE_MIN_DISTANCE * SWIPE_MIN_DISTANCE && !hasMoved) {
                         var moved = false
-                        //Vertical
+                        // Vertical
                         if ((dy >= SWIPE_THRESHOLD_VELOCITY && Math.abs(dy) >= Math.abs(dx) || y - startingY >= MOVE_THRESHOLD) && previousDirection % 2 != 0) {
                             moved = true
                             previousDirection *= 2
@@ -116,7 +116,7 @@ class InputListener : View.OnTouchListener {
                             veryLastDirection = 3
                             mGame!!.move(0)
                         }
-                        //Horizontal
+                        // Horizontal
                         if ((dx >= SWIPE_THRESHOLD_VELOCITY && Math.abs(dx) >= Math.abs(dy) || x - startingX >= MOVE_THRESHOLD) && previousDirection % 5 != 0) {
                             moved = true
                             previousDirection *= 5

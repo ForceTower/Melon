@@ -5,6 +5,10 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'io.fabric'
 
+configurations {
+    ktlint
+}
+
 android {
     compileSdkVersion sdkVersions.compile
     defaultConfig {
@@ -75,6 +79,9 @@ android {
         targetCompatibility 1.8
         sourceCompatibility 1.8
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 afterEvaluate {
@@ -92,6 +99,7 @@ dependencies {
     //Kotlin Dependencies
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.core:core-ktx:$ktx"
+    ktlint 'com.github.shyiko:ktlint:0.29.0'
 
     //Android Component
     implementation "androidx.appcompat:appcompat:$appcompat"
@@ -168,7 +176,7 @@ dependencies {
     implementation 'com.github.PhilJay:MPAndroidChart:v3.0.3'
 
     //Debug Use
-    implementation "com.jakewharton.timber:timber:4.7.0"
+    implementation "com.jakewharton.timber:timber:$timber"
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.8.0'
@@ -185,8 +193,22 @@ dependencies {
 
     //Helper Projects
     implementation project(path: ':sagres')
-    implementation project(':bypass')
+    implementation project(path: ':bypass')
     implementation project(path: ':cropper')
+}
+
+task ktlint(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "src/**/*.kt"
+}
+
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    args "-F", "src/**/*.kt"
 }
 
 apply from: "../artifacts.gradle"

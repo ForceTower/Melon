@@ -43,7 +43,7 @@ import timber.log.Timber
 class DemandOffersAdapter(
     val lifecycleOwner: LifecycleOwner,
     val viewModel: DemandViewModel
-): RecyclerView.Adapter<DemandHolder>() {
+) : RecyclerView.Adapter<DemandHolder>() {
     private val differ = AsyncListDiffer<Any>(this, DiffCallback)
 
     var currentList: List<SDemandOffer> = listOf()
@@ -70,7 +70,7 @@ class DemandOffersAdapter(
             }
             is DemandHolder.HeaderHolder -> {
                 val ctx = holder.itemView.context
-                val string = when(differ.currentList[position]) {
+                val string = when (differ.currentList[position]) {
                     is AvailableHeader -> ctx.getString(R.string.demand_status_available)
                     is CurrentHeader -> ctx.getString(R.string.demand_status_current)
                     is CompletedHeader -> ctx.getString(R.string.demand_status_completed)
@@ -97,7 +97,7 @@ class DemandOffersAdapter(
 
         val bugged = copy.filter { !it.selectable }
         copy -= bugged
-        
+
         Timber.d("Bugged size: ${bugged.size}")
 
         val current = copy.filter { it.current }
@@ -143,12 +143,12 @@ class DemandOffersAdapter(
     override fun getItemCount() = differ.currentList.size
 }
 
-sealed class DemandHolder(itemView: View): RecyclerView.ViewHolder(itemView) {
-    class HeaderHolder(val binding: ItemDemandHeaderBinding): DemandHolder(binding.root)
-    class OfferHolder(val binding: ItemCardDemandOfferBinding): DemandHolder(binding.root)
+sealed class DemandHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    class HeaderHolder(val binding: ItemDemandHeaderBinding) : DemandHolder(binding.root)
+    class OfferHolder(val binding: ItemCardDemandOfferBinding) : DemandHolder(binding.root)
 }
 
-private object DiffCallback: DiffUtil.ItemCallback<Any>() {
+private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem === AvailableHeader && newItem === AvailableHeader -> true

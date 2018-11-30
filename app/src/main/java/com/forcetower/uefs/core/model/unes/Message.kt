@@ -82,6 +82,6 @@ fun Message.notify(context: Context) {
 }
 
 fun List<SMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
-    val values = this?.map { Message.fromMessage(it, notified) }?: emptyList()
+    val values = this?.map { Message.fromMessage(it, notified) } ?: emptyList()
     database.messageDao().insertIgnoring(values)
 }

@@ -41,11 +41,11 @@ fun Context.isNavBarOnBottom(): Boolean {
 
 fun Context.openURL(url: String) {
     var fixed = url
-    if (!url.startsWith("http://")
-        && !url.startsWith("HTTP://")
-        && !url.startsWith("HTTPS://")
-        && !url.startsWith("https://")
-        && !url.contains("//")
+    if (!url.startsWith("http://") &&
+        !url.startsWith("HTTP://") &&
+        !url.startsWith("HTTPS://") &&
+        !url.startsWith("https://") &&
+        !url.contains("//")
     ) {
         fixed = "http://$url"
     }

@@ -42,7 +42,7 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val loginSagresRepository: LoginSagresRepository,
     private val dataRepository: SagresDataRepository
-): ViewModel() {
+) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
@@ -51,14 +51,13 @@ class HomeViewModel @Inject constructor(
     val openProfileCase: LiveData<Event<String>>
         get() = _openProfileCase
 
-
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
 
     fun logout() = dataRepository.logout()
 
-    //TODO Make this more personalized and extract to a different view model
+    // TODO Make this more personalized and extract to a different view model
     fun showSnack(message: String) {
         _snackbar.value = Event(message)
     }

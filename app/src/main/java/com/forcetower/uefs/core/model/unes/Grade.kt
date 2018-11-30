@@ -44,7 +44,7 @@ import java.util.UUID
  * 4 -> Grade changed
  */
 @Entity(foreignKeys = [
-    ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["class_id"]),
     Index(value = ["name", "class_id"], unique = true),
@@ -62,13 +62,13 @@ data class Grade(
     val uuid: String = UUID.randomUUID().toString()
 ) {
     fun hasGrade(): Boolean {
-        return (!grade.trim().isEmpty()
-                && !grade.trim().equals("Não Divulgada", ignoreCase = true)
-                && !grade.trim().equals("-", ignoreCase = true)
-                && !grade.trim().equals("--", ignoreCase = true)
-                && !grade.trim().equals("*", ignoreCase = true)
-                && !grade.trim().equals("**", ignoreCase = true)
-                && !grade.trim().equals("-1", ignoreCase = true))
+        return (!grade.trim().isEmpty() &&
+                !grade.trim().equals("Não Divulgada", ignoreCase = true) &&
+                !grade.trim().equals("-", ignoreCase = true) &&
+                !grade.trim().equals("--", ignoreCase = true) &&
+                !grade.trim().equals("*", ignoreCase = true) &&
+                !grade.trim().equals("**", ignoreCase = true) &&
+                !grade.trim().equals("-1", ignoreCase = true))
     }
 
     override fun toString(): String = "${name}_${grade}_${date}_$notified"

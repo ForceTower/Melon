@@ -191,7 +191,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
     }
 
     private fun load() {
-        //Stopping all animations
+        // Stopping all animations
         binding.gameview.cancelAnimations()
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         for (xx in 0 until mGame.gameGrid!!.grid.size) {
@@ -296,7 +296,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
                         Timber.i("Vertical Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE)
                         return false // We don't consume the event
                     }
-                }// swipe vertical?
+                } // swipe vertical?
 
                 return true
             }

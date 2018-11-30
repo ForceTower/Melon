@@ -44,7 +44,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
-class ScheduleFragment: UFragment(), Injectable {
+class ScheduleFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 

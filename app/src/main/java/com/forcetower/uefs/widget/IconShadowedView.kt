@@ -41,7 +41,7 @@ class IconShadowedView @JvmOverloads constructor(
     attrs: AttributeSet,
     @AttrRes defStyleAttr: Int = R.attr.iconViewStyle,
     @StyleRes defStyleRes: Int = R.style.Widget_ShadowedIcon_IconView
-): View(context, attrs, defStyleAttr, defStyleRes) {
+) : View(context, attrs, defStyleAttr, defStyleRes) {
 
     var icon: Drawable? = null
         set(value) {
@@ -93,7 +93,6 @@ class IconShadowedView @JvmOverloads constructor(
         padding = bigBlurRadius.toInt()
         smallBlurRadius = a.getFloat(R.styleable.IconShadowedView_smallBlurRadius, smallBlurRadius)
             .coerceIn(0f, 25f)
-
 
         icon = a.getDrawable(R.styleable.IconShadowedView_drawable)
         if (icon != null) {

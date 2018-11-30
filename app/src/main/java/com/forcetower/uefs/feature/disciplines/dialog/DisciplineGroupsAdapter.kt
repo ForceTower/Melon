@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class DisciplineGroupsAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val listener: DisciplineActions
-): ListAdapter<ClassGroup, GroupHolder>(GroupDiff) {
+) : ListAdapter<ClassGroup, GroupHolder>(GroupDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = GroupHolder(
         parent.inflate(R.layout.item_select_discipline_group)
     )
@@ -56,9 +56,9 @@ class DisciplineGroupsAdapter(
     }
 }
 
-class GroupHolder(val binding: ItemSelectDisciplineGroupBinding): RecyclerView.ViewHolder(binding.root)
+class GroupHolder(val binding: ItemSelectDisciplineGroupBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object GroupDiff: DiffUtil.ItemCallback<ClassGroup>() {
+private object GroupDiff : DiffUtil.ItemCallback<ClassGroup>() {
     override fun areItemsTheSame(oldItem: ClassGroup, newItem: ClassGroup) = oldItem.uid == newItem.uid
     override fun areContentsTheSame(oldItem: ClassGroup, newItem: ClassGroup) = oldItem == newItem
 }

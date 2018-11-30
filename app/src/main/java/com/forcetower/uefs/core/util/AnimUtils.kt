@@ -39,7 +39,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
 import android.view.animation.LinearInterpolator
 
-
 object AnimUtils {
     private var fastOutSlowIn: Interpolator? = null
     private var fastOutLinearIn: Interpolator? = null
@@ -178,7 +177,7 @@ object AnimUtils {
     class NoPauseAnimator(private val mAnimator: Animator) : Animator() {
         private val mListeners = ArrayMap<AnimatorListener, AnimatorListener>()
 
-        override fun getDuration(): Long= mAnimator.duration
+        override fun getDuration(): Long = mAnimator.duration
 
         override fun getInterpolator(): TimeInterpolator = mAnimator.interpolator
 
@@ -269,5 +268,4 @@ object AnimUtils {
             mListener.onAnimationRepeat(mAnimator)
         }
     }
-
 }

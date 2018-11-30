@@ -106,7 +106,7 @@ private constructor(context: Context) : SagresNavigator() {
 
     private fun createProxyClient(context: Context, parentClient: OkHttpClient): OkHttpClient {
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        proxyConfigured = preferences.getBoolean("stg_sync_auto_proxy", true) //TODO Activated for testing
+        proxyConfigured = preferences.getBoolean("stg_sync_auto_proxy", true) // TODO Activated for testing
         val proxy = preferences.getString("stg_sync_proxy", "10.65.16.2:3128")!!
         val splits = proxy.split(":")
 
@@ -115,7 +115,7 @@ private constructor(context: Context) : SagresNavigator() {
 
         if (splits.size == 2) {
             ip = splits[0]
-            gate = splits[1].toIntOrNull()?: 3128
+            gate = splits[1].toIntOrNull() ?: 3128
         }
 
         return parentClient.newBuilder()

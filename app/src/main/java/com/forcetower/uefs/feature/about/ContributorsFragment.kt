@@ -43,9 +43,9 @@ import com.forcetower.uefs.databinding.FragmentAboutContributorsBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 
-class ContributorsFragment: UFragment(), Injectable {
+class ContributorsFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentAboutContributorsBinding
-    private val adapter: ContributorAdapter by lazy { ContributorAdapter(listener = object: ContributorActions {
+    private val adapter: ContributorAdapter by lazy { ContributorAdapter(listener = object : ContributorActions {
         override fun onContributorClick(contributor: Contributor, position: Int) {
             if (contributor.link.isNotBlank()) {
                 CustomTabActivityHelper.openCustomTab(

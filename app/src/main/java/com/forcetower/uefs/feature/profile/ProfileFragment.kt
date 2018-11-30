@@ -54,7 +54,7 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import timber.log.Timber
 import javax.inject.Inject
 
-class ProfileFragment: UFragment(), Injectable {
+class ProfileFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -135,7 +135,6 @@ class ProfileFragment: UFragment(), Injectable {
                         .setActivityTitle(getString(R.string.cut_profile_image))
                         .setGuidelines(CropImageView.Guidelines.OFF)
                         .start(requireContext(), this)
-
                 }
             }
             CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {

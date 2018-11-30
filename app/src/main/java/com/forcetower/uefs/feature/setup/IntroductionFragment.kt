@@ -54,7 +54,7 @@ import com.theartofdev.edmodo.cropper.CropImageView
 import timber.log.Timber
 import javax.inject.Inject
 
-class IntroductionFragment: UFragment(), Injectable {
+class IntroductionFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -75,7 +75,7 @@ class IntroductionFragment: UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.textSelectCourseInternal.setOnClickListener {
             val dialog = SelectCourseDialog()
-            dialog.setCallback(object: CourseSelectionCallback {
+            dialog.setCallback(object : CourseSelectionCallback {
                 override fun onSelected(course: Course) {
                     viewModel.setSelectedCourse(course)
                     binding.textSelectCourseInternal.setText(course.name)
@@ -157,7 +157,6 @@ class IntroductionFragment: UFragment(), Injectable {
                             .setActivityTitle(getString(R.string.cut_profile_image))
                             .setGuidelines(CropImageView.Guidelines.OFF)
                             .start(requireContext(), this)
-
                 }
             }
             CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {

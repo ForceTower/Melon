@@ -46,12 +46,12 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executor
 
-class DisciplineDetailsOperation (
+class DisciplineDetailsOperation(
     private val semester: String?,
     private val code: String?,
     private val group: String?,
     executor: Executor?
-): Operation<DisciplineDetailsCallback>(executor) {
+) : Operation<DisciplineDetailsCallback>(executor) {
 
     init {
         this.perform()
@@ -68,8 +68,8 @@ class DisciplineDetailsOperation (
     }
 
     private fun executeSteps(access: SAccess) {
-        login(access)?: return
-        val initial = initialPage()?: return
+        login(access) ?: return
+        val initial = initialPage() ?: return
         val forms = SagresDisciplineDetailsFetcherParser.extractFormBodies(initial.document!!, semester, code, group)
         val groups = mutableListOf<SDisciplineGroup>()
         for (form in forms) {

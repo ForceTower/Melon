@@ -36,7 +36,7 @@ import javax.inject.Inject
 
 class LaunchViewModel @Inject constructor(
     database: UDatabase
-): ViewModel() {
+) : ViewModel() {
     var started = false
     private val accessSrc = database.accessDao().getAccess()
 
@@ -51,7 +51,7 @@ class LaunchViewModel @Inject constructor(
 
 enum class Destination { LOGIN_ACTIVITY, HOME_ACTIVITY }
 
-//--------------------------------------------------------------------------
+// --------------------------------------------------------------------------
 open class Event<out T>(private val content: T) {
     var hasBeenHandled = false
         private set
@@ -67,7 +67,7 @@ open class Event<out T>(private val content: T) {
 
     fun peek(): T = content
 }
-class EventObserver<T>(private val onEventUnhandled: (T) -> Unit): Observer<Event<T>> {
+class EventObserver<T>(private val onEventUnhandled: (T) -> Unit) : Observer<Event<T>> {
     override fun onChanged(event: Event<T>?) {
         event?.getIfNotHandled()?.let { value ->
             onEventUnhandled(value)

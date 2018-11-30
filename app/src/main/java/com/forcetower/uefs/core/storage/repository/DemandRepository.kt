@@ -101,7 +101,7 @@ class DemandRepository @Inject constructor(
         val callback = SagresNavigator.instance.createDemandOffer(list)
 
         val title = context.getString(R.string.demand_notification_title)
-        //TODO this must be a string resource
+        // TODO this must be a string resource
         val content = when (callback.status) {
             Status.STARTED -> "Começou a requisição e nem terminou"
             Status.LOADING -> "Começou a carregar a requisição e não terminou"

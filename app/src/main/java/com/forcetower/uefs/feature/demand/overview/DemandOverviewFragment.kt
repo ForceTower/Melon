@@ -35,7 +35,6 @@ import android.widget.Toast
 import androidx.core.view.doOnLayout
 import androidx.databinding.ObservableFloat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -46,11 +45,9 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.forcetower.uefs.widget.BottomSheetBehavior
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_COLLAPSED
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_EXPANDED
-import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_HIDDEN
-import timber.log.Timber
 import javax.inject.Inject
 
-class DemandOverviewFragment: UFragment(), Injectable {
+class DemandOverviewFragment : UFragment(), Injectable {
     companion object {
         private const val ALPHA_CHANGEOVER = 0.33f
         private const val ALPHA_DESC_MAX = 0f

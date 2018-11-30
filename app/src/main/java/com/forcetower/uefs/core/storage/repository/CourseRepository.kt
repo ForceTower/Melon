@@ -40,8 +40,8 @@ class CourseRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     private val service: UService
-){
-    fun getCourses() = object: NetworkBoundResource<List<Course>, List<Course>>(executors) {
+) {
+    fun getCourses() = object : NetworkBoundResource<List<Course>, List<Course>>(executors) {
         override fun loadFromDb() = database.courseDao().selectAll()
         override fun shouldFetch(it: List<Course>?) = true
         override fun createCall() = service.getCourses()

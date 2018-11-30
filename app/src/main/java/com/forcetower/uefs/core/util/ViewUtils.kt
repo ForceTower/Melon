@@ -33,13 +33,15 @@ import android.util.TypedValue
 
 object ViewUtils {
     @JvmStatic
-    fun getSingleLineTextSize(text: String,
-                              paint: TextPaint,
-                              targetWidth: Float,
-                              low: Float,
-                              high: Float,
-                              precision: Float,
-                              metrics: DisplayMetrics): Float {
+    fun getSingleLineTextSize(
+        text: String,
+        paint: TextPaint,
+        targetWidth: Float,
+        low: Float,
+        high: Float,
+        precision: Float,
+        metrics: DisplayMetrics
+    ): Float {
         val mid = (low + high) / 2.0f
 
         paint.textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_PX, mid, metrics)

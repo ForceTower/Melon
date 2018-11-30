@@ -53,7 +53,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 
-class DisciplineFragment: UFragment(), Injectable {
+class DisciplineFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -95,16 +95,16 @@ class DisciplineFragment: UFragment(), Injectable {
         viewModel.navigateToDisciplineAction.observe(this, EventObserver {
             handleNavigateToDisciplineDetails(it)
         })
-        
+
         viewModel.navigateToGroupAction.observe(this, EventObserver {
-            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.uid))
+            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
         })
     }
 
     private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
         when {
             it.groups.isEmpty() -> homeViewModel.showSnack(getString(R.string.no_class_groups))
-            it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.groups[0].group.uid))
+            it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.clazz.uid, it.groups[0].uid))
             else -> showGroupDialog(it)
         }
     }
@@ -116,7 +116,7 @@ class DisciplineFragment: UFragment(), Injectable {
         dialog.show(childFragmentManager, "select_discipline_group")
     }
 
-    private inner class SemesterAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         private val semesters: MutableList<Semester> = ArrayList()
 
         fun submitList(list: List<Semester>) {

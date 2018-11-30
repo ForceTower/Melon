@@ -66,7 +66,6 @@ fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
 
 fun Parcel.readBoolean() = readInt() != 0
 
-
 @RequiresApi(Build.VERSION_CODES.N_MR1)
 fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: String): ShortcutInfo {
     return ShortcutInfo.Builder(ctx, id)

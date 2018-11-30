@@ -60,11 +60,11 @@ abstract class ClassLocationDao {
         if (locations.isEmpty()) return
 
         val semester = selectCurrentSemesterDirect()
-        val profile  = getMeProfile()
+        val profile = getMeProfile()
         wipeScheduleProfile(profile.uid)
 
         locations.forEach {
-            val groups = selectGroups(semester.uid, it.classCode, profile.uid)
+            val groups = selectGroups(semester.uid, it.classCode)
             if (groups.isNotEmpty()) {
                 if (groups.size == 1) {
                     val group = groups[0]
@@ -80,7 +80,6 @@ abstract class ClassLocationDao {
                 }
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
-
             }
         }
     }
@@ -104,8 +103,8 @@ abstract class ClassLocationDao {
     @Update(onConflict = REPLACE)
     protected abstract fun update(group: ClassGroup)
 
-    @Query("SELECT g.* FROM ClassGroup g, ClassStudent cs, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode AND cs.group_id = g.uid AND cs.profile_id = :profileId")
-    protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String, profileId: Long): List<ClassGroup>
+    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
+    protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String): List<ClassGroup>
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
@@ -113,7 +112,7 @@ abstract class ClassLocationDao {
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC LIMIT 1")
     protected abstract fun selectCurrentSemesterDirect(): Semester
 
-    //TODO Find a better way to wipe current locations
+    // TODO Find a better way to wipe current locations
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
     protected abstract fun wipeScheduleProfile(profileId: Long)
 }

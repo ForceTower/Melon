@@ -55,7 +55,6 @@ abstract class NetworkBoundResource<ResultType, RequestType>
                 }
             }
         }
-
     }
 
     private fun fetchFromNetwork(dbSource: LiveData<ResultType>) {

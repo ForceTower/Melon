@@ -40,13 +40,16 @@ Então você quer contribuir com o UNES? Que demais! O UNES GitHub Pull Requests
 
 A partir de agora vamos demorar um tempo (ou não):
 * [Instale o Android Studio](https://developer.android.com/studio/) e configure os passos iniciais (se você ainda não instalou ainda)
-* [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork)
+* [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
+* [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
 * [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
 * [Espere muito tempo](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
 * [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
 * [Crie um projeto no Firebase](https://console.firebase.google.com/) e substitua o google-services.json padrão pelo o do seu projeto do firebase, ele está localizado na pasta app [Este passo é opcional, mas algumas funções não irão funcionar nos seus testes se você não configurar]
 
 Isso deve ser tudo, nem parece que demoramos 7 horas para fazer o projeto rodar.
+
+Uma coisa importante, o projeto utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código Kotlin, essa ferramenta irá manter tudo organizadinho =D
 
 ## Contribuindo com documentação
 Documentação é importante para que entendamos o que estamos fazendo, o que fizemos e porque fizemos certas escolhas.
@@ -77,6 +80,7 @@ Para contribuir com código:
 * Faça as mudanças realizadas, tentando manter a identação utilizada ao redor do código
 * Inclua comentários sobre o que foi feito na mudança
 * Escreva mensagens de commits claras e concisas.
+* O UNES utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código do projeto, se você mandar o PR com o código fora do estilo, o CircleCI irá acusar um erro. Você pode verificar se o seu código está de acordo com o estilo executando o comando: `gradlew ktlint` e também pode corrigir automáticamente os erros de estilo com o comando: `gradlew ktlintFormat`.
 
 Quando você enviar:
 * O PR somente será analisado se passar por todas as verificações (CircleCI)

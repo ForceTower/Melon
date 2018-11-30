@@ -45,18 +45,18 @@ fun messageContent(tv: TextView, content: String) {
 
 @BindingAdapter("disciplineText")
 fun disciplineText(tv: TextView, message: Message?) {
-    message?: return
+    message ?: return
     var discipline = message.discipline
     if (discipline == null && message.senderProfile == 3) discipline = "Secretaria Acadêmica"
 
-    val text = discipline?: message.senderName
+    val text = discipline ?: message.senderName
     val title = WordUtils.toTitleCase(text)
     tv.text = title
 }
 
 @BindingAdapter("senderName")
 fun senderText(tv: TextView, message: Message?) {
-    message?: return
+    message ?: return
     var discipline = message.discipline
     if (discipline == null && message.senderProfile == 3) discipline = "Secretaria Acadêmica"
 
@@ -66,6 +66,6 @@ fun senderText(tv: TextView, message: Message?) {
         tv.visibility = VISIBLE
         val text = message.senderName
         val title = WordUtils.toTitleCase(text)
-        tv.text = title?: "::prov_renatinha::"
+        tv.text = title ?: "::prov_renatinha::"
     }
 }

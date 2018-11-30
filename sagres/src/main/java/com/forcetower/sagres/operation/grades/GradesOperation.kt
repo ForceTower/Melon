@@ -40,7 +40,7 @@ import timber.log.Timber
 import java.io.IOException
 import java.util.concurrent.Executor
 
-class GradesOperation(private val semester: Long?, private val document: Document?, executor: Executor?): Operation<GradesCallback>(executor) {
+class GradesOperation(private val semester: Long?, private val document: Document?, executor: Executor?) : Operation<GradesCallback>(executor) {
     init {
         this.perform()
     }
@@ -63,7 +63,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
 
     private fun processResults(body: String) {
         val document = Utils.createDocument(body)
-        val codes    = SagresGradesParser.extractSemesterCodes(document)
+        val codes = SagresGradesParser.extractSemesterCodes(document)
         val selected = SagresGradesParser.getSelectedSemester(document)
 
         if (selected != null) {
@@ -72,7 +72,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
                 val frequency = SagresMissedClassesParser.extractMissedClasses(document, selected.second)
                 successMeasures(document, codes, grades, frequency)
             } else {
-                //val variants = SagresGradesParser.extractCourseVariants(document)
+                // val variants = SagresGradesParser.extractCourseVariants(document)
                 Timber.d("Trying alternate page on this bad boy")
             }
         } else {
@@ -81,8 +81,12 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         }
     }
 
-    private fun successMeasures(document: Document, codes: List<Pair<Long, String>>, grades: List<SGrade>,
-                                frequency: Pair<Boolean, List<SDisciplineMissedClass>>) {
+    private fun successMeasures(
+        document: Document,
+        codes: List<Pair<Long, String>>,
+        grades: List<SGrade>,
+        frequency: Pair<Boolean, List<SDisciplineMissedClass>>
+    ) {
         publishProgress(GradesCallback(Status.SUCCESS).document(document)
                 .grades(grades)
                 .frequency(if (frequency.first) null else frequency.second)

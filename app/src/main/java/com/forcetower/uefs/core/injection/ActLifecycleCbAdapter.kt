@@ -31,7 +31,7 @@ import android.app.Activity
 import android.app.Application
 import android.os.Bundle
 
-abstract class ActLifecycleCbAdapter: Application.ActivityLifecycleCallbacks {
+abstract class ActLifecycleCbAdapter : Application.ActivityLifecycleCallbacks {
     override fun onActivityPaused(activity: Activity?) {}
     override fun onActivityResumed(activity: Activity?) {}
     override fun onActivityStarted(activity: Activity?) {}

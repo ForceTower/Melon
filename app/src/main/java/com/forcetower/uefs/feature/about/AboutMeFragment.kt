@@ -45,7 +45,7 @@ import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
-class AboutMeFragment: UFragment(), Injectable {
+class AboutMeFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentAboutMeBinding
     private val markdown: Bypass by lazy { Bypass(requireContext(), Bypass.Options()) }
 

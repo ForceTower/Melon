@@ -39,7 +39,7 @@ import android.view.animation.DecelerateInterpolator
 import com.forcetower.uefs.R
 import kotlin.math.min
 
-class CircleProgressBar(ctx: Context, private val attrs: AttributeSet): View(ctx, attrs) {
+class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ctx, attrs) {
     private var foregroundStrokeWidth = 4f
     private var backgroundStrokeWidth = 4f
     private var progress = 0f
@@ -97,8 +97,8 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet): View(ctx
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val height = getDefaultSize(suggestedMinimumHeight, heightMeasureSpec)
-        val width  = getDefaultSize(suggestedMinimumWidth,  widthMeasureSpec)
-        val min    = min(height, width)
+        val width = getDefaultSize(suggestedMinimumWidth, widthMeasureSpec)
+        val min = min(height, width)
 
         setMeasuredDimension(min, min)
         val fl = foregroundStrokeWidth / 2
@@ -111,7 +111,6 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet): View(ctx
         canvas.drawOval(rectF!!, backgroundPaint!!)
         val angle = 360 * progress / max
         canvas.drawArc(rectF!!, startAngle.toFloat(), angle, false, foregroundPaint!!)
-
     }
 
     fun setProgress(progress: Float) {

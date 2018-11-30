@@ -54,7 +54,6 @@ import com.forcetower.uefs.feature.shared.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
-
 class LoadingFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory

@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 4,
-    "identityHash": "e0642c20b3954d8fbd4b57180bb918a6",
+    "identityHash": "36896f11232b7faf00ac544c12a5ac45",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -457,7 +457,7 @@
       },
       {
         "tableName": "Class",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `discipline_id` INTEGER NOT NULL, `semester_id` INTEGER NOT NULL, `status` TEXT, `uuid` TEXT NOT NULL, `missedClasses` INTEGER NOT NULL, `lastClass` TEXT NOT NULL, `nextClass` TEXT NOT NULL, FOREIGN KEY(`discipline_id`) REFERENCES `Discipline`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`semester_id`) REFERENCES `Semester`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `discipline_id` INTEGER NOT NULL, `semester_id` INTEGER NOT NULL, `status` TEXT, `final_score` REAL, `uuid` TEXT NOT NULL, `missedClasses` INTEGER NOT NULL, `lastClass` TEXT NOT NULL, `nextClass` TEXT NOT NULL, FOREIGN KEY(`discipline_id`) REFERENCES `Discipline`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`semester_id`) REFERENCES `Semester`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -481,6 +481,12 @@
             "fieldPath": "status",
             "columnName": "status",
             "affinity": "TEXT",
+            "notNull": false
+          },
+          {
+            "fieldPath": "finalScore",
+            "columnName": "final_score",
+            "affinity": "REAL",
             "notNull": false
           },
           {
@@ -684,101 +690,8 @@
         ]
       },
       {
-        "tableName": "ClassStudent",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `profile_id` INTEGER NOT NULL, `group_id` INTEGER NOT NULL, `final_score` REAL, `uuid` TEXT NOT NULL, FOREIGN KEY(`group_id`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
-        "fields": [
-          {
-            "fieldPath": "uid",
-            "columnName": "uid",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "profileId",
-            "columnName": "profile_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "groupId",
-            "columnName": "group_id",
-            "affinity": "INTEGER",
-            "notNull": true
-          },
-          {
-            "fieldPath": "finalScore",
-            "columnName": "final_score",
-            "affinity": "REAL",
-            "notNull": false
-          },
-          {
-            "fieldPath": "uuid",
-            "columnName": "uuid",
-            "affinity": "TEXT",
-            "notNull": true
-          }
-        ],
-        "primaryKey": {
-          "columnNames": [
-            "uid"
-          ],
-          "autoGenerate": true
-        },
-        "indices": [
-          {
-            "name": "index_ClassStudent_group_id",
-            "unique": false,
-            "columnNames": [
-              "group_id"
-            ],
-            "createSql": "CREATE  INDEX `index_ClassStudent_group_id` ON `${TABLE_NAME}` (`group_id`)"
-          },
-          {
-            "name": "index_ClassStudent_profile_id_group_id",
-            "unique": true,
-            "columnNames": [
-              "profile_id",
-              "group_id"
-            ],
-            "createSql": "CREATE UNIQUE INDEX `index_ClassStudent_profile_id_group_id` ON `${TABLE_NAME}` (`profile_id`, `group_id`)"
-          },
-          {
-            "name": "index_ClassStudent_uuid",
-            "unique": true,
-            "columnNames": [
-              "uuid"
-            ],
-            "createSql": "CREATE UNIQUE INDEX `index_ClassStudent_uuid` ON `${TABLE_NAME}` (`uuid`)"
-          }
-        ],
-        "foreignKeys": [
-          {
-            "table": "ClassGroup",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "group_id"
-            ],
-            "referencedColumns": [
-              "uid"
-            ]
-          },
-          {
-            "table": "Profile",
-            "onDelete": "CASCADE",
-            "onUpdate": "CASCADE",
-            "columns": [
-              "profile_id"
-            ],
-            "referencedColumns": [
-              "uid"
-            ]
-          }
-        ]
-      },
-      {
         "tableName": "ClassAbsence",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `profile_id` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `description` TEXT NOT NULL, `date` TEXT NOT NULL, `uuid` TEXT NOT NULL, `notified` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `profile_id` INTEGER NOT NULL, `sequence` INTEGER NOT NULL, `description` TEXT NOT NULL, `date` TEXT NOT NULL, `uuid` TEXT NOT NULL, `notified` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`profile_id`) REFERENCES `Profile`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -873,7 +786,7 @@
         ],
         "foreignKeys": [
           {
-            "table": "ClassStudent",
+            "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
@@ -1298,7 +1211,7 @@
       },
       {
         "tableName": "Grade",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT NOT NULL, `grade` TEXT NOT NULL, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `ClassStudent`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT NOT NULL, `grade` TEXT NOT NULL, `notified` INTEGER NOT NULL, `uuid` TEXT NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )",
         "fields": [
           {
             "fieldPath": "uid",
@@ -1378,7 +1291,7 @@
         ],
         "foreignKeys": [
           {
-            "table": "ClassStudent",
+            "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "CASCADE",
             "columns": [
@@ -1738,9 +1651,10 @@
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"e0642c20b3954d8fbd4b57180bb918a6\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"36896f11232b7faf00ac544c12a5ac45\")"
     ]
   }
 }

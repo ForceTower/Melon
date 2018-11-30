@@ -54,6 +54,8 @@ data class Class(
     @ColumnInfo(name = "semester_id")
     val semesterId: Long,
     var status: String? = null,
+    @ColumnInfo(name = "final_score")
+    var finalScore: Double? = null,
     val uuid: String = UUID.randomUUID().toString(),
     var missedClasses: Int = 0,
     var lastClass: String = "",

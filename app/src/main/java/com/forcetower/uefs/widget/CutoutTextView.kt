@@ -43,7 +43,7 @@ import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.ViewUtils
 
-class CutoutTextView(ctx: Context, attrs: AttributeSet): View(ctx, attrs) {
+class CutoutTextView(ctx: Context, attrs: AttributeSet) : View(ctx, attrs) {
     private val textPaint: TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)
     private var foregroundColor = Color.MAGENTA
     private var text: String = ""
@@ -59,15 +59,15 @@ class CutoutTextView(ctx: Context, attrs: AttributeSet): View(ctx, attrs) {
             try {
                 val font = ResourcesCompat.getFont(context, a.getResourceId(R.styleable.CutoutTextView_android_fontFamily, 0))
                 if (font != null) textPaint.typeface = font
-            } catch (nfe: Resources.NotFoundException){}
+            } catch (nfe: Resources.NotFoundException) {}
         }
 
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {
-            foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor, foregroundColor);
+            foregroundColor = a.getColor(R.styleable.CutoutTextView_foregroundColor, foregroundColor)
         }
 
         if (a.hasValue(R.styleable.CutoutTextView_android_text)) {
-            text = a.getString(R.styleable.CutoutTextView_android_text)?: ""
+            text = a.getString(R.styleable.CutoutTextView_android_text) ?: ""
         }
 
         a.recycle()

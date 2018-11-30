@@ -49,7 +49,7 @@ abstract class ActivityModule {
     @ContributesAndroidInjector(modules = [SetupModule::class])
     abstract fun bindSetupActivity(): SetupActivity
     @ContributesAndroidInjector(modules = [HomeModule::class])
-    abstract fun bindHomeActivity() : HomeActivity
+    abstract fun bindHomeActivity(): HomeActivity
     @ContributesAndroidInjector(modules = [AboutModule::class])
     abstract fun bindAboutActivity(): AboutActivity
     @ContributesAndroidInjector(modules = [DisciplineModule::class])

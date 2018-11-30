@@ -33,7 +33,6 @@ import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
 
-
 @Module
 object FirebaseCoreModule {
     @Provides
@@ -44,5 +43,5 @@ object FirebaseCoreModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance();
+    fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 }

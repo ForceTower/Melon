@@ -37,7 +37,7 @@ import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.feature.shared.UActivity
 import timber.log.Timber
 
-class Game2048Activity: UActivity() {
+class Game2048Activity : UActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

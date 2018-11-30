@@ -32,7 +32,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import javax.inject.Inject
 
-class SnackbarViewModel @Inject constructor(): ViewModel() {
+class SnackbarViewModel @Inject constructor() : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar

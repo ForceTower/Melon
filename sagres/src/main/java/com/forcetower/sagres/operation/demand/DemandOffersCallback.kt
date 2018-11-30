@@ -31,7 +31,7 @@ import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
-class DemandOffersCallback(status: Status): BaseCallback<DemandOffersCallback>(status) {
+class DemandOffersCallback(status: Status) : BaseCallback<DemandOffersCallback>(status) {
     private var offers: List<SDemandOffer>? = null
 
     fun getOffers() = offers

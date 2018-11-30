@@ -33,33 +33,22 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.storage.database.accessors.ClassGroupWithStudents
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
 
 @BindingAdapter("disciplineGroupsGrades")
-fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<ClassGroupWithStudents>) {
-    val list = generateGradesList(classes)
-    recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter?: ClassGroupGradesAdapter()).apply {
-        submitList(list)
+fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
+    val sort = classes?.sortedBy { it.name }
+    recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter ?: ClassGroupGradesAdapter()).apply {
+        submitList(sort)
     }
-}
-
-fun generateGradesList(classes: List<ClassGroupWithStudents>): List<Grade>? {
-    val list = ArrayList<Grade>()
-    classes.forEach {
-        if (it.students.isNotEmpty())
-            list.addAll(it.students[0].grades)
-    }
-    list.sortBy { it -> it.name }
-    return list
 }
 
 @BindingAdapter("classStudentGrade")
 fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
-    val value: Double? = getClassWithGroupsGrade(clazz)
+    val value = clazz.clazz.finalScore
     if (value == null) {
         cpb.setProgress(0.0f)
     } else {
@@ -69,7 +58,7 @@ fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
 
 @BindingAdapter("classStudentGrade")
 fun classStudentGrade(tv: TextView, clazz: ClassWithGroups) {
-    val value = getClassWithGroupsGrade(clazz)
+    val value = clazz.clazz.finalScore
     if (value == null) {
         tv.text = "??"
     } else {
@@ -79,16 +68,14 @@ fun classStudentGrade(tv: TextView, clazz: ClassWithGroups) {
 
 fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
     if (clazz.groups.isNotEmpty()) {
-        val students = clazz.groups[0].students
-        if (students.isNotEmpty())
-            return students[0].student.finalScore
+        return clazz.clazz.finalScore
     }
     return null
 }
 
 @BindingAdapter(value = ["missedDescription", "missedDate"], requireAll = true)
 fun classAbsence(tv: TextView, desc: String?, date: String?) {
-    tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc?: tv.context.getString(R.string.not_registed), date?: tv.context.getString(R.string.not_registed))
+    tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc ?: tv.context.getString(R.string.not_registed), date ?: tv.context.getString(R.string.not_registed))
 }
 
 @BindingAdapter(value = ["absences", "credits"], requireAll = true)
@@ -98,14 +85,14 @@ fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
         tv.text = context.getString(R.string.discipline_credits_undefined)
     } else {
         Timber.d("Credits: $credits __ Absence: $absences")
-        val left = (credits/4) - absences
+        val left = (credits / 4) - absences
         tv.text = context.getString(R.string.discipline_absence_left, left)
     }
 }
 
 @BindingAdapter(value = ["disciplineCredits"])
 fun credits(tv: TextView, credits: Int?) {
-    tv.text = credits?.toString()?.plus("h")?: "??h"
+    tv.text = credits?.toString()?.plus("h") ?: "??h"
 }
 
 @BindingAdapter(value = ["somethingOrQuestions"])
