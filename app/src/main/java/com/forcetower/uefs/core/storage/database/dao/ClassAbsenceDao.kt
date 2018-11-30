@@ -58,7 +58,7 @@ abstract class ClassAbsenceDao {
         val profile = getMeProfile()
 
         classes.forEach {
-            val sequence = it.description.split("-")[0].trim().split(" ")[1].trim().toIntOrNull()?: 0
+            val sequence = it.description.split("-")[0].trim().split(" ")[1].trim().toIntOrNull() ?: 0
             val clazz = getClass(it.disciplineCode, it.semester)
 
             if (clazz != null) {
@@ -69,7 +69,7 @@ abstract class ClassAbsenceDao {
         }
     }
 
-    @Query("SELECT c.* FROM Class c, Discipline d WHERE c.semester_id = :semester AND c.discipline_id = d.uid AND d.code = :code")
+    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
     abstract fun getClass(code: String, semester: Long): Class?
 
     @Query("SELECT * FROM Profile WHERE me = 1")

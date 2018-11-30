@@ -138,7 +138,7 @@
     <string name="message_received_date_format">Mensagem recebida %1$s</string>
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
-    <string name="label_grades_disciplines_short">Turmas</string>
+    <string name="label_grades_disciplines_short">Disciplinas</string>
     
     <string name="data_step_format">Passo %1$d de %2$d: %3$s</string>
     <string name="step_delete_database">Apagando dados</string>
