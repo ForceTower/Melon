@@ -39,7 +39,6 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
-import com.forcetower.uefs.core.model.unes.ClassStudent
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
@@ -59,7 +58,6 @@ import com.forcetower.uefs.core.storage.database.dao.ClassGroupDao
 import com.forcetower.uefs.core.storage.database.dao.ClassItemDao
 import com.forcetower.uefs.core.storage.database.dao.ClassLocationDao
 import com.forcetower.uefs.core.storage.database.dao.ClassMaterialDao
-import com.forcetower.uefs.core.storage.database.dao.ClassStudentDao
 import com.forcetower.uefs.core.storage.database.dao.CourseDao
 import com.forcetower.uefs.core.storage.database.dao.DemandOfferDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
@@ -81,7 +79,6 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     Discipline::class,
     Class::class,
     ClassGroup::class,
-    ClassStudent::class,
     ClassAbsence::class,
     ClassLocation::class,
     ClassItem::class,
@@ -93,7 +90,7 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     Teacher::class,
     SDemandOffer::class,
     SagresFlags::class
-], version = 4, exportSchema = true)
+], version = 5, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -104,7 +101,6 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun disciplineDao(): DisciplineDao
     abstract fun classDao(): ClassDao
     abstract fun classGroupDao(): ClassGroupDao
-    abstract fun classStudentDao(): ClassStudentDao
     abstract fun classAbsenceDao(): ClassAbsenceDao
     abstract fun classLocationDao(): ClassLocationDao
     abstract fun gradesDao(): GradeDao

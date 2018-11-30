@@ -99,6 +99,10 @@ abstract class ClassGroupDao {
     @Query("SELECT * FROM ClassGroup WHERE uid = :classGroupId")
     abstract fun getWithRelations(classGroupId: Long): LiveData<GroupWithClass?>
 
+    @Transaction
+    @Query("SELECT * FROM ClassGroup WHERE uid = :classGroupId")
+    abstract fun getWithRelationsDirect(classGroupId: Long): GroupWithClass?
+
     @Insert(onConflict = IGNORE)
     protected abstract fun insert(item: ClassItem)
 

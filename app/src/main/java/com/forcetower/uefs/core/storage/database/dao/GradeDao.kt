@@ -30,14 +30,12 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.database.model.SGradeInfo
-import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.model.unes.ClassStudent
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
@@ -75,48 +73,30 @@ abstract class GradeDao {
 
     @Transaction
     open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
-        val profile = getMeProfile()
-
         grades.forEach {
             val code = it.discipline.split("-")[0].trim()
 
-            val groups = getClassGroup(code, it.semesterId, profile.uid)
-            if (groups.isEmpty()) Timber.d("<grades_group_404> :: Groups not found for ${code}_${it.semesterId}_${profile.name}")
-            else {
-                // Sets the final score to this discipline in every class the student is in.
-                try {
-                    val finalScore = it.finalScore
-                            .replace(",", ".")
-                            .replace("-", "")
-                            .replace("*", "")
-                    val score = finalScore.toDouble()
+            val clazz = getClass(code, it.semesterId)
+            if (clazz != null) {
+                val finalScore = it.finalScore
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+                val score = finalScore.toDoubleOrNull()
+                if (score != null)
+                    updateClassScore(clazz.uid, score)
 
-                    groups.forEach { g ->
-                        val cs = getClassStudent(g.uid, profile.uid)
-                        cs.finalScore = score
-                        updateCS(cs)
-                    }
-                } catch (ignored: Throwable) {}
-
-                // Insert the Grades on Classes
-                if (groups.size == 1) {
-                    val group = groups[0]
-                    val cs = getClassStudent(group.uid, profile.uid)
-                    prepareInsertion(cs, it, notify)
-                } else {
-                    val value = groups.firstOrNull { g -> !g.group.startsWith("P") }
-                    if (value == null) {
-                        Timber.e("<grades_no_T_found> :: This will be ignored forever ${code}_${it.semesterId}_${profile.name} ")
-                    } else {
-                        val cs = getClassStudent(value.uid, profile.uid)
-                        prepareInsertion(cs, it, notify)
-                    }
-                }
+                prepareInsertion(clazz, it, notify)
+            } else {
+                Timber.d("<grades_clazz_404> :: Clazz not found for ${code}_${it.semesterId}")
             }
         }
     }
 
-    private fun prepareInsertion(cs: ClassStudent, it: SGrade, notify: Boolean) {
+    @Query("SELECT c.* FROM Class c, Discipline d WHERE c.semester_id = :semesterId AND c.discipline_id = d.uid AND d.code = :code")
+    protected abstract fun getClass(code: String, semesterId: Long): Class?
+
+    private fun prepareInsertion(clazz: Class, it: SGrade, notify: Boolean) {
         val values = HashMap<String, SGradeInfo>()
         it.values.forEach { g ->
             var grade = values[g.name]
@@ -130,10 +110,10 @@ abstract class GradeDao {
         }
 
         values.values.forEach { i ->
-            val grade = getNamedGradeDirect(cs.uid, i.name)
+            val grade = getNamedGradeDirect(clazz.uid, i.name)
             if (grade == null) {
                 val notified = if (i.hasGrade()) 3 else 1
-                insert(Grade(classId = cs.uid, name = i.name, date = i.date, notified = if (notify) notified else 0, grade = i.grade))
+                insert(Grade(classId = clazz.uid, name = i.name, date = i.date, notified = if (notify) notified else 0, grade = i.grade))
             } else {
                 if (grade.hasGrade() && i.hasGrade() && grade.grade != i.grade) {
                     grade.notified = 4
@@ -155,17 +135,11 @@ abstract class GradeDao {
         }
     }
 
-    @Update(onConflict = REPLACE)
-    protected abstract fun updateCS(cs: ClassStudent)
+    @Query("UPDATE Class SET final_score = :score WHERE uid = :classId")
+    protected abstract fun updateClassScore(classId: Long, score: Double)
 
     @Query("SELECT * FROM Grade WHERE class_id = :classId AND name = :name")
     protected abstract fun getNamedGradeDirect(classId: Long, name: String): Grade?
-
-    @Query("SELECT cs.* FROM ClassStudent cs WHERE cs.group_id = :groupId AND cs.profile_id = :profileId")
-    protected abstract fun getClassStudent(groupId: Long, profileId: Long): ClassStudent
-
-    @Query("SELECT g.* FROM ClassGroup g, Class c, Discipline d, Semester s, ClassStudent cs WHERE g.class_id = c.uid AND c.semester_id = s.uid AND c.discipline_id = d.uid AND s.sagres_id = :semesterId AND d.code = :code AND cs.profile_id = :profileId AND g.uid = cs.group_id")
-    protected abstract fun getClassGroup(code: String, semesterId: Long, profileId: Long): List<ClassGroup>
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile

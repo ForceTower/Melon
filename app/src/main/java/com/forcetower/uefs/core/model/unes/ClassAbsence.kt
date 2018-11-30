@@ -36,7 +36,7 @@ import androidx.room.PrimaryKey
 import java.util.UUID
 
 @Entity(foreignKeys = [
-    ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE),
+    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE),
     ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["profile_id"]),

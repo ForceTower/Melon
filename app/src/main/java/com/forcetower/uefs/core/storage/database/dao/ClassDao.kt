@@ -40,6 +40,7 @@ import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithDiscipline
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 
@@ -68,11 +69,15 @@ abstract class ClassDao {
             "d.code = :code")
     abstract fun getClass(semester: String, code: String): LiveData<Class?>
 
+    @Transaction
+    @Query("SELECT * FROM Class c WHERE c.uid = :classId")
+    abstract fun getClass(classId: Long): LiveData<ClassFullWithGroup?>
+
     @Query("SELECT c.* FROM Class c, Semester s WHERE c.semester_id = s.uid AND s.codename = :semester")
     abstract fun getClassesFromSemester(semester: String): LiveData<List<Class>>
 
     @Transaction
-    @Query("select Class.* from Class where Class.semester_id = :semesterId AND Class.uid IN (select ClassGroup.class_id FROM ClassGroup WHERE ClassGroup.uid IN (SELECT ClassStudent.group_id FROM ClassStudent WHERE ClassStudent.profile_id = (SELECT Profile.uid FROM Profile WHERE Profile.me = 1)))")
+    @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId")
     abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>>
 
     @Query("SELECT * FROM Discipline WHERE code = :code")

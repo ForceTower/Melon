@@ -71,7 +71,7 @@
             android:layout_marginStart="@dimen/spacing_normal"
             tools:text="João Batista Rocha Junior"
             android:textColor="@color/text_secondary_dark"
-            android:text="@{viewModel.group.group.teacher}"
+            android:text="@{viewModel.group.teacher}"
             android:layout_marginTop="@dimen/spacing_common"
             app:layout_constraintBottom_toTopOf="@id/speaker_item_company"
             app:layout_constraintEnd_toEndOf="parent"

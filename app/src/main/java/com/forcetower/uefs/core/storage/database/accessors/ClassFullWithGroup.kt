@@ -30,11 +30,11 @@ package com.forcetower.uefs.core.storage.database.accessors
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.model.unes.ClassStudent
 
-class ClassGroupWithStudents {
+class ClassFullWithGroup {
     @Embedded
-    lateinit var group: ClassGroup
-    @Relation(parentColumn = "uid", entityColumn = "group_id", entity = ClassStudent::class)
-    lateinit var students: List<ClassStudentWithGrades>
+    lateinit var clazz: ClassWithDiscipline
+    // TODO Watch this guy
+    @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassGroup::class)
+    lateinit var groups: List<ClassGroup>
 }
