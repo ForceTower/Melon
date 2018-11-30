@@ -93,8 +93,8 @@ abstract class GradeDao {
         }
     }
 
-    @Query("SELECT c.* FROM Class c, Discipline d WHERE c.semester_id = :semesterId AND c.discipline_id = d.uid AND d.code = :code")
-    protected abstract fun getClass(code: String, semesterId: Long): Class?
+    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
+    protected abstract fun getClass(code: String, semester: Long): Class?
 
     private fun prepareInsertion(clazz: Class, it: SGrade, notify: Boolean) {
         val values = HashMap<String, SGradeInfo>()
