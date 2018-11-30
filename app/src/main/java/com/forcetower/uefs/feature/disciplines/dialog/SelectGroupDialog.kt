@@ -61,7 +61,7 @@ class SelectGroupDialog : RoundedDialog(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val list = value.groups.map { it.group }
+        val list = value.groups
         val groupsAdapter = DisciplineGroupsAdapter(this, viewModel)
         binding.recyclerGroups.apply {
             adapter = groupsAdapter

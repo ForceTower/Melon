@@ -34,7 +34,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
+import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
 import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
@@ -46,17 +47,17 @@ class OverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DisciplineViewModel
 ) : RecyclerView.Adapter<OverviewHolder>() {
-    var currentDiscipline: ClassStudentWithGroup? = null
+    var currentClazz: ClassFullWithGroup? = null
     set(value) {
         field = value
-        differ.submitList(buildMergedList(discipline = value))
+        differ.submitList(buildMergedList(clazz = value))
     }
 
-//    var currentLocations: List<LocationWithGroup>? = listOf()
-//    set(value) {
-//        field = value
-//        differ.submitList(buildMergedList(locations = value))
-//    }
+    var currentGroup: ClassGroup? = null
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(group = value))
+    }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()
@@ -111,24 +112,25 @@ class OverviewAdapter(
     }
 
     private fun buildMergedList(
-        discipline: ClassStudentWithGroup? = currentDiscipline
+        clazz: ClassFullWithGroup? = currentClazz,
+        group: ClassGroup? = currentGroup
     ): List<Any> {
         val list = mutableListOf<Any>()
-        if (discipline != null) {
+        if (clazz != null) {
 
-            if (discipline.group().group.draft) {
+            if (group?.draft != null) {
                 list += DisciplineDraft
             }
 
-            if (discipline.group().clazz().discipline().shortText != null) {
+            if (clazz.clazz.discipline().shortText != null) {
                 list += DisciplineShort
             }
 
-            if (discipline.group().group.teacher != null) {
+            if (group?.teacher != null) {
                 list += DisciplineTeacher
             }
 
-            if (discipline.group().clazz().discipline().resume != null) {
+            if (clazz.clazz.discipline().resume != null) {
                 list += DisciplineResume
             }
 

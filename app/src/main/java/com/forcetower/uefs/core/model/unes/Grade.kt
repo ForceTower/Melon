@@ -44,7 +44,7 @@ import java.util.UUID
  * 4 -> Grade changed
  */
 @Entity(foreignKeys = [
-    ForeignKey(entity = ClassStudent::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["class_id"]),
     Index(value = ["name", "class_id"], unique = true),

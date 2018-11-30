@@ -54,7 +54,8 @@ class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
                 val classGroupId = intent.getLongExtra(CLASS_GROUP_ID, 1)
-                add(R.id.fragment_container, DisciplineDetailsFragment.newInstance(classGroupId))
+                val classId = intent.getLongExtra(CLASS_ID, 1)
+                add(R.id.fragment_container, DisciplineDetailsFragment.newInstance(classId, classGroupId))
             }
         }
     }
@@ -69,9 +70,11 @@ class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
 
     companion object {
         const val CLASS_GROUP_ID = "class_group_id"
-        fun startIntent(context: Context, classGroupId: Long): Intent {
+        const val CLASS_ID = "class_id"
+        fun startIntent(context: Context, classId: Long, classGroupId: Long): Intent {
             return Intent(context, DisciplineDetailsActivity::class.java).apply {
                 putExtra(CLASS_GROUP_ID, classGroupId)
+                putExtra(CLASS_ID, classId)
             }
         }
     }
