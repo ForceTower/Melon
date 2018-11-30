@@ -118,7 +118,7 @@ class OverviewAdapter(
         val list = mutableListOf<Any>()
         if (clazz != null) {
 
-            if (group?.draft != null) {
+            if (group?.draft == false) {
                 list += DisciplineDraft
             }
 
