@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
@@ -50,6 +51,12 @@ class OverviewAdapter(
     set(value) {
         field = value
         differ.submitList(buildMergedList(clazz = value))
+    }
+
+    var currentGroup: ClassGroup? = null
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(group = value))
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
@@ -105,12 +112,13 @@ class OverviewAdapter(
     }
 
     private fun buildMergedList(
-        clazz: ClassFullWithGroup? = currentClazz
+        clazz: ClassFullWithGroup? = currentClazz,
+        group: ClassGroup? = currentGroup
     ): List<Any> {
         val list = mutableListOf<Any>()
         if (clazz != null) {
 
-            if (clazz.group().draft) {
+            if (group?.draft != null) {
                 list += DisciplineDraft
             }
 
@@ -118,7 +126,7 @@ class OverviewAdapter(
                 list += DisciplineShort
             }
 
-            if (clazz.group().teacher != null) {
+            if (group?.teacher != null) {
                 list += DisciplineTeacher
             }
 

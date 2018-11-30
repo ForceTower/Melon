@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 class ClassFullWithGroup {
     @Embedded
     lateinit var clazz: ClassWithDiscipline
+    // TODO Watch this guy
     @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassGroup::class)
     lateinit var groups: List<ClassGroup>
 }
