@@ -71,7 +71,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = context.getString(R.string.notification_grade_created, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_created_title))
@@ -89,7 +89,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = context.getString(R.string.notification_grade_changed, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_changed_title))
@@ -107,7 +107,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = context.getString(R.string.notification_grade_date_change, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_date_change_title))
@@ -126,7 +126,7 @@ object NotificationCreator {
         }
 
         val spoiler = getPreferences(context).getInt("notification_grade_spoiler_level", 0)
-        val discipline = grade.clazz().group().singleClass().singleDiscipline().name
+        val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = when (spoiler) {
             1 -> {
                 val value = grade.grade.grade.trim().toDoubleOrNull()

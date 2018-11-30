@@ -33,33 +33,22 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.storage.database.accessors.ClassGroupWithStudents
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
 
 @BindingAdapter("disciplineGroupsGrades")
-fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<ClassGroupWithStudents>) {
-    val list = generateGradesList(classes)
+fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
+    val sort = classes?.sortedBy { it.name }
     recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter ?: ClassGroupGradesAdapter()).apply {
-        submitList(list)
+        submitList(sort)
     }
-}
-
-fun generateGradesList(classes: List<ClassGroupWithStudents>): List<Grade>? {
-    val list = ArrayList<Grade>()
-    classes.forEach {
-        if (it.students.isNotEmpty())
-            list.addAll(it.students[0].grades)
-    }
-    list.sortBy { it -> it.name }
-    return list
 }
 
 @BindingAdapter("classStudentGrade")
 fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
-    val value: Double? = getClassWithGroupsGrade(clazz)
+    val value = clazz.clazz.finalScore
     if (value == null) {
         cpb.setProgress(0.0f)
     } else {
@@ -69,7 +58,7 @@ fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
 
 @BindingAdapter("classStudentGrade")
 fun classStudentGrade(tv: TextView, clazz: ClassWithGroups) {
-    val value = getClassWithGroupsGrade(clazz)
+    val value = clazz.clazz.finalScore
     if (value == null) {
         tv.text = "??"
     } else {
@@ -79,9 +68,7 @@ fun classStudentGrade(tv: TextView, clazz: ClassWithGroups) {
 
 fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
     if (clazz.groups.isNotEmpty()) {
-        val students = clazz.groups[0].students
-        if (students.isNotEmpty())
-            return students[0].student.finalScore
+        return clazz.clazz.finalScore
     }
     return null
 }
