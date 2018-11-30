@@ -320,7 +320,6 @@ class SagresSyncRepository @Inject constructor(
             val group = database.classGroupDao().insert(it)
             values.add(group)
         }
-        database.classStudentDao().joinGroups(values)
     }
 
     @WorkerThread
