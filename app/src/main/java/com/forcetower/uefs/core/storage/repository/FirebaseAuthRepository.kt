@@ -53,7 +53,7 @@ class FirebaseAuthRepository @Inject constructor(
     private val context: Context,
     private val executors: AppExecutors,
     private val preferences: SharedPreferences
-){
+) {
     private val secret = context.getString(R.string.firebase_account_secret)
 
     fun loginToFirebase(person: SPerson, access: Access) {
@@ -64,7 +64,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
+                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -84,7 +84,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptCreateAccount(email: String, password: String, access: Access, person: SPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
+                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -103,25 +103,26 @@ class FirebaseAuthRepository @Inject constructor(
     private fun connected(access: Access, person: SPerson, uid: String) {
         Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
 
-        val data = mutableMapOf (
-                "name"      to WordUtils.capitalize(person.name.trim()),
-                "username"  to access.username,
-                "email"     to person.email.trim().toLowerCase(),
-                "cpf"       to person.cpf.trim(),
-                "sagresId"  to person.id,
-                "imageUrl"  to "/users/$uid/avatar.jpg"
+        val data = mutableMapOf(
+                "name" to WordUtils.capitalize(person.name.trim()),
+                "username" to access.username,
+                "email" to person.email.trim().toLowerCase(),
+                "cpf" to person.cpf.trim(),
+                "sagresId" to person.id,
+                "imageUrl" to "/users/$uid/avatar.jpg",
+                "manufacturer" to android.os.Build.MANUFACTURER,
+                "model" to android.os.Build.MODEL
         )
 
         val token = preferences.getString("current_firebase_token", null)
         if (token != null) {
             data["firebaseToken"] = token
         }
-        
+
         userCollection.document(uid).set(data, SetOptions.merge())
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Timber.d("User data set!")
-
                     } else {
                         Timber.d("Failed to set data...")
                         Timber.d("Exception: ${task.exception}")
@@ -135,10 +136,9 @@ class FirebaseAuthRepository @Inject constructor(
                 "course" to course.name
         )
         userCollection.document(user.uid).set(data, SetOptions.merge())
-                .addOnCompleteListener(executors.others(), OnCompleteListener {task ->
+                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Timber.d("User course data set!")
-
                     } else {
                         Timber.d("Failed to set course data...")
                         Timber.d("Exception: ${task.exception}")
@@ -148,7 +148,7 @@ class FirebaseAuthRepository @Inject constructor(
 
     fun updateFrequency(value: Int) {
         val user = firebaseAuth.currentUser
-        user?: return
+        user ?: return
 
         val data = mapOf("syncFrequency" to value)
         userCollection.document(user.uid).set(data, SetOptions.merge())

@@ -45,7 +45,7 @@ import java.util.UUID
     Index(value = ["is_new"], unique = false),
     Index(value = ["uuid"], unique = true)
 ])
-data class ClassItem (
+data class ClassItem(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
     @ColumnInfo(name = "group_id")

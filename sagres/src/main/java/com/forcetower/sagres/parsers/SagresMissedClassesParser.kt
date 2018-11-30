@@ -51,7 +51,7 @@ object SagresMissedClassesParser {
                 val code = text.substring(0, text.indexOf("-") - 1).trim()
 
                 val frequency = clazz.selectFirst("div[class=\"boletim-frequencia\"]")
-                val spectrum  = frequency.selectFirst("table")
+                val spectrum = frequency.selectFirst("table")
                 if (spectrum == null) Timber.d("<table_not_found> :: There's no missed classes for $code")
                 else {
                     val body = spectrum.selectFirst("tbody")

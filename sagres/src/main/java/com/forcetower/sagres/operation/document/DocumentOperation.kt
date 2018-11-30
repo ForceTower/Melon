@@ -43,7 +43,7 @@ class DocumentOperation(
     private val file: File,
     private val url: String,
     executor: Executor?
-): Operation<DocumentCallback>(executor) {
+) : Operation<DocumentCallback>(executor) {
 
     init {
         this.perform()

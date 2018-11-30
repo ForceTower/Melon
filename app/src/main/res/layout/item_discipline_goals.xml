@@ -68,7 +68,7 @@
                 android:layout_marginTop="@dimen/margin_small"
                 android:layout_marginEnd="@dimen/margin_normal"
                 android:layout_marginBottom="@dimen/margin_normal"
-                android:text="@{viewModel.group.clazz().discipline().resume}"
+                android:text="@{viewModel.clazz.clazz.discipline().resume}"
                 android:textSize="14sp"
                 android:textColor="@color/text_secondary_dark"
                 app:layout_constraintBottom_toBottomOf="parent"

@@ -41,7 +41,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class MaterialAdapter(
     val lifecycleOwner: LifecycleOwner,
     val viewModel: DisciplineViewModel
-): ListAdapter<ClassMaterial, MaterialAdapter.ClassMaterialHolder>(DiffCallback) {
+) : ListAdapter<ClassMaterial, MaterialAdapter.ClassMaterialHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ClassMaterialHolder(parent.inflate(R.layout.item_discipline_class_material))
 
@@ -54,9 +54,9 @@ class MaterialAdapter(
         }
     }
 
-    inner class ClassMaterialHolder(val binding: ItemDisciplineClassMaterialBinding): RecyclerView.ViewHolder(binding.root)
+    inner class ClassMaterialHolder(val binding: ItemDisciplineClassMaterialBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private object DiffCallback: DiffUtil.ItemCallback<ClassMaterial>() {
+    private object DiffCallback : DiffUtil.ItemCallback<ClassMaterial>() {
         override fun areItemsTheSame(oldItem: ClassMaterial, newItem: ClassMaterial) = oldItem.uid == newItem.uid
         override fun areContentsTheSame(oldItem: ClassMaterial, newItem: ClassMaterial) = oldItem == newItem
     }

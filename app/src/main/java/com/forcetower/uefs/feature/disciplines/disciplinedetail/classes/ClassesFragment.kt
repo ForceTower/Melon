@@ -43,7 +43,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class ClassesFragment: UFragment(), Injectable {
+class ClassesFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel

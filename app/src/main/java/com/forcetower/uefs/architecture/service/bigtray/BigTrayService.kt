@@ -14,7 +14,7 @@ import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
 
-class BigTrayService: LifecycleService() {
+class BigTrayService : LifecycleService() {
     companion object {
         private const val NOTIFICATION_BIG_TRAY = 187745
         private const val START_SERVICE_ACTION = "com.forcetower.uefs.bigtray.START_FOREGROUND_SERVICE"
@@ -85,5 +85,4 @@ class BigTrayService: LifecycleService() {
         val pending = PendingIntent.getService(this, 0, intent, 0)
         return NotificationCreator.showBigTrayNotification(this, data, pending)
     }
-
 }

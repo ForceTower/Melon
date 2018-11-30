@@ -28,6 +28,9 @@ android {
         sourceCompatibility = '1.8'
         targetCompatibility = '1.8'
     }
+    lintOptions {
+        abortOnError false
+    }
 }
 
 dependencies {
@@ -45,7 +48,7 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle_version"
 
-    implementation "com.jakewharton.timber:timber:4.7.0"
+    implementation "com.jakewharton.timber:timber:$timber"
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 }
 

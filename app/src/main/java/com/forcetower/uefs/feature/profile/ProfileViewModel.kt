@@ -40,7 +40,7 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     val repository: ProfileRepository
-): ViewModel(){
+) : ViewModel() {
     private val profileId = MutableLiveData<String?>()
 
     private val _profile = MediatorLiveData<Profile?>()

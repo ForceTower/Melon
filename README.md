@@ -8,12 +8,13 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 
 ### Objetivos
 * ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
-* Utilizar os novos componentes do Android
-* Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal
+* ~~Utilizar os novos componentes do Android~~
+* ~~Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal~~
 * ~~Demanda Web direto no App~~ [Completo]
 * ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
+* Matrícula no App
 * Corrigir o erro que afeta alguns estudantes que tem 2 cursos em 1 (????)
-* Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO
+* ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal
 
 ### Versão do Android

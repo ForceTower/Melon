@@ -32,7 +32,7 @@ import javax.inject.Inject
 
 class BigTrayViewModel @Inject constructor(
     private val repository: BigTrayRepository
-): ViewModel() {
+) : ViewModel() {
 
     var requesting: Boolean = false
     set(value) {

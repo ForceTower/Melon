@@ -47,7 +47,7 @@ import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class MaterialsFragment: UFragment(), Injectable {
+class MaterialsFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel

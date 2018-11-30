@@ -36,9 +36,11 @@ import android.text.style.URLSpan
  *
  * Derived from http://stackoverflow.com/a/20905824
  */
-class TouchableUrlSpan(url: String,
-                       textColor: ColorStateList,
-                       private val pressedBackgroundColor: Int) : URLSpan(url) {
+class TouchableUrlSpan(
+    url: String,
+    textColor: ColorStateList,
+    private val pressedBackgroundColor: Int
+) : URLSpan(url) {
     private var isPressed: Boolean = false
     private val normalTextColor: Int = textColor.defaultColor
     private val pressedTextColor: Int

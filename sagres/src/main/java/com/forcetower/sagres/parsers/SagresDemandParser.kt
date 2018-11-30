@@ -36,26 +36,26 @@ object SagresDemandParser {
     fun getOffers(document: Document): List<SDemandOffer>? {
         val list = mutableListOf<SDemandOffer>()
 
-        //Each element represents a column full of disciplines for the semester
+        // Each element represents a column full of disciplines for the semester
         val elements = document.select("div[class=\"demanda-coluna\"]")
-        //If no elements is found, the demand is not available
+        // If no elements is found, the demand is not available
         if (elements.size == 0) return null
 
-        //We iterate over each "semester"
+        // We iterate over each "semester"
         for (element in elements) {
-            //Get the semester title
+            // Get the semester title
             val title = element.selectFirst("span").text().trim()
 
-            //Find the objects that represents the disciplines
+            // Find the objects that represents the disciplines
             val disciplines = element.select("div[qtcredito][nomeatividade][codigoatividade][qthoras]")
-            //And iterate over it
+            // And iterate over it
             for (discipline in disciplines) {
-                //Extract the attributes
+                // Extract the attributes
                 val id = discipline.selectFirst("input[type=\"hidden\"]").attr("name").trim()
                 val selected = discipline.selectFirst("input[type=\"hidden\"]").attr("value").trim()
                 val name = discipline.attr("nomeatividade").trim()
                 val code = discipline.attr("codigoatividade").trim()
-                //val activityId = discipline.attr("idatividade").trim()
+                // val activityId = discipline.attr("idatividade").trim()
                 val hour = discipline.attr("qthoras").trim()
 
                 var av = false
@@ -84,7 +84,7 @@ object SagresDemandParser {
                     e.printStackTrace()
                 }
 
-                //Adds it to the offers
+                // Adds it to the offers
                 val offer = SDemandOffer(0, id, code, name, bSelected, title, iHours, co, av, cu, se, un)
                 list.add(offer)
             }

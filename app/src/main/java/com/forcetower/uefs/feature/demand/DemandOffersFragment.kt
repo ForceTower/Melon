@@ -43,7 +43,7 @@ import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
+class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -82,5 +82,4 @@ class DemandOffersFragment: UFragment(), Injectable, NavigationFragment {
             if (data != null) offersAdapter.currentList = it.data
         })
     }
-
 }

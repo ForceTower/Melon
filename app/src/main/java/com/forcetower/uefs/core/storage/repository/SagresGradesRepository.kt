@@ -58,7 +58,7 @@ class SagresGradesRepository @Inject constructor(
     @WorkerThread
     fun getGrades(semesterSagresId: Long, needLogin: Boolean = true): Int {
         val access = database.accessDao().getAccessDirect()
-        access?: return NO_ACCESS
+        access ?: return NO_ACCESS
 
         return if (needLogin) {
             val login = SagresNavigator.instance.login(access.username, access.password)

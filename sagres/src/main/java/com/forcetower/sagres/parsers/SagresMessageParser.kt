@@ -58,10 +58,10 @@ object SagresMessageParser {
 
             found = true
 
-            //val article = html.substring(start, end)
+            // val article = html.substring(start, end)
 
-            //val message = extractInfoArticle(article)
-            //if (message != null) messages.add(message)
+            // val message = extractInfoArticle(article)
+            // if (message != null) messages.add(message)
             position = end
         }
 
@@ -96,7 +96,7 @@ object SagresMessageParser {
             val endCRE = article.indexOf("</span>", startCRE)
             var extracted = article.substring(startCRE, endCRE)
 
-            //CLASS NAME
+            // CLASS NAME
             extracted = extracted.substring(extracted.indexOf(">") + 1).trim { it <= ' ' }
             return extracted
         }
