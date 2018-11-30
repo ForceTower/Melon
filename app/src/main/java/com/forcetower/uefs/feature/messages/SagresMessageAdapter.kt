@@ -39,7 +39,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class SagresMessageAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: MessagesViewModel
-): ListAdapter<Message, MessageHolder>(MessagesDiff) {
+) : ListAdapter<Message, MessageHolder>(MessagesDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val binding = ItemSagresMessageBinding.inflate(parent.inflater(), parent, false)
@@ -58,7 +58,7 @@ class SagresMessageAdapter(
 
 class MessageHolder(val binding: ItemSagresMessageBinding) : RecyclerView.ViewHolder(binding.root)
 
-object MessagesDiff: DiffUtil.ItemCallback<Message>() {
+object MessagesDiff : DiffUtil.ItemCallback<Message>() {
     override fun areItemsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem.sagresId == newItem.sagresId
     override fun areContentsTheSame(oldItem: Message, newItem: Message): Boolean = oldItem == newItem
 }

@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,7 +42,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import javax.inject.Inject
 
-class ConfigurationFragment: UFragment(), Injectable {
+class ConfigurationFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -61,7 +62,7 @@ class ConfigurationFragment: UFragment(), Injectable {
         binding.textSetupSync.setText(viewModel.getSelectedFrequency().name)
         binding.textSetupSync.setOnClickListener {
             val dialog = SelectSyncDialog()
-            dialog.setCallback(object: FrequencySelectionCallback {
+            dialog.setCallback(object : FrequencySelectionCallback {
                 override fun onSelected(frequency: Frequency) {
                     viewModel.setSelectedFrequency(frequency)
                     binding.textSetupSync.setText(frequency.name)
@@ -72,8 +73,24 @@ class ConfigurationFragment: UFragment(), Injectable {
 
         binding.btnNext.setOnClickListener {
             completeSetup()
-            findNavController().navigate(R.id.action_configuration_to_home)
-            requireActivity().finishAfterTransition()
+            decideNext()
+        }
+    }
+
+    private fun decideNext() {
+        val manufacturer = Build.MANUFACTURER.toLowerCase()
+
+        when (manufacturer) {
+            "xiaomi" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "oppo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "vivo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "lenovo" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "honor" -> findNavController().navigate(R.id.action_configuration_to_special)
+            "huawei" -> findNavController().navigate(R.id.action_configuration_to_special)
+            else -> {
+                findNavController().navigate(R.id.action_configuration_to_home)
+                requireActivity().finishAfterTransition()
+            }
         }
     }
 

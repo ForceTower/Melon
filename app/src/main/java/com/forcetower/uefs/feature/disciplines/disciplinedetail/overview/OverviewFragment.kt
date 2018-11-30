@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
-class OverviewFragment: UFragment(), Injectable {
+class OverviewFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var binding: FragmentDisciplineOverviewBinding
@@ -56,8 +56,7 @@ class OverviewFragment: UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val overviewAdapter =
-            OverviewAdapter(this, viewModel)
+        val overviewAdapter = OverviewAdapter(this, viewModel)
         binding.recyclerOverview.apply {
             adapter = overviewAdapter
             itemAnimator?.run {
@@ -66,10 +65,10 @@ class OverviewFragment: UFragment(), Injectable {
                 changeDuration = 120L
                 removeDuration = 100L
             }
-
         }
 
-        viewModel.classStudent.observe(this, Observer { overviewAdapter.currentDiscipline = it })
+        viewModel.clazz.observe(this, Observer { overviewAdapter.currentClazz = it })
+        viewModel.group.observe(this, Observer { overviewAdapter.currentGroup = it })
     }
 
     companion object {

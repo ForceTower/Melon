@@ -29,7 +29,6 @@ package com.forcetower.sagres.parsers
 
 import okhttp3.FormBody
 import org.jsoup.nodes.Document
-import timber.log.Timber
 import java.util.ArrayList
 
 object SagresDisciplineDetailsFetcherParser {
@@ -86,7 +85,6 @@ object SagresDisciplineDetailsFetcherParser {
                         }
                     }
                 }
-
             } else {
                 val webPart = clazz.selectFirst("div[class=\"webpart-dropdown webpart-dropdown-up\"]")
                 val anchor = webPart.selectFirst("a[href]")

@@ -31,7 +31,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity
-data class SDemandOffer (
+data class SDemandOffer(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
     val id: String,

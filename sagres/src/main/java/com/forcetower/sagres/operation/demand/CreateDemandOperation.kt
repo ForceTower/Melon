@@ -40,13 +40,13 @@ import java.util.concurrent.Executor
 class CreateDemandOperation(
     private val revised: List<SDemandOffer>,
     executor: Executor?
-): Operation<DemandCreatorCallback>(executor) {
+) : Operation<DemandCreatorCallback>(executor) {
     init {
         perform()
     }
 
     override fun execute() {
-        val callback = loadOffers()?: return
+        val callback = loadOffers() ?: return
         val document = callback.document!!
         val offers = callback.getOffers()!!
         val hash = offers.groupBy { it.code }

@@ -44,7 +44,7 @@ import com.forcetower.uefs.feature.shared.provideViewModel
 import java.util.Calendar
 import javax.inject.Inject
 
-class CreateReminderDialog: RoundedDialog(), Injectable {
+class CreateReminderDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 

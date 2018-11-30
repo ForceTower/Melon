@@ -46,14 +46,14 @@ class SetupViewModel @Inject constructor(
     private val preferences: SharedPreferences,
     private val context: Context,
     private val profileRepository: ProfileRepository
-): ViewModel() {
+) : ViewModel() {
     private var selectImageUri: Uri? = null
     private var course: Course? = null
     private var frequency: Frequency = Frequency(context.getString(R.string.at_every_time_hour), 60)
 
     fun uploadImageToStorage(reference: String) {
         val uri = selectImageUri
-        uri?: return
+        uri ?: return
         UploadImageToStorage.createWorker(uri, reference)
     }
 

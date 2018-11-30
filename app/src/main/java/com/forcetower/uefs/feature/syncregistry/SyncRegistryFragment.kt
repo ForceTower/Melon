@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.provideViewModel
 import javax.inject.Inject
 
-class SyncRegistryFragment: UFragment(), Injectable {
+class SyncRegistryFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
 

@@ -30,5 +30,4 @@ package com.forcetower.uefs.feature.teachers
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
 
-class TeachersFragment: UFragment(), Injectable {
-}
+class TeachersFragment : UFragment(), Injectable

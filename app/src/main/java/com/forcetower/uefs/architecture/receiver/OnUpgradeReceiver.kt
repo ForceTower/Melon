@@ -37,7 +37,7 @@ import com.forcetower.uefs.service.NotificationCreator
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
-class OnUpgradeReceiver: BroadcastReceiver() {
+class OnUpgradeReceiver : BroadcastReceiver() {
     @Inject
     lateinit var preferences: SharedPreferences
     @Inject

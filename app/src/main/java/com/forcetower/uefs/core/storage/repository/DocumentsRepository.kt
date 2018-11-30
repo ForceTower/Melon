@@ -120,7 +120,6 @@ class DocumentsRepository @Inject constructor(
             } else {
                 Timber.d("File not deleted...")
             }
-
         }
     }
 

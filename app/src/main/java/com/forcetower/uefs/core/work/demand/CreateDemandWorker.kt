@@ -40,9 +40,10 @@ import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CreateDemandWorker (
-    context : Context, params : WorkerParameters
-): Worker(context, params) {
+class CreateDemandWorker(
+    context: Context,
+    params: WorkerParameters
+) : Worker(context, params) {
     @Inject
     lateinit var repository: DemandRepository
 

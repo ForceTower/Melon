@@ -46,13 +46,13 @@ class LoginFragment : UFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentLoginBinding.inflate(inflater, container, false).also {
             binding = it
-            binding.btnNoAccount.setOnClickListener{_ ->
+            binding.btnNoAccount.setOnClickListener { _ ->
                 showSnack(getString(R.string.there_is_no_vestibular_anymore))
             }
-            binding.btnConnect.setOnClickListener{_ ->
+            binding.btnConnect.setOnClickListener { _ ->
                 prepareLogin()
             }
-            binding.btnAboutUnes.setOnClickListener {_ ->
+            binding.btnAboutUnes.setOnClickListener { _ ->
                 toAbout()
             }
         }.root

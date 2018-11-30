@@ -34,7 +34,7 @@ import dagger.android.AndroidInjection
 import timber.log.Timber
 import javax.inject.Inject
 
-class FirebaseActionsService: FirebaseMessagingService() {
+class FirebaseActionsService : FirebaseMessagingService() {
     @Inject
     lateinit var repository: FirebaseMessageRepository
 
@@ -45,13 +45,13 @@ class FirebaseActionsService: FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage?) {
         Timber.d("Message received: $message")
-        message?: return
+        message ?: return
         repository.onMessageReceived(message)
     }
 
     override fun onNewToken(token: String?) {
         Timber.d("On Token received: $token")
-        token?: return
+        token ?: return
         repository.onNewToken(token)
     }
 }

@@ -36,7 +36,7 @@ import androidx.recyclerview.widget.RecyclerView
 class DividerItemDecorator(
     private val mDivider: Drawable,
     private val orientation: Int
-): RecyclerView.ItemDecoration() {
+) : RecyclerView.ItemDecoration() {
 
     private val mBounds = Rect()
 

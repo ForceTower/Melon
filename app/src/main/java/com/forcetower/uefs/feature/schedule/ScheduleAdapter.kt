@@ -51,14 +51,14 @@ import com.forcetower.uefs.feature.shared.toLongWeekDay
 import com.forcetower.uefs.feature.shared.toWeekDay
 import java.util.HashMap
 
-//---------------------------------------- Schedule Line -------------------------------------------
+// ---------------------------------------- Schedule Line -------------------------------------------
 
 private const val SCHEDULE_LINE_DAY_HOLDER: Int = 1
 private const val SCHEDULE_LINE_CLASS_HOLDER: Int = 2
 
 class ScheduleLineAdapter(
     private val pool: RecyclerView.RecycledViewPool
-): ListAdapter<ScheduleDay, DayLineHolder>(DayLineDiff) {
+) : ListAdapter<ScheduleDay, DayLineHolder>(DayLineDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayLineHolder {
         val binding = ItemScheduleLineDayBinding.inflate(parent.inflater(), parent, false)
         return DayLineHolder(binding, pool)
@@ -83,10 +83,9 @@ class ScheduleLineAdapter(
 
         submitList(list)
     }
-
 }
 
-class ScheduleLineClassAdapter: ListAdapter<LocationWithGroup, LocationLineHolder>(ClassLineDiff) {
+class ScheduleLineClassAdapter : ListAdapter<LocationWithGroup, LocationLineHolder>(ClassLineDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationLineHolder {
         val binding = ItemScheduleLineClassBinding.inflate(parent.inflater(), parent, false)
         return LocationLineHolder(binding)
@@ -102,7 +101,7 @@ class ScheduleLineClassAdapter: ListAdapter<LocationWithGroup, LocationLineHolde
 class DayLineHolder(
     private val binding: ItemScheduleLineDayBinding,
     pool: RecyclerView.RecycledViewPool
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     private val adapter by lazy { ScheduleLineClassAdapter() }
     init {
         binding.recyclerDay.setRecycledViewPool(pool)
@@ -118,7 +117,7 @@ class DayLineHolder(
 
 class LocationLineHolder(
     private val binding: ItemScheduleLineClassBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(location: LocationWithGroup) {
         binding.location = location
@@ -126,12 +125,12 @@ class LocationLineHolder(
     }
 }
 
-object DayLineDiff: DiffUtil.ItemCallback<ScheduleDay>() {
+object DayLineDiff : DiffUtil.ItemCallback<ScheduleDay>() {
     override fun areItemsTheSame(oldItem: ScheduleDay, newItem: ScheduleDay) = oldItem.day == newItem.day
     override fun areContentsTheSame(oldItem: ScheduleDay, newItem: ScheduleDay) = oldItem.location == newItem.location
 }
 
-object ClassLineDiff: DiffUtil.ItemCallback<LocationWithGroup>() {
+object ClassLineDiff : DiffUtil.ItemCallback<LocationWithGroup>() {
     override fun areItemsTheSame(oldItem: LocationWithGroup, newItem: LocationWithGroup) = oldItem.location.uid == newItem.location.uid
     override fun areContentsTheSame(oldItem: LocationWithGroup, newItem: LocationWithGroup) = oldItem.location == newItem.location
 }
@@ -141,14 +140,14 @@ data class ScheduleDay(
     val location: List<LocationWithGroup>
 )
 
-//-------------------------------------- Schedule Block --------------------------------------------
+// -------------------------------------- Schedule Block --------------------------------------------
 
 class ScheduleBlockAdapter(
     private val pool: RecyclerView.RecycledViewPool,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: ScheduleViewModel,
     context: Context
-): RecyclerView.Adapter<DayBlockHolder>() {
+) : RecyclerView.Adapter<DayBlockHolder>() {
     private val list = ArrayList<ArrayList<InnerLocation>>()
     private val colors = context.resources.getIntArray(R.array.discipline_colors)
 
@@ -213,8 +212,7 @@ class ScheduleBlockAdapter(
     }
 }
 
-
-//==================================================================================================
+// ==================================================================================================
 private const val HEADER: Int = 0
 private const val TIME: Int = 1
 private const val CLASS: Int = 2
@@ -226,7 +224,7 @@ class ScheduleBlockClassAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: ScheduleViewModel,
     private val colors: IntArray
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private val list = ArrayList<InnerLocation>()
 
     fun submitList(list: List<InnerLocation>) {
@@ -236,21 +234,21 @@ class ScheduleBlockClassAdapter(
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-        return when(viewType) {
+        return when (viewType) {
             HEADER -> BHeaderHolder(ItemScheduleBlockHeaderBinding.inflate(parent.inflater(), parent, false))
-            TIME   -> BTimeHolder(ItemScheduleBlockTimeBinding.inflate(parent.inflater(), parent, false))
-            CLASS  -> BClassHolder(ItemScheduleBlockClassBinding.inflate(parent.inflater(), parent, false))
+            TIME -> BTimeHolder(ItemScheduleBlockTimeBinding.inflate(parent.inflater(), parent, false))
+            CLASS -> BClassHolder(ItemScheduleBlockClassBinding.inflate(parent.inflater(), parent, false))
             HEAD_N -> BHeadNotHolder(ItemScheduleBlockHeadNotBinding.inflate(parent.inflater(), parent, false))
-            else   -> BNothingHolder(ItemScheduleBlockNothingBinding.inflate(parent.inflater(), parent, false))
+            else -> BNothingHolder(ItemScheduleBlockNothingBinding.inflate(parent.inflater(), parent, false))
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val element = list[position]
-        when(getItemViewType(position)) {
+        when (getItemViewType(position)) {
             HEADER -> (holder as BHeaderHolder).bind(element)
-            TIME   -> (holder as BTimeHolder)  .bind(element)
-            CLASS  -> (holder as BClassHolder) .bind(element, colors).also {
+            TIME -> (holder as BTimeHolder) .bind(element)
+            CLASS -> (holder as BClassHolder) .bind(element, colors).also {
                 holder.binding.setLifecycleOwner(lifecycleOwner)
                 holder.binding.scheduleActions = viewModel
                 holder.binding.group = element.location!!.singleGroup()
@@ -279,7 +277,7 @@ class DayBlockHolder(
     colors: IntArray,
     lifecycleOwner: LifecycleOwner,
     scheduleViewModel: ScheduleViewModel
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     private val adapter by lazy { ScheduleBlockClassAdapter(lifecycleOwner, scheduleViewModel, colors) }
     init {
         binding.recyclerDay.setRecycledViewPool(pool)
@@ -293,7 +291,7 @@ class DayBlockHolder(
 
 class BHeaderHolder(
     private val binding: ItemScheduleBlockHeaderBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(inner: InnerLocation) {
         binding.textHeader.text = inner.day
     }
@@ -301,7 +299,7 @@ class BHeaderHolder(
 
 class BTimeHolder(
     private val binding: ItemScheduleBlockTimeBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(inner: InnerLocation) {
         binding.inner = inner
@@ -311,7 +309,7 @@ class BTimeHolder(
 
 class BClassHolder(
     val binding: ItemScheduleBlockClassBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(inner: InnerLocation, colors: IntArray) {
         binding.tvCode.text = inner.location!!.singleGroup().singleClass().singleDiscipline().code
@@ -324,16 +322,16 @@ class BClassHolder(
 
 class BNothingHolder(
     binding: ItemScheduleBlockNothingBinding
-): RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.ViewHolder(binding.root)
 
 class BHeadNotHolder(
     binding: ItemScheduleBlockHeadNotBinding
-): RecyclerView.ViewHolder(binding.root)
+) : RecyclerView.ViewHolder(binding.root)
 
 class ClassTime(
     val start: String,
     val end: String
-): Comparable<ClassTime> {
+) : Comparable<ClassTime> {
 
     override fun compareTo(other: ClassTime): Int {
         return start.compareTo(other.start)
@@ -353,10 +351,9 @@ class ClassTime(
         result = 31 * result + end.hashCode()
         return result
     }
-
 }
 
-class InnerLocation (
+class InnerLocation(
     val location: LocationWithGroup? = null,
     val time: ClassTime? = null,
     val colorIndex: Int? = 0,
@@ -364,11 +361,11 @@ class InnerLocation (
     val header: Boolean = false,
     val timeRow: Boolean = false,
     val nothing: Boolean = false
-): Comparable<InnerLocation> {
+) : Comparable<InnerLocation> {
 
     override fun compareTo(other: InnerLocation): Int {
         if (header) return -1
-        return time?.compareTo(other.time!!)?: 0
+        return time?.compareTo(other.time!!) ?: 0
     }
 
     override fun equals(other: Any?): Boolean {
@@ -383,7 +380,7 @@ class InnerLocation (
     override fun hashCode(): Int {
         var result = location?.hashCode() ?: 0
         result = 31 * result + (time?.hashCode() ?: 0)
-        result = 31 * result + (colorIndex?: 0)
+        result = 31 * result + (colorIndex ?: 0)
         result = 31 * result + header.hashCode()
         result = 31 * result + timeRow.hashCode()
         result = 31 * result + nothing.hashCode()

@@ -42,7 +42,7 @@ import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import java.lang.IllegalStateException
 import javax.inject.Inject
 
-class SelectGroupDialog: RoundedDialog(), Injectable {
+class SelectGroupDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
@@ -61,7 +61,7 @@ class SelectGroupDialog: RoundedDialog(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val list = value.groups.map { it.group }
+        val list = value.groups
         val groupsAdapter = DisciplineGroupsAdapter(this, viewModel)
         binding.recyclerGroups.apply {
             adapter = groupsAdapter

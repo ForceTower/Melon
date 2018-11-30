@@ -42,8 +42,9 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class GradesSagresWorker(
-    context : Context, params : WorkerParameters
-): Worker(context, params) {
+    context: Context,
+    params: WorkerParameters
+) : Worker(context, params) {
     @Inject
     lateinit var repository: SagresGradesRepository
     override fun doWork(): Result {
@@ -51,7 +52,7 @@ class GradesSagresWorker(
         val semesterId = inputData.getLong(SEMESTER_ID, 0)
         val result = repository.getGrades(semesterId)
         return when {
-            result >=  0 -> Result.SUCCESS
+            result >= 0 -> Result.SUCCESS
             result >= -2 -> Result.FAILURE
             else -> Result.RETRY
         }
