@@ -36,7 +36,7 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
+import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import timber.log.Timber
@@ -60,12 +60,12 @@ class DisciplinesRepository @Inject constructor(
         return database.classGroupDao().getWithRelations(classGroupId)
     }
 
-    fun getClassStudent(classGroupId: Long): LiveData<ClassStudentWithGroup?> {
-        return database.classStudentDao().getMeFromGroup(classGroupId)
+    fun getClassFull(classId: Long): LiveData<ClassFullWithGroup?> {
+        return database.classDao().getClass(classId)
     }
 
-    fun getMyAbsencesFromGroup(classGroupId: Long): LiveData<List<ClassAbsence>> {
-        return database.classAbsenceDao().getMyAbsenceFromGroup(classGroupId)
+    fun getMyAbsencesFromClass(classId: Long): LiveData<List<ClassAbsence>> {
+        return database.classAbsenceDao().getMyAbsenceFromClass(classId)
     }
 
     fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>> {
@@ -85,14 +85,14 @@ class DisciplinesRepository @Inject constructor(
     // TODO create a observable here
     fun loadClassDetails(groupId: Long) {
         executors.networkIO().execute {
-            val value = database.classStudentDao().getMeFromGroupDirect(groupId)
+            val value = database.classGroupDao().getWithRelationsDirect(groupId)
             if (value == null) {
                 Timber.d("Class Group with ID: $groupId was not found")
             } else {
-                val clazz = value.group().clazz()
+                val clazz = value.clazz()
                 val semester = clazz.semester().name
                 val code = clazz.discipline().code
-                val group = value.group().group.group
+                val group = value.group.group
 
                 val callback = SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
                 if (callback.status == Status.COMPLETED) {

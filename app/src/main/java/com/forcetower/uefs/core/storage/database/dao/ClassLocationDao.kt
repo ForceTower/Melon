@@ -103,7 +103,7 @@ abstract class ClassLocationDao {
     @Update(onConflict = REPLACE)
     protected abstract fun update(group: ClassGroup)
 
-    @Query("SELECT g.* FROM ClassGroup g, ClassStudent cs, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode AND cs.group_id = g.uid AND cs.profile_id = :profileId")
+    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
     protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String, profileId: Long): List<ClassGroup>
 
     @Query("SELECT * FROM Profile WHERE me = 1")

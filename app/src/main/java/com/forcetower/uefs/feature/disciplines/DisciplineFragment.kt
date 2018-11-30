@@ -97,14 +97,14 @@ class DisciplineFragment : UFragment(), Injectable {
         })
 
         viewModel.navigateToGroupAction.observe(this, EventObserver {
-            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.uid))
+            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
         })
     }
 
     private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
         when {
             it.groups.isEmpty() -> homeViewModel.showSnack(getString(R.string.no_class_groups))
-            it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.groups[0].group.uid))
+            it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.clazz.uid, it.groups[0].uid))
             else -> showGroupDialog(it)
         }
     }
