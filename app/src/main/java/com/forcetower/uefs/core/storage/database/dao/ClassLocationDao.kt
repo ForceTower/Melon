@@ -64,7 +64,7 @@ abstract class ClassLocationDao {
         wipeScheduleProfile(profile.uid)
 
         locations.forEach {
-            val groups = selectGroups(semester.uid, it.classCode, profile.uid)
+            val groups = selectGroups(semester.uid, it.classCode)
             if (groups.isNotEmpty()) {
                 if (groups.size == 1) {
                     val group = groups[0]
@@ -104,7 +104,7 @@ abstract class ClassLocationDao {
     protected abstract fun update(group: ClassGroup)
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
-    protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String, profileId: Long): List<ClassGroup>
+    protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String): List<ClassGroup>
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile

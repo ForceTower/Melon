@@ -68,6 +68,7 @@ class OverviewFragment : UFragment(), Injectable {
         }
 
         viewModel.clazz.observe(this, Observer { overviewAdapter.currentClazz = it })
+        viewModel.group.observe(this, Observer { overviewAdapter.currentGroup = it })
     }
 
     companion object {
