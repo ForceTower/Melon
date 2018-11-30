@@ -147,7 +147,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guide_title"
-                app:disciplineGroupsGrades="@{clazzGroup.groups}"
+                app:disciplineGroupsGrades="@{clazzGroup.grades}"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_grade" />

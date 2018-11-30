@@ -50,7 +50,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:swipeEnabled="@{false}"
-            app:refreshing="@{viewModel.loading}"
+            app:refreshing="@{safeUnbox(viewModel.loading)}"
             app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
     

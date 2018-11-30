@@ -56,8 +56,7 @@ class OverviewFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val overviewAdapter =
-            OverviewAdapter(this, viewModel)
+        val overviewAdapter = OverviewAdapter(this, viewModel)
         binding.recyclerOverview.apply {
             adapter = overviewAdapter
             itemAnimator?.run {
@@ -68,7 +67,7 @@ class OverviewFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.classStudent.observe(this, Observer { overviewAdapter.currentDiscipline = it })
+        viewModel.clazz.observe(this, Observer { overviewAdapter.currentClazz = it })
     }
 
     companion object {

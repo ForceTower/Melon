@@ -32,12 +32,15 @@ import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Grade
 
 class ClassWithGroups {
     @Embedded
     lateinit var clazz: Class
     @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassGroup::class)
-    lateinit var groups: List<ClassGroupWithStudents>
+    lateinit var groups: List<ClassGroup>
+    @Relation(parentColumn = "uid", entityColumn = "class_id", entity = Grade::class)
+    lateinit var grades: List<Grade>
     @Relation(parentColumn = "discipline_id", entityColumn = "uid", entity = Discipline::class)
     lateinit var disciplines: List<Discipline>
 

@@ -35,14 +35,12 @@ import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
-import com.forcetower.uefs.core.storage.database.accessors.ClassStudentWithGroup
+import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
-import com.forcetower.uefs.feature.shared.map
 import com.forcetower.uefs.feature.shared.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
@@ -55,14 +53,15 @@ class DisciplineViewModel @Inject constructor(
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
     private val classGroupId = MutableLiveData<Long?>()
+    private val classId = MutableLiveData<Long?>()
 
-    private val _classStudent = MediatorLiveData<ClassStudentWithGroup?>()
-    val classStudent: LiveData<ClassStudentWithGroup?>
-        get() = _classStudent
+    private val _classFull = MediatorLiveData<ClassFullWithGroup?>()
+    val clazz: LiveData<ClassFullWithGroup?>
+        get() = _classFull
 
-    val group: LiveData<GroupWithClass?> = classStudent.map {
-        it?.group()
-    }
+    private val _group = MediatorLiveData<ClassGroup?>()
+    val group: LiveData<ClassGroup?>
+        get() = _group
 
     private val _absences = MediatorLiveData<List<ClassAbsence>>()
     val absences: LiveData<List<ClassAbsence>>
@@ -97,10 +96,10 @@ class DisciplineViewModel @Inject constructor(
         get() = _materialClick
 
     init {
-        _classStudent.addSource(classGroupId) {
+        _classFull.addSource(classId) {
             refreshClassStudent(it)
         }
-        _absences.addSource(classGroupId) {
+        _absences.addSource(classId) {
             refreshAbsences(it)
         }
         _materials.addSource(classGroupId) {
@@ -111,6 +110,14 @@ class DisciplineViewModel @Inject constructor(
         }
         _loadClassDetails.addSource(classGroupId) {
             if (it != null) repository.loadClassDetails(it)
+        }
+        _group.addSource(classGroupId) {
+            if (it != null) {
+                val source = repository.getClassGroup(it)
+                _group.addSource(source) { value ->
+                    _group.value = value?.group
+                }
+            }
         }
     }
 
@@ -132,26 +139,30 @@ class DisciplineViewModel @Inject constructor(
         }
     }
 
-    private fun refreshAbsences(classGroupId: Long?) {
-        if (classGroupId != null) {
-            val source = repository.getMyAbsencesFromGroup(classGroupId)
+    private fun refreshAbsences(classId: Long?) {
+        if (classId != null) {
+            val source = repository.getMyAbsencesFromClass(classId)
             _absences.addSource(source) { value ->
                 _absences.value = value
             }
         }
     }
 
-    private fun refreshClassStudent(classGroupId: Long?) {
-        if (classGroupId != null) {
-            val source = repository.getClassStudent(classGroupId)
-            _classStudent.addSource(source) { value ->
-                _classStudent.value = value
+    private fun refreshClassStudent(classId: Long?) {
+        if (classId != null) {
+            val source = repository.getClassFull(classId)
+            _classFull.addSource(source) { value ->
+                _classFull.value = value
             }
         }
     }
 
     fun setClassGroupId(classGroupId: Long?) {
         this.classGroupId.setValueIfNew(classGroupId)
+    }
+
+    fun setClassId(classId: Long?) {
+        this.classId.setValueIfNew(classId)
     }
 
     override fun classClicked(clazz: ClassWithGroups) {
