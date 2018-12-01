@@ -26,9 +26,9 @@
   ~ SOFTWARE.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_sagres_messages"
         android:layout_width="match_parent"
@@ -37,5 +37,7 @@
         android:paddingEnd="16dp"
         android:paddingBottom="16dp"
         android:paddingTop="8dp"
-        android:clipToPadding="false"/>
+        android:clipToPadding="false"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        tools:listitem="@layout/item_unes_message"/>
 </layout>
