@@ -135,6 +135,11 @@ fun Long.formatTime(): String {
     return dateFormat.format(this)
 }
 
+fun Long.formatTimeWithouSeconds(): String {
+    val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
+    return dateFormat.format(this)
+}
+
 fun Long.formatFullDate(): String {
     val date = Date(this)
     val format = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault())
@@ -144,5 +149,11 @@ fun Long.formatFullDate(): String {
 fun Long.formatSimpleDay(): String {
     val date = Date(this)
     val format = SimpleDateFormat("EEE, d MMM yyyy", Locale.getDefault())
+    return format.format(date)
+}
+
+fun Long.formatMonthYear(): String {
+    val date = Date(this)
+    val format = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
     return format.format(date)
 }
