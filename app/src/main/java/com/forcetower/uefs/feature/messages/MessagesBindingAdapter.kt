@@ -35,6 +35,10 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.feature.shared.formatMonthYear
+import com.forcetower.uefs.feature.shared.formatTimeWithouSeconds
+import java.util.Calendar
+import java.util.Date
 
 @BindingAdapter("messageContent")
 fun messageContent(tv: TextView, content: String) {
@@ -67,5 +71,34 @@ fun senderText(tv: TextView, message: Message?) {
         val text = message.senderName
         val title = WordUtils.toTitleCase(text)
         tv.text = title ?: "::prov_renatinha::"
+    }
+}
+
+@BindingAdapter("dateNumberFromDate")
+fun dateNumberFromDate(tv: TextView, date: Date?) {
+    if (date == null) {
+        tv.text = "??"
+    } else {
+        val time = date.time
+        val calendar = Calendar.getInstance().apply { timeInMillis = time }
+        tv.text = calendar.get(Calendar.DAY_OF_MONTH).toString()
+    }
+}
+
+@BindingAdapter("monthFromDate")
+fun monthFromDate(tv: TextView, date: Date?) {
+    if (date == null) {
+        tv.text = "?? ????"
+    } else {
+        tv.text = date.time.formatMonthYear()
+    }
+}
+
+@BindingAdapter("hourFromDate")
+fun hourFromDate(tv: TextView, date: Date?) {
+    if (date == null) {
+        tv.text = "??:??"
+    } else {
+        tv.text = date.time.formatTimeWithouSeconds()
     }
 }

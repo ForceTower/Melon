@@ -25,40 +25,20 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.messages
+package com.forcetower.uefs.core.model.service
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.storage.repository.MessagesRepository
-import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
+import com.google.firebase.firestore.ServerTimestamp
+import java.util.Date
 
-class MessagesViewModel @Inject constructor(
-    val repository: MessagesRepository
-) : ViewModel(), MessagesActions {
-    val messages by lazy { repository.getMessages() }
-    val unesMessages by lazy { repository.getUnesMessages() }
-
-    private val _refreshing = MediatorLiveData<Boolean>()
-    val refreshing: LiveData<Boolean>
-        get() = _refreshing
-
-    private val _messageClick = MutableLiveData<Event<String>>()
-    val messageClick: LiveData<Event<String>>
-        get() = _messageClick
-
-    fun onRefresh() {
-        val fetchMessages = repository.fetchMessages()
-        _refreshing.value = true
-        _refreshing.addSource(fetchMessages) {
-            _refreshing.removeSource(fetchMessages)
-            _refreshing.value = false
-        }
-    }
-
-    override fun onMessageClick(message: String) {
-        _messageClick.value = Event(message)
+data class UMessage(
+    var id: String = "",
+    var title: String = "",
+    var message: String = "",
+    var image: String? = null,
+    @ServerTimestamp
+    var createdAt: Date? = null
+) {
+    companion object {
+        const val COLLECTION = "unes_messages"
     }
 }
