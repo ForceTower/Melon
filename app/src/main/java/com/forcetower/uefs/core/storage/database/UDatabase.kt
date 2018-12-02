@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
+import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
@@ -58,6 +59,7 @@ import com.forcetower.uefs.core.storage.database.dao.ClassGroupDao
 import com.forcetower.uefs.core.storage.database.dao.ClassItemDao
 import com.forcetower.uefs.core.storage.database.dao.ClassLocationDao
 import com.forcetower.uefs.core.storage.database.dao.ClassMaterialDao
+import com.forcetower.uefs.core.storage.database.dao.ContributorDao
 import com.forcetower.uefs.core.storage.database.dao.CourseDao
 import com.forcetower.uefs.core.storage.database.dao.DemandOfferDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
@@ -89,8 +91,9 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     SyncRegistry::class,
     Teacher::class,
     SDemandOffer::class,
-    SagresFlags::class
-], version = 5, exportSchema = true)
+    SagresFlags::class,
+    Contributor::class
+], version = 6, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -111,4 +114,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun classItemDao(): ClassItemDao
     abstract fun demandOfferDao(): DemandOfferDao
     abstract fun flagsDao(): FlagsDao
+    abstract fun contributorDao(): ContributorDao
 }

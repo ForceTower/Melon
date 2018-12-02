@@ -25,26 +25,27 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.feature.about
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Contributor
+import com.forcetower.uefs.core.storage.repository.ContributorRepository
+import com.forcetower.uefs.core.vm.Event
+import javax.inject.Inject
 
-@Entity(indices = [
-    Index(value = ["login"], unique = true)
-])
-data class Contributor(
-    @PrimaryKey
-    var id: Long = 0,
-    var login: String = "",
-    var total: Int = 0,
-    var name: String = "",
-    @SerializedName("avatar_url")
-    var image: String? = null,
-    @SerializedName("html_url")
-    var link: String? = null,
-    var url: String? = null,
-    var bio: String? = null
-)
+class ContributorViewModel @Inject constructor(
+    private val repository: ContributorRepository
+) : ViewModel(), ContributorActions {
+    val contributors by lazy { repository.loadContributors() }
+
+    private val _contributorClickAction = MutableLiveData<Event<String>>()
+    val contributorClickAction: LiveData<Event<String>>
+        get () = _contributorClickAction
+
+    override fun onContributorClick(contributor: Contributor?) {
+        val link = contributor?.link ?: return
+        _contributorClickAction.value = Event(link)
+    }
+}
