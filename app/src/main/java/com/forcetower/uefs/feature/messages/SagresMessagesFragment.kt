@@ -31,20 +31,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ArrayAdapter
-import androidx.appcompat.app.AlertDialog
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.util.getLinks
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
-import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.openURL
 import com.forcetower.uefs.feature.shared.provideActivityViewModel
 import javax.inject.Inject
 
@@ -57,11 +49,9 @@ class SagresMessagesFragment : UFragment(), Injectable {
     private val manager by lazy { LinearLayoutManager(context) }
     private lateinit var binding: FragmentSagresMessagesBinding
     private lateinit var viewModel: MessagesViewModel
-    private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(vmFactory)
-        homeViewModel = provideActivityViewModel(vmFactory)
         binding = FragmentSagresMessagesBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -80,39 +70,5 @@ class SagresMessagesFragment : UFragment(), Injectable {
         }
 
         viewModel.messages.observe(this, Observer { adapter.submitList(it) })
-        viewModel.messageClick.observe(this, EventObserver { openLink(it) })
-    }
-
-    private fun openLink(message: Message) {
-        val links = message.content.getLinks()
-        if (links.isEmpty()) return
-
-        if (links.size == 1) {
-            try {
-                requireContext().openURL(links[0])
-            } catch (ignored: Throwable) {
-                homeViewModel.showSnack(getString(R.string.unable_to_open_url))
-            }
-        } else {
-            val adapter = ArrayAdapter<String>(requireContext(), android.R.layout.select_dialog_item)
-            adapter.addAll(links)
-
-            val dialog = AlertDialog.Builder(requireContext())
-                .setIcon(R.drawable.ic_http_accent_30dp)
-                .setTitle(R.string.select_a_link)
-                .setAdapter(adapter) { dialog, position ->
-                    val url = adapter.getItem(position)
-                    dialog.dismiss()
-                    try {
-                        if (url != null) requireContext().openURL(url)
-                    } catch (ignored: Throwable) {
-                        homeViewModel.showSnack(getString(R.string.unable_to_open_url))
-                    }
-                }
-                .setNegativeButton(R.string.cancel) { dialog, _ -> dialog.dismiss() }
-                .create()
-
-            dialog.show()
-        }
     }
 }

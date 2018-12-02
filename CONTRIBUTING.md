@@ -45,7 +45,7 @@ A partir de agora vamos demorar um tempo (ou não):
 * [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
 * [Espere muito tempo](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
 * [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-* [Crie um projeto no Firebase](https://console.firebase.google.com/) e substitua o google-services.json padrão pelo o do seu projeto do firebase, ele está localizado na pasta app [Este passo é opcional, mas algumas funções não irão funcionar nos seus testes se você não configurar]
+* [Opcional: Crie um projeto no Firebase](https://console.firebase.google.com/) e substitua o google-services.json padrão pelo o do seu projeto do firebase, ele está localizado na pasta app [Este passo é opcional, mas algumas funções que dependem de processamento em servidor não irão funcionar, contudo, este passo somente é recomendável se você for familiarizado com o Firebase]
 
 Isso deve ser tudo, nem parece que demoramos 7 horas para fazer o projeto rodar.
 

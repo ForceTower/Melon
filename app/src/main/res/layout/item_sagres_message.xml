@@ -45,7 +45,7 @@
         app:strokeColor="@color/messages_stroke"
         app:strokeWidth="1dp"
         android:layout_marginBottom="8dp"
-        android:onClick="@{() -> listener.onMessageClick(message)}"
+        android:onClick="@{() -> listener.onMessageClick(message.content)}"
         android:stateListAnimator="@animator/default_card_raise">
 
         <androidx.constraintlayout.widget.ConstraintLayout
