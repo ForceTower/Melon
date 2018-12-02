@@ -55,3 +55,11 @@ object M3TO4 : Migration(3, 4) {
         database.execSQL("ALTER TABLE Message ADD COLUMN code_discipline TEXT DEFAULT NULL")
     }
 }
+
+object M5TO6 : Migration(5, 6) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val tableName = "Contributor"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$tableName` (`id` INTEGER NOT NULL, `login` TEXT NOT NULL, `total` INTEGER NOT NULL, `name` TEXT NOT NULL, `image` TEXT, `link` TEXT, `url` TEXT, `bio` TEXT, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE UNIQUE INDEX `index_Contributor_login` ON `$tableName` (`login`)")
+    }
+}
