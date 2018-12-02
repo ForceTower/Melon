@@ -50,7 +50,7 @@ class ContributorRepository @Inject constructor(
 
     @MainThread
     fun loadContributors(): LiveData<Resource<List<Contributor>>> {
-        return object: NetworkBoundResource<List<Contributor>, List<GithubContributor>>(executors) {
+        return object : NetworkBoundResource<List<Contributor>, List<GithubContributor>>(executors) {
             override fun loadFromDb() = database.contributorDao().getContributors()
             override fun shouldFetch(it: List<Contributor>?) = true
             override fun createCall() = service.getContributors()
