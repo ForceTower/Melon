@@ -31,14 +31,41 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.R
+import androidx.lifecycle.Observer
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.FragmentUnesMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import javax.inject.Inject
 
-class UnesMessagesFragment : UFragment() {
+class UnesMessagesFragment : UFragment(), Injectable {
+    @Inject
+    lateinit var factory: UViewModelFactory
+    private lateinit var binding: FragmentUnesMessagesBinding
+    private lateinit var viewModel: MessagesViewModel
+
     init { displayName = "UNES" }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_unes_messages, container, false)
-        return view
+        viewModel = provideActivityViewModel(factory)
+        return FragmentUnesMessagesBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val messagesAdapter = UnesMessageAdapter(this, viewModel)
+        binding.recyclerSagresMessages.apply {
+            adapter = messagesAdapter
+            itemAnimator?.run {
+                addDuration = 120L
+                moveDuration = 120L
+                changeDuration = 120L
+                removeDuration = 100L
+            }
+        }
+
+        viewModel.unesMessages.observe(this, Observer { messagesAdapter.submitList(it) })
     }
 }
