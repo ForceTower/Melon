@@ -25,26 +25,23 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.forcetower.uefs.core.model.unes.Contributor
 
-@Entity(indices = [
-    Index(value = ["login"], unique = true)
-])
-data class Contributor(
-    @PrimaryKey
-    var id: Long = 0,
-    var login: String = "",
-    var total: Int = 0,
-    var name: String = "",
-    @SerializedName("avatar_url")
-    var image: String? = null,
-    @SerializedName("html_url")
-    var link: String? = null,
-    var url: String? = null,
-    var bio: String? = null
-)
+@Dao
+interface ContributorDao {
+    @Insert(onConflict = REPLACE)
+    fun insert(contributor: Contributor)
+
+    @Query("SELECT * FROM Contributor ORDER BY total DESC")
+    fun getContributors(): LiveData<List<Contributor>>
+
+    @Query("DELETE FROM Contributor")
+    fun deleteAll()
+}

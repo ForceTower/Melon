@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.SnackbarViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.feature.about.ContributorViewModel
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
 import com.forcetower.uefs.feature.demand.DemandViewModel
@@ -138,6 +139,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SnackbarViewModel::class)
     abstract fun bindSnackbarViewModel(vm: SnackbarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ContributorViewModel::class)
+    abstract fun bindContributorViewModel(vm: ContributorViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

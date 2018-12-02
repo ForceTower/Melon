@@ -32,6 +32,9 @@
         <variable
             name="contributor"
             type="com.forcetower.uefs.core.model.unes.Contributor"/>
+        <variable
+            name="actions"
+            type="com.forcetower.uefs.feature.about.ContributorActions"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -41,6 +44,7 @@
         android:layout_marginStart="@dimen/spacing_common"
         android:layout_marginEnd="@dimen/spacing_common"
         android:stateListAnimator="@animator/contributor_raise"
+        android:onClick="@{() -> actions.onContributorClick(contributor)}"
         android:clickable="true"
         android:focusable="true">
 
@@ -84,14 +88,18 @@
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="João Paulo Santos Sena" />
-
+    
             <TextView
                 style="@style/UTheme.TextAppearance.Subtitle1"
                 android:layout_width="0dp"
-                android:layout_height="wrap_content"
+                android:layout_height="0dp"
                 android:layout_marginTop="8dp"
-                android:text="@{contributor.description}"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:text="@{contributor.bio}"
                 android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/text_user_name"
                 tools:text="Programação das features core" />
