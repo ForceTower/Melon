@@ -40,39 +40,24 @@ class ContributorAdapter(
 ) : ListAdapter<Contributor, ContributorHolder>(ContributorDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContributorHolder {
         val binding = ItemAboutContributorBinding.inflate(parent.inflater(), parent, false)
-        return ContributorHolder(binding, listener)
+        return ContributorHolder(binding)
     }
 
     override fun onBindViewHolder(holder: ContributorHolder, position: Int) {
-        holder.bind(getItem(position))
+        holder.binding.apply {
+            actions = listener
+            contributor = getItem(position)
+        }
     }
 }
 
-class ContributorHolder(
-    private val binding: ItemAboutContributorBinding,
-    private val listener: ContributorActions? = null
-) : RecyclerView.ViewHolder(binding.root) {
-    init {
-        binding.root.setOnClickListener { _ -> onClick() }
-    }
+class ContributorHolder(val binding: ItemAboutContributorBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private fun onClick() {
-        val position = adapterPosition
-        val item = binding.contributor
-        if (item != null) listener?.onContributorClick(item, position)
-    }
-
-    fun bind(contributor: Contributor) {
-        binding.contributor = contributor
-        binding.executePendingBindings()
-    }
-}
-
-object ContributorDiff : DiffUtil.ItemCallback<Contributor>() {
-    override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem.uid == newItem.uid
+private object ContributorDiff : DiffUtil.ItemCallback<Contributor>() {
+    override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem.id == newItem.id
     override fun areContentsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem == newItem
 }
 
 interface ContributorActions {
-    fun onContributorClick(contributor: Contributor, position: Int)
+    fun onContributorClick(contributor: Contributor?)
 }
