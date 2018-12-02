@@ -5,7 +5,6 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 🛑 Versão altamente instável e com funções faltando 🛑
 
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon/tree/development)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/b7f7893bd3a64fb7bad733fa9d4b576f)](https://app.codacy.com/app/ForceTower/Melon?utm_source=github.com&utm_medium=referral&utm_content=ForceTower/Melon&utm_campaign=Badge_Grade_Dashboard)
 
 ### Objetivos
 * ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
