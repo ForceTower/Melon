@@ -27,8 +27,6 @@
 
 package com.forcetower.uefs.feature.messages
 
-import com.forcetower.uefs.core.model.unes.Message
-
 interface MessagesActions {
-    fun onMessageClick(message: Message)
+    fun onMessageClick(message: String)
 }

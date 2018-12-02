@@ -33,15 +33,21 @@ import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.defineInDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.Query
+import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class MessagesRepository @Inject constructor(
-    val database: UDatabase,
-    val executors: AppExecutors
+    private val database: UDatabase,
+    private val executors: AppExecutors,
+    @Named(UMessage.COLLECTION) private val collection: CollectionReference
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
@@ -68,5 +74,18 @@ class MessagesRepository @Inject constructor(
         } else {
             false
         }
+    }
+
+    fun getUnesMessages(): LiveData<List<UMessage>> {
+        val result = MutableLiveData<List<UMessage>>()
+        collection.orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, exception ->
+            if (exception != null) {
+                Timber.e(exception)
+            } else if (snapshot != null) {
+                val list = snapshot.documents.map { it.toObject(UMessage::class.java)!!.apply { id = it.id } }
+                result.postValue(list)
+            }
+        }
+        return result
     }
 }

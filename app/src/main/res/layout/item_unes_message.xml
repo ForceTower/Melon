@@ -29,47 +29,156 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    
+    <data>
+        <variable
+            name="message"
+            type="com.forcetower.uefs.core.model.service.UMessage"/>
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.messages.MessagesActions"/>
+    </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
-        app:cardCornerRadius="8dp">
-
+        app:strokeWidth="1dp"
+        app:strokeColor="@color/messages_stroke"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="1dp"
+        android:onClick="@{() -> listener.onMessageClick(message.link)}"
+        android:stateListAnimator="@animator/default_card_raise">
+    
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-
-            <TextView
-                android:id="@+id/text_message_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginEnd="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                tools:text="Esta é uma mensagem de teste. Ela não deve ser muito levada a sério" />
-
-            <ImageView
-                android:id="@+id/image_message_picture"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="8dp"
-                android:scaleType="centerCrop"
-                tools:src="@mipmap/ic_unes_large_image_512"
-                app:layout_constraintTop_toBottomOf="@id/text_message_content"/>
-
-            <TextView
+        
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_header"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
+                android:orientation="horizontal"
+                app:layout_constraintGuide_begin="72dp" />
+        
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="16dp" />
+        
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_end"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_end="16dp" />
+        
+            <ImageView
+                android:id="@+id/circle"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:importantForAccessibility="no"
+                android:src="@color/blue_accent"
+                app:clipToCircle="@{true}"
+                app:layout_constraintBottom_toTopOf="@+id/guideline_header"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/image_message_picture"
-                tools:text="Enviada por: João Paulo" />
+                app:layout_constraintTop_toTopOf="parent" />
+        
+            <TextView
+                android:id="@+id/text_date_number"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:textAlignment="gravity"
+                android:textColor="#FFF"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:dateNumberFromDate="@{message.createdAt}"
+                app:layout_constraintBottom_toBottomOf="@+id/circle"
+                app:layout_constraintEnd_toEndOf="@+id/circle"
+                app:layout_constraintStart_toStartOf="@+id/circle"
+                app:layout_constraintTop_toTopOf="@+id/circle"
+                tools:text="27" />
+        
+            <TextView
+                android:id="@+id/text_month_year"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/text_primary_dark"
+                android:textSize="16sp"
+                android:textStyle="bold"
+                app:monthFromDate="@{message.createdAt}"
+                app:layout_constraintBottom_toBottomOf="@+id/text_date_number"
+                app:layout_constraintStart_toEndOf="@+id/text_date_number"
+                app:layout_constraintTop_toTopOf="@+id/text_date_number"
+                tools:text="Maio 2019" />
+        
+            <TextView
+                android:id="@+id/text_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary_dark"
+                android:textSize="15sp"
+                app:hourFromDate="@{message.createdAt}"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@id/guideline_header"
+                tools:text="09:17" />
+        
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textColor="@color/text_primary_dark"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                android:text="@{message.title}"
+                app:layout_constraintBottom_toTopOf="@+id/text_content"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_time"
+                tools:text="Feliz Aniversário!" />
+        
+            <TextView
+                android:id="@+id/text_content"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="@color/text_secondary_dark"
+                android:textSize="16sp"
+                android:text="@{message.message}"
+                app:layout_constraintBottom_toTopOf="@+id/image_message"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_title"
+                tools:text="É o meu aniversário... Doce, guaraná, bombom para mim! Essa mensagem é um teste, por isso mesmo que ela não existe e está somente aqui, nos layouts." />
+        
+            <ImageView
+                android:id="@+id/image_message"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/unes_message_image"
+                android:scaleType="centerCrop"
+                app:goneUnless="@{message.image != null}"
+                app:imageUrl="@{message.image}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/text_content"
+                tools:src="@tools:sample/backgrounds/scenic"
+                tools:visibility="visible" />
+    
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
