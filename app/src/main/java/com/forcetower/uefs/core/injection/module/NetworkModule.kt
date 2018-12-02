@@ -31,6 +31,7 @@ import android.content.Context
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
+import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
@@ -95,5 +96,18 @@ object NetworkModule {
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
                 .create(UService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideGithubService(client: OkHttpClient): GithubService {
+        return Retrofit.Builder()
+            .baseUrl("https://api.github.com/")
+            .client(client)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(GithubService::class.java)
     }
 }

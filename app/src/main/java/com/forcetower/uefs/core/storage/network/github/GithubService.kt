@@ -25,26 +25,21 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.core.storage.network.github
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import retrofit2.Call
+import retrofit2.http.GET
+import retrofit2.http.Path
 
-@Entity(indices = [
-    Index(value = ["login"], unique = true)
-])
-data class Contributor(
-    @PrimaryKey
-    var id: Long = 0,
-    var login: String = "",
-    var total: Int = 0,
-    var name: String = "",
-    @SerializedName("avatar_url")
-    var image: String? = null,
-    @SerializedName("html_url")
-    var link: String? = null,
-    var url: String? = null,
-    var bio: String? = null
-)
+const val username = "ForceTower"
+const val project = "Melon"
+
+interface GithubService {
+    @GET("repos/$username/$project/stats/contributors")
+    fun getContributors(): LiveData<ApiResponse<List<GithubContributor>>>
+
+    @GET("users/{username}")
+    fun getUserDirect(@Path("username") username: String): Call<GithubUser>
+}
