@@ -36,7 +36,7 @@ import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.feature.shared.formatMonthYear
-import com.forcetower.uefs.feature.shared.formatTimeWithouSeconds
+import com.forcetower.uefs.feature.shared.formatTimeWithoutSeconds
 import java.util.Calendar
 import java.util.Date
 
@@ -90,7 +90,7 @@ fun monthFromDate(tv: TextView, date: Date?) {
     if (date == null) {
         tv.text = "?? ????"
     } else {
-        tv.text = date.time.formatMonthYear()
+        tv.text = date.time.formatMonthYear().capitalize()
     }
 }
 
@@ -99,6 +99,6 @@ fun hourFromDate(tv: TextView, date: Date?) {
     if (date == null) {
         tv.text = "??:??"
     } else {
-        tv.text = date.time.formatTimeWithouSeconds()
+        tv.text = date.time.formatTimeWithoutSeconds()
     }
 }
