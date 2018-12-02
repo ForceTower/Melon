@@ -135,7 +135,7 @@ fun Long.formatTime(): String {
     return dateFormat.format(this)
 }
 
-fun Long.formatTimeWithouSeconds(): String {
+fun Long.formatTimeWithoutSeconds(): String {
     val dateFormat = SimpleDateFormat("HH:mm", Locale.getDefault())
     return dateFormat.format(this)
 }
