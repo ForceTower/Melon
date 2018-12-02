@@ -42,7 +42,7 @@ class ContributorViewModel @Inject constructor(
 
     private val _contributorClickAction = MutableLiveData<Event<String>>()
     val contributorClickAction: LiveData<Event<String>>
-        get () = _contributorClickAction
+        get() = _contributorClickAction
 
     override fun onContributorClick(contributor: Contributor?) {
         val link = contributor?.link ?: return
