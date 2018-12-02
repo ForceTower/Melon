@@ -25,26 +25,21 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.core.storage.network.github
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
+import com.forcetower.uefs.core.model.unes.Contributor
 
-@Entity(indices = [
-    Index(value = ["login"], unique = true)
-])
-data class Contributor(
-    @PrimaryKey
-    var id: Long = 0,
-    var login: String = "",
+data class GithubContributor(
     var total: Int = 0,
+    var author: Contributor? = null
+) {
+    fun toContributor(): Contributor? {
+        return author?.apply { total = this@GithubContributor.total }
+    }
+}
+
+data class GithubUser(
+    var login: String = "",
     var name: String = "",
-    @SerializedName("avatar_url")
-    var image: String? = null,
-    @SerializedName("html_url")
-    var link: String? = null,
-    var url: String? = null,
     var bio: String? = null
 )
