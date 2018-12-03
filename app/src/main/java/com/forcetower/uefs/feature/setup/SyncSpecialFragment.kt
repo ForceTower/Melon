@@ -52,7 +52,7 @@ class SyncSpecialFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.btnNext.setOnClickListener {
-            findNavController().navigate(R.id.action_configuration_to_home)
+            findNavController().navigate(R.id.action_special_to_home)
             requireActivity().finishAfterTransition()
         }
 
@@ -73,6 +73,10 @@ class SyncSpecialFragment : UFragment(), Injectable {
                     "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
                 )
                 "honor" -> intent.component = ComponentName(
+                    "com.huawei.systemmanager",
+                    "com.huawei.systemmanager.optimize.process.ProtectActivity"
+                )
+                "huawei" -> intent.component = ComponentName(
                     "com.huawei.systemmanager",
                     "com.huawei.systemmanager.optimize.process.ProtectActivity"
                 )
