@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -50,7 +51,8 @@ class FirebaseMessageRepository @Inject constructor(
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val context: Context,
-    private val syncRepository: SagresSyncRepository
+    private val syncRepository: SagresSyncRepository,
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) {
     fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
@@ -68,8 +70,30 @@ class FirebaseMessageRepository @Inject constructor(
             "remote_database" -> promoteDatabase(data)
             "service" -> serviceNotification(data)
             "synchronize" -> universalSync(data)
+            "reconnect_firebase" -> firebaseReconnect(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun firebaseReconnect(data: Map<String, String>) {
+        // Esta função se tornou necessária ja que eu fiz a besteira de não colocar um toLowerCase nos nomes
+        // que compõe as credenciais do firebase, isso poderia fazer com que todos os usuarios precisassem se reconectar.
+        // Então, basta invocar esta função que a pessoa irá se reconectar aos serviços do firebase sem problemas.
+
+        val unique = data["unique"]
+        val version = data["version"]?.toIntOrNull()
+        if (unique == null || version == null) {
+            Crashlytics.log("You need to specify a unique key and a version for this to work")
+            return
+        }
+
+        val executed = preferences.getBoolean("${unique}__firebase", false)
+        if (BuildConfig.VERSION_CODE < version || executed) {
+            return
+        }
+
+        preferences.edit().putBoolean("${unique}__firebase", true).apply()
+        firebaseAuthRepository.reconnect()
     }
 
     private fun universalSync(@Suppress("UNUSED_PARAMETER") data: Map<String, String>) {

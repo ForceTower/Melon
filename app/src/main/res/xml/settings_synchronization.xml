@@ -26,7 +26,8 @@
   ~ SOFTWARE.
   -->
 
-<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
         
     <ListPreference
@@ -34,7 +35,7 @@
         app:defaultValue="0"
         app:title="@string/settings_sync_type_label"
         app:summary="@string/settings_sync_type_info_label"
-        app:icon="@drawable/ic_group_work_accent_30dp"
+        app:icon="@drawable/ic_group_work_accent_24dp"
         app:entries="@array/settings_sync_type_titles"
         app:entryValues="@array/settings_sync_type_values" />
     
@@ -43,7 +44,7 @@
         app:defaultValue="60"
         app:title="@string/settings_sync_frequency_label"
         app:summary="@string/settings_sync_frequency_info_label"
-        app:icon="@drawable/ic_sync_accent_30dp"
+        app:icon="@drawable/ic_sync_accent_24dp"
         app:entries="@array/settings_sync_frequency_titles"
         app:entryValues="@array/settings_sync_frequency_values" />
     

@@ -119,4 +119,8 @@ public class SPerson {
     public void setSagresId(@Nullable String sagresId) {
         this.sagresId = sagresId;
     }
+
+    public String getUnique() {
+        return cpf.toLowerCase() + ".." + id;
+    }
 }

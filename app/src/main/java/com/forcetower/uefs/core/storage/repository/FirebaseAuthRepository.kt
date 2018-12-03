@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
@@ -57,8 +58,13 @@ class FirebaseAuthRepository @Inject constructor(
     private val secret = context.getString(R.string.firebase_account_secret)
 
     fun loginToFirebase(person: SPerson, access: Access) {
-        val email = context.getString(R.string.email_unes_format, access.username)
-        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, access, person, secret), access, person)
+        val email = context.getString(R.string.email_unes_format, access.username.toLowerCase())
+
+        val profiler = "${person.sagresId}__${access.toString().toLowerCase()}"
+        val username = access.username.toLowerCase()
+        val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
+
+        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, username, password, secret), access, person)
     }
 
     private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
@@ -160,5 +166,30 @@ class FirebaseAuthRepository @Inject constructor(
                         Timber.d("Exception: ${task.exception}")
                     }
                 })
+    }
+
+    fun reconnect(access: Access, profile: Profile) {
+        val email = context.getString(R.string.email_unes_format, access.username.toLowerCase())
+        val username = access.username.toLowerCase()
+        val profiler = "${profile.sagresId}__${access.toString().toLowerCase()}"
+        val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
+        val currentUser = firebaseAuth.currentUser
+        currentUser?.updatePassword(password)?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                Timber.d("Completed firebase password update operation")
+                if (currentUser.email != null && currentUser.email != email)
+                    currentUser.updateEmail(email).addOnCompleteListener { update ->
+                        if (update.isSuccessful) {
+                            Timber.d("Completed firebase email update operation")
+                        } else {
+                            Crashlytics.setUserName(access.username)
+                            Crashlytics.log("Failed to update firebase email credential")
+                        }
+                    }
+            } else {
+                Crashlytics.setUserName(access.username)
+                Crashlytics.log("Failed to update firebase password credential")
+            }
+        }
     }
 }
