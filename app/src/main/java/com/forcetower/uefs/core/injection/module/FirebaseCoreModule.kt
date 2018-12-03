@@ -27,10 +27,13 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import android.content.Context
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import javax.inject.Singleton
 
 @Module
@@ -44,4 +47,9 @@ object FirebaseCoreModule {
     @Singleton
     @JvmStatic
     fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance()
+
+    @Provides
+    @Reusable
+    @JvmStatic
+    fun provideAnalytics(context: Context): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 }
