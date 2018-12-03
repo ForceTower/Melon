@@ -55,10 +55,10 @@ class OnUpgradeReceiver : BroadcastReceiver() {
             preferences.edit().putBoolean("upgrade_msg_unes_v2", true).apply()
         }
 
-        val demand = preferences.getBoolean("upgrade_demand_v2", false)
-        if (!demand) {
-            NotificationCreator.showUpgradeNotification(context.getString(R.string.demand_update_title), context.getString(R.string.demand_update_content), context)
-            preferences.edit().putBoolean("upgrade_demand_v2", true).apply()
-        }
+//        val demand = preferences.getBoolean("upgrade_demand_v2", false)
+//        if (!demand) {
+//            NotificationCreator.showUpgradeNotification(context.getString(R.string.demand_update_title), context.getString(R.string.demand_update_content), context)
+//            preferences.edit().putBoolean("upgrade_demand_v2", true).apply()
+//        }
     }
 }
