@@ -35,13 +35,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.firebase.analytics.FirebaseAnalytics
+import javax.inject.Inject
 
 class SyncSpecialFragment : UFragment(), Injectable {
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
+
     private lateinit var binding: FragmentSetupSpecialConfigBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -85,6 +91,11 @@ class SyncSpecialFragment : UFragment(), Injectable {
 
             val list = requireContext().packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
             if (list.size > 0) {
+                if (intent.action != android.provider.Settings.ACTION_SETTINGS) {
+                    try {
+                        analytics.logEvent("open_special_settings", bundleOf("manufacturer" to manufacturer))
+                    } catch (ignored: Throwable) {}
+                }
                 requireContext().startActivity(intent)
             } else {
                 showSnack(getString(R.string.open_settings_failed))
