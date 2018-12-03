@@ -103,7 +103,8 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
         }
 
         direction ?: return
-        findNavController(R.id.home_nav_host).navigate(direction)
+
+        findNavController(R.id.home_nav_host).navigate(direction, intent.extras)
     }
 
     private fun initShortcuts() {

@@ -34,6 +34,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import androidx.appcompat.app.AlertDialog
+import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import com.forcetower.uefs.R
@@ -52,6 +53,16 @@ import java.util.Arrays
 import javax.inject.Inject
 
 class MessagesFragment : UFragment(), Injectable {
+    companion object {
+        const val EXTRA_MESSAGES_FLAG = "unes.messages.is_svc_message"
+
+        fun newInstance(unesService: Boolean): MessagesFragment {
+            return MessagesFragment().apply {
+                arguments = bundleOf(EXTRA_MESSAGES_FLAG to unesService)
+            }
+        }
+    }
+
     @Inject
     lateinit var factory: UViewModelFactory
 
@@ -92,6 +103,14 @@ class MessagesFragment : UFragment(), Injectable {
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, Arrays.asList(sagres, unes))
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val unes = arguments?.getBoolean(EXTRA_MESSAGES_FLAG, false) ?: false
+        val open = savedInstanceState?.getBoolean(EXTRA_MESSAGES_FLAG, true) ?: true
+        if (unes && open) {
+            binding.pagerMessage.setCurrentItem(1, true)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(this, EventObserver { openLink(it) })
@@ -128,6 +147,11 @@ class MessagesFragment : UFragment(), Injectable {
 
             dialog.show()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean(EXTRA_MESSAGES_FLAG, false)
+        super.onSaveInstanceState(outState)
     }
 
     private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>) : FragmentPagerAdapter(fm) {
