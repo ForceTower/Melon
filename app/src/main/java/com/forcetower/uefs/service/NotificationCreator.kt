@@ -45,6 +45,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.home.HomeActivity
+import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.shared.toTitleCase
 import timber.log.Timber
 
@@ -168,14 +169,17 @@ object NotificationCreator {
 
     fun showEventNotification(context: Context, id: String, title: String, description: String, image: String?) {
         if (!shouldShowNotification("show_event_notifications", context)) return
-        showDefaultImageNotification(context, NotificationHelper.CHANNEL_EVENTS_GENERAL_ID, id.hashCode().toLong(), title, description, image)
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_EVENTS_GENERAL_ID, title, description, image)
+        showNotification(context, id.hashCode().toLong(), builder)
     }
 
     fun showServiceMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
-        showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, id, title, description, image)
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, description, image)
+        builder.setContentIntent(createUNESMessagesIntent(context))
+        showNotification(context, id, builder)
     }
 
-    private fun showDefaultImageNotification(context: Context, channel: String, id: Long, title: String, content: String, image: String?) {
+    private fun showDefaultImageNotification(context: Context, channel: String, title: String, content: String, image: String?): NotificationCompat.Builder {
         var style = createBigText(content)
         if (image != null && image != "null") {
             val other = createBigImage(context, image)
@@ -190,12 +194,13 @@ object NotificationCreator {
             .setStyle(style)
 
         addOptions(context, builder)
-        showNotification(context, id.hashCode().toLong(), builder)
+        return builder
     }
 
     fun showSimpleNotification(context: Context, title: String, content: String) {
         if (!shouldShowNotification("show_notification_remote", context)) return
-        showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, content.hashCode().toLong(), title, content, null)
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, content, null)
+        showNotification(context, content.hashCode().toLong(), builder)
     }
 
     fun showBigTrayNotification(context: Context, data: BigTrayData?, close: PendingIntent): Notification {
@@ -278,6 +283,18 @@ object NotificationCreator {
     private fun createMessagesIntent(ctx: Context): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
+        }
+
+        return TaskStackBuilder.create(ctx)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createUNESMessagesIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
+            putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, true)
         }
 
         return TaskStackBuilder.create(ctx)
