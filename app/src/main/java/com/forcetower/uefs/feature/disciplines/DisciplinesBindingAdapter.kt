@@ -41,9 +41,19 @@ import timber.log.Timber
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
     val sort = classes?.sortedBy { it.name }
-    recycler.adapter = (recycler.adapter as? ClassGroupGradesAdapter ?: ClassGroupGradesAdapter()).apply {
-        submitList(sort)
+    if (sort != null && sort.isNotEmpty() && sort[0].classId == 64L) {
+        Timber.d("Sorted List $sort")
     }
+
+    val adapter: ClassGroupGradesAdapter
+    if (recycler.adapter == null) {
+        adapter = ClassGroupGradesAdapter()
+        recycler.adapter = adapter
+    } else {
+        adapter = recycler.adapter as ClassGroupGradesAdapter
+    }
+
+    adapter.submitList(sort)
 }
 
 @BindingAdapter("classStudentGrade")
