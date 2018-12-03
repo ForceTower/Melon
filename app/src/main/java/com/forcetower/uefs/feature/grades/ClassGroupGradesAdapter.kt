@@ -43,18 +43,18 @@ class ClassGroupGradesAdapter : ListAdapter<Grade, GradesHolder>(GradesDiff) {
         return GradesHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: GradesHolder, position: Int) = holder.bind(getItem(position))
+    override fun onBindViewHolder(holder: GradesHolder, position: Int) {
+        holder.binding.apply {
+            val item = getItem(position)
+            grade = item
+            executePendingBindings()
+        }
+    }
+
     override fun getItemViewType(position: Int) = GRADE
 }
 
-class GradesHolder(
-    val binding: ItemGradeBinding
-) : RecyclerView.ViewHolder(binding.root) {
-    fun bind(grade: Grade) {
-        binding.grade = grade
-        binding.executePendingBindings()
-    }
-}
+class GradesHolder(val binding: ItemGradeBinding) : RecyclerView.ViewHolder(binding.root)
 
 private object GradesDiff : DiffUtil.ItemCallback<Grade>() {
     override fun areItemsTheSame(oldItem: Grade, newItem: Grade) = oldItem.uid == newItem.uid
