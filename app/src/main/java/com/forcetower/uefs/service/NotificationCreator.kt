@@ -177,7 +177,7 @@ object NotificationCreator {
 
     private fun showDefaultImageNotification(context: Context, channel: String, id: Long, title: String, content: String, image: String?) {
         var style = createBigText(content)
-        if (image != null) {
+        if (image != null && image != "null") {
             val other = createBigImage(context, image)
             if (other != null) style = other
         }
