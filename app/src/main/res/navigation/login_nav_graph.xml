@@ -50,7 +50,7 @@
         android:id="@+id/login_form"
         android:name="com.forcetower.uefs.feature.login.LoginFragment"
         android:label="LoginFragment"
-        tools:layout="@layout/fragment_login">
+        tools:layout="@layout/fragment_login_form">
         <action
             android:id="@+id/action_login_form_to_signing_in"
             app:destination="@id/login_signing_in" />
