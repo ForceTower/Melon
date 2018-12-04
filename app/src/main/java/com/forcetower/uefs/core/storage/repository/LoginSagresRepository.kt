@@ -131,7 +131,7 @@ class LoginSagresRepository @Inject constructor(
                 val person = m.person
                 if (person != null) {
                     executor.diskIO().execute { database.profileDao().insert(person, score) }
-                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
+                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
                     messages(data, person.id)
                 } else {
                     Timber.d("SPerson is null")

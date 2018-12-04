@@ -56,9 +56,22 @@ class FirebaseAuthRepository @Inject constructor(
 ) {
     private val secret = context.getString(R.string.firebase_account_secret)
 
-    fun loginToFirebase(person: SPerson, access: Access) {
-        val email = context.getString(R.string.email_unes_format, access.username)
-        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, access, person, secret), access, person)
+    fun loginToFirebase(person: SPerson, access: Access, reconnect: Boolean = false) {
+        if (reconnect) { firebaseAuth.signOut() }
+        if (firebaseAuth.currentUser == null) {
+            val email = context.getString(R.string.email_unes_format, access.username.toLowerCase())
+
+            val profiler = "${person.sagresId}__${access.username.toLowerCase()}__${access.password.toLowerCase()}"
+            val username = access.username.toLowerCase()
+            val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
+
+            attemptSignIn(
+                email,
+                context.getString(R.string.firebase_password_pattern, username, password, secret),
+                access,
+                person
+            )
+        }
     }
 
     private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
@@ -160,5 +173,10 @@ class FirebaseAuthRepository @Inject constructor(
                         Timber.d("Exception: ${task.exception}")
                     }
                 })
+    }
+
+    fun reconnect(): Boolean {
+        firebaseAuth.signOut()
+        return true
     }
 }
