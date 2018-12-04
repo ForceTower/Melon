@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.setup
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.Uri
+import android.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Course
@@ -84,5 +85,8 @@ class SetupViewModel @Inject constructor(
         firebaseAuthRepository.updateFrequency(frequency.value)
         SyncLinkedWorker.stopWorker()
         SyncMainWorker.createWorker(context, frequency.value)
+        PreferenceManager.getDefaultSharedPreferences(context).edit()
+            .putString("stg_sync_frequency", frequency.value.toString())
+            .apply()
     }
 }

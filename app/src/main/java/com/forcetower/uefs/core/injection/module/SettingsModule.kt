@@ -27,8 +27,8 @@
 
 package com.forcetower.uefs.core.injection.module
 
-import com.forcetower.uefs.feature.reminders.RemindersFragment
 import com.forcetower.uefs.feature.settings.RootSettingsFragment
+import com.forcetower.uefs.feature.settings.SyncSettingsFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -37,5 +37,5 @@ abstract class SettingsModule {
     @ContributesAndroidInjector
     abstract fun settingsFragment(): RootSettingsFragment
     @ContributesAndroidInjector
-    abstract fun remindersFragment(): RemindersFragment
+    abstract fun syncSettingsFragment(): SyncSettingsFragment
 }

@@ -28,10 +28,11 @@
 package com.forcetower.uefs.core.vm
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.feature.shared.map
+import com.forcetower.uefs.feature.shared.setValueIfNew
 import javax.inject.Inject
 
 class LaunchViewModel @Inject constructor(
@@ -40,13 +41,16 @@ class LaunchViewModel @Inject constructor(
     var started = false
     private val accessSrc = database.accessDao().getAccess()
 
-    fun getAccess(): LiveData<Event<Destination>> =
-        accessSrc.map {
-            when (it) {
-                null -> Event(Destination.LOGIN_ACTIVITY)
-                else -> Event(Destination.HOME_ACTIVITY)
-            }
+    private val _direction = MediatorLiveData<Event<Destination>>()
+    val direction: LiveData<Event<Destination>>
+        get() = _direction
+
+    init {
+        _direction.addSource(accessSrc) {
+            val destination = if (it != null) Destination.HOME_ACTIVITY else Destination.LOGIN_ACTIVITY
+            _direction.setValueIfNew(Event(destination))
         }
+    }
 }
 
 enum class Destination { LOGIN_ACTIVITY, HOME_ACTIVITY }
