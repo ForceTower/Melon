@@ -57,13 +57,19 @@ class SyncSpecialFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+
         binding.btnNext.setOnClickListener {
             findNavController().navigate(R.id.action_special_to_home)
             requireActivity().finishAfterTransition()
         }
 
+        val manufacturer = Build.MANUFACTURER.toLowerCase()
+
+        if (savedInstanceState == null) {
+            analytics.logEvent("special_settings", bundleOf("manufacturer" to manufacturer))
+        }
+
         binding.btnConfig.setOnClickListener {
-            val manufacturer = Build.MANUFACTURER.toLowerCase()
             val intent = Intent()
             when (manufacturer) {
                 "xiaomi" -> intent.component = ComponentName(
