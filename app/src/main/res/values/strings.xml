@@ -179,9 +179,11 @@
     <string name="channel_group_messages">Mensagens</string>
     <string name="channel_group_general">Gerais</string>
     <string name="channel_group_events">Eventos</string>
-    <string name="channel_messages_sagres">Mensagens Sagres</string>
+    <string name="channel_messages_teachers">Mensagens Professores</string>
+    <string name="channel_messages_uefs">Mensagens UEFS</string>
     <string name="channel_grades_posted">Notas Postadas</string>
     <string name="channel_grades_date_changed">Mudança de data</string>
+    <string name="channel_grades_value_changed">Nota Alterada</string>
     <string name="channel_grades_created">Avaliação criada</string>
     <string name="warnings">Avisos</string>
     <string name="remote">Avisos Remotos</string>

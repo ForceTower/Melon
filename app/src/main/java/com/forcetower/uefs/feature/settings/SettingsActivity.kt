@@ -70,7 +70,7 @@ class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFrag
             "settings_synchronization" -> navigateTo(SyncSettingsFragment())
             "settings_notifications" -> {
                 if (VersionUtils.isOreo()) {
-                    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS)
                     intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
                     startActivity(intent)
                 } else {
