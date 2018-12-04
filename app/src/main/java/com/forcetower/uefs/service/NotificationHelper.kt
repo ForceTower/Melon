@@ -34,6 +34,7 @@ import android.app.NotificationManager
 import android.content.Context
 import android.content.ContextWrapper
 import android.os.Build
+import androidx.core.content.ContextCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
 
@@ -104,7 +105,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         return channel
     }
 
-    private fun getManager() = getSystemService(NotificationManager::class.java)
+    private fun getManager() = ContextCompat.getSystemService(this, NotificationManager::class.java)!!
 
     companion object {
         // Notification Groups

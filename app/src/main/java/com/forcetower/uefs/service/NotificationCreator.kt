@@ -269,8 +269,8 @@ object NotificationCreator {
     }
 
     private fun showNotification(context: Context, id: Long, builder: NotificationCompat.Builder): Boolean {
-        val notificationManager = context.getSystemService(NotificationManager::class.java)
-        notificationManager.notify(id.toInt(), builder.build())
+        val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
+        notificationManager?.notify(id.toInt(), builder.build())
         return true
     }
 
