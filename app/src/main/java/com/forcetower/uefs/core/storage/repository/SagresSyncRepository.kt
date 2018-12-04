@@ -44,6 +44,7 @@ import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -63,7 +64,9 @@ import javax.inject.Singleton
 @Singleton
 class SagresSyncRepository @Inject constructor(
     private val context: Context,
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val executors: AppExecutors,
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) {
 
     @WorkerThread
@@ -131,6 +134,8 @@ class SagresSyncRepository @Inject constructor(
             database.syncRegistryDao().update(registry)
             return
         }
+
+        executors.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
 
         var result = 0
         if (!messages(person.id)) result += 1 shl 1

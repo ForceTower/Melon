@@ -64,6 +64,7 @@ class FirebaseMessageRepository @Inject constructor(
     }
 
     private fun onDataMessageReceived(data: Map<String, String>) {
+        Timber.d("Data message received")
         when (data["identifier"]) {
             "event" -> eventNotification(data)
             "teacher" -> teacherNotification(data)
@@ -83,17 +84,20 @@ class FirebaseMessageRepository @Inject constructor(
         val unique = data["unique"]
         val version = data["version"]?.toIntOrNull()
         if (unique == null || version == null) {
+            Timber.d("You need to specify a unique key and a version for this to work")
             Crashlytics.log("You need to specify a unique key and a version for this to work")
             return
         }
 
         val executed = preferences.getBoolean("${unique}__firebase", false)
-        if (BuildConfig.VERSION_CODE < version || executed) {
+        if (BuildConfig.VERSION_CODE >= version || executed) {
+            Timber.d("Invalid version code($version) or executed($executed)")
             return
         }
 
-        preferences.edit().putBoolean("${unique}__firebase", true).apply()
-        firebaseAuthRepository.reconnect()
+        val completed = firebaseAuthRepository.reconnect()
+        Timber.d("Finished execution >> Completed: $completed")
+        preferences.edit().putBoolean("${unique}__firebase", completed).apply()
     }
 
     private fun universalSync(@Suppress("UNUSED_PARAMETER") data: Map<String, String>) {
@@ -175,6 +179,7 @@ class FirebaseMessageRepository @Inject constructor(
     }
 
     private fun onSimpleMessageReceived(message: RemoteMessage) {
+        Timber.d("Simple notification received")
         val notification = message.notification
         if (notification == null) {
             Crashlytics.log("Invalidation of notification happened really quickly")
