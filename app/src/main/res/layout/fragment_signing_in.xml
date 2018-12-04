@@ -41,6 +41,13 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+        
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@mipmap/new_login"
+            android:scaleType="centerCrop"
+            android:importantForAccessibility="no"/>
 
         <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/content_loading"
@@ -50,6 +57,7 @@
             app:backgroundThickness="4dp"
             app:foregroundThickness="4dp"
             tools:progress="65"
+            android:elevation="2dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -82,6 +90,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
+            android:elevation="2dp"
             android:inAnimation="@android:anim/slide_in_left"
             android:outAnimation="@android:anim/slide_out_right"
             app:layout_constraintEnd_toEndOf="parent"
@@ -110,6 +119,7 @@
             android:layout_marginBottom="24dp"
             android:visibility="invisible"
             tools:visibility="visible"
+            android:elevation="2dp"
             app:layout_constraintBottom_toTopOf="@+id/content_loading"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
