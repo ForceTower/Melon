@@ -48,7 +48,7 @@
     <string name="label_services">Serviços</string>
     <string name="label_reminders">Lembretes</string>
     <string name="label_adventure">Aventura [Em breve]</string>
-    <string name="label_settings">Configurações [Em breve]</string>
+    <string name="label_settings">Configurações</string>
     <string name="label_about_app">Sobre o Aplicativo</string>
     <string name="label_definitions">Definições</string>
     <string name="label_logout">Sair</string>
@@ -223,10 +223,10 @@
     <string name="no_pdf_reader">Nenhum Leitor de PDF instalado, por favor, instale algum disponível na PlayStore</string>
     <string name="notification_grade_posted_title">Nota postada!</string>
     <string name="notification_grade_posted_message_lv_0">A nota da %1$s da disciplina %2$s está disponível</string>
-    <string name="notification_grade_posted_message_lv_1_perfect">A nota da %1$s da disciplina %2$s está disponível\n\nPerfeita!</string>
-    <string name="notification_grade_posted_message_lv_1_good">A nota da %1$s da disciplina %2$s está disponível\n\nÉ uma das boas, pode ficar de boas!</string>
-    <string name="notification_grade_posted_message_lv_1_pass">A nota da %1$s da disciplina %2$s está disponível\n\nDeu para passar.</string>
-    <string name="notification_grade_posted_message_lv_1_bad">A nota da %1$s da disciplina %2$s está disponível\n\nEu tenho uma má notícia</string>
+    <string name="notification_grade_posted_message_lv_1_perfect">A nota da %1$s da disciplina %2$s está disponível\n\nPerfeito</string>
+    <string name="notification_grade_posted_message_lv_1_good">A nota da %1$s da disciplina %2$s está disponível\n\nSafe demais! Pode ficar de boas!</string>
+    <string name="notification_grade_posted_message_lv_1_pass">A nota da %1$s da disciplina %2$s está disponível\n\nSei não hein Rick</string>
+    <string name="notification_grade_posted_message_lv_1_bad">A nota da %1$s da disciplina %2$s está disponível\n\nSenhor Stark, eu não quero morrer</string>
     <string name="notification_grade_posted_message_lv_2">Você tirou %1$s na avaliação disciplina %2$s</string>
     <string name="notification_grade_created">A %1$s da disciplina %2$s foi criada mas não há notas associadas</string>
     <string name="notification_grade_created_title">Uma avaliação foi criada</string>
@@ -309,7 +309,7 @@
     <string name="settings_sync_type_info_label">Escolha como os dados são atualizados</string>
     <string name="settings_sync_frequency_label">Frequência</string>
     <string name="settings_sync_frequency_info_label">Define a frequência de atualização dos dados</string>
-    <string name="settings_sync_auto_proxy_label">UEFS Proxy</string>
+    <string name="settings_sync_auto_proxy_label">UEFS Proxy [Em testes]</string>
     <string name="settings_sync_auto_proxy_info_label">Detectar a rede da UEFS automaticamente para utilizar o proxy</string>
     <string name="settings_proxy_label">Proxy</string>
     <string name="settings_proxy_info_label">Defina o proxy a ser utilizado</string>

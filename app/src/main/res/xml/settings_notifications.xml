@@ -26,7 +26,8 @@
   ~ SOFTWARE.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
     
     <PreferenceCategory
         android:title="@string/settings_notification_messages_label">
@@ -46,14 +47,6 @@
     
     <PreferenceCategory
         android:title="@string/settings_notification_grades_label">
-    
-        <ListPreference
-            android:defaultValue="1"
-            android:key="stg_ntf_grade_spoiler"
-            android:title="@string/settings_ntf_grade_spoiler"
-            android:summary="@string/settings_ntf_grade_spoiler_info"
-            android:entries="@array/settings_ntf_grade_spoiler_titles"
-            android:entryValues="@array/settings_ntf_grade_spoiler_values"/>
         
         <SwitchPreference
             android:defaultValue="false"
@@ -88,11 +81,5 @@
             android:key="stg_ntf_event_created"
             android:title="@string/settings_ntf_event_created"
             android:summary="@string/settings_ntf_event_created_info" />
-        
-        <SwitchPreference
-            android:defaultValue="true"
-            android:key="stg_ntf_reminder_near"
-            android:title="@string/settings_ntf_reminder_near"
-            android:summary="@string/settings_ntf_reminder_near_info" />
     </PreferenceCategory>
-</PreferenceScreen>
+</androidx.preference.PreferenceScreen>
