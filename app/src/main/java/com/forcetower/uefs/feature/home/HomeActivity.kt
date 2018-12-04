@@ -38,6 +38,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.R
+import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -98,12 +99,18 @@ class HomeActivity : UActivity(), HasSupportFragmentInjector {
         val direction = when (directions) {
             EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
             EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
-            EXTRA_BIGTRAY_DIRECTION -> R.id.big_tray
+            EXTRA_BIGTRAY_DIRECTION -> {
+                val intent = Intent(this, BigTrayService::class.java).apply {
+                    action = BigTrayService.STOP_SERVICE_ACTION
+                }
+                startService(intent)
+
+                R.id.big_tray
+            }
             else -> null
         }
 
         direction ?: return
-
         findNavController(R.id.home_nav_host).navigate(direction, intent.extras)
     }
 
