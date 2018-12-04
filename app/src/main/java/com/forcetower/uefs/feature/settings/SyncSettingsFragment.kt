@@ -36,13 +36,19 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
+import javax.inject.Inject
 
-class SyncSettingsFragment : PreferenceFragmentCompat() {
+class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
+    @Inject
+    lateinit var firebaseRepository: FirebaseAuthRepository
+
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         onPreferenceChange(shared, key)
     }
@@ -97,6 +103,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
                 SyncLinkedWorker.createWorker(period)
             }
         }
+        firebaseRepository.updateFrequency(period)
         return true
     }
 
@@ -117,6 +124,8 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
             SyncLinkedWorker.createWorker(period)
             getSharedPreferences().edit().putString("stg_sync_worker_type", "1").apply()
         }
+
+        firebaseRepository.updateFrequency(period)
         return true
     }
 
