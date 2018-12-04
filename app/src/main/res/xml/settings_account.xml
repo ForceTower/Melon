@@ -26,7 +26,8 @@
   ~ SOFTWARE.
   -->
 
-<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen
+    xmlns:android="http://schemas.android.com/apk/res/android">
     <SwitchPreference
         android:defaultValue="true"
         android:key="stg_acc_semester"
@@ -38,4 +39,12 @@
         android:key="stg_acc_score"
         android:title="@string/settings_acc_score"
         android:summary="@string/settings_acc_score_info" />
-</PreferenceScreen>
+    
+    <ListPreference
+        android:defaultValue="1"
+        android:key="stg_ntf_grade_spoiler"
+        android:title="@string/settings_ntf_grade_spoiler"
+        android:summary="@string/settings_ntf_grade_spoiler_info"
+        android:entries="@array/settings_ntf_grade_spoiler_titles"
+        android:entryValues="@array/settings_ntf_grade_spoiler_values"/>
+</androidx.preference.PreferenceScreen>

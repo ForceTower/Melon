@@ -44,9 +44,9 @@ import timber.log.Timber
 
 class SyncSettingsFragment : PreferenceFragmentCompat() {
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
-        Timber.d("Shared preferences detected change at $key")
         onPreferenceChange(shared, key)
     }
+
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_synchronization, rootKey)
     }
