@@ -27,16 +27,15 @@
 
 package com.forcetower.uefs.feature.profile
 
+import android.preference.PreferenceManager
 import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import androidx.preference.PreferenceManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Profile
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 
@@ -79,12 +78,12 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
 }
 
 @BindingAdapter("profileScoreOptional")
-fun profileScoreOptional(tv: TextView, profile: Profile?) {
+fun profileScoreOptional(tv: TextView, score: Double?) {
     val context = tv.context
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    if (preferences.getBoolean("stg_acc_score", true) && profile != null) {
-        tv.text = context.getString(R.string.label_your_score, profile.score)
+    if (preferences.getBoolean("stg_acc_score", true) && score != null) {
+        tv.text = context.getString(R.string.label_your_score, score)
     } else {
         tv.visibility = View.INVISIBLE
     }

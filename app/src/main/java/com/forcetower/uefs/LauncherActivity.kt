@@ -40,6 +40,7 @@ import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.shared.provideViewModel
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import timber.log.Timber
 import javax.inject.Inject
 
 class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
@@ -51,7 +52,8 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: LaunchViewModel = provideViewModel(factory)
-        viewModel.getAccess().observe(this, EventObserver {
+        viewModel.direction.observe(this, EventObserver {
+            Timber.d("Once!")
             if (!viewModel.started) {
                 when (it) {
                     Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
