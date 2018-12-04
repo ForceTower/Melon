@@ -32,6 +32,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
@@ -44,6 +45,7 @@ import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -63,7 +65,9 @@ import javax.inject.Singleton
 @Singleton
 class SagresSyncRepository @Inject constructor(
     private val context: Context,
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val executors: AppExecutors,
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) {
 
     @WorkerThread
@@ -131,6 +135,8 @@ class SagresSyncRepository @Inject constructor(
             database.syncRegistryDao().update(registry)
             return
         }
+
+        executors.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
 
         var result = 0
         if (!messages(person.id)) result += 1 shl 1
@@ -344,6 +350,11 @@ class SagresSyncRepository @Inject constructor(
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
+    }
+
+    @MainThread
+    fun asyncSync() {
+        executors.networkIO().execute { performSync("Manual") }
     }
 
     companion object {
