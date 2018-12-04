@@ -85,6 +85,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
 
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_DCE_ID)
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_SAGRES_ID)
+        manager.deleteNotificationChannel(CHANNEL_GRADES_CHANGED_ID)
     }
 
     @TargetApi(Build.VERSION_CODES.O)
@@ -126,5 +127,6 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         // Deleted Channels
         const val CHANNEL_MESSAGES_DCE_ID = "com.forcetower.uefs.MESSAGES.DCE"
         const val CHANNEL_MESSAGES_SAGRES_ID = "com.forcetower.uefs.MESSAGES.SAGRES.POST"
+        const val CHANNEL_GRADES_CHANGED_ID = "com.forcetower.uefs.GRADES.CHANGE"
     }
 }
