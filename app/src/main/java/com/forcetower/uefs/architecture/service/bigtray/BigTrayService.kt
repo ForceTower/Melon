@@ -17,8 +17,8 @@ import javax.inject.Inject
 class BigTrayService : LifecycleService() {
     companion object {
         private const val NOTIFICATION_BIG_TRAY = 187745
-        private const val START_SERVICE_ACTION = "com.forcetower.uefs.bigtray.START_FOREGROUND_SERVICE"
-        private const val STOP_SERVICE_ACTION = "com.forcetower.uefs.bigtray.STOP_FOREGROUND_SERVICE"
+        const val START_SERVICE_ACTION = "com.forcetower.uefs.bigtray.START_FOREGROUND_SERVICE"
+        const val STOP_SERVICE_ACTION = "com.forcetower.uefs.bigtray.STOP_FOREGROUND_SERVICE"
 
         @JvmStatic
         fun startService(context: Context) {
