@@ -57,15 +57,21 @@ class FirebaseAuthRepository @Inject constructor(
     private val secret = context.getString(R.string.firebase_account_secret)
 
     fun loginToFirebase(person: SPerson, access: Access, reconnect: Boolean = false) {
-        val email = context.getString(R.string.email_unes_format, access.username.toLowerCase())
-
-        val profiler = "${person.sagresId}__${access.username.toLowerCase()}__${access.password.toLowerCase()}"
-        val username = access.username.toLowerCase()
-        val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
-
         if (reconnect) { firebaseAuth.signOut() }
+        if (firebaseAuth.currentUser == null) {
+            val email = context.getString(R.string.email_unes_format, access.username.toLowerCase())
 
-        attemptSignIn(email, context.getString(R.string.firebase_password_pattern, username, password, secret), access, person)
+            val profiler = "${person.sagresId}__${access.username.toLowerCase()}__${access.password.toLowerCase()}"
+            val username = access.username.toLowerCase()
+            val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
+
+            attemptSignIn(
+                email,
+                context.getString(R.string.firebase_password_pattern, username, password, secret),
+                access,
+                person
+            )
+        }
     }
 
     private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
