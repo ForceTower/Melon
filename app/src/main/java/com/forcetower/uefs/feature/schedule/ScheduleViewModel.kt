@@ -31,11 +31,13 @@ import android.view.View
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
+import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import javax.inject.Inject
 
 class ScheduleViewModel @Inject constructor(
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val sagresSyncRepository: SagresSyncRepository
 ) : ViewModel(), ScheduleActions {
     val scheduleSrc by lazy { database.classLocationDao().getCurrentSchedule() }
 
@@ -45,5 +47,9 @@ class ScheduleViewModel @Inject constructor(
     }
 
     override fun onClick(group: GroupWithClass) {
+    }
+
+    override fun refreshData() {
+        sagresSyncRepository.asyncSync()
     }
 }

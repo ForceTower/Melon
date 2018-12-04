@@ -35,8 +35,8 @@
             type="Boolean"/>
 
         <variable
-            name="profileViewModel"
-            type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
+            name="actions"
+            type="com.forcetower.uefs.feature.schedule.ScheduleActions"/>
 
         <variable
             name="firebaseUser"
@@ -80,6 +80,7 @@
                     android:layout_width="?attr/actionBarSize"
                     android:layout_height="?attr/actionBarSize"
                     android:layout_gravity="end"
+                    android:onClick="@{() -> actions.refreshData()}"
                     app:icon="@drawable/ic_refresh_black_24dp"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     app:iconTint="@color/blue_accent"
