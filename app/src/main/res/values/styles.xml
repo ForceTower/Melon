@@ -38,8 +38,6 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/white</item>
-        
-        <item name="android:statusBarColor">@color/white</item>
     </style>
     
     <style name="CropTheme.ActionBar.Text" parent="@android:style/TextAppearance">
@@ -60,14 +58,12 @@
     <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryDark">@color/grey_300</item>
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/white</item>
-        
-        <item name="android:statusBarColor">@color/white</item>
     </style>
     
     <style name="Widget.ShadowedIcon" parent="@android:style/Widget" />
