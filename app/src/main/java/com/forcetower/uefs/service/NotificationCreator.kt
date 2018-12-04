@@ -52,12 +52,21 @@ import timber.log.Timber
 object NotificationCreator {
 
     fun showSagresMessageNotification(message: Message, context: Context, uid: Long = message.uid) {
-        val settingsKey = if (message.senderProfile == 3) "stg_ntf_message_uefs" else "stg_ntf_message_teacher"
+        val settingsKey: String
+        val channel: String
+        if (message.senderProfile == 3) {
+            settingsKey = "stg_ntf_message_uefs"
+            channel = NotificationHelper.CHANNEL_MESSAGES_UEFS_ID
+        } else {
+            settingsKey = "stg_ntf_message_teacher"
+            channel = NotificationHelper.CHANNEL_MESSAGES_TEACHER_ID
+        }
+
         if (!shouldShowNotification(settingsKey, context)) {
             return
         }
 
-        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_MESSAGES_SAGRES_ID)
+        val builder = notificationBuilder(context, channel)
             .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
             .setContentText(message.content)
             .setStyle(createBigText(message.content))
@@ -93,7 +102,7 @@ object NotificationCreator {
 
         val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = context.getString(R.string.notification_grade_changed, grade.grade.name, discipline)
-        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_VALUE_CHANGED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_changed_title))
             .setContentText(message)
             .setContentIntent(createGradesIntent(context))
@@ -129,9 +138,16 @@ object NotificationCreator {
 
         val spoiler = getPreferences(context).getString("stg_ntf_grade_spoiler", "1")?.toIntOrNull() ?: 1
         val discipline = grade.clazz().clazz.singleDiscipline().name
+        Timber.d("Spoiler level: $spoiler")
+
         val message = when (spoiler) {
             1 -> {
-                val value = grade.grade.grade.trim().toDoubleOrNull()
+                val value = grade.grade.grade.trim()
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+                    .toDoubleOrNull()
+                Timber.d("Level 1 spoiler value: $value")
                 if (value == null) context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
                 else when (value) {
                     in 0.0..6.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_bad, grade.grade.name, discipline)
