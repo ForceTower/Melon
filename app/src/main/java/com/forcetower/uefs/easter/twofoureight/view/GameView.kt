@@ -35,6 +35,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
+import androidx.core.content.ContextCompat
 import com.forcetower.uefs.R
 import timber.log.Timber
 
@@ -356,11 +357,11 @@ class GameView : View {
     private fun drawTileText(canvas: Canvas, value: Int, sX: Int, sY: Int) {
         val textShiftY = centerText()
         if (value == 2) {
-            mPaint.color = context.getColor(R.color.text_shadow)
-            mPaint.setShadowLayer(2.0f, 0f, 0f, context.getColor(R.color.text_white))
+            mPaint.color = ContextCompat.getColor(context, R.color.text_shadow)
+            mPaint.setShadowLayer(2.0f, 0f, 0f, ContextCompat.getColor(context, R.color.text_white))
         } else {
-            mPaint.color = context.getColor(R.color.text_white)
-            mPaint.setShadowLayer(2.0f, 0f, 0f, context.getColor(R.color.text_shadow))
+            mPaint.color = ContextCompat.getColor(context, R.color.text_white)
+            mPaint.setShadowLayer(2.0f, 0f, 0f, ContextCompat.getColor(context, R.color.text_shadow))
         }
         canvas.drawText("" + value, (sX + mCellSize / 2).toFloat(), (sY + mCellSize / 2 - textShiftY).toFloat(), mPaint)
     }
