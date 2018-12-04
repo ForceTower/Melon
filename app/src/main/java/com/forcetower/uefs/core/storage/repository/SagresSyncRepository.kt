@@ -32,6 +32,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
@@ -349,6 +350,11 @@ class SagresSyncRepository @Inject constructor(
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
+    }
+
+    @MainThread
+    fun asyncSync() {
+        executors.networkIO().execute { performSync("Manual") }
     }
 
     companion object {
