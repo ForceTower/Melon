@@ -41,10 +41,12 @@
     
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/login_form_card"
-            android:layout_width="280dp"
+            android:layout_width="0dp"
             android:layout_height="256dp"
             app:cardCornerRadius="8dp"
             app:cardElevation="8dp"
+            android:layout_marginStart="32dp"
+            android:layout_marginEnd="32dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -69,13 +71,14 @@
         
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/text_user_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:hint="@string/login_user"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
+                    app:boxBackgroundColor="@color/white"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -94,13 +97,14 @@
         
                 <com.google.android.material.textfield.TextInputLayout
                     android:id="@+id/text_pass_layout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
+                    app:boxBackgroundColor="@color/white"
                     android:hint="@string/login_password"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.FilledBox"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user_layout">
@@ -114,15 +118,15 @@
                         android:inputType="textPassword" />
         
                 </com.google.android.material.textfield.TextInputLayout>
-    
+        
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_connect"
                     style="@style/UTheme.MaterialButton.Default"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/login_sign_in"
                     android:layout_marginTop="16dp"
                     android:layout_marginBottom="16dp"
+                    android:text="@string/login_sign_in"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.9"
                     app:layout_constraintStart_toStartOf="parent"
