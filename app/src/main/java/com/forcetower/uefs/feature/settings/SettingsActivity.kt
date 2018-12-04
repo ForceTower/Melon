@@ -30,17 +30,18 @@ package com.forcetower.uefs.feature.settings
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.provider.Settings
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.databinding.ActivitySettingsBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.inTransaction
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
-import timber.log.Timber
 import javax.inject.Inject
 
 class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
@@ -53,22 +54,29 @@ class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFrag
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
-        supportFragmentManager.inTransaction {
-            add(R.id.fragment_container, RootSettingsFragment())
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.fragment_container, RootSettingsFragment())
+            }
         }
 
         binding.incToolbar.textToolbarTitle.text = getString(R.string.label_settings)
-        binding.root.setOnScrollChangeListener { _, _, scrollY, _, oldScrollY ->
-            val dy = scrollY - oldScrollY
-            Timber.d("Scroll delta: $dy")
-        }
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
         val key = pref?.key ?: return false
         when (key) {
             "settings_synchronization" -> navigateTo(SyncSettingsFragment())
-            "settings_notifications" -> navigateTo(NotificationSettingsFragment())
+            "settings_notifications" -> {
+                if (VersionUtils.isOreo()) {
+                    val intent = Intent(Settings.ACTION_CHANNEL_NOTIFICATION_SETTINGS)
+                    intent.putExtra(Settings.EXTRA_APP_PACKAGE, packageName)
+                    startActivity(intent)
+                } else {
+                    navigateTo(NotificationSettingsFragment())
+                }
+            }
             "settings_account" -> navigateTo(AccountSettingsFragment())
         }
         return true

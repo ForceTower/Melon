@@ -52,7 +52,8 @@ import timber.log.Timber
 object NotificationCreator {
 
     fun showSagresMessageNotification(message: Message, context: Context, uid: Long = message.uid) {
-        if (!shouldShowNotification("show_message_notification", context)) {
+        val settingsKey = if (message.senderProfile == 3) "stg_ntf_message_uefs" else "stg_ntf_message_teacher"
+        if (!shouldShowNotification(settingsKey, context)) {
             return
         }
 
@@ -68,7 +69,7 @@ object NotificationCreator {
     }
 
     fun showSagresCreateGradesNotification(grade: GradeWithClassStudent, context: Context) {
-        if (!shouldShowNotification("show_create_grades_notification", context)) {
+        if (!shouldShowNotification("stg_ntf_grade_create", context, false)) {
             return
         }
 
@@ -86,7 +87,7 @@ object NotificationCreator {
     }
 
     fun showSagresChangeGradesNotification(grade: GradeWithClassStudent, context: Context) {
-        if (!shouldShowNotification("show_change_grades_notification", context)) {
+        if (!shouldShowNotification("stg_ntf_grade_change", context)) {
             return
         }
 
@@ -104,7 +105,7 @@ object NotificationCreator {
     }
 
     fun showSagresDateGradesNotification(grade: GradeWithClassStudent, context: Context) {
-        if (!shouldShowNotification("show_date_grades_notification", context)) {
+        if (!shouldShowNotification("stg_ntf_grade_date", context, false)) {
             return
         }
 
@@ -122,11 +123,11 @@ object NotificationCreator {
     }
 
     fun showSagresPostedGradesNotification(grade: GradeWithClassStudent, context: Context) {
-        if (!shouldShowNotification("show_posted_grades_notification", context)) {
+        if (!shouldShowNotification("stg_ntf_grade_posted", context)) {
             return
         }
 
-        val spoiler = getPreferences(context).getInt("notification_grade_spoiler_level", 0)
+        val spoiler = getPreferences(context).getString("stg_ntf_grade_spoiler", "1")?.toIntOrNull() ?: 1
         val discipline = grade.clazz().clazz.singleDiscipline().name
         val message = when (spoiler) {
             1 -> {
@@ -168,7 +169,7 @@ object NotificationCreator {
     }
 
     fun showEventNotification(context: Context, id: String, title: String, description: String, image: String?) {
-        if (!shouldShowNotification("show_event_notifications", context)) return
+        if (!shouldShowNotification("stg_ntf_event_created", context)) return
         val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_EVENTS_GENERAL_ID, title, description, image)
         showNotification(context, id.hashCode().toLong(), builder)
     }
@@ -323,9 +324,9 @@ object NotificationCreator {
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun shouldShowNotification(value: String, context: Context): Boolean {
+    private fun shouldShowNotification(value: String, context: Context, default: Boolean = true): Boolean {
         val preference = getPreferences(context)
-        val notify = preference.getBoolean(value, true)
+        val notify = preference.getBoolean(value, default)
         return notify || VersionUtils.isOreo()
     }
 
