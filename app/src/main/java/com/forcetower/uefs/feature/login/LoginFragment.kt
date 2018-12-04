@@ -34,25 +34,24 @@ import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.ActivityNavigator
-import androidx.navigation.fragment.FragmentNavigatorExtras
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.databinding.FragmentLoginBinding
+import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
 class LoginFragment : UFragment() {
-    private lateinit var binding: FragmentLoginBinding
+    private lateinit var binding: FragmentLoginFormBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentLoginBinding.inflate(inflater, container, false).also {
+        return FragmentLoginFormBinding.inflate(inflater, container, false).also {
             binding = it
-            binding.btnNoAccount.setOnClickListener { _ ->
-                showSnack(getString(R.string.there_is_no_vestibular_anymore))
-            }
-            binding.btnConnect.setOnClickListener { _ ->
+//            binding.btnNoAccount.setOnClickListener {
+//                showSnack(getString(R.string.there_is_no_vestibular_anymore))
+//            }
+            binding.btnConnect.setOnClickListener {
                 prepareLogin()
             }
-            binding.btnAboutUnes.setOnClickListener { _ ->
+            binding.btnAboutUnes.setOnClickListener {
                 toAbout()
             }
         }.root
@@ -77,12 +76,12 @@ class LoginFragment : UFragment() {
 
         if (error) return
 
-        val extras = FragmentNavigatorExtras(binding.imageUnes to getString(R.string.user_image_transition))
+        // val extras = FragmentNavigatorExtras(binding.imageUnes to getString(R.string.user_image_transition))
 
         findNavController().navigate(R.id.action_login_form_to_signing_in, bundleOf(
                 "username" to username,
-                "password" to password
-        ), null, extras)
+                "password" to password))
+        // ), null, extras)
     }
 
     private fun toAbout() {
