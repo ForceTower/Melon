@@ -49,8 +49,8 @@ class SelectSyncDialog : RoundedDialog(), Injectable {
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DialogSelectSynchronizationBinding.inflate(inflater, container, false).also {
             binding = it
-            it.btnCancel.setOnClickListener { _ -> dismiss() }
-            it.btnOk.setOnClickListener { _ -> select() }
+            it.btnCancel.setOnClickListener { dismiss() }
+            it.btnOk.setOnClickListener { select() }
         }.root
     }
 
