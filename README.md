@@ -4,7 +4,7 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 
 🛑 Versão altamente instável e com funções faltando 🛑
 
-[![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon/tree/development)
+[![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
 
 ### Objetivos
 * ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
