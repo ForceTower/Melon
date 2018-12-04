@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.demand
 
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.GlideApp
@@ -68,7 +69,7 @@ fun strokeColor(cardView: MaterialCardView, offer: SDemandOffer?) {
         else -> R.color.demand_case_bugged
     }
 
-    val tgt = ctx.getColor(next)
+    val tgt = ContextCompat.getColor(ctx, next)
     if (tgt == old) return
 
     cardView.strokeColor = tgt
