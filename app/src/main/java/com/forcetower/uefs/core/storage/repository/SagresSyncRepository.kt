@@ -34,6 +34,7 @@ import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import androidx.core.content.ContextCompat
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
 import com.forcetower.sagres.database.model.SDiscipline
@@ -57,6 +58,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
 import timber.log.Timber
 import javax.inject.Inject
@@ -89,22 +91,41 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun createRegistry(executor: String): SyncRegistry {
-        val connectivity = context.getSystemService(ConnectivityManager::class.java)
-        val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
-        return if (capabilities != null) {
-            val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            val network = if (wifi) {
-                val manager = context.getSystemService(WifiManager::class.java)
-                manager.connectionInfo.ssid
+        val connectivity = ContextCompat.getSystemService(context, ConnectivityManager::class.java)!!
+
+        if (VersionUtils.isMarshmallow()) {
+            val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
+            return if (capabilities != null) {
+                val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                val network = if (wifi) {
+                    val manager = context.getSystemService(WifiManager::class.java)
+                    manager.connectionInfo.ssid
+                } else {
+                    val manager = context.getSystemService(TelephonyManager::class.java)
+                    manager.simOperatorName
+                }
+                Timber.d("Is on Wifi? $wifi. Network name: $network")
+                SyncRegistry(
+                    executor = executor, network = network,
+                    networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal
+                )
             } else {
-                val manager = context.getSystemService(TelephonyManager::class.java)
-                manager.simOperatorName
+                SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
             }
-            Timber.d("Is on Wifi? $wifi. Network name: $network")
-            SyncRegistry(executor = executor, network = network,
-                networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal)
         } else {
-            SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
+            val manager = ContextCompat.getSystemService(context, WifiManager::class.java)
+            val info = manager?.connectionInfo
+            return if (info == null) {
+                val phone = ContextCompat.getSystemService(context, TelephonyManager::class.java)
+                val operatorName = phone?.simOperatorName
+                if (operatorName != null) {
+                    SyncRegistry(executor = executor, network = operatorName, networkType = NetworkType.CELLULAR.ordinal)
+                } else {
+                    SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
+                }
+            } else {
+                SyncRegistry(executor = executor, network = info.ssid, networkType = NetworkType.WIFI.ordinal)
+            }
         }
     }
 
