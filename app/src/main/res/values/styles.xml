@@ -32,15 +32,13 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="titleTextColor">@color/colorAccent</item>
-        <item name="android:titleTextColor">@color/colorAccent</item>
         <item name="actionMenuTextColor">@color/colorAccent</item>
         <item name="android:titleTextStyle">@style/CropTheme.ActionBar.Text</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/white</item>
-
-        <item name="android:windowLightStatusBar">true</item>
+        
         <item name="android:statusBarColor">@color/white</item>
     </style>
     
@@ -68,8 +66,7 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/white</item>
-
-        <item name="android:windowLightStatusBar">true</item>
+        
         <item name="android:statusBarColor">@color/white</item>
     </style>
     
@@ -98,7 +95,6 @@
         <item name="android:windowDrawsSystemBarBackgrounds">true</item>
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
-        <item name="android:windowLightStatusBar">false</item>
     </style>
 
     <style name="UTheme.Translucent.About">

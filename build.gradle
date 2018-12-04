@@ -36,7 +36,7 @@ allprojects {
 
 ext.sdkVersions = [
     'compile'    : 28,
-    'min'        : 23,
+    'min'        : 21,
     'target'     : 28,
 ]
 

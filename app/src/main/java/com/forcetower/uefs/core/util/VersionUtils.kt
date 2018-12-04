@@ -31,4 +31,5 @@ import android.os.Build
 
 object VersionUtils {
     fun isOreo() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    fun isMarshmallow() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
 }
