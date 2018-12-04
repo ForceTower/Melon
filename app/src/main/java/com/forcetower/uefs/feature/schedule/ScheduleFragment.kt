@@ -69,7 +69,7 @@ class ScheduleFragment : UFragment(), Injectable {
         return FragmentScheduleBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
-            profileViewModel = this@ScheduleFragment.profileViewModel
+            actions = this@ScheduleFragment.viewModel
             setLifecycleOwner(this@ScheduleFragment)
         }.root
     }

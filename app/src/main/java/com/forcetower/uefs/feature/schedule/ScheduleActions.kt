@@ -33,4 +33,5 @@ import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 interface ScheduleActions {
     fun onLongClick(view: View): Boolean
     fun onClick(group: GroupWithClass)
+    fun refreshData()
 }
