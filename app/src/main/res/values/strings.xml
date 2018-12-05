@@ -389,6 +389,10 @@
     <string name="setup_continue">Continuar</string>
     <string name="open_settings_failed">Falhou ao abrir configurações, configure manualmente ou me mande um e-mail</string>
     <string name="unes_message_image">Imagem da mensagem!</string>
+    <string name="label_achievements">Conquistas</string>
+    <string name="achievements_check_in">Verificar localização</string>
+    <string name="btn_check_achievements">Ver conquistas</string>
+    <string name="btn_achievements_leave">Deixar a aventura</string>
     
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
