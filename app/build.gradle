@@ -161,6 +161,9 @@ dependencies {
         transitive = true
     }
 
+    //Google Play Games
+    implementation 'com.google.android.gms:play-services-games:16.0.0'
+
     //Internet / API Connection
     implementation 'com.squareup.okhttp3:okhttp:3.11.0'
     implementation 'com.squareup.retrofit2:retrofit:2.4.0'
