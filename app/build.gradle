@@ -2,7 +2,6 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
-apply plugin: 'com.github.triplet.play'
 apply plugin: 'io.fabric'
 
 configurations {
@@ -58,9 +57,6 @@ android {
         }
     }
     buildTypes {
-        debug {
-            //ext.enableCrashlytics = false
-        }
         release {
             signingConfig signingConfigs.release
             minifyEnabled false
@@ -82,16 +78,6 @@ android {
     lintOptions {
         abortOnError true
     }
-}
-
-afterEvaluate {
-
-}
-
-play {
-    serviceAccountCredentials = file('../google_play_console_auth.json')
-    track = "internal"
-    defaultToAppBundles = true
 }
 
 dependencies {
