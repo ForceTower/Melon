@@ -39,15 +39,25 @@ import dagger.android.support.AndroidSupportInjection
 import dagger.android.support.HasSupportFragmentInjector
 
 object AppInjection {
+    /**
+     * Registra um evento para descobrir quando uma atividade foi criada para que possamos injetar
+     * as dependencias nela
+     */
     fun create(application: UApplication): AppComponent {
         application.registerActivityLifecycleCallbacks(object : ActLifecycleCbAdapter() {
             override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
                 handle(activity)
             }
         })
+        // Retorna o componente do Dagger [Observe que existe uma classe chamada AppComponent no
+        // modulo injection
         return DaggerAppComponent.builder().application(application).build()
     }
 
+    /**
+     * Para cada fragmento gerado dentro das atividades, escute o evento de ligação e injeta
+     * as dependencias nos fragmentos tambem
+     */
     private fun handle(activity: Activity?) {
         if (activity is HasSupportFragmentInjector) {
             AndroidInjection.inject(activity)
