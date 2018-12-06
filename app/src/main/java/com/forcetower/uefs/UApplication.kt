@@ -49,6 +49,11 @@ import io.fabric.sdk.android.Fabric
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * Representa o aplicativo por completo.
+ *
+ * Iniciar o aplicativo por qualquer meio irá iniciar os processos de injeção de dependençias
+ */
 class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjector, HasBroadcastReceiverInjector, HasServiceInjector {
     @Inject
     lateinit var activityInjector: DispatchingAndroidInjector<Activity>
@@ -65,13 +70,21 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     private var injected = false
 
     override fun onCreate() {
+        // O Crashlytics é desativado em builds de debug
         initCrashlytics()
+        // O log timber só existe em build de debug
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
+        // Redefine os trabalhos de sincronização
         defineWorker()
     }
 
+    /**
+     * Este método irá observar qual o tipo de sincronização selecionado e tentará cria apenas se ele
+     * tiver sido apagado
+     */
     private fun defineWorker() {
         val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
@@ -82,14 +95,24 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         }
     }
 
+    /**
+     * Inicia o Crashlytics para envio de erros que acontecem no aplicativo
+     */
     private fun initCrashlytics() {
         val core = CrashlyticsCore.Builder().disabled(BuildConfig.DEBUG).build()
         val kit = Crashlytics.Builder().core(core).build()
         Fabric.with(this, kit)
     }
 
+    /**
+     * Cria o componente do Dagger.
+     * Este processo pode ser simplicado se a classe extendesse de DaggerApplication
+     */
     private fun createApplicationInjector() = AppInjection.create(this)
 
+    /**
+     * Injetar as dependencias!
+     */
     private fun injectApplicationIfNecessary() {
         if (!injected) {
             synchronized(this) {
@@ -103,16 +126,25 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         }
     }
 
+    /**
+     * Marca aplicação como injetada
+     */
     @Inject
     fun setInjected() {
         injected = true
     }
 
+    /**
+     * Inicializa o objeto de conexão com o Sagres
+     */
     @Inject
     fun configureSagresNavigator() {
         SagresNavigator.initialize(this)
     }
 
+    /**
+     * Cria/Apaga os canais de notificação
+     */
     @Inject
     fun configureNotifications() {
         NotificationHelper(this).createChannels()
