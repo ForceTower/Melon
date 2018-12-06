@@ -34,6 +34,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
@@ -121,8 +122,8 @@ class ProfileFragment : UFragment(), Injectable {
                 if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
                     val uri = data.data!!
 
-                    val bg = ColorUtils.modifyAlpha(requireContext().getColor(R.color.colorPrimary), 120)
-                    val ac = requireContext().getColor(R.color.colorAccent)
+                    val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
+                    val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                     CropImage.activity(uri)
                         .setFixAspectRatio(true)
                         .setAspectRatio(1, 1)

@@ -32,7 +32,6 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
-import android.os.SystemClock
 import androidx.annotation.WorkerThread
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -41,6 +40,7 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.forcetower.uefs.core.work.enqueue
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
@@ -67,31 +67,18 @@ class UploadImageToStorage(
         val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
 
         val baos = ByteArrayOutputStream()
+        // noinspection WrongThread
         bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
 
         val data = baos.toByteArray()
 
-        var completed = false
-        var success = false
-
-        ref.putBytes(data).addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                success = true
-                Timber.d("Image Uploaded!")
-            } else {
-                Timber.d("Failed to upload image")
-                Timber.d("Exception: ${task.exception?.message}")
-            }
-            completed = true
+        val task = ref.putBytes(data)
+        return try {
+            Tasks.await(task)
+            Result.SUCCESS
+        } catch (t: Throwable) {
+            Result.RETRY
         }
-
-        var count = 0
-        while (!completed && count < 200) {
-            SystemClock.sleep(1000)
-            count++
-        }
-
-        return if (success) Result.SUCCESS else Result.RETRY
     }
 
     companion object {
