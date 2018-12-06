@@ -35,6 +35,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -98,11 +99,13 @@ class ScheduleFragment : UFragment(), Injectable {
                 }
             }
 
-            layoutData.setOnScrollChangeListener { _, _, _, _, _ ->
-                if (layoutData.scrollY > 0)
-                    appBar.elevation = getPixelsFromDp(requireContext(), 4)
-                else
-                    appBar.elevation = 0f
+            if (VersionUtils.isMarshmallow()) {
+                layoutData.setOnScrollChangeListener { _, _, _, _, _ ->
+                    if (layoutData.scrollY > 0)
+                        appBar.elevation = getPixelsFromDp(requireContext(), 4)
+                    else
+                        appBar.elevation = 0f
+                }
             }
         }
 

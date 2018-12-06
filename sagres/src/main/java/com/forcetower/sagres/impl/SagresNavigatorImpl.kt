@@ -31,10 +31,12 @@ import android.content.Context
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.preference.PreferenceManager
 import androidx.annotation.AnyThread
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
@@ -87,8 +89,8 @@ private constructor(context: Context) : SagresNavigator() {
     private lateinit var cookieJar: PersistentCookieJar
     @get:RestrictTo(RestrictTo.Scope.LIBRARY)
     val proxyClient: OkHttpClient
-    private val connectivityManager = context.getSystemService(ConnectivityManager::class.java)
-    private val wifiManager = context.getSystemService(WifiManager::class.java)
+    private val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java)
+    private val wifiManager = ContextCompat.getSystemService(context, WifiManager::class.java)
 
     val client: OkHttpClient
         get() {
@@ -167,18 +169,28 @@ private constructor(context: Context) : SagresNavigator() {
 
     private fun shouldUseProxy(): Boolean {
         val connectivity = connectivityManager
-        val capabilities = connectivity.getNetworkCapabilities(connectivity.activeNetwork)
-        if (capabilities != null) {
-            val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
-            if (wifi) {
-                val manager = wifiManager
-                val ssid = manager.connectionInfo.ssid
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val capabilities = connectivity?.getNetworkCapabilities(connectivity.activeNetwork)
+            if (capabilities != null) {
+                val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
+                if (wifi) {
+                    val manager = wifiManager
+                    val ssid = manager?.connectionInfo?.ssid
+                    if (ssid != null && Constants.WIFI_PROXY_NAMES.contains(ssid)) {
+                        return true
+                    }
+                }
+            }
+            return false
+        } else {
+            val ssid = wifiManager?.connectionInfo?.ssid
+            if (ssid != null) {
                 if (Constants.WIFI_PROXY_NAMES.contains(ssid)) {
                     return true
                 }
             }
+            return false
         }
-        return false
     }
 
     override fun stopTags(tag: String) {
