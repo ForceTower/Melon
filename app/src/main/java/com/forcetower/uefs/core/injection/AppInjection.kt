@@ -50,7 +50,7 @@ object AppInjection {
             }
         })
         // Retorna o componente do Dagger [Observe que existe uma classe chamada AppComponent no
-        // modulo injection
+        // modulo core.injection
         return DaggerAppComponent.builder().application(application).build()
     }
 
