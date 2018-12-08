@@ -393,7 +393,12 @@
     <string name="achievements_check_in">Verificar localização</string>
     <string name="btn_check_achievements">Ver conquistas</string>
     <string name="btn_achievements_leave">Deixar a aventura</string>
-    
+    <string name="unable_to_open_achievements">O Google não pôde atender a requisição no momento</string>
+    <string name="invalid_google_sign_in_error">Erro de login inválido (Erro no erro)</string>
+    <string name="google_sign_in_cancelled">Login cancelado</string>
+    <string name="google_sign_in_outdated">Google Play Services não está atualizado e não consegue processar esta requisição</string>
+    <string name="google_sign_in_progress">Já existe um login em progresso</string>
+
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
         <item>Encadeado</item>

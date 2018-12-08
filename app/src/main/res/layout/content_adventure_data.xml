@@ -27,12 +27,18 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.adventure.AdventureInteractor"/>
+    </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
     
         <TextView
             android:id="@+id/label_achievements"
@@ -59,6 +65,7 @@
             android:layout_marginTop="16dp"
             style="@style/UTheme.MaterialButton.Outline.AccentBorder"
             android:text="@string/achievements_check_in"
+            android:onClick="@{() -> interactor.turnOnLocations()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_achievements" />
@@ -72,6 +79,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/btn_check_achievements"
+            android:onClick="@{() -> interactor.checkAchievements()}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_check_in" />
@@ -86,8 +94,9 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:text="@string/btn_achievements_leave"
-            app:strokeColor="@color/red"
+            android:onClick="@{() -> interactor.leave()}"
             android:textColor="@color/red"
+            app:strokeColor="@color/red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btn_check_achievements" />
