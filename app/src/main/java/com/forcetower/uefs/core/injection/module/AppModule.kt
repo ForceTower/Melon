@@ -31,6 +31,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
+import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.database.M1TO2
 import com.forcetower.uefs.core.storage.database.M2TO3
@@ -47,7 +48,8 @@ object AppModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideContext(application: UApplication): Context = application.applicationContext
+    fun provideContext(application: UApplication): Context =
+            application.applicationContext
 
     @Provides
     @Singleton
@@ -63,4 +65,10 @@ object AppModule {
                 .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6)
                 .fallbackToDestructiveMigration()
                 .build()
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providePlayGames(context: Context): GooglePlayGamesInstance =
+            GooglePlayGamesInstance(context)
 }

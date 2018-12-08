@@ -29,6 +29,21 @@
 <layout xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="storage"
+            type="com.google.firebase.storage.FirebaseStorage"/>
+
+        <variable
+            name="firebaseUser"
+            type="com.google.firebase.auth.FirebaseUser"/>
+
+        <variable
+            name="profile"
+            type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
@@ -40,6 +55,8 @@
             android:layout_marginTop="36dp"
             android:importantForAccessibility="no"
             app:clipToCircle="@{true}"
+            app:firebaseStorage="@{storage}"
+            app:firebaseUser="@{firebaseUser}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -56,6 +73,7 @@
             android:textColor="@color/text_primary_dark"
             android:textAlignment="gravity"
             android:gravity="center"
+            android:text="@{profile.profile.name}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_image"
@@ -72,6 +90,7 @@
             android:textSize="12sp"
             android:textAlignment="gravity"
             android:gravity="center"
+            android:text="@{profile.course.name}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
