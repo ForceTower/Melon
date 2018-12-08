@@ -26,8 +26,26 @@
   ~ SOFTWARE.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="storage"
+            type="com.google.firebase.storage.FirebaseStorage"/>
+
+        <variable
+            name="firebaseUser"
+            type="com.google.firebase.auth.FirebaseUser"/>
+
+        <variable
+            name="profile"
+            type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
+
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.adventure.AdventureInteractor"/>
+    </data>
     
     <LinearLayout
         android:layout_width="match_parent"
@@ -36,10 +54,14 @@
     
         <include
             android:id="@+id/adventure_header"
-            layout="@layout/content_adventure_header" />
+            layout="@layout/content_adventure_header"
+            app:profile="@{profile}"
+            app:firebaseUser="@{firebaseUser}"
+            app:storage="@{storage}"/>
     
         <include
             android:id="@+id/adventure_achievements"
-            layout="@layout/content_adventure_data" />
+            layout="@layout/content_adventure_data"
+            app:interactor="@{interactor}"/>
     </LinearLayout>
 </layout>
