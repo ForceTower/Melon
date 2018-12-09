@@ -93,7 +93,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
     /**
      * Retorna se existe alguem conectado às contas do google ou não
      */
-    fun isConnected() : Boolean {
+    fun isConnected(): Boolean {
         return GoogleSignIn.getLastSignedInAccount(this) != null
     }
 

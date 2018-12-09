@@ -16,6 +16,5 @@ class AdventureRepository @Inject constructor(
     }
 
     private fun internalCheckAchievements() {
-
     }
 }
