@@ -39,11 +39,15 @@ class AdventureViewModel @Inject constructor(
         _locations.value = !requesting
     }
 
-    override fun checkAchievements() {
+    override fun openAchievements() {
         _achievements.value = Event(Any())
     }
 
     override fun isConnected(): Boolean {
         return true
+    }
+
+    fun checkAchievements(email: String? = null) {
+        repository.checkAchievements(email)
     }
 }
