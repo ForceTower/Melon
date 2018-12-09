@@ -45,11 +45,11 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
-import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.config
+import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.isNougatMR1
 import com.forcetower.uefs.feature.shared.provideViewModel
 import com.forcetower.uefs.feature.shared.toShortcut
+import com.forcetower.uefs.feature.shared.config
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
@@ -58,7 +58,7 @@ import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class HomeActivity : UActivity(), HasSupportFragmentInjector {
+class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     companion object {
         const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
         const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"

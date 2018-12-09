@@ -26,9 +26,8 @@ interface AdventureInteractor {
      */
     fun checkAchievements()
 
-
     /**
      * Verifica se o usuário está conectado ao Google Play Games
      */
-    fun isConnected() : Boolean
+    fun isConnected(): Boolean
 }
