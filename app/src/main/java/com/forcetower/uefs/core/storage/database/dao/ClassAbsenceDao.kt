@@ -53,6 +53,9 @@ abstract class ClassAbsenceDao {
     @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId")
     abstract fun getMyAbsenceFromClass(classId: Long): LiveData<List<ClassAbsence>>
 
+    @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId")
+    abstract fun getAbsenceFromClassDirect(classId: Long): List<ClassAbsence>
+
     @Transaction
     open fun putAbsences(classes: List<SDisciplineMissedClass>) {
         val profile = getMeProfile()
@@ -70,7 +73,7 @@ abstract class ClassAbsenceDao {
     }
 
     @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
-    abstract fun getClass(code: String, semester: Long): Class?
+    protected abstract fun getClass(code: String, semester: Long): Class?
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile

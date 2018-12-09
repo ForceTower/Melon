@@ -2,6 +2,7 @@ package com.forcetower.uefs.feature.shared
 
 import android.content.Intent
 import android.os.Bundle
+import androidx.annotation.StringRes
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.PLAY_GAMES_ACHIEVEMENTS
 import com.forcetower.uefs.PLAY_GAMES_SIGN_IN
@@ -12,6 +13,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CA
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS
 import com.google.android.gms.common.ConnectionResult.NETWORK_ERROR
 import com.google.android.gms.common.api.ApiException
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -47,6 +49,7 @@ abstract class UGameActivity : UActivity() {
     fun signIn() {
         val client = mGamesInstance.signInClient
         client ?: return
+        Timber.d("Signing in!")
         startActivityForResult(client.signInIntent, PLAY_GAMES_SIGN_IN)
     }
 
@@ -57,6 +60,9 @@ abstract class UGameActivity : UActivity() {
     }
 
     open fun checkAchievements() = Unit
+
+    fun isConnectedToPlayGames() = mGamesInstance.isConnected()
+    fun unlockAchievement(@StringRes id: Int) = mGamesInstance.unlockAchievement(id)
 
     fun openAchievements() {
         if (!mGamesInstance.isConnected()) return
@@ -80,9 +86,11 @@ abstract class UGameActivity : UActivity() {
 
         when (requestCode) {
             PLAY_GAMES_SIGN_IN -> {
+                Timber.d("Continue from result!")
                 GoogleSignIn.getSignedInAccountFromIntent(data).addOnCompleteListener(this) {
                     if (it.isSuccessful) {
                         val account = it.result
+                        Timber.d("Play Games Sign in!")
                         if (account != null) {
                             onGooglePlayGamesConnected(account)
                         }
@@ -98,6 +106,7 @@ abstract class UGameActivity : UActivity() {
                             exception.message.isNullOrBlank() -> R.string.invalid_google_sign_in_error
                             else -> R.string.invalid_google_sign_in_error
                         }
+                        Timber.e("Exception: ${exception?.message}")
                         mGamesInstance.onDisconnected()
                         val error = getString(message)
                         showSnack(error)

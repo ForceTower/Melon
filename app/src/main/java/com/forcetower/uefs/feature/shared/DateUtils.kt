@@ -157,3 +157,25 @@ fun Long.formatMonthYear(): String {
     val format = SimpleDateFormat("MMMM yyyy", Locale.getDefault())
     return format.format(date)
 }
+
+fun String?.generateCalendarFromHour(): Calendar? {
+    if (this == null) return null
+
+    try {
+        val calendar = Calendar.getInstance()
+        val parts = trim { it <= ' ' }.split(":".toRegex()).dropLastWhile { it.isEmpty() }.toTypedArray()
+        if (parts.size != 1) {
+            calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]))
+            calendar.set(Calendar.MINUTE, Integer.parseInt(parts[1]))
+
+            if (parts.size == 3)
+                calendar.set(Calendar.SECOND, Integer.parseInt(parts[2]))
+
+            return calendar
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+    }
+
+    return null
+}

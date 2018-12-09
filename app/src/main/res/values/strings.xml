@@ -398,6 +398,12 @@
     <string name="google_sign_in_cancelled">Login cancelado</string>
     <string name="google_sign_in_outdated">Google Play Services não está atualizado e não consegue processar esta requisição</string>
     <string name="google_sign_in_progress">Já existe um login em progresso</string>
+    <string name="adventure_start">Aventura</string>
+    <string name="label_adventure_info">A aventura é uma série de conquistas para algumas das ações que você completa na universidade. Passar em matérias, notas, faltas, greves... Tudo conta</string>
+    <string name="label_adventure_info_update">A sua conta de email será associada a esta conta do Sagres, então você só irá desbloquear as conquistas nesta conta do Sagres.</string>
+    <string name="lets_go">Vamos lá!</string>
+    <string name="not_now">Agora não</string>
+    <string name="connected_to_play_games">Boas vindas à aventura</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

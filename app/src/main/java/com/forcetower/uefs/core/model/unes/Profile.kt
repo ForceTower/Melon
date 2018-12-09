@@ -43,6 +43,8 @@ data class Profile(
     val name: String?,
     val email: String?,
     val score: Double = -1.0,
+    @ColumnInfo(name = "calc_score")
+    val calcScore: Double = -1.0,
     val course: Long? = null,
     val imageUrl: String? = null,
     @ColumnInfo(name = "sagres_id")
