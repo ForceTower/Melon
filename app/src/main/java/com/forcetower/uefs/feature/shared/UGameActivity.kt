@@ -8,7 +8,9 @@ import com.forcetower.uefs.PLAY_GAMES_SIGN_IN
 import com.forcetower.uefs.R
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.*
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
+import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS
+import com.google.android.gms.common.ConnectionResult.NETWORK_ERROR
 import com.google.android.gms.common.api.ApiException
 import javax.inject.Inject
 
@@ -104,5 +106,4 @@ abstract class UGameActivity : UActivity() {
             }
         }
     }
-
 }
