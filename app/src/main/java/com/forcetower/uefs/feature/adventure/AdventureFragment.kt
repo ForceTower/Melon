@@ -7,6 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import com.forcetower.uefs.GameConnectionStatus
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -64,5 +66,22 @@ class AdventureFragment : UFragment(), Injectable {
             achievements.observe(this@AdventureFragment, EventObserver { activity?.openAchievements() })
             start.observe(this@AdventureFragment, EventObserver { activity?.signIn() })
         }
+
+        if (activity?.isConnectedToPlayGames() == false && savedInstanceState == null) {
+            openStartupDialog()
+        }
+
+        activity?.mGamesInstance?.connectionStatus?.observe(this, EventObserver {
+            when (it) {
+                GameConnectionStatus.DISCONNECTED -> openStartupDialog()
+                GameConnectionStatus.CONNECTED -> showSnack(getString(R.string.connected_to_play_games))
+                GameConnectionStatus.LOADING -> Unit
+            }
+        })
+    }
+
+    private fun openStartupDialog() {
+        val dialog = AdventureSignInDialog()
+        dialog.show(childFragmentManager, "adventure_sign_in")
     }
 }
