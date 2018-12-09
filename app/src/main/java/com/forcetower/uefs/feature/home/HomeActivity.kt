@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
+import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
@@ -74,6 +75,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var viewModel: HomeViewModel
+    private lateinit var adventureViewModel: AdventureViewModel
     private lateinit var binding: ActivityHomeBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -143,6 +145,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun setupViewModel() {
         viewModel = provideViewModel(vmFactory)
+        adventureViewModel = provideViewModel(vmFactory)
     }
 
     private fun setupUserData() {
@@ -176,6 +179,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
         snack.config()
         snack.show()
+    }
+
+    override fun checkAchievements(email: String?) {
+        adventureViewModel.checkAchievements(email)
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector

@@ -1,6 +1,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
+import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -15,6 +16,7 @@ import com.forcetower.uefs.feature.shared.generateCalendarFromHour
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
 import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -36,7 +38,7 @@ class AdventureRepository @Inject constructor(
     private val preferences: SharedPreferences
 ) {
 
-    @MainThread
+    @AnyThread
     fun checkAchievements(email: String? = null): LiveData<Map<Int, Int>> {
         val data = MutableLiveData<Map<Int, Int>>()
         executors.diskIO().execute {
@@ -55,8 +57,15 @@ class AdventureRepository @Inject constructor(
 
         try {
             val snapshot = Tasks.await(collection.document(id).get())
-            val games = snapshot?.data?.get("adventure") ?: "unset"
-            if (games == email) performCheckAchievements(data)
+            val games = snapshot?.data?.get("adventure") as? String
+            if (games == null && email != null) {
+                Timber.d("Setting up account")
+                collection.document(id).set(mapOf("adventure" to email), SetOptions.merge())
+            } else if (games == email) {
+                performCheckAchievements(data)
+            } else {
+                Timber.d("Invalid combination of $email and ${user.email}")
+            }
         } catch (exception: Exception) {
             Timber.d("Ignored exception: ${exception.message}")
         }
