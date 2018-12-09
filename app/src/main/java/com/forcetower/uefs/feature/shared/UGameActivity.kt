@@ -56,10 +56,10 @@ abstract class UGameActivity : UActivity() {
     private fun onGooglePlayGamesConnected(account: GoogleSignInAccount) {
         mGamesInstance.onConnected(account)
         mGamesInstance.gamesClient?.setViewForPopups(window.decorView.findViewById(android.R.id.content))
-        checkAchievements()
+        checkAchievements(account.email)
     }
 
-    open fun checkAchievements() = Unit
+    open fun checkAchievements(email: String?) = Unit
 
     fun isConnectedToPlayGames() = mGamesInstance.isConnected()
     fun unlockAchievement(@StringRes id: Int) = mGamesInstance.unlockAchievement(id)

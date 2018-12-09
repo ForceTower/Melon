@@ -24,7 +24,7 @@ interface AdventureInteractor {
     /**
      * Abre as conquistas do UNES
      */
-    fun checkAchievements()
+    fun openAchievements()
 
     /**
      * Verifica se o usuário está conectado ao Google Play Games
