@@ -6,6 +6,7 @@ import android.preference.PreferenceManager
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.uefs.core.vm.Event
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
@@ -25,8 +26,8 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
     private val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     private var playerUnlockedSwitch: Boolean = false
 
-    private val _status = MutableLiveData<GameConnectionStatus>()
-    val connectionStatus: LiveData<GameConnectionStatus>
+    private val _status = MutableLiveData<Event<GameConnectionStatus>>()
+    val connectionStatus: LiveData<Event<GameConnectionStatus>>
         get() = _status
 
     /**
@@ -49,7 +50,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         achievementsClient = Games.getAchievementsClient(this, account)
         leaderboardClient = Games.getLeaderboardsClient(this, account)
         gamesClient = Games.getGamesClient(this, account)
-        _status.postValue(GameConnectionStatus.CONNECTED)
+        _status.postValue(Event(GameConnectionStatus.CONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled", true).apply()
         unlockAchievement(R.string.achievement_comeou_o_jogo)
         if (playerUnlockedSwitch) {
@@ -64,7 +65,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         achievementsClient = null
         leaderboardClient = null
         gamesClient = null
-        _status.postValue(GameConnectionStatus.DISCONNECTED)
+        _status.postValue(Event(GameConnectionStatus.DISCONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled", false).apply()
     }
 

@@ -55,6 +55,9 @@ abstract class ClassLocationDao {
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1")
     abstract fun getCurrentSchedule(): LiveData<List<LocationWithGroup>>
 
+    @Query("SELECT cl.* FROM ClassLocation cl")
+    abstract fun getCurrentScheduleDirect(): List<ClassLocation>
+
     @Transaction
     open fun putSchedule(locations: List<SDisciplineClassLocation>) {
         if (locations.isEmpty()) return
