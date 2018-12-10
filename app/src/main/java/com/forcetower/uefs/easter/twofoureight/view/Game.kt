@@ -29,7 +29,7 @@ package com.forcetower.uefs.easter.twofoureight.view
 
 import android.content.Context
 import timber.log.Timber
-import java.util.*
+import java.util.UUID
 
 /**
  * Created by João Paulo on 02/06/2018.
