@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- app_id -->
+    <string name="app_id" translatable="false">371085821263</string>
+    <!-- package_name -->
+    <string name="package_name" translatable="false">com.forcetower.uefs</string>
+    <!--! achievement Começou o jogo -->
+    <string name="achievement_comeou_o_jogo" translatable="false">CgkIz4rBs-YKEAIQAQ</string>
+    <!--! achievement Achei fácil -->
+    <string name="achievement_achei_fcil" translatable="false">CgkIz4rBs-YKEAIQAg</string>
+    <!--! achievement Média 10! -->
+    <string name="achievement_mdia_10" translatable="false">CgkIz4rBs-YKEAIQAw</string>
+    <!--! achievement Semestre Limpo -->
+    <string name="achievement_semestre_limpo" translatable="false">CgkIz4rBs-YKEAIQBA</string>
+    <!--! achievement Medíocre -->
+    <string name="achievement_medocre" translatable="false">CgkIz4rBs-YKEAIQBQ</string>
+    <!--! achievement Semestre de 6 meses -->
+    <string name="achievement_semestre_de_6_meses" translatable="false">CgkIz4rBs-YKEAIQBg</string>
+    <!--! achievement Semestre da virada -->
+    <string name="achievement_semestre_da_virada" translatable="false">CgkIz4rBs-YKEAIQBw</string>
+    <!--! achievement Sobrevivente -->
+    <string name="achievement_sobrevivente" translatable="false">CgkIz4rBs-YKEAIQCA</string>
+    <!--! achievement E ai, forma quando? -->
+    <string name="achievement_e_ai_forma_quando" translatable="false">CgkIz4rBs-YKEAIQCQ</string>
+    <!--! achievement Luta até o fim -->
+    <string name="achievement_luta_at_o_fim" translatable="false">CgkIz4rBs-YKEAIQCg</string>
+    <!--! achievement Veterano -->
+    <string name="achievement_veterano" translatable="false">CgkIz4rBs-YKEAIQCw</string>
+    <!--! achievement Eu estou sempre lá -->
+    <string name="achievement_eu_estou_sempre_l" translatable="false">CgkIz4rBs-YKEAIQDA</string>
+    <!--! achievement Quase! -->
+    <string name="achievement_quase" translatable="false">CgkIz4rBs-YKEAIQDQ</string>
+    <!--! achievement Nunca nem vi -->
+    <string name="achievement_nunca_nem_vi" translatable="false">CgkIz4rBs-YKEAIQDg</string>
+    <!--! achievement Pseudoveterano -->
+    <string name="achievement_pseudoveterano" translatable="false">CgkIz4rBs-YKEAIQDw</string>
+    <!--! achievement Dora, a Aventureira -->
+    <string name="achievement_dora_a_aventureira" translatable="false">CgkIz4rBs-YKEAIQEA</string>
+    <!--! achievement Dora, a Exploradora -->
+    <string name="achievement_dora_a_exploradora" translatable="false">CgkIz4rBs-YKEAIQEQ</string>
+    <!--! achievement Dora, a Estudiosa -->
+    <string name="achievement_dora_a_estudiosa" translatable="false">CgkIz4rBs-YKEAIQEg</string>
+    <!--! achievement Agora eu entendi, agora eu saquei! -->
+    <string name="achievement_agora_eu_entendi_agora_eu_saquei" translatable="false">CgkIz4rBs-YKEAIQFA</string>
+    <!--! achievement Agora todas as peças se encaixaram! -->
+    <string name="achievement_agora_todas_as_peas_se_encaixaram" translatable="false">CgkIz4rBs-YKEAIQEw</string>
+    <!--! achievement Tão perto, mas tão longe... -->
+    <string name="achievement_to_perto_mas_to_longe" translatable="false">CgkIz4rBs-YKEAIQFQ</string>
+    <!--! achievement MECANIZOU TODO! -->
+    <string name="achievement_mecanizou_todo" translatable="false">CgkIz4rBs-YKEAIQFg</string>
+    <!--! achievement Introdução a Introduções -->
+    <string name="achievement_introduo_a_introdues" translatable="false">CgkIz4rBs-YKEAIQFw</string>
+    <!--! achievement Jackpot -->
+    <string name="achievement_jackpot" translatable="false">CgkIz4rBs-YKEAIQGA</string>
+    <!--! achievement Maratonista -->
+    <string name="achievement_maratonista" translatable="false">CgkIz4rBs-YKEAIQGQ</string>
+    <!--! achievement Killing Spree -->
+    <string name="achievement_killing_spree" translatable="false">CgkIz4rBs-YKEAIQGg</string>
+    <!--! achievement Me empresta o seu vira-tempo? -->
+    <string name="achievement_me_empresta_o_seu_viratempo" translatable="false">CgkIz4rBs-YKEAIQHA</string>
+    <!--! achievement Engatinhando -->
+    <string name="achievement_engatinhando" translatable="false">CgkIz4rBs-YKEAIQHQ</string>
+    <!-- achievement Bandejão! -->
+    <string name="achievement_bandejo" translatable="false">CgkIz4rBs-YKEAIQHg</string>
+    <!-- achievement Claramente na Disney -->
+    <string name="achievement_claramente_na_disney" translatable="false">CgkIz4rBs-YKEAIQHw</string>
+    <!--! achievement Você... Me achou! -->
+    <string name="achievement_voc_me_achou" translatable="false">CgkIz4rBs-YKEAIQIg</string>
+    <!--! achievement Você é bom... -->
+    <string name="achievement_voc__bom" translatable="false">CgkIz4rBs-YKEAIQIw</string>
+    <!--! achievement Eu tentei... -->
+    <string name="achievement_eu_tentei" translatable="false">CgkIz4rBs-YKEAIQJA</string>
+    <!--! achievement O Campeão de 2048 no UNES -->
+    <string name="achievement_o_campeo_de_2048_no_unes" translatable="false">CgkIz4rBs-YKEAIQJQ</string>
+    <!--! achievement A prática leva à perfeição -->
+    <string name="achievement_a_prtica_leva__perfeio" translatable="false">CgkIz4rBs-YKEAIQJg</string>
+    <!--! achievement Dora, a misteriosa -->
+    <string name="achievement_dora_a_misteriosa" translatable="false">CgkIz4rBs-YKEAIQJw</string>
+    <!-- achievement O criador -->
+    <string name="achievement_o_criador" translatable="false">CgkIz4rBs-YKEAIQKA</string>
+    <!--! achievement Atualizado! -->
+    <string name="achievement_atualizado" translatable="false">CgkIz4rBs-YKEAIQKQ</string>
+</resources>

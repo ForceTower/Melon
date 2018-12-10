@@ -43,6 +43,11 @@ import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
 import javax.inject.Inject
 
+/**
+ * A atividade inicial do aplicativo, ela tem o papel de decidir qual tela mostrar
+ * - Login -> caso o usuário não esteja conectado [Não existe usuário + senha no aplicativo]
+ * - Home  -> caso o usuário esteja conectado
+ */
 class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
@@ -54,6 +59,7 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         val viewModel: LaunchViewModel = provideViewModel(factory)
         viewModel.direction.observe(this, EventObserver {
             Timber.d("Once!")
+            // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
             if (!viewModel.started) {
                 when (it) {
                     Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))

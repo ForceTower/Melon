@@ -47,7 +47,7 @@
     <string name="label_events">Eventos</string>
     <string name="label_services">Serviços</string>
     <string name="label_reminders">Lembretes</string>
-    <string name="label_adventure">Aventura [Em breve]</string>
+    <string name="label_adventure">Aventura</string>
     <string name="label_settings">Configurações</string>
     <string name="label_about_app">Sobre o Aplicativo</string>
     <string name="label_definitions">Definições</string>
@@ -68,72 +68,6 @@
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
     <string name="default_firebase_notification_channel_id" translatable="false">com.forcetower.uefs.GENERAL.REMOTE</string>
-    
-    <string-array name="login_random_messages">
-        <item>Preparando Foguetes</item>
-        <item>Iniciando Sincronização</item>
-        <item>Procurando por itens interessantes</item>
-        <item>Unificando o UNES</item>
-        <item>Carregando mensagens aleatórias</item>
-        <item>Alguém lê isso?</item>
-        <item>Girando barra de progresso</item>
-        <item>João Paulo está dormindo</item>
-        <item>A barra de progresso está girando</item>
-        <item>Carregando capacitores</item>
-        <item>Ligando a FPGA</item>
-        <item>Dormindo um pouco</item>
-        <item>UNES > Sagres</item>
-        <item>Jogando 2048</item>
-        <item>Concluindo a Graduação</item>
-        <item>Processando processadores</item>
-        <item>Usando algoritmos genéticos</item>
-        <item>Classificando usuários</item>
-        <item>Otimizando o UNES</item>
-        <item>Aumentando suas notas</item>
-        <item>Criando o UNESverso</item>
-        <item>Visitando o Bandejão</item>
-        <item>Entrando em Greve</item>
-        <item>Calculando Hashes malucos</item>
-        <item>RX o rato</item>
-        <item>Eu amo barras de carregamento</item>
-        <item>Criando aviãozinho</item>
-        <item>Gerando código de ignição</item>
-        <item>Deixando o aplicativo bonito</item>
-        <item>Criando compras no aplicativo</item>
-        <item>Andando por ai sem motivo</item>
-        <item>Retirando suas faltas</item>
-        <item>Aprovando as matérias</item>
-        <item>Indo para a calourada</item>
-        <item>Descansando um pouco</item>
-        <item>Criando novas strings</item>
-        <item>Desvendando seus segredos</item>
-        <item>Criando barreira anti-jubilamento</item>
-        <item>Recebendo um aviãozinho</item>
-        <item>Mensagem Aleátoria</item>
-        <item>Fingindo que está carregando</item>
-        <item>Roubando sua caneta</item>
-        <item>Comprando almofadas</item>
-        <item>A cozinha está em chamas</item>
-        <item>Já volto</item>
-        <item>Lendo livro na biblioteca</item>
-        <item>Estudando para a prova</item>
-        <item>Passando em PDS</item>
-        <item>Enfrentando o monstro do mau</item>
-        <item>Carregando suas mensagens</item>
-        <item>Vazando suas notas</item>
-        <item>Olhando esta barra</item>
-        <item>Olhando o Ponto U</item>
-        <item>Olhando os raios de luz!</item>
-        <item>BUNITO</item>
-        <item>Entendendo tudo agora</item>
-        <item>Encaixando todas as peças</item>
-        <item>Ficando de olhos abertos</item>
-        <item>Quebrando a melancia</item>
-        <item>Mas é 15 conto..</item>
-        <item>You front!! You front!!!</item>
-        <item>I\'m dono do jogo, drop helmet</item>
-        <item>Observe a velocidade do bote</item>
-    </string-array>
     
     <string name="message_received_date_format">Mensagem recebida %1$s</string>
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
@@ -389,7 +323,25 @@
     <string name="setup_continue">Continuar</string>
     <string name="open_settings_failed">Falhou ao abrir configurações, configure manualmente ou me mande um e-mail</string>
     <string name="unes_message_image">Imagem da mensagem!</string>
-    
+    <string name="label_achievements">Conquistas</string>
+    <string name="achievements_check_in">Verificar localização</string>
+    <string name="btn_check_achievements">Ver conquistas</string>
+    <string name="btn_achievements_leave">Deixar a aventura</string>
+    <string name="unable_to_open_achievements">O Google não pôde atender a requisição no momento</string>
+    <string name="invalid_google_sign_in_error">Erro de login inválido (Erro no erro)</string>
+    <string name="google_sign_in_cancelled">Login cancelado</string>
+    <string name="google_sign_in_outdated">Google Play Services não está atualizado e não consegue processar esta requisição</string>
+    <string name="google_sign_in_progress">Já existe um login em progresso</string>
+    <string name="adventure_start">Aventura</string>
+    <string name="label_adventure_info">A aventura é uma série de conquistas para algumas das ações que você completa na universidade. Passar em matérias, notas, faltas, greves... Tudo conta</string>
+    <string name="label_adventure_info_update">A sua conta de email será associada a esta conta do Sagres, então você só irá desbloquear as conquistas nesta conta do Sagres.</string>
+    <string name="lets_go">Vamos lá!</string>
+    <string name="not_now">Agora não</string>
+    <string name="connected_to_play_games">Boas vindas à aventura</string>
+    <string name="permission_location_adventure">Para verificar a localização o aplicativo precisa de sua permissão</string>
+    <string name="adventure_not_accurate">Localização ainda não está acurada</string>
+    <string name="cant_receive_location">Não é possivel receber localizações</string>
+
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
         <item>Encadeado</item>

@@ -46,6 +46,10 @@ import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
 import javax.inject.Singleton
 
+/**
+ * Define todas as regras de injeção de dependencias.
+ * Onde, como, quando e por quem.
+ */
 @Singleton
 @Component(
     modules = [

@@ -28,6 +28,7 @@
 package com.forcetower.uefs.easter.twofoureight
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.KeyEvent
@@ -47,6 +48,7 @@ import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
 import com.forcetower.uefs.easter.twofoureight.view.Game
 import com.forcetower.uefs.easter.twofoureight.view.Tile
+import com.forcetower.uefs.feature.shared.UGameActivity
 import timber.log.Timber
 
 /**
@@ -61,6 +63,13 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
     private lateinit var mGame: Game
 
     private lateinit var binding: GameFragment2048Binding
+    private var activity: UGameActivity? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        activity = context as? UGameActivity
+        activity ?: Timber.e("Adventure Fragment must be attached to a UGameActivity for it to work")
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment_2048, container, false)
@@ -144,19 +153,19 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
     }
 
     override fun onGameStateChanged(state: Game.State?) {
-        Timber.d("Game state changed to: " + state!!)
-        if (state === Game.State.WON || state === Game.State.ENLESS_WON) {
+        Timber.d("Game state changed to: %s", state!!)
+        if (state == Game.State.WON || state == Game.State.ENLESS_WON) {
             binding.tvEndgameOverlay.visibility = View.VISIBLE
             binding.tvEndgameOverlay.setText(R.string.you_win)
-            //            UActivity activity = (UActivity) requireActivity();
-            //            activity.unlockAchievements(getString(R.string.achievement_you_are_good_in_2048), activity.mPlayGamesInstance);
-            //            activity.incrementAchievementProgress(getString(R.string.achievement_unes_2048_champion), 1, activity.mPlayGamesInstance);
-        } else if (state === Game.State.LOST) {
+
+            activity?.unlockAchievement(R.string.achievement_voc__bom)
+            activity?.incrementAchievementProgress(R.string.achievement_o_campeo_de_2048_no_unes, 1)
+        } else if (state == Game.State.LOST) {
             binding.tvEndgameOverlay.visibility = View.VISIBLE
             binding.tvEndgameOverlay.setText(R.string.game_over)
-            //            UBaseActivity activity = (UBaseActivity) requireActivity();
-            //            activity.unlockAchievements(getString(R.string.achievement_you_tried_2048), activity.mPlayGamesInstance);
-            //            activity.incrementAchievementProgress(getString(R.string.achievement_practice_makes_perfect), 1, activity.mPlayGamesInstance);
+
+            activity?.unlockAchievement(R.string.achievement_eu_tentei)
+            activity?.incrementAchievementProgress(R.string.achievement_a_prtica_leva__perfeio, 1)
         } else {
             binding.tvEndgameOverlay.visibility = View.GONE
         }
@@ -167,6 +176,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         val editor = settings.edit()
         val field = mGame.gameGrid!!.grid
         val undoField = mGame.gameGrid!!.undoGrid
+        val uuid = mGame.uuid
         for (xx in field.indices) {
             for (yy in 0 until field[0].size) {
                 if (field[xx][yy] != null) {
@@ -187,6 +197,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         editor.putBoolean(CAN_UNDO, mGame.isCanUndo)
         editor.putString(GAME_STATE, mGame.gameState!!.name)
         editor.putString(UNDO_GAME_STATE, mGame.lastGameState!!.name)
+        editor.putString(GAME_UUID, uuid)
         editor.apply()
     }
 
@@ -215,6 +226,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         mGame.score = settings.getLong(SCORE, 0)
         mGame.lastScore = settings.getLong(UNDO_SCORE, 0)
         mGame.isCanUndo = settings.getBoolean(CAN_UNDO, mGame.isCanUndo)
+        mGame.uuid = settings.getString(GAME_UUID, mGame.uuid) ?: mGame.uuid
         try {
             mGame.updateGameState(Game.State.valueOf(settings.getString(GAME_STATE, Game.State.NORMAL.name)!!))
         } catch (e: Exception) {
@@ -230,22 +242,22 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         mGame.updateUI()
     }
 
-    fun onLeftSwipe() {
+    private fun onLeftSwipe() {
         mGame.move(Game.DIRECTION_LEFT)
         Timber.d("Left Swipe")
     }
 
-    fun onRightSwipe() {
+    private fun onRightSwipe() {
         mGame.move(Game.DIRECTION_RIGHT)
         Timber.d("Right Swipe")
     }
 
-    fun onDownSwipe() {
+    private fun onDownSwipe() {
         mGame.move(Game.DIRECTION_DOWN)
         Timber.d("Down Swipe")
     }
 
-    fun onUpSwipe() {
+    private fun onUpSwipe() {
         mGame.move(Game.DIRECTION_UP)
         Timber.d("Up Swipe")
     }
@@ -278,7 +290,6 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
                             return true
                         }
                     } else {
-                        Timber.i("Horizontal Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE)
                         return false // We don't consume the event
                     }
                 } else {
@@ -293,7 +304,6 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
                             return true
                         }
                     } else {
-                        Timber.i("Vertical Swipe was only " + Math.abs(deltaX) + " long, need at least " + MIN_DISTANCE)
                         return false // We don't consume the event
                     }
                 } // swipe vertical?
@@ -305,9 +315,6 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
     }
 
     companion object {
-        private const val SWIPE_MIN_DISTANCE = 120
-        private const val SWIPE_MAX_OFF_PATH = 250
-        private const val SWIPE_THRESHOLD_VELOCITY = 200
         internal const val MIN_DISTANCE = 70
 
         private const val SCORE = "savegame.score"
@@ -316,5 +323,6 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         private const val UNDO_GRID = "savegame.undo"
         private const val GAME_STATE = "savegame.gamestate"
         private const val UNDO_GAME_STATE = "savegame.undogamestate"
+        private const val GAME_UUID = "savegame.uuid"
     }
 }
