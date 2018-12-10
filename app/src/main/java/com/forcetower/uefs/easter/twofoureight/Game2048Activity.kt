@@ -36,7 +36,6 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.feature.shared.UGameActivity
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
