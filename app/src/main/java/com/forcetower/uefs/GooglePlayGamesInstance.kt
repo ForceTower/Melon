@@ -115,6 +115,16 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
     private fun unlockAchievement(achievement: String) {
         achievementsClient?.unlock(achievement)
     }
+
+    fun revealAchievement(@StringRes resource: Int) {
+        val id = getString(resource)
+        achievementsClient?.reveal(id)
+    }
+
+    fun incrementAchievement(@StringRes resource: Int, step: Int) {
+        val id = getString(resource)
+        achievementsClient?.increment(id, step)
+    }
 }
 
 enum class GameConnectionStatus {
