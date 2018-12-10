@@ -48,8 +48,8 @@ class AdventureViewModel @Inject constructor(
         return true
     }
 
-    fun checkAchievements(email: String? = null) {
-        repository.checkAchievements(email)
+    fun checkAchievements(email: String? = null): LiveData<Map<Int, Int>> {
+        return repository.checkAchievements(email)
     }
 
     fun onReceiveLocation(location: Location): Int? {
