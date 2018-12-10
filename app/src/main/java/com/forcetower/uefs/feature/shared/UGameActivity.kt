@@ -65,6 +65,8 @@ abstract class UGameActivity : UActivity() {
     fun unlockAchievement(@StringRes id: Int) = mGamesInstance.unlockAchievement(id)
     fun revealAchievement(@StringRes id: Int) = mGamesInstance.revealAchievement(id)
     fun incrementAchievementProgress(@StringRes id: Int, step: Int) = mGamesInstance.incrementAchievement(id, step)
+    fun updateAchievementProgress(@StringRes id: Int, value: Int) = mGamesInstance.updateProgress(id, value)
+    fun signOut() = mGamesInstance.disconnect()
 
     fun openAchievements() {
         if (!mGamesInstance.isConnected()) return
