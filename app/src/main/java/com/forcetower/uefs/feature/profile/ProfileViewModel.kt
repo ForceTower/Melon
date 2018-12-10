@@ -67,11 +67,9 @@ class ProfileViewModel @Inject constructor(
 
     private fun refreshProfile(profileId: String?) {
         if (profileId != null) {
-            Timber.d("ProfileId changed, refreshing")
             val source = repository.loadProfile(profileId)
             _profile.addSource(source) {
                 _profile.value = it
-                Timber.d("Updating profile information with $it")
 
                 if (it != null) {
                     updateCourse(it)

@@ -46,6 +46,7 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
+
         <activity
             android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav">
@@ -55,12 +56,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".feature.login.LoginActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity
             android:name=".feature.setup.SetupActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity
             android:name=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav">
@@ -68,25 +72,33 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
+
         <activity
             android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
+
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
+
         <activity
             android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity
             android:name=".feature.profile.ProfileActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity android:name=".easter.twofoureight.Game2048Activity" />
+
         <activity
             android:name=".feature.reminders.RemindersActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity
             android:name=".feature.settings.SettingsActivity"
             android:theme="@style/UTheme.LightNav" />
+
         <activity
             android:name=".feature.demand.DemandActivity"
             android:theme="@style/UTheme.LightNav" />
@@ -94,16 +106,24 @@
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_unes_colored" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/blue_accent" />
+
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_firebase_notification_channel_id" />
+
         <meta-data android:name="firebase_crashlytics_collection_enabled" android:value="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.games.APP_ID"
+            android:value="@string/app_id" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -131,6 +151,7 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
         <service
             android:name=".architecture.service.bigtray.BigTrayService"
             android:exported="false" />

@@ -92,4 +92,10 @@
         android:label="RemindersFragment"
         tools:layout="@layout/fragment_reminders"/>
 
+    <fragment
+        android:id="@+id/adventure"
+        android:name="com.forcetower.uefs.feature.adventure.AdventureFragment"
+        android:label="RemindersFragment"
+        tools:layout="@layout/fragment_reminders"/>
+
 </navigation>

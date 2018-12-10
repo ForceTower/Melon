@@ -39,7 +39,7 @@ Quando você enviar:
 Então você quer contribuir com o UNES? Que demais! O UNES GitHub Pull Requests para gerenciar as contribuições, então [leia sobre como fazer um fork de um projeto do GitHub e como criar um PR](https://guides.github.com/activities/forking) se você nunca fez isso antes.
 
 A partir de agora vamos demorar um tempo (ou não):
-* [Instale o Android Studio](https://developer.android.com/studio/) e configure os passos iniciais (se você ainda não instalou ainda)
+* [Instale o Android Studio](https://developer.android.com/studio/) e configure os passos iniciais (se você ainda não possui ele instalado)
 * [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
 * [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
 * [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
