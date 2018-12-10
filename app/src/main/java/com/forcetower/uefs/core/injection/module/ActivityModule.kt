@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.LauncherActivity
+import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
@@ -62,4 +63,6 @@ abstract class ActivityModule {
     abstract fun bindSettingsActivity(): SettingsActivity
     @ContributesAndroidInjector(modules = [DemandModule::class])
     abstract fun bindDemandActivity(): DemandActivity
+    @ContributesAndroidInjector
+    abstract fun bindGame2048Activity(): Game2048Activity
 }
