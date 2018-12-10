@@ -2,8 +2,9 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.location.Location
 import com.forcetower.uefs.R
+import javax.inject.Inject
 
-class AchLocationsRepository {
+class AchLocationsRepository @Inject constructor() {
 
     fun onReceiveLocation(location: Location): Int? {
         return matchesBigTray(location) ?:
