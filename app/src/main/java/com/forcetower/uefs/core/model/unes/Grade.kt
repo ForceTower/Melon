@@ -71,5 +71,11 @@ data class Grade(
                 !grade.trim().equals("-1", ignoreCase = true))
     }
 
+    fun gradeDouble() = grade.trim()
+            .replace(",", ".")
+            .replace("-", "")
+            .replace("*", "")
+            .toDoubleOrNull()
+
     override fun toString(): String = "${name}_${grade}_${date}_$notified"
 }

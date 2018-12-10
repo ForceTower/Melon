@@ -49,6 +49,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.util.fromJson
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -57,6 +58,8 @@ import com.forcetower.uefs.feature.shared.provideViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
+import java.lang.Exception
+import java.nio.charset.Charset
 import javax.inject.Inject
 
 class SigningInFragment : UFragment(), Injectable {
@@ -89,7 +92,19 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun prepareMessages() {
-        messages = resources.getStringArray(R.array.login_random_messages)
+        try {
+            val stream = context?.assets?.open("login_messages.json")
+            if (stream != null) {
+                val size = stream.available()
+                val buffer = ByteArray(size)
+                stream.read(buffer)
+                stream.close()
+                val json = String(buffer, Charset.forName("UTF-8"))
+                messages = json.fromJson()
+            }
+        } catch (e: Exception) {
+            messages = arrayOf("Hum... Algo de estranho aconteceu", "O aplicativo não tem mensagens...", "Corre!!!", "Me avisa que isso aconteceu!")
+        }
     }
 
     private fun prepareSwitcher() {
@@ -175,15 +190,6 @@ class SigningInFragment : UFragment(), Injectable {
             binding.textHelloUser.text = getString(R.string.login_hello_user, profile.name)
             binding.textHelloUser.fadeIn()
         }
-/*
-        GlideApp.with(this)
-                .load(profile?.imageUrl)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(binding.imageCenter)
-                */
     }
 
     private fun completeLogin() {
@@ -208,17 +214,6 @@ class SigningInFragment : UFragment(), Injectable {
                 binding.firebaseUser = current
                 binding.executePendingBindings()
             }
-
-//            if (current != null) {
-//                val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
-//                GlideApp.with(requireContext())
-//                        .load(reference)
-//                        .fallback(R.mipmap.ic_unes_large_image_512)
-//                        .placeholder(R.mipmap.ic_unes_large_image_512)
-//                        .circleCrop()
-//                        .transition(DrawableTransitionOptions.withCrossFade())
-//                        .into(binding.imageCenter)
-//            }
         }
     }
 

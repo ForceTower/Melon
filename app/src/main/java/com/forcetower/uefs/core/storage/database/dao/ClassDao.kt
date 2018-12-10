@@ -80,6 +80,10 @@ abstract class ClassDao {
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId")
     abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>>
 
+    @Transaction
+    @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId")
+    abstract fun getClassesWithGradesFromSemesterDirect(semesterId: Long): List<ClassWithGroups>
+
     @Query("SELECT * FROM Discipline WHERE code = :code")
     protected abstract fun selectDisciplineDirect(code: String): Discipline
 

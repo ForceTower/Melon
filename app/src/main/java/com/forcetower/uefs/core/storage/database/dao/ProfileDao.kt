@@ -75,4 +75,7 @@ abstract class ProfileDao {
 
     @Query("UPDATE Profile SET course = :courseId WHERE me = 1")
     abstract fun updateCourse(courseId: Long)
+
+    @Query("UPDATE Profile SET calc_score = :score WHERE me = 1")
+    abstract fun updateCalculatedScore(score: Double)
 }
