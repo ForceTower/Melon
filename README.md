@@ -17,6 +17,12 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 * ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal
 
+### Adicionando uma mensagem nova ao login
+Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.
+Você pode editar o arquivo [login_messages.json](https://github.com/ForceTower/Melon/blob/development/app/src/main/assets/login_messages.json) e mandar o seu PR :)
+
+As suas mensagens serão avaliadas e se aprovadas elas poderão aparecer no aplicativo!
+
 ### Versão do Android
 Esta nova versão não oferecerá suporte para dispositivos com Android inferior ao 5.0
 Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
