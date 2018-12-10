@@ -34,10 +34,10 @@ import android.view.KeyEvent
 import android.view.WindowManager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
-import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.UGameActivity
 import timber.log.Timber
 
-class Game2048Activity : UActivity() {
+class Game2048Activity : UGameActivity() {
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
@@ -60,11 +60,11 @@ class Game2048Activity : UActivity() {
                 .commit()
         }
 
-        //        unlockAchievements(getString(R.string.achievement_you_found_me), mPlayGamesInstance);
-        //        revealAchievement(getString(R.string.achievement_you_are_good_in_2048), mPlayGamesInstance);
-        //        revealAchievement(getString(R.string.achievement_unes_2048_champion), mPlayGamesInstance);
-        //        revealAchievement(getString(R.string.achievement_you_tried_2048), mPlayGamesInstance);
-        //        revealAchievement(getString(R.string.achievement_practice_makes_perfect), mPlayGamesInstance);
+        unlockAchievement(R.string.achievement_voc_me_achou)
+        revealAchievement(R.string.achievement_voc__bom)
+        revealAchievement(R.string.achievement_o_campeo_de_2048_no_unes)
+        revealAchievement(R.string.achievement_eu_tentei)
+        revealAchievement(R.string.achievement_a_prtica_leva__perfeio)
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

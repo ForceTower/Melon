@@ -111,6 +111,10 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
     </style>
+    
+    <style name="UTheme.MaterialButton.Outline.AccentBorder" parent="UTheme.MaterialButton.Outline">
+        <item name="strokeColor">@color/blue_accent</item>
+    </style>
 
     <style name="UTheme.MaterialButton.Default.DialogPrimary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -123,6 +127,7 @@
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">@color/text_secondary_dark</item>
         <item name="rippleColor">@color/text_secondary_dark</item>
+        <item name="android:letterSpacing">0</item>
     </style>
 
     <style name="UTheme.TextAppearance" parent="TextAppearance.AppCompat">
