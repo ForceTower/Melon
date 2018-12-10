@@ -124,10 +124,11 @@ class AdventureRepository @Inject constructor(
                 val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
                 classes.forEach { clazz ->
                     val points = clazz.clazz.finalScore ?: -1.0
+                    val credits = clazz.discipline().credits
 
                     if (points >= 0) {
-                        accumulatedMean += points
-                        accumulatedHours += clazz.discipline().credits
+                        accumulatedMean += points * credits
+                        accumulatedHours += credits
                     }
 
                     if (points < 7 && points >= 0) final = true
@@ -160,7 +161,7 @@ class AdventureRepository @Inject constructor(
 
                     val absences = database.classAbsenceDao().getAbsenceFromClassDirect(clazz.clazz.uid)
                     if (absences.isEmpty()) data[R.string.achievement_eu_estou_sempre_l] = -1
-                    if (clazz.clazz.missedClasses >= clazz.discipline().credits / 4) data[R.string.achievement_nunca_nem_vi] = -1
+                    if (clazz.clazz.missedClasses >= credits / 4) data[R.string.achievement_nunca_nem_vi] = -1
 
                     val name = clazz.discipline().name
                     if (name.matches("(?i)(.*)introdu([cç])([aã])o(.*)".toRegex())) {
@@ -169,7 +170,7 @@ class AdventureRepository @Inject constructor(
                         introduction++
                     }
 
-                    hours += clazz.discipline().credits
+                    hours += credits
                 }
 
                 if (!final) {
