@@ -7,11 +7,10 @@ import javax.inject.Inject
 class AchLocationsRepository @Inject constructor() {
 
     fun onReceiveLocation(location: Location): Int? {
-        return matchesBigTray(location) ?:
-                matchesLibrary(location) ?:
-                matchesZoologyMuseum(location) ?:
-                matchesHogwarts(location)
-
+        return matchesBigTray(location)
+                ?: matchesLibrary(location)
+                ?: matchesZoologyMuseum(location)
+                ?: matchesHogwarts(location)
     }
 
     private fun matchesBigTray(location: Location): Int? {
