@@ -1,5 +1,6 @@
 package com.forcetower.uefs.feature.adventure
 
+import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,8 +11,8 @@ import javax.inject.Inject
 class AdventureViewModel @Inject constructor(
     private val repository: AdventureRepository
 ) : ViewModel(), AdventureInteractor {
-    private val _locations = MutableLiveData<Boolean?>()
-    val locations: LiveData<Boolean?>
+    private val _locations = MutableLiveData<Boolean>()
+    val locations: LiveData<Boolean>
         get() = _locations
 
     private val _achievements = MutableLiveData<Event<Any?>>()
@@ -49,5 +50,9 @@ class AdventureViewModel @Inject constructor(
 
     fun checkAchievements(email: String? = null) {
         repository.checkAchievements(email)
+    }
+
+    fun onReceiveLocation(location: Location): Int? {
+        return repository.matchesAnyAchievement(location)
     }
 }

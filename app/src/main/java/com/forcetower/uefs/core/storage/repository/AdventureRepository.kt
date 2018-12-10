@@ -1,6 +1,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
+import android.location.Location
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -21,21 +22,21 @@ import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
-import kotlin.collections.Collection
-import kotlin.collections.HashMap
-import kotlin.collections.Map
-import kotlin.collections.forEach
-import kotlin.collections.maxBy
 import kotlin.collections.set
-import kotlin.collections.sortedBy
 
 class AdventureRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     @Named(Profile.COLLECTION) private val collection: CollectionReference,
     private val auth: FirebaseAuth,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val locations: AchLocationsRepository
 ) {
+
+    @AnyThread
+    fun matchesAnyAchievement(location: Location): Int? {
+        return locations.onReceiveLocation(location)
+    }
 
     @AnyThread
     fun checkAchievements(email: String? = null): LiveData<Map<Int, Int>> {
@@ -96,7 +97,6 @@ class AdventureRepository @Inject constructor(
             data[R.string.achievement_pseudoveterano] = -1
 
             val sorted = semesters.sortedBy { it.sagresId }.subList(0, semesters.size - 1)
-            val current = semesters.maxBy { it.sagresId }!!
             var noFinalCount = 0
             var introduction = 0
             var accumulatedMean = 0.0
