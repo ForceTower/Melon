@@ -34,13 +34,13 @@
     <string name="achievement_nunca_nem_vi" translatable="false">CgkIz4rBs-YKEAIQDg</string>
     <!--! achievement Pseudoveterano -->
     <string name="achievement_pseudoveterano" translatable="false">CgkIz4rBs-YKEAIQDw</string>
-    <!-- achievement Dora, a Aventureira -->
+    <!--! achievement Dora, a Aventureira -->
     <string name="achievement_dora_a_aventureira" translatable="false">CgkIz4rBs-YKEAIQEA</string>
     <!--! achievement Dora, a Exploradora -->
     <string name="achievement_dora_a_exploradora" translatable="false">CgkIz4rBs-YKEAIQEQ</string>
-    <!-- achievement Dora, a Estudiosa -->
+    <!--! achievement Dora, a Estudiosa -->
     <string name="achievement_dora_a_estudiosa" translatable="false">CgkIz4rBs-YKEAIQEg</string>
-    <!-- achievement Agora eu entendi, agora eu saquei! -->
+    <!--! achievement Agora eu entendi, agora eu saquei! -->
     <string name="achievement_agora_eu_entendi_agora_eu_saquei" translatable="false">CgkIz4rBs-YKEAIQFA</string>
     <!--! achievement Agora todas as peças se encaixaram! -->
     <string name="achievement_agora_todas_as_peas_se_encaixaram" translatable="false">CgkIz4rBs-YKEAIQEw</string>
@@ -74,7 +74,7 @@
     <string name="achievement_o_campeo_de_2048_no_unes" translatable="false">CgkIz4rBs-YKEAIQJQ</string>
     <!--! achievement A prática leva à perfeição -->
     <string name="achievement_a_prtica_leva__perfeio" translatable="false">CgkIz4rBs-YKEAIQJg</string>
-    <!-- achievement Dora, a misteriosa -->
+    <!--! achievement Dora, a misteriosa -->
     <string name="achievement_dora_a_misteriosa" translatable="false">CgkIz4rBs-YKEAIQJw</string>
     <!-- achievement O criador -->
     <string name="achievement_o_criador" translatable="false">CgkIz4rBs-YKEAIQKA</string>
