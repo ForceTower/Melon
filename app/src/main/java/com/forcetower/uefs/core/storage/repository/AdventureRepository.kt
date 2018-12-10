@@ -82,7 +82,7 @@ class AdventureRepository @Inject constructor(
         unlockScheduleBased(schedule, data)
 
         val old = preferences.getBoolean("old_fella", false)
-        if (old) data[R.string.achievement_atualizado] = -1
+        data[R.string.achievement_atualizado] = -1
     }
 
     private fun unlockSemesterBased(semesters: Collection<Semester>, data: HashMap<Int, Int>) {
