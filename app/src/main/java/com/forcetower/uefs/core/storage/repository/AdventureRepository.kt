@@ -60,7 +60,8 @@ class AdventureRepository @Inject constructor(
             val games = snapshot?.data?.get("adventure") as? String
             if (games == null && email != null) {
                 Timber.d("Setting up account")
-                collection.document(id).set(mapOf("adventure" to email), SetOptions.merge())
+                Tasks.await(collection.document(id).set(mapOf("adventure" to email), SetOptions.merge()))
+                performCheckAchievements(data)
             } else if (games == email) {
                 performCheckAchievements(data)
             } else {
