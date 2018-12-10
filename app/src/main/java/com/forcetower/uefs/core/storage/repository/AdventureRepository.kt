@@ -122,6 +122,7 @@ class AdventureRepository @Inject constructor(
                 var mechanics = true
                 var hours = 0
                 val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
+                var valid = false
                 classes.forEach { clazz ->
                     val points = clazz.clazz.finalScore ?: -1.0
                     val credits = clazz.discipline().credits
@@ -133,15 +134,14 @@ class AdventureRepository @Inject constructor(
 
                     if (points < 7 && points >= 0) final = true
                     if (points == 10.0) data[R.string.achievement_mdia_10] = -1
-                    if (points >= 5 && points < 7) data[R.string.achievement_sobrevivente] = -1
+                    if (points >= 5 && points < 7) data[R.string.achievement_luta_at_o_fim] = -1
                     if (points == 5.0) data[R.string.achievement_quase] = -1
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
 
                     clazz.grades.forEach { grade ->
-                        if (grade.name.equals("notas complementares", true)) final = true
+                        valid = true
                         val number = grade.gradeDouble() ?: -1
-
                         if (number == 7) data[R.string.achievement_medocre] = -1
                         if (number == 10) data[R.string.achievement_achei_fcil] = -1
                     }
@@ -173,7 +173,7 @@ class AdventureRepository @Inject constructor(
                     hours += credits
                 }
 
-                if (!final) {
+                if (!final && valid) {
                     data[R.string.achievement_semestre_limpo] = -1
                     noFinalCount++
                 } else {
