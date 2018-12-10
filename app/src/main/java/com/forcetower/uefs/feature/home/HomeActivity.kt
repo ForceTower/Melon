@@ -182,7 +182,14 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements(email)
+        adventureViewModel.checkAchievements(email).observe(this, Observer {
+            it.entries.forEach { achievement ->
+                if (achievement.value == -1)
+                    unlockAchievement(achievement.key)
+                else
+                    updateAchievementProgress(achievement.key, achievement.value)
+            }
+        })
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector

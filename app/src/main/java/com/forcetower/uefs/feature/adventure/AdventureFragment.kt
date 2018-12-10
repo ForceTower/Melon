@@ -86,6 +86,7 @@ class AdventureFragment : UFragment(), Injectable {
             achievements.observe(this@AdventureFragment, EventObserver { activity?.openAchievements() })
             start.observe(this@AdventureFragment, EventObserver { activity?.signIn() })
             locations.observe(this@AdventureFragment, Observer { requestLocations(it) })
+            leave.observe(this@AdventureFragment, EventObserver { activity?.signOut() })
         }
 
         if (activity?.isConnectedToPlayGames() == false && savedInstanceState == null) {
@@ -119,6 +120,8 @@ class AdventureFragment : UFragment(), Injectable {
     private fun requestLocations(request: Boolean) {
         if (request) {
             startRequesting()
+        } else {
+            stopUpdates()
         }
     }
 

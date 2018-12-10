@@ -125,6 +125,11 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         val id = getString(resource)
         achievementsClient?.increment(id, step)
     }
+
+    fun updateProgress(@StringRes resource: Int, value: Int) {
+        val id = getString(resource)
+        achievementsClient?.setSteps(id, value)
+    }
 }
 
 enum class GameConnectionStatus {
