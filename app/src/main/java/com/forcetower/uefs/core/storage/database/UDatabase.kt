@@ -93,7 +93,7 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     SDemandOffer::class,
     SagresFlags::class,
     Contributor::class
-], version = 6, exportSchema = true)
+], version = 7, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao

@@ -29,8 +29,7 @@ package com.forcetower.uefs.easter.twofoureight.view
 
 import android.content.Context
 import timber.log.Timber
-
-import java.util.ArrayList
+import java.util.UUID
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -39,6 +38,7 @@ class Game(private val mContext: Context) {
     private var endingMaxValue: Int = 0
     var gameGrid: GameGrid? = null
         private set
+    var uuid: String = UUID.randomUUID().toString()
     private val mPositionsX = DEFAULT_HEIGHT_X
     private val mPositionsY = DEFAULT_WIDTH_Y
     private val mTileTypes = DEFAULT_TILE_TYPES
@@ -98,6 +98,7 @@ class Game(private val mContext: Context) {
     }
 
     fun newGame() {
+        uuid = UUID.randomUUID().toString()
         if (gameGrid == null) {
             gameGrid = GameGrid(mPositionsX, mPositionsY)
         } else {
@@ -166,15 +167,19 @@ class Game(private val mContext: Context) {
     }
 
     fun revertUndoState() {
-        if (isCanUndo) {
-            isCanUndo = false
-            mView!!.cancelAnimations()
-            gameGrid!!.revertTiles()
-            updateScore(lastScore)
-            updateGameState(lastGameState)
-            mView!!.setGameState(gameState!!)
-            mView!!.setRefreshLastTime(true)
-            mView!!.invalidate()
+        if (gameState != State.WON) {
+            if (isCanUndo) {
+                isCanUndo = false
+                mView!!.cancelAnimations()
+                gameGrid!!.revertTiles()
+                updateScore(lastScore)
+                updateGameState(lastGameState)
+                mView!!.setGameState(gameState!!)
+                mView!!.setRefreshLastTime(true)
+                mView!!.invalidate()
+            }
+        } else {
+            Timber.d("Can't revert a won game")
         }
     }
 

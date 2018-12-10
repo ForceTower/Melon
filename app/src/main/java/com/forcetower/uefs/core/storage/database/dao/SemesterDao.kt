@@ -47,4 +47,7 @@ interface SemesterDao {
 
     @Query("DELETE FROM Semester")
     fun deleteAll()
+
+    @Query("SELECT * FROM Semester")
+    fun getSemestersDirect(): List<Semester>
 }

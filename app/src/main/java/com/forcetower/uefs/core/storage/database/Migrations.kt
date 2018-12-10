@@ -63,3 +63,10 @@ object M5TO6 : Migration(5, 6) {
         database.execSQL("CREATE UNIQUE INDEX `index_Contributor_login` ON `$tableName` (`login`)")
     }
 }
+
+object M6TO7 : Migration(6, 7) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val tableName = "Profile"
+        database.execSQL("ALTER TABLE $tableName ADD COLUMN calc_score REAL NOT NULL DEFAULT -1")
+    }
+}
