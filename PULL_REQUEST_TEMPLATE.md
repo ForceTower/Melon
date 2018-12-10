@@ -1,3 +1,9 @@
+### Você está adicionando uma mensagem aleatória?
+Coloque o nome do PR com o prefixo [MA] para ficar facil de identifica-las :)
+E não precisa responder as perguntas abaixo, na verdade, pode até apaga-las
+
+### É um PR com funcionalidades/correções? Então abaixo é para você
+
 * **Qual a mudança que este Pull Request introduz?** (Correção de erros, nova função, atualização de comentarios ou documentação, ...)
 
 
