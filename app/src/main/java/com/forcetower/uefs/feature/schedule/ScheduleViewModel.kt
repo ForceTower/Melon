@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import javax.inject.Inject
 
 class ScheduleViewModel @Inject constructor(
@@ -46,7 +47,8 @@ class ScheduleViewModel @Inject constructor(
         return false
     }
 
-    override fun onClick(group: GroupWithClass) {
+    override fun onClick(view: View, group: GroupWithClass) {
+        DisciplineDetailsActivity.startIntent(view.context, group.clazz().clazz.uid, group.group.uid)
     }
 
     override fun refreshData() {
