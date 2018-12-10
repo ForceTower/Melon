@@ -31,11 +31,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.preference.PreferenceManager
 import androidx.room.Room
+import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.database.M1TO2
 import com.forcetower.uefs.core.storage.database.M2TO3
 import com.forcetower.uefs.core.storage.database.M3TO4
 import com.forcetower.uefs.core.storage.database.M5TO6
+import com.forcetower.uefs.core.storage.database.M6TO7
 import com.forcetower.uefs.core.storage.database.UDatabase
 import dagger.Module
 import dagger.Provides
@@ -47,7 +49,8 @@ object AppModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideContext(application: UApplication): Context = application.applicationContext
+    fun provideContext(application: UApplication): Context =
+            application.applicationContext
 
     @Provides
     @Singleton
@@ -60,7 +63,13 @@ object AppModule {
     @JvmStatic
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
-                .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6)
+                .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7)
                 .fallbackToDestructiveMigration()
                 .build()
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun providePlayGames(context: Context): GooglePlayGamesInstance =
+            GooglePlayGamesInstance(context)
 }

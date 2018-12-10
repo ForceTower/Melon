@@ -27,6 +27,8 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.feature.adventure.AdventureFragment
+import com.forcetower.uefs.feature.adventure.AdventureSignInDialog
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
 import com.forcetower.uefs.feature.calendar.CalendarFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
@@ -77,4 +79,8 @@ abstract class HomeModule {
     abstract fun createReminderDialog(): CreateReminderDialog
     @ContributesAndroidInjector
     abstract fun selectGroupDialog(): SelectGroupDialog
+    @ContributesAndroidInjector
+    abstract fun adventureFragment(): AdventureFragment
+    @ContributesAndroidInjector
+    abstract fun adventureSignInDialog(): AdventureSignInDialog
 }
