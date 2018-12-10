@@ -52,7 +52,7 @@
     <string name="achievement_introduo_a_introdues" translatable="false">CgkIz4rBs-YKEAIQFw</string>
     <!--! achievement Jackpot -->
     <string name="achievement_jackpot" translatable="false">CgkIz4rBs-YKEAIQGA</string>
-    <!-- achievement Maratonista -->
+    <!--! achievement Maratonista -->
     <string name="achievement_maratonista" translatable="false">CgkIz4rBs-YKEAIQGQ</string>
     <!--! achievement Killing Spree -->
     <string name="achievement_killing_spree" translatable="false">CgkIz4rBs-YKEAIQGg</string>
@@ -64,15 +64,15 @@
     <string name="achievement_bandejo" translatable="false">CgkIz4rBs-YKEAIQHg</string>
     <!-- achievement Claramente na Disney -->
     <string name="achievement_claramente_na_disney" translatable="false">CgkIz4rBs-YKEAIQHw</string>
-    <!-- achievement Você... Me achou! -->
+    <!--! achievement Você... Me achou! -->
     <string name="achievement_voc_me_achou" translatable="false">CgkIz4rBs-YKEAIQIg</string>
-    <!-- achievement Você é bom... -->
+    <!--! achievement Você é bom... -->
     <string name="achievement_voc__bom" translatable="false">CgkIz4rBs-YKEAIQIw</string>
-    <!-- achievement Eu tentei... -->
+    <!--! achievement Eu tentei... -->
     <string name="achievement_eu_tentei" translatable="false">CgkIz4rBs-YKEAIQJA</string>
-    <!-- achievement O Campeão de 2048 no UNES -->
+    <!--! achievement O Campeão de 2048 no UNES -->
     <string name="achievement_o_campeo_de_2048_no_unes" translatable="false">CgkIz4rBs-YKEAIQJQ</string>
-    <!-- achievement A prática leva à perfeição -->
+    <!--! achievement A prática leva à perfeição -->
     <string name="achievement_a_prtica_leva__perfeio" translatable="false">CgkIz4rBs-YKEAIQJg</string>
     <!-- achievement Dora, a misteriosa -->
     <string name="achievement_dora_a_misteriosa" translatable="false">CgkIz4rBs-YKEAIQJw</string>

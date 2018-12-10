@@ -2,7 +2,6 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
 import androidx.annotation.AnyThread
-import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
