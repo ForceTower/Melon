@@ -8,7 +8,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
@@ -153,8 +152,6 @@ class AdventureFragment : UFragment(), Injectable {
             } catch (e: SecurityException) {
                 Timber.e("What??? How did this happen?")
             }
-
-
         }.addOnFailureListener(requireActivity()) { fail ->
             if (fail is ResolvableApiException) {
                 try {
@@ -164,7 +161,6 @@ class AdventureFragment : UFragment(), Injectable {
                     e.printStackTrace()
                     showSnack(getString(R.string.cant_receive_location))
                 }
-
             } else {
                 Timber.d("Unresolvable Exception")
                 fail.printStackTrace()
@@ -180,7 +176,6 @@ class AdventureFragment : UFragment(), Injectable {
         } catch (e: SecurityException) {
             Timber.d("Method could not be called")
         }
-
     }
 
     private fun stopUpdates() {
@@ -189,7 +184,7 @@ class AdventureFragment : UFragment(), Injectable {
 
     private fun locationSettings() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
-        locationCallback = object: LocationCallback() {
+        locationCallback = object : LocationCallback() {
             override fun onLocationResult(result: LocationResult?) {
                 result ?: return
                 result.locations.forEach { location ->
