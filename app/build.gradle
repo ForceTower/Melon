@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.palette:palette:$pallete"
     implementation "androidx.browser:browser:$browser"
     implementation "androidx.preference:preference:$preference"
-    implementation "com.google.android:flexbox:0.3.2"
+    implementation "com.google.android:flexbox:1.1.0"
 
     //Lifecycle Extensions
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
