@@ -35,6 +35,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import androidx.work.Result
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.work.enqueueUnique
@@ -52,9 +53,9 @@ class GradesSagresWorker(
         val semesterId = inputData.getLong(SEMESTER_ID, 0)
         val result = repository.getGrades(semesterId)
         return when {
-            result >= 0 -> Result.SUCCESS
-            result >= -2 -> Result.FAILURE
-            else -> Result.RETRY
+            result >= 0 -> Result.success()
+            result >= -2 -> Result.failure()
+            else -> Result.retry()
         }
     }
 

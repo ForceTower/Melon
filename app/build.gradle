@@ -114,15 +114,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //Work Manager
-    implementation("android.arch.work:work-runtime:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
-    implementation("android.arch.work:work-runtime-ktx:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
-    implementation("android.arch.work:work-firebase:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
+    implementation("android.arch.work:work-runtime-ktx:$work_version")
 
     //In-app purchases!
     implementation 'com.android.billingclient:billing:1.2'

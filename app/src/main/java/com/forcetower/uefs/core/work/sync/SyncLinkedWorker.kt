@@ -36,6 +36,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.Result
 import androidx.work.workDataOf
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
@@ -59,7 +60,7 @@ class SyncLinkedWorker(
         val count = inputData.getInt(COUNT, 0)
         val other = if (count == 2) 1 else 2
         createWorker(period, true, other)
-        return Result.SUCCESS
+        return Result.success()
     }
 
     companion object {

@@ -28,12 +28,14 @@
 package com.forcetower.uefs.core.work.demand
 
 import android.content.Context
+import androidx.annotation.WorkerThread
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.Result
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.work.enqueueUnique
@@ -47,10 +49,11 @@ class CreateDemandWorker(
     @Inject
     lateinit var repository: DemandRepository
 
+    @WorkerThread
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
         repository.executeCreateDemand()
-        return Result.SUCCESS
+        return Result.success()
     }
 
     companion object {
