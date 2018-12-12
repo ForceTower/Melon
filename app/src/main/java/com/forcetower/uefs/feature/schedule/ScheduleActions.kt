@@ -29,9 +29,11 @@ package com.forcetower.uefs.feature.schedule
 
 import android.view.View
 import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
+import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 
 interface ScheduleActions {
     fun onLongClick(view: View): Boolean
     fun onClick(view: View, group: GroupWithClass)
     fun refreshData()
+    fun onLocationClick(view: View, location: LocationWithGroup)
 }
