@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.work.image
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -39,6 +40,7 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import androidx.work.Result
 import com.forcetower.uefs.core.work.enqueue
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
@@ -50,11 +52,12 @@ class UploadImageToStorage(
     params: WorkerParameters
 ) : Worker(context, params) {
 
+    @SuppressLint("WrongThread")
     @WorkerThread
     override fun doWork(): Result {
         Timber.d("Started picture upload")
-        val tUri = inputData.getString(URI) ?: return Result.FAILURE
-        val tRef = inputData.getString(REFERENCE) ?: return Result.FAILURE
+        val tUri = inputData.getString(URI) ?: return Result.failure()
+        val tRef = inputData.getString(REFERENCE) ?: return Result.failure()
 
         val uri = Uri.parse(tUri)
         val storage = FirebaseStorage.getInstance()
@@ -62,7 +65,7 @@ class UploadImageToStorage(
 
         val resolver = applicationContext.contentResolver
         val image = BitmapFactory.decodeStream(resolver.openInputStream(uri))
-        image ?: return Result.FAILURE
+        image ?: return Result.failure()
 
         val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
 
@@ -75,9 +78,9 @@ class UploadImageToStorage(
         val task = ref.putBytes(data)
         return try {
             Tasks.await(task)
-            Result.SUCCESS
+            Result.success()
         } catch (t: Throwable) {
-            Result.RETRY
+            Result.retry()
         }
     }
 
