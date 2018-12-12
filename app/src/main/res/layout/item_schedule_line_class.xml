@@ -34,9 +34,14 @@
         <variable
             name="location"
             type="com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup"/>
+
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.schedule.ScheduleActions"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card_root"
         android:layout_width="match_parent"
         android:layout_height="72dp"
         android:layout_marginStart="8dp"
@@ -46,7 +51,8 @@
         app:cardCornerRadius="4dp"
         app:cardElevation="2dp"
         android:clickable="true"
-        android:focusable="true">
+        android:focusable="true"
+        android:onClick="@{() -> interactor.onLocationClick(cardRoot, location)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

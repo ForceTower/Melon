@@ -94,7 +94,7 @@ dependencies {
     implementation "androidx.palette:palette:$pallete"
     implementation "androidx.browser:browser:$browser"
     implementation "androidx.preference:preference:$preference"
-    implementation "com.google.android:flexbox:0.3.2"
+    implementation "com.google.android:flexbox:1.1.0"
 
     //Lifecycle Extensions
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
@@ -114,15 +114,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room_version"
 
     //Work Manager
-    implementation("android.arch.work:work-runtime:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
-    implementation("android.arch.work:work-runtime-ktx:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
-    implementation("android.arch.work:work-firebase:$work_version") {
-        exclude group: 'com.google.guava', module: 'listenablefuture'
-    }
+    implementation("android.arch.work:work-runtime-ktx:$work_version")
 
     //In-app purchases!
     implementation 'com.android.billingclient:billing:1.2'
