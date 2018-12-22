@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.storage.network
 
 import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
@@ -55,4 +56,7 @@ interface UService {
 
     @GET("course")
     fun getCourses(): LiveData<ApiResponse<List<Course>>>
+
+    @GET("update")
+    fun getUpdate(): Call<UNESUpdate>
 }
