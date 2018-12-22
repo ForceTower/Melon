@@ -337,10 +337,10 @@
     <string name="label_adventure_info_update">A sua conta de email será associada a esta conta do Sagres, então você só irá desbloquear as conquistas nesta conta do Sagres.</string>
     <string name="lets_go">Vamos lá!</string>
     <string name="not_now">Agora não</string>
-    <string name="connected_to_play_games">Boas vindas à aventura</string>
+    <string name="connected_to_play_games">Boas-vindas à aventura</string>
     <string name="permission_location_adventure">Para verificar a localização o aplicativo precisa de sua permissão</string>
     <string name="adventure_not_accurate">Localização ainda não está acurada</string>
-    <string name="cant_receive_location">Não é possivel receber localizações</string>
+    <string name="cant_receive_location">Não é possível receber localizações</string>
     <string name="send_email">Enviar e-mail</string>
 
     <string-array name="settings_sync_type_titles">
@@ -349,8 +349,8 @@
     </string-array>
     
     <string-array name="settings_sync_frequency_titles">
-        <item>5 minutos [Encadeado]</item>
-        <item>10 minutos [Encadeado]</item>
+        <!--<item>5 minutos [Encadeado]</item>-->
+        <!--<item>10 minutos [Encadeado]</item>-->
         <item>15 minutos</item>
         <item>30 minutos</item>
         <item>1 hora</item>
@@ -367,8 +367,8 @@
     </string-array>
     
     <string-array name="settings_sync_frequency_values">
-        <item>5</item>
-        <item>10</item>
+        <!--<item>5</item>-->
+        <!--<item>10</item>-->
         <item>15</item>
         <item>30</item>
         <item>60</item>
