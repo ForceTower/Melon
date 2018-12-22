@@ -49,6 +49,7 @@ import javax.inject.Inject
 import android.content.Intent
 import android.net.Uri
 import com.forcetower.uefs.BuildConfig
+import com.forcetower.uefs.core.constants.Constants
 
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
@@ -111,7 +112,7 @@ class HomeBottomFragment : UFragment(), Injectable {
                 }
                 R.id.bug_report -> {
                     val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-                    val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "forcetowerandroid@gmail.com", null)).apply {
+                    val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
                         putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
                         putExtra(Intent.EXTRA_TEXT, text)
                     }
