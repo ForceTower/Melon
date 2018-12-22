@@ -38,7 +38,6 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import androidx.work.Result
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
