@@ -35,7 +35,6 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import androidx.work.Result
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.work.enqueueUnique
