@@ -196,7 +196,9 @@ class SigningInFragment : UFragment(), Injectable {
         if (viewModel.isConnected()) return
         viewModel.setConnected()
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
-        val extras = ActivityNavigator.Extras(options)
+        val extras = ActivityNavigator.Extras.Builder()
+                .setActivityOptions(options)
+                .build()
 
         Handler(Looper.getMainLooper()).postDelayed({
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {

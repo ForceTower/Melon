@@ -31,6 +31,9 @@ jobs:
           command: |
             ./gradlew :app:assembleDebug
 
+      - run:
+          name: Save Lint Results
+          command: scripts/save_lint_results.sh
 
       - store_artifacts:
           path: ci_results/lint
