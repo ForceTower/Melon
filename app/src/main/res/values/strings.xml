@@ -145,7 +145,7 @@
     <string name="label_big_tray">Bandejão</string>
     <string name="label_profile">Perfil</string>
     <string name="label_documents">Documentos</string>
-    <string name="bug_report">Reportar erros [Em breve]</string>
+    <string name="bug_report">Bugs, Comentários e Sugestões</string>
     <string name="ru_last_update">Última atualização: %1$s</string>
     <string name="ru_is_closed_message">O bandejão está fechado</string>
     <string name="ru_loading_data">Carregando dados</string>
@@ -341,6 +341,7 @@
     <string name="permission_location_adventure">Para verificar a localização o aplicativo precisa de sua permissão</string>
     <string name="adventure_not_accurate">Localização ainda não está acurada</string>
     <string name="cant_receive_location">Não é possivel receber localizações</string>
+    <string name="send_email">Enviar e-mail</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
