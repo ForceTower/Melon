@@ -46,6 +46,10 @@ import com.google.firebase.storage.FirebaseStorage
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
+import android.content.Intent
+import android.net.Uri
+import com.forcetower.uefs.BuildConfig
+
 
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
@@ -104,6 +108,15 @@ class HomeBottomFragment : UFragment(), Injectable {
                 }
                 R.id.settings -> {
                     startActivity(SettingsActivity.startIntent(requireContext()))
+                    true
+                }
+                R.id.bug_report -> {
+                    val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
+                    val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", "forcetowerandroid@gmail.com", null)).apply {
+                        putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
+                        putExtra(Intent.EXTRA_TEXT, text)
+                    }
+                    startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
                     true
                 }
 //                R.id.demand -> {
