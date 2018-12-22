@@ -58,6 +58,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
 import timber.log.Timber
@@ -69,7 +70,8 @@ class SagresSyncRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase,
     private val executors: AppExecutors,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val service: UService
 ) {
 
     @WorkerThread
@@ -133,6 +135,27 @@ class SagresSyncRepository @Inject constructor(
     private fun execute(access: Access, registry: SyncRegistry) {
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
+
+        try {
+            val call = service.getUpdate()
+            val response = call.execute()
+            if (response.isSuccessful) {
+                val body = response.body()
+                if (body != null && !body.manager) {
+                    registry.completed = true
+                    registry.error = -4
+                    registry.success = false
+                    registry.message = "Atualização negada"
+                    registry.end = System.currentTimeMillis()
+                    database.syncRegistryDao().update(registry)
+                    return
+                }
+            }
+        } catch (t: Throwable) {
+            Timber.e(t)
+            Timber.d("An error just happened... It will complete anyways")
+        }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         val score = login(access)
