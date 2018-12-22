@@ -50,7 +50,6 @@ import android.content.Intent
 import android.net.Uri
 import com.forcetower.uefs.BuildConfig
 
-
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: UViewModelFactory

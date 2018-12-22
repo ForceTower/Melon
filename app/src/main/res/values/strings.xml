@@ -145,7 +145,7 @@
     <string name="label_big_tray">Bandejão</string>
     <string name="label_profile">Perfil</string>
     <string name="label_documents">Documentos</string>
-    <string name="bug_report">Reportar erros [Em breve]</string>
+    <string name="bug_report">Bugs, Comentários e Sugestões</string>
     <string name="ru_last_update">Última atualização: %1$s</string>
     <string name="ru_is_closed_message">O bandejão está fechado</string>
     <string name="ru_loading_data">Carregando dados</string>
