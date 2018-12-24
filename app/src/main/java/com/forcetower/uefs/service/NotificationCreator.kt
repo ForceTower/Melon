@@ -46,7 +46,7 @@ import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
-import com.forcetower.uefs.feature.shared.toTitleCase
+import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import timber.log.Timber
 
 object NotificationCreator {

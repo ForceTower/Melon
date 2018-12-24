@@ -38,9 +38,9 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityDemandBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.config
-import com.forcetower.uefs.feature.shared.inTransaction
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector

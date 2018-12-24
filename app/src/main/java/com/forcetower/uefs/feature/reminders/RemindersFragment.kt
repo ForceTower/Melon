@@ -42,7 +42,7 @@ import com.forcetower.uefs.databinding.FragmentRemindersBinding
 import com.forcetower.uefs.feature.shared.SwipeDeleteHandler
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
 
 class RemindersFragment : UFragment(), Injectable {

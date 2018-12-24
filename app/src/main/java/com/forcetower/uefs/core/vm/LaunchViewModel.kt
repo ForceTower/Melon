@@ -32,7 +32,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.feature.shared.setValueIfNew
+import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import javax.inject.Inject
 
 class LaunchViewModel @Inject constructor(

@@ -52,7 +52,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.Materi
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.inflate
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.widget.DividerItemDecorator
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.CollectionReference
