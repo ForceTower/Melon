@@ -47,7 +47,7 @@ import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_PROFI
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage

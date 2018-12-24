@@ -35,8 +35,8 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityDisciplineDetailsBinding
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.config
-import com.forcetower.uefs.feature.shared.inTransaction
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector

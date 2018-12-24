@@ -45,7 +45,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAboutContributorsBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import timber.log.Timber
 import javax.inject.Inject

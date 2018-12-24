@@ -33,8 +33,8 @@ import androidx.databinding.BindingAdapter
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.uefs.feature.shared.formatDate
-import com.forcetower.uefs.feature.shared.formatFullDate
+import com.forcetower.uefs.feature.shared.extensions.formatDate
+import com.forcetower.uefs.feature.shared.extensions.formatFullDate
 
 @BindingAdapter("loadImage")
 fun loadImage(iv: ImageView, url: String) {

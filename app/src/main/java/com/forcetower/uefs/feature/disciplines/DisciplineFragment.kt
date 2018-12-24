@@ -48,8 +48,8 @@ import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.makeSemester
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.makeSemester
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 

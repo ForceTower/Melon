@@ -25,36 +25,15 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
-import android.content.Context
-import android.content.Intent
-import android.net.Uri
-import android.os.Build
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
-fun Context.isNavBarOnBottom(): Boolean {
-    val config = resources.configuration
-    val dm = resources.displayMetrics
-    val canMove = dm.widthPixels != dm.heightPixels && config.smallestScreenWidthDp < 600
-    return !canMove || dm.widthPixels < dm.heightPixels
-}
+inline fun <reified VM : ViewModel> Fragment.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
+        ViewModelProviders.of(this, viewModelFactory)[VM::class.java]
 
-fun Context.openURL(url: String) {
-    var fixed = url
-    if (!url.startsWith("http://") &&
-        !url.startsWith("HTTP://") &&
-        !url.startsWith("HTTPS://") &&
-        !url.startsWith("https://") &&
-        !url.contains("//")
-    ) {
-        fixed = "http://$url"
-    }
-
-    val intent = Intent(Intent.ACTION_VIEW)
-    intent.data = Uri.parse(fixed)
-    this.startActivity(intent)
-}
-
-fun isNougatMR1(): Boolean {
-    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
-}
+inline fun <reified VM : ViewModel> Fragment.provideActivityViewModel(viewModelFactory: ViewModelProvider.Factory) =
+        ViewModelProviders.of(requireActivity(), viewModelFactory)[VM::class.java]

@@ -39,7 +39,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.databinding.ActivitySettingsBinding
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.inTransaction
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject

@@ -38,7 +38,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import java.lang.IllegalStateException
 import javax.inject.Inject
 

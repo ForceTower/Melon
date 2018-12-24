@@ -40,7 +40,7 @@ import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.mikepenz.aboutlibraries.Libs

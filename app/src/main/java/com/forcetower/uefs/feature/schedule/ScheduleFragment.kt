@@ -41,8 +41,8 @@ import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
 
 class ScheduleFragment : UFragment(), Injectable {
