@@ -41,7 +41,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDemandOverviewBinding
 import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.widget.BottomSheetBehavior
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_COLLAPSED
 import com.forcetower.uefs.widget.BottomSheetBehavior.Companion.STATE_EXPANDED

@@ -37,7 +37,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentCalendarBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
 
 class CalendarFragment : UFragment(), Injectable {

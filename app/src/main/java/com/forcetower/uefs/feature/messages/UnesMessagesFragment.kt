@@ -36,7 +36,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentUnesMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class UnesMessagesFragment : UFragment(), Injectable {

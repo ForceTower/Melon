@@ -25,16 +25,36 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
-import com.forcetower.sagres.utils.WordUtils
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.os.Build
 
-fun String.makeSemester(): String {
-    return if (this.length > 4) {
-        this.substring(0, 4) + "." + this.substring(4)
-    } else {
-        this
-    }
+fun Context.isNavBarOnBottom(): Boolean {
+    val config = resources.configuration
+    val dm = resources.displayMetrics
+    val canMove = dm.widthPixels != dm.heightPixels && config.smallestScreenWidthDp < 600
+    return !canMove || dm.widthPixels < dm.heightPixels
 }
 
-fun String?.toTitleCase(): String? = WordUtils.toTitleCase(this)
+fun Context.openURL(url: String) {
+    var fixed = url
+    if (!url.startsWith("http://") &&
+        !url.startsWith("HTTP://") &&
+        !url.startsWith("HTTPS://") &&
+        !url.startsWith("https://") &&
+        !url.contains("//")
+    ) {
+        fixed = "http://$url"
+    }
+
+    val intent = Intent(Intent.ACTION_VIEW)
+    intent.data = Uri.parse(fixed)
+    this.startActivity(intent)
+}
+
+fun isNougatMR1(): Boolean {
+    return Build.VERSION.SDK_INT >= Build.VERSION_CODES.N_MR1
+}

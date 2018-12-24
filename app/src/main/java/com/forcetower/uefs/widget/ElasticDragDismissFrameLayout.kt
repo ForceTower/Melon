@@ -37,7 +37,7 @@ import android.widget.FrameLayout
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.AnimUtils
 import com.forcetower.uefs.core.util.ColorUtils
-import com.forcetower.uefs.feature.shared.isNavBarOnBottom
+import com.forcetower.uefs.feature.shared.extensions.isNavBarOnBottom
 
 import java.util.ArrayList
 

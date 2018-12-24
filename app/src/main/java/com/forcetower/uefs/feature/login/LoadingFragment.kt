@@ -50,7 +50,7 @@ import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
 

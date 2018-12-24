@@ -38,8 +38,8 @@ import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityLoginBinding
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.config
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector

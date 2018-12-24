@@ -35,7 +35,7 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityProfileBinding
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.inTransaction
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
