@@ -78,7 +78,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         leaderboardClient = Games.getLeaderboardsClient(this, account)
         gamesClient = Games.getGamesClient(this, account)
         _status.postValue(Event(GameConnectionStatus.CONNECTED))
-        preferences.edit().putBoolean("google_play_games_enabled", true).apply()
+        preferences.edit().putBoolean("google_play_games_enabled_v2", true).apply()
         unlockAchievement(R.string.achievement_comeou_o_jogo)
         if (playerUnlockedSwitch) {
             unlockAchievement(R.string.achievement_agora_eu_entendi_agora_eu_saquei)
@@ -93,7 +93,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         leaderboardClient = null
         gamesClient = null
         _status.postValue(Event(GameConnectionStatus.DISCONNECTED))
-        preferences.edit().putBoolean("google_play_games_enabled", false).apply()
+        preferences.edit().putBoolean("google_play_games_enabled_v2", false).apply()
     }
 
     /**
@@ -129,7 +129,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
      * Descobre se o Google Play Games está ativado ou desativado
      */
     fun isPlayGamesEnabled(): Boolean {
-        return preferences.getBoolean("google_play_games_enabled", false)
+        return preferences.getBoolean("google_play_games_enabled_v2", false)
     }
 
     /**
