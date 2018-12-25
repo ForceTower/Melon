@@ -16,6 +16,10 @@ jobs:
     steps:
       - checkout
       
+      - run:
+          name: Google Services Config
+          command: echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
+      
       - run: 
           name: Downloading Dependencies
           command: |
