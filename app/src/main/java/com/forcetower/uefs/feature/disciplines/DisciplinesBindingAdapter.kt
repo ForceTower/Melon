@@ -131,3 +131,10 @@ fun disciplineAbsence(tv: TextView, sequence: Int?, date: String?) {
     val text = ctx.getString(R.string.discipline_absence_date_format, seq, dat)
     tv.text = text
 }
+
+@BindingAdapter(value = ["absenceDescription"])
+fun absenceDescription(tv: TextView, description: String?) {
+    val desc = description ?: "CL 2 - ????"
+    val text = desc.substring(desc.indexOf("-") + 1).trim()
+    tv.text = text
+}
