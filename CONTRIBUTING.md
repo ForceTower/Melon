@@ -1,3 +1,4 @@
+
 ## Introdução
 Obrigado pelo seu interesse em contribuir com o projeto!. Todos os tipos de contribuição são bem vindos e valorizados. Veja a [tabela de conteudos](#toc) para maneiras diferentes de ajudar e detalhes sobre como o projeto lida com cada uma delas!📝
 
@@ -39,13 +40,20 @@ Quando você enviar:
 Então você quer contribuir com o UNES? Que demais! O UNES GitHub Pull Requests para gerenciar as contribuições, então [leia sobre como fazer um fork de um projeto do GitHub e como criar um PR](https://guides.github.com/activities/forking) se você nunca fez isso antes.
 
 A partir de agora vamos demorar um tempo (ou não):
-* [Instale o Android Studio](https://developer.android.com/studio/) e configure os passos iniciais (se você ainda não possui ele instalado)
-* [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
-* [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
-* [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
-* [Espere muito tempo](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
-* [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
-* [Opcional: Crie um projeto no Firebase](https://console.firebase.google.com/) e substitua o google-services.json padrão pelo o do seu projeto do firebase, ele está localizado na pasta app [Este passo é opcional, mas algumas funções que dependem de processamento em servidor não irão funcionar, contudo, este passo somente é recomendável se você for familiarizado com o Firebase]
+ 1. [Instale o Android Studio](https://developer.android.com/studio/) e configure os passos iniciais (se você ainda não possui ele instalado)
+ 2. [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
+ 3. [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
+ 4. [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
+ 5. [Espere muito tempo](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
+ 6. [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
+ 7. Firebase, o UNES utiliza o firebase como backend, então...
+ 7.1. [Crie um projeto no Firebase](https://console.firebase.google.com/), você pode dar o nome que você quiser.
+ 7.2. Após criar o projeto você vai ser apresentado com uma tela onde ele fala para adicionar o firebase ao seu aplicativo. Como estamos num aplicativo nativo Android, selecione o ícone do Android.
+ 7.3. O primeiro passo é dizer o nome do pacote do aplicativo, no caso do UNES é: com.forcetower.uefs
+ 7.4. Você pode ignorar o campo Certificado de assinatura de depuração SHA-1 se quiser, ou pode preenche-lo se souber como fazer isso facilmente :)
+ 7.5. Após clicar em registrar app o próximo passo é baixar o google-services.json, baixe-o e copie e cole na pasta app do projeto.
+ 7.6. Pronto, você não precisa mais fazer qualquer alteração, se quiser, ative os recursos de autenticação com email e senha, o firestore, o storage e o functions. Estes são os 4 serviços principais para o aplicativo funcionar com todos os recursos, mas este passo não é obrigatório e a maioria dos recursos irão funcionar corretamente sem fazer este passo. Ah, se você quiser o código das functions do UNES elas estão [aqui](https://github.com/ForceTower/FireMelon).
+ 7.7. Acabamos!
 
 Isso deve ser tudo, nem parece que demoramos 7 horas para fazer o projeto rodar.
 
