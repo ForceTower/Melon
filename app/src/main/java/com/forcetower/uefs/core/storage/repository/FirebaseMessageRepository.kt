@@ -84,7 +84,7 @@ class FirebaseMessageRepository @Inject constructor(
     private fun rescheduleSync(data: Map<String, String>) {
         val current = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
         val period = data["period"]?.toIntOrNull() ?: current
-        val forced = data["forced"]?.toBooleanOrNull() ?: false
+        val forced = data["forced"]?.toBooleanOrNull() ?: true
 
         /**
          * Se a frequencia atual for maior que a recomendada e a sincronização não for forçada,
