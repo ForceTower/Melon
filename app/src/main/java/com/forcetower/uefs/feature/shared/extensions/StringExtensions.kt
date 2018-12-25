@@ -38,3 +38,12 @@ fun String.makeSemester(): String {
 }
 
 fun String?.toTitleCase(): String? = WordUtils.toTitleCase(this)
+
+fun String?.toBooleanOrNull(): Boolean? {
+    if (this == null) return null
+    return try {
+        java.lang.Boolean.parseBoolean(this)
+    } catch (t: Throwable) {
+        null
+    }
+}
