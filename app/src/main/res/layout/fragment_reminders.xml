@@ -46,7 +46,35 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_reminder"
             android:paddingBottom="72dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            android:visibility="visible"/>
+
+        <LinearLayout
+            android:id="@+id/layout_no_data"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:gravity="center"
+            android:visibility="gone"
+            tools:ignore="UseCompoundDrawables">
+
+            <ImageView
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:importantForAccessibility="no"
+                android:src="@mipmap/relaxed_at_home_second" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:layout_marginTop="16dp"
+                android:text="@string/no_active_reminders"
+                android:textColor="@color/text_primary_dark"
+                android:textAlignment="gravity"
+                android:gravity="center"/>
+        </LinearLayout>
     
         <com.google.android.material.button.MaterialButton
             android:id="@+id/fab"

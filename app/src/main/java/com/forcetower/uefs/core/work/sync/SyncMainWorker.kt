@@ -67,11 +67,11 @@ class SyncMainWorker(
         private const val NAME = "worker_sagres_sync"
 
         // Function that creates a Sagres Sync Worker
-        fun createWorker(ctx: Context, @IntRange(from = 15, to = 9000) period: Int) {
+        fun createWorker(ctx: Context, @IntRange(from = 15, to = 9000) period: Int, forcedReplace: Boolean = false) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(ctx)
             // We need to observe the frequency to know if we need to replace the current worker with a new one
             val current = preferences.getInt(PreferenceConstants.SYNC_FREQUENCY, 60)
-            val replace = current != period
+            val replace = current != period || forcedReplace
 
             // The Sync Worker requires internet connection
             val constraints = Constraints.Builder()
