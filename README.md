@@ -1,8 +1,10 @@
-# \[ 🚧 🔧 Trabalho em progresso ⛏ 👷 \] UNES 2.0 
-Reescrevendo o UNES utilizando o AndroidX, transformando partes do código para Kotlin e utilizando o Material Design 2.0
-O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
+## UNES
 
-🛑 Versão altamente instável e com funções faltando 🛑
+O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. Com o tempo, ele se tornou um pouco mais que isso, mas esta é a função principal e pela qual o aplicativo vive.
+
+O UNES é um aplicativo nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0
+
+O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
 
