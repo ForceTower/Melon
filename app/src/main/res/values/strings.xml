@@ -342,6 +342,9 @@
     <string name="adventure_not_accurate">Localização ainda não está acurada</string>
     <string name="cant_receive_location">Não é possível receber localizações</string>
     <string name="send_email">Enviar e-mail</string>
+    <string name="discipline_details_absences">Faltas</string>
+    <string name="discipline_no_absence_posted">Você não tem faltas registradas nesta disciplina</string>
+    <string name="discipline_absence_date_format">Aula: %1$d - %2$s</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.GradesFragment
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.absences.AbsencesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import dagger.Module
@@ -47,4 +48,6 @@ abstract class DisciplineModule {
     abstract fun classesFragment(): ClassesFragment
     @ContributesAndroidInjector
     abstract fun gradesFragment(): GradesFragment
+    @ContributesAndroidInjector
+    abstract fun absencesFragment(): AbsencesFragment
 }
