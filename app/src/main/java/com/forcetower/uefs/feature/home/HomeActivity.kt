@@ -168,6 +168,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
+            mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
         }
