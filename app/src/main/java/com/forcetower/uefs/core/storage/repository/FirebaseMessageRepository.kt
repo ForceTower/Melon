@@ -34,6 +34,9 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
+import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
@@ -43,6 +46,7 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.math.max
 
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
@@ -72,7 +76,30 @@ class FirebaseMessageRepository @Inject constructor(
             "service" -> serviceNotification(data)
             "synchronize" -> universalSync(data)
             "reconnect_firebase" -> firebaseReconnect(data)
+            "reschedule_sync" -> rescheduleSync(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
+        }
+    }
+
+    private fun rescheduleSync(data: Map<String, String>) {
+        val current = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
+        val period = data["period"]?.toIntOrNull() ?: current
+        val forced = data["forced"]?.toBooleanOrNull() ?: false
+
+        if (current >= period && !forced) {
+            Timber.d("No action needed")
+        } else {
+            val nextPeriod = max(period, current)
+            val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
+            when (worker) {
+                0 -> SyncMainWorker.createWorker(context, nextPeriod, true)
+                1 -> {
+                    SyncLinkedWorker.stopWorker()
+                    SyncLinkedWorker.createWorker(nextPeriod, true)
+                }
+            }
+            preferences.edit().putString("stg_sync_frequency", period.toString()).apply()
+            Timber.d("Target rescheduled")
         }
     }
 
