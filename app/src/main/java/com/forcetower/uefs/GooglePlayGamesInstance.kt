@@ -1,3 +1,30 @@
+/*
+ * Copyright (c) 2018.
+ * João Paulo Sena <joaopaulo761@gmail.com>
+ *
+ * This file is part of the UNES Open Source Project.
+ *
+ * UNES is licensed under the MIT License
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package com.forcetower.uefs
 
 import android.content.Context
@@ -51,7 +78,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         leaderboardClient = Games.getLeaderboardsClient(this, account)
         gamesClient = Games.getGamesClient(this, account)
         _status.postValue(Event(GameConnectionStatus.CONNECTED))
-        preferences.edit().putBoolean("google_play_games_enabled", true).apply()
+        preferences.edit().putBoolean("google_play_games_enabled_v2", true).apply()
         unlockAchievement(R.string.achievement_comeou_o_jogo)
         if (playerUnlockedSwitch) {
             unlockAchievement(R.string.achievement_agora_eu_entendi_agora_eu_saquei)
@@ -66,7 +93,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         leaderboardClient = null
         gamesClient = null
         _status.postValue(Event(GameConnectionStatus.DISCONNECTED))
-        preferences.edit().putBoolean("google_play_games_enabled", false).apply()
+        preferences.edit().putBoolean("google_play_games_enabled_v2", false).apply()
     }
 
     /**
@@ -102,7 +129,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
      * Descobre se o Google Play Games está ativado ou desativado
      */
     fun isPlayGamesEnabled(): Boolean {
-        return preferences.getBoolean("google_play_games_enabled", false)
+        return preferences.getBoolean("google_play_games_enabled_v2", false)
     }
 
     /**

@@ -30,7 +30,7 @@ package com.forcetower.uefs.feature.reminders
 import android.graphics.Paint
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
-import com.forcetower.uefs.feature.shared.formatSimpleDay
+import com.forcetower.uefs.feature.shared.extensions.formatSimpleDay
 
 @BindingAdapter("strikeText")
 fun strikeText(tv: TextView, strike: Boolean) {

@@ -39,7 +39,7 @@ import com.forcetower.uefs.databinding.FragmentDisciplineOverviewBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity.Companion.CLASS_GROUP_ID
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class OverviewFragment : UFragment(), Injectable {

@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

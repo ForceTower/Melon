@@ -47,10 +47,10 @@ import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.forcetower.uefs.feature.shared.isNougatMR1
-import com.forcetower.uefs.feature.shared.provideViewModel
-import com.forcetower.uefs.feature.shared.toShortcut
-import com.forcetower.uefs.feature.shared.config
+import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.toShortcut
+import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
@@ -168,6 +168,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
+            mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
         }

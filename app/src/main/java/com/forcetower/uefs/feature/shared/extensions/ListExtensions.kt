@@ -25,15 +25,9 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
-
-inline fun <reified VM : ViewModel> Fragment.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
-        ViewModelProviders.of(this, viewModelFactory)[VM::class.java]
-
-inline fun <reified VM : ViewModel> Fragment.provideActivityViewModel(viewModelFactory: ViewModelProvider.Factory) =
-        ViewModelProviders.of(requireActivity(), viewModelFactory)[VM::class.java]
+fun <T> List<T>.positionOf(other: Any): Int {
+    for (i in 0..(size - 1)) if (get(i) == other) return i
+    return -1
+}

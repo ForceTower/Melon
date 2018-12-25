@@ -28,7 +28,7 @@
 package com.forcetower.uefs.core.model.bigtray
 
 import androidx.core.math.MathUtils.clamp
-import com.forcetower.uefs.feature.shared.toCalendar
+import com.forcetower.uefs.feature.shared.extensions.toCalendar
 import timber.log.Timber
 import java.util.Calendar
 import java.util.Calendar.SATURDAY

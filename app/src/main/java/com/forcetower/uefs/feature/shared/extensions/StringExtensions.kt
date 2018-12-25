@@ -25,12 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
-import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
+import com.forcetower.sagres.utils.WordUtils
 
-inline fun <reified VM : ViewModel> FragmentActivity.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
-        ViewModelProviders.of(this, viewModelFactory)[VM::class.java]
+fun String.makeSemester(): String {
+    return if (this.length > 4) {
+        this.substring(0, 4) + "." + this.substring(4)
+    } else {
+        this
+    }
+}
+
+fun String?.toTitleCase(): String? = WordUtils.toTitleCase(this)

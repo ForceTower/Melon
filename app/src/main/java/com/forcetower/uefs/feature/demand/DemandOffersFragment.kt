@@ -40,7 +40,7 @@ import com.forcetower.uefs.databinding.FragmentDemandOffersBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
