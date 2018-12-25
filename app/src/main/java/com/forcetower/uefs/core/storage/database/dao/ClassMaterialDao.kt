@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
@@ -40,4 +41,8 @@ abstract class ClassMaterialDao {
 
     @Query("DELETE FROM ClassMaterial")
     abstract fun deleteAll()
+
+    @WorkerThread
+    @Query("DELETE FROM ClassMaterial WHERE group_id = :groupId")
+    abstract fun clearFromGroup(groupId: Long)
 }

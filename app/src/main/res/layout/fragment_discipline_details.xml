@@ -31,6 +31,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     
     <data>
+        <import type="android.view.View"/>
+
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
@@ -52,7 +54,8 @@
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:animateLayoutChanges="true">
             
                 <androidx.constraintlayout.widget.Guideline
                     android:id="@+id/guideline_start"
@@ -91,13 +94,24 @@
                     app:layout_constraintStart_toStartOf="@id/text_discipline_name"
                     app:layout_constraintTop_toBottomOf="@id/text_discipline_name"
                     tools:text="Departamento de Tecnologia" />
+
+                <ProgressBar
+                    android:id="@+id/pb_loading"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                    android:indeterminate="true"
+                    android:layout_marginTop="8dp"
+                    tools:visibility="gone"
+                    android:visibility="@{viewModel.loadClassDetails ? View.VISIBLE : View.GONE}"
+                    app:layout_constraintTop_toBottomOf="@+id/department"/>
             
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/barrier_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     app:barrierDirection="bottom"
-                    app:constraint_referenced_ids="department" />
+                    app:constraint_referenced_ids="pb_loading" />
             
                 <Space
                     android:id="@+id/spacer_title"

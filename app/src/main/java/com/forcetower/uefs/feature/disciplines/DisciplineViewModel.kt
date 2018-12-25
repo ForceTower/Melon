@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
@@ -75,8 +76,8 @@ class DisciplineViewModel @Inject constructor(
     val classItems: LiveData<List<ClassItem>>
         get() = _classItems
 
-    private val _loadClassDetails = MediatorLiveData<Long>()
-    val loadClassDetails: LiveData<Long>
+    private val _loadClassDetails = MediatorLiveData<Boolean>()
+    val loadClassDetails: LiveData<Boolean>
         get() = _loadClassDetails
 
     private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
@@ -109,7 +110,12 @@ class DisciplineViewModel @Inject constructor(
             refreshClassItems(it)
         }
         _loadClassDetails.addSource(classGroupId) {
-            if (it != null) repository.loadClassDetails(it)
+            if (it != null) {
+                val src = repository.loadClassDetails(it)
+                _loadClassDetails.addSource(src) { loading ->
+                    _loadClassDetails.value = loading
+                }
+            }
         }
         _group.addSource(classGroupId) {
             if (it != null) {
@@ -187,6 +193,12 @@ class DisciplineViewModel @Inject constructor(
                 _refreshing.value = false
             }
         }
+    }
+
+    fun resetGroups(clazz: Class?): Boolean {
+        clazz ?: return true
+        repository.resetGroups(clazz)
+        return true
     }
 
     override fun onMaterialClick(material: ClassMaterial?) {
