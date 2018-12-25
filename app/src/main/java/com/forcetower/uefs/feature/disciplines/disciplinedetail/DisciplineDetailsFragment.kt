@@ -35,7 +35,6 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
@@ -103,7 +102,6 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
-        viewModel.loadClassDetails.observe(this, Observer { Unit })
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             setLifecycleOwner(this@DisciplineDetailsFragment)

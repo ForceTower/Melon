@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
@@ -36,4 +37,8 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 abstract class ClassItemDao {
     @Query("SELECT * FROM ClassItem WHERE group_id = :classGroupId")
     abstract fun getClassItemsFromGroup(classGroupId: Long): LiveData<List<ClassItem>>
+
+    @WorkerThread
+    @Query("DELETE FROM ClassItem WHERE group_id = :groupId")
+    abstract fun clearFromGroup(groupId: Long)
 }
