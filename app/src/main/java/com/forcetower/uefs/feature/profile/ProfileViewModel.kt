@@ -34,7 +34,7 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
-import com.forcetower.uefs.feature.shared.setValueIfNew
+import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
 

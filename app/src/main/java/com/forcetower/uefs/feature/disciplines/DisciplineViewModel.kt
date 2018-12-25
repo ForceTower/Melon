@@ -41,7 +41,7 @@ import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
-import com.forcetower.uefs.feature.shared.setValueIfNew
+import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
 

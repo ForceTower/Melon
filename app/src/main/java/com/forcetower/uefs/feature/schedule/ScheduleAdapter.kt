@@ -46,9 +46,9 @@ import com.forcetower.uefs.databinding.ItemScheduleDayBinding
 import com.forcetower.uefs.databinding.ItemScheduleLineClassBinding
 import com.forcetower.uefs.databinding.ItemScheduleLineDayBinding
 import com.forcetower.uefs.feature.shared.inflater
-import com.forcetower.uefs.feature.shared.positionOf
-import com.forcetower.uefs.feature.shared.toLongWeekDay
-import com.forcetower.uefs.feature.shared.toWeekDay
+import com.forcetower.uefs.feature.shared.extensions.positionOf
+import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
+import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import java.util.HashMap
 
 // ---------------------------------------- Schedule Line -------------------------------------------

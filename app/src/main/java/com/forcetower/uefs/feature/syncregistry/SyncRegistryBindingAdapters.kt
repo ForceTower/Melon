@@ -31,7 +31,7 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.NetworkType
-import com.forcetower.uefs.feature.shared.formatFullDate
+import com.forcetower.uefs.feature.shared.extensions.formatFullDate
 
 @BindingAdapter("syncTime")
 fun bindTime(tv: TextView, value: Long?) {

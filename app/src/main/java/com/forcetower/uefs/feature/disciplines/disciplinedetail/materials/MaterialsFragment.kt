@@ -43,8 +43,8 @@ import com.forcetower.uefs.databinding.FragmentDisciplineAttachmentsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.openURL
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.openURL
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class MaterialsFragment : UFragment(), Injectable {
