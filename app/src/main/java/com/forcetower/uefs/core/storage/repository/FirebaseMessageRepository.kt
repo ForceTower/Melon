@@ -86,7 +86,15 @@ class FirebaseMessageRepository @Inject constructor(
         val period = data["period"]?.toIntOrNull() ?: current
         val forced = data["forced"]?.toBooleanOrNull() ?: false
 
-        if (current >= period && !forced) {
+        /**
+         * Se a frequencia atual for maior que a recomendada e a sincronização não for forçada,
+         * nada precisa ser feito.
+         *
+         * Note que não é maior ou igual, este método se torna conveniente para que o remetente
+         * possa enviar uma mensagem somente com o identificador reschedule_sync e o aparelho irá
+         * fazer o reschedule mesmo que nenhum parâmetro seja passado.
+        **/
+        if (current > period && !forced) {
             Timber.d("No action needed")
         } else {
             val nextPeriod = max(period, current)
