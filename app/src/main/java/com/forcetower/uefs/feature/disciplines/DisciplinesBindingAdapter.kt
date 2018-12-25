@@ -121,3 +121,13 @@ fun classSubject(tv: TextView, subject: String?, situation: String?) {
     if (strike == true) tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
     else tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
 }
+
+@BindingAdapter(value = ["absenceSequence", "absenceDate"], requireAll = true)
+fun disciplineAbsence(tv: TextView, sequence: Int?, date: String?) {
+    val ctx = tv.context
+    val seq = sequence ?: 0
+    val dat = date ?: "??/??/????"
+
+    val text = ctx.getString(R.string.discipline_absence_date_format, seq, dat)
+    tv.text = text
+}
