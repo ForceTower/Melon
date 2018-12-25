@@ -24,12 +24,6 @@ android {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
             }
         }
-
-        copy {
-            from "../secret/"
-            into "."
-            include "**/*.json"
-        }
     }
     signingConfigs {
         release {

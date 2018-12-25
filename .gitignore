@@ -77,3 +77,5 @@ freeline_project_description.json
 
 keystore_auth
 /secret/
+
+app/google-services\.json
