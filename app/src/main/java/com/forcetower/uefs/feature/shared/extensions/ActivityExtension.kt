@@ -25,36 +25,12 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.uefs.feature.shared.extensions
 
-import android.view.ViewGroup
-import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
-import com.forcetower.uefs.R
-import com.google.android.material.snackbar.Snackbar
+import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelProviders
 
-fun Snackbar.config(bottomPadding: Int = 12, pxElevation: Int = 6) {
-    val context = view.context
-    val params = view.layoutParams as ViewGroup.MarginLayoutParams
-
-    val px12 = getPixelsFromDp(context, 12).toInt()
-    val px6 = getPixelsFromDp(context, pxElevation)
-    val pxB = getPixelsFromDp(context, bottomPadding).toInt()
-
-    params.setMargins(px12, px12, px12, pxB)
-    view.elevation = px6
-    view.bringToFront()
-
-    view.layoutParams = params
-
-    view.background = context.getDrawable(R.drawable.snackbar_background)
-
-    val font = ResourcesCompat.getFont(context, R.font.product_sans_regular)
-    val tv = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
-    tv.typeface = font
-
-    try {
-        val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
-        at.typeface = font
-    } catch (ignored: Exception) {}
-}
+inline fun <reified VM : ViewModel> FragmentActivity.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
+        ViewModelProviders.of(this, viewModelFactory)[VM::class.java]

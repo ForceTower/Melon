@@ -46,8 +46,8 @@ import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.openURL
-import com.forcetower.uefs.feature.shared.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.openURL
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
 import java.util.Arrays
 import javax.inject.Inject

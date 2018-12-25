@@ -43,8 +43,8 @@ import com.forcetower.uefs.core.model.bigtray.percentage
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentBigTrayBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.formatDateTime
-import com.forcetower.uefs.feature.shared.provideViewModel
+import com.forcetower.uefs.feature.shared.extensions.formatDateTime
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
 
 class BigTrayFragment : UFragment(), Injectable {

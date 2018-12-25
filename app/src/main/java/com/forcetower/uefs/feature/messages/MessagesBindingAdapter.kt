@@ -35,8 +35,8 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.feature.shared.formatMonthYear
-import com.forcetower.uefs.feature.shared.formatTimeWithoutSeconds
+import com.forcetower.uefs.feature.shared.extensions.formatMonthYear
+import com.forcetower.uefs.feature.shared.extensions.formatTimeWithoutSeconds
 import java.util.Calendar
 import java.util.Date
 
