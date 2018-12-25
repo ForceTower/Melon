@@ -47,6 +47,7 @@ import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
 import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.absences.AbsencesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
@@ -116,7 +117,8 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         val overview = getString(R.string.discipline_details_overview) to OverviewFragment.newInstance(group)
         val classes = getString(R.string.discipline_details_classes) to ClassesFragment.newInstance(group)
         val materials = getString(R.string.discipline_details_materials) to MaterialsFragment.newInstance(group)
-        val list = listOf<Pair<String, Fragment>>(overview, classes, materials)
+        val absences = getString(R.string.discipline_details_absences) to AbsencesFragment.newInstance(group)
+        val list = listOf<Pair<String, Fragment>>(overview, classes, materials, absences)
         adapter.submitList(list)
     }
 
