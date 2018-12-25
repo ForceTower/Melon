@@ -101,6 +101,15 @@ class RemindersFragment : UFragment(), Injectable {
         }, ignored = listOf(ReminderHolder.CompletedHeaderHolder::class.java)))
         helper.attachToRecyclerView(binding.recyclerReminders)
 
-        viewModel.reminders.observe(this, Observer { reminderAdapter.currentReminders = it })
+        viewModel.reminders.observe(this, Observer {
+            reminderAdapter.currentReminders = it
+            if (it.isEmpty()) {
+                binding.recyclerReminders.visibility = View.GONE
+                binding.layoutNoData.visibility = View.VISIBLE
+            } else {
+                binding.recyclerReminders.visibility = View.VISIBLE
+                binding.layoutNoData.visibility = View.GONE
+            }
+        })
     }
 }
