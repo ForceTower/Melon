@@ -103,7 +103,6 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
-        viewModel.loadClassDetails.observe(this, Observer { Unit })
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             setLifecycleOwner(this@DisciplineDetailsFragment)

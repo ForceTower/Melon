@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -130,4 +131,8 @@ abstract class ClassGroupDao {
 
     @Update
     protected abstract fun updateDiscipline(discipline: Discipline)
+
+    @WorkerThread
+    @Query("SELECT * FROM ClassGroup WHERE class_id = :classId")
+    abstract fun getGroupsFromClassDirect(classId: Long): List<ClassGroup>
 }

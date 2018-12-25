@@ -28,9 +28,11 @@
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassMaterial
@@ -82,17 +84,22 @@ class DisciplinesRepository @Inject constructor(
         }
     }
 
-    // TODO create a observable here
-    fun loadClassDetails(groupId: Long) {
+    fun loadClassDetails(groupId: Long): LiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        result.postValue(true)
         executors.networkIO().execute {
+            Timber.d("Group id for load is $groupId")
             val value = database.classGroupDao().getWithRelationsDirect(groupId)
             if (value == null) {
                 Timber.d("Class Group with ID: $groupId was not found")
+                result.postValue(false)
             } else {
                 val clazz = value.clazz()
                 val semester = clazz.semester().name
                 val code = clazz.discipline().code
                 val group = value.group.group
+
+                Timber.d("Code: $code. Semester: $semester. Group: $group")
 
                 val callback = SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
                 if (callback.status == Status.COMPLETED) {
@@ -105,6 +112,20 @@ class DisciplinesRepository @Inject constructor(
                 } else {
                     Timber.d("Load group has failed along the way")
                 }
+                result.postValue(false)
+            }
+        }
+        return result
+    }
+
+    fun resetGroups(clazz: Class) {
+        executors.diskIO().execute {
+            val uid = clazz.uid
+            val groups = database.classGroupDao().getGroupsFromClassDirect(uid)
+            groups.forEach {
+                val id = it.uid
+                database.classItemDao().clearFromGroup(id)
+                database.classMaterialDao().clearFromGroup(id)
             }
         }
     }
