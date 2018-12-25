@@ -91,7 +91,7 @@ class SyncLinkedWorker(
         }
 
         fun stopWorker() {
-            WorkManager.getInstance().cancelAllWorkByTag(TAG)
+            WorkManager.getInstance().cancelAllWorkByTag(TAG).result.get()
         }
     }
 }
