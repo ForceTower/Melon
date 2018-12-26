@@ -65,7 +65,7 @@ class DisciplineLoaderRepository @Inject constructor(
      */
     @MainThread
     fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null): LiveData<DisciplineDetailsCallback> {
-        return object: LoadDisciplineDetailsResource(executors, semester, code, group) {
+        return object : LoadDisciplineDetailsResource(executors, semester, code, group) {
             @WorkerThread
             override fun saveResults(groups: List<SDisciplineGroup>) {
                 database.classGroupDao().defineGroups(groups)
