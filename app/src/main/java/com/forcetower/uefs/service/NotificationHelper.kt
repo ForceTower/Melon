@@ -61,6 +61,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         val remote = createChannel(CHANNEL_GENERAL_REMOTE_ID, getString(R.string.remote), NotificationManager.IMPORTANCE_DEFAULT)
         val eventGen = createChannel(CHANNEL_EVENTS_GENERAL_ID, getString(R.string.channel_events_general), NotificationManager.IMPORTANCE_DEFAULT)
         val bigTray = createChannel(CHANNEL_GENERAL_BIGTRAY_ID, getString(R.string.channel_big_tray_quota), NotificationManager.IMPORTANCE_LOW)
+        val commonLow = createChannel(CHANNEL_GENERAL_COMMON_LOW_ID, getString(R.string.channel_common_low), NotificationManager.IMPORTANCE_LOW)
 
         messages.group = CHANNEL_GROUP_MESSAGES_ID
         uefsMsg.group = CHANNEL_GROUP_MESSAGES_ID
@@ -72,6 +73,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         remote.group = CHANNEL_GROUP_GENERAL_ID
         eventGen.group = CHANNEL_GROUP_EVENTS_ID
         bigTray.group = CHANNEL_GROUP_GENERAL_ID
+        commonLow.group = CHANNEL_GROUP_GENERAL_ID
 
         manager.createNotificationChannel(messages)
         manager.createNotificationChannel(uefsMsg)
@@ -83,6 +85,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         manager.createNotificationChannel(remote)
         manager.createNotificationChannel(eventGen)
         manager.createNotificationChannel(bigTray)
+        manager.createNotificationChannel(commonLow)
 
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_DCE_ID)
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_SAGRES_ID)
@@ -121,6 +124,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         const val CHANNEL_GRADES_DATE_CHANGED_ID = "com.forcetower.uefs.GRADES.DATE_CHANGE"
         const val CHANNEL_GRADES_VALUE_CHANGED_ID = "com.forcetower.uefs.GRADES.VALUE_CHANGED"
         const val CHANNEL_GENERAL_WARNINGS_ID = "com.forcetower.uefs.GENERAL.WARNINGS"
+        const val CHANNEL_GENERAL_COMMON_LOW_ID = "com.forcetower.uefs.GENERAL.COMMON.LOW"
         const val CHANNEL_GENERAL_REMOTE_ID = "com.forcetower.uefs.GENERAL.REMOTE"
         const val CHANNEL_GENERAL_BIGTRAY_ID = "com.forcetower.uefs.GENERAL.BIGTRAY"
         const val CHANNEL_EVENTS_GENERAL_ID = "com.forcetower.uefs.EVENTS.GENERAL"

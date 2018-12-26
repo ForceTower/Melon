@@ -334,6 +334,12 @@ private constructor(context: Context) : SagresNavigator() {
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aLoadDisciplineDetails(semester: String?, code: String?, group: String?): LiveData<DisciplineDetailsCallback> {
+        return DisciplineDetailsOperation(semester, code, group, SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun aLoadDemandOffers(): LiveData<DemandOffersCallback> {
         return LoadDemandOffersOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
