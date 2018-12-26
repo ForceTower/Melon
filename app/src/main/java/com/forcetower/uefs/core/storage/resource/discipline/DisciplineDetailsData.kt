@@ -29,7 +29,7 @@ package com.forcetower.uefs.core.storage.resource.discipline
 
 import com.forcetower.uefs.core.model.service.ClassStatsData
 
-data class DisciplineDetailsData (
+data class DisciplineDetailsData(
     var semester: Int,
     var score: Double,
     var disciplines: List<ClassStatsData>
