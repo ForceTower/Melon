@@ -30,6 +30,8 @@ package com.forcetower.sagres.request;
 import androidx.annotation.NonNull;
 import com.forcetower.sagres.Constants;
 import com.forcetower.sagres.database.model.SLinker;
+
+import androidx.annotation.Nullable;
 import okhttp3.FormBody;
 import okhttp3.Request;
 import okhttp3.RequestBody;
@@ -117,7 +119,7 @@ public class SagresRequests {
     }
 
     @NotNull
-    public static Request getGradesForSemester(long semester, @NonNull Document document) {
+    public static Request getGradesForSemester(long semester, @NonNull Document document, @Nullable Long variant) {
         FormBody.Builder formBody = new FormBody.Builder();
 
         Elements elements = document.select("input[value][type=\"hidden\"]");
@@ -129,6 +131,9 @@ public class SagresRequests {
         }
 
         formBody.add("ctl00$MasterPlaceHolder$ddPeriodosLetivos$ddPeriodosLetivos", Long.valueOf(semester).toString());
+        if (variant != null) {
+            formBody.add("ctl00$MasterPlaceHolder$ddRegistroCurso", variant.toString());
+        }
         formBody.add("ctl00$MasterPlaceHolder$imRecuperar", "Exibir");
         return new Request.Builder()
                 .url(Constants.SAGRES_GRADE_ANY)
