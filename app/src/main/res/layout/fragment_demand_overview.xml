@@ -71,7 +71,7 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="16dp" />
-    
+
         <View
             android:id="@+id/sheet_header_shadow"
             android:layout_width="0dp"
@@ -79,6 +79,8 @@
             android:alpha="0"
             android:background="@drawable/rounded_sheet_header_shadow"
             android:stateListAnimator="@animator/active_alpha"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/guide_peek_height" />
     
         <!-- Header -->
