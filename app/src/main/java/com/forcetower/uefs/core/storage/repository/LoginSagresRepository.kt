@@ -34,6 +34,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
 import com.forcetower.sagres.database.model.SDiscipline
@@ -231,6 +232,8 @@ class LoginSagresRepository @Inject constructor(
                 Timber.d("Grades received: ${g.grades}")
                 Timber.d("Frequency: ${g.frequency}")
                 Timber.d("Semesters: ${g.semesters}")
+
+                Crashlytics.log(0, "Grades Parser", "Received: ${g.grades}")
                 executor.diskIO().execute {
                     defineSemesters(g.semesters)
                     defineGrades(g.grades)
