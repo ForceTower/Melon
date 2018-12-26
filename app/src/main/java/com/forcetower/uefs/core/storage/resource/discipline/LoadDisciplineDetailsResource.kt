@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.resource
+package com.forcetower.uefs.core.storage.resource.discipline
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
