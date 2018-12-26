@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
@@ -78,12 +79,7 @@ class DisciplinesRepository @Inject constructor(
         return database.classItemDao().getClassItemsFromGroup(classGroupId)
     }
 
-    fun loadClassDetails(semester: String, code: String, group: String) {
-        executors.networkIO().execute {
-            SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
-        }
-    }
-
+    @AnyThread
     fun loadClassDetails(groupId: Long): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
         result.postValue(true)
@@ -118,6 +114,7 @@ class DisciplinesRepository @Inject constructor(
         return result
     }
 
+    @AnyThread
     fun resetGroups(clazz: Class) {
         executors.diskIO().execute {
             val uid = clazz.uid

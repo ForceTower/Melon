@@ -11,7 +11,7 @@ buildscript {
     }
 
     dependencies {
-        classpath 'com.android.tools.build:gradle:3.2.1'
+        classpath 'com.android.tools.build:gradle:3.3.0-rc03'
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:4.2.0"
         classpath "io.fabric.tools:gradle:1.26.1"
@@ -56,7 +56,7 @@ ext {
     work_version = "1.0.0-beta01"
 
     //Dagger
-    dagger_version = "2.16"
+    dagger_version = "2.20"
 
     //Firebase
     firebase_core = "16.0.6"
