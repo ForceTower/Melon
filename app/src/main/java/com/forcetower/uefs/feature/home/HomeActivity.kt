@@ -95,7 +95,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun onActivityStart() {
         initShortcuts()
         moveToTask()
-        DisciplineDetailsLoaderService.startService(this)
     }
 
     private fun moveToTask() {
