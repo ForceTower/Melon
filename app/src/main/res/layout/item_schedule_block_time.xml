@@ -35,8 +35,8 @@
     </data>
     <LinearLayout
         android:orientation="vertical"
-        android:layout_width="60dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/schedule_block_width"
+        android:layout_height="@dimen/schedule_block_height"
         android:gravity="center"
         android:layout_margin="2dp">
 
@@ -46,6 +46,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="07:30"
+            android:textSize="@dimen/schedule_block_primary_text"
             android:text="@{inner.time.start}"
             android:textColor="@color/text_primary_dark" />
 
@@ -56,6 +57,7 @@
             android:gravity="center"
             tools:text="09:30"
             android:text="@{inner.time.end}"
+            android:textSize="@dimen/schedule_block_primary_text"
             android:textColor="@color/text_primary_dark" />
 
     </LinearLayout>
