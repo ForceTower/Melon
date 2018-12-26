@@ -328,7 +328,7 @@ private constructor(context: Context) : SagresNavigator() {
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun loadDisciplineDetails(semester: String, code: String, group: String): DisciplineDetailsCallback {
+    override fun loadDisciplineDetails(semester: String?, code: String?, group: String?): DisciplineDetailsCallback {
         return DisciplineDetailsOperation(semester, code, group, null).finishedResult
     }
 
