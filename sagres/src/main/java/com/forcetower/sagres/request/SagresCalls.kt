@@ -116,11 +116,11 @@ object SagresCalls {
 
     @JvmStatic
     @RestrictTo
-    fun getGrades(semester: Long?, document: Document?): Call {
+    fun getGrades(semester: Long?, document: Document?, variant: Long? = null): Call {
         val request = if (semester == null) {
             SagresRequests.getCurrentGrades()
         } else {
-            SagresRequests.getGradesForSemester(semester, document!!)
+            SagresRequests.getGradesForSemester(semester, document!!, variant)
         }
 
         return getCall(request)
