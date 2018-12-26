@@ -39,6 +39,7 @@ import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.R
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
+import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory

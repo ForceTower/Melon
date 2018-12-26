@@ -35,6 +35,10 @@ import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.DOWNLOADING
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.INITIAL
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.LOGIN
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.PROCESSING
 import com.forcetower.sagres.parsers.SagresDisciplineDetailsFetcherParser
 import com.forcetower.sagres.parsers.SagresDisciplineDetailsParser
 import com.forcetower.sagres.parsers.SagresMaterialsParser
@@ -68,11 +72,17 @@ class DisciplineDetailsOperation(
     }
 
     private fun executeSteps(access: SAccess) {
+        publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(LOGIN))
         login(access) ?: return
+        publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(INITIAL))
         val initial = initialPage() ?: return
+        publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(PROCESSING))
         val forms = SagresDisciplineDetailsFetcherParser.extractFormBodies(initial.document!!, semester, code, group)
         val groups = mutableListOf<SDisciplineGroup>()
-        for (form in forms) {
+
+        val total = forms.size
+        for ((index, form) in forms.withIndex()) {
+            publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(DOWNLOADING).current(index).total(total))
             val document = initialFormConnect(form.first)
             if (document != null) {
                 val params = SagresDisciplineDetailsFetcherParser.extractParamsForDiscipline(document)
