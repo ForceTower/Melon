@@ -40,7 +40,7 @@ import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallba
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.PROCESSING
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.SAVING
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.storage.repository.DisciplineLoaderRepository
+import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.android.AndroidInjection
 import timber.log.Timber
@@ -59,7 +59,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
     }
 
     @Inject
-    lateinit var repository: DisciplineLoaderRepository
+    lateinit var repository: DisciplineDetailsRepository
     private var running = false
 
     override fun onCreate() {
