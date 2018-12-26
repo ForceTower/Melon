@@ -247,6 +247,14 @@ object NotificationCreator {
         return builder.build()
     }
 
+    fun disciplineDetailsLoadNotification(context: Context): NotificationCompat.Builder {
+        return notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_COMMON_LOW_ID, false)
+                .setOngoing(true)
+                .setContentTitle(context.getString(R.string.downloading_discipline_details))
+                .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)

@@ -155,6 +155,11 @@
         <service
             android:name=".architecture.service.bigtray.BigTrayService"
             android:exported="false" />
+
+        <service
+            android:name=".architecture.service.discipline.DisciplineDetailsLoaderService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

@@ -33,10 +33,32 @@ import com.forcetower.sagres.operation.Status
 
 class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetailsCallback>(status) {
     private var groups: List<SDisciplineGroup>? = null
+    private var flags: Int = 0
+    private var current: Int = 0
+    private var total: Int = 0
+
+    fun getFlags() = flags
     fun getGroups() = groups
+    fun getCurrent() = current
+    fun getTotal() = total
 
     fun groups(groups: List<SDisciplineGroup>?): DisciplineDetailsCallback {
         this.groups = groups
+        return this
+    }
+
+    fun flags(flags: Int = 0): DisciplineDetailsCallback {
+        this.flags = flags
+        return this
+    }
+
+    fun current(current: Int): DisciplineDetailsCallback {
+        this.current = current
+        return this
+    }
+
+    fun total(total: Int): DisciplineDetailsCallback {
+        this.total = total
         return this
     }
 
@@ -45,5 +67,11 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
             return DisciplineDetailsCallback(callback.status).message(callback.message).code(callback.code).throwable(
                 callback.throwable).document(callback.document)
         }
+
+        const val LOGIN = 1
+        const val INITIAL = 2
+        const val PROCESSING = 4
+        const val DOWNLOADING = 8
+        const val SAVING = 16
     }
 }

@@ -346,6 +346,15 @@
     <string name="discipline_no_absence_posted">Você não tem faltas registradas nesta disciplina</string>
     <string name="discipline_absence_date_format">Aula: %1$d - %2$s</string>
     <string name="no_active_reminders">Você não tem lembretes ativos</string>
+    <string name="channel_group_disciplines">Disciplinas</string>
+    <string name="channel_common_low">Serviços Básicos</string>
+    <string name="downloading_discipline_details">Baixando disciplinas</string>
+    <string name="step_undefined">Desconhecido</string>
+    <string name="step_discipline_details_processing">Processando informações</string>
+    <string name="step_discipline_details_saving">Salvando informações</string>
+    <string name="step_discipline_details_downloading">Concluídas %1$d de %2$d</string>
+    <string name="step_discipline_details_login">Em suas marcas!</string>
+    <string name="step_discipline_details_initial">Preparando...</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
