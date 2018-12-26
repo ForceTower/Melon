@@ -35,7 +35,6 @@ import android.telephony.TelephonyManager
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
 import com.forcetower.sagres.database.model.SDiscipline
@@ -298,8 +297,6 @@ class SagresSyncRepository @Inject constructor(
                 Timber.d("Grades received: ${grades.grades}")
                 Timber.d("Frequency: ${grades.frequency}")
                 Timber.d("Semesters: ${grades.semesters}")
-
-                Crashlytics.log(0, "Grades Parser", "Received: ${grades.grades}")
 
                 gradesNotifications()
                 frequencyNotifications()
