@@ -40,8 +40,8 @@
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/card_root"
-        android:layout_width="60dp"
-        android:layout_height="48dp"
+        android:layout_width="@dimen/schedule_block_width"
+        android:layout_height="@dimen/schedule_block_height"
         android:layout_margin="2dp"
         app:cardCornerRadius="4dp"
         app:strokeWidth="1dp"
@@ -61,6 +61,7 @@
                 android:layout_height="wrap_content"
                 tools:text="@sample/classes.json/data/classCode"
                 android:gravity="center"
+                android:textSize="@dimen/schedule_block_primary_text"
                 android:textColor="@color/text_primary_dark" />
 
             <View
@@ -74,7 +75,7 @@
                 tools:text="@sample/classes.json/data/group"
                 android:gravity="center"
                 android:textColor="@color/text_primary_dark"
-                android:textSize="12sp"/>
+                android:textSize="@dimen/schedule_block_second_text"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
