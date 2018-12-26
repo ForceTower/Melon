@@ -27,10 +27,12 @@
 
 package com.forcetower.uefs.feature.disciplines
 
+import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -198,6 +200,12 @@ class DisciplineViewModel @Inject constructor(
     fun resetGroups(clazz: Class?): Boolean {
         clazz ?: return true
         repository.resetGroups(clazz)
+        return true
+    }
+
+    fun loadAllDisciplines(view: View): Boolean {
+        val ctx = view.context
+        DisciplineDetailsLoaderService.startService(ctx)
         return true
     }
 
