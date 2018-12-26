@@ -28,7 +28,7 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android">
     <View
-        android:layout_width="60dp"
+        android:layout_width="@dimen/schedule_block_width"
         android:layout_height="30dp"
         android:layout_margin="2dp"/>
 </layout>
