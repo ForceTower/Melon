@@ -15,7 +15,7 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 * ~~Demanda Web direto no App~~ [Completo]
 * ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
 * Matrícula no App
-* Corrigir o erro que afeta alguns estudantes que tem 2 cursos em 1 (????)
+* Corrigir o erro que afeta alguns estudantes que mudaram de modalidade durante a graduação [Licenciatura/Bacharelado]
 * ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal
 
