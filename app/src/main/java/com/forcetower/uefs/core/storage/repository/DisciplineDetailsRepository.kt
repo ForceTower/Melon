@@ -30,18 +30,27 @@ package com.forcetower.uefs.core.storage.repository
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.resource.LoadDisciplineDetailsResource
+import com.forcetower.uefs.core.storage.resource.discipline.DisciplineDetailsData
+import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
-class DisciplineLoaderRepository @Inject constructor(
+class DisciplineDetailsRepository @Inject constructor(
     private val database: UDatabase,
-    private val executors: AppExecutors
+    private val executors: AppExecutors,
+    private val firebaseAuth: FirebaseAuth,
+    @Named(ClassStatsData.STATS_CONTRIBUTION) private val collection: CollectionReference
 ) {
 
     /**
@@ -57,10 +66,10 @@ class DisciplineLoaderRepository @Inject constructor(
      *
      * Note to myself: save the data when it is ready, don't wait until everything completes
      *
-     * Second note: add a "don't load this discipline", kind of a blacklist so the process can load
-     * it faster
+     * Second note: add a "don't load this discipline", kind of a blacklist so the process ignore the
+     * discipline and load everything faster
      *
-     * Third note: add a "simple load" and a "complex load". Simple load will only fetch the teacher
+     * Third note: add a "simple load" and a "full load". Simple load will only fetch the teacher
      * name, which is the common use for this function.
      */
     @MainThread
@@ -71,5 +80,20 @@ class DisciplineLoaderRepository @Inject constructor(
                 database.classGroupDao().defineGroups(groups)
             }
         }.asLiveData()
+    }
+
+    @WorkerThread
+    fun sendDisciplineDetails() {
+        val user = firebaseAuth.currentUser ?: return
+        val stats = database.classGroupDao().getClassStatsDirect()
+        val semesters = database.semesterDao().getSemestersDirect()
+        val profile = database.profileDao().selectMeDirect() ?: return
+
+        val amountSemesters = semesters.size
+        val score = if (profile.score != -1.0) profile.score else profile.calcScore
+
+        val data = DisciplineDetailsData(amountSemesters, score, stats)
+        val task = collection.document(user.uid).set(data)
+        Tasks.await(task)
     }
 }
