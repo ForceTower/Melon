@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.model.service.Event
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -74,4 +75,10 @@ object FirestoreModule {
     @Reusable
     @Named(UMessage.COLLECTION)
     fun provideUnesMessagesCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(UMessage.COLLECTION)
+
+    @JvmStatic
+    @Provides
+    @Reusable
+    @Named(ClassStatsData.STATS_CONTRIBUTION)
+    fun provideStatsContributionCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(ClassStatsData.STATS_CONTRIBUTION)
 }
