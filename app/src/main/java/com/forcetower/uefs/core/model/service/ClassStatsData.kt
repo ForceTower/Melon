@@ -31,10 +31,10 @@ import androidx.room.ColumnInfo
 
 data class ClassStatsData(
     var code: String,
-    @ColumnInfo(name="discipline")
+    @ColumnInfo(name = "discipline")
     var disciplineName: String,
     var semester: Int,
-    @ColumnInfo(name="semester_name")
+    @ColumnInfo(name = "semester_name")
     var semesterName: String,
     var teacher: String,
     var grade: Double

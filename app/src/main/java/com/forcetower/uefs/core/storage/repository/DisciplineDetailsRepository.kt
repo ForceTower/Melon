@@ -30,7 +30,6 @@ package com.forcetower.uefs.core.storage.repository
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.uefs.AppExecutors
