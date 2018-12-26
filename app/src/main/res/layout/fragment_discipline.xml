@@ -69,7 +69,8 @@
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
                     android:text="@string/label_grades_disciplines_short"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:onLongClick="@{view -> viewModel.loadAllDisciplines(view)}"/>
             </FrameLayout>
 
             <com.google.android.material.tabs.TabLayout
