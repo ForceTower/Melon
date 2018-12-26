@@ -84,7 +84,7 @@
     <string name="step_fetching_grades">Buscando notas</string>
     
     <string name="label_terms_and_conditions_p1">Ao continuar, você concorda com os</string>
-    <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Pineapple/blob/development/privacy_policy.md)</string>
+    <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md)</string>
     
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
@@ -204,8 +204,8 @@
     <string name="not_registed">Não registrado</string>
     <string name="unknown_error">Erro desconhecido o_O</string>
     <string name="discipline_classes_header">Aulas</string>
-    <string name="about_description">Esta versão ainda está em desenvolvimento :)</string>
-    <string name="upgrade_unes_the_second">O aplicativo está de cara nova! [Em desenvolvimento]</string>
+    <string name="about_description">Muitas coisas legais estão para chegar</string>
+    <string name="upgrade_unes_the_second">O aplicativo está de cara nova!</string>
     <string name="upgrade_unes_second_title">Nova geração do UNES</string>
     <string name="label_library">Biblioteca [Em breve]</string>
     <string name="label_disciplines_count">Disciplinas</string>

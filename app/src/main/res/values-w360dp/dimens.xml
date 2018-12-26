@@ -25,10 +25,11 @@
   ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
   ~ SOFTWARE.
   -->
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
-    <View
-        android:layout_width="@dimen/schedule_block_width"
-        android:layout_height="@dimen/schedule_block_height"
-        android:layout_margin="2dp"/>
-</layout>
+
+<resources>
+    <dimen name="schedule_block_width">52dp</dimen>
+    <dimen name="schedule_block_height">42dp</dimen>
+
+    <dimen name="schedule_block_primary_text">12sp</dimen>
+    <dimen name="schedule_block_second_text">10sp</dimen>
+</resources>

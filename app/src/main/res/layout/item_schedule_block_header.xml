@@ -29,10 +29,11 @@
     xmlns:tools="http://schemas.android.com/tools">
     <TextView
         android:id="@+id/text_header"
-        android:layout_width="60dp"
+        android:layout_width="@dimen/schedule_block_width"
         android:layout_height="30dp"
         android:gravity="center"
         android:layout_margin="2dp"
         tools:text="SEG"
+        android:textSize="@dimen/schedule_block_primary_text"
         android:textColor="@color/text_primary_dark" />
 </layout>
