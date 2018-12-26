@@ -106,7 +106,7 @@ abstract class SagresNavigator {
     abstract fun downloadHistory(file: File): DocumentCallback
 
     @WorkerThread
-    abstract fun loadDisciplineDetails(semester: String, code: String, group: String): DisciplineDetailsCallback
+    abstract fun loadDisciplineDetails(semester: String?, code: String?, group: String?): DisciplineDetailsCallback
 
     @AnyThread
     abstract fun aLoadDemandOffers(): LiveData<DemandOffersCallback>

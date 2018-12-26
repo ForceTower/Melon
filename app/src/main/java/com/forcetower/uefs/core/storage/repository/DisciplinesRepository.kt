@@ -78,12 +78,6 @@ class DisciplinesRepository @Inject constructor(
         return database.classItemDao().getClassItemsFromGroup(classGroupId)
     }
 
-    fun loadClassDetails(semester: String, code: String, group: String) {
-        executors.networkIO().execute {
-            SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
-        }
-    }
-
     fun loadClassDetails(groupId: Long): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
         result.postValue(true)

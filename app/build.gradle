@@ -175,19 +175,19 @@ dependencies {
     implementation project(path: ':bypass')
 }
 
-task ktlint(type: JavaExec) {
+tasks.register("ktlint", JavaExec) {
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
     args "src/**/*.kt"
 }
 
-check.dependsOn ktlint
-
-task ktlintFormat(type: JavaExec) {
+tasks.register("ktlintFormat", JavaExec) {
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
     args "-F", "src/**/*.kt"
 }
+
+check.dependsOn ktlint
 
 apply from: "../artifacts.gradle"
 apply plugin: 'com.google.gms.google-services'
