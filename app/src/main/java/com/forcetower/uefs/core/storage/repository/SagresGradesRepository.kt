@@ -31,6 +31,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SDisciplineMissedClass
 import com.forcetower.sagres.database.model.SGrade
@@ -85,6 +86,7 @@ class SagresGradesRepository @Inject constructor(
                 defineFrequency(semesterGrades.frequency)
                 Timber.d("[$semesterSagresId] Grades Part 02/02 Completed!")
                 Timber.d("[$semesterSagresId] Grades: ${semesterGrades.grades}")
+                Crashlytics.log(0, "Grades Parser", "Received: ${semesterGrades.grades}")
                 SUCCESS
             } else {
                 ACTUAL_GRADES_CALL_FAILED
