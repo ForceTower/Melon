@@ -53,7 +53,7 @@ O UNES utiliza o Firebase como backend, então temos uns passos adicionais...
 * Após criar o projeto você vai ser apresentado com uma tela onde ele fala para adicionar o firebase ao seu aplicativo. Como estamos num aplicativo nativo Android, selecione `Adicionar o Firebase ao seu aplicativo Android`.
 * O primeiro passo é dizer o nome do pacote do aplicativo, no caso do UNES é: `com.forcetower.uefs`
 * As informações do Certificado e Assinatura de debug podem ser deixadas em branco, ou siga as instruções mostradas no firebase para encontrar as suas.
-* Após clicar em registrar app o próximo passo é baixar o `google-services.json`, baixe-o e mova-o na pasta `app` do projeto
+* Após clicar em registrar app o próximo passo é baixar o `google-services.json`, baixe-o e mova-o para a pasta `app` do projeto.
 * Pronto, você não precisa mais fazer qualquer alteração, se quiser, ative os recursos de autenticação com email e senha, o firestore, o storage e o functions. Estes são os 4 serviços principais para o aplicativo funcionar com todos os recursos, mas este passo não é obrigatório e a maioria dos recursos irão funcionar corretamente sem fazer este passo. Ah, se você quiser o código das functions do UNES elas estão [aqui](https://github.com/ForceTower/FireMelon).
  
  7.7. Acabamos!
