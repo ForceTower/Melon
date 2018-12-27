@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
@@ -35,6 +36,7 @@ import android.telephony.TelephonyManager
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SCalendar
 import com.forcetower.sagres.database.model.SDiscipline
@@ -53,6 +55,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
+import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.SyncRegistry
@@ -61,8 +64,15 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -70,8 +80,13 @@ class SagresSyncRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase,
     private val executors: AppExecutors,
+    private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val service: UService
+    private val firebaseAuth: FirebaseAuth,
+    @Named(Profile.COLLECTION)
+    private val collection: CollectionReference,
+    private val service: UService,
+    private val preferences: SharedPreferences
 ) {
 
     @WorkerThread
@@ -187,6 +202,24 @@ class SagresSyncRepository @Inject constructor(
         if (!semesters(person.id)) result += 1 shl 2
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
+
+        try {
+            val day = preferences.getInt("sync_daily_update", -1)
+            val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+            val user = firebaseAuth.currentUser
+            if (user != null && day != today) {
+                val instance = FirebaseInstanceId.getInstance().instanceId
+                val instanceId = Tasks.await(instance)
+                val data = mapOf("firebaseToken" to instanceId.token)
+                val task = collection.document(user.uid).set(data, SetOptions.merge())
+                Tasks.await(task)
+                preferences.edit().putInt("sync_daily_update", today).apply()
+
+                adventureRepository.performCheckAchievements(HashMap())
+            }
+        } catch (t: Throwable) {
+            Crashlytics.logException(t)
+        }
 
         registry.completed = true
         registry.error = result

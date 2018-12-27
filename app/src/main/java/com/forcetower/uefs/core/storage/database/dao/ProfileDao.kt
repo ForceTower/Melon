@@ -46,7 +46,7 @@ abstract class ProfileDao {
     abstract fun selectMeDirect(): Profile?
 
     @Query("SELECT * FROM Profile WHERE me = 1 LIMIT 1")
-    abstract fun selectMe(): LiveData<Profile>
+    abstract fun selectMe(): LiveData<Profile?>
 
     @Transaction
     open fun insert(person: SPerson, score: Double = -1.0) {

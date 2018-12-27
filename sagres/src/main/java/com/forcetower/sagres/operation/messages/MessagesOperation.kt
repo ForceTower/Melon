@@ -39,31 +39,96 @@ import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.request.SagresCalls
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import timber.log.Timber
 import java.io.IOException
 import java.util.ArrayList
 import java.util.concurrent.Executor
 
-class MessagesOperation(executor: Executor?, private val userId: Long) : Operation<MessagesCallback>(executor) {
+class MessagesOperation(
+    executor: Executor?,
+    private val userId: Long,
+    private val fetchAll: Boolean
+) : Operation<MessagesCallback>(executor) {
     init {
         this.perform()
     }
 
     override fun execute() {
-        result.postValue(MessagesCallback(Status.STARTED))
+        executor()
+//        result.postValue(MessagesCallback(Status.STARTED))
+//        val call = SagresCalls.getMessages(userId)
+//        try {
+//            val response = call.execute()
+//            if (response.isSuccessful) {
+//                val body = response.body()!!.string()
+//                successMeasures(body)
+//            } else {
+//                publishProgress(MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+//            }
+//        } catch (e: IOException) {
+//            e.printStackTrace()
+//            publishProgress(MessagesCallback(Status.NETWORK_ERROR).throwable(e))
+//        }
+    }
+
+    fun executor() {
+        publishProgress(MessagesCallback(Status.STARTED))
         val call = SagresCalls.getMessages(userId)
         try {
             val response = call.execute()
             if (response.isSuccessful) {
+                val result = mutableListOf<SMessage>()
                 val body = response.body()!!.string()
-                successMeasures(body)
+                val first = Gson().fromJson(body, MessageResponse::class.java)
+                result += first.messages
+                if (fetchAll) {
+                    val messages = fetchAllMessages(first)
+                    result += messages
+                }
+                successMeasures(result)
             } else {
                 publishProgress(MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
             }
-        } catch (e: IOException) {
-            e.printStackTrace()
-            publishProgress(MessagesCallback(Status.NETWORK_ERROR).throwable(e))
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            publishProgress(MessagesCallback(Status.NETWORK_ERROR).throwable(t))
+        }
+    }
+
+    private fun fetchAllMessages(first: MessageResponse): List<SMessage> {
+        val result = mutableListOf<SMessage>()
+        var nextLink = first.older
+        try {
+            while (nextLink != null) {
+                val call = SagresCalls.getLink(nextLink)
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    val body = response.body()!!.string()
+                    val value = Gson().fromJson(body, MessageResponse::class.java)
+                    result += value.messages
+                    nextLink = value.older
+                } else {
+                    Timber.d("Invalid response, aborting with code ${response.code()}")
+                    nextLink = null
+                }
+            }
+        } catch (t: Throwable) {
+            Timber.d("Fetch got interrupted because of exception")
+            Timber.e(t)
+        }
+        return result
+    }
+
+    private fun successMeasures(messages: List<SMessage>) {
+        try {
+            val items = messages.toMutableList()
+            items.sort()
+            items.forEach { extractDetailsIfNeeded(it) }
+            publishProgress(MessagesCallback(Status.SUCCESS).messages(items))
+        } catch (t: Throwable) {
+            publishProgress(MessagesCallback(Status.UNKNOWN_FAILURE).throwable(t).message(t.message))
         }
     }
 
@@ -74,37 +139,41 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
             val items = dMessages.items
             items.sort()
             for (message in items) {
-                val person = getPerson(message.sender)
-                if (person != null)
-                    message.senderName = person.name
-                else {
-                    if (message.senderProfile == 3) {
-                        message.senderName = ".UEFS."
-                    }
-                    Timber.d("SPerson is Invalid")
-                }
-
-                // Message is from a teacher
-                if (message.senderProfile == 2) {
-                    val scope = getScope(message.scopes)
-                    if (scope != null) {
-                        val clazz = getClazz(scope)
-                        if (clazz != null) {
-                            val discipline = getDiscipline(clazz)
-                            if (discipline != null) {
-                                Timber.d("Setting up the discipline name: ${discipline.name}")
-                                message.discipline = discipline.name
-                                message.disciplineCode = discipline.code
-                                message.objective = discipline.objective
-                            }
-                        }
-                    }
-                }
+                extractDetailsIfNeeded(message)
             }
 
             publishProgress(MessagesCallback(Status.SUCCESS).messages(items))
         } catch (t: Throwable) {
             publishProgress(MessagesCallback(Status.UNKNOWN_FAILURE).throwable(t).message(body))
+        }
+    }
+
+    private fun extractDetailsIfNeeded(message: SMessage) {
+        val person = getPerson(message.sender)
+        if (person != null)
+            message.senderName = person.name
+        else {
+            if (message.senderProfile == 3) {
+                message.senderName = ".UEFS."
+            }
+            Timber.d("SPerson is Invalid")
+        }
+
+        // Message is from a teacher
+        if (message.senderProfile == 2) {
+            val scope = getScope(message.scopes)
+            if (scope != null) {
+                val clazz = getClazz(scope)
+                if (clazz != null) {
+                    val discipline = getDiscipline(clazz)
+                    if (discipline != null) {
+                        Timber.d("Setting up the discipline name: ${discipline.name}")
+                        message.discipline = discipline.name
+                        message.disciplineCode = discipline.code
+                        message.objective = discipline.objective
+                    }
+                }
+            }
         }
     }
 
@@ -236,4 +305,13 @@ class MessagesOperation(executor: Executor?, private val userId: Long) : Operati
 
         return null
     }
+
+    private data class MessageResponse(
+        @SerializedName("maisAntigos")
+        var older: SLinker? = null,
+        @SerializedName("maisRecentes")
+        var newer: SLinker? = null,
+        @SerializedName("itens")
+        var messages: List<SMessage> = emptyList()
+    )
 }

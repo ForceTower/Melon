@@ -2,10 +2,9 @@ ext {
     //noinspection SpellCheckingInspection
     buildVersion = {
         //Perform git commands
-        def git_sha = 'git rev-parse --short HEAD'.execute([], project.rootDir).text.trim()
         def commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
-        def last_tag = 'git rev-list --tags --no-walk --max-count=1'.execute([], project.rootDir).text.trim()
-        def new_commits = Integer.parseInt("git rev-list ${last_tag}..HEAD --count".execute([], project.rootDir).text.trim())
+        //def last_tag = 'git rev-list --tags --no-walk --max-count=1'.execute([], project.rootDir).text.trim()
+        //def new_commits = Integer.parseInt("git rev-list ${last_tag}..HEAD --count".execute([], project.rootDir).text.trim())
 
         def postfix = "[release]"
         def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
@@ -19,7 +18,7 @@ ext {
             }
         }
 
-        (major, minor, patch, new_commits) = [major, minor, patch, new_commits].collect{it.toInteger()}
+        (major, minor, patch) = [major, minor, patch].collect{it.toInteger()}
 
         //For the version 12.7.4 will be generated the code: 21COUNT and the name: [12.7.4 build COUNT post]
         def name = "${major}.${minor}.${patch} build ${commit_count} ${postfix}"

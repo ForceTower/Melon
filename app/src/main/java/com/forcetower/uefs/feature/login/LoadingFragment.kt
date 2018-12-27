@@ -39,7 +39,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Access
@@ -65,8 +65,8 @@ class LoadingFragment : UFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentLoadingBinding.inflate(inflater, container, false).also {
             binding = it
-            binding.btnFirstSteps.setOnClickListener { v ->
-                v.findNavController().navigate(R.id.action_login_loading_to_login_form)
+            binding.btnFirstSteps.setOnClickListener {
+                findNavController().navigate(R.id.action_login_loading_to_login_form)
             }
             markdown = Bypass(requireContext(), Bypass.Options())
             setupTermsText()
