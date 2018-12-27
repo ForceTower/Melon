@@ -85,7 +85,7 @@ abstract class ClassDao {
     abstract fun getClassesWithGradesFromSemesterDirect(semesterId: Long): List<ClassWithGroups>
 
     @Query("SELECT * FROM Discipline WHERE code = :code")
-    protected abstract fun selectDisciplineDirect(code: String): Discipline
+    protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
     @Query("SELECT * FROM Semester WHERE LOWER(codename) = LOWER(:name)")
     protected abstract fun selectSemesterDirect(name: String): Semester?
@@ -96,7 +96,7 @@ abstract class ClassDao {
         if (clazz == null) {
             val discipline = selectDisciplineDirect(dis.code)
             val semester = selectSemesterDirect(dis.semester.trim())
-            if (semester != null) {
+            if (semester != null && discipline != null) {
                 clazz = Class(
                     disciplineId = discipline.uid,
                     semesterId = semester.uid
