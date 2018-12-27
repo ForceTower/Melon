@@ -33,6 +33,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ClassLocation
@@ -75,6 +76,17 @@ class AdventureRepository @Inject constructor(
         return data
     }
 
+    @AnyThread
+    fun justCheckAchievements(): LiveData<Map<Int, Int>> {
+        val data = MutableLiveData<Map<Int, Int>>()
+        executors.diskIO().execute {
+            val map = HashMap<Int, Int>()
+            performCheckAchievements(map)
+            data.postValue(map)
+        }
+        return data
+    }
+
     @WorkerThread
     private fun internalCheckAchievements(email: String?): Map<Int, Int> {
         val data = HashMap<Int, Int>()
@@ -96,13 +108,14 @@ class AdventureRepository @Inject constructor(
             }
         } catch (exception: Exception) {
             Timber.d("Ignored exception: ${exception.message}")
+            Crashlytics.logException(exception)
         }
 
         return data
     }
 
     @WorkerThread
-    private fun performCheckAchievements(data: HashMap<Int, Int>) {
+    fun performCheckAchievements(data: HashMap<Int, Int>) {
         val semesters = database.semesterDao().getSemestersDirect()
         unlockSemesterBased(semesters, data)
         val schedule = database.classLocationDao().getCurrentScheduleDirect()
@@ -116,6 +129,9 @@ class AdventureRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         val score = profile?.score ?: profile?.calcScore ?: -1.0
 
+        var accumulatedMean = 0.0
+        var accumulatedHours = 0
+
         if (semesters.size > 5 && score >= 7)
             data[R.string.achievement_sobrevivente] = -1
 
@@ -127,8 +143,6 @@ class AdventureRepository @Inject constructor(
             val sorted = semesters.sortedBy { it.sagresId }.subList(0, semesters.size - 1)
             var noFinalCount = 0
             var introduction = 0
-            var accumulatedMean = 0.0
-            var accumulatedHours = 0
 
             sorted.forEach { semester ->
                 val start = semester.start
@@ -151,7 +165,7 @@ class AdventureRepository @Inject constructor(
                 val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
                 var valid = false
                 classes.forEach { clazz ->
-                    val points = clazz.clazz.finalScore ?: -1.0
+                    val points = clazz.clazz.finalScore ?: 0.0
                     val credits = clazz.discipline().credits
 
                     if (points >= 0) {
@@ -217,7 +231,23 @@ class AdventureRepository @Inject constructor(
             }
 
             data[R.string.achievement_introduo_a_introdues] = introduction
+        }
 
+        if (semesters.isNotEmpty()) {
+            val semester = semesters.sortedByDescending { it.sagresId }[0]
+            val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
+            classes.forEach { clazz ->
+                val points = clazz.clazz.finalScore ?: -1.0
+                val credits = clazz.discipline().credits
+
+                if (points >= 0) {
+                    accumulatedMean += points * credits
+                    accumulatedHours += credits
+                }
+            }
+        }
+
+        if (accumulatedHours != 0) {
             val calcScore = accumulatedMean / accumulatedHours
             Timber.d("Score calculated is: $calcScore")
             database.profileDao().updateCalculatedScore(calcScore)

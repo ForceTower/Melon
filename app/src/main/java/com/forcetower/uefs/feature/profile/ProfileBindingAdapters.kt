@@ -77,13 +77,22 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
     }
 }
 
-@BindingAdapter("profileScoreOptional")
-fun profileScoreOptional(tv: TextView, score: Double?) {
+@BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated"], requireAll = true)
+fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
     val context = tv.context
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
-    if (preferences.getBoolean("stg_acc_score", true) && score != null) {
-        tv.text = context.getString(R.string.label_your_score, score)
+    val actual = score ?: -1.0
+    val calc = calculated ?: -1.0
+
+    if (preferences.getBoolean("stg_acc_score", true)) {
+        if (actual != -1.0) {
+            tv.text = context.getString(R.string.label_your_score, score)
+        } else if (calc != -1.0) {
+            tv.text = context.getString(R.string.label_your_calculated_score, calc)
+        } else {
+            tv.text = context.getString(R.string.label_score_undefined)
+        }
     } else {
         tv.visibility = View.INVISIBLE
     }
