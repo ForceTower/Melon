@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.shared.extensions
 
+import android.util.Base64
 import com.forcetower.sagres.utils.WordUtils
 
 fun String.makeSemester(): String {
@@ -38,6 +39,10 @@ fun String.makeSemester(): String {
 }
 
 fun String?.toTitleCase(): String? = WordUtils.toTitleCase(this)
+
+fun String.toBase64(): String {
+    return Base64.encodeToString(this.toByteArray(), Base64.DEFAULT)
+}
 
 fun String?.toBooleanOrNull(): Boolean? {
     if (this == null) return null
