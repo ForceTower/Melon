@@ -52,7 +52,7 @@ class HomeViewModel @Inject constructor(
         get() = _openProfileCase
 
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
-    val profile: LiveData<Profile> by lazy { loginSagresRepository.getProfileMe() }
+    val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
 
     fun logout() = dataRepository.logout()
@@ -64,8 +64,10 @@ class HomeViewModel @Inject constructor(
 
     fun onMeProfileClicked() {
         _openProfileCase.addSource(profile) {
-            _openProfileCase.removeSource(profile)
-            _openProfileCase.value = Event(it.uuid)
+            if (it != null) {
+                _openProfileCase.removeSource(profile)
+                _openProfileCase.value = Event(it.uuid)
+            }
         }
     }
 }
