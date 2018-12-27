@@ -47,6 +47,12 @@ public class WordUtils {
                 continue;
             }
 
+            // Special case only for "MI's". PBL!!!!
+            if (anArr.equalsIgnoreCase("MI")) {
+                sb.append(anArr.toUpperCase()).append(" ");
+                continue;
+            }
+
             if ((anArr.length() < 3 && !anArr.endsWith(".")) || (anArr.length() == 3 && anArr.endsWith("s"))) {
                 sb.append(anArr).append(" ");
                 continue;
