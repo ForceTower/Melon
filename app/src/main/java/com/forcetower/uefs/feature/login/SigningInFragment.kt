@@ -55,6 +55,7 @@ import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.shared.fadeOut
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
@@ -200,8 +201,11 @@ class SigningInFragment : UFragment(), Injectable {
                 .setActivityOptions(options)
                 .build()
 
+        binding.textHelloUser.fadeOut()
+
         Handler(Looper.getMainLooper()).postDelayed({
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                binding.textHelloUser.text = ""
                 findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
                 activity?.finishAfterTransition()
             }

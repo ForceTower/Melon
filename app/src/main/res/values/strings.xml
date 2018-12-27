@@ -355,6 +355,8 @@
     <string name="step_discipline_details_downloading">Concluídas %1$d de %2$d</string>
     <string name="step_discipline_details_login">Em suas marcas!</string>
     <string name="step_discipline_details_initial">Preparando...</string>
+    <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
+    <string name="label_score_undefined">Não achei seu score</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
