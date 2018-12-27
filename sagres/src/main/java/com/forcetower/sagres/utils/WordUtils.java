@@ -42,7 +42,12 @@ public class WordUtils {
         StringBuilder sb = new StringBuilder();
 
         for (String anArr : arr) {
-            if (anArr.length() < 4 && !anArr.endsWith(".")) {
+            if (isGreekOneToTen(anArr)) {
+                sb.append(anArr.toUpperCase()).append(" ");
+                continue;
+            }
+
+            if ((anArr.length() < 3 && !anArr.endsWith(".")) || (anArr.length() == 3 && anArr.startsWith("d") && anArr.endsWith("s"))) {
                 sb.append(anArr).append(" ");
                 continue;
             }
@@ -51,6 +56,19 @@ public class WordUtils {
                     .append(anArr.substring(1)).append(" ");
         }
         return sb.toString().trim();
+    }
+
+    private static boolean isGreekOneToTen(String str) {
+        return str.equalsIgnoreCase("i") ||
+                str.equalsIgnoreCase("ii") ||
+                str.equalsIgnoreCase("iii") ||
+                str.equalsIgnoreCase("iv") ||
+                str.equalsIgnoreCase("v") ||
+                str.equalsIgnoreCase("vi") ||
+                str.equalsIgnoreCase("vii") ||
+                str.equalsIgnoreCase("viii") ||
+                str.equalsIgnoreCase("ix") ||
+                str.equalsIgnoreCase("x");
     }
 
     public static String capitalize(String givenString) {
