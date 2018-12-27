@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
@@ -40,6 +41,7 @@ class MessagesViewModel @Inject constructor(
 ) : ViewModel(), MessagesActions {
     val messages by lazy { repository.getMessages() }
     val unesMessages by lazy { repository.getUnesMessages() }
+    var pushedTimes = 0
 
     private val _refreshing = MediatorLiveData<Boolean>()
     val refreshing: LiveData<Boolean>
@@ -49,8 +51,17 @@ class MessagesViewModel @Inject constructor(
     val messageClick: LiveData<Event<String>>
         get() = _messageClick
 
+    private val _snackMessage = MutableLiveData<Event<Int>>()
+    val snackMessage: LiveData<Event<Int>>
+        get() = _snackMessage
+
     fun onRefresh() {
-        val fetchMessages = repository.fetchMessages()
+        pushedTimes++
+        if (pushedTimes == 3) {
+            _snackMessage.value = Event(R.string.download_all_messages)
+        }
+
+        val fetchMessages = repository.fetchMessages(pushedTimes == 3)
         _refreshing.value = true
         _refreshing.addSource(fetchMessages) {
             _refreshing.removeSource(fetchMessages)
