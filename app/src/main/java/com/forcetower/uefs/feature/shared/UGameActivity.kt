@@ -58,6 +58,7 @@ abstract class UGameActivity : UActivity() {
     override fun onStart() {
         super.onStart()
         if (mGamesInstance.isPlayGamesEnabled()) signInSilently()
+        // else checkNotConnectedAchievements()
     }
 
     private fun signInSilently() {
@@ -87,6 +88,7 @@ abstract class UGameActivity : UActivity() {
     }
 
     open fun checkAchievements(email: String?) = Unit
+    open fun checkNotConnectedAchievements() = Unit
 
     fun isConnectedToPlayGames() = mGamesInstance.isConnected()
     fun unlockAchievement(@StringRes id: Int) = mGamesInstance.unlockAchievement(id)

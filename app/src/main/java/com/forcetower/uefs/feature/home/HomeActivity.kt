@@ -193,5 +193,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         })
     }
 
+    override fun checkNotConnectedAchievements() {
+        adventureViewModel.checkNotConnectedAchievements().observe(this, Observer { Unit })
+    }
+
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
 }
