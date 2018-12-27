@@ -176,8 +176,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
 
-    override fun showSnack(string: String) {
-        val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = Snackbar.make(binding.snack, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
         snack.config()
         snack.show()
     }
