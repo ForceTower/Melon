@@ -132,7 +132,7 @@ class SigningInFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideViewModel(factory)
         viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
-        viewModel.getProfile().observe(this, Observer<Profile>(this::onProfileUpdate))
+        viewModel.getProfile().observe(this, Observer(this::onProfileUpdate))
         viewModel.getStep().observe(this, Observer<LoginSagresRepository.Step>(this::onStep))
         doLogin()
     }
