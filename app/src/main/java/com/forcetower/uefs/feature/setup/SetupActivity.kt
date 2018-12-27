@@ -67,8 +67,8 @@ class SetupActivity : UActivity(), HasSupportFragmentInjector {
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.setup_nav_host).navigateUp()
 
-    override fun showSnack(string: String) {
-        val snack = Snackbar.make(binding.root, string, Snackbar.LENGTH_SHORT)
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
         snack.config()
         snack.show()
     }
