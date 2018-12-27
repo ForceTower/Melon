@@ -80,6 +80,7 @@ class SagresSyncRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase,
     private val executors: AppExecutors,
+    private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
     private val firebaseAuth: FirebaseAuth,
     @Named(Profile.COLLECTION)
@@ -213,6 +214,8 @@ class SagresSyncRepository @Inject constructor(
                 val task = collection.document(user.uid).set(data, SetOptions.merge())
                 Tasks.await(task)
                 preferences.edit().putInt("sync_daily_update", today).apply()
+
+                adventureRepository.performCheckAchievements(HashMap())
             }
         } catch (t: Throwable) {
             Crashlytics.logException(t)
