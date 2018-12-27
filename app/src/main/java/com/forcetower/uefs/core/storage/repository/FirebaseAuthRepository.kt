@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
@@ -37,10 +38,12 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.google.android.gms.tasks.OnCompleteListener
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -127,9 +130,14 @@ class FirebaseAuthRepository @Inject constructor(
                 "model" to android.os.Build.MODEL
         )
 
-        val token = preferences.getString("current_firebase_token", null)
-        if (token != null) {
+        val idTask = FirebaseInstanceId.getInstance().instanceId
+        try {
+            val result = Tasks.await(idTask)
+            val token = result.token
+            preferences.edit().putString("current_firebase_token", token).apply()
             data["firebaseToken"] = token
+        } catch (t: Throwable) {
+            Crashlytics.logException(t)
         }
 
         userCollection.document(uid).set(data, SetOptions.merge())
