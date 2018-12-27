@@ -244,14 +244,14 @@ private constructor(context: Context) : SagresNavigator() {
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun aMessages(userId: Long): LiveData<MessagesCallback> {
-        return MessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), userId).result
+    override fun aMessages(userId: Long, fetchAll: Boolean): LiveData<MessagesCallback> {
+        return MessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), userId, fetchAll).result
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun messages(userId: Long): MessagesCallback {
-        return MessagesOperation(null, userId).finishedResult
+    override fun messages(userId: Long, fetchAll: Boolean): MessagesCallback {
+        return MessagesOperation(null, userId, fetchAll).finishedResult
     }
 
     @AnyThread
