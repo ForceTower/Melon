@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import android.content.Context
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
@@ -53,7 +52,6 @@ import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import timber.log.Timber
 import javax.inject.Inject
@@ -63,11 +61,8 @@ import javax.inject.Singleton
 class LoginSagresRepository @Inject constructor(
     private val executor: AppExecutors,
     private val database: UDatabase,
-    private val service: UService,
-    private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val context: Context
+    private val firebaseAuthRepository: FirebaseAuthRepository
 ) {
-    private val appToken = context.getString(R.string.app_service_token)
     val currentStep: MutableLiveData<Step> = MutableLiveData()
 
     fun getAccess(): LiveData<Access?> = database.accessDao().getAccess()
@@ -86,8 +81,11 @@ class LoginSagresRepository @Inject constructor(
             currentStep.value = createStep(R.string.step_delete_database)
             executor.diskIO().execute {
                 database.accessDao().deleteAll()
+                database.messageDao().deleteAll()
                 database.accessTokenDao().deleteAll()
+                database.calendarDao().delete()
                 database.profileDao().deleteMe()
+                database.semesterDao().deleteAll()
                 executor.mainThread().execute {
                     login(signIn, username, password)
                 }

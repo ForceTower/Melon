@@ -114,6 +114,7 @@ class MessagesFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(this, EventObserver { openLink(it) })
+        messagesViewModel.snackMessage.observe(this, EventObserver { showSnack(getString(it)) })
     }
 
     private fun openLink(content: String) {
@@ -147,6 +148,11 @@ class MessagesFragment : UFragment(), Injectable {
 
             dialog.show()
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        messagesViewModel.pushedTimes = 0
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

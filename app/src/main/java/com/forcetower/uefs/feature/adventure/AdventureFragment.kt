@@ -106,7 +106,9 @@ class AdventureFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         profileViewModel.getMeProfile().observe(this, Observer {
-            profileViewModel.setProfileId(it.uuid)
+            if (it != null) {
+                profileViewModel.setProfileId(it.uuid)
+            }
         })
 
         viewModel.run {

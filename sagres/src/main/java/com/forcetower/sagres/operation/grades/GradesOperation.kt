@@ -96,10 +96,12 @@ class GradesOperation(private val semester: Long?, private val document: Documen
     ) {
         val grades = mutableListOf<SGrade>()
         val frequency = mutableListOf<SDisciplineMissedClass>()
+        var doc = document
         variants.forEach {
-            val result = requestVariant(semester, document, it.uefsId)
+            val result = requestVariant(semester, doc, it.uefsId)
             grades += result.grades
             frequency += result.frequency
+            doc = result.document
         }
         successMeasures(document, codes, grades, true to frequency)
     }
@@ -111,7 +113,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
             val body = response.body()!!.string()
             processVariant(body, semester)
         } catch (e: Exception) {
-            GradeResult()
+            GradeResult(document = document)
         }
     }
 
@@ -120,9 +122,9 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         return if (SagresGradesParser.canExtractGrades(document)) {
             val grades = SagresGradesParser.extractGrades(document, semester)
             val frequency = SagresMissedClassesParser.extractMissedClasses(document, semester)
-            GradeResult(grades, frequency.second)
+            GradeResult(grades, frequency.second, document)
         } else {
-            GradeResult()
+            GradeResult(document = document)
         }
     }
 
@@ -141,6 +143,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
 
     private data class GradeResult(
         val grades: List<SGrade> = emptyList(),
-        val frequency: List<SDisciplineMissedClass> = emptyList()
+        val frequency: List<SDisciplineMissedClass> = emptyList(),
+        val document: Document
     )
 }
