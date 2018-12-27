@@ -41,7 +41,8 @@ import java.util.Calendar
 import java.util.Date
 
 @BindingAdapter("messageContent")
-fun messageContent(tv: TextView, content: String) {
+fun messageContent(tv: TextView, cont: String?) {
+    val content = cont ?: ""
     val spannable = SpannableString(content)
     Linkify.addLinks(spannable, Linkify.WEB_URLS)
     tv.text = spannable

@@ -81,9 +81,9 @@ class DemandActivity : UActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun showSnack(string: String) {
+    override fun showSnack(string: String, long: Boolean) {
         Timber.d("Show snack called on activity")
-        val snack = Snackbar.make(binding.snack, string, Snackbar.LENGTH_SHORT)
+        val snack = Snackbar.make(binding.snack, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
         snack.config(pxElevation = 8)
         snack.show()
     }
