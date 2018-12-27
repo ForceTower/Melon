@@ -47,7 +47,7 @@ public class WordUtils {
                 continue;
             }
 
-            if ((anArr.length() < 3 && !anArr.endsWith(".")) || (anArr.length() == 3 && anArr.startsWith("d") && anArr.endsWith("s"))) {
+            if ((anArr.length() < 3 && !anArr.endsWith(".")) || (anArr.length() == 3 && anArr.endsWith("s"))) {
                 sb.append(anArr).append(" ");
                 continue;
             }
