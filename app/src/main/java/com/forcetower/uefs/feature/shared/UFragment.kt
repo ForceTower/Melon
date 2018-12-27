@@ -33,10 +33,10 @@ import timber.log.Timber
 abstract class UFragment : Fragment() {
     var displayName: String = javaClass.simpleName
 
-    fun showSnack(string: String) {
+    fun showSnack(string: String, long: Boolean = false) {
         val activity = activity
         if (activity is UActivity) {
-            activity.showSnack(string)
+            activity.showSnack(string, long)
         } else {
             Timber.d("Not part of UActivity")
         }

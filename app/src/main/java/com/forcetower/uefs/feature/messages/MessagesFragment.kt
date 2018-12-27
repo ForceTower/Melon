@@ -114,7 +114,7 @@ class MessagesFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(this, EventObserver { openLink(it) })
-        messagesViewModel.snackMessage.observe(this, EventObserver { showSnack(getString(it)) })
+        messagesViewModel.snackMessage.observe(this, EventObserver { showSnack(getString(it), true) })
     }
 
     private fun openLink(content: String) {
