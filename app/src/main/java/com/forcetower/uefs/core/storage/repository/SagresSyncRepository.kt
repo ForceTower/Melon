@@ -95,6 +95,7 @@ class SagresSyncRepository @Inject constructor(
         val access = database.accessDao().getAccessDirect()
         access ?: Timber.d("Access is null, sync will not continue")
         if (access != null) {
+            Crashlytics.setUserIdentifier(access.username)
             // Only one sync may be active at a time
             synchronized(S_LOCK) { execute(access, registry) }
         } else {
