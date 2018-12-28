@@ -172,6 +172,8 @@ dependencies {
     //Permissions Helper
     implementation 'pub.devrel:easypermissions:0.3.0'
 
+    implementation 'com.ramotion.cardslider:card-slider:0.3.0'
+
     api 'com.theartofdev.edmodo:android-image-cropper:2.8.0'
 
     //Helper Projects
