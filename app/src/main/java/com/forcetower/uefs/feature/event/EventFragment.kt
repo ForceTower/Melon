@@ -32,12 +32,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.service.Event
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventsBinding
+import com.forcetower.uefs.feature.shared.TextViewFactory
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.ramotion.cardslider.CardSliderLayoutManager
+import com.ramotion.cardslider.CardSnapHelper
 import javax.inject.Inject
 
 class EventFragment : UFragment(), Injectable {
@@ -46,29 +51,86 @@ class EventFragment : UFragment(), Injectable {
 
     private lateinit var viewModel: EventViewModel
     private lateinit var binding: FragmentEventsBinding
+    private lateinit var manager: CardSliderLayoutManager
+
+    private var currentPosition = 0
+    private val items: MutableList<Event> = mutableListOf()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
-        return FragmentEventsBinding.inflate(inflater, container, false).also {
+        FragmentEventsBinding.inflate(inflater, container, false).also {
             binding = it
+            manager = binding.eventsRecycler.layoutManager as CardSliderLayoutManager
         }.apply {
             incToolbar.apply {
                 textToolbarTitle.text = getString(R.string.label_events)
             }
-        }.root
+        }
+
+        initSwitchers()
+        return binding.root
+    }
+
+    private fun initSwitchers() {
+        binding.textEventName.setFactory(TextViewFactory(requireContext(), R.style.UTheme_EventTitleText))
+        binding.textEventLocation.setFactory(TextViewFactory(requireContext(), R.style.UTheme_EventLocationText))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val eventAdapter = EventAdapter(this, viewModel)
-        binding.recyclerEvents.apply {
-            adapter = eventAdapter
-            itemAnimator?.run {
-                addDuration = 120L
-                moveDuration = 120L
-                changeDuration = 120L
-                removeDuration = 100L
+        val pagerAdapter = EventAdapter2()
+
+        binding.eventsRecycler.apply {
+            adapter = pagerAdapter
+            setHasFixedSize(true)
+        }
+
+        binding.eventsRecycler.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                if (newState == RecyclerView.SCROLL_STATE_IDLE) {
+                    onActiveEventChange()
+                }
+            }
+        })
+
+        CardSnapHelper().attachToRecyclerView(binding.eventsRecycler)
+
+        viewModel.events.observe(this, Observer {
+            pagerAdapter.submitList(it)
+            items.clear()
+            items += it
+
+            if (it.isEmpty()) currentPosition = RecyclerView.NO_POSITION
+            else if (currentPosition >= it.size) currentPosition = it.size - 1
+
+            if (currentPosition != RecyclerView.NO_POSITION) animateChange(currentPosition)
+        })
+    }
+
+    fun onActiveEventChange() {
+        val position = manager.activeCardPosition
+        if (position == RecyclerView.NO_POSITION || position == currentPosition) return
+
+        currentPosition = position
+        animateChange(position)
+    }
+
+    private fun animateChange(position: Int) {
+        val event = items[position]
+        val top = R.anim.slide_in_top
+        val bottom = R.anim.slide_out_bottom
+        val ctx = requireContext()
+
+        binding.run {
+            textEventName.apply {
+                setInAnimation(ctx, top)
+                setOutAnimation(ctx, bottom)
+                setText(event.name)
+            }
+            textEventLocation.apply {
+                setInAnimation(ctx, top)
+                setOutAnimation(ctx, bottom)
+                setText(event.location)
             }
         }
-        viewModel.events.observe(this, Observer { eventAdapter.currentEvents = it })
     }
 }
