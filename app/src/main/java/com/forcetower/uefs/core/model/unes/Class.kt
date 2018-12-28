@@ -59,7 +59,9 @@ data class Class(
     val uuid: String = UUID.randomUUID().toString(),
     var missedClasses: Int = 0,
     var lastClass: String = "",
-    var nextClass: String = ""
+    var nextClass: String = "",
+    @ColumnInfo(name = "schedule_only")
+    val scheduleOnly: Boolean = false
 ) {
 
     fun selectiveCopy(dis: SDiscipline) {

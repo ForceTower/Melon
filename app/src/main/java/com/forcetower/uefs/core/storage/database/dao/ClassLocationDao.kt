@@ -36,8 +36,10 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.forcetower.sagres.database.model.SDisciplineClassLocation
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
+import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
@@ -83,6 +85,21 @@ abstract class ClassLocationDao {
                 }
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
+
+                var discipline = selectDisciplineDirect(it.classCode)
+                if (discipline == null) {
+                    val fakeDiscipline = Discipline(name = it.className, code = it.classCode, credits = 0)
+                    val id = insertDiscipline(fakeDiscipline)
+                    fakeDiscipline.uid = id
+                    discipline = fakeDiscipline
+                }
+
+                val clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
+                val id = insertClass(clazz)
+                val group = ClassGroup(classId = id, group = it.classGroup)
+                val groupId = insertGroup(group)
+                group.uid = groupId
+                prepareInsertion(group, profile, it)
             }
         }
     }
@@ -118,4 +135,16 @@ abstract class ClassLocationDao {
     // TODO Find a better way to wipe current locations
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
     protected abstract fun wipeScheduleProfile(profileId: Long)
+
+    @Query("SELECT * FROM Discipline WHERE code = :code")
+    protected abstract fun selectDisciplineDirect(code: String): Discipline?
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insertDiscipline(discipline: Discipline): Long
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insertClass(clazz: Class): Long
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insertGroup(group: ClassGroup): Long
 }
