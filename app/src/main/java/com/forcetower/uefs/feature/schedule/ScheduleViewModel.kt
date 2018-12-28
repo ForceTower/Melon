@@ -57,6 +57,7 @@ class ScheduleViewModel @Inject constructor(
 
     override fun onLocationClick(view: View, location: LocationWithGroup) {
         val group = location.singleGroup()
+        if (group.singleClass().clazz.scheduleOnly) return
         val context = view.context
         val intent = DisciplineDetailsActivity.startIntent(context, group.clazz().clazz.uid, group.group.uid)
         context.startActivity(intent)

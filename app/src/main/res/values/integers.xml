@@ -28,5 +28,6 @@
 
 <resources>
 
-    
+
+    <integer name="labels_animation_duration">350</integer>
 </resources>
