@@ -25,18 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.widget.cardslider
+package com.forcetower.uefs.widget
 
 import android.view.View
 import android.view.animation.AccelerateInterpolator
 import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.LinearSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import com.ramotion.cardslider.CardSliderLayoutManager
 import java.security.InvalidParameterException
 
-/**
- * Extended [LinearSnapHelper] that works **only** with [CardSliderLayoutManager].
- */
 class CardSnapHelper : LinearSnapHelper() {
 
     private var recyclerView: RecyclerView? = null
@@ -117,8 +115,10 @@ class CardSnapHelper : LinearSnapHelper() {
         return (layoutManager as CardSliderLayoutManager).topView
     }
 
-    override fun calculateDistanceToFinalSnap(layoutManager: RecyclerView.LayoutManager,
-                                              targetView: View): IntArray? {
+    override fun calculateDistanceToFinalSnap(
+        layoutManager: RecyclerView.LayoutManager,
+        targetView: View
+    ): IntArray? {
         val lm = layoutManager as CardSliderLayoutManager
         val viewLeft = lm.getDecoratedLeft(targetView)
         val activeCardLeft = lm.activeCardLeft
@@ -146,7 +146,6 @@ class CardSnapHelper : LinearSnapHelper() {
     }
 
     override fun createScroller(layoutManager: RecyclerView.LayoutManager): LinearSmoothScroller? {
-        return (layoutManager as CardSliderLayoutManager).getSmoothScroller(recyclerView)
+        return (layoutManager as CardSliderLayoutManager).getSmoothScroller(recyclerView!!)
     }
-
 }
