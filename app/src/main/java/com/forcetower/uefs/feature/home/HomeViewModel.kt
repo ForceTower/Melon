@@ -64,8 +64,8 @@ class HomeViewModel @Inject constructor(
 
     fun onMeProfileClicked() {
         _openProfileCase.addSource(profile) {
+            _openProfileCase.removeSource(profile)
             if (it != null) {
-                _openProfileCase.removeSource(profile)
                 _openProfileCase.value = Event(it.uuid)
             }
         }

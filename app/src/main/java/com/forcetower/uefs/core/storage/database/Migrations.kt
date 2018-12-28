@@ -70,3 +70,9 @@ object M6TO7 : Migration(6, 7) {
         database.execSQL("ALTER TABLE $tableName ADD COLUMN calc_score REAL NOT NULL DEFAULT -1")
     }
 }
+
+object M7TO8 : Migration(7, 8) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Class ADD COLUMN schedule_only INTEGER NOT NULL DEFAULT 0")
+    }
+}
