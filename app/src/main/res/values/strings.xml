@@ -358,6 +358,7 @@
     <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
     <string name="label_score_undefined">Não achei seu score</string>
     <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
+    <string name="create_new_event">Criar Evento</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
