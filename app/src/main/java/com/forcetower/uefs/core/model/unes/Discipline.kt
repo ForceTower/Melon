@@ -41,7 +41,7 @@ import java.util.UUID
 ])
 data class Discipline(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
+    var uid: Long = 0,
     val name: String,
     val code: String,
     val credits: Int,
