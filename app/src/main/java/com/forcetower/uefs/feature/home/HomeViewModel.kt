@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.home
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Message
@@ -64,8 +65,8 @@ class HomeViewModel @Inject constructor(
 
     fun onMeProfileClicked() {
         _openProfileCase.addSource(profile) {
+            _openProfileCase.removeSource(profile)
             if (it != null) {
-                _openProfileCase.removeSource(profile)
                 _openProfileCase.value = Event(it.uuid)
             }
         }
