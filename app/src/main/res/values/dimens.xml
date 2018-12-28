@@ -78,4 +78,6 @@
     <dimen name="schedule_block_height">38dp</dimen>
     <dimen name="schedule_block_primary_text">10sp</dimen>
     <dimen name="schedule_block_second_text">8sp</dimen>
+
+    <dimen name="event_listing_width">250dp</dimen>
 </resources>

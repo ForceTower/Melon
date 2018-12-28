@@ -87,8 +87,13 @@ public class WordUtils {
         StringBuilder sb = new StringBuilder();
 
         for (String anArr : arr) {
-            sb.append(Character.toUpperCase(anArr.charAt(0)))
-                    .append(anArr.substring(1)).append(" ");
+            if (anArr.isEmpty()) continue;
+            if (anArr.length() < 2) {
+                sb.append(anArr).append(" ");
+            } else {
+                sb.append(Character.toUpperCase(anArr.charAt(0)))
+                        .append(anArr.substring(1)).append(" ");
+            }
         }
         return sb.toString().trim();
     }

@@ -27,11 +27,14 @@
   -->
 
 <resources>
-    <dimen name="schedule_block_width">52dp</dimen>
-    <dimen name="schedule_block_height">42dp</dimen>
-
-    <dimen name="schedule_block_primary_text">12sp</dimen>
-    <dimen name="schedule_block_second_text">10sp</dimen>
-
-    <dimen name="event_listing_width">280dp</dimen>
+    <declare-styleable name="CardSlider">
+        <!-- Active card offset from start of RecyclerView. Default value is 50dp. -->
+        <attr name="activeCardLeftOffset" format="dimension"/>
+        <!-- Card width. Default value is 148dp. -->
+        <attr name="cardWidth" format="dimension"/>
+        <!-- Distance between cards. Default value is 12dp. -->
+        <attr name="cardsGap" format="dimension"/>
+        <!-- ViewUpdater implementation class. If not set, DefaultViewUpdater class is used. -->
+        <attr name="viewUpdater" format="string"/>
+    </declare-styleable>
 </resources>
