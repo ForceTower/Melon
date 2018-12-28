@@ -81,10 +81,14 @@ object SagresGradesParser {
                         Pair(false, id)
                     } catch (e: Exception) {
                         Timber.d("Can't parse long: $value")
+                        null
                     }
+                } else {
+                    null
                 }
+            } else {
+                null
             }
-            null
         }
     }
 
