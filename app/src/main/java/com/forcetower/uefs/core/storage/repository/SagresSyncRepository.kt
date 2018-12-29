@@ -424,6 +424,10 @@ class SagresSyncRepository @Inject constructor(
         if (flags == null) database.flagsDao().insertFlags(SagresFlags())
 
         database.flagsDao().updateDemand(demandOpen)
+
+        if ((flags?.demandOpen == false || flags?.demandOpen == null) && demandOpen) {
+            NotificationCreator.showDemandOpenNotification(context)
+        }
     }
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
