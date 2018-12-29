@@ -47,6 +47,7 @@ class ContributorAdapter(
         holder.binding.apply {
             actions = listener
             contributor = getItem(position)
+            executePendingBindings()
         }
     }
 }
@@ -54,8 +55,8 @@ class ContributorAdapter(
 class ContributorHolder(val binding: ItemAboutContributorBinding) : RecyclerView.ViewHolder(binding.root)
 
 private object ContributorDiff : DiffUtil.ItemCallback<Contributor>() {
-    override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: Contributor, newItem: Contributor): Boolean = oldItem == newItem
+    override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: Contributor, newItem: Contributor) = oldItem == newItem
 }
 
 interface ContributorActions {
