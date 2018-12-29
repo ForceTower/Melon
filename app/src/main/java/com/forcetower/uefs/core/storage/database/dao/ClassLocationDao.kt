@@ -66,6 +66,7 @@ abstract class ClassLocationDao {
 
         val semester = selectCurrentSemesterDirect()
         val profile = getMeProfile()
+        if (semester == null || profile == null) return
         wipeScheduleProfile(profile.uid)
 
         locations.forEach {
@@ -126,11 +127,14 @@ abstract class ClassLocationDao {
     @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
     protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String): List<ClassGroup>
 
+    // There's almost 0 chance for this to happen, but, if user log's out during update this will
+    // be called concurrently
     @Query("SELECT * FROM Profile WHERE me = 1")
-    protected abstract fun getMeProfile(): Profile
+    protected abstract fun getMeProfile(): Profile?
 
+    // There's a really rare bug (1 occurrence) where the user got no semesters defined
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC LIMIT 1")
-    protected abstract fun selectCurrentSemesterDirect(): Semester
+    protected abstract fun selectCurrentSemesterDirect(): Semester?
 
     // TODO Find a better way to wipe current locations
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
