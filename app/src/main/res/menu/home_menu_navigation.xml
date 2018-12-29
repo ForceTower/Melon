@@ -42,6 +42,12 @@
             android:icon="@drawable/ic_description_black_24dp"/>
 
         <item
+            android:id="@+id/demand"
+            android:title="@string/label_demand_title"
+            android:icon="@drawable/ic_demand_black_24dp"
+            android:visible="false"/>
+
+        <item
             android:id="@+id/big_tray"
             android:title="@string/label_big_tray"
             android:icon="@drawable/ic_food_black_24dp"/>
