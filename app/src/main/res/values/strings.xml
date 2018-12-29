@@ -359,6 +359,9 @@
     <string name="label_score_undefined">Não achei seu score</string>
     <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
     <string name="create_new_event">Criar Evento</string>
+    <string name="demand_open_title">Demanda Web</string>
+    <string name="demand_open_text">A demanda web foi aberta. Faça a sua pelo UNES!</string>
+    <string name="channel_common_hig">Avisos principais</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

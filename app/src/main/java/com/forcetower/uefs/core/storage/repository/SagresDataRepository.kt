@@ -54,4 +54,6 @@ class SagresDataRepository @Inject constructor(
             SagresNavigator.instance.logout()
         }
     }
+
+    fun getFlags() = database.flagsDao().getFlags()
 }
