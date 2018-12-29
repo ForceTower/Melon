@@ -27,14 +27,37 @@
 
 package com.forcetower.uefs.feature.barrildeboa
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.databinding.ActivityHourglassBinding
+import com.google.android.material.snackbar.Snackbar
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class HourglassActivity : AppCompatActivity() {
+class HourglassActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var factory: UViewModelFactory
+
+    private lateinit var binding: ActivityHourglassBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_hourglass)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_hourglass)
     }
+
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = Snackbar.make(binding.snack, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+        snack.config()
+        snack.show()
+    }
+
+    override fun supportFragmentInjector() = fragmentInjector
 }
