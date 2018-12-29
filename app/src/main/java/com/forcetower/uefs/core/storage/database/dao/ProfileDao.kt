@@ -50,7 +50,7 @@ abstract class ProfileDao {
 
     @Transaction
     open fun insert(person: SPerson, score: Double = -1.0) {
-        val name = WordUtils.capitalize(person.name.trim())
+        val name = WordUtils.toTitleCase(person.name.trim())
         var profile = selectMeDirect()
         if (profile != null) {
             updateProfile(name, person.email.trim())
