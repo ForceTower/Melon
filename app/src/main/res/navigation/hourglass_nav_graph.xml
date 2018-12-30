@@ -35,19 +35,20 @@
     <fragment
         android:id="@+id/hourglass_init"
         android:name="com.forcetower.uefs.feature.barrildeboa.HourglassFragment"
-        android:label="HourglassFragment" >
+        android:label="HourglassFragment"
+        tools:layout="@layout/fragment_hourglass_init">
         <action
             android:id="@+id/action_hourglass_init_to_hourglass_landing"
             app:destination="@id/hourglass_landing"
-            app:launchSingleTop="false"
-            app:popUpTo="@+id/hourglass_landing"
-            app:popUpToInclusive="true" />
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:popUpTo="@+id/hourglass_init" />
         <action
             android:id="@+id/action_hourglass_init_to_hourglass_contribute"
             app:destination="@id/hourglass_contribute"
             app:launchSingleTop="true"
-            app:popUpTo="@+id/hourglass_contribute"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:popUpTo="@+id/hourglass_init" />
     </fragment>
 
     <fragment
