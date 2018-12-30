@@ -31,7 +31,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
@@ -103,7 +102,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 generateNotification(callback)
             }
             Status.COMPLETED -> {
-                if (!isConnectedToInternet()) {
+                if (isConnectedToInternet()) {
                     preferences.edit().putInt("hourglass_state", 1).apply()
                     if (contributing)
                         NotificationCreator.createCompletedDisciplineLoadNotification(this)

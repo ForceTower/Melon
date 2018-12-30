@@ -29,11 +29,19 @@ package com.forcetower.uefs.feature.barrildeboa
 
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.FragmentHourglassInitBinding
 import com.forcetower.uefs.feature.shared.UFragment
 
 class HourglassFragment : UFragment() {
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentHourglassInitBinding.inflate(inflater, container, false).root
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
