@@ -80,6 +80,11 @@
                     android:id="@+id/adventure"
                     android:title="@string/label_adventure"
                     android:icon="@drawable/ic_games_black_24dp"/>
+
+                <item
+                    android:id="@+id/hourglass"
+                    android:title="@string/label_hourglass"
+                    android:icon="@drawable/ic_cast_education_black_24dp"/>
                 
                 <item
                     android:id="@+id/library"
