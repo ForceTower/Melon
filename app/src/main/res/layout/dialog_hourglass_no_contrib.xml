@@ -40,22 +40,20 @@
 
         <TextView
             android:id="@+id/label_hourglass"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/are_you_sure"
             android:textColor="@color/text_primary_dark"
             android:textSize="20sp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/label_hourglass_information"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_common"
             android:text="@string/label_hourglass_not_contribute_information"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_hourglass" />
 
@@ -75,7 +73,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
-            android:layout_marginEnd="24dp"
+            android:layout_marginEnd="16dp"
             android:text="@string/all_right"
             style="@style/UTheme.MaterialButton.Default.DialogPrimary"
             android:textColor="@color/red"

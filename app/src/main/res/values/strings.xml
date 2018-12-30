@@ -378,6 +378,7 @@
     <string name="label_hourglass_not_contribute_information">Se você optar por esta ação, você tambem não poderá acessar as estatísticas.</string>
     <string name="changed_my_mind">Mudei de ideia</string>
     <string name="all_right">Tudo bem</string>
+    <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
