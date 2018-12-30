@@ -365,7 +365,7 @@
     <string name="hourglass_what_is_this">O que é isso?</string>
     <string name="ohh_i_see">Ahh ta</string>
     <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.\n\nEsta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.\n\nNo final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
-    <string name="label_hourglass">Ampulheta de Zhonyas (Outro Nome)</string>
+    <string name="label_hourglass">Ampulheta de Zhonyas</string>
     <string name="hourglass_landing_desc">Antes de começar, o UNES irá baixar os detalhes de todas as disciplinas. Nos encontraremos de novo quando terminar</string>
     <string name="hourglass_landing_title">Oi, você vem sempre aqui?</string>
     <string name="hourglass_not_contribute">Não</string>
