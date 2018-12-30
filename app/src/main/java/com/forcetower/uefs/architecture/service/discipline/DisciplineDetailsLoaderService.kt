@@ -30,6 +30,7 @@ package com.forcetower.uefs.architecture.service.discipline
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
@@ -50,6 +51,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
 
     companion object {
         private const val NOTIFICATION_DISCIPLINE_DETAILS_LOADER = 20546
+        const val EXTRA_SHOW_CONTRIBUTING_NOTIFICATION = "show_contributing_notification"
 
         @JvmStatic
         fun startService(context: Context) {
@@ -60,7 +62,11 @@ class DisciplineDetailsLoaderService : LifecycleService() {
 
     @Inject
     lateinit var repository: DisciplineDetailsRepository
+    @Inject
+    lateinit var preferences: SharedPreferences
+
     private var running = false
+    private var contributing = false
 
     override fun onCreate() {
         super.onCreate()
@@ -69,6 +75,10 @@ class DisciplineDetailsLoaderService : LifecycleService() {
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
+
+        val value = intent?.extras?.getBoolean(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, false) ?: false
+        contributing = value || contributing
+
         startComponent()
         return Service.START_STICKY
     }
@@ -89,6 +99,10 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 generateNotification(callback)
             }
             Status.COMPLETED -> {
+                preferences.edit().putInt("hourglass_state", 1).apply()
+                if (contributing)
+                    NotificationCreator.createCompletedDisciplineLoadNotification(this)
+
                 stopForeground(true)
                 stopSelf()
             }

@@ -27,9 +27,11 @@
 
 package com.forcetower.uefs.feature.barrildeboa
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.UActivity
@@ -59,5 +61,6 @@ class HourglassActivity : UActivity(), HasSupportFragmentInjector {
         snack.show()
     }
 
+    override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.setup_nav_host).navigateUp()
     override fun supportFragmentInjector() = fragmentInjector
 }

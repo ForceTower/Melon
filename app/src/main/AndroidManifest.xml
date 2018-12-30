@@ -21,7 +21,6 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".feature.barrildeboa.HourglassActivity"></activity>
         <activity
             android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav">
@@ -65,6 +64,10 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.demand.DemandActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.barrildeboa.HourglassActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
 
         <meta-data
