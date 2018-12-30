@@ -353,8 +353,8 @@
     <string name="step_discipline_details_processing">Processando informações</string>
     <string name="step_discipline_details_saving">Salvando informações</string>
     <string name="step_discipline_details_downloading">Concluídas %1$d de %2$d</string>
-    <string name="step_discipline_details_login">Em suas marcas!</string>
-    <string name="step_discipline_details_initial">Preparando...</string>
+    <string name="step_discipline_details_login">Preparando...</string>
+    <string name="step_discipline_details_initial">Em suas marcas!</string>
     <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
     <string name="label_score_undefined">Não achei seu score</string>
     <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
