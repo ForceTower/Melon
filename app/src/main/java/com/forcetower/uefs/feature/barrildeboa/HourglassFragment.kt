@@ -25,17 +25,27 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.barrildeboa
 
-import com.forcetower.uefs.feature.barrildeboa.setup.ContributeFragment
-import com.forcetower.uefs.feature.barrildeboa.setup.HourglassNotContributeDialog
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.os.Bundle
+import android.preference.PreferenceManager
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.UFragment
 
-@Module
-abstract class HourglassModule {
-    @ContributesAndroidInjector
-    abstract fun contributeFragment(): ContributeFragment
-    @ContributesAndroidInjector
-    abstract fun hourglassNotContributeDialog(): HourglassNotContributeDialog
+class HourglassFragment : UFragment() {
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+
+        val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val state = preferences.getInt("hourglass_state", 0)
+        val direction = when (state) {
+            0 -> R.id.action_hourglass_init_to_hourglass_landing
+            1 -> R.id.action_hourglass_init_to_hourglass_contribute
+            else -> R.id.action_hourglass_init_to_hourglass_landing
+        }
+
+        findNavController().navigate(direction)
+    }
 }
