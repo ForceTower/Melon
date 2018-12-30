@@ -31,6 +31,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
@@ -42,6 +43,7 @@ import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallba
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.SAVING
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
+import com.forcetower.uefs.core.util.isConnectedToInternet
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.android.AndroidInjection
 import timber.log.Timber
@@ -54,8 +56,10 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         const val EXTRA_SHOW_CONTRIBUTING_NOTIFICATION = "show_contributing_notification"
 
         @JvmStatic
-        fun startService(context: Context) {
-            val intent = Intent(context, DisciplineDetailsLoaderService::class.java)
+        fun startService(context: Context, contributing: Boolean = false) {
+            val intent = Intent(context, DisciplineDetailsLoaderService::class.java).apply {
+                putExtra(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, contributing)
+            }
             context.startService(intent)
         }
     }
@@ -76,7 +80,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        val value = intent?.extras?.getBoolean(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, false) ?: false
+        val value = intent?.getBooleanExtra(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, false) ?: false
         contributing = value || contributing
 
         startComponent()
@@ -99,9 +103,11 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 generateNotification(callback)
             }
             Status.COMPLETED -> {
-                preferences.edit().putInt("hourglass_state", 1).apply()
-                if (contributing)
-                    NotificationCreator.createCompletedDisciplineLoadNotification(this)
+                if (!isConnectedToInternet()) {
+                    preferences.edit().putInt("hourglass_state", 1).apply()
+                    if (contributing)
+                        NotificationCreator.createCompletedDisciplineLoadNotification(this)
+                }
 
                 stopForeground(true)
                 stopSelf()

@@ -53,7 +53,7 @@ class LandingFragment : UFragment() {
                 dialog.show(childFragmentManager, "explain_hourglass_dialog")
             }
             confirmButton.setOnClickListener {
-                DisciplineDetailsLoaderService.startService(requireContext())
+                DisciplineDetailsLoaderService.startService(requireContext(), true)
                 activity?.finish()
             }
         }
