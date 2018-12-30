@@ -27,6 +27,8 @@
 
 package com.forcetower.uefs.core.util
 
+import android.content.Context
+import android.net.ConnectivityManager
 import com.google.gson.Gson
 
 fun Any.toJson(): String {
@@ -37,4 +39,12 @@ fun Any.toJson(): String {
 inline fun <reified T> String.fromJson(): T {
     val gson = Gson()
     return gson.fromJson(this, T::class.java)
+}
+
+fun Context.isConnectedToInternet(): Boolean {
+    val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
+            as? ConnectivityManager ?: return false
+
+    val activeNetworkInfo = manager.activeNetworkInfo
+    return activeNetworkInfo != null && activeNetworkInfo.isConnected
 }
