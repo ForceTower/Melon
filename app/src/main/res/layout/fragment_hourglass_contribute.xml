@@ -27,8 +27,7 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -41,7 +40,7 @@
             android:layout_marginTop="36dp"
             android:importantForAccessibility="no"
             android:scaleType="centerInside"
-            android:src="@mipmap/hourglass_landing"
+            android:src="@mipmap/hourglass_stats"
             app:layout_constraintBottom_toTopOf="@+id/texts_explain"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
@@ -65,9 +64,9 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
+                android:text="@string/hourglass_contribution_title"
                 android:textColor="@color/text_primary_dark"
-                android:textSize="20sp"
-                android:text="@string/hourglass_landing_title" />
+                android:textSize="20sp" />
 
             <TextView
                 android:layout_width="match_parent"
@@ -76,12 +75,11 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
+                android:text="@string/hourglass_contribution_desc"
                 android:textAlignment="gravity"
                 android:textColor="@color/text_secondary_dark"
-                android:textSize="16sp"
-                android:text="@string/hourglass_landing_desc" />
+                android:textSize="16sp" />
         </LinearLayout>
-
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/confirm_button"
@@ -89,20 +87,21 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/lets_go"
+            android:text="@string/hourglass_contribute"
             android:textAllCaps="false"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/explain_button"
+            android:id="@+id/do_not_contribute_button"
             style="@style/UTheme.MaterialButton.Default.DialogPrimary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginBottom="16dp"
-            android:text="@string/hourglass_what_is_this"
+            android:text="@string/hourglass_not_contribute"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

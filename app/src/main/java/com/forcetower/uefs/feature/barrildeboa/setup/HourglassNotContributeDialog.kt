@@ -25,17 +25,32 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module
+package com.forcetower.uefs.feature.barrildeboa.setup
 
-import com.forcetower.uefs.feature.barrildeboa.setup.ContributeFragment
-import com.forcetower.uefs.feature.barrildeboa.setup.HourglassNotContributeDialog
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.databinding.DialogHourglassNoContribBinding
+import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.google.firebase.analytics.FirebaseAnalytics
+import javax.inject.Inject
 
-@Module
-abstract class HourglassModule {
-    @ContributesAndroidInjector
-    abstract fun contributeFragment(): ContributeFragment
-    @ContributesAndroidInjector
-    abstract fun hourglassNotContributeDialog(): HourglassNotContributeDialog
+class HourglassNotContributeDialog : RoundedDialog(), Injectable {
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
+
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return DialogHourglassNoContribBinding.inflate(inflater, container, false).apply {
+            btnContribute.setOnClickListener {
+                analytics.logEvent("hourglass_changed_mind", null)
+                dismiss()
+            }
+            btnBack.setOnClickListener {
+                analytics.logEvent("hourglass_not_contribute_certain", null)
+                activity?.finish()
+            }
+        }.root
+    }
 }
