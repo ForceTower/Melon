@@ -67,6 +67,8 @@ class PurchasesFragment : UFragment(), Injectable {
         return FragmentPurchasesBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
+            imageTop = "https://cdn.dribbble.com/users/1903950/screenshots/4225909/02_main_tr__1.gif"
+            executePendingBindings()
             incToolbar.textToolbarTitle.text = getString(R.string.label_purchases)
         }.root
     }
