@@ -169,7 +169,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
                 val expires = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
                 preferences.edit()
-                        .putFloat("score_increase_value", currentIncrease + 0.1f)
+                        .putFloat("score_increase_value", currentIncrease + 0.2f)
                         .putLong("score_increase_expires", expires)
                         .apply()
             }
