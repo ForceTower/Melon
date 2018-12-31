@@ -93,6 +93,12 @@
         tools:layout="@layout/fragment_reminders"/>
 
     <fragment
+        android:id="@+id/purchases"
+        android:name="com.forcetower.uefs.feature.purchases.PurchasesFragment"
+        android:label="PurchasesFragment"
+        tools:layout="@layout/fragment_purchases"/>
+
+    <fragment
         android:id="@+id/adventure"
         android:name="com.forcetower.uefs.feature.adventure.AdventureFragment"
         android:label="AdventureFragment"
