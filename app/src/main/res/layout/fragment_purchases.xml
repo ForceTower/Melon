@@ -59,7 +59,7 @@
                     android:layout_height="200dp"
                     android:importantForAccessibility="no"
                     android:scaleType="centerInside"
-                    app:imageUrl="@{image}"/>
+                    app:imageUrl="@{imageTop}"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:layout_width="match_parent"
