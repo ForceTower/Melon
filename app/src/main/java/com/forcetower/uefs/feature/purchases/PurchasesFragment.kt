@@ -33,6 +33,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -66,6 +67,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
     private lateinit var billingClient: BillingClient
 
     private val list: MutableList<String> = mutableListOf()
+    private val details: MutableList<SkuDetails> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -125,6 +127,8 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
         if (result.responseCode == BillingClient.BillingResponse.OK) {
             val values = result.list
             Timber.d("Values: $values")
+            details.clear()
+            if (values != null) details.addAll(values)
             skuAdapter.submitList(values)
         } else {
             showSnack(getString(R.string.donation_service_response_error), true)
@@ -174,7 +178,24 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
                         .apply()
             }
             billingClient.consumeAsync(purchase.purchaseToken) { code, token ->
-                Timber.d("Attempt to consume $token finished with code $code ")
+                Timber.d("Attempt to consume $token finished with code $code")
+            }
+
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                val item = details.find { it.sku == purchase.sku }
+
+                if (item == null) {
+                    showSnack(getString(R.string.you_bought_an_item))
+                } else {
+                    val value = item.title
+                    val title = if (value.contains("(")) {
+                        val index = value.lastIndexOf("(")
+                        value.substring(0, index).trim()
+                    } else {
+                        item.title
+                    }
+                    showSnack(getString(R.string.you_bought_this_item, title))
+                }
             }
         }
     }
