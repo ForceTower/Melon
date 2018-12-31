@@ -48,6 +48,7 @@ import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
 import android.content.Intent
 import android.net.Uri
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
 
@@ -80,6 +81,12 @@ class HomeBottomFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
+        viewModel.flags.observe(this, Observer {
+            if (it?.demandOpen == true) {
+                val item = binding.navigationView.menu.findItem(R.id.demand)
+                item?.isVisible = true
+            }
+        })
     }
 
     private fun setupNavigation() {
@@ -119,10 +126,6 @@ class HomeBottomFragment : UFragment(), Injectable {
                     startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
                     true
                 }
-//                R.id.demand -> {
-//                    startActivity(DemandActivity.startIntent(requireContext()))
-//                    true
-//                }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }

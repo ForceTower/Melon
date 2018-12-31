@@ -25,35 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package com.forcetower.uefs.core.vm
 
-import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.android.billingclient.api.SkuDetails
+import com.forcetower.uefs.core.storage.repository.BillingRepository
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class SagresDataRepository @Inject constructor(
-    private val database: UDatabase,
-    private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
-) {
-    fun getMessages() = database.messageDao().getAllMessages()
+class BillingViewModel @Inject constructor(
+    val repository: BillingRepository
+) : ViewModel() {
+    private val _selectSku = MutableLiveData<Event<SkuDetails>>()
+    val selectSku: LiveData<Event<SkuDetails>>
+        get() = _selectSku
 
-    fun logout() {
-        executor.diskIO().execute {
-            firebaseAuth.signOut()
-            database.accessDao().deleteAll()
-            database.accessTokenDao().deleteAll()
-            database.profileDao().deleteMe()
-            database.classDao().deleteAll()
-            database.semesterDao().deleteAll()
-            database.messageDao().deleteAll()
-            SagresNavigator.instance.logout()
-        }
+    fun getSkus() = repository.getManagedSkus()
+
+    fun selectSku(skuDetails: SkuDetails?) {
+        skuDetails ?: return
+        _selectSku.value = Event(skuDetails)
     }
-
-    fun getFlags() = database.flagsDao().getFlags()
 }

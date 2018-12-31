@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.annotation.ViewModelKey
+import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.SnackbarViewModel
@@ -150,6 +151,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(AdventureViewModel::class)
     abstract fun bindAdventureViewModel(vm: AdventureViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(BillingViewModel::class)
+    abstract fun bindBillingViewModel(vm: BillingViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

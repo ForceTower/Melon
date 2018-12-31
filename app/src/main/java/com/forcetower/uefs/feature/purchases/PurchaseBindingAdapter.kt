@@ -25,35 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package com.forcetower.uefs.feature.purchases
 
-import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
-import javax.inject.Inject
-import javax.inject.Singleton
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.forcetower.uefs.R
 
-@Singleton
-class SagresDataRepository @Inject constructor(
-    private val database: UDatabase,
-    private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
-) {
-    fun getMessages() = database.messageDao().getAllMessages()
+@BindingAdapter(value = ["skuPrice"])
+fun price(tv: TextView, price: String?) {
+    val value = price ?: "???,??"
+    tv.text = tv.context.getString(R.string.sku_price_format, "R$", value)
+}
 
-    fun logout() {
-        executor.diskIO().execute {
-            firebaseAuth.signOut()
-            database.accessDao().deleteAll()
-            database.accessTokenDao().deleteAll()
-            database.profileDao().deleteMe()
-            database.classDao().deleteAll()
-            database.semesterDao().deleteAll()
-            database.messageDao().deleteAll()
-            SagresNavigator.instance.logout()
-        }
+@BindingAdapter(value = ["skuTitle"])
+fun title(tv: TextView, title: String?) {
+    val value = title ?: "Nem sei"
+    if (value.contains("(")) {
+        val index = value.lastIndexOf("(")
+        val corrected = value.substring(0, index).trim()
+        tv.text = corrected
+    } else {
+        tv.text = value
     }
-
-    fun getFlags() = database.flagsDao().getFlags()
 }

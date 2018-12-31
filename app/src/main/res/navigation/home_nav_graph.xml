@@ -93,9 +93,21 @@
         tools:layout="@layout/fragment_reminders"/>
 
     <fragment
+        android:id="@+id/purchases"
+        android:name="com.forcetower.uefs.feature.purchases.PurchasesFragment"
+        android:label="PurchasesFragment"
+        tools:layout="@layout/fragment_purchases"/>
+
+    <fragment
         android:id="@+id/adventure"
         android:name="com.forcetower.uefs.feature.adventure.AdventureFragment"
-        android:label="RemindersFragment"
-        tools:layout="@layout/fragment_reminders"/>
+        android:label="AdventureFragment"
+        tools:layout="@layout/fragment_adventure_begins"/>
+
+    <activity
+        android:id="@+id/demand"
+        android:name="com.forcetower.uefs.feature.demand.DemandActivity"
+        android:label="DemandActivity"
+        tools:layout="@layout/activity_demand"/>
 
 </navigation>

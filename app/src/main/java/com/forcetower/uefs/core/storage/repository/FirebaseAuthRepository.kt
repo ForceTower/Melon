@@ -120,7 +120,7 @@ class FirebaseAuthRepository @Inject constructor(
         Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
 
         val data = mutableMapOf(
-                "name" to WordUtils.capitalize(person.name.trim()),
+                "name" to WordUtils.toTitleCase(person.name.trim()),
                 "username" to access.username,
                 "email" to person.email.trim().toLowerCase(),
                 "cpf" to person.cpf.trim(),

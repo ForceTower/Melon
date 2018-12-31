@@ -65,6 +65,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
         const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
         const val EXTRA_GRADES_DIRECTION = "grades"
+        const val EXTRA_DEMAND_DIRECTION = "demand"
     }
 
     @Inject
@@ -109,6 +110,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
                 R.id.big_tray
             }
+            EXTRA_DEMAND_DIRECTION -> R.id.demand
             else -> null
         }
 
