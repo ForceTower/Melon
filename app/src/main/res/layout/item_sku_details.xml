@@ -34,6 +34,10 @@
         <variable
             name="skuDetails"
             type="com.android.billingclient.api.SkuDetails"/>
+
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.core.vm.BillingViewModel"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -43,7 +47,8 @@
         android:layout_marginHorizontal="@dimen/spacing_common"
         android:layout_marginVertical="@dimen/spacing_small"
         tools:elevation="6dp"
-        android:stateListAnimator="@animator/default_card_raise">
+        android:stateListAnimator="@animator/default_card_raise"
+        android:onClick="@{() -> viewModel.selectSku(skuDetails)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
