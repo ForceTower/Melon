@@ -27,33 +27,23 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
-import javax.inject.Singleton
 
-@Singleton
-class SagresDataRepository @Inject constructor(
-    private val database: UDatabase,
-    private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
+class BillingRepository @Inject constructor(
+    val firestore: FirebaseFirestore
 ) {
-    fun getMessages() = database.messageDao().getAllMessages()
 
-    fun logout() {
-        executor.diskIO().execute {
-            firebaseAuth.signOut()
-            database.accessDao().deleteAll()
-            database.accessTokenDao().deleteAll()
-            database.profileDao().deleteMe()
-            database.classDao().deleteAll()
-            database.semesterDao().deleteAll()
-            database.messageDao().deleteAll()
-            SagresNavigator.instance.logout()
+    fun getManagedSkus(): LiveData<List<String>> {
+        val result = MutableLiveData<List<String>>()
+        firestore.collection("products_sku").addSnapshotListener { snapshot, _ ->
+            if (snapshot != null) {
+                val data = snapshot.documents.map { it.data?.get("sku") as String }
+                result.postValue(data)
+            }
         }
+        return result
     }
-
-    fun getFlags() = database.flagsDao().getFlags()
 }

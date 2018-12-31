@@ -25,40 +25,37 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.about
+package com.forcetower.uefs.feature.purchases
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.core.model.unes.Contributor
-import com.forcetower.uefs.databinding.ItemAboutContributorBinding
-import com.forcetower.uefs.feature.shared.inflater
+import com.android.billingclient.api.SkuDetails
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.BillingViewModel
+import com.forcetower.uefs.databinding.ItemSkuDetailsBinding
+import com.forcetower.uefs.feature.shared.inflate
 
-class ContributorAdapter(
-    private val listener: ContributorActions? = null
-) : ListAdapter<Contributor, ContributorHolder>(ContributorDiff) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ContributorHolder {
-        val binding = ItemAboutContributorBinding.inflate(parent.inflater(), parent, false)
-        return ContributorHolder(binding)
+class SkuDetailsAdapter(
+    private val viewModel: BillingViewModel
+) : ListAdapter<SkuDetails, SkuDetailsAdapter.SkuHolder>(SkuDiff) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkuHolder {
+        return SkuHolder(parent.inflate(R.layout.item_sku_details))
     }
 
-    override fun onBindViewHolder(holder: ContributorHolder, position: Int) {
+    override fun onBindViewHolder(holder: SkuHolder, position: Int) {
         holder.binding.apply {
-            actions = listener
-            contributor = getItem(position)
+            skuDetails = getItem(position)
+            viewModel = this@SkuDetailsAdapter.viewModel
             executePendingBindings()
         }
     }
-}
 
-class ContributorHolder(val binding: ItemAboutContributorBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class SkuHolder(val binding: ItemSkuDetailsBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object ContributorDiff : DiffUtil.ItemCallback<Contributor>() {
-    override fun areItemsTheSame(oldItem: Contributor, newItem: Contributor) = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: Contributor, newItem: Contributor) = oldItem == newItem
-}
-
-interface ContributorActions {
-    fun onContributorClick(contributor: Contributor?)
+    object SkuDiff : DiffUtil.ItemCallback<SkuDetails>() {
+        override fun areItemsTheSame(oldItem: SkuDetails, newItem: SkuDetails) = oldItem.sku == newItem.sku
+        override fun areContentsTheSame(oldItem: SkuDetails, newItem: SkuDetails) = oldItem == newItem
+    }
 }
