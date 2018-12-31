@@ -147,7 +147,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
         if (!billingClient.isReady) {
             Timber.d("BillingClient is not ready to query for existing purchases")
         }
-        val result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
+        val result = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
         if (result == null) {
             Timber.d("Update purchase: Null purchase result")
         } else {
