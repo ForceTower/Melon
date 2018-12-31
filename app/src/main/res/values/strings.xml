@@ -365,6 +365,8 @@
     <string name="donation_service_response_error">Erro ao processar doações</string>
     <string name="label_purchases">Doações e Itens</string>
     <string name="sku_price_format">%1$s %2$s</string>
+    <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
+    <string name="you_bought_this_item">Você comprou o %1$s</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
