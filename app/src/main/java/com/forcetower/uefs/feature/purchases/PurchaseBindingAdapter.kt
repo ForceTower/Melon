@@ -36,3 +36,15 @@ fun price(tv: TextView, price: String?) {
     val value = price ?: "???,??"
     tv.text = tv.context.getString(R.string.sku_price_format, "R$", value)
 }
+
+@BindingAdapter(value = ["skuTitle"])
+fun title(tv: TextView, title: String?) {
+    val value = title ?: "Nem sei"
+    if (value.contains("(")) {
+        val index = value.lastIndexOf("(")
+        val corrected = value.substring(0, index).trim()
+        tv.text = corrected
+    } else {
+        tv.text = value
+    }
+}
