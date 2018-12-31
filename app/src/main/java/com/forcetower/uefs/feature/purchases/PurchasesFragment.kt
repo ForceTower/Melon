@@ -60,7 +60,6 @@ class PurchasesFragment : UFragment(), Injectable {
     private lateinit var adapter: SkuDetailsAdapter
 
     private val list: MutableList<String> = mutableListOf()
-    // private val PURCHASE_IDS = arrayOf("donate_bandejao", "donate_5_bandejao", "donate_no_ads_app", "")
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
