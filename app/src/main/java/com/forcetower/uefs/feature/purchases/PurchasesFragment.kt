@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.purchases
 import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,6 +69,10 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
     private val list: MutableList<String> = mutableListOf()
 
+    companion object {
+        const val TAG = "PurchaseFragment"
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -76,7 +81,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
                 .build()
 
         if (!billingClient.isReady) {
-            Timber.d("Starting Connection...")
+            Log.d(TAG,"Starting Connection...")
             billingClient.startConnection(this)
         }
     }
@@ -122,7 +127,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
     private fun processDetails(result: SkuDetailsResult) {
         if (result.responseCode == BillingClient.BillingResponse.OK) {
             val values = result.list
-            Timber.d("Values: $values")
+            Log.d(TAG,"Values: $values")
             adapter.submitList(values)
         } else {
             showSnack(getString(R.string.donation_service_response_error), true)
@@ -139,14 +144,14 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
     private fun updatePurchases() {
         if (!billingClient.isReady) {
-            Timber.e("BillingClient is not ready to query for existing purchases")
+            Log.d(TAG,"BillingClient is not ready to query for existing purchases")
         }
         val result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
         if (result == null) {
-            Timber.i("Update purchase: Null purchase result")
+            Log.d(TAG,"Update purchase: Null purchase result")
         } else {
             if (result.purchasesList == null) {
-                Timber.i("Update purchase: Null purchase list")
+                Log.d(TAG,"Update purchase: Null purchase list")
             } else {
                 handlePurchases(result.purchasesList)
             }
@@ -158,7 +163,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
         purchasesList.forEach { purchase ->
             // TODO extract this method to somewhere else it will be usefull
             if (purchase.sku == "score_increase_common") {
-                Timber.d("Purchased score increase common")
+                Log.d(TAG,"Purchased score increase common")
                 val current = preferences.getInt("score_increase_value", 0)
                 val expires = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, 1) }.timeInMillis
                 preferences.edit()
@@ -167,57 +172,57 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
                         .apply()
             }
             billingClient.consumeAsync(purchase.purchaseToken) { code, token ->
-                Timber.d("Attempt to consume $token finished with code $code ")
+                Log.d(TAG,"Attempt to consume $token finished with code $code ")
             }
         }
     }
 
     @SuppressLint("BinaryOperationInTimber")
     override fun onPurchasesUpdated(responseCode: Int, purchasesList: List<Purchase>?) {
-        Timber.d("onPurchasesUpdated, response code: $responseCode")
+        Log.d(TAG,"onPurchasesUpdated, response code: $responseCode")
         when (responseCode) {
             BillingClient.BillingResponse.OK -> {
                 if (purchasesList == null) {
-                    Timber.d("Purchase update: No purchases")
+                    Log.d(TAG,"Purchase update: No purchases")
                     handlePurchases(null)
                 } else {
                     handlePurchases(purchasesList)
                 }
             }
             BillingClient.BillingResponse.USER_CANCELED -> {
-                Timber.i("User canceled the purchase")
+                Log.d(TAG,"User canceled the purchase")
             }
             BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
-                Timber.i("The user already owns this item")
+                Log.d(TAG,"The user already owns this item")
             }
             BillingClient.BillingResponse.DEVELOPER_ERROR -> {
-                Timber.e("Developer error means that Google Play does not recognize the " +
+                Log.d(TAG,"Developer error means that Google Play does not recognize the " +
                         "configuration. If you are just getting started, make sure you have " +
                         "configured the application correctly in the Google Play Console. " +
                         "The SKU product ID must match and the APK you are using must be " +
                         "signed with release keys.")
             }
             else -> {
-                Timber.e("See error code in BillingClient.BillingResponse: $responseCode")
+                Log.d(TAG,"See error code in BillingClient.BillingResponse: $responseCode")
             }
         }
     }
 
     override fun onBillingSetupFinished(billingResponseCode: Int) {
-        Timber.d("onBillingSetupFinished: $billingResponseCode")
+        Log.d(TAG,"onBillingSetupFinished: $billingResponseCode")
         if (billingResponseCode == BillingClient.BillingResponse.OK) {
             updatePurchases()
         }
     }
 
     override fun onBillingServiceDisconnected() {
-        Timber.d("onBillingServiceDisconnected")
+        Log.d(TAG,"onBillingServiceDisconnected")
     }
 
     override fun onDestroy() {
         super.onDestroy()
         if (billingClient.isReady) {
-            Timber.d("Closing connection")
+            Log.d(TAG,"Closing connection")
             billingClient.endConnection()
         }
     }
