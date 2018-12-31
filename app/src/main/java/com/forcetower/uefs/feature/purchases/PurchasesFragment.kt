@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
@@ -60,6 +61,8 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
     lateinit var factory: UViewModelFactory
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
 
     private lateinit var viewModel: BillingViewModel
     private lateinit var binding: FragmentPurchasesBinding
@@ -71,6 +74,10 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if (savedInstanceState == null) {
+            analytics.logEvent("purchases_screen", null)
+        }
 
         billingClient = BillingClient.newBuilder(requireContext().applicationContext)
                 .setListener(this)
@@ -132,6 +139,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
             skuAdapter.submitList(values)
         } else {
             showSnack(getString(R.string.donation_service_response_error), true)
+            analytics.logEvent("purchases_failed", null)
         }
     }
 
