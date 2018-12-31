@@ -363,7 +363,7 @@
     <string name="demand_open_text">A demanda web foi aberta. Faça a sua pelo UNES!</string>
     <string name="channel_common_hig">Avisos principais</string>
     <string name="donation_service_response_error">Erro ao processar doações</string>
-    <string name="label_purchases">Loja de Itens</string>
+    <string name="label_purchases">Doações e Itens</string>
     <string name="sku_price_format">%1$s %2$s</string>
 
     <string-array name="settings_sync_type_titles">
