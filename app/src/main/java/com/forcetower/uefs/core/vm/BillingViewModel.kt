@@ -36,18 +36,11 @@ import com.forcetower.uefs.core.storage.repository.BillingRepository
 import javax.inject.Inject
 
 class BillingViewModel @Inject constructor(
-    val client: BillingClientLifecycle,
     val repository: BillingRepository
 ) : ViewModel() {
     private val _selectSku = MutableLiveData<Event<SkuDetails>>()
     val selectSku: LiveData<Event<SkuDetails>>
         get() = _selectSku
-
-    val state = client.state
-    val purchases = client.purchases
-    val purchaseUpdateEvent = client.purchaseUpdateEvent
-    fun querySkuDetails(list: List<String>) = client.querySkuDetails(list)
-    fun consumeItem(token: String) = client.consumeToken(token)
 
     fun getSkus() = repository.getManagedSkus()
 
