@@ -31,7 +31,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.android.billingclient.api.SkuDetails
-import com.forcetower.uefs.core.billing.BillingClientLifecycle
 import com.forcetower.uefs.core.storage.repository.BillingRepository
 import javax.inject.Inject
 

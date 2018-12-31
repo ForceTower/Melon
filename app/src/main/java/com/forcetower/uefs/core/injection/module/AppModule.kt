@@ -33,7 +33,6 @@ import android.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.billing.BillingClientLifecycle
 import com.forcetower.uefs.core.storage.database.M1TO2
 import com.forcetower.uefs.core.storage.database.M2TO3
 import com.forcetower.uefs.core.storage.database.M3TO4
