@@ -47,6 +47,7 @@ class SkuDetailsAdapter(
     override fun onBindViewHolder(holder: SkuHolder, position: Int) {
         holder.binding.apply {
             skuDetails = getItem(position)
+            viewModel = this@SkuDetailsAdapter.viewModel
             executePendingBindings()
         }
     }

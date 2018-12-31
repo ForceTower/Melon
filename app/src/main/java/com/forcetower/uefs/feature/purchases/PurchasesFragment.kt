@@ -34,7 +34,6 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -52,7 +51,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
-import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -64,7 +62,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
     private lateinit var viewModel: BillingViewModel
     private lateinit var binding: FragmentPurchasesBinding
-    private lateinit var adapter: SkuDetailsAdapter
+    private lateinit var skuAdapter: SkuDetailsAdapter
     private lateinit var billingClient: BillingClient
 
     private val list: MutableList<String> = mutableListOf()
@@ -99,7 +97,10 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SkuDetailsAdapter(viewModel)
+        skuAdapter = SkuDetailsAdapter(viewModel)
+        binding.recyclerSku.apply {
+            adapter = skuAdapter
+        }
         viewModel.getSkus().observe(this, Observer {
             if (list != it) {
                 list.clear()
@@ -128,7 +129,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
         if (result.responseCode == BillingClient.BillingResponse.OK) {
             val values = result.list
             Log.d(TAG,"Values: $values")
-            adapter.submitList(values)
+            skuAdapter.submitList(values)
         } else {
             showSnack(getString(R.string.donation_service_response_error), true)
         }
