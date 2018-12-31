@@ -98,6 +98,7 @@
                 android:layout_marginBottom="8dp"
                 android:text="@{contributor.bio}"
                 android:textSize="13sp"
+                android:maxLines="2"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"

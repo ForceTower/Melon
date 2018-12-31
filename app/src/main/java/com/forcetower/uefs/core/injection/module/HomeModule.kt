@@ -40,6 +40,7 @@ import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
 import com.forcetower.uefs.feature.messages.UnesMessagesFragment
+import com.forcetower.uefs.feature.purchases.PurchasesFragment
 import com.forcetower.uefs.feature.reminders.CreateReminderDialog
 import com.forcetower.uefs.feature.reminders.RemindersFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
@@ -83,4 +84,6 @@ abstract class HomeModule {
     abstract fun adventureFragment(): AdventureFragment
     @ContributesAndroidInjector
     abstract fun adventureSignInDialog(): AdventureSignInDialog
+    @ContributesAndroidInjector
+    abstract fun purchasesFragment(): PurchasesFragment
 }

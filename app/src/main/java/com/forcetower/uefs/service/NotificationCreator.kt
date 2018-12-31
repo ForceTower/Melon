@@ -255,6 +255,17 @@ object NotificationCreator {
                 .setColor(ContextCompat.getColor(context, R.color.blue_accent))
     }
 
+    fun showDemandOpenNotification(context: Context) {
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
+                .setContentTitle(context.getString(R.string.demand_open_title))
+                .setContentText(context.getString(R.string.demand_open_text))
+                .setColor(ContextCompat.getColor(context, R.color.teal))
+                .setContentIntent(createDemandIntent(context))
+
+        addOptions(context, builder)
+        showNotification(context, 7690, builder)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
@@ -331,6 +342,17 @@ object NotificationCreator {
     private fun createBigTrayIntent(ctx: Context): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_BIGTRAY_DIRECTION)
+        }
+
+        return TaskStackBuilder.create(ctx)
+                .addParentStack(HomeActivity::class.java)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createDemandIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_DEMAND_DIRECTION)
         }
 
         return TaskStackBuilder.create(ctx)

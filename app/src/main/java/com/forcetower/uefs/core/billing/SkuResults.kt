@@ -25,35 +25,16 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package com.forcetower.uefs.core.billing
 
-import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.android.billingclient.api.SkuDetails
 
-@Singleton
-class SagresDataRepository @Inject constructor(
-    private val database: UDatabase,
-    private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
-) {
-    fun getMessages() = database.messageDao().getAllMessages()
+data class SkuDetailsResult(
+    val responseCode: Int,
+    val list: List<SkuDetails>? = null
+)
 
-    fun logout() {
-        executor.diskIO().execute {
-            firebaseAuth.signOut()
-            database.accessDao().deleteAll()
-            database.accessTokenDao().deleteAll()
-            database.profileDao().deleteMe()
-            database.classDao().deleteAll()
-            database.semesterDao().deleteAll()
-            database.messageDao().deleteAll()
-            SagresNavigator.instance.logout()
-        }
-    }
-
-    fun getFlags() = database.flagsDao().getFlags()
-}
+data class SkuConsumeResult(
+    val responseCode: Int,
+    val token: String? = null
+)
