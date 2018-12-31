@@ -39,6 +39,7 @@ import com.forcetower.uefs.R
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import java.util.Calendar
+import kotlin.math.min
 
 @BindingAdapter("profileImage")
 fun profileImage(iv: ImageView, url: String?) {
@@ -94,8 +95,8 @@ fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
 
     if (preferences.getBoolean("stg_acc_score", true)) {
         when {
-            actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, (actual + currentIncrease))
-            calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, (calc + currentIncrease))
+            actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
+            calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
             else -> tv.text = context.getString(R.string.label_score_undefined)
         }
     } else {
