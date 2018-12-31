@@ -74,10 +74,4 @@ object AppModule {
     @JvmStatic
     fun providePlayGames(context: Context): GooglePlayGamesInstance =
             GooglePlayGamesInstance(context)
-
-    @Provides
-    @Singleton
-    @JvmStatic
-    fun provideBillingClient(application: UApplication): BillingClientLifecycle =
-            BillingClientLifecycle(application)
 }
