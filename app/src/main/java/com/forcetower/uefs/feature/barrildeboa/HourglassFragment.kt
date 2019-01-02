@@ -25,26 +25,35 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.util
+package com.forcetower.uefs.feature.barrildeboa
 
-import android.content.Context
-import android.net.ConnectivityManager
-import com.google.gson.Gson
+import android.os.Bundle
+import android.preference.PreferenceManager
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.FragmentHourglassInitBinding
+import com.forcetower.uefs.feature.shared.UFragment
 
-fun Any.toJson(): String {
-    val gson = Gson()
-    return gson.toJson(this)
-}
+class HourglassFragment : UFragment() {
 
-inline fun <reified T> String.fromJson(): T {
-    val gson = Gson()
-    return gson.fromJson(this, T::class.java)
-}
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentHourglassInitBinding.inflate(inflater, container, false).root
+    }
 
-fun Context.isConnectedToInternet(): Boolean {
-    val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
-            as? ConnectivityManager ?: return false
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
 
-    val activeNetworkInfo = manager.activeNetworkInfo
-    return activeNetworkInfo != null && activeNetworkInfo.isConnected
+        val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
+        val state = preferences.getInt("hourglass_state", 0)
+        val direction = when (state) {
+            0 -> R.id.action_hourglass_init_to_hourglass_landing
+            1 -> R.id.action_hourglass_init_to_hourglass_contribute
+            else -> R.id.action_hourglass_init_to_hourglass_landing
+        }
+
+        findNavController().navigate(direction)
+    }
 }

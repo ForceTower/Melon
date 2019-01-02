@@ -44,6 +44,7 @@ import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
@@ -266,6 +267,17 @@ object NotificationCreator {
         showNotification(context, 7690, builder)
     }
 
+    fun createCompletedDisciplineLoadNotification(context: Context) {
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
+                .setContentTitle(context.getString(R.string.discipline_load_all_completed))
+                .setContentText(context.getString(R.string.discipline_load_all_completed_info))
+                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+                .setContentIntent(createHourglassIntent(context))
+
+        addOptions(context, builder)
+        showNotification(context, 7569, builder)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
@@ -357,6 +369,15 @@ object NotificationCreator {
 
         return TaskStackBuilder.create(ctx)
                 .addParentStack(HomeActivity::class.java)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createHourglassIntent(ctx: Context): PendingIntent {
+        val intent = Intent(ctx, HourglassActivity::class.java)
+
+        return TaskStackBuilder.create(ctx)
+                .addParentStack(HourglassActivity::class.java)
                 .addNextIntent(intent)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }

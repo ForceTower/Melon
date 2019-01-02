@@ -1,29 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?><!--
-  ~ Copyright (c) 2018.
-  ~ João Paulo Sena <joaopaulo761@gmail.com>
-  ~
-  ~ This file is part of the UNES Open Source Project.
-  ~
-  ~ UNES is licensed under the MIT License
-  ~
-  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
-  ~ of this software and associated documentation files (the "Software"), to deal
-  ~ in the Software without restriction, including without limitation the rights
-  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-  ~ copies of the Software, and to permit persons to whom the Software is
-  ~ furnished to do so, subject to the following conditions:
-  ~
-  ~ The above copyright notice and this permission notice shall be included in all
-  ~ copies or substantial portions of the Software.
-  ~
-  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-  ~ SOFTWARE.
--->
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.forcetower.uefs">
 
@@ -47,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
-
         <activity
             android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav">
@@ -57,15 +31,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.login.LoginActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity
             android:name=".feature.setup.SetupActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity
             android:name=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav">
@@ -73,53 +44,45 @@
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
-
         <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
-
         <activity
             android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity
             android:name=".feature.profile.ProfileActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity android:name=".easter.twofoureight.Game2048Activity" />
-
         <activity
             android:name=".feature.reminders.RemindersActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity
             android:name=".feature.settings.SettingsActivity"
             android:theme="@style/UTheme.LightNav" />
-
         <activity
             android:name=".feature.demand.DemandActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.barrildeboa.HourglassActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_icon"
             android:resource="@drawable/ic_unes_colored" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_color"
             android:resource="@color/blue_accent" />
-
         <meta-data
             android:name="com.google.firebase.messaging.default_notification_channel_id"
             android:value="@string/default_firebase_notification_channel_id" />
-
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
@@ -150,15 +113,12 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
-
         <service
             android:name=".architecture.service.bigtray.BigTrayService"
             android:exported="false" />
-
         <service
             android:name=".architecture.service.discipline.DisciplineDetailsLoaderService"
             android:exported="false" />
-
     </application>
 
 </manifest>
