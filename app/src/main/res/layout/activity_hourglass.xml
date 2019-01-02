@@ -26,44 +26,23 @@
   ~ SOFTWARE.
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_height="match_parent"
+        tools:context=".feature.barrildeboa.HourglassActivity">
+
+        <fragment
+            android:id="@+id/hourglass_nav_host"
+            android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="56dp">
-
-            <fragment
-                android:id="@+id/home_nav_host"
-                android:name="androidx.navigation.fragment.NavHostFragment"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                app:defaultNavHost="true"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:navGraph="@navigation/home_nav_graph" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.google.android.material.bottomnavigation.BottomNavigationView
-            android:id="@+id/bottom_navigation"
-            android:layout_alignParentBottom="true"
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:background="@color/white"
-            android:layout_gravity="bottom"
-            app:elevation="12dp"
-            app:labelVisibilityMode="labeled"
-            app:itemHorizontalTranslationEnabled="false"
-            app:itemTextAppearanceActive="@style/UTheme.BottomNavigation.Active"
-            app:itemTextAppearanceInactive="@style/UTheme.BottomNavigation.Active"
-            app:menu="@menu/home_bottom_navigation"
-            app:itemIconTint="@color/navigation_bottom_color"
-            app:itemTextColor="@color/navigation_bottom_color"/>
+            app:defaultNavHost="true"
+            app:navGraph="@navigation/hourglass_nav_graph" />
 
         <androidx.coordinatorlayout.widget.CoordinatorLayout
             android:id="@+id/snack"
@@ -73,4 +52,5 @@
             android:layout_marginBottom="68dp"/>
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
+
 </layout>

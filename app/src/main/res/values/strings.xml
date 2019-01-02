@@ -68,12 +68,12 @@
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
     <string name="default_firebase_notification_channel_id" translatable="false">com.forcetower.uefs.GENERAL.REMOTE</string>
-    
+
     <string name="message_received_date_format">Mensagem recebida %1$s</string>
     <string name="message_received_date_ago_format">Mensagem recebida %1$s atrás</string>
     <string name="label_menu">Menu</string>
     <string name="label_grades_disciplines_short">Disciplinas</string>
-    
+
     <string name="data_step_format">Passo %1$d de %2$d: %3$s</string>
     <string name="step_delete_database">Apagando dados</string>
     <string name="step_logging_in">Fazendo login</string>
@@ -82,10 +82,10 @@
     <string name="step_fetching_semesters">Buscando semestres</string>
     <string name="step_moving_to_start_page">Movendo para página inicial</string>
     <string name="step_fetching_grades">Buscando notas</string>
-    
+
     <string name="label_terms_and_conditions_p1">Ao continuar, você concorda com os</string>
     <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md)</string>
-    
+
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
     <string name="about_unes_2">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
@@ -94,7 +94,7 @@
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com código ou ideias</string>
-    
+
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
     <string name="label_schedule_not_found">Horário não foi encontrado</string>
@@ -222,7 +222,7 @@
     <string name="you_win">Você venceu</string>
     <string name="game_over">Fim de Jogo</string>
     <string name="start_new_game">Iniciar Novo</string>
-    
+
     <string name="integer_format">%1$d</string>
     <string name="screen_under_development">Esta página está em construção</string>
     <string name="tasks_completed_label">Concluídas</string>
@@ -353,8 +353,8 @@
     <string name="step_discipline_details_processing">Processando informações</string>
     <string name="step_discipline_details_saving">Salvando informações</string>
     <string name="step_discipline_details_downloading">Concluídas %1$d de %2$d</string>
-    <string name="step_discipline_details_login">Em suas marcas!</string>
-    <string name="step_discipline_details_initial">Preparando...</string>
+    <string name="step_discipline_details_login">Preparando...</string>
+    <string name="step_discipline_details_initial">Em suas marcas!</string>
     <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
     <string name="label_score_undefined">Não achei seu score</string>
     <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
@@ -362,6 +362,23 @@
     <string name="demand_open_title">Demanda Web</string>
     <string name="demand_open_text">A demanda web foi aberta. Faça a sua pelo UNES!</string>
     <string name="channel_common_hig">Avisos principais</string>
+    <string name="hourglass_what_is_this">O que é isso?</string>
+    <string name="ohh_i_see">Ahh ta</string>
+    <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.\n\nEsta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.\n\nNo final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
+    <string name="label_hourglass">Ampulheta de Zhonyas</string>
+    <string name="hourglass_landing_desc">Antes de começar, o UNES irá baixar os detalhes de todas as disciplinas. Nos encontraremos de novo quando terminar</string>
+    <string name="hourglass_landing_title">Oi, você vem sempre aqui?</string>
+    <string name="hourglass_not_contribute">Não</string>
+    <string name="hourglass_contribute">Claro que sim!</string>
+    <string name="hourglass_contribution_title">Quer ajudar?</string>
+    <string name="hourglass_contribution_desc">Para oferecer estatísticas precisas, todos precisam contribuir. Então, você quer ajudar com as disciplinas que você cursou?</string>
+    <string name="discipline_load_all_completed">Disciplinas baixadas</string>
+    <string name="discipline_load_all_completed_info">Concluído! Podemos ir para o próximo passo!</string>
+    <string name="are_you_sure">Você tem certeza?</string>
+    <string name="label_hourglass_not_contribute_information">Se você optar por esta ação, você tambem não poderá acessar as estatísticas.</string>
+    <string name="changed_my_mind">Mudei de ideia</string>
+    <string name="all_right">Tudo bem</string>
+    <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
     <string name="donation_service_response_error">Erro ao processar doações</string>
     <string name="label_purchases">Doações e Itens</string>
     <string name="sku_price_format">%1$s %2$s</string>
@@ -372,7 +389,7 @@
         <item>Periódico</item>
         <item>Encadeado</item>
     </string-array>
-    
+
     <string-array name="settings_sync_frequency_titles">
         <!--<item>5 minutos [Encadeado]</item>-->
         <!--<item>10 minutos [Encadeado]</item>-->
@@ -384,13 +401,13 @@
         <item>6 horas</item>
         <item>12 horas</item>
     </string-array>
-    
+
     <string-array name="settings_ntf_grade_spoiler_titles">
         <item>Nenhum</item>
         <item>Moderado</item>
         <item>Completo</item>
     </string-array>
-    
+
     <string-array name="settings_sync_frequency_values">
         <!--<item>5</item>-->
         <!--<item>10</item>-->
@@ -402,18 +419,18 @@
         <item>360</item>
         <item>720</item>
     </string-array>
-    
+
     <string-array name="settings_sync_type_values">
         <item>0</item>
         <item>1</item>
     </string-array>
-    
+
     <string-array name="settings_ntf_grade_spoiler_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
     </string-array>
-    
+
     <plurals name="duration_hours">
         <item quantity="one">%1$s hora</item>
         <item quantity="other">%1$s horas</item>

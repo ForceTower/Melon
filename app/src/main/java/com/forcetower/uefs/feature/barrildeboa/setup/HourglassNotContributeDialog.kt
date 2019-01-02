@@ -25,26 +25,32 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.util
+package com.forcetower.uefs.feature.barrildeboa.setup
 
-import android.content.Context
-import android.net.ConnectivityManager
-import com.google.gson.Gson
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.databinding.DialogHourglassNoContribBinding
+import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.google.firebase.analytics.FirebaseAnalytics
+import javax.inject.Inject
 
-fun Any.toJson(): String {
-    val gson = Gson()
-    return gson.toJson(this)
-}
+class HourglassNotContributeDialog : RoundedDialog(), Injectable {
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
 
-inline fun <reified T> String.fromJson(): T {
-    val gson = Gson()
-    return gson.fromJson(this, T::class.java)
-}
-
-fun Context.isConnectedToInternet(): Boolean {
-    val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
-            as? ConnectivityManager ?: return false
-
-    val activeNetworkInfo = manager.activeNetworkInfo
-    return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return DialogHourglassNoContribBinding.inflate(inflater, container, false).apply {
+            btnContribute.setOnClickListener {
+                analytics.logEvent("hourglass_changed_mind", null)
+                dismiss()
+            }
+            btnBack.setOnClickListener {
+                analytics.logEvent("hourglass_not_contribute_certain", null)
+                activity?.finish()
+            }
+        }.root
+    }
 }

@@ -25,26 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.util
+package com.forcetower.uefs.core.injection.module
 
-import android.content.Context
-import android.net.ConnectivityManager
-import com.google.gson.Gson
+import com.forcetower.uefs.feature.barrildeboa.setup.ContributeFragment
+import com.forcetower.uefs.feature.barrildeboa.setup.HourglassNotContributeDialog
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-fun Any.toJson(): String {
-    val gson = Gson()
-    return gson.toJson(this)
-}
-
-inline fun <reified T> String.fromJson(): T {
-    val gson = Gson()
-    return gson.fromJson(this, T::class.java)
-}
-
-fun Context.isConnectedToInternet(): Boolean {
-    val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
-            as? ConnectivityManager ?: return false
-
-    val activeNetworkInfo = manager.activeNetworkInfo
-    return activeNetworkInfo != null && activeNetworkInfo.isConnected
+@Module
+abstract class HourglassModule {
+    @ContributesAndroidInjector
+    abstract fun contributeFragment(): ContributeFragment
+    @ContributesAndroidInjector
+    abstract fun hourglassNotContributeDialog(): HourglassNotContributeDialog
 }
