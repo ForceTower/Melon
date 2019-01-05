@@ -1,7 +1,0 @@
-android.applicationVariants.all { variant ->
-    def appName = "UNES"
-
-    variant.outputs.all { output ->
-        outputFileName = "${appName}-${output.baseName}-${variant.versionName}.apk"
-    }
-}
