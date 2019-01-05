@@ -81,3 +81,5 @@ keystore_auth
 app/google-services\.json
 
 \.idea/kotlinScripting\.xml
+
+unes_uefs_publisher\.json
