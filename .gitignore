@@ -79,3 +79,5 @@ keystore_auth
 /secret/
 
 app/google-services\.json
+
+\.idea/kotlinScripting\.xml
