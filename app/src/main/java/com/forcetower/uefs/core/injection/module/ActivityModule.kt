@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.LauncherActivity
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.about.AboutActivity
+import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
@@ -63,6 +64,8 @@ abstract class ActivityModule {
     abstract fun bindSettingsActivity(): SettingsActivity
     @ContributesAndroidInjector(modules = [DemandModule::class])
     abstract fun bindDemandActivity(): DemandActivity
+    @ContributesAndroidInjector(modules = [HourglassModule::class])
+    abstract fun bindHourglassActivity(): HourglassActivity
     @ContributesAndroidInjector
     abstract fun bindGame2048Activity(): Game2048Activity
 }
