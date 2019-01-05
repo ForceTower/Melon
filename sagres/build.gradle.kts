@@ -8,7 +8,6 @@ plugins {
 
 android {
     compileSdkVersion(Versions.Android.compileSdkVersion)
-    buildToolsVersion(Versions.Android.buildToolsVersion)
     defaultConfig {
         minSdkVersion(Versions.Android.minSdkVersion)
         targetSdkVersion(Versions.Android.targetSdkVersion)
@@ -33,15 +32,6 @@ android {
     }
     lintOptions {
         isAbortOnError = false
-        textReport = true
-        textOutput("stdout")
-    }
-    kapt {
-        useBuildCache = true
-        correctErrorTypes = true
-        javacOptions {
-            option("-Xmaxerrs", 1000)
-        }
     }
 }
 
