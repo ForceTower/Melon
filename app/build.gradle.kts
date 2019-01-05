@@ -13,7 +13,7 @@ plugins {
     kotlin("kapt")
     kotlin("android.extensions")
     id("io.fabric")
-    //id("com.github.triplet.play") version Versions.playPublisher
+    id("com.github.triplet.play") version Versions.playPublisher
     id("com.google.gms.google-services") apply false
     id("org.jmailen.kotlinter")
 }
@@ -78,6 +78,12 @@ android {
         textReport = true
         textOutput("stdout")
     }
+}
+
+play {
+    serviceAccountCredentials = rootProject.file("unes_uefs_publisher.json")
+    track = "internal"
+    defaultToAppBundles = true
 }
 
 dependencies {
