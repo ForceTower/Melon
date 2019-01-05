@@ -5,8 +5,8 @@ references:
       - image: circleci/android:api-28-alpha
     working_directory: ~/unes
     enviroment:
-      JVM_OPTS: -Xmx1536m
-      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=2"
+      JVM_OPTS: -Xmx2586m
+      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=4"
       TERM: dumb
 
 jobs:
@@ -15,29 +15,40 @@ jobs:
     
     steps:
       - checkout
-      
+
       - run:
-          name: Google Services Config
-          command: echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
+          name: Decode Config Files
+          command: |
+            echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
+            echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
+            echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
       
       - run: 
           name: Downloading Dependencies
           command: |
-            ./gradlew dependencies
+            ./gradlew dependencies --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
             
       - run:
           name: Run JVM Checks & Lint
           command: |
-            ./gradlew check
-
-      - run:
-          name: Build Debug APK
-          command: |
-            ./gradlew :app:assembleDebug
+            ./gradlew clean check --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
 
       - run:
           name: Save Lint Results
           command: scripts/save_lint_results.sh
+
+      - run:
+          name: Build App or Publish
+          command: |
+            ./gradlew clean --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            if [[ "${CIRCLE_BRANCH}" == "master" ]]
+            then
+              echo "Starting the publish build!"
+              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            else
+              echo "Starting a debug build"
+              ./gradlew :app:assembleDebug --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            fi
 
       - store_artifacts:
           path: ci_results/lint

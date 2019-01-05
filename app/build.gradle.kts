@@ -1,12 +1,3 @@
-import groovy.lang.Closure
-import org.apache.tools.ant.types.optional.depend.DependScanner
-import org.gradle.kotlin.dsl.apply
-import org.gradle.kotlin.dsl.dependencies
-import org.gradle.kotlin.dsl.kotlin
-import org.gradle.kotlin.dsl.repositories
-import org.gradle.kotlin.dsl.version
-import org.gradle.kotlin.dsl.*
-
 plugins {
     id("com.android.application")
     kotlin("android")
@@ -22,7 +13,7 @@ android {
     dataBinding.isEnabled = true
 
     compileSdkVersion(Versions.Android.compileSdkVersion)
-    buildToolsVersion(Versions.Android.buildToolsVersion)
+
     defaultConfig {
         applicationId = Config.applicationId
         minSdkVersion(Versions.Android.minSdkVersion)
@@ -63,10 +54,12 @@ android {
     }
     kapt {
         useBuildCache = true
-        correctErrorTypes = true
         javacOptions {
             option("-Xmaxerrs", 1000)
         }
+    }
+    dexOptions {
+        preDexLibraries = true
     }
 
     compileOptions {
@@ -75,8 +68,6 @@ android {
     }
     lintOptions {
         isAbortOnError = true
-        textReport = true
-        textOutput("stdout")
     }
 }
 
