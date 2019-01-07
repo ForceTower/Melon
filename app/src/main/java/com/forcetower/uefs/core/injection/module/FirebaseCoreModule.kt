@@ -28,9 +28,13 @@
 package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
+import com.forcetower.uefs.BuildConfig
+import com.forcetower.uefs.R
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
@@ -52,4 +56,18 @@ object FirebaseCoreModule {
     @Reusable
     @JvmStatic
     fun provideAnalytics(context: Context): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
+
+    @Provides
+    @Reusable
+    @JvmStatic
+    fun provideRemoteConfig(): FirebaseRemoteConfig {
+        val config = FirebaseRemoteConfig.getInstance()
+        val settings = FirebaseRemoteConfigSettings.Builder()
+                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .build()
+
+        config.setConfigSettings(settings)
+        config.setDefaults(R.xml.remote_config_defaults)
+        return config
+    }
 }

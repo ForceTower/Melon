@@ -73,6 +73,7 @@ object Versions {
     const val firebaseMessaging = "17.3.4"
     const val firebaseFirestore = "17.1.5"
     const val firebaseStorage = "16.0.5"
+    const val firebaseRemoteConfig = "16.1.2"
     const val firebaseUiStorage = "4.2.0"
 
 
