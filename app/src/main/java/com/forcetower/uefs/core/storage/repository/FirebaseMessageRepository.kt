@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
@@ -38,9 +39,11 @@ import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
 import com.forcetower.uefs.service.NotificationCreator
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
 import javax.inject.Inject
@@ -56,7 +59,9 @@ class FirebaseMessageRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val context: Context,
     private val syncRepository: SagresSyncRepository,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val firebaseMessaging: FirebaseMessaging,
+    private val executors: AppExecutors
 ) {
     fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
@@ -247,5 +252,17 @@ class FirebaseMessageRepository @Inject constructor(
             Timber.d("Disconnected")
         }
         preferences.edit().putString("current_firebase_token", token).apply()
+    }
+
+    fun subscribe(topics: Array<out String>) {
+        executors.networkIO().execute {
+            topics.map { firebaseMessaging.subscribeToTopic(it) }.forEach { task ->
+                try {
+                    Tasks.await(task)
+                } catch (t: Throwable) {
+                    Crashlytics.logException(t)
+                }
+            }
+        }
     }
 }
