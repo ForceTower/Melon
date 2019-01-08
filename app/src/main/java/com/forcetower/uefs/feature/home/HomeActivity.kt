@@ -47,10 +47,10 @@ import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
+import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
-import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
@@ -89,7 +89,12 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
         if (savedInstanceState == null) {
             onActivityStart()
+            subscribeToTopics()
         }
+    }
+
+    private fun subscribeToTopics() {
+        viewModel.subscribeToTopics("events", "messages", "general")
     }
 
     private fun onActivityStart() {
