@@ -384,6 +384,8 @@
     <string name="sku_price_format">%1$s %2$s</string>
     <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
     <string name="you_bought_this_item">Você comprou o %1$s</string>
+    <string name="label_services_follow_up">Solicitações de Serviços</string>
+    <string name="no_services_to_follow_up">Não existem documentos nesta categoria</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
