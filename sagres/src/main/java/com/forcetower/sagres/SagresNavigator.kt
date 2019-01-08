@@ -122,10 +122,10 @@ abstract class SagresNavigator {
     abstract fun createDemandOffer(offers: List<SDemandOffer>): DemandCreatorCallback
 
     @AnyThread
-    abstract fun aGetRequestedServices(): LiveData<RequestedServicesCallback>
+    abstract fun aGetRequestedServices(login: Boolean = false): LiveData<RequestedServicesCallback>
 
     @WorkerThread
-    abstract fun getRequestedServices(): RequestedServicesCallback
+    abstract fun getRequestedServices(login: Boolean = false): RequestedServicesCallback
 
     @AnyThread
     abstract fun stopTags(tag: String)

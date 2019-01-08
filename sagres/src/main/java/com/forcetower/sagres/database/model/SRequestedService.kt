@@ -25,19 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.sagres.operation.servicerequest
+package com.forcetower.sagres.database.model
 
-import com.forcetower.sagres.database.model.SRequestedService
-import com.forcetower.sagres.operation.BaseCallback
-import com.forcetower.sagres.operation.Status
-
-class RequestedServicesCallback(status: Status) : BaseCallback<RequestedServicesCallback>(status) {
-    private var services: List<SRequestedService> = emptyList()
-
-    fun services(services: List<SRequestedService>): RequestedServicesCallback {
-        this.services = services
-        return this
-    }
-
-    fun services(): List<SRequestedService> = services
-}
+data class SRequestedService(
+    val service: String = "",
+    val date: String = "",
+    val amount: Int = 0,
+    val situation: String = "",
+    val value: String = "",
+    val observation: String = "",
+    val correct: Boolean = true
+)

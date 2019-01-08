@@ -360,14 +360,14 @@ private constructor(context: Context) : SagresNavigator() {
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun aGetRequestedServices(): LiveData<RequestedServicesCallback> {
-        return RequestedServicesOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
+    override fun aGetRequestedServices(login: Boolean): LiveData<RequestedServicesCallback> {
+        return RequestedServicesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), login).result
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun getRequestedServices(): RequestedServicesCallback {
-        return RequestedServicesOperation(null).finishedResult
+    override fun getRequestedServices(login: Boolean): RequestedServicesCallback {
+        return RequestedServicesOperation(null, login).finishedResult
     }
 
     companion object {

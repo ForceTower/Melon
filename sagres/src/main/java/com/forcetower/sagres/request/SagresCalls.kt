@@ -153,4 +153,8 @@ object SagresCalls {
         val request = SagresRequests.createDemandWithParams(body)
         return getCall(request)
     }
+
+    fun getRequestedServices(): Call {
+        return getCall(SagresRequests.getRequestedServices())
+    }
 }
