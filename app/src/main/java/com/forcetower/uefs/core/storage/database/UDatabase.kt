@@ -69,6 +69,7 @@ import com.forcetower.uefs.core.storage.database.dao.GradeDao
 import com.forcetower.uefs.core.storage.database.dao.MessageDao
 import com.forcetower.uefs.core.storage.database.dao.ProfileDao
 import com.forcetower.uefs.core.storage.database.dao.SemesterDao
+import com.forcetower.uefs.core.storage.database.dao.ServiceRequestDao
 import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
 
 @Database(entities = [
@@ -115,4 +116,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun demandOfferDao(): DemandOfferDao
     abstract fun flagsDao(): FlagsDao
     abstract fun contributorDao(): ContributorDao
+    abstract fun serviceRequestDao(): ServiceRequestDao
 }

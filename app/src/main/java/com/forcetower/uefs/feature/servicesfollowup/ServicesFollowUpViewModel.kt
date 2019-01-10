@@ -32,8 +32,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.repository.ServicesFollowUpRepository
 import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 
 class ServicesFollowUpViewModel @Inject constructor(
@@ -44,18 +47,23 @@ class ServicesFollowUpViewModel @Inject constructor(
     val refreshing: LiveData<Boolean>
         get() = _refreshing
 
-    private val _pendingServices = MediatorLiveData<Resource<List<SRequestedService>>>()
-    val pendingServices: LiveData<Resource<List<SRequestedService>>>
+    private val _pendingServices = MediatorLiveData<Event<Resource<List<SRequestedService>>>>()
+    val pendingServices: LiveData<Event<Resource<List<SRequestedService>>>>
         get() = _pendingServices
 
-    private fun onRefresh() {
+    fun onRefresh() {
         if (_refreshing.value != true) {
             _refreshing.value = true
             val data = repository.getPendingServices()
             _pendingServices.addSource(data) { change ->
-                _pendingServices.value = change
-                _refreshing.value = false
+                _pendingServices.value = Event(change)
+                if (change.status == Status.ERROR || change.status == Status.SUCCESS) {
+                    _pendingServices.removeSource(data)
+                    _refreshing.value = false
+                }
             }
         }
     }
+
+    fun getRequestedServices(filter: String?): LiveData<List<ServiceRequest>> = repository.getRequestedServices(filter)
 }

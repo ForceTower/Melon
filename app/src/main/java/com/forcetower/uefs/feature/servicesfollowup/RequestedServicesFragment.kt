@@ -31,51 +31,56 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.DividerItemDecoration
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.ContentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.databinding.FragmentServicesFollowupBinding
-import com.forcetower.uefs.feature.shared.NamedFragmentAdapter
+import com.forcetower.uefs.widget.DividerItemDecorator
 import javax.inject.Inject
 
-class ServicesFollowUpFragment : UFragment(), Injectable {
+class RequestedServicesFragment : UFragment(), Injectable {
+    companion object {
+        private const val FILTER_TYPE = "requested_services_filter"
+        fun newInstance(filter: String? = null): RequestedServicesFragment {
+            return RequestedServicesFragment().apply {
+                arguments = bundleOf(FILTER_TYPE to filter)
+            }
+        }
+    }
+
     @Inject
     lateinit var factory: UViewModelFactory
     lateinit var viewModel: ServicesFollowUpViewModel
-    lateinit var binding: FragmentServicesFollowupBinding
+    lateinit var binding: ContentServicesFollowupBinding
+
+    private val adapter by lazy { ServicesFollowUpAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
-        return FragmentServicesFollowupBinding.inflate(inflater, container, false).also {
+        return ContentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
-        }.apply {
-            viewModel = this@ServicesFollowUpFragment.viewModel
-            setLifecycleOwner(this@ServicesFollowUpFragment)
-            executePendingBindings()
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val pager = binding.pagerServices
-        val tabs = binding.tabLayout
-
-        pager.adapter = NamedFragmentAdapter(childFragmentManager, listOf(
-            getString(R.string.service_requests_all) to RequestedServicesFragment.newInstance(),
-            getString(R.string.service_requests_completed) to RequestedServicesFragment.newInstance("atendido")
-        ))
-        tabs.setupWithViewPager(pager)
+        binding.recyclerServices.run {
+            adapter = this@RequestedServicesFragment.adapter
+            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.HORIZONTAL))
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.pendingServices.observe(this, EventObserver {
-            if (it.status == Status.ERROR) {
-                showSnack(getString(R.string.service_requests_load_failed))
-            }
+        val filter = arguments?.getString(FILTER_TYPE)
+        viewModel.getRequestedServices(filter).observe(this, Observer {
+            binding.empty = it.isEmpty()
+            binding.executePendingBindings()
+            adapter.submitList(it)
         })
     }
 }

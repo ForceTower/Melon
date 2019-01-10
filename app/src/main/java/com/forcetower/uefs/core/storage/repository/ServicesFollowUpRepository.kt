@@ -34,6 +34,7 @@ import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
 import javax.inject.Inject
@@ -51,11 +52,24 @@ class ServicesFollowUpRepository @Inject constructor(
         executors.networkIO().execute {
             val callback = SagresNavigator.instance.getRequestedServices()
             val resource = when (callback.status) {
-                Status.SUCCESS -> Resource.success(callback.services())
+                Status.SUCCESS -> {
+                    val list = callback.services().map { ServiceRequest.fromSagres(it) }
+                    database.serviceRequestDao().insertList(list)
+                    database.serviceRequestDao().markAllNotified()
+                    Resource.success(callback.services())
+                }
                 else -> Resource.error("Failed to load", callback.services())
             }
             result.postValue(resource)
         }
         return result
+    }
+
+    fun getRequestedServices(filter: String?): LiveData<List<ServiceRequest>> {
+        return if (filter == null) {
+            database.serviceRequestDao().getAll()
+        } else {
+            database.serviceRequestDao().getFiltered(filter)
+        }
     }
 }

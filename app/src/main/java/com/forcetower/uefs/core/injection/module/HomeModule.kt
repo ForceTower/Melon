@@ -44,6 +44,7 @@ import com.forcetower.uefs.feature.purchases.PurchasesFragment
 import com.forcetower.uefs.feature.reminders.CreateReminderDialog
 import com.forcetower.uefs.feature.reminders.RemindersFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
+import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment
 import dagger.Module
@@ -89,4 +90,6 @@ abstract class HomeModule {
     abstract fun purchasesFragment(): PurchasesFragment
     @ContributesAndroidInjector
     abstract fun servicesFollowUpFragment(): ServicesFollowUpFragment
+    @ContributesAndroidInjector
+    abstract fun requestedServicesFragment(): RequestedServicesFragment
 }
