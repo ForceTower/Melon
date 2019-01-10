@@ -53,12 +53,12 @@ class ServicesFollowUpRepository @Inject constructor(
             val callback = SagresNavigator.instance.getRequestedServices()
             val resource = when (callback.status) {
                 Status.SUCCESS -> {
-                    val list = callback.services().map { ServiceRequest.fromSagres(it) }
+                    val list = callback.services.map { ServiceRequest.fromSagres(it) }
                     database.serviceRequestDao().insertList(list)
                     database.serviceRequestDao().markAllNotified()
-                    Resource.success(callback.services())
+                    Resource.success(callback.services)
                 }
-                else -> Resource.error("Failed to load", callback.services())
+                else -> Resource.error("Failed to load", callback.services)
             }
             result.postValue(resource)
         }
