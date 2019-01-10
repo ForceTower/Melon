@@ -32,12 +32,11 @@ import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 
 class RequestedServicesCallback(status: Status) : BaseCallback<RequestedServicesCallback>(status) {
-    private var services: List<SRequestedService> = emptyList()
+    var services: List<SRequestedService> = emptyList()
+        private set
 
     fun services(services: List<SRequestedService>): RequestedServicesCallback {
         this.services = services
         return this
     }
-
-    fun services(): List<SRequestedService> = services
 }

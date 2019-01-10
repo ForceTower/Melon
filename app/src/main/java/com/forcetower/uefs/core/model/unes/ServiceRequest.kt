@@ -47,10 +47,10 @@ data class ServiceRequest(
     val service: String,
     val date: String,
     val amount: Int,
-    val situation: String,
+    var situation: String,
     val value: String,
-    val observation: String,
-    val notify: Int
+    var observation: String,
+    var notify: Int
 ) {
     companion object {
         fun fromSagres(request: SRequestedService): ServiceRequest {
