@@ -30,30 +30,54 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
+import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.uefs.core.model.unes.ServiceRequest
+import timber.log.Timber
 
 @Dao
-interface ServiceRequestDao {
+abstract class ServiceRequestDao {
     @Insert(onConflict = REPLACE)
-    fun insert(service: ServiceRequest)
+    abstract fun insert(service: ServiceRequest)
 
-    @Insert(onConflict = REPLACE)
-    fun insertList(list: List<ServiceRequest>)
+    @Transaction
+    fun insertList(list: List<ServiceRequest>) {
+        list.forEach {
+            val existing = getSpecificDirect(it.date, it.service)
+            if (existing != null && !existing.situation.equals(it.situation, ignoreCase = true)) {
+                existing.observation = it.observation
+                existing.situation = it.situation
+                existing.notify = 2
+                updateServiceRequest(existing)
+            } else if (existing == null) {
+                insert(it)
+            } else {
+                Timber.d("Ignored ${it.service} at ${it.date} because no change was detected")
+            }
+        }
+    }
 
-    @Query("SELECT * FROM ServiceRequest WHERE date = :date AND LOWER(service) = LOWER(:service)")
-    fun getSpecificDirect(date: String, service: String): ServiceRequest?
+    @Update(onConflict = IGNORE)
+    abstract fun updateServiceRequest(service: ServiceRequest)
+
+    @Query("SELECT * FROM ServiceRequest WHERE date = :date AND LOWER(service) = LOWER(:service) LIMIT 1")
+    protected abstract fun getSpecificDirect(date: String, service: String): ServiceRequest?
+
+    @Query("SELECT * FROM ServiceRequest WHERE notify = 1")
+    abstract fun getCreatedDirect(): List<ServiceRequest>
+
+    @Query("SELECT * FROM ServiceRequest WHERE notify = 2")
+    abstract fun getStatusChangedDirect(): List<ServiceRequest>
 
     @Query("SELECT * FROM ServiceRequest")
-    fun getAllDirect(): List<ServiceRequest>
-
-    @Query("SELECT * FROM ServiceRequest")
-    fun getAll(): LiveData<List<ServiceRequest>>
+    abstract fun getAll(): LiveData<List<ServiceRequest>>
 
     @Query("SELECT * FROM ServiceRequest WHERE LOWER(situation) = LOWER(:filter)")
-    fun getFiltered(filter: String): LiveData<List<ServiceRequest>>
+    abstract fun getFiltered(filter: String): LiveData<List<ServiceRequest>>
 
     @Query("UPDATE ServiceRequest SET notify = 0")
-    fun markAllNotified()
+    abstract fun markAllNotified()
 }

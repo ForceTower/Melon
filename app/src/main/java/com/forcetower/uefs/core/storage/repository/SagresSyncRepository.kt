@@ -45,6 +45,7 @@ import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.database.model.SDisciplineMissedClass
 import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.database.model.SPerson
+import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
@@ -58,6 +59,7 @@ import com.forcetower.uefs.core.model.unes.NetworkType
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -203,6 +205,7 @@ class SagresSyncRepository @Inject constructor(
         if (!semesters(person.id)) result += 1 shl 2
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
+        if (!servicesRequest()) result += 1 shl 5
 
         try {
             val day = preferences.getInt("sync_daily_update", -1)
@@ -343,6 +346,40 @@ class SagresSyncRepository @Inject constructor(
                 false
             }
         }
+    }
+
+    @WorkerThread
+    private fun servicesRequest(): Boolean {
+        val services = SagresNavigator.instance.getRequestedServices()
+        return when (services.status) {
+            Status.SUCCESS -> {
+                defineServices(services.services)
+
+                Timber.d("Services Requested: ${services.services}")
+
+                servicesNotifications()
+                true
+            }
+            else -> {
+                produceErrorMessage(services)
+                false
+            }
+        }
+    }
+
+    private fun servicesNotifications() {
+        database.serviceRequestDao().run {
+            // TODO Implement service request notifications
+            val created = getCreatedDirect()
+            val updated = getStatusChangedDirect()
+
+            markAllNotified()
+        }
+    }
+
+    private fun defineServices(services: List<SRequestedService>) {
+        val list = services.map { ServiceRequest.fromSagres(it) }
+        database.serviceRequestDao().insertList(list)
     }
 
     private fun frequencyNotifications() {
