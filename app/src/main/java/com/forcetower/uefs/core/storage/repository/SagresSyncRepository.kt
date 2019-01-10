@@ -367,9 +367,11 @@ class SagresSyncRepository @Inject constructor(
 
     private fun servicesNotifications() {
         database.serviceRequestDao().run {
-            // TODO Implement service request notifications
             val created = getCreatedDirect()
             val updated = getStatusChangedDirect()
+
+            created.forEach { NotificationCreator.createServiceRequestNotification(context, it, false) }
+            updated.forEach { NotificationCreator.createServiceRequestNotification(context, it, true) }
 
             markAllNotified()
         }

@@ -90,7 +90,7 @@ object Versions {
     }
 
     object Network {
-        const val okhttp = "3.11.0"
+        const val okhttp = "3.12.1"
         const val retrofit = "2.4.0"
         const val cookieJar = "v1.0.1"
     }
