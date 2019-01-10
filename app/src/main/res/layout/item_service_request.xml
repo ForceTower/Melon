@@ -31,58 +31,57 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="android.view.View"/>
-
         <variable
-            name="empty"
-            type="Boolean"/>
+            name="request"
+            type="com.forcetower.uefs.core.model.unes.ServiceRequest" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recycler_services"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:clipToPadding="false"
-            android:paddingBottom="16dp"
-            android:visibility="@{empty ? View.GONE : View.VISIBLE}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        <ImageView
+            android:id="@+id/image"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="16dp"
+            android:importantForAccessibility="no"
+            app:requestedServiceImage="@{request.situation}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            tools:listitem="@layout/item_service_request"/>
+            tools:src="@drawable/ic_check_black_24dp"/>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:visibility="@{empty ? View.GONE : View.VISIBLE}"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{request.service}"
+            android:textColor="@color/text_primary_dark"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toStartOf="@+id/image"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:orientation="vertical"
-            tools:visibility="gone">
+            tools:text="Histórico (Justificar Pedido)" />
 
-            <ImageView
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:scaleType="centerInside"
-                android:importantForAccessibility="no"
-                android:src="@mipmap/documents"/>
+        <TextView
+            android:id="@+id/situation"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="16dp"
+            android:text="@{request.situation}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/image"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/title"
+            tools:text="Enviado para o colegiado" />
 
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textAlignment="gravity"
-                android:gravity="center"
-                android:textSize="16sp"
-                android:textColor="@color/text_primary_dark"
-                android:text="@string/no_services_to_follow_up"
-                android:padding="16dp"/>
-        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 </layout>
