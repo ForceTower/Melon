@@ -66,6 +66,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
         const val EXTRA_GRADES_DIRECTION = "grades"
         const val EXTRA_DEMAND_DIRECTION = "demand"
+        const val EXTRA_REQUEST_SERVICE_DIRECTION = "request_service"
     }
 
     @Inject
@@ -107,10 +108,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                     action = BigTrayService.STOP_SERVICE_ACTION
                 }
                 startService(intent)
-
                 R.id.big_tray
             }
             EXTRA_DEMAND_DIRECTION -> R.id.demand
+            EXTRA_REQUEST_SERVICE_DIRECTION -> R.id.request_services
             else -> null
         }
 

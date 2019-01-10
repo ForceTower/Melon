@@ -58,6 +58,11 @@
             android:icon="@drawable/ic_calendar_black_24dp"/>
 
         <item
+            android:id="@+id/request_services"
+            android:title="@string/label_services_follow_up"
+            android:icon="@drawable/ic_receipt_black_24dp"/>
+
+        <item
             android:id="@+id/purchases"
             android:title="@string/label_purchases"
             android:icon="@drawable/ic_gift_card_black_24dp"/>

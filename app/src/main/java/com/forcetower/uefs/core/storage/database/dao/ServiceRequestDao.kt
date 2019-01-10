@@ -53,6 +53,7 @@ abstract class ServiceRequestDao {
                 existing.notify = 2
                 updateServiceRequest(existing)
             } else if (existing == null) {
+                if (it.situation.equals("atendido", ignoreCase = true)) it.notify = 2
                 insert(it)
             } else {
                 Timber.d("Ignored ${it.service} at ${it.date} because no change was detected")
