@@ -354,9 +354,7 @@ class SagresSyncRepository @Inject constructor(
         return when (services.status) {
             Status.SUCCESS -> {
                 defineServices(services.services)
-
                 Timber.d("Services Requested: ${services.services}")
-
                 servicesNotifications()
                 true
             }
