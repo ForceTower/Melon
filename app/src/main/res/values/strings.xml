@@ -389,6 +389,12 @@
     <string name="service_requests_all">Todos</string>
     <string name="service_requests_completed">Completos</string>
     <string name="service_requests_load_failed">Falha ao carregar serviços</string>
+    <string name="channel_group_service_request">Solicitações de Serviço</string>
+    <string name="channel_svc_req_create">Serviço cadastrado</string>
+    <string name="channel_svc_req_update">Mudança de status</string>
+    <string name="service_requests_ntf_title">Situação da Solicitação</string>
+    <string name="service_requests_ntf_update_format">A solicitação %1$s teve situação alterada para %2$s</string>
+    <string name="service_requests_ntf_create_format">A solicitação %1$s está sendo observada pelo UNES</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
