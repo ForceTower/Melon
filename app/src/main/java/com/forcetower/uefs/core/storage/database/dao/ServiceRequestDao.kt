@@ -44,7 +44,7 @@ abstract class ServiceRequestDao {
     abstract fun insert(service: ServiceRequest)
 
     @Transaction
-    fun insertList(list: List<ServiceRequest>) {
+    open fun insertList(list: List<ServiceRequest>) {
         list.forEach {
             val existing = getSpecificDirect(it.date, it.service)
             if (existing != null && !existing.situation.equals(it.situation, ignoreCase = true)) {

@@ -48,6 +48,7 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.dao.AccessDao
@@ -93,8 +94,9 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     Teacher::class,
     SDemandOffer::class,
     SagresFlags::class,
-    Contributor::class
-], version = 8, exportSchema = true)
+    Contributor::class,
+    ServiceRequest::class
+], version = 9, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
