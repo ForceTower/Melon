@@ -63,6 +63,8 @@ import com.forcetower.sagres.operation.person.PersonCallback
 import com.forcetower.sagres.operation.person.PersonOperation
 import com.forcetower.sagres.operation.semester.SemesterCallback
 import com.forcetower.sagres.operation.semester.SemesterOperation
+import com.forcetower.sagres.operation.servicerequest.RequestedServicesCallback
+import com.forcetower.sagres.operation.servicerequest.RequestedServicesOperation
 import com.forcetower.sagres.operation.start_page.StartPageCallback
 import com.forcetower.sagres.operation.start_page.StartPageOperation
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
@@ -354,6 +356,18 @@ private constructor(context: Context) : SagresNavigator() {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun createDemandOffer(offers: List<SDemandOffer>): DemandCreatorCallback {
         return CreateDemandOperation(offers, null).finishedResult
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aGetRequestedServices(login: Boolean): LiveData<RequestedServicesCallback> {
+        return RequestedServicesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), login).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun getRequestedServices(login: Boolean): RequestedServicesCallback {
+        return RequestedServicesOperation(null, login).finishedResult
     }
 
     companion object {

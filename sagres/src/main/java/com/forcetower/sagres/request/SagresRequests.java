@@ -192,4 +192,13 @@ public class SagresRequests {
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
     }
+
+    @NotNull
+    public static Request getRequestedServices() {
+        return new Request.Builder()
+                .url(Constants.SAGRES_REQUESTED_SERVICES)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
 }
