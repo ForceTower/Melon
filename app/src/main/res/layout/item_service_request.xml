@@ -68,6 +68,17 @@
             tools:text="Histórico (Justificar Pedido)" />
 
         <TextView
+            android:id="@+id/date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:text="@{request.date}"
+            app:layout_constraintBottom_toBottomOf="@+id/situation"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/situation"
+            tools:text="28/09/2018" />
+
+        <TextView
             android:id="@+id/situation"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
@@ -78,7 +89,7 @@
             android:text="@{request.situation}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/image"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/date"
             app:layout_constraintTop_toBottomOf="@+id/title"
             tools:text="Enviado para o colegiado" />
 

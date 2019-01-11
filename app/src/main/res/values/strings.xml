@@ -395,6 +395,7 @@
     <string name="service_requests_ntf_title">Situação da Solicitação</string>
     <string name="service_requests_ntf_update_format">A solicitação %1$s teve situação alterada para %2$s</string>
     <string name="service_requests_ntf_create_format">A solicitação %1$s está sendo observada pelo UNES</string>
+    <string name="service_requests_incomplete">Pendentes</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
