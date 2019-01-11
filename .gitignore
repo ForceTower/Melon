@@ -1,6 +1,7 @@
 # Built application files
 *.apk
 *.ap_
+*.aab
 
 # Files for the ART/Dalvik VM
 *.dex
@@ -34,11 +35,7 @@ captures/
 
 # Intellij
 *.iml
-.idea/workspace.xml
-.idea/tasks.xml
-.idea/gradle.xml
-.idea/dictionaries
-.idea/libraries
+.idea
 
 # Keystore files
 *.jks
@@ -51,35 +48,9 @@ freeline.py
 freeline/
 freeline_project_description.json
 
-# Intellij Stuff
-/.idea/encodings.xml
-/.idea/misc.xml
-/.idea/modules.xml
-/.idea/runConfigurations.xml
-/.idea/vcs.xml
-/.idea/inspectionProfiles/Project_Default.xml
-/.idea/kotlinc.xml
-/.idea/codeStyles/Project.xml
-/.idea/caches/build_file_checksums.ser
-/.idea/assetWizardSettings.xml
-/app/src/main/res/drawable/Thumbs.db
-/app/src/main/res/values/ids.xml
-/.idea/navEditor.xml
-/app/release/
-/.idea/copyright/profiles_settings.xml
-/.idea/copyright/UNES.xml
+# API Keys
+unes_uefs_publisher.json
+google-services.json
 
-/google_play_console_auth.json
-/app/src/main/play
-/.idea/codeStyles/codeStyleConfig.xml
-/.idea/inspectionProfiles/ktlint.xml
-/.idea/inspectionProfiles/profiles_settings.xml
-
-keystore_auth
-/secret/
-
-app/google-services\.json
-
-\.idea/kotlinScripting\.xml
-
-unes_uefs_publisher\.json
+app/src/main/play/*
+!app/src/main/play/release-notes/*
