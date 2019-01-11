@@ -76,3 +76,10 @@ object M7TO8 : Migration(7, 8) {
         database.execSQL("ALTER TABLE Class ADD COLUMN schedule_only INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+object M8TO9 : Migration(8, 9) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS ServiceRequest (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `service` TEXT NOT NULL, `date` TEXT NOT NULL, `amount` INTEGER NOT NULL, `situation` TEXT NOT NULL, `value` TEXT NOT NULL, `observation` TEXT NOT NULL, `notify` INTEGER NOT NULL)")
+        database.execSQL("CREATE UNIQUE INDEX `service_uniqueness` ON ServiceRequest (`service`, `date`)")
+    }
+}

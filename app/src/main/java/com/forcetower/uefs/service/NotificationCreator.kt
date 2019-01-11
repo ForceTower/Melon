@@ -42,6 +42,7 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
@@ -278,6 +279,31 @@ object NotificationCreator {
         showNotification(context, 7569, builder)
     }
 
+    fun createServiceRequestNotification(context: Context, service: ServiceRequest, update: Boolean) {
+        val preference = if (update) "stg_ntf_svc_req_update" else "stg_ntf_svc_req_create"
+        if (!shouldShowNotification(preference, context, default = update)) return
+
+        val channel = if (update) NotificationHelper.CHANNEL_SVC_REQ_UPDATE_ID else NotificationHelper.CHANNEL_SVC_REQ_CREATE_ID
+        val title = context.getString(R.string.service_requests_ntf_title)
+        val message = when (update) {
+            true -> {
+                context.getString(R.string.service_requests_ntf_update_format, service.service, service.situation)
+            }
+            false -> {
+                context.getString(R.string.service_requests_ntf_create_format, service.service)
+            }
+        }
+
+        val builder = notificationBuilder(context, channel)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setColor(ContextCompat.getColor(context, R.color.teal))
+                .setContentIntent(createDirectionsIntent(context, HomeActivity.EXTRA_REQUEST_SERVICE_DIRECTION))
+
+        addOptions(context, builder)
+        showNotification(context, service.uid + message.hashCode(), builder)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
@@ -389,6 +415,17 @@ object NotificationCreator {
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createDirectionsIntent(ctx: Context, direction: String): PendingIntent {
+        val intent = Intent(ctx, HomeActivity::class.java).apply {
+            putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, direction)
+        }
+
+        return TaskStackBuilder.create(ctx)
+                .addParentStack(HomeActivity::class.java)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun shouldShowNotification(value: String, context: Context, default: Boolean = true): Boolean {
