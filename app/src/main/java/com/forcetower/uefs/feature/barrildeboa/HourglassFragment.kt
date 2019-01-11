@@ -51,6 +51,7 @@ class HourglassFragment : UFragment() {
         val direction = when (state) {
             0 -> R.id.action_hourglass_init_to_hourglass_landing
             1 -> R.id.action_hourglass_init_to_hourglass_contribute
+            2 -> R.id.action_hourglass_init_to_development
             else -> R.id.action_hourglass_init_to_hourglass_landing
         }
 
