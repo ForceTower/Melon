@@ -79,6 +79,9 @@ abstract class ServiceRequestDao {
     @Query("SELECT * FROM ServiceRequest WHERE LOWER(situation) = LOWER(:filter)")
     abstract fun getFiltered(filter: String): LiveData<List<ServiceRequest>>
 
+    @Query("SELECT * FROM ServiceRequest WHERE LOWER(situation) <> 'atendido'")
+    abstract fun getIncomplete(): LiveData<List<ServiceRequest>>
+
     @Query("UPDATE ServiceRequest SET notify = 0")
     abstract fun markAllNotified()
 }

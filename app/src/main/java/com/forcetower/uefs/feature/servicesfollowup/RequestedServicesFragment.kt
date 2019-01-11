@@ -70,7 +70,7 @@ class RequestedServicesFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.recyclerServices.run {
             adapter = this@RequestedServicesFragment.adapter
-            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.HORIZONTAL))
+            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.VERTICAL))
         }
     }
 

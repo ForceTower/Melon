@@ -68,6 +68,8 @@ class ServicesFollowUpRepository @Inject constructor(
     fun getRequestedServices(filter: String?): LiveData<List<ServiceRequest>> {
         return if (filter == null) {
             database.serviceRequestDao().getAll()
+        } else if (filter.equals("incomplete", ignoreCase = true)) {
+            database.serviceRequestDao().getIncomplete()
         } else {
             database.serviceRequestDao().getFiltered(filter)
         }

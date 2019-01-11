@@ -64,8 +64,9 @@ class ServicesFollowUpFragment : UFragment(), Injectable {
         val tabs = binding.tabLayout
 
         pager.adapter = NamedFragmentAdapter(childFragmentManager, listOf(
-            getString(R.string.service_requests_all) to RequestedServicesFragment.newInstance(),
-            getString(R.string.service_requests_completed) to RequestedServicesFragment.newInstance("atendido")
+            getString(R.string.service_requests_incomplete) to RequestedServicesFragment.newInstance("incomplete"),
+            getString(R.string.service_requests_completed) to RequestedServicesFragment.newInstance("atendido"),
+            getString(R.string.service_requests_all) to RequestedServicesFragment.newInstance()
         ))
         tabs.setupWithViewPager(pager)
     }
