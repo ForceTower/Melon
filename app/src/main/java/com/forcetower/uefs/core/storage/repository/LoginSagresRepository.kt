@@ -220,31 +220,52 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun grades(data: MediatorLiveData<Callback>) {
+        Timber.d("Grades Fetch!")
         val grades = SagresNavigator.instance.aGetCurrentGrades()
         currentStep.value = createStep(R.string.step_fetching_grades)
         data.addSource(grades) { g ->
-            if (g.status == Status.SUCCESS) {
-                data.removeSource(grades)
+            when {
+                g.status == Status.SUCCESS -> {
+                    data.removeSource(grades)
 
-                Timber.d("Grades received: ${g.grades}")
-                Timber.d("Frequency: ${g.frequency}")
-                Timber.d("Semesters: ${g.semesters}")
+                    Timber.d("Grades received: ${g.grades}")
+                    Timber.d("Frequency: ${g.frequency}")
+                    Timber.d("Semesters: ${g.semesters}")
 
-                executor.diskIO().execute {
-                    defineSemesters(g.semesters)
-                    defineGrades(g.grades)
-                    defineFrequency(g.frequency)
-                    database.gradesDao().markAllNotified()
-                    defineGradesWorkers(g.semesters.map { pair -> pair.first })
-                    data.postValue(Callback.Builder(g.status).document(g.document).build())
+                    executor.diskIO().execute {
+                        defineSemesters(g.semesters)
+                        defineGrades(g.grades)
+                        defineFrequency(g.frequency)
+                        database.gradesDao().markAllNotified()
+                        Timber.d("Execute default")
+                        val result = SagresNavigator.instance.getRequestedServices()
+                        Timber.d("Result: ${result.status}")
+                        defineGradesWorkers(g.semesters.map { pair -> pair.first })
+                        data.postValue(Callback.Builder(g.status).document(g.document).build())
+                    }
                 }
-            } else {
-                data.value = Callback.Builder(Status.GRADES_FAILED)
-                        .code(g.code)
-                        .message(g.message)
-                        .throwable(g.throwable)
-                        .document(g.document)
-                        .build()
+                g.status == Status.LOADING -> {
+                    data.value = Callback.Builder(g.status)
+                            .code(g.code)
+                            .message(g.message)
+                            .throwable(g.throwable)
+                            .document(g.document)
+                            .build()
+                }
+                else -> {
+                    Timber.d("Data status: ${g.status} ${g.code} ${g.throwable?.message}")
+                    executor.diskIO().execute {
+                        Timber.d("Execute default")
+                        val result = SagresNavigator.instance.getRequestedServices()
+                        Timber.d("Result: ${result.status}")
+                    }
+                    data.value = Callback.Builder(Status.GRADES_FAILED)
+                            .code(g.code)
+                            .message(g.message)
+                            .throwable(g.throwable)
+                            .document(g.document)
+                            .build()
+                }
             }
         }
     }

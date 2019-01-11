@@ -44,6 +44,7 @@ import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.messages.MessagesCallback
 import com.forcetower.sagres.operation.person.PersonCallback
 import com.forcetower.sagres.operation.semester.SemesterCallback
+import com.forcetower.sagres.operation.servicerequest.RequestedServicesCallback
 import com.forcetower.sagres.operation.start_page.StartPageCallback
 import org.jsoup.nodes.Document
 import java.io.File
@@ -119,6 +120,12 @@ abstract class SagresNavigator {
 
     @WorkerThread
     abstract fun createDemandOffer(offers: List<SDemandOffer>): DemandCreatorCallback
+
+    @AnyThread
+    abstract fun aGetRequestedServices(login: Boolean = false): LiveData<RequestedServicesCallback>
+
+    @WorkerThread
+    abstract fun getRequestedServices(login: Boolean = false): RequestedServicesCallback
 
     @AnyThread
     abstract fun stopTags(tag: String)
