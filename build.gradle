@@ -5,8 +5,9 @@ buildscript {
         classpath deps.plugin.android
         classpath deps.plugin.kotlin
 		classpath deps.plugin.google_play_services
-		classpath deps.fabric
-		classpath deps.kotlinter
+		classpath deps.plugin.fabric
+		classpath deps.plugin.kotlinter
+		classpath deps.plugin.play_publisher
         classpath deps.navigation.safe_args_plugin
     }
 }
@@ -24,4 +25,10 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+apply from: "versioning.gradle"
+
+repositories {
+    google()
 }

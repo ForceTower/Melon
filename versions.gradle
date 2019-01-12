@@ -68,6 +68,7 @@ versions.kotlin = "1.3.11"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.26.1"
 versions.kotlinter = "1.20.1"
+versions.play_publisher = "2.0.0"
 
 // --------- End of Dependencies Versions -----------
 
@@ -79,7 +80,7 @@ androidx.ktx = "androidx.core:core-ktx:$versions.ktx"
 androidx.app_compat = "androidx.appcompat:appcompat:$versions.app_compat"
 androidx.annotations = "androidx.annotation:annotation:$versions.annotation"
 androidx.constraint_layout = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
-androidx.material = "com.google.android.material:material:$versions.google_material"
+androidx.google_material = "com.google.android.material:material:$versions.google_material"
 androidx.pallete = "androidx.palette:palette:$versions.pallete"
 androidx.browser = "androidx.browser:browser:$versions.browser"
 androidx.preference = "androidx.preference:preference:$versions.preference"
@@ -103,7 +104,7 @@ navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$vers
 navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 deps.navigation = navigation
 
-deps.paging_ktx = "androidx.paging:paging-runtime-ktx:$versions.paging"
+deps.paging = "androidx.paging:paging-runtime:$versions.paging"
 
 def room = [:]
 room.runtime = "androidx.room:room-runtime:$versions.room"
@@ -111,9 +112,9 @@ room.compiler = "androidx.room:room-compiler:$versions.room"
 deps.room = room
 
 def work_manager = [:]
-work.runtime = "android.arch.work:work-runtime:$versions.work_manager"
-work.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work_manager"
-deps.work_manager = work
+work_manager.runtime = "android.arch.work:work-runtime:$versions.work_manager"
+work_manager.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work_manager"
+deps.work_manager = work_manager
 
 
 // Dependency Injection
@@ -144,8 +145,8 @@ deps.logs = logs
 // Google Play
 def play = [:]
 play.games = "com.google.android.gms:play-services-games:$versions.gp_games"
-play.games = "com.google.android.gms:play-services-auth:$versions.gp_auth"
-play.games = "com.google.android.gms:play-services-location:$versions.gp_location"
+play.auth = "com.google.android.gms:play-services-auth:$versions.gp_auth"
+play.location = "com.google.android.gms:play-services-location:$versions.gp_location"
 play.billing = "com.android.billingclient:billing:$versions.gp_billing_client"
 deps.play = play
 
@@ -187,6 +188,7 @@ plugin.android = "com.android.tools.build:gradle:$versions.android_gradle_plugin
 plugin.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
 plugin.google_play_services = "com.google.gms:google-services:$versions.google_play_services"
 plugin.fabric = "io.fabric.tools:gradle:$versions.fabric"
+plugin.play_publisher = "com.github.triplet.gradle:play-publisher:$versions.play_publisher"
 plugin.kotlinter = "org.jmailen.gradle:kotlinter-gradle:$versions.kotlinter"
 deps.plugin = plugin
 
@@ -202,11 +204,12 @@ build_versions.target_sdk = 28
 build_versions.build_tools = "28.0.3"
 ext.build_versions = build_versions
 
-def addRepos(RepositoryHandler handler) {
+static def addRepos(RepositoryHandler handler) {
     handler.google()
     handler.jcenter()
 	handler.maven { url "https://jitpack.io" }
 	handler.maven { url "https://maven.fabric.io/public" }
+    handler.maven { url "https://plugins.gradle.org/m2/" }
 }
 
 ext.addRepos = this.&addRepos
