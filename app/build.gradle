@@ -95,13 +95,12 @@ dependencies {
     implementation deps.androidx.preference
     implementation deps.androidx.flexbox
 
-    implementation deps.lifecycle.runtime
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
     kapt deps.lifecycle.compiler
 
-    implementation deps.navigation.runtime
-    implementation deps.navigation.runtime_ktx
+    implementation deps.navigation.ui
+    implementation deps.navigation.ui_ktx
     implementation deps.navigation.fragment
     implementation deps.navigation.fragment_ktx
 
@@ -139,9 +138,10 @@ dependencies {
     implementation deps.network.okhttp
     implementation deps.network.retrofit
     implementation deps.network.retrofit_gson
+    implementation deps.network.cookie_jar
 
     implementation deps.image.glide_runtime
-    implementation deps.image.glide_compiler
+    kapt deps.image.glide_compiler
     implementation deps.image.lottie
     implementation deps.image.image_cropper
 
@@ -151,7 +151,6 @@ dependencies {
     implementation deps.others.about_libraries
     implementation deps.others.easy_permissions
     implementation deps.others.card_slider
-
 
     implementation project(path: ':sagres')
     implementation project(path: ':bypass')

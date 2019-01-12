@@ -87,18 +87,16 @@ androidx.preference = "androidx.preference:preference:$versions.preference"
 androidx.flexbox = "com.google.android:flexbox:$versions.flexbox"
 deps.androidx = androidx
 
-
 // Architecture
 def lifecycle = [:]
-lifecycle.runtime = "androidx.lifecycle:lifecycle-runtime:$versions.lifecycle"
 lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
 deps.lifecycle = lifecycle
 
 def navigation = [:]
-navigation.runtime = "android.arch.navigation:navigation-runtime:$versions.navigation"
-navigation.runtime_ktx = "android.arch.navigation:navigation-runtime-ktx:$versions.navigation"
+navigation.ui = "android.arch.navigation:navigation-ui:$versions.navigation"
+navigation.ui_ktx = "android.arch.navigation:navigation-ui:$versions.navigation"
 navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
 navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
 navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
