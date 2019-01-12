@@ -80,7 +80,6 @@
                     android:layout_marginEnd="16dp"
                     android:hint="@string/login_user"
                     app:boxBackgroundColor="@color/textBoxColor"
-                    app:hintTextAppearance="@style/UTheme.TextAppearance.TextInputLayoutHint"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"

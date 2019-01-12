@@ -35,12 +35,13 @@
 
 
     <color name="text_primary_dark">#ffffffff</color> <!-- 87% -->
-    <color name="text_secondary_dark">#b3ffffff</color> <!-- 54% -->
+    <color name="text_secondary_dark">#c5c5c5</color> <!-- 54% -->
     <color name="text_tertiary_dark">#4dffffff</color> <!-- 38% -->
 
     <color name="window_background">#000</color>
     <color name="cardBackground">#2E2E2E</color>
     <color name="textBoxColor">@android:color/transparent</color>
+    <color name="iconColor">#b3ffffff</color>
 
     <color name="colorDarkThemed">@color/cardBackground</color>
     <color name="navigation_grey">#b3ffffff</color>
