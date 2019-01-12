@@ -38,6 +38,7 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/window_background</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
     <style name="CropTheme.ActionBar.Text" parent="@android:style/TextAppearance">
@@ -61,6 +62,7 @@
         <item name="colorPrimaryDark">@color/colorDarkThemed</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="cardBackgroundColor">@color/cardBackground</item>
+        <item name="iconColor">@color/iconColor</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
@@ -184,6 +186,7 @@
     <style name="BottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
@@ -192,6 +195,7 @@
 
     <style name="BottomSheetEntryDivider">
         <item name="android:background">#EEEEEE</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
 
     <style name="TextAppearanceSubtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
@@ -213,9 +217,12 @@
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
         <item name="android:background">@color/white</item>
         <item name="android:orientation">vertical</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
-    <style name="Widget.Melon" parent="@android:style/Widget" />
+    <style name="Widget.Melon" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
     
     <style name="Widget.Melon.DisciplineDetailTitle">
         <item name="android:gravity">start|bottom</item>
@@ -260,13 +267,20 @@
         <item name="android:paddingBottom">@dimen/padding_borderless_button</item>
     </style>
 
-    <style name="Widget.Schedule" parent="@android:style/Widget" />
+    <style name="Widget.Schedule" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
+
+    <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="boxBackgroundColor">@color/textBoxColor</item>
+        <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
+    </style>
 
     <style name="UTheme.TextAppearance.TextInputLayoutHelper">
         <item name="android:textColor">@color/colorPrimary</item>
     </style>
     
-    <style name="UTheme.TextAppearance.TextInputLayoutHint">
+    <style name="UTheme.TextAppearance.TextInputLayoutHint" parent="TextAppearance.Design.Hint">
         <item name="android:textColor">@color/text_input_hint_color</item>
     </style>
 
