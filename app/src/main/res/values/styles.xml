@@ -60,7 +60,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorDarkThemed</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="app:cardBackgroundColor">@color/cardBackground</item>
+        <item name="cardBackgroundColor">@color/cardBackground</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>

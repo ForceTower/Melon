@@ -40,6 +40,7 @@
 
     <color name="window_background">#000</color>
     <color name="cardBackground">#2E2E2E</color>
+    <color name="textBoxColor">@android:color/transparent</color>
 
     <color name="colorDarkThemed">@color/cardBackground</color>
     <color name="navigation_grey">#b3ffffff</color>
