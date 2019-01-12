@@ -48,10 +48,14 @@ abstract class ServiceRequestDao {
         list.forEach {
             val existing = getSpecificDirect(it.date, it.service)
             if (existing != null && !existing.situation.equals(it.situation, ignoreCase = true)) {
-                existing.observation = it.observation
-                existing.situation = it.situation
-                existing.notify = 2
-                updateServiceRequest(existing)
+                if (existing.situation.equals("atendido", ignoreCase = true)) {
+                    Timber.d("Can't downgrade!")
+                } else {
+                    existing.observation = it.observation
+                    existing.situation = it.situation
+                    existing.notify = 2
+                    updateServiceRequest(existing)
+                }
             } else if (existing == null) {
                 if (it.situation.equals("atendido", ignoreCase = true)) it.notify = 2
                 insert(it)
