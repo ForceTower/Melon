@@ -1,0 +1,27 @@
+buildscript {
+    apply from: 'versions.gradle'
+    addRepos(repositories)
+    dependencies {
+        classpath deps.plugin.android
+        classpath deps.plugin.kotlin
+		classpath deps.plugin.google_play_services
+		classpath deps.fabric
+		classpath deps.kotlinter
+        classpath deps.navigation.safe_args_plugin
+    }
+}
+
+allprojects {
+    addRepos(repositories)
+	
+	gradle.projectsEvaluated {
+        tasks.withType(JavaCompile) {
+            options.compilerArgs << "-Xmaxerrs" << "10000"
+            options.compilerArgs << "-Xmaxwarns" << "10000"
+        }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
