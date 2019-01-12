@@ -89,6 +89,9 @@
             android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_large"
             android:layout_marginEnd="@dimen/spacing_normal"
+            app:boxBackgroundColor="@color/textBoxColor"
+            app:boxStrokeColor="@color/colorAccent"
+            app:hintTextAppearance="@style/UTheme.TextAppearance.TextInputLayoutHint"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/image_user_image">
@@ -97,10 +100,12 @@
                 android:id="@+id/text_select_course_internal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="@color/text_secondary_dark"
                 android:hint="@string/setup_select_course_label"
                 android:focusable="false"
                 android:cursorVisible="false"
-                android:focusableInTouchMode="false"/>
+                android:focusableInTouchMode="false"
+                tools:text="Engenharia de Computação"/>
         </com.google.android.material.textfield.TextInputLayout>
 
         <com.google.android.material.button.MaterialButton
