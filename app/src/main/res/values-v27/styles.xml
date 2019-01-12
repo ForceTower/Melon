@@ -28,13 +28,13 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
     <style name="UTheme.LightNav">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/lightStatusBar</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:statusBarColor">@color/highlight_light</item>
     </style>
 
     <style name="CropTheme.Default">
-        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">true</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">@bool/lightStatusBar</item>
         <item name="android:navigationBarColor">@color/white</item>
         <item name="android:statusBarColor">@color/highlight_light</item>
     </style>

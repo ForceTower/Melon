@@ -32,6 +32,9 @@
     <color name="colorPrimaryLight">#FFF</color>
     <color name="colorAccent">#2196F3</color>
 
+    <color name="colorDarkThemed">@color/grey_300</color>
+    <color name="statusBarColor">#FFF</color>
+
     <color name="yellow_pr">#FFC107</color>
     <color name="yellow_pr_dark">#FFA000</color>
     <color name="yellow_pr_light">#FFECB3</color>
@@ -83,6 +86,9 @@
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
+    <color name="window_background">#FFF</color>
+    <color name="cardBackground">#FFF</color>
+    <color name="textBoxColor">@android:color/transparent</color>
 
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>
