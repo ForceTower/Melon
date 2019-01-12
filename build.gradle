@@ -28,7 +28,3 @@ task clean(type: Delete) {
 }
 
 apply from: "versioning.gradle"
-
-repositories {
-    google()
-}
