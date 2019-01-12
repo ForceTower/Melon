@@ -39,5 +39,7 @@
         <attr name="textPrimary" format="color"/>
         <attr name="textSecondary" format="color"/>
         <attr name="textTertiary" format="color"/>
+
+        <attr name="iconColor" format="color"/>
     </declare-styleable>
 </resources>

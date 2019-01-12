@@ -58,6 +58,7 @@
         
         <item name="android:windowLightStatusBar">@bool/lightStatusBar</item>
         <item name="android:statusBarColor">@color/statusBarColor</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
     <style name="UTheme.TransparentStatus" parent="UTheme.LightNav">
