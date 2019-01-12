@@ -37,7 +37,7 @@
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
     
     <style name="CropTheme.ActionBar.Text" parent="@android:style/TextAppearance">
@@ -58,12 +58,13 @@
     <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/grey_300</item>
+        <item name="colorPrimaryDark">@color/colorDarkThemed</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="app:cardBackgroundColor">@color/cardBackground</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="android:windowBackground">@color/window_background</item>
     </style>
     
     <style name="Widget.ShadowedIcon" parent="@android:style/Widget" />
@@ -260,6 +261,14 @@
     </style>
 
     <style name="Widget.Schedule" parent="@android:style/Widget" />
+
+    <style name="UTheme.TextAppearance.TextInputLayoutHelper">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
     
+    <style name="UTheme.TextAppearance.TextInputLayoutHint">
+        <item name="android:textColor">@color/text_input_hint_color</item>
+    </style>
+
     <dimen name="padding_borderless_button">16dp</dimen>
 </resources>

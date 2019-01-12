@@ -47,6 +47,7 @@
             app:cardElevation="8dp"
             android:layout_marginStart="32dp"
             android:layout_marginEnd="32dp"
+            app:cardBackgroundColor="@color/cardBackground"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -78,7 +79,8 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:hint="@string/login_user"
-                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundColor="@color/textBoxColor"
+                    app:hintTextAppearance="@style/UTheme.TextAppearance.TextInputLayoutHint"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -91,7 +93,8 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_user"
                         android:importantForAutofill="yes"
-                        android:inputType="text" />
+                        android:inputType="text"
+                        android:textColor="@color/text_primary_dark" />
         
                 </com.google.android.material.textfield.TextInputLayout>
         
@@ -103,7 +106,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    app:boxBackgroundColor="@color/white"
+                    app:boxBackgroundColor="@color/textBoxColor"
                     android:hint="@string/login_password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -115,7 +118,8 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_password"
                         android:importantForAutofill="yes"
-                        android:inputType="textPassword" />
+                        android:inputType="textPassword"
+                        android:textColor="@color/text_primary_dark"/>
         
                 </com.google.android.material.textfield.TextInputLayout>
         
