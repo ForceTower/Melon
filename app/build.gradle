@@ -1,0 +1,160 @@
+apply plugin: 'com.android.application'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'io.fabric'
+apply plugin: 'org.jmailen.kotlinter'
+apply plugin: 'com.github.triplet.play'
+
+android {
+    compileSdkVersion build_versions.target_sdk
+    buildToolsVersion build_versions.build_tools
+
+    defaultConfig {
+        applicationId 'com.forcetower.uefs'
+        minSdkVersion build_versions.min_sdk
+        targetSdkVersion build_versions.target_sdk
+        def (code, name) = buildVersion()
+        versionCode code
+        versionName name
+        multiDexEnabled true
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+            }
+        }
+
+        ndk {
+            abiFilters "arm64-v8a", "armeabi","armeabi-v7a", "mips", "mips64", "x86", "x86_64"
+        }
+    }
+
+    signingConfigs {
+        release {
+            storeFile rootProject.file("sign.jks")
+            storePassword System.getenv("UNES_KEYSTORE_PASSWORD")
+            keyAlias System.getenv("UNES_KEYSTORE_ALIAS")
+            keyPassword System.getenv("UNES_KEYSTORE_PRIVATE_KEY_PASSWORD")
+        }
+        debug {
+            storeFile rootProject.file("debug.keystore")
+            storePassword "android"
+            keyAlias "androiddebugkey"
+            keyPassword "android"
+        }
+    }
+
+    buildTypes {
+        release {
+            signingConfig signingConfigs.release
+            minifyEnabled false
+        }
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+    kapt {
+        correctErrorTypes true
+        javacOptions {
+            option("-Xmaxerrs", 1000)
+        }
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    lintOptions {
+        abortOnError true
+    }
+}
+
+play {
+    serviceAccountCredentials rootProject.file("unes_uefs_publisher.json")
+    track "internal"
+    defaultToAppBundles true
+}
+
+dependencies {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    implementation deps.kotlin.stdlib
+
+    implementation deps.androidx.ktx
+    implementation deps.androidx.annotations
+    implementation deps.androidx.app_compat
+    implementation deps.androidx.constraint_layout
+    implementation deps.androidx.google_material
+    implementation deps.androidx.pallete
+    implementation deps.androidx.browser
+    implementation deps.androidx.preference
+    implementation deps.androidx.flexbox
+
+    implementation deps.lifecycle.runtime
+    implementation deps.lifecycle.extensions
+    implementation deps.lifecycle.java8
+    kapt deps.lifecycle.compiler
+
+    implementation deps.navigation.runtime
+    implementation deps.navigation.runtime_ktx
+    implementation deps.navigation.fragment
+    implementation deps.navigation.fragment_ktx
+
+    implementation deps.paging
+
+    implementation deps.room.runtime
+    kapt deps.room.compiler
+
+    implementation deps.work_manager.runtime
+    implementation deps.work_manager.runtime_ktx
+
+    implementation deps.dagger.runtime
+    kapt deps.dagger.compiler
+    implementation deps.dagger.android
+    implementation deps.dagger.android_support
+    kapt deps.dagger.android_support_compiler
+
+    implementation deps.firebase.core
+    implementation deps.firebase.auth
+    implementation deps.firebase.messaging
+    implementation deps.firebase.firestore
+    implementation deps.firebase.storage
+    implementation deps.firebase.storage_ui
+
+    implementation (deps.logs.crashlytics) {
+        transitive true
+    }
+    implementation deps.logs.timber
+
+    implementation deps.play.games
+    implementation deps.play.auth
+    implementation deps.play.location
+    implementation deps.play.billing
+
+    implementation deps.network.okhttp
+    implementation deps.network.retrofit
+    implementation deps.network.retrofit_gson
+
+    implementation deps.image.glide_runtime
+    implementation deps.image.glide_compiler
+    implementation deps.image.lottie
+    implementation deps.image.image_cropper
+
+    implementation deps.others.gson
+    implementation deps.others.jsoup
+    implementation deps.others.chart_view
+    implementation deps.others.about_libraries
+    implementation deps.others.easy_permissions
+    implementation deps.others.card_slider
+
+
+    implementation project(path: ':sagres')
+    implementation project(path: ':bypass')
+}
+
+apply plugin: 'com.google.gms.google-services'
