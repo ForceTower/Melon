@@ -32,6 +32,7 @@ versions.firebase_auth = "16.1.0"
 versions.firebase_messaging = "17.3.4"
 versions.firebase_firestore = "17.1.5"
 versions.firebase_storage = "16.0.5"
+versions.firebase_remote_config = "16.0.1"
 versions.firebase_ui_storage = "4.2.0"
 
 // Logs
@@ -131,6 +132,7 @@ firebase.auth = "com.google.firebase:firebase-auth:$versions.firebase_auth"
 firebase.messaging = "com.google.firebase:firebase-messaging:$versions.firebase_messaging"
 firebase.firestore = "com.google.firebase:firebase-firestore:$versions.firebase_firestore"
 firebase.storage = "com.google.firebase:firebase-storage:$versions.firebase_storage"
+firebase.remote_config = "com.google.firebase:firebase-config:$versions.firebase_remote_config"
 firebase.storage_ui = "com.firebaseui:firebase-ui-storage:$versions.firebase_ui_storage"
 deps.firebase = firebase
 
