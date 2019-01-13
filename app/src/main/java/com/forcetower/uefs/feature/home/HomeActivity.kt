@@ -47,10 +47,10 @@ import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
+import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
-import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.auth.FirebaseAuth
 import dagger.android.AndroidInjector
@@ -66,6 +66,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
         const val EXTRA_GRADES_DIRECTION = "grades"
         const val EXTRA_DEMAND_DIRECTION = "demand"
+        const val EXTRA_REQUEST_SERVICE_DIRECTION = "request_service"
     }
 
     @Inject
@@ -89,7 +90,12 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
         if (savedInstanceState == null) {
             onActivityStart()
+            subscribeToTopics()
         }
+    }
+
+    private fun subscribeToTopics() {
+        viewModel.subscribeToTopics("events", "messages", "general")
     }
 
     private fun onActivityStart() {
@@ -107,10 +113,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                     action = BigTrayService.STOP_SERVICE_ACTION
                 }
                 startService(intent)
-
                 R.id.big_tray
             }
             EXTRA_DEMAND_DIRECTION -> R.id.demand
+            EXTRA_REQUEST_SERVICE_DIRECTION -> R.id.request_services
             else -> null
         }
 

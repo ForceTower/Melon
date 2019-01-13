@@ -89,7 +89,7 @@ Para contribuir com código:
 * Faça as mudanças realizadas, tentando manter a identação utilizada ao redor do código
 * Inclua comentários sobre o que foi feito na mudança
 * Escreva mensagens de commits claras e concisas.
-* O UNES utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código do projeto, se você mandar o PR com o código fora do estilo, o CircleCI irá acusar um erro. Você pode verificar se o seu código está de acordo com o estilo executando o comando: `gradlew ktlint` e também pode corrigir automáticamente os erros de estilo com o comando: `gradlew ktlintFormat`.
+* O UNES utiliza o [ktlint](https://ktlint.github.io/) para manter o estilo de código do projeto, se você mandar o PR com o código fora do estilo, o CircleCI irá acusar um erro. Você pode verificar se o seu código está de acordo com o estilo executando o comando: `gradlew lintKotlin` e também pode corrigir automáticamente os erros de estilo com o comando: `gradlew formatKotlin`.
 
 Quando você enviar:
 * O PR somente será analisado se passar por todas as verificações (CircleCI)

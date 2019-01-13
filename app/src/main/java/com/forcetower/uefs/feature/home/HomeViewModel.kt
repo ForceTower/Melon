@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
+import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.Event
@@ -42,7 +43,8 @@ import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
     private val loginSagresRepository: LoginSagresRepository,
-    private val dataRepository: SagresDataRepository
+    private val dataRepository: SagresDataRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository
 ) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
@@ -71,5 +73,9 @@ class HomeViewModel @Inject constructor(
                 _openProfileCase.value = Event(it.uuid)
             }
         }
+    }
+
+    fun subscribeToTopics(vararg topics: String) {
+        firebaseMessageRepository.subscribe(topics)
     }
 }
