@@ -49,6 +49,12 @@
             app:launchSingleTop="true"
             app:popUpToInclusive="true"
             app:popUpTo="@+id/hourglass_init" />
+        <action
+            android:id="@+id/action_hourglass_init_to_development"
+            app:destination="@id/development"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:popUpTo="@+id/hourglass_init" />
     </fragment>
 
     <fragment
@@ -61,6 +67,19 @@
         android:id="@+id/hourglass_contribute"
         android:name="com.forcetower.uefs.feature.barrildeboa.setup.ContributeFragment"
         android:label="ContributeFragment"
-        tools:layout="@layout/fragment_hourglass_contribute"/>
+        tools:layout="@layout/fragment_hourglass_contribute">
+        <action
+            android:id="@+id/action_hourglass_contribute_to_development"
+            app:destination="@id/development"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:popUpTo="@+id/hourglass_contribute"/>
+    </fragment>
+
+    <fragment
+        android:id="@+id/development"
+        android:name="com.forcetower.uefs.feature.shared.fragments.UnderDevelopmentFragment"
+        android:label="UnderDevelopmentFragment"
+        tools:layout="@layout/fragment_feature_not_ready"/>
 
 </navigation>

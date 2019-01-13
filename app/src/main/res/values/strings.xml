@@ -384,6 +384,20 @@
     <string name="sku_price_format">%1$s %2$s</string>
     <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
     <string name="you_bought_this_item">Você comprou o %1$s</string>
+    <string name="label_services_follow_up">Solicitações de Serviços</string>
+    <string name="no_services_to_follow_up">Não existem documentos nesta categoria</string>
+    <string name="service_requests_all">Todos</string>
+    <string name="service_requests_completed">Completos</string>
+    <string name="service_requests_load_failed">Falha ao carregar serviços</string>
+    <string name="channel_group_service_request">Solicitações de Serviço</string>
+    <string name="channel_svc_req_create">Serviço cadastrado</string>
+    <string name="channel_svc_req_update">Mudança de status</string>
+    <string name="service_requests_ntf_title">Situação da Solicitação</string>
+    <string name="service_requests_ntf_update_format">A solicitação %1$s teve situação alterada para %2$s</string>
+    <string name="service_requests_ntf_create_format">A solicitação %1$s está sendo observada pelo UNES</string>
+    <string name="service_requests_incomplete">Pendentes</string>
+    <string name="not_ready_feature">Esta função está em construção!\nObserve o projeto no GitHub para ver o progresso!</string>
+    <string name="project_github">www.github.com/ForceTower/Melon</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
