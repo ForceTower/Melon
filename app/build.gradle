@@ -124,6 +124,7 @@ dependencies {
     implementation deps.firebase.firestore
     implementation deps.firebase.storage
     implementation deps.firebase.storage_ui
+    implementation deps.firebase.remote_config
 
     implementation (deps.logs.crashlytics) {
         transitive true
