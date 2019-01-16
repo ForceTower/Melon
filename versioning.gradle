@@ -1,0 +1,23 @@
+ext {
+    buildVersion = {
+        def commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+
+        def postfix = "[release]"
+        def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
+        if (patch.endsWith("dev")) {
+            patch = patch.replaceAll("[^0-9]","")
+            postfix = "[development]"
+        } else {
+            if (patch.endsWith("pr")) {
+                patch = patch.replaceAll("[^0-9]", "")
+                postfix = "[pre-release]"
+            }
+        }
+
+        (major, minor, patch) = [major, minor, patch].collect{it.toInteger()}
+
+        def name = "${major}.${minor}.${patch} build ${commit_count} ${postfix}"
+        def code = (21 * 100000) + commit_count
+        return [code, name]
+    }
+}

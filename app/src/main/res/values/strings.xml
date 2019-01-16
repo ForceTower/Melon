@@ -398,6 +398,8 @@
     <string name="service_requests_incomplete">Pendentes</string>
     <string name="not_ready_feature">Esta função está em construção!\nObserve o projeto no GitHub para ver o progresso!</string>
     <string name="project_github">www.github.com/ForceTower/Melon</string>
+    <string name="obsolete_message">Esta versão do UNES está muito desatualizada e não é mais suportada. Por favor atualize o aplicativo para continuar usando a interface.\n\nVocê ainda receberá notificações :)</string>
+    <string name="new_version_ntf_title_format">A versão %1$s do UNES está disponível</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
