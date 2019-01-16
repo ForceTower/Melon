@@ -64,7 +64,7 @@ versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
 
 // Build Versions
-versions.android_gradle_plugin = "3.3.0-rc03"
+versions.android_gradle_plugin = "3.3.0"
 versions.kotlin = "1.3.11"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.26.1"
