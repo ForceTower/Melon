@@ -48,9 +48,11 @@ import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
 import android.content.Intent
 import android.net.Uri
+import androidx.annotation.IdRes
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
@@ -59,6 +61,8 @@ class HomeBottomFragment : UFragment(), Injectable {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseStorage: FirebaseStorage
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private lateinit var binding: HomeBottomBinding
     private lateinit var viewModel: HomeViewModel
@@ -81,12 +85,23 @@ class HomeBottomFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
+        val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
         viewModel.flags.observe(this, Observer {
-            if (it?.demandOpen == true) {
-                val item = binding.navigationView.menu.findItem(R.id.demand)
-                item?.isVisible = true
+            if (it?.demandOpen == true || demandFlag) {
+                toggleItem(R.id.demand, true)
             }
         })
+
+        val storeFlag = remoteConfig.getBoolean("feature_flag_store")
+        toggleItem(R.id.purchases, storeFlag)
+
+        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass")
+        toggleItem(R.id.hourglass, hourglass)
+    }
+
+    private fun toggleItem(@IdRes id: Int, visible: Boolean) {
+        val item = binding.navigationView.menu.findItem(id)
+        item?.isVisible = visible
     }
 
     private fun setupNavigation() {

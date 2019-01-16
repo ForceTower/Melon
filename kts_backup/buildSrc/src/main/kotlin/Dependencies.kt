@@ -73,6 +73,7 @@ object Dependencies {
         const val messaging = "com.google.firebase:firebase-messaging:${Versions.firebaseMessaging}"
         const val firestore = "com.google.firebase:firebase-firestore:${Versions.firebaseFirestore}"
         const val storage = "com.google.firebase:firebase-storage:${Versions.firebaseStorage}"
+        const val config = "com.google.firebase:firebase-config:${Versions.firebaseRemoteConfig}"
 
         object UI {
             const val storage = "com.firebaseui:firebase-ui-storage:${Versions.firebaseUiStorage}"
