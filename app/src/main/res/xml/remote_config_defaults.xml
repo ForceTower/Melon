@@ -53,6 +53,6 @@
     </entry>
     <entry>
         <key>feature_flag_store</key>
-        <key>true</key>
+        <key>false</key>
     </entry>
 </defaultsMap>
