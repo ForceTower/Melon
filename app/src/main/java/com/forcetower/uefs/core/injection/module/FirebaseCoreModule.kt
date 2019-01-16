@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import android.content.Context
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants.REMOTE_CONFIG_REFRESH
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.messaging.FirebaseMessaging
@@ -39,6 +40,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
@@ -74,6 +76,13 @@ object FirebaseCoreModule {
 
         config.setConfigSettings(settings)
         config.setDefaults(R.xml.remote_config_defaults)
+        config.fetch(REMOTE_CONFIG_REFRESH).addOnCompleteListener {
+            if (it.isSuccessful) {
+                config.activateFetched()
+            } else {
+                Timber.d("Failed to init remote config")
+            }
+        }
         return config
     }
 }
