@@ -32,6 +32,14 @@
         <value>2100637</value>
     </entry>
     <entry>
+        <key>version_notes</key>
+        <value>Nothing new, just wondering around...</value>
+    </entry>
+    <entry>
+        <key>version_name</key>
+        <value>7.0.3</value>
+    </entry>
+    <entry>
         <key>version_disable</key>
         <value>2100608</value>
     </entry>
