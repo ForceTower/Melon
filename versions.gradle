@@ -1,0 +1,215 @@
+
+ext.deps = [:]
+
+def versions = [:]
+// Kotlin Extensions
+versions.ktx = "1.0.1"
+
+// Android X [Old Support]
+versions.app_compat = "1.0.2"
+versions.google_material = "1.0.0"
+versions.constraint_layout = "1.1.3"
+versions.annotation = "1.0.1"
+versions.exif_interface = "1.0.0"
+versions.pallete = "1.0.0"
+versions.flexbox = "1.1.0"
+versions.browser = "1.0.0"
+versions.preference = "1.0.0"
+
+// Architecture
+versions.room = "2.0.0"
+versions.lifecycle = "2.0.0"
+versions.paging = "2.0.0"
+versions.navigation = "1.0.0-alpha09"
+versions.work_manager = "1.0.0-beta01"
+
+// Dependency Injection
+versions.dagger = "2.20"
+
+// Firebase
+versions.firebase_core = "16.0.6"
+versions.firebase_auth = "16.1.0"
+versions.firebase_messaging = "17.3.4"
+versions.firebase_firestore = "17.1.5"
+versions.firebase_storage = "16.0.5"
+versions.firebase_remote_config = "16.0.1"
+versions.firebase_ui_storage = "4.2.0"
+
+// Logs
+versions.crashlytics = "2.9.8@aar"
+versions.timber = "4.7.1"
+
+// Image
+versions.glide = "4.8.0"
+versions.lottie = "2.8.0"
+versions.image_cropper = "2.8.0"
+
+// Google Services
+versions.gp_auth = "16.0.1"
+versions.gp_games = "16.0.0"
+versions.gp_location = "16.0.0"
+versions.gp_billing_client = "1.2"
+
+// Networking
+versions.okhttp = "3.12.1"
+versions.retrofit = "2.4.0"
+versions.cookie_jar = "v1.0.1"
+
+// Others
+versions.gson = "2.8.5"
+versions.jsoup = "1.11.3"
+versions.chart_view = "v3.0.3"
+versions.about_libraries = "6.2.0"
+versions.easy_permissions = "0.3.0"
+versions.card_slider = "0.3.0"
+
+// Build Versions
+versions.android_gradle_plugin = "3.3.0"
+versions.kotlin = "1.3.11"
+versions.google_play_services = "4.2.0"
+versions.fabric = "1.26.1"
+versions.kotlinter = "1.20.1"
+versions.play_publisher = "2.0.0"
+
+// --------- End of Dependencies Versions -----------
+
+def deps = [:]
+
+// Android X
+def androidx = [:]
+androidx.ktx = "androidx.core:core-ktx:$versions.ktx"
+androidx.app_compat = "androidx.appcompat:appcompat:$versions.app_compat"
+androidx.annotations = "androidx.annotation:annotation:$versions.annotation"
+androidx.constraint_layout = "androidx.constraintlayout:constraintlayout:$versions.constraint_layout"
+androidx.google_material = "com.google.android.material:material:$versions.google_material"
+androidx.pallete = "androidx.palette:palette:$versions.pallete"
+androidx.browser = "androidx.browser:browser:$versions.browser"
+androidx.preference = "androidx.preference:preference:$versions.preference"
+androidx.flexbox = "com.google.android:flexbox:$versions.flexbox"
+deps.androidx = androidx
+
+// Architecture
+def lifecycle = [:]
+lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
+lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
+lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
+deps.lifecycle = lifecycle
+
+def navigation = [:]
+navigation.ui = "android.arch.navigation:navigation-ui:$versions.navigation"
+navigation.ui_ktx = "android.arch.navigation:navigation-ui:$versions.navigation"
+navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
+navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
+deps.navigation = navigation
+
+deps.paging = "androidx.paging:paging-runtime:$versions.paging"
+
+def room = [:]
+room.runtime = "androidx.room:room-runtime:$versions.room"
+room.compiler = "androidx.room:room-compiler:$versions.room"
+deps.room = room
+
+def work_manager = [:]
+work_manager.runtime = "android.arch.work:work-runtime:$versions.work_manager"
+work_manager.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work_manager"
+deps.work_manager = work_manager
+
+
+// Dependency Injection
+def dagger = [:]
+dagger.runtime = "com.google.dagger:dagger:$versions.dagger"
+dagger.compiler = "com.google.dagger:dagger-compiler:$versions.dagger"
+dagger.android = "com.google.dagger:dagger-android:$versions.dagger"
+dagger.android_support = "com.google.dagger:dagger-android-support:$versions.dagger"
+dagger.android_support_compiler = "com.google.dagger:dagger-android-processor:$versions.dagger"
+deps.dagger = dagger
+
+// Firebase
+def firebase = [:]
+firebase.core = "com.google.firebase:firebase-core:$versions.firebase_core"
+firebase.auth = "com.google.firebase:firebase-auth:$versions.firebase_auth"
+firebase.messaging = "com.google.firebase:firebase-messaging:$versions.firebase_messaging"
+firebase.firestore = "com.google.firebase:firebase-firestore:$versions.firebase_firestore"
+firebase.storage = "com.google.firebase:firebase-storage:$versions.firebase_storage"
+firebase.remote_config = "com.google.firebase:firebase-config:$versions.firebase_remote_config"
+firebase.storage_ui = "com.firebaseui:firebase-ui-storage:$versions.firebase_ui_storage"
+deps.firebase = firebase
+
+// Logs
+def logs = [:]
+logs.crashlytics = "com.crashlytics.sdk.android:crashlytics:$versions.crashlytics"
+logs.timber = "com.jakewharton.timber:timber:$versions.timber"
+deps.logs = logs
+
+// Google Play
+def play = [:]
+play.games = "com.google.android.gms:play-services-games:$versions.gp_games"
+play.auth = "com.google.android.gms:play-services-auth:$versions.gp_auth"
+play.location = "com.google.android.gms:play-services-location:$versions.gp_location"
+play.billing = "com.android.billingclient:billing:$versions.gp_billing_client"
+deps.play = play
+
+// Networking
+def network = [:]
+network.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+network.retrofit = "com.squareup.retrofit2:retrofit:$versions.retrofit"
+network.retrofit_gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
+network.cookie_jar = "com.github.franmontiel:PersistentCookieJar:$versions.cookie_jar"
+deps.network = network
+
+
+// Image
+def image = [:]
+image.glide_runtime = "com.github.bumptech.glide:glide:$versions.glide"
+image.glide_compiler = "com.github.bumptech.glide:compiler:$versions.glide"
+image.lottie = "com.airbnb.android:lottie:$versions.lottie"
+image.image_cropper = "com.theartofdev.edmodo:android-image-cropper:$versions.image_cropper"
+deps.image = image
+
+// Others
+def others = [:]
+others.gson = "com.google.code.gson:gson:$versions.gson"
+others.jsoup = "org.jsoup:jsoup:$versions.jsoup"
+others.chart_view = "com.github.PhilJay:MPAndroidChart:$versions.chart_view"
+others.about_libraries = "com.mikepenz:aboutlibraries:$versions.about_libraries"
+others.easy_permissions = "pub.devrel:easypermissions:$versions.easy_permissions"
+others.card_slider = "com.ramotion.cardslider:card-slider:$versions.card_slider"
+deps.others = others
+
+// Kotlin
+def kotlin = [:]
+kotlin.stdlib = "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$versions.kotlin"
+deps.kotlin = kotlin
+
+// Gradle Plug In's
+def plugin = [:]
+plugin.android = "com.android.tools.build:gradle:$versions.android_gradle_plugin"
+plugin.kotlin = "org.jetbrains.kotlin:kotlin-gradle-plugin:$versions.kotlin"
+plugin.google_play_services = "com.google.gms:google-services:$versions.google_play_services"
+plugin.fabric = "io.fabric.tools:gradle:$versions.fabric"
+plugin.play_publisher = "com.github.triplet.gradle:play-publisher:$versions.play_publisher"
+plugin.kotlinter = "org.jmailen.gradle:kotlinter-gradle:$versions.kotlinter"
+deps.plugin = plugin
+
+// Externals
+ext.deps = deps
+
+// ------------ End of Dependencies -----------
+
+// Build Tools [Min, Target, Tools]
+def build_versions = [:]
+build_versions.min_sdk = 21
+build_versions.target_sdk = 28
+build_versions.build_tools = "28.0.3"
+ext.build_versions = build_versions
+
+static def addRepos(RepositoryHandler handler) {
+    handler.google()
+    handler.jcenter()
+	handler.maven { url "https://jitpack.io" }
+	handler.maven { url "https://maven.fabric.io/public" }
+    handler.maven { url "https://plugins.gradle.org/m2/" }
+}
+
+ext.addRepos = this.&addRepos
