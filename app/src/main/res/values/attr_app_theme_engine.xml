@@ -28,8 +28,11 @@
 
 <resources>
     <declare-styleable name="AppThemeEngine">
-        <attr name="windowBackground" format="color"/>
-        <attr name="cardBackground" format="color"/>
+        <attr name="surface" format="color"/>
+        <attr name="onBackground" format="color"/>
+        <attr name="onAccent" format="color"/>
+        <attr name="onAccentLight" format="color"/>
+        <attr name="onBackgroundLight" format="color"/>
 
         <attr name="statusBarColor" format="color"/>
         <attr name="navBarColor" format="color"/>
