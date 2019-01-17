@@ -27,7 +27,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CropTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="CropTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -56,12 +56,12 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorDarkThemed</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryVariant">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="cardBackgroundColor">@color/cardBackground</item>
         <item name="iconColor">@color/iconColor</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
