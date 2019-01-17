@@ -70,6 +70,9 @@
             android:name=".feature.barrildeboa.HourglassActivity"
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.obsolete.ObsoleteActivity"
+            android:theme="@style/UTheme.LightNav"/>
 
         <meta-data
             android:name="preloaded_fonts"

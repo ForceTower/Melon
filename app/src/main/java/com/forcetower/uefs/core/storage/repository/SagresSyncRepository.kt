@@ -50,6 +50,8 @@ import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.BuildConfig
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -71,6 +73,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
@@ -88,6 +91,7 @@ class SagresSyncRepository @Inject constructor(
     @Named(Profile.COLLECTION)
     private val collection: CollectionReference,
     private val service: UService,
+    private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
 ) {
 
@@ -221,6 +225,7 @@ class SagresSyncRepository @Inject constructor(
 
                 adventureRepository.performCheckAchievements(HashMap())
             }
+            createNewVersionNotification()
         } catch (t: Throwable) {
             Crashlytics.logException(t)
         }
@@ -231,6 +236,18 @@ class SagresSyncRepository @Inject constructor(
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
+    }
+
+    private fun createNewVersionNotification() {
+        val currentVersion = remoteConfig.getLong("version_current")
+        val notified = preferences.getBoolean("version_ntf_key_$currentVersion", false)
+        if (currentVersion > BuildConfig.VERSION_CODE && !notified) {
+            val notes = remoteConfig.getString("version_notes")
+            val version = remoteConfig.getString("version_name")
+            val title = context.getString(R.string.new_version_ntf_title_format, version)
+            NotificationCreator.showSimpleNotification(context, title, notes)
+            preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
+        }
     }
 
     fun login(access: Access): Double? {
