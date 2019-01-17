@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2018.
+ * Copyright (c) 2019.
  * João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This file is part of the UNES Open Source Project.
@@ -25,12 +25,15 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.feature.obsolete
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
+import android.os.Bundle
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.UActivity
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 3600L
+class ObsoleteActivity : UActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_obsolete)
+    }
 }

@@ -117,6 +117,7 @@ dependencies {
     implementation (Dependencies.Firebase.messaging)
     implementation (Dependencies.Firebase.firestore)
     implementation (Dependencies.Firebase.storage)
+    implementation (Dependencies.Firebase.config)
     implementation (Dependencies.Firebase.UI.storage)
 
     implementation (Dependencies.Crashlytics.core) { isTransitive = true }

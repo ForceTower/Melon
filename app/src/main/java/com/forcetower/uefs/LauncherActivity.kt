@@ -28,6 +28,7 @@
 package com.forcetower.uefs
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
@@ -37,7 +38,10 @@ import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
+import com.forcetower.uefs.feature.obsolete.ObsoleteActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.service.NotificationCreator
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
@@ -53,22 +57,49 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val viewModel: LaunchViewModel = provideViewModel(factory)
-        viewModel.direction.observe(this, EventObserver {
-            Timber.d("Once!")
-            // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-            if (!viewModel.started) {
-                when (it) {
-                    Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                    Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+        if (savedInstanceState != null) return
+
+        createNewVersionNotification()
+
+        val disabledCode = remoteConfig.getLong("version_disable")
+        if (disabledCode > BuildConfig.VERSION_CODE) {
+            Timber.d("This version has been disabled")
+            startActivity(Intent(this, ObsoleteActivity::class.java))
+            finish()
+        } else {
+            viewModel.direction.observe(this, EventObserver {
+                Timber.d("Once!")
+                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
+                if (!viewModel.started) {
+                    when (it) {
+                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+                    }
+                    viewModel.started = true
+                    finish()
                 }
-                viewModel.started = true
-                finish()
-            }
-        })
+            })
+        }
+    }
+
+    private fun createNewVersionNotification() {
+        val currentVersion = remoteConfig.getLong("version_current")
+        val notified = preferences.getBoolean("version_ntf_key_$currentVersion", false)
+        if (currentVersion > BuildConfig.VERSION_CODE && !notified) {
+            val notes = remoteConfig.getString("version_notes")
+            val version = remoteConfig.getString("version_name")
+            val title = getString(R.string.new_version_ntf_title_format, version)
+            NotificationCreator.showSimpleNotification(this, title, notes)
+            preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
+        }
     }
 
     override fun supportFragmentInjector() = fragmentInjector
