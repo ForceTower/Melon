@@ -37,6 +37,7 @@ fun requestedServiceImage(iv: ImageView, situation: String?) {
     val ctx = iv.context
     val icon = when (situation.toLowerCase()) {
         "atendido" -> R.drawable.ic_check_black_24dp
+        "indeferido" -> R.drawable.ic_block_black_24dp
         else -> R.drawable.ic_change_history_black_24dp
     }
     val drawable = ctx.getDrawable(icon)
