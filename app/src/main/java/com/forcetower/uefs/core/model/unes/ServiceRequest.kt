@@ -52,6 +52,21 @@ data class ServiceRequest(
     var observation: String,
     var notify: Int
 ) {
+    fun isAtFinalState(): Boolean {
+        return when (situation.toLowerCase().trim()) {
+            "atendido" -> true
+            "indeferido" -> true
+            else -> false
+        }
+    }
+
+    fun isAtStartState(): Boolean {
+        return when (situation.toLowerCase().trim()) {
+            "registrado na web" -> true
+            else -> false
+        }
+    }
+
     companion object {
         fun fromSagres(request: SRequestedService): ServiceRequest {
             return ServiceRequest(
