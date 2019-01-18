@@ -48,7 +48,7 @@ abstract class ServiceRequestDao {
         list.forEach {
             val existing = getSpecificDirect(it.date, it.service)
             if (existing != null && !existing.situation.equals(it.situation, ignoreCase = true)) {
-                if (existing.situation.equals("atendido", ignoreCase = true)) {
+                if (it.isAtStartState() || existing.isAtFinalState()) {
                     Timber.d("Can't downgrade!")
                 } else {
                     existing.observation = it.observation
@@ -57,7 +57,7 @@ abstract class ServiceRequestDao {
                     updateServiceRequest(existing)
                 }
             } else if (existing == null) {
-                if (it.situation.equals("atendido", ignoreCase = true)) it.notify = 2
+                if (it.isAtFinalState()) it.notify = 2
                 insert(it)
             } else {
                 Timber.d("Ignored ${it.service} at ${it.date} because no change was detected")
@@ -85,6 +85,9 @@ abstract class ServiceRequestDao {
 
     @Query("SELECT * FROM ServiceRequest WHERE LOWER(situation) <> 'atendido'")
     abstract fun getIncomplete(): LiveData<List<ServiceRequest>>
+
+    @Query("SELECT * FROM ServiceRequest WHERE LOWER(situation) = 'atendido' OR LOWER(situation) = 'indeferido'")
+    abstract fun getComplete(): LiveData<List<ServiceRequest>>
 
     @Query("UPDATE ServiceRequest SET notify = 0")
     abstract fun markAllNotified()
