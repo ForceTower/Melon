@@ -82,7 +82,7 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
                 if (!viewModel.started) {
                     when (it) {
                         Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, SetupActivity::class.java))
+                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
                     }
                     viewModel.started = true
                     finish()
