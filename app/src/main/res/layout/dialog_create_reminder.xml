@@ -43,7 +43,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/label_create_reminder"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -54,6 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_common"
             android:text="@string/label_create_reminder_information"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_create_reminder" />
     
@@ -73,6 +74,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="@string/label_reminder_title"
+                android:textColor="?attr/colorOnSurface"
                 android:maxLines="1"
                 android:maxLength="512"
                 android:inputType="text|textAutoComplete|textAutoCorrect|textCapSentences"/>
@@ -92,6 +94,7 @@
                 android:id="@+id/text_input_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
                 android:hint="@string/label_reminder_description"
                 android:maxLength="1024"
                 android:inputType="text|textAutoComplete|textAutoCorrect|textCapSentences|textMultiLine"/>
@@ -106,7 +109,7 @@
             android:textAllCaps="false"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             app:icon="@drawable/ic_calendar_black_24dp"
-            app:iconTint="@color/text_secondary_dark"
+            app:iconTint="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/inp_description" />
     
