@@ -39,7 +39,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.obsolete.ObsoleteActivity
-import com.forcetower.uefs.feature.setup.SetupActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
