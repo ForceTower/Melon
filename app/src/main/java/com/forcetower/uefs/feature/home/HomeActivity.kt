@@ -106,8 +106,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun onDarkTheme() {
-        val player = MediaPlayer.create(this, R.raw.darkness_theme)
-        player.start()
+//        val player = MediaPlayer.create(this, R.raw.darkness_theme)
+//        player.start()
     }
 
     private fun moveToTask() {
