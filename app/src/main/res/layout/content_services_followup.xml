@@ -81,7 +81,7 @@
                 android:textAlignment="gravity"
                 android:gravity="center"
                 android:textSize="16sp"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnSurface"
                 android:text="@string/no_services_to_follow_up"
                 android:padding="16dp"/>
         </LinearLayout>

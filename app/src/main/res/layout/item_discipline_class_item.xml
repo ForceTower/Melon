@@ -62,7 +62,7 @@
             android:layout_marginTop="8dp"
             app:classSubject="@{classItem.subject}"
             app:classSituation="@{classItem.situation}"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"
@@ -76,6 +76,7 @@
             android:layout_marginTop="4dp"
             app:somethingOrQuestions="@{classItem.date}"
             android:textSize="12sp"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toEndOf="@id/ic_status"
             app:layout_constraintTop_toBottomOf="@id/text_subject"
             tools:text="24/06/2018 Segunda-feira" />
@@ -105,6 +106,7 @@
             android:layout_marginTop="4dp"
             android:text="@{@string/integer_format(classItem.numberOfMaterials)}"
             android:textSize="12sp"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toEndOf="@id/ic_materials"
             app:layout_constraintTop_toBottomOf="@id/text_subject"
             tools:text="3" />

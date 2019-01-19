@@ -57,6 +57,7 @@
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
                     android:text="@string/teachers_label"
+                    android:textColor="?attr/colorOnBackground"
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
             </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -76,7 +77,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"
             android:src="@drawable/ic_add_black_24dp"
-            android:tint="@color/white"/>
+            app:tint="?attr/colorOnPrimary"/>
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
     
