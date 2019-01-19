@@ -38,7 +38,7 @@
             android:id="@+id/view_contributors_bg"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/white"/>
+            android:background="?attr/background"/>
 
         <LinearLayout
             android:orientation="vertical"
@@ -76,13 +76,13 @@
                     android:layout_width="match_parent"
                     android:layout_height="24dp"
                     android:background="@drawable/gradient_top_bottom"
-                    android:backgroundTint="@color/white"/>
+                    android:backgroundTint="?attr/background"/>
 
                 <View
                     android:layout_width="match_parent"
                     android:layout_height="24dp"
                     android:background="@drawable/gradient_bottom_top"
-                    android:backgroundTint="@color/white"
+                    android:backgroundTint="?attr/background"
                     android:layout_alignBottom="@id/recycler_contributors"/>
             </RelativeLayout>
 

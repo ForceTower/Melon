@@ -65,7 +65,7 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:progressbarColor="@color/blue_accent"
+                    app:progressbarColor="?attr/colorPrimary"
                     tools:progress="59" />
 
                 <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,7 +79,7 @@
                         android:layout_gravity="center"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
-                        android:textColor="@color/blue_accent"
+                        android:textColor="?attr/colorPrimary"
                         android:textSize="40sp"
                         app:layout_constraintBottom_toTopOf="@+id/amount_name"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -95,6 +95,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="8dp"
                         android:layout_marginEnd="8dp"
+                        android:textColor="?attr/colorOnSurfaceLight"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.5"
@@ -112,6 +113,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginBottom="8dp"
                 android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 tools:text="Última atualização: 12:08:45" />
@@ -132,7 +134,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_notification"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
-                android:textColor="@color/blue_accent"
+                android:textColor="?attr/colorPrimary"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
@@ -142,7 +144,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:strokeColor="@color/blue_accent"
+                app:strokeColor="?attr/colorPrimary"
                 app:strokeWidth="1dp" />
 
             <ImageView
@@ -169,6 +171,7 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/ru_is_closed_message"
+                android:textColor="?attr/colorOnSurfaceLight"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toTopOf="@+id/text_update"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -185,6 +188,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:text="@string/ru_loading_data"
+                android:textColor="?attr/colorOnSurfaceLight"
                 android:textSize="18sp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -200,6 +204,7 @@
                 android:layout_marginEnd="8dp"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_cancel_outline_black_24dp"
+                app:tint="?attr/colorOnBackground"
                 app:layout_constraintBottom_toTopOf="@+id/text_failed_load"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"

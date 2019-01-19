@@ -27,7 +27,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CropTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="CropTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -37,7 +37,7 @@
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/white</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
     <style name="CropTheme.ActionBar.Text" parent="@android:style/TextAppearance">
@@ -55,15 +55,49 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/grey_300</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="background">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
+
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
+        <item name="android:listDivider">@color/transparent</item>
+
+        <item name="colorStatusBar">@color/statusBarColor</item>
+        <item name="colorNavBar">?attr/colorSurface</item>
+        <item name="lightStatusBar">@bool/lightStatusBar</item>
+        <item name="lightNavBar">@bool/lightStatusBar</item>
+
+        <item name="numberPickerStyle">@style/NPWidget.Holo.NumberPicker</item>
+
+        <item name="android:statusBarColor">?attr/colorStatusBar</item>
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/white</item>
+
+        <item name="iconColor">?attr/colorOnBackground</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
+    </style>
+
+    <style name="UNumberPicker">
+        <item name="android:solidColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="WindowAnimationDefaultTransition">
+        <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
+        <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
     
     <style name="Widget.ShadowedIcon" parent="@android:style/Widget" />
@@ -113,7 +147,7 @@
     </style>
     
     <style name="UTheme.MaterialButton.Outline.AccentBorder" parent="UTheme.MaterialButton.Outline">
-        <item name="strokeColor">@color/blue_accent</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
     </style>
 
     <style name="UTheme.MaterialButton.Default.DialogPrimary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
@@ -125,8 +159,8 @@
     <style name="UTheme.MaterialButton.Default.DialogSecondary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
-        <item name="rippleColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
+        <item name="rippleColor">?attr/colorOnSurfaceLight</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
@@ -135,31 +169,31 @@
     </style>
 
     <style name="UTheme.TextAppearance.Headline1" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UTheme.TextAppearance.Headline2" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UTheme.TextAppearance.Common" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="UTheme.TextAppearance.Subtitle1" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">12sp</item>
     </style>
 
     <style name="UTheme.TextAppearance.TermsAndConditions" parent="UTheme.TextAppearance">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="lineHeightHint">24sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -167,13 +201,19 @@
 
     <style name="UTheme.TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="lineHeightHint">24sp</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
     <style name="UTheme.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="itemTextAppearanceActive">@style/UTheme.BottomNavigation.Active</item>
+        <item name="itemTextAppearanceInactive">@style/UTheme.BottomNavigation.Active</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemHorizontalTranslationEnabled">false</item>
+        <item name="itemIconTint">@color/navigation_bottom_color</item>
+        <item name="itemTextColor">@color/navigation_bottom_color</item>
+        <item name="android:background">?attr/colorSurface</item>
     </style>
 
     <style name="UTheme.BottomNavigation.Active" parent="TextAppearance.MaterialComponents.Caption">
@@ -183,14 +223,16 @@
     <style name="BottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="iconColor">@color/iconColor</item>
+        <item name="background">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <!--<item name="android:background">@drawable/bottom_sheet_dialog_background</item>-->
-    </style>
-
-    <style name="BottomSheetEntryDivider">
-        <item name="android:background">#EEEEEE</item>
     </style>
 
     <style name="TextAppearanceSubtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
@@ -210,11 +252,14 @@
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/background</item>
         <item name="android:orientation">vertical</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
     
-    <style name="Widget.Melon" parent="@android:style/Widget" />
+    <style name="Widget.Melon" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
     
     <style name="Widget.Melon.DisciplineDetailTitle">
         <item name="android:gravity">start|bottom</item>
@@ -233,7 +278,7 @@
     <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="UTheme.EventTitleText">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
         <item name="android:textSize">28sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -241,7 +286,7 @@
     </style>
 
     <style name="UTheme.EventLocationText">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnBackgroundLight</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:maxLines">1</item>
@@ -259,7 +304,21 @@
         <item name="android:paddingBottom">@dimen/padding_borderless_button</item>
     </style>
 
-    <style name="Widget.Schedule" parent="@android:style/Widget" />
+    <style name="Widget.Schedule" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
+
+    <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
+    </style>
+
+    <style name="UTheme.TextAppearance.TextInputLayoutHelper">
+        <item name="android:textColor">@color/colorPrimary</item>
+    </style>
     
+    <style name="UTheme.TextAppearance.TextInputLayoutHint" parent="TextAppearance.Design.Hint">
+        <item name="android:textColor">@color/text_input_hint_color</item>
+    </style>
+
     <dimen name="padding_borderless_button">16dp</dimen>
 </resources>

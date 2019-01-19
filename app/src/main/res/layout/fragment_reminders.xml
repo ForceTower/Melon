@@ -71,7 +71,7 @@
                 android:paddingEnd="16dp"
                 android:layout_marginTop="16dp"
                 android:text="@string/no_active_reminders"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnBackground"
                 android:textAlignment="gravity"
                 android:gravity="center"/>
         </LinearLayout>
@@ -86,15 +86,15 @@
             android:paddingEnd="20dp"
             android:text="@string/create_new_reminder"
             android:textAllCaps="false"
-            android:textColor="@android:color/white"
+            android:textColor="?attr/colorOnPrimary"
             android:textSize="14sp"
-            app:backgroundTint="@color/blue_accent"
+            app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="32dp"
             app:icon="@drawable/ic_add_black_24dp"
             app:iconPadding="12dp"
             app:iconSize="24dp"
             android:elevation="6dp"
-            app:iconTint="@android:color/white"
+            app:iconTint="?attr/colorOnPrimary"
             android:layout_gravity="bottom|center" />
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -51,7 +51,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/select_discipline_group_label"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -63,6 +63,7 @@
             android:layout_marginTop="@dimen/spacing_common"
             tools:text="@string/label_select_discipline_group_info"
             android:text="@{@string/label_select_discipline_group_info(clazzGroups.discipline().name)}"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/select_group_label" />
     
