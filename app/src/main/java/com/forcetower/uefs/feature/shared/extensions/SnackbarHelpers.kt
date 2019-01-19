@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.feature.shared.extensions
 
-import android.util.TypedValue
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
