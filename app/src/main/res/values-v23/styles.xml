@@ -55,7 +55,7 @@
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
 
         <item name="colorStatusBar">@color/statusBarColor</item>
-        <item name="colorNavBar">@color/navBarColor</item>
+        <item name="colorNavBar">?attr/colorSurface</item>
         <item name="lightStatusBar">@bool/lightStatusBar</item>
         <item name="lightNavBar">@bool/lightStatusBar</item>
         <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
