@@ -27,10 +27,24 @@
   -->
 
 <resources>
-    <color name="colorPrimary">#FFF</color>
-    <color name="colorPrimaryDark">#FFF</color>
-    <color name="colorPrimaryLight">#FFF</color>
-    <color name="colorAccent">#2196F3</color>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#de000000</color>
+    <color name="onSurfaceLight">#8a000000</color>
+    <color name="onBackground">#de000000</color>
+    <color name="onBackgroundLight">#8a000000</color>
+    <color name="onPrimary">#FFF</color>
+
+    <color name="statusBarColor">#FFF</color>
+    <color name="navBarColor">#FFF</color>
+
+    <color name="colorPrimary">#00a1e0</color>
+    <color name="colorPrimaryDark">#007bb9</color>
+    <color name="colorPrimaryLight">#83d7f6</color>
+    <color name="colorPrimaryAlpha">#192196F3</color>
+    <color name="colorAccent">#FFC107</color>
+
+    <color name="colorDarkThemed">@color/grey_300</color>
 
     <color name="yellow_pr">#FFC107</color>
     <color name="yellow_pr_dark">#FFA000</color>
@@ -47,7 +61,6 @@
     <color name="navigation_bottom_checked_color">#2196F3</color>
     <color name="text_bottom_sheet_menu">#2196F3</color>
 
-    <color name="drawer_selected_color">#192196F3</color>
     <color name="icon_nav_color">#2196F3</color>
 
     <color name="links_colors">#2196F3</color>
@@ -83,6 +96,8 @@
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
+    <color name="cardBackground">#FFF</color>
+    <color name="iconColor">#000</color>
 
     <color name="page_indicator_dark">#80333333</color>
     <color name="page_indicator_dark_selected">#ff333333</color>
@@ -147,5 +162,7 @@
     <color name="text_brown">#d6cdc4</color>
     <color name="myoteal">#00bcdd</color>
     <color name="myoblack">#1e242b</color>
-    <color name="background">#f8f8f8</color>
+    <color name="transparent">#00000000</color>
+
+    <color name="home_bottom_color_divider">#EEEEEE</color>
 </resources>

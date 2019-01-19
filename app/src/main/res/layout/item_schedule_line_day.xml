@@ -39,17 +39,18 @@
             android:id="@+id/text_schedule_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:padding="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="8dp"
+            android:paddingHorizontal="16dp"
             tools:text="@tools:sample/date/day_of_week"
             android:textSize="16sp"
-            android:textColor="@color/yellow_pr" />
+            android:textColor="?attr/colorAccent" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_day"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            android:paddingTop="4dp"
             tools:listitem="@layout/item_schedule_line_class"
             tools:itemCount="3">
         </androidx.recyclerview.widget.RecyclerView>

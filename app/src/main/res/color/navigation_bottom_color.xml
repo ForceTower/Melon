@@ -29,8 +29,8 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item
         android:state_checked="true"
-        android:color="@color/navigation_bottom_checked_color" />
+        android:color="?attr/colorPrimary" />
     <item
         android:state_checked="false"
-        android:color="@color/navigation_grey" />
+        android:color="?attr/colorOnSurfaceLight" />
 </selector>

@@ -65,7 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="120dp"
                 android:importantForAccessibility="no"
-                android:scaleType="centerCrop"
+                android:scaleType="centerInside"
                 android:src="@mipmap/school_items" />
             
             <TextView
@@ -76,7 +76,7 @@
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"
                 android:text="@string/discipline_no_file_posted"
-                android:textColor="@color/text_primary_dark" />
+                android:textColor="?attr/colorOnSurface" />
         
         </LinearLayout>
     

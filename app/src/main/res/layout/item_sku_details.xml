@@ -62,7 +62,7 @@
                 android:layout_marginTop="@dimen/spacing_normal"
                 app:skuTitle="@{skuDetails.title}"
                 android:textSize="18sp"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="Modo Escuro" />
@@ -74,7 +74,7 @@
                 android:layout_marginEnd="@dimen/spacing_normal"
                 android:text="@{skuDetails.price}"
                 android:textSize="16sp"
-                android:textColor="@color/blue_accent"
+                android:textColor="?attr/colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_sku_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="R$ 5,00" />
@@ -88,7 +88,7 @@
                 android:layout_marginEnd="@dimen/spacing_normal"
                 android:layout_marginBottom="@dimen/spacing_normal"
                 android:text="@{skuDetails.description}"
-                android:textColor="@color/text_secondary_dark"
+                android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"

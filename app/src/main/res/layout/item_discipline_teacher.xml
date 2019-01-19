@@ -48,7 +48,7 @@
             android:paddingEnd="@dimen/spacing_normal"
             android:text="@string/discipline_teacher"
             android:textSize="16sp"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintTop_toTopOf="parent"/>
         
         <ImageView
@@ -70,7 +70,7 @@
             android:layout_marginEnd="@dimen/spacing_normal"
             android:layout_marginStart="@dimen/spacing_normal"
             tools:text="João Batista Rocha Junior"
-            android:textColor="@color/text_secondary_dark"
+            android:textColor="?attr/colorOnSurfaceLight"
             android:text="@{viewModel.group.teacher}"
             android:layout_marginTop="@dimen/spacing_common"
             app:layout_constraintBottom_toTopOf="@id/speaker_item_company"
@@ -84,6 +84,7 @@
             android:layout_height="wrap_content"
             android:layout_marginEnd="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_small"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@id/speaker_item_name"
