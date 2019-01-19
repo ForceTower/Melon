@@ -46,13 +46,22 @@
     </style>
     
     <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
         <item name="colorOnBackground">@color/onBackground</item>
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
+
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
+        <item name="android:listDivider">@color/transparent</item>
 
         <item name="colorStatusBar">@color/statusBarColor</item>
         <item name="colorNavBar">?attr/colorSurface</item>
@@ -63,12 +72,6 @@
         <item name="numberPickerStyle">@style/NPWidget.Holo.NumberPicker</item>
 
         <item name="android:statusBarColor">?attr/colorStatusBar</item>
-
-        <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
-        <item name="colorAccent">@color/colorAccent</item>
         
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
