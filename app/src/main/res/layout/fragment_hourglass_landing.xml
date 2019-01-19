@@ -65,7 +65,7 @@
                 android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="20sp"
                 android:text="@string/hourglass_landing_title" />
 
@@ -77,7 +77,7 @@
                 android:layout_marginEnd="16dp"
                 android:gravity="center"
                 android:textAlignment="gravity"
-                android:textColor="@color/text_secondary_dark"
+                android:textColor="?attr/colorOnBackgroundLight"
                 android:textSize="16sp"
                 android:text="@string/hourglass_landing_desc" />
         </LinearLayout>

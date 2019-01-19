@@ -34,5 +34,5 @@
     android:paddingEnd="16dp"
     android:text="@string/tasks_completed_label"
     android:textSize="18sp"
-    android:textColor="@color/text_primary_dark"
+    android:textColor="?attr/colorOnBackground"
     android:gravity="center_vertical"/>

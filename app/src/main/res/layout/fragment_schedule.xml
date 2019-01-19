@@ -55,8 +55,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             app:elevation="0dp"
-            android:orientation="vertical"
-            android:background="@color/white">
+            android:background="?attr/background"
+            android:orientation="vertical">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -70,10 +70,11 @@
                     android:layout_height="?attr/actionBarSize"
                     android:layout_marginStart="16dp"
                     android:layout_gravity="start"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+                    android:textColor="?attr/colorOnBackground"
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
-                    android:text="@string/label_schedule"
-                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+                    android:text="@string/label_schedule" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_reload"
@@ -83,7 +84,7 @@
                     android:onClick="@{() -> actions.refreshData()}"
                     app:icon="@drawable/ic_refresh_black_24dp"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                    app:iconTint="@color/blue_accent"
+                    app:iconTint="?attr/colorOnSurface"
                     app:strokeWidth="0dp"/>
             </FrameLayout>
         </com.google.android.material.appbar.AppBarLayout>
@@ -157,7 +158,7 @@
                     android:layout_marginEnd="16dp"
                     android:layout_marginBottom="8dp"
                     android:text="@string/label_schedule_not_found"
-                    android:textColor="@color/blue_accent"
+                    android:textColor="?attr/colorPrimary"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
