@@ -64,6 +64,7 @@
                     android:gravity="center"
                     android:minHeight="?actionBarSize"
                     android:text="@string/label_messages"
+                    android:textColor="?attr/colorOnBackground"
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
             </FrameLayout>
 
@@ -72,14 +73,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
-                android:background="@color/white"
+                android:background="?attr/background"
                 app:tabContentStart="36dp"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="false"
                 app:tabMode="scrollable"
-                app:tabBackground="@color/white"
-                app:tabTextColor="@color/tab_text_color"
-                app:tabIndicatorColor="@color/tab_drawable_color"
+                app:tabTextColor="?attr/colorPrimary"
+                app:tabIndicatorColor="?attr/colorPrimary"
                 app:tabTextAppearance="@style/TextAppearanceTabLayout"
                 app:tabIndicator="@drawable/tab_indicator"/>
         </com.google.android.material.appbar.AppBarLayout>
