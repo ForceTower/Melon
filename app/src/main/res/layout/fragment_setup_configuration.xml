@@ -55,7 +55,7 @@
             android:layout_marginTop="@dimen/spacing_extra_large"
             android:layout_marginEnd="8dp"
             android:text="@string/label_app_config"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             android:textSize="26sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
@@ -70,7 +70,7 @@
             android:fontFamily="@font/roboto"
             android:text="@string/setup_configuration_information"
             android:textAlignment="center"
-            android:textColor="@color/text_secondary_dark"
+            android:textColor="?attr/colorOnSurfaceLight"
             android:textSize="13sp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
@@ -104,6 +104,7 @@
                 android:cursorVisible="false"
                 android:focusable="false"
                 android:focusableInTouchMode="false"
+                android:textColor="?attr/colorOnSurface"
                 android:hint="@string/setup_synchronization"
                 android:text="@string/label_example_sync_freq"/>
         </com.google.android.material.textfield.TextInputLayout>
