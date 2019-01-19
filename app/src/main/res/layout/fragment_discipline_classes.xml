@@ -65,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="56dp"
                 android:importantForAccessibility="no"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_planning_colored" />
         
             <TextView
