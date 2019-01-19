@@ -34,7 +34,6 @@ import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
 import kotlin.math.sqrt
 
-
 /**
  * This class encapsulates scrolling.  The duration of the scroll
  * can be passed in the constructor and specifies the maximum time that
@@ -179,11 +178,11 @@ class Scroller
     }
 
     private fun computeDeceleration(friction: Float): Float {
-        return (SensorManager.GRAVITY_EARTH   // g (m/s^2)
+        return (SensorManager.GRAVITY_EARTH // g (m/s^2)
 
-                * 39.37f               // inch/meter
+                * 39.37f * // inch/meter
 
-                * mPpi                 // pixels per inch
+                mPpi // pixels per inch
 
                 * friction)
     }
@@ -301,8 +300,16 @@ class Scroller
      * @param maxY Maximum Y value. The scroller will not scroll past this
      * point.
      */
-    fun fling(startX: Int, startY: Int, velocityX: Int, velocityY: Int,
-              minX: Int, maxX: Int, minY: Int, maxY: Int) {
+    fun fling(
+        startX: Int,
+        startY: Int,
+        velocityX: Int,
+        velocityY: Int,
+        minX: Int,
+        maxX: Int,
+        minY: Int,
+        maxY: Int
+    ) {
         var velocityX = velocityX
         var velocityY = velocityY
         // Continue a scroll or fling in progress
@@ -452,7 +459,7 @@ class Scroller
             if (x < 1.0f) {
                 x -= 1.0f - Math.exp((-x).toDouble()).toFloat()
             } else {
-                val start = 0.36787944117f   // 1/e == exp(-1)
+                val start = 0.36787944117f // 1/e == exp(-1)
                 x = 1.0f - Math.exp((1.0f - x).toDouble()).toFloat()
                 x = start + x * (1.0f - start)
             }
