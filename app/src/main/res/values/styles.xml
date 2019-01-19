@@ -46,12 +46,15 @@
     </style>
 
     <style name="CropTheme.Default"/>
-    
+
+    <!-- TODO this is the only theme that is still using old color schema -->
     <style name="UTheme.DatePickerDialog" parent="Theme.AppCompat.Light">
         <item name="colorAccent">@color/colorPrimary</item>
         <item name="colorControlActivated">@color/indigo_dark</item>
         <item name="colorControlHighlight">@color/colorAccent</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textColorPrimary">@color/text_primary_dark</item>
+        <item name="android:textColorSecondary">@color/text_secondary_dark</item>
     </style>
 
     <!-- Base application theme. -->
@@ -130,7 +133,7 @@
     <style name="UTheme.Translucent.About">
         <item name="android:windowEnterTransition">@transition/about_enter</item>
         <item name="android:windowReturnTransition">@transition/about_return</item>
-        <item name="android:statusBarColor">@color/blue_accent</item>
+        <item name="android:statusBarColor">?attr/colorPrimary</item>
     </style>
 
     <style name="UTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
