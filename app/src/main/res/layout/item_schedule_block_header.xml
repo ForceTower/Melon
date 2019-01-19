@@ -35,5 +35,5 @@
         android:layout_margin="2dp"
         tools:text="SEG"
         android:textSize="@dimen/schedule_block_primary_text"
-        android:textColor="@color/text_primary_dark" />
+        android:textColor="?attr/colorOnBackground" />
 </layout>
