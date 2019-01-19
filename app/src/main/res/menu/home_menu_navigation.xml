@@ -34,6 +34,7 @@
         <item
             android:id="@+id/profile"
             android:title="@string/label_profile"
+            android:visible="false"
             android:icon="@drawable/ic_face_black_24dp"/>
 
         <item
