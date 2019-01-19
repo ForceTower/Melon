@@ -27,14 +27,8 @@
   -->
 
 <resources>
-    <declare-styleable name="AppThemeEngine">
-        <attr name="colorOnSurfaceLight" format="color"/>
-
-        <attr name="statusBarColor" format="color"/>
-        <attr name="navBarColor" format="color"/>
-        <attr name="lightStatusBar" format="boolean"/>
-        <attr name="lightNavBar" format="boolean"/>
-
-        <attr name="iconColor" format="color"/>
-    </declare-styleable>
+    <color name="background">#000000</color>
+    <color name="surface">#36343a</color>
+    <color name="onSurface">#FFFFFF</color>
+    <color name="onSurfaceLight">#b3ffffff</color>
 </resources>

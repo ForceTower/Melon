@@ -64,7 +64,7 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:text="@string/login_using_sagres_account"
-                    android:textColor="@color/text_primary_dark"
+                    android:textColor="?attr/colorOnSurface"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -78,7 +78,6 @@
                     android:layout_marginTop="16dp"
                     android:layout_marginEnd="16dp"
                     android:hint="@string/login_user"
-                    app:boxBackgroundColor="@color/textBoxColor"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
@@ -91,8 +90,7 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_user"
                         android:importantForAutofill="yes"
-                        android:inputType="text"
-                        android:textColor="@color/text_primary_dark" />
+                        android:inputType="text" />
         
                 </com.google.android.material.textfield.TextInputLayout>
         
@@ -104,7 +102,6 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="16dp"
-                    app:boxBackgroundColor="@color/textBoxColor"
                     android:hint="@string/login_password"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -116,8 +113,7 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_password"
                         android:importantForAutofill="yes"
-                        android:inputType="textPassword"
-                        android:textColor="@color/text_primary_dark"/>
+                        android:inputType="textPassword" />
         
                 </com.google.android.material.textfield.TextInputLayout>
         

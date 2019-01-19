@@ -27,6 +27,13 @@
   -->
 
 <resources>
+    <color name="background">#FFFFFF</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="onSurface">#de000000</color>
+    <color name="onSurfaceLight">#8a000000</color>
+
+
+
     <color name="colorPrimary">#00a1e0</color>
     <color name="colorPrimaryDark">#007bb9</color>
     <color name="colorPrimaryLight">#83d7f6</color>
@@ -86,9 +93,7 @@
     <color name="text_secondary_light">#b3ffffff</color> <!-- 70% -->
     <color name="text_disabled_light">#4dffffff</color>
     <color name="white">#FFFF</color>
-    <color name="window_background">#FFF</color>
     <color name="cardBackground">#FFF</color>
-    <color name="textBoxColor">@android:color/transparent</color>
     <color name="iconColor">#000</color>
 
     <color name="page_indicator_dark">#80333333</color>
@@ -154,5 +159,4 @@
     <color name="text_brown">#d6cdc4</color>
     <color name="myoteal">#00bcdd</color>
     <color name="myoblack">#1e242b</color>
-    <color name="background">#f8f8f8</color>
 </resources>
