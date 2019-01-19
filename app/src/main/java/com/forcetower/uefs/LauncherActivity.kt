@@ -69,8 +69,6 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         if (savedInstanceState != null) return
 
         createNewVersionNotification()
-        preferences.edit().putBoolean("ach_night_mode_enabled", true).putInt("cfg_night_mode", 2).apply()
-
         prepareDarkness()
 
         val disabledCode = remoteConfig.getLong("version_disable")
