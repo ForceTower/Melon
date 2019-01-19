@@ -30,7 +30,6 @@ package com.forcetower.uefs.feature.home
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.pm.ShortcutManager
-import android.media.MediaPlayer
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
