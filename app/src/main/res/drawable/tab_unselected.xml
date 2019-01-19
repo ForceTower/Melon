@@ -31,7 +31,7 @@
         <shape android:shape="rectangle">
             <corners android:topLeftRadius="24dp"
                 android:topRightRadius="24dp"/>
-            <solid android:color="@color/tab_drawable_color" />
+            <solid android:color="?attr/colorPrimary" />
         </shape>
     </item>
 </layer-list>

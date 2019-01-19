@@ -7,7 +7,7 @@ versions.ktx = "1.0.1"
 
 // Android X [Old Support]
 versions.app_compat = "1.0.2"
-versions.google_material = "1.0.0"
+versions.google_material = "1.1.0-alpha02"
 versions.constraint_layout = "1.1.3"
 versions.annotation = "1.0.1"
 versions.exif_interface = "1.0.0"

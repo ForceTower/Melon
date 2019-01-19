@@ -59,7 +59,8 @@
                     android:layout_height="200dp"
                     android:importantForAccessibility="no"
                     android:scaleType="centerInside"
-                    app:imageUrl="@{imageTop}"/>
+                    app:imageUrl="@{imageTop}"
+                    android:visibility="gone"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_sku"
@@ -74,7 +75,5 @@
             </LinearLayout>
 
         </androidx.core.widget.NestedScrollView>
-
-
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

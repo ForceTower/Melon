@@ -41,22 +41,45 @@
         <item name="android:windowActivityTransitions">true</item>
         <item name="android:windowBackground">@color/white</item>
         
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
+        <item name="android:windowLightStatusBar">@bool/lightStatusBar</item>
+        <item name="android:statusBarColor">@color/statusBarColor</item>
     </style>
     
-    <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
+    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="background">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
+
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
+        <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
+        <item name="android:listDivider">@color/transparent</item>
+
+        <item name="colorStatusBar">@color/statusBarColor</item>
+        <item name="colorNavBar">?attr/colorSurface</item>
+        <item name="lightStatusBar">@bool/lightStatusBar</item>
+        <item name="lightNavBar">@bool/lightStatusBar</item>
+        <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
+
+        <item name="numberPickerStyle">@style/NPWidget.Holo.NumberPicker</item>
+
+        <item name="android:statusBarColor">?attr/colorStatusBar</item>
         
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/white</item>
-        
-        <item name="android:windowLightStatusBar">true</item>
-        <item name="android:statusBarColor">@color/white</item>
+
+        <item name="iconColor">?attr/colorOnBackground</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
     </style>
     
     <style name="UTheme.TransparentStatus" parent="UTheme.LightNav">

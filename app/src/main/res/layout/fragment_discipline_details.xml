@@ -77,7 +77,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/padding_normal"
                     android:text="@{viewModel.clazz.clazz.discipline().name}"
-                    android:textColor="@color/text_primary_dark"
+                    android:textColor="?attr/colorOnSurface"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toEndOf="@id/guideline_start"
@@ -90,6 +90,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:text="@{viewModel.clazz.clazz.discipline().department}"
+                    android:textColor="?attr/colorOnSurfaceLight"
                     app:layout_constraintEnd_toEndOf="@id/text_discipline_name"
                     app:layout_constraintStart_toStartOf="@id/text_discipline_name"
                     app:layout_constraintTop_toBottomOf="@id/text_discipline_name"
@@ -136,8 +137,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     app:layout_constraintTop_toBottomOf="@+id/recycler_discipline_items"
-                    app:tabSelectedTextColor="@color/text_primary_dark"
-                    app:tabTextColor="@color/text_tertiary_dark"
+                    app:tabSelectedTextColor="?attr/colorPrimary"
+                    app:tabTextColor="?attr/colorOnSurfaceLight"
                     app:tabIndicator="@null"
                     app:tabMode="scrollable"
                     app:tabTextAppearance="@style/TextAppearance.TabLayout.Disciplines"
@@ -165,7 +166,8 @@
             android:contentDescription="@string/navigate_up"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            app:tint="?attr/colorOnBackground"/>
     
         <TextView
             android:layout_width="wrap_content"
@@ -173,7 +175,7 @@
             android:maxLines="1"
             android:text="@string/discipline_details_toolbar_label"
             android:textSize="16sp"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="@+id/up"
             app:layout_constraintStart_toEndOf="@+id/up"
             app:layout_constraintTop_toTopOf="@+id/up" />

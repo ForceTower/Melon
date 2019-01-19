@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  ~ Copyright (c) 2018.
+  ~ Copyright (c) 2019.
   ~ João Paulo Sena <joaopaulo761@gmail.com>
   ~
   ~ This file is part of the UNES Open Source Project.
@@ -26,23 +26,8 @@
   ~ SOFTWARE.
   -->
 
-<layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
-    <data>
-        <variable
-            name="absence"
-            type="com.forcetower.uefs.core.model.unes.ClassAbsence"/>
-    </data>
-    
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/spacing_common"
-        android:layout_marginStart="@dimen/spacing_normal"
-        android:layout_marginEnd="@dimen/spacing_normal"
-        android:textColor="@color/text_primary_dark"
-        app:missedDescription="@{absence.description}"
-        app:missedDate="@{absence.date}"
-        tools:text="23/11/2018 - Mais variações de modelos de Amplificadores Operacionais"/>
-</layout>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:color="@color/colorAccent" android:state_activated="true"/>
+    <item android:color="@color/colorAccent" android:state_selected="true"/>
+    <item android:color="@color/text_secondary_dark" />
+</selector>

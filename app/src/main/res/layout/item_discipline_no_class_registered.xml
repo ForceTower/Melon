@@ -49,6 +49,6 @@
         android:gravity="center"
         android:paddingStart="@dimen/padding_normal"
         android:paddingEnd="@dimen/padding_normal"
-        android:textColor="@color/text_primary_dark"/>
+        android:textColor="?attr/colorOnSurface"/>
 
 </LinearLayout>
