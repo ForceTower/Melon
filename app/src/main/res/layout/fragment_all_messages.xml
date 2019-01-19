@@ -73,7 +73,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
                 style="@style/Widget.MaterialComponents.TabLayout.Colored"
-                android:background="?attr/background"
                 app:tabContentStart="36dp"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="false"
@@ -81,7 +80,8 @@
                 app:tabTextColor="?attr/colorPrimary"
                 app:tabIndicatorColor="?attr/colorPrimary"
                 app:tabTextAppearance="@style/TextAppearanceTabLayout"
-                app:tabIndicator="@drawable/tab_indicator"/>
+                app:tabIndicator="@drawable/tab_indicator"
+                android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
