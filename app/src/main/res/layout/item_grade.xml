@@ -61,7 +61,7 @@
             android:layout_marginTop="8dp"
             android:layout_marginEnd="8dp"
             android:maxLines="1"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintBottom_toTopOf="@+id/text_evaluation_date"
             app:layout_constraintEnd_toStartOf="@+id/guideline_grade"
             app:layout_constraintHorizontal_bias="0.5"
@@ -79,6 +79,7 @@
             android:layout_marginBottom="8dp"
             android:textSize="12sp"
             android:maxLines="1"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_grade"
             app:layout_constraintHorizontal_bias="0.5"
@@ -99,6 +100,6 @@
             app:layout_constraintTop_toTopOf="parent"
             android:text="@{grade.grade}"
             tools:text="8.7"
-            android:textColor="@color/colorAccent"/>
+            android:textColor="?attr/colorAccent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

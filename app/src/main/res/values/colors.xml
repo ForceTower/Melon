@@ -40,7 +40,7 @@
     <color name="colorPrimary">#00a1e0</color>
     <color name="colorPrimaryDark">#007bb9</color>
     <color name="colorPrimaryLight">#83d7f6</color>
-    <color name="colorAccent">#fe5000</color>
+    <color name="colorAccent">#FFC107</color>
 
     <color name="colorDarkThemed">@color/grey_300</color>
 
