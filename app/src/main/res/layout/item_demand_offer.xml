@@ -96,6 +96,7 @@
             android:contentDescription="@string/demand_discipline_status"
             app:disciplineIcon="@{offer}"
             android:scaleType="fitCenter"
+            app:tint="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_discipline_name"

@@ -204,6 +204,7 @@
                 android:layout_marginEnd="8dp"
                 android:importantForAccessibility="no"
                 android:src="@drawable/ic_cancel_outline_black_24dp"
+                app:tint="?attr/colorOnBackground"
                 app:layout_constraintBottom_toTopOf="@+id/text_failed_load"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
