@@ -32,7 +32,8 @@
     <color name="onSurface">#de000000</color>
     <color name="onSurfaceLight">#8a000000</color>
 
-
+    <color name="statusBarColor">#FFF</color>
+    <color name="navBarColor">#FFF</color>
 
     <color name="colorPrimary">#00a1e0</color>
     <color name="colorPrimaryDark">#007bb9</color>
@@ -40,7 +41,6 @@
     <color name="colorAccent">#fe5000</color>
 
     <color name="colorDarkThemed">@color/grey_300</color>
-    <color name="statusBarColor">#FFF</color>
 
     <color name="yellow_pr">#FFC107</color>
     <color name="yellow_pr_dark">#FFA000</color>

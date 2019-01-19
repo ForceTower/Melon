@@ -52,6 +52,14 @@
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
 
+        <item name="colorStatusBar">@color/statusBarColor</item>
+        <item name="colorNavBar">@color/navBarColor</item>
+        <item name="lightStatusBar">@bool/lightStatusBar</item>
+        <item name="lightNavBar">@bool/lightStatusBar</item>
+        <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
+
+        <item name="android:statusBarColor">?attr/colorStatusBar</item>
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -59,10 +67,9 @@
         
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        
-        <item name="android:windowLightStatusBar">@bool/lightStatusBar</item>
-        <item name="android:statusBarColor">@color/statusBarColor</item>
+
         <item name="iconColor">@color/iconColor</item>
+        <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
     </style>
     
     <style name="UTheme.TransparentStatus" parent="UTheme.LightNav">

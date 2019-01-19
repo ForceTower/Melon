@@ -90,6 +90,7 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_user"
                         android:importantForAutofill="yes"
+                        android:textColor="?attr/colorOnSurface"
                         android:inputType="text" />
         
                 </com.google.android.material.textfield.TextInputLayout>
@@ -113,6 +114,7 @@
                         android:layout_height="match_parent"
                         android:autofillHints="@string/login_password"
                         android:importantForAutofill="yes"
+                        android:textColor="?attr/colorOnSurface"
                         android:inputType="textPassword" />
         
                 </com.google.android.material.textfield.TextInputLayout>
