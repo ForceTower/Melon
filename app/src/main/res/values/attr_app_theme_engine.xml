@@ -30,8 +30,8 @@
     <declare-styleable name="AppThemeEngine">
         <attr name="colorOnSurfaceLight" format="color"/>
 
-        <attr name="statusBarColor" format="color"/>
-        <attr name="navBarColor" format="color"/>
+        <attr name="colorStatusBar" format="color"/>
+        <attr name="colorNavBar" format="color"/>
         <attr name="lightStatusBar" format="boolean"/>
         <attr name="lightNavBar" format="boolean"/>
 
