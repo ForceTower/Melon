@@ -91,7 +91,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.profile.name}"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnBackground"
                 android:textSize="16sp"
                 app:layout_constraintStart_toStartOf="@+id/third_keyline"
                 app:layout_constraintTop_toTopOf="@+id/image_user_picture"
@@ -105,6 +105,7 @@
                 app:profileScoreOptional="@{viewModel.profile.score}"
                 app:profileScoreCalculated="@{viewModel.profile.calcScore}"
                 android:textSize="14sp"
+                android:textColor="?attr/colorOnBackgroundLight"
                 app:layout_constraintStart_toStartOf="@+id/third_keyline"
                 app:layout_constraintTop_toBottomOf="@+id/text_user_name"
                 tools:text="Seu score é: 8.7" />
@@ -115,7 +116,7 @@
             android:id="@+id/divider"
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="#EEEEEE"
+            android:background="#8B8B8B"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_bottom"/>

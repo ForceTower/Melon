@@ -40,6 +40,7 @@
     <color name="colorPrimary">#00a1e0</color>
     <color name="colorPrimaryDark">#007bb9</color>
     <color name="colorPrimaryLight">#83d7f6</color>
+    <color name="colorPrimaryAlpha">#192196F3</color>
     <color name="colorAccent">#FFC107</color>
 
     <color name="colorDarkThemed">@color/grey_300</color>
@@ -59,7 +60,6 @@
     <color name="navigation_bottom_checked_color">#2196F3</color>
     <color name="text_bottom_sheet_menu">#2196F3</color>
 
-    <color name="drawer_selected_color">#192196F3</color>
     <color name="icon_nav_color">#2196F3</color>
 
     <color name="links_colors">#2196F3</color>
