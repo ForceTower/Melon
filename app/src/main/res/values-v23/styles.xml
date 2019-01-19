@@ -78,7 +78,7 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
 
-        <item name="iconColor">@color/iconColor</item>
+        <item name="iconColor">?attr/colorOnBackground</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
     </style>
     

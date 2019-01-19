@@ -36,4 +36,6 @@
 
     <color name="statusBarColor">#000</color>
     <color name="navBarColor">#000</color>
+
+    <color name="home_bottom_color_divider">#8B8B8B</color>
 </resources>
