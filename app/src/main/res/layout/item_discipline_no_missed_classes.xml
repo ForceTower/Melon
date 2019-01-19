@@ -37,7 +37,7 @@
         android:layout_width="match_parent"
         android:layout_height="48dp"
         android:src="@drawable/ic_very_happy_black_24dp"
-        android:tint="@color/blue_accent"
+        android:tint="?attr/colorPrimary"
         android:importantForAccessibility="no"/>
     
     <TextView
@@ -48,5 +48,5 @@
         android:paddingEnd="@dimen/spacing_normal"
         android:layout_marginTop="4dp"
         android:text="@string/discipline_no_missed_classes"
-        android:textColor="@color/text_primary_dark"/>
+        android:textColor="?attr/colorOnSurface"/>
 </LinearLayout>
