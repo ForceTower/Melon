@@ -72,6 +72,10 @@
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
     </style>
 
+    <style name="UNumberPicker">
+        <item name="android:solidColor">?attr/colorOnSurface</item>
+    </style>
+
     <style name="WindowAnimationDefaultTransition">
         <item name="android:windowEnterAnimation">@android:anim/fade_in</item>
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
@@ -136,8 +140,8 @@
     <style name="UTheme.MaterialButton.Default.DialogSecondary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
-        <item name="rippleColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
+        <item name="rippleColor">?attr/colorOnSurfaceLight</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
@@ -195,15 +199,15 @@
         <item name="android:windowIsFloating">false</item>
         <item name="bottomSheetStyle">@style/BottomSheet</item>
         <item name="iconColor">@color/iconColor</item>
+        <item name="background">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+        <item name="colorOnSurface">@color/onSurface</item>
+        <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
         <!--<item name="android:background">@drawable/bottom_sheet_dialog_background</item>-->
-    </style>
-
-    <style name="BottomSheetEntryDivider">
-        <item name="android:background">#EEEEEE</item>
-        <item name="iconColor">@color/iconColor</item>
     </style>
 
     <style name="TextAppearanceSubtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
@@ -223,7 +227,7 @@
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
-        <item name="android:background">@color/white</item>
+        <item name="android:background">@color/background</item>
         <item name="android:orientation">vertical</item>
         <item name="iconColor">@color/iconColor</item>
     </style>

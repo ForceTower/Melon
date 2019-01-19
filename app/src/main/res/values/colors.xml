@@ -159,4 +159,5 @@
     <color name="text_brown">#d6cdc4</color>
     <color name="myoteal">#00bcdd</color>
     <color name="myoblack">#1e242b</color>
+    <color name="transparent">#00000000</color>
 </resources>

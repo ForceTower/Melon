@@ -58,6 +58,8 @@
         <item name="lightNavBar">@bool/lightStatusBar</item>
         <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
 
+        <item name="numberPickerStyle">@style/NPWidget.Holo.NumberPicker</item>
+
         <item name="android:statusBarColor">?attr/colorStatusBar</item>
 
         <!-- Customize your theme here. -->
