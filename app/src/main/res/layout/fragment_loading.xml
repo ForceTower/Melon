@@ -50,26 +50,26 @@
 
         <TextView
             android:id="@+id/text_welcome"
+            style="@style/UTheme.TextAppearance.Headline1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="8dp"
             android:text="@string/login_welcome_to_unes"
-            style="@style/UTheme.TextAppearance.Headline1"
             app:layout_constraintBottom_toTopOf="@+id/text_tag_line"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
             android:id="@+id/text_tag_line"
+            style="@style/UTheme.TextAppearance.Common"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="8dp"
             android:layout_marginBottom="16dp"
             android:text="@string/login_unes_single_help"
-            style="@style/UTheme.TextAppearance.Common"
             app:layout_constraintBottom_toTopOf="@+id/btn_first_steps"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -102,18 +102,18 @@
 
         <TextView
             android:id="@+id/text_terms_and_privacy"
+            style="@style/UTheme.TextAppearance.TermsAndConditions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="16dp"
-            tools:text="Ao continuar, você concorda com os\nTermos de Uso e Política de Privacidade"
-            style="@style/UTheme.TextAppearance.TermsAndConditions"
-            android:textColorLink="@color/unes_links"
             android:textColorHighlight="@color/links_highlighted"
+            android:textColorLink="@color/unes_links"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            tools:text="Ao continuar, você concorda com os\nTermos de Uso e Política de Privacidade" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -37,7 +37,6 @@
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/window_background</item>
         <item name="iconColor">@color/iconColor</item>
     </style>
     
@@ -57,6 +56,10 @@
 
     <!-- Base application theme. -->
     <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="background">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+
         <!-- Customize your theme here. -->
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
@@ -66,7 +69,6 @@
 
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:windowActivityTransitions">true</item>
-        <item name="android:windowBackground">@color/window_background</item>
     </style>
     
     <style name="Widget.ShadowedIcon" parent="@android:style/Widget" />
@@ -138,31 +140,31 @@
     </style>
 
     <style name="UTheme.TextAppearance.Headline1" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">24sp</item>
         <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UTheme.TextAppearance.Headline2" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:textSize">18sp</item>
         <item name="android:textAlignment">center</item>
     </style>
 
     <style name="UTheme.TextAppearance.Common" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="android:textSize">14sp</item>
     </style>
 
     <style name="UTheme.TextAppearance.Subtitle1" parent="UTheme.TextAppearance">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="android:fontFamily">@font/roboto</item>
         <item name="android:textSize">12sp</item>
     </style>
 
     <style name="UTheme.TextAppearance.TermsAndConditions" parent="UTheme.TextAppearance">
         <item name="android:textSize">12sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="lineHeightHint">24sp</item>
         <item name="android:textAlignment">center</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -170,7 +172,7 @@
 
     <style name="UTheme.TextAppearance.About" parent="@android:style/TextAppearance.Material.Body1">
         <item name="android:textSize">16sp</item>
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
         <item name="lineHeightHint">24sp</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
@@ -272,7 +274,6 @@
     </style>
 
     <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
-        <item name="boxBackgroundColor">@color/textBoxColor</item>
         <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
     </style>
 
