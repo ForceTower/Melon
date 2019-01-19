@@ -42,7 +42,7 @@
             <com.forcetower.uefs.widget.CutoutTextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_app_name_header"
-                app:foregroundColor="@color/colorAccent"
+                app:foregroundColor="?attr/colorPrimary"
                 android:text="@string/app_name"
                 android:fontFamily="@font/product_sans_regular"/>
 
@@ -50,7 +50,7 @@
                 android:id="@+id/text_about_description"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_light"
+                android:background="?attr/background"
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingTop="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"
@@ -62,7 +62,7 @@
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_light">
+                android:background="?attr/background">
 
                 <ImageView
                     android:id="@+id/image_creator_picture"
@@ -78,7 +78,7 @@
                 android:id="@+id/text_about_continuation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/background_light"
+                android:background="?attr/background"
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingTop="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"

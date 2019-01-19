@@ -72,7 +72,7 @@
                 android:paddingStart="@dimen/padding_normal"
                 android:paddingEnd="@dimen/padding_normal"
                 android:text="@string/discipline_no_absence_posted"
-                android:textColor="@color/text_primary_dark" />
+                android:textColor="?attr/colorOnSurface" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

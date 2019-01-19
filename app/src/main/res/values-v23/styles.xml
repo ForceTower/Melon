@@ -45,7 +45,7 @@
         <item name="android:statusBarColor">@color/statusBarColor</item>
     </style>
     
-    <style name="UTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
@@ -61,6 +61,7 @@
         <item name="colorOnBackground">@color/onBackground</item>
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
 
+        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
         <item name="android:listDivider">@color/transparent</item>
 
