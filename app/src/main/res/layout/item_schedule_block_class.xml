@@ -62,7 +62,7 @@
                 tools:text="@sample/classes.json/data/classCode"
                 android:gravity="center"
                 android:textSize="@dimen/schedule_block_primary_text"
-                android:textColor="@color/text_primary_dark" />
+                android:textColor="?attr/colorOnSurface" />
 
             <View
                 android:layout_width="match_parent"
@@ -74,7 +74,7 @@
                 android:layout_height="wrap_content"
                 tools:text="@sample/classes.json/data/group"
                 android:gravity="center"
-                android:textColor="@color/text_primary_dark"
+                android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/schedule_block_second_text"/>
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>

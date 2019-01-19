@@ -96,7 +96,7 @@
                 android:layout_marginBottom="8dp"
                 android:gravity="center_vertical"
                 android:textAlignment="gravity"
-                android:textColor="@color/colorAccent"
+                android:textColor="?attr/colorPrimary"
                 android:textSize="12sp"
                 app:layout_constraintBottom_toTopOf="@+id/guide_title"
                 app:layout_constraintEnd_toStartOf="@+id/guide_score"
@@ -118,7 +118,7 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:min="0"
                 app:max="100"
-                app:progressbarColor="@color/yellow_pr"
+                app:progressbarColor="?attr/colorAccent"
                 app:classStudentGrade="@{clazzGroup}"
                 tools:progress="87" />
 
@@ -134,7 +134,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 tools:text="8.7"
-                android:textColor="@color/yellow_pr_dark"
+                android:textColor="?attr/colorAccent"
                 android:gravity="center"
                 app:classStudentGrade="@{clazzGroup}"/>
 

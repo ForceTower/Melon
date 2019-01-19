@@ -44,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="8dp"
-        android:background="@color/white"
+        android:background="?attr/background"
         android:onClick="@{() -> listener.onClick(reminder)}">
     
         <androidx.appcompat.widget.AppCompatRadioButton
@@ -66,7 +66,7 @@
             android:layout_marginBottom="8dp"
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnBackground"
             android:textSize="16sp"
             android:text="@{reminder.title}"
             app:strikeText="@{reminder.completed}"
@@ -87,6 +87,7 @@
             android:layout_marginEnd="16dp"
             android:textSize="12sp"
             android:text="@{reminder.description}"
+            android:textColor="?attr/colorOnBackgroundLight"
             app:goneUnless="@{reminder.description != null}"
             app:layout_constraintBottom_toTopOf="@+id/text_task_date"
             app:layout_constraintEnd_toEndOf="parent"
@@ -102,7 +103,7 @@
             android:layout_marginStart="8dp"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="8dp"
-            android:textColor="@color/blue_accent"
+            android:textColor="?attr/colorPrimary"
             android:textSize="12sp"
             app:goneUnless="@{reminder.date != null &amp;&amp; !reminder.completed}"
             app:reminderDate="@{reminder.date}"

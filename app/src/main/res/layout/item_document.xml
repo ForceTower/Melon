@@ -67,13 +67,14 @@
                 tools:text="Guia de Matrícula"
                 android:text="@{document.name}"
                 android:textSize="18sp"
-                android:textColor="@color/text_primary_dark"/>
+                android:textColor="?attr/colorOnSurface"/>
     
             <TextView
                 android:id="@+id/text_download_date"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="8dp"
+                android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_document_name"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="15/06/2018"

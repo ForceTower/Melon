@@ -29,6 +29,7 @@ package com.forcetower.uefs.feature.shared.extensions
 
 import android.view.ViewGroup
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
@@ -50,9 +51,12 @@ fun Snackbar.config(bottomPadding: Int = 12, pxElevation: Int = 6) {
 
     view.background = context.getDrawable(R.drawable.snackbar_background)
 
+    val colorOnSurface = ContextCompat.getColor(context, R.color.white)
+
     val font = ResourcesCompat.getFont(context, R.font.product_sans_regular)
     val tv = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     tv.typeface = font
+    tv.setTextColor(colorOnSurface)
 
     try {
         val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)

@@ -30,13 +30,13 @@ package com.forcetower.uefs.feature.login
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.util.TypedValue
 import android.view.Gravity.CENTER
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -110,12 +110,17 @@ class SigningInFragment : UFragment(), Injectable {
 
     private fun prepareSwitcher() {
         val font = ResourcesCompat.getFont(requireContext(), R.font.product_sans_regular)
+
         binding.textStatus.setFactory {
             val textView = TextView(requireContext())
             textView.textSize = 16f
             textView.gravity = CENTER
             textView.typeface = font
-            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_primary_dark))
+            val typedValue = TypedValue()
+            val theme = requireContext().theme
+            theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
+            val colorOnSurface = typedValue.data
+            textView.setTextColor(colorOnSurface)
             textView
         }
 
@@ -124,7 +129,11 @@ class SigningInFragment : UFragment(), Injectable {
             textView.textSize = 12f
             textView.gravity = CENTER
             textView.typeface = font
-            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.text_secondary_dark))
+            val typedValue = TypedValue()
+            val theme = requireContext().theme
+            theme.resolveAttribute(R.attr.colorOnSurfaceLight, typedValue, true)
+            val colorOnSurfaceLight = typedValue.data
+            textView.setTextColor(colorOnSurfaceLight)
             textView
         }
     }

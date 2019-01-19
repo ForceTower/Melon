@@ -33,14 +33,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DividerItemDecoration
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ContentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.widget.DividerItemDecorator
 import javax.inject.Inject
 
 class RequestedServicesFragment : UFragment(), Injectable {
@@ -70,7 +67,6 @@ class RequestedServicesFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.recyclerServices.run {
             adapter = this@RequestedServicesFragment.adapter
-            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.VERTICAL))
         }
     }
 

@@ -48,7 +48,7 @@
             tools:text="07:30"
             android:textSize="@dimen/schedule_block_primary_text"
             android:text="@{inner.time.start}"
-            android:textColor="@color/text_primary_dark" />
+            android:textColor="?attr/colorOnBackground" />
 
         <TextView
             android:id="@+id/text_end"
@@ -58,7 +58,7 @@
             tools:text="09:30"
             android:text="@{inner.time.end}"
             android:textSize="@dimen/schedule_block_primary_text"
-            android:textColor="@color/text_primary_dark" />
+            android:textColor="?attr/colorOnBackground" />
 
     </LinearLayout>
 </layout>
