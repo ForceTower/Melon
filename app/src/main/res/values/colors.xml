@@ -31,6 +31,8 @@
     <color name="surface">#FFFFFF</color>
     <color name="onSurface">#de000000</color>
     <color name="onSurfaceLight">#8a000000</color>
+    <color name="onBackground">#de000000</color>
+    <color name="onBackgroundLight">#8a000000</color>
 
     <color name="statusBarColor">#FFF</color>
     <color name="navBarColor">#FFF</color>

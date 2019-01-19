@@ -51,6 +51,8 @@
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
 
         <item name="colorStatusBar">@color/statusBarColor</item>
         <item name="colorNavBar">@color/navBarColor</item>
