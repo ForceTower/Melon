@@ -28,6 +28,7 @@
 
 <resources>
     <declare-styleable name="AppThemeEngine">
+        <attr name="colorPrimaryLight" format="color"/>
         <attr name="colorOnSurfaceLight" format="color"/>
 
         <attr name="colorStatusBar" format="color"/>

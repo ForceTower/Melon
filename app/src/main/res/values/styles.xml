@@ -188,7 +188,13 @@
     </style>
 
     <style name="UTheme.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
-        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="itemTextAppearanceActive">@style/UTheme.BottomNavigation.Active</item>
+        <item name="itemTextAppearanceInactive">@style/UTheme.BottomNavigation.Active</item>
+        <item name="labelVisibilityMode">labeled</item>
+        <item name="itemHorizontalTranslationEnabled">false</item>
+        <item name="itemIconTint">@color/navigation_bottom_color</item>
+        <item name="itemTextColor">@color/navigation_bottom_color</item>
+        <item name="android:background">?attr/colorSurface</item>
     </style>
 
     <style name="UTheme.BottomNavigation.Active" parent="TextAppearance.MaterialComponents.Caption">
