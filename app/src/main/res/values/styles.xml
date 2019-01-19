@@ -128,7 +128,7 @@
     </style>
     
     <style name="UTheme.MaterialButton.Outline.AccentBorder" parent="UTheme.MaterialButton.Outline">
-        <item name="strokeColor">@color/blue_accent</item>
+        <item name="strokeColor">?attr/colorPrimary</item>
     </style>
 
     <style name="UTheme.MaterialButton.Default.DialogPrimary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
