@@ -54,7 +54,7 @@
             android:layout_height="16dp"
             android:src="@drawable/ic_location_black_24dp"
             android:importantForAccessibility="no"
-            app:tint="@color/text_secondary_dark"
+            app:tint="?attr/colorOnBackgroundLight"
             app:layout_constraintBottom_toBottomOf="@+id/text_event_location"
             app:layout_constraintStart_toStartOf="@+id/text_event_name"
             app:layout_constraintTop_toTopOf="@+id/text_event_location" />
@@ -65,7 +65,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginStart="8dp"
-            android:textColor="@color/text_secondary_dark"
+            app:tint="?attr/colorOnBackgroundLight"
             app:layout_constraintStart_toEndOf="@+id/ic_location"
             app:layout_constraintTop_toBottomOf="@+id/text_event_name" />
 

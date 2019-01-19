@@ -259,7 +259,7 @@
     <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
 
     <style name="UTheme.EventTitleText">
-        <item name="android:textColor">@color/text_primary_dark</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
         <item name="android:textSize">28sp</item>
         <item name="android:textStyle">bold</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -267,7 +267,7 @@
     </style>
 
     <style name="UTheme.EventLocationText">
-        <item name="android:textColor">@color/text_secondary_dark</item>
+        <item name="android:textColor">?attr/colorOnBackgroundLight</item>
         <item name="android:textSize">14sp</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:maxLines">1</item>
