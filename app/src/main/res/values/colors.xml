@@ -163,4 +163,6 @@
     <color name="myoteal">#00bcdd</color>
     <color name="myoblack">#1e242b</color>
     <color name="transparent">#00000000</color>
+
+    <color name="home_bottom_color_divider">#EEEEEE</color>
 </resources>
