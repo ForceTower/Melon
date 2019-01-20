@@ -117,9 +117,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginEnd="16dp"
-            android:visibility="gone"
+            android:visibility="visible"
             android:text="@string/switch_dark_theme"
             android:textColor="?attr/colorOnBackground"
+            android:checked="true"
+            app:useMaterialThemeColors="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/header_bottom" />
