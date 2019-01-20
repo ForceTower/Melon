@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
+import com.appsee.Appsee
 import com.forcetower.uefs.core.vm.Destination
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.LaunchViewModel
@@ -68,6 +69,9 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         if (savedInstanceState != null) return
 
         createNewVersionNotification()
+
+        val apiKey = remoteConfig.getString("app_see_key")
+        if (apiKey != "undefined") Appsee.start(apiKey)
 
         val disabledCode = remoteConfig.getLong("version_disable")
         if (disabledCode > BuildConfig.VERSION_CODE) {
