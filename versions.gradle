@@ -62,6 +62,7 @@ versions.chart_view = "v3.0.3"
 versions.about_libraries = "6.2.0"
 versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
+versions.date_time_picker = "4.1.1"
 
 // Build Versions
 versions.android_gradle_plugin = "3.3.0"
@@ -175,6 +176,7 @@ others.chart_view = "com.github.PhilJay:MPAndroidChart:$versions.chart_view"
 others.about_libraries = "com.mikepenz:aboutlibraries:$versions.about_libraries"
 others.easy_permissions = "pub.devrel:easypermissions:$versions.easy_permissions"
 others.card_slider = "com.ramotion.cardslider:card-slider:$versions.card_slider"
+others.date_time_picker = "com.wdullaer:materialdatetimepicker:$versions.date_time_picker"
 deps.others = others
 
 // Kotlin
