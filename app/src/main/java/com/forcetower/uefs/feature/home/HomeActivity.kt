@@ -58,7 +58,9 @@ import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -83,6 +85,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
@@ -113,8 +119,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun drawDarkModeEvent() {
+        val event = remoteConfig.getBoolean("dark_event")
+
         val random = Math.random() * 100
-        if (random < 10) {
+        if (event && random < 10) {
             Handler(Looper.getMainLooper()).postDelayed({
                 moveToDarkTheme()
             }, 5000)
@@ -126,6 +134,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun moveToDarkTheme() {
         if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            analytics.logEvent("user_got_dark", null)
             onDarkTheme()
         }
     }
