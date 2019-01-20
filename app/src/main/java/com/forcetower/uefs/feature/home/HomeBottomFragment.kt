@@ -117,6 +117,8 @@ class HomeBottomFragment : UFragment(), Injectable {
 
         binding.switchNight.setOnCheckedChangeListener { _, isChecked ->
             val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            val state = if (isChecked) 2 else 0
+            preferences.edit().putInt("cfg_night_mode", state).apply()
             AppCompatDelegate.setDefaultNightMode(flag)
         }
     }
