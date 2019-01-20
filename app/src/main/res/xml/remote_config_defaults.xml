@@ -45,14 +45,18 @@
     </entry>
     <entry>
         <key>feature_flag_hourglass</key>
-        <key>false</key>
+        <value>false</value>
     </entry>
     <entry>
         <key>feature_flag_demand</key>
-        <key>false</key>
+        <value>false</value>
     </entry>
     <entry>
         <key>feature_flag_store</key>
-        <key>false</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>dark_event</key>
+        <value>false</value>
     </entry>
 </defaultsMap>
