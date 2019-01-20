@@ -119,10 +119,13 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun drawDarkModeEvent() {
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        if (enabled) return
+
         val event = remoteConfig.getBoolean("dark_event")
 
         val random = Math.random() * 100
-        if (event && random < 10) {
+        if (event && random < 15) {
             Handler(Looper.getMainLooper()).postDelayed({
                 moveToDarkTheme()
             }, 5000)
@@ -136,12 +139,13 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
             analytics.logEvent("user_got_dark", null)
             onDarkTheme()
+            recreate()
         }
     }
 
     private fun onDarkTheme() {
         val player = MediaPlayer.create(this, R.raw.darkness_theme)
-        player.setVolume(0.4f, 0.4f)
+        player.setVolume(0.3f, 0.3f)
         player.start()
     }
 
