@@ -47,8 +47,10 @@ import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
@@ -63,6 +65,8 @@ class HomeBottomFragment : UFragment(), Injectable {
     lateinit var firebaseStorage: FirebaseStorage
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var binding: HomeBottomBinding
     private lateinit var viewModel: HomeViewModel
@@ -105,7 +109,16 @@ class HomeBottomFragment : UFragment(), Injectable {
     }
 
     private fun nightModeSwitcher() {
-        val item = binding.navigationView.menu.findItem(id)
+        val config = preferences.getInt("cfg_night_mode", 0)
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        val active = config == 2
+        binding.switchNight.isChecked = active
+        binding.switchNight.visibility = if (enabled) View.VISIBLE else View.GONE
+
+        binding.switchNight.setOnCheckedChangeListener { _, isChecked ->
+            val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            AppCompatDelegate.setDefaultNightMode(flag)
+        }
     }
 
     private fun toggleItem(@IdRes id: Int, visible: Boolean) {
