@@ -43,6 +43,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.appsee.Appsee
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.R
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
@@ -237,6 +238,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
+            val uid = firebaseAuth.currentUser?.uid ?: access.username
+            Appsee.setUserId(uid)
         }
     }
 

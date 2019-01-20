@@ -154,6 +154,8 @@ dependencies {
     implementation deps.others.card_slider
     implementation deps.others.date_time_picker
 
+    implementation 'com.appsee:appsee-android:2.4.5'
+
     implementation project(path: ':sagres')
     implementation project(path: ':bypass')
 }
