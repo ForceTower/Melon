@@ -59,4 +59,8 @@
         <key>dark_event</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>app_see_key</key>
+        <value>undefined</value>
+    </entry>
 </defaultsMap>
