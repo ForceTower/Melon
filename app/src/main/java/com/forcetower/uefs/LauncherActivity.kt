@@ -31,7 +31,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.forcetower.uefs.core.vm.Destination
 import com.forcetower.uefs.core.vm.EventObserver
@@ -69,7 +68,6 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         if (savedInstanceState != null) return
 
         createNewVersionNotification()
-        prepareDarkness()
 
         val disabledCode = remoteConfig.getLong("version_disable")
         if (disabledCode > BuildConfig.VERSION_CODE) {
@@ -89,15 +87,6 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
                     finish()
                 }
             })
-        }
-    }
-
-    private fun prepareDarkness() {
-        val config = preferences.getInt("cfg_night_mode", 0)
-        when (config) {
-            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
     }
 
