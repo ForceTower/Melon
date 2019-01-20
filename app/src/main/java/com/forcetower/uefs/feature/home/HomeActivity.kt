@@ -29,10 +29,16 @@ package com.forcetower.uefs.feature.home
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
+import android.media.MediaPlayer
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -75,6 +81,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var vmFactory: UViewModelFactory
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
@@ -101,12 +109,31 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun onActivityStart() {
         initShortcuts()
         moveToTask()
-        onDarkTheme()
+        drawDarkModeEvent()
+    }
+
+    private fun drawDarkModeEvent() {
+        val random = Math.random() * 100
+        if (random < 10) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                moveToDarkTheme()
+            }, 5000)
+        } else {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+        }
+    }
+
+    private fun moveToDarkTheme() {
+        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            onDarkTheme()
+        }
     }
 
     private fun onDarkTheme() {
-//        val player = MediaPlayer.create(this, R.raw.darkness_theme)
-//        player.start()
+        val player = MediaPlayer.create(this, R.raw.darkness_theme)
+        player.setVolume(0.4f, 0.4f)
+        player.start()
     }
 
     private fun moveToTask() {
