@@ -152,6 +152,7 @@ dependencies {
     implementation deps.others.about_libraries
     implementation deps.others.easy_permissions
     implementation deps.others.card_slider
+    implementation deps.others.date_time_picker
 
     implementation project(path: ':sagres')
     implementation project(path: ':bypass')
