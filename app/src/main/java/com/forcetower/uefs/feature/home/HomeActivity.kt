@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
@@ -103,6 +104,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
+        setupDayNightTheme()
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -144,6 +146,47 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                     recreate()
                 }
             }
+        }
+    }
+
+    @SuppressLint("SwitchIntDef")
+    private fun setupDayNightTheme() {
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        if (!enabled) return
+
+        val uiMode = preferences.getInt("cfg_night_mode", 0)
+        val current = AppCompatDelegate.getDefaultNightMode()
+
+        Timber.d("This is happening: $uiMode $current")
+        when (current) {
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                if (uiMode == 1) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    recreate()
+                } else if (uiMode == 2) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    recreate()
+                }
+            }
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
+                if (uiMode == 0) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    recreate()
+                } else if (uiMode == 2) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    recreate()
+                }
+            }
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                if (uiMode == 0) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    recreate()
+                } else if (uiMode == 1) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    recreate()
+                }
+            }
+            else -> Unit
         }
     }
 

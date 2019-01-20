@@ -31,6 +31,7 @@
         <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">?attr/lightStatusBar</item>
         <item name="android:navigationBarColor">?attr/colorNavBar</item>
         <item name="android:statusBarColor">?attr/colorStatusBar</item>
+        <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
     </style>
 
     <style name="CropTheme.Default">
