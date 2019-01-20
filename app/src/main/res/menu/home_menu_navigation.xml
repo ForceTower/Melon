@@ -71,6 +71,7 @@
         <item
             android:id="@+id/teacher_email"
             android:title="@string/teachers_label"
+            android:visible="false"
             android:icon="@drawable/ic_teach_black_24dp"/>
     </group>
 
@@ -100,6 +101,7 @@
                 <item
                     android:id="@+id/library"
                     android:title="@string/label_library"
+                    android:visible="false"
                     android:icon="@drawable/ic_local_library_black_24dp"/>
             </group>
         </menu>
