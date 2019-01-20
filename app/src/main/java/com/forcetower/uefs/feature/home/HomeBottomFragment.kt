@@ -85,6 +85,11 @@ class HomeBottomFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
+        featureFlags()
+        nightModeSwitcher()
+    }
+
+    private fun featureFlags() {
         val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
         viewModel.flags.observe(this, Observer {
             if (it?.demandOpen == true || demandFlag) {
@@ -97,6 +102,10 @@ class HomeBottomFragment : UFragment(), Injectable {
 
         val hourglass = remoteConfig.getBoolean("feature_flag_hourglass")
         toggleItem(R.id.hourglass, hourglass)
+    }
+
+    private fun nightModeSwitcher() {
+        val item = binding.navigationView.menu.findItem(id)
     }
 
     private fun toggleItem(@IdRes id: Int, visible: Boolean) {
