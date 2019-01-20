@@ -33,6 +33,7 @@ import android.app.Service
 import android.content.BroadcastReceiver
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
+import com.appsee.Appsee
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
