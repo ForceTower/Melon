@@ -46,8 +46,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="16dp">
+        android:layout_height="match_parent"
+        android:paddingTop="16dp"
+        android:clipToPadding="false">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/header_bottom"
@@ -137,16 +138,17 @@
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            app:layout_constraintTop_toBottomOf="@id/divider"
-            app:itemIconPadding="@dimen/second_keyline"
-            app:menu="@menu/home_menu_navigation"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             app:itemBackground="@drawable/navigation_item_background"
-            app:itemTextColor="@color/navigation_text_color"
+            app:itemIconPadding="@dimen/second_keyline"
             app:itemIconTint="@color/navigation_icon_color"
-            android:paddingBottom="120dp"/>
+            app:itemTextColor="@color/navigation_text_color"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/divider"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:menu="@menu/home_menu_navigation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
