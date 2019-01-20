@@ -144,7 +144,7 @@
             app:itemBackground="@drawable/navigation_item_background"
             app:itemTextColor="@color/navigation_text_color"
             app:itemIconTint="@color/navigation_icon_color"
-            android:paddingBottom="96dp"/>
+            android:paddingBottom="120dp"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
