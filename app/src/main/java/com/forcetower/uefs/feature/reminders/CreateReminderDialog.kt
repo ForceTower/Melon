@@ -27,9 +27,9 @@
 
 package com.forcetower.uefs.feature.reminders
 
-import android.app.DatePickerDialog
 import android.content.res.ColorStateList
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +41,7 @@ import com.forcetower.uefs.databinding.DialogCreateReminderBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -81,11 +82,11 @@ class CreateReminderDialog : RoundedDialog(), Injectable {
 
     private fun openCalendar() {
         val calendar = Calendar.getInstance()
-        val date = calendar.get(Calendar.DAY_OF_MONTH)
-        val mont = calendar.get(Calendar.MONTH)
-        val year = calendar.get(Calendar.YEAR)
 
-        val picker = DatePickerDialog(requireContext(), DatePickerDialog.OnDateSetListener { _, y, m, d ->
+        if (viewModel.currentDeadline != null)
+            calendar.timeInMillis = viewModel.currentDeadline!!
+
+        val picker = DatePickerDialog.newInstance({ _, y, m, d ->
             val next = Calendar.getInstance().apply {
                 set(Calendar.YEAR, y)
                 set(Calendar.MONTH, m)
@@ -93,7 +94,21 @@ class CreateReminderDialog : RoundedDialog(), Injectable {
             }.timeInMillis
             viewModel.currentDeadline = next
             binding.btnDeadline.iconTint = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.blue_accent))
-        }, year, mont, date)
-        picker.show()
+        }, calendar)
+        picker.version = DatePickerDialog.Version.VERSION_2
+        val color = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+        picker.accentColor = color
+        picker.setOkColor(color)
+
+        val theme = requireContext().theme
+        val darkThemeValue = TypedValue()
+        theme.resolveAttribute(R.attr.lightStatusBar, darkThemeValue, true)
+        picker.isThemeDark = darkThemeValue.data == 0
+
+        val colorOnSurfaceLight = TypedValue()
+        theme.resolveAttribute(R.attr.colorOnSurfaceLight, colorOnSurfaceLight, true)
+        picker.setCancelColor(colorOnSurfaceLight.data)
+
+        picker.show(childFragmentManager, "date_picker_dialog")
     }
 }
