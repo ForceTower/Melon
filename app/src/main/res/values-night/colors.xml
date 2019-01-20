@@ -27,14 +27,14 @@
   -->
 
 <resources>
-    <color name="background">#000000</color>
+    <color name="background">#1A1A1A</color>
     <color name="surface">#36343a</color>
     <color name="onSurface">#FFFFFF</color>
     <color name="onSurfaceLight">#b3ffffff</color>
     <color name="onBackground">#FFFFFF</color>
     <color name="onBackgroundLight">#b3ffffff</color>
 
-    <color name="statusBarColor">#000</color>
+    <color name="statusBarColor">#1A1A1A</color>
     <color name="navBarColor">#000</color>
 
     <color name="home_bottom_color_divider">#202020</color>

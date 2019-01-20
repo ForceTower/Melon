@@ -18,6 +18,7 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 * ~~Corrigir o erro que afeta alguns estudantes que mudaram de modalidade durante a graduação [Licenciatura/Bacharelado]~~
 * ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal
+* ~~Tema escuro/preto porque tema dark é legal em todo lugar~~
 
 ### Adicionando uma mensagem nova ao login
 Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.
