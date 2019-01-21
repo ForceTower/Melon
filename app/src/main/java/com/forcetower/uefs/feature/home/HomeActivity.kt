@@ -129,7 +129,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         val event = remoteConfig.getBoolean("dark_event")
 
         val random = Math.random() * 100
-        if (event && random < 15) {
+        if (event && random < remoteConfig.getDouble("dark_theme_chance")) {
             Handler(Looper.getMainLooper()).postDelayed({
                 moveToDarkTheme()
             }, 5000)
