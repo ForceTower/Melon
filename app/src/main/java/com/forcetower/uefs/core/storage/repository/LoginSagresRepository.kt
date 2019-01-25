@@ -145,8 +145,12 @@ class LoginSagresRepository @Inject constructor(
         }
     }
 
-    private fun messages(data: MediatorLiveData<Callback>, userId: Long) {
-        val messages = SagresNavigator.instance.aMessages(userId)
+    private fun messages(data: MediatorLiveData<Callback>, userId: Long?) {
+        val messages = if (userId != null)
+            SagresNavigator.instance.aMessages(userId)
+        else
+            SagresNavigator.instance.aMessagesHtml()
+
         currentStep.value = createStep(R.string.step_fetching_messages)
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
@@ -155,7 +159,10 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute { database.messageDao().insertIgnoring(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
-                semesters(data, userId)
+                if (userId != null)
+                    semesters(data, userId)
+                else
+                    startPage(data)
             } else {
                 data.value = Callback.Builder(m.status)
                         .code(m.code)
