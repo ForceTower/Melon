@@ -54,7 +54,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
@@ -453,10 +452,8 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        val values = ArrayList<ClassGroup>()
         groups.forEach {
-            val group = database.classGroupDao().insert(it)
-            values.add(group)
+            database.classGroupDao().insert(it)
         }
     }
 
