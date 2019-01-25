@@ -102,4 +102,10 @@ object SagresBasicParser {
         } catch (ignored: Throwable) {}
         return false
     }
+
+    fun getName(document: Document?): String? {
+        document ?: return null
+        val nameCss = document.selectFirst("span[class=\"usuario-nome\"]")
+        return nameCss?.text()?.trim()
+    }
 }
