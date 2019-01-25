@@ -47,7 +47,6 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
@@ -120,6 +119,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access) {
+        // TODO Don't rely on the buggy API
         val me = SagresNavigator.instance.aMe()
         currentStep.value = createStep(R.string.step_finding_profile)
         data.addSource(me) { m ->
@@ -310,10 +310,8 @@ class LoginSagresRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        val values = ArrayList<ClassGroup>()
         groups.forEach {
-            val group = database.classGroupDao().insert(it)
-            values.add(group)
+            database.classGroupDao().insert(it)
         }
     }
 
