@@ -201,4 +201,13 @@ public class SagresRequests {
                 .addHeader("cache-control", "no-cache")
                 .build();
     }
+
+    @NotNull
+    public static Request getMessagesPage() {
+        return new Request.Builder()
+                .url(Constants.SAGRES_MESSAGES_PAGE)
+                .addHeader("content-type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
 }
