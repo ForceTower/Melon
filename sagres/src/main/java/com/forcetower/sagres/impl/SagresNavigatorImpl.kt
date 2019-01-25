@@ -59,6 +59,7 @@ import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.sagres.operation.login.LoginOperation
 import com.forcetower.sagres.operation.messages.MessagesCallback
 import com.forcetower.sagres.operation.messages.MessagesOperation
+import com.forcetower.sagres.operation.messages.OldMessagesOperation
 import com.forcetower.sagres.operation.person.PersonCallback
 import com.forcetower.sagres.operation.person.PersonOperation
 import com.forcetower.sagres.operation.semester.SemesterCallback
@@ -254,6 +255,18 @@ private constructor(context: Context) : SagresNavigator() {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun messages(userId: Long, fetchAll: Boolean): MessagesCallback {
         return MessagesOperation(null, userId, fetchAll).finishedResult
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aMessagesHtml(): LiveData<MessagesCallback> {
+        return OldMessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun messagesHtml(): MessagesCallback {
+        return OldMessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
     }
 
     @AnyThread
