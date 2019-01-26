@@ -405,6 +405,11 @@
     <string name="attention_user_login_with_email">Atenção %1$s!</string>
     <string name="label_location_nearby">Quando você estiver perto de um lugar que desbloqueie alguma das conquistas...</string>
     <string name="adventure_other_actions">Outras ações</string>
+    <string name="settings_theme">Tema</string>
+    <string name="back">Voltar</string>
+    <string name="night_mode_follow_system">Seguir o tema do sistema</string>
+    <string name="night_mode_always_light">Sempre claro</string>
+    <string name="night_mode_always_dark">Sempre escuro</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -447,6 +452,18 @@
     </string-array>
 
     <string-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="settings_theme_titles">
+        <item>Seguir o tema do sistema</item>
+        <item>Sempre claro</item>
+        <item>Sempre escuro</item>
+    </string-array>
+
+    <string-array name="settings_theme_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
