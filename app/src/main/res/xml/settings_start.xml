@@ -26,9 +26,9 @@
   ~ SOFTWARE.
   -->
 
-<androidx.preference.PreferenceScreen
-    android:key="settings_root"
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen android:key="settings_root"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     
     <Preference
         android:key="settings_synchronization"
@@ -54,4 +54,11 @@
         android:fragment="com.forcetower.uefs.feature.settings.AccountSettingsFragment">
     </Preference>
 
+    <ListPreference
+        app:key="stg_night_mode"
+        app:defaultValue="0"
+        app:title="@string/settings_theme"
+        app:icon="@drawable/ic_palette_accent_24dp"
+        app:entries="@array/settings_theme_titles"
+        app:entryValues="@array/settings_theme_values"/>
 </androidx.preference.PreferenceScreen>

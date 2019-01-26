@@ -27,12 +27,14 @@
 
 package com.forcetower.uefs
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.SharedPreferences
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
-import androidx.preference.PreferenceManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
@@ -60,6 +62,8 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     lateinit var receiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
     @Inject
     lateinit var serviceInjector: DispatchingAndroidInjector<Service>
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     lateinit var component: AppComponent
 
@@ -74,6 +78,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         super.onCreate()
         // Redefine os trabalhos de sincronização
         defineWorker()
+        setupDayNightTheme()
     }
 
     /**
@@ -81,7 +86,6 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
      * tiver sido apagado
      */
     private fun defineWorker() {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(this)
         val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
         val period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
         when (worker) {
@@ -134,6 +138,44 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     @Inject
     fun configureNotifications() {
         NotificationHelper(this).createChannels()
+    }
+
+    @SuppressLint("SwitchIntDef")
+    private fun setupDayNightTheme() {
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        if (!enabled) {
+            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            return
+        }
+
+        val uiMode = preferences.getInt("stg_night_mode", 0)
+        val current = AppCompatDelegate.getDefaultNightMode()
+
+        Timber.d("This is happening: $uiMode $current")
+        when (current) {
+            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
+                if (uiMode == 1) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                } else if (uiMode == 2) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+            }
+            AppCompatDelegate.MODE_NIGHT_NO -> {
+                if (uiMode == 0) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                } else if (uiMode == 2) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                }
+            }
+            AppCompatDelegate.MODE_NIGHT_YES -> {
+                if (uiMode == 0) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                } else if (uiMode == 1) {
+                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                }
+            }
+            else -> Unit
+        }
     }
 
     override fun activityInjector() = activityInjector
