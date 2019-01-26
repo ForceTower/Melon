@@ -37,6 +37,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
+import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
@@ -53,13 +54,12 @@ import com.forcetower.uefs.core.util.fromJson
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
-import java.lang.Exception
 import java.nio.charset.Charset
 import javax.inject.Inject
 
@@ -126,14 +126,15 @@ class SigningInFragment : UFragment(), Injectable {
 
         binding.textTips.setFactory {
             val textView = TextView(requireContext())
-            textView.textSize = 12f
+            textView.textSize = 13f
             textView.gravity = CENTER
             textView.typeface = font
-            val typedValue = TypedValue()
-            val theme = requireContext().theme
-            theme.resolveAttribute(R.attr.colorOnSurfaceLight, typedValue, true)
-            val colorOnSurfaceLight = typedValue.data
-            textView.setTextColor(colorOnSurfaceLight)
+//            val typedValue = TypedValue()
+//            val theme = requireContext().theme
+//            theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
+//            val colorOnSurfaceLight = typedValue.data
+//            textView.setTextColor(colorOnSurfaceLight)
+            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             textView
         }
     }
@@ -172,6 +173,12 @@ class SigningInFragment : UFragment(), Injectable {
             view?.findNavController()?.popBackStack()
         } else {
             viewModel.login(username, password, true)
+            if (username.contains("@")) {
+                binding.textTips.setText(getString(R.string.enter_using_username_instead))
+                binding.textTips.fadeIn()
+            } else {
+                binding.textTips.fadeOut()
+            }
         }
     }
 
@@ -197,7 +204,12 @@ class SigningInFragment : UFragment(), Injectable {
 
     private fun onProfileUpdate(profile: Profile?) {
         if (profile != null) {
-            binding.textHelloUser.text = getString(R.string.login_hello_user, profile.name)
+            val username = arguments?.getString("username")
+            if (username != null && username.contains("@")) {
+                binding.textHelloUser.text = getString(R.string.attention_user_login_with_email, profile.name)
+            } else {
+                binding.textHelloUser.text = getString(R.string.login_hello_user, profile.name)
+            }
             binding.textHelloUser.fadeIn()
         }
     }
@@ -235,6 +247,9 @@ class SigningInFragment : UFragment(), Injectable {
     private fun snackAndBack(string: String) {
         showSnack(string)
         firebaseAuth.signOut()
+        binding.textHelloUser.text = ""
+        binding.textHelloUser.fadeOut()
+        binding.textTips.fadeOut()
         view?.findNavController()?.popBackStack()
     }
 }
