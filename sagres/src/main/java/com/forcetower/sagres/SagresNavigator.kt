@@ -71,6 +71,12 @@ abstract class SagresNavigator {
     abstract fun messages(userId: Long, fetchAll: Boolean = false): MessagesCallback
 
     @AnyThread
+    abstract fun aMessagesHtml(): LiveData<MessagesCallback>
+
+    @WorkerThread
+    abstract fun messagesHtml(): MessagesCallback
+
+    @AnyThread
     abstract fun aCalendar(): LiveData<CalendarCallback>
 
     @WorkerThread

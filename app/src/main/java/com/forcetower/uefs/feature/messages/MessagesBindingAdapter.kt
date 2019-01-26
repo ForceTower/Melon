@@ -34,11 +34,15 @@ import android.view.View.VISIBLE
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.sagres.utils.WordUtils
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.feature.shared.extensions.formatMonthYear
 import com.forcetower.uefs.feature.shared.extensions.formatTimeWithoutSeconds
+import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 
 @BindingAdapter("messageContent")
 fun messageContent(tv: TextView, cont: String?) {
@@ -55,8 +59,47 @@ fun disciplineText(tv: TextView, message: Message?) {
     if (discipline == null && message.senderProfile == 3) discipline = "Secretaria Acadêmica"
 
     val text = discipline ?: message.senderName
-    val title = WordUtils.toTitleCase(text)
+    val title = if (!message.html) {
+        WordUtils.toTitleCase(text)
+    } else {
+        text
+    }
     tv.text = title
+}
+
+@BindingAdapter(value = ["messageTimestamp"])
+fun getTimeStampedDate(view: TextView, message: Message) {
+    if (!message.html) {
+        val time = message.timestamp
+        val context = view.context
+        val now = System.currentTimeMillis()
+        val diff = now - time
+
+        val oneDay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
+        val oneHor = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+        val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+        val value = when {
+            days > 1L -> {
+                val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val str = format.format(Date(time))
+                context.getString(R.string.message_received_date_format, str)
+            }
+            days == 1L -> {
+                val hours = TimeUnit.HOURS.convert(diff - oneDay, TimeUnit.MILLISECONDS)
+                val str = days.toString() + "d " + hours.toString() + "h"
+                context.getString(R.string.message_received_date_ago_format, str)
+            }
+            else -> {
+                val hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
+                val minutes = TimeUnit.MINUTES.convert(diff - (hours * oneHor), TimeUnit.MILLISECONDS)
+                val str = hours.toString() + "h " + minutes + "min"
+                context.getString(R.string.message_received_date_ago_format, str)
+            }
+        }
+        view.text = value
+    } else {
+        view.text = message.dateString ?: "Horário desconhecido"
+    }
 }
 
 @BindingAdapter("senderName")

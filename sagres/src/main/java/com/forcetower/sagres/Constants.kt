@@ -33,6 +33,7 @@ import androidx.annotation.RestrictTo
 object Constants {
     private const val SAGRES_SERVER_PAGE = "http://academico2.uefs.br/Portal"
     const val SAGRES_LOGIN_PAGE = "$SAGRES_SERVER_PAGE/Acesso.aspx"
+    const val SAGRES_MESSAGES_PAGE = "$SAGRES_SERVER_PAGE/Modules/Diario/Aluno/Consultas/Recados.aspx"
     const val SAGRES_GRADE_PAGE = "$SAGRES_SERVER_PAGE/Modules/Diario/Aluno/Relatorio/Boletim.aspx"
     const val SAGRES_DIARY_PAGE = "$SAGRES_SERVER_PAGE/Modules/Diario/Aluno/Default.aspx"
     const val SAGRES_CLASS_PAGE = "$SAGRES_SERVER_PAGE/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx"

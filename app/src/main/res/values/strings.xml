@@ -401,6 +401,8 @@
     <string name="obsolete_message">Esta versão do UNES está muito desatualizada e não é mais suportada. Por favor atualize o aplicativo para continuar usando a interface.\n\nVocê ainda receberá notificações :)</string>
     <string name="new_version_ntf_title_format">A versão %1$s do UNES está disponível</string>
     <string name="switch_dark_theme">Tema escuro</string>
+    <string name="enter_using_username_instead">Entre utilizando o seu nome de usuário no lugar do seu email</string>
+    <string name="attention_user_login_with_email">Atenção %1$s!</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

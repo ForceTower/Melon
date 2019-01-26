@@ -54,7 +54,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
@@ -74,6 +73,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
@@ -180,8 +180,10 @@ class SagresSyncRepository @Inject constructor(
 
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
-        val score = login(access)
-        if (score == null) {
+        val homeDoc = login(access)
+        val score = SagresBasicParser.getScore(homeDoc)
+        Timber.d("Login Completed. Score Parsed: $score")
+        if (homeDoc == null) {
             registry.completed = true
             registry.error = -2
             registry.success = false
@@ -191,7 +193,7 @@ class SagresSyncRepository @Inject constructor(
             return
         }
 
-        val person = me(score)
+        val person = me(score, homeDoc, access)
         if (person == null) {
             registry.completed = true
             registry.error = -3
@@ -205,8 +207,12 @@ class SagresSyncRepository @Inject constructor(
         executors.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
 
         var result = 0
-        if (!messages(person.id)) result += 1 shl 1
-        if (!semesters(person.id)) result += 1 shl 2
+        if (access.username.contains("@")) {
+            if (!messages(null)) result += 1 shl 1
+        } else {
+            if (!messages(person.id)) result += 1 shl 1
+            if (!semesters(person.id)) result += 1 shl 2
+        }
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
@@ -250,40 +256,48 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    fun login(access: Access): Double? {
+    fun login(access: Access): Document? {
         val login = SagresNavigator.instance.login(access.username, access.password)
         when (login.status) {
             Status.SUCCESS -> {
-                val score = SagresBasicParser.getScore(login.document)
-                Timber.d("Login Completed. Score Parsed: $score")
-                return score
+                return login.document
             }
             else -> produceErrorMessage(login)
         }
         return null
     }
 
-    private fun me(score: Double): SPerson? {
-        val me = SagresNavigator.instance.me()
-        when (me.status) {
-            Status.SUCCESS -> {
-                val person = me.person
-                if (person != null) {
-                    database.profileDao().insert(person, score)
-                    Timber.d("Me completed. Person name: ${person.name}")
-                    return person
-                } else {
-                    Timber.e("Page loaded but API returned invalid types")
+    private fun me(score: Double, document: Document, access: Access): SPerson? {
+        val username = access.username
+        if (username.contains("@")) {
+            val name = SagresBasicParser.getName(document) ?: username
+            return SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+        } else {
+            val me = SagresNavigator.instance.me()
+            when (me.status) {
+                Status.SUCCESS -> {
+                    val person = me.person
+                    if (person != null) {
+                        database.profileDao().insert(person, score)
+                        Timber.d("Me completed. Person name: ${person.name}")
+                        return person
+                    } else {
+                        Timber.e("Page loaded but API returned invalid types")
+                    }
                 }
+                else -> produceErrorMessage(me)
             }
-            else -> produceErrorMessage(me)
         }
         return null
     }
 
     @WorkerThread
-    private fun messages(userId: Long): Boolean {
-        val messages = SagresNavigator.instance.messages(userId)
+    private fun messages(userId: Long?): Boolean {
+        val messages = if (userId != null)
+            SagresNavigator.instance.messages(userId)
+        else
+            SagresNavigator.instance.messagesHtml()
+
         return when (messages.status) {
             Status.SUCCESS -> {
                 val values = messages.messages?.map { Message.fromMessage(it, false) } ?: emptyList()
@@ -453,10 +467,8 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        val values = ArrayList<ClassGroup>()
         groups.forEach {
-            val group = database.classGroupDao().insert(it)
-            values.add(group)
+            database.classGroupDao().insert(it)
         }
     }
 
