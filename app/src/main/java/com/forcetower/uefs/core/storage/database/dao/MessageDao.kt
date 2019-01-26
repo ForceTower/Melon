@@ -54,6 +54,10 @@ abstract class MessageDao {
                         updateDisciplineName(message.sagresId, message.discipline)
                     }
                 }
+
+                if (message.html && direct.html) {
+                    updateDateString(message.sagresId, message.dateString)
+                }
             }
             val resume = message.disciplineResume?.trim()
             val code = message.codeDiscipline?.trim()
@@ -64,6 +68,9 @@ abstract class MessageDao {
 
         insertIgnore(messages)
     }
+
+    @Query("UPDATE Message SET date_string = :dateString WHERE sagres_id = :sagresId")
+    protected abstract fun updateDateString(sagresId: Long, dateString: String?)
 
     @Query("UPDATE Discipline SET resume = :resume WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun updateDisciplineResume(code: String, resume: String)
