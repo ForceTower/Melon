@@ -31,12 +31,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.google.firebase.functions.FirebaseFunctionsException
 import javax.inject.Inject
 
 class InviteDarkThemeFragment : UFragment(), Injectable {
@@ -59,7 +62,40 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.currentCall.observe(this, Observer {
+            when (it.status) {
+                Status.SUCCESS -> showSnack(getString(R.string.dark_theme_invite_sent))
+                Status.ERROR -> {
+                    val exception = it.throwable as? FirebaseFunctionsException
+                    val messageRes = when (exception?.code) {
+                        FirebaseFunctionsException.Code.NOT_FOUND -> R.string.dark_theme_user_not_found
+                        FirebaseFunctionsException.Code.FAILED_PRECONDITION -> R.string.dark_theme_no_more_invites
+                        FirebaseFunctionsException.Code.UNAUTHENTICATED -> R.string.you_are_not_connected_to_the_unesverso
+                        else -> R.string.what_firebase_says_the_app_commits
+                    }
+                    showSnack(getString(messageRes), true)
+                }
+                Status.LOADING -> Unit
+            }
+        })
+
+        viewModel.profile.observe(this, Observer {
+            if (it == null) {
+                binding.textInvitesLeft.text = "0"
+            } else {
+                val invites = it.darkInvites ?: 0
+                val sent = it.sentDarkInvites ?: invites
+                val left = invites - sent
+                binding.textInvitesLeft.text = "$left"
+            }
+        })
+    }
+
     private fun onSendRandom() {
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 1
+        binding.textInvitesLeft.text = "${text - 1}"
         viewModel.sendDarkThemeTo(null)
     }
 
@@ -69,6 +105,9 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
             return
         }
+
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 1
+        binding.textInvitesLeft.text = "${text - 1}"
 
         viewModel.sendDarkThemeTo(username)
     }

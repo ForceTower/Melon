@@ -434,6 +434,11 @@
     <string name="dark_theme_invite_a_friend_title">Presenteie alguém com o tema escuro</string>
     <string name="dark_theme_username_is_empty">O nome não pode ser vazio</string>
     <string name="send_to_random">Enviar aleatório</string>
+    <string name="what_firebase_says_the_app_commits">Erro. O servidor não permitiu a operação. Muita coisa pode ter acontecido</string>
+    <string name="you_are_not_connected_to_the_unesverso">Você não está conectado ao UNESVerso. Fazer login novamente talvez resolva</string>
+    <string name="dark_theme_no_more_invites">O servidor disse que você não tem mais convites. E ele manda em tudo.</string>
+    <string name="dark_theme_user_not_found">Este usuário não foi encontrado no UNESVerso</string>
+    <string name="dark_theme_invite_sent">O seu presente foi enviado</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

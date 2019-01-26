@@ -32,6 +32,7 @@ data class FirebaseProfile(
     var course: String?,
     var courseId: Int?,
     var darkInvites: Int?,
+    var sentDarkInvites: Int?,
     var darkThemeEnabled: Int?,
     var email: String?,
     var name: String?,
