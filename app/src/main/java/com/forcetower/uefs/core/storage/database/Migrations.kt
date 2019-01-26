@@ -83,3 +83,12 @@ object M8TO9 : Migration(8, 9) {
         database.execSQL("CREATE UNIQUE INDEX `service_uniqueness` ON ServiceRequest (`service`, `date`)")
     }
 }
+
+object M9TO10 : Migration(9, 10) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Message ADD COLUMN html INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE Message ADD COLUMN date_string TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE Message ADD COLUMN processing_time INTEGER DEFAULT NULL")
+        database.execSQL("DELETE FROM Access WHERE username LIKE '%@%'")
+    }
+}

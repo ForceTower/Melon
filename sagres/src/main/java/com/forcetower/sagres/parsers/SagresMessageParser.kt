@@ -42,8 +42,7 @@ object SagresMessageParser {
     private const val MESSAGE_FROM_RECEIVED = "class=\"recado-remetente\">"
 
     @JvmStatic
-    fun getMessages(document: Document): List<SMessage> {
-        val html = document.html()
+    fun getMessages(html: String): List<SMessage> {
         val messages = ArrayList<SMessage>()
 
         var position = 0
@@ -68,6 +67,12 @@ object SagresMessageParser {
         return messages
     }
 
+    @JvmStatic
+    fun getMessages(document: Document): List<SMessage> {
+        val html = document.html()
+        return SagresMessageParser.getMessages(html)
+    }
+
     private fun extractInfoArticle(article: String): SMessage? {
         val clazz = extractArticleForm1(MESSAGE_CLASS_RECEIVED, article)
         val date = extractArticleForm1(MESSAGE_DATE_RECEIVED, article)
@@ -82,9 +87,10 @@ object SagresMessageParser {
             from,
             null
         ).apply {
-            isFromHtml = false
+            isFromHtml = true
             discipline = clazz
             dateString = date
+            processingTime = System.currentTimeMillis()
         }
     }
 

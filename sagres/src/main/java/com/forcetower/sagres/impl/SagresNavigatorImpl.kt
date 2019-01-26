@@ -266,7 +266,7 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun messagesHtml(): MessagesCallback {
-        return OldMessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor()).finishedResult
+        return OldMessagesOperation(null).finishedResult
     }
 
     @AnyThread

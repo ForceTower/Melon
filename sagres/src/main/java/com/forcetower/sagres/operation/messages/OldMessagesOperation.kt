@@ -57,7 +57,10 @@ class OldMessagesOperation(
 
     private fun processResponse(response: String) {
         val document = Utils.createDocument(response)
-        val messages = SagresMessageParser.getMessages(document)
+        val messages = SagresMessageParser.getMessages(response)
+        messages.reversed().forEachIndexed { index, message ->
+            message.processingTime = System.currentTimeMillis() + index
+        }
         publishProgress(MessagesCallback(Status.SUCCESS).messages(messages))
     }
 }
