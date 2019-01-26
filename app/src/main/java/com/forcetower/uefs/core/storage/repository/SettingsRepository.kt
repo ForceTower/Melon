@@ -55,7 +55,7 @@ class SettingsRepository @Inject constructor(
         if (uid != null) {
             profileReference.document(uid).addSnapshotListener { snapshot, exception ->
                 if (snapshot != null) {
-                    val enabled = snapshot["dark_mode"] as? Boolean ?: false
+                    val enabled = snapshot["darkThemeEnabled"] as? Boolean ?: false
                     preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
                     result.postValue(enabled)
                 } else {

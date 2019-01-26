@@ -50,6 +50,7 @@ import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.reminders.RemindersViewModel
 import com.forcetower.uefs.feature.schedule.ScheduleViewModel
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpViewModel
+import com.forcetower.uefs.feature.settings.SettingsViewModel
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryViewModel
 import dagger.Binds
@@ -162,6 +163,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(ServicesFollowUpViewModel::class)
     abstract fun bindServicesFollowUpViewModel(vm: ServicesFollowUpViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SettingsViewModel::class)
+    abstract fun bindSettingsViewModel(vm: SettingsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

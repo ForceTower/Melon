@@ -148,7 +148,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
             return
         }
 
-        val uiMode = preferences.getInt("stg_night_mode", 0)
+        val uiMode = preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0
         val current = AppCompatDelegate.getDefaultNightMode()
 
         Timber.d("This is happening: $uiMode $current")

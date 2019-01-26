@@ -110,6 +110,12 @@
         android:label="ServicesFollowUp"
         tools:layout="@layout/fragment_services_followup"/>
 
+    <fragment
+        android:id="@+id/dark_theme_event"
+        android:name="com.forcetower.uefs.easter.darktheme.DarkThemeUnlockFragment"
+        android:label="DarkThemeEvent"
+        tools:layout="@layout/fragment_dark_theme_unlock"/>
+
     <activity
         android:id="@+id/demand"
         android:name="com.forcetower.uefs.feature.demand.DemandActivity"
