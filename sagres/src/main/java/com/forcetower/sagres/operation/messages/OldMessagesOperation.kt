@@ -27,7 +27,6 @@
 
 package com.forcetower.sagres.operation.messages
 
-import com.forcetower.sagres.Utils
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresMessageParser
@@ -56,7 +55,6 @@ class OldMessagesOperation(
     }
 
     private fun processResponse(response: String) {
-        val document = Utils.createDocument(response)
         val messages = SagresMessageParser.getMessages(response)
         messages.reversed().forEachIndexed { index, message ->
             message.processingTime = System.currentTimeMillis() + index
