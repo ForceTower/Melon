@@ -103,7 +103,10 @@ abstract class ClassDao {
                 )
                 insert(clazz)
             } else {
-                Crashlytics.logException(Throwable("Semester not found ${dis.semester.trim()}"))
+                if (semester == null)
+                    Crashlytics.logException(Throwable("Semester not found ${dis.semester.trim()}"))
+                if (discipline != null)
+                    Crashlytics.logException(Throwable("Discipline not found ${discipline.code}"))
             }
         }
 

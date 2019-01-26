@@ -34,12 +34,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SCalendar
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineClassLocation
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SPerson
 import com.forcetower.sagres.database.model.SDisciplineMissedClass
 import com.forcetower.sagres.database.model.SGrade
+import com.forcetower.sagres.database.model.SDisciplineClassLocation
+import com.forcetower.sagres.database.model.SDiscipline
+import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SCalendar
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
@@ -47,12 +48,12 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
+import org.jsoup.nodes.Document
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -107,7 +108,7 @@ class LoginSagresRepository @Inject constructor(
                 val score = SagresBasicParser.getScore(l.document)
                 Timber.d("Login Completed. Score parsed: $score")
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
-                me(data, score, Access(username = username, password = password))
+                me(data, score, Access(username = username, password = password), l.document!!)
             } else {
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
@@ -119,34 +120,48 @@ class LoginSagresRepository @Inject constructor(
         }
     }
 
-    private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access) {
+    private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access, document: Document) {
         val me = SagresNavigator.instance.aMe()
         currentStep.value = createStep(R.string.step_finding_profile)
-        data.addSource(me) { m ->
-            if (m.status == Status.SUCCESS) {
-                data.removeSource(me)
-                Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
-                val person = m.person
-                if (person != null) {
-                    executor.diskIO().execute { database.profileDao().insert(person, score) }
-                    executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
-                    messages(data, person.id)
+        val username = access.username
+
+        if (username.contains("@")) {
+            val name = SagresBasicParser.getName(document) ?: username
+            val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+            executor.diskIO().execute { database.profileDao().insert(person, score) }
+            executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
+            messages(data, null)
+        } else {
+            data.addSource(me) { m ->
+                if (m.status == Status.SUCCESS) {
+                    data.removeSource(me)
+                    Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
+                    val person = m.person
+                    if (person != null) {
+                        executor.diskIO().execute { database.profileDao().insert(person, score) }
+                        executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
+                        messages(data, person.id)
+                    } else {
+                        Timber.d("SPerson is null")
+                    }
                 } else {
-                    Timber.d("SPerson is null")
+                    data.value = Callback.Builder(m.status)
+                            .code(m.code)
+                            .message(m.message)
+                            .throwable(m.throwable)
+                            .document(m.document)
+                            .build()
                 }
-            } else {
-                data.value = Callback.Builder(m.status)
-                        .code(m.code)
-                        .message(m.message)
-                        .throwable(m.throwable)
-                        .document(m.document)
-                        .build()
             }
         }
     }
 
-    private fun messages(data: MediatorLiveData<Callback>, userId: Long) {
-        val messages = SagresNavigator.instance.aMessages(userId)
+    private fun messages(data: MediatorLiveData<Callback>, userId: Long?) {
+        val messages = if (userId != null)
+            SagresNavigator.instance.aMessages(userId)
+        else
+            SagresNavigator.instance.aMessagesHtml()
+
         currentStep.value = createStep(R.string.step_fetching_messages)
         data.addSource(messages) { m ->
             if (m.status == Status.SUCCESS) {
@@ -155,7 +170,10 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute { database.messageDao().insertIgnoring(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
-                semesters(data, userId)
+                if (userId != null)
+                    semesters(data, userId)
+                else
+                    startPage(data)
             } else {
                 data.value = Callback.Builder(m.status)
                         .code(m.code)
@@ -303,10 +321,8 @@ class LoginSagresRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        val values = ArrayList<ClassGroup>()
         groups.forEach {
-            val group = database.classGroupDao().insert(it)
-            values.add(group)
+            database.classGroupDao().insert(it)
         }
     }
 

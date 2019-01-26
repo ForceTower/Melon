@@ -42,8 +42,7 @@ object SagresMessageParser {
     private const val MESSAGE_FROM_RECEIVED = "class=\"recado-remetente\">"
 
     @JvmStatic
-    fun getMessages(document: Document): List<SMessage> {
-        val html = document.html()
+    fun getMessages(html: String): List<SMessage> {
         val messages = ArrayList<SMessage>()
 
         var position = 0
@@ -58,23 +57,42 @@ object SagresMessageParser {
 
             found = true
 
-            // val article = html.substring(start, end)
+            val article = html.substring(start, end)
 
-            // val message = extractInfoArticle(article)
-            // if (message != null) messages.add(message)
+            val message = extractInfoArticle(article)
+            if (message != null) messages.add(message)
             position = end
         }
 
         return messages
     }
 
-//    private fun extractInfoArticle(article: String): SMessage? {
-//        val clazz = extractArticleForm1(MESSAGE_CLASS_RECEIVED, article)
-//        val date = extractArticleForm1(MESSAGE_DATE_RECEIVED, article)
-//        val message = extractArticleForm2(MESSAGE_MESSAGE_RECEIVED, article)
-//        val from = extractArticleForm2(MESSAGE_FROM_RECEIVED, article)
-//        return null
-//    }
+    @JvmStatic
+    fun getMessages(document: Document): List<SMessage> {
+        val html = document.html()
+        return SagresMessageParser.getMessages(html)
+    }
+
+    private fun extractInfoArticle(article: String): SMessage? {
+        val clazz = extractArticleForm1(MESSAGE_CLASS_RECEIVED, article)
+        val date = extractArticleForm1(MESSAGE_DATE_RECEIVED, article)
+        val message = extractArticleForm2(MESSAGE_MESSAGE_RECEIVED, article)
+        val from = extractArticleForm2(MESSAGE_FROM_RECEIVED, article)
+        return SMessage(
+            message!!.toLowerCase().hashCode().toLong(),
+            null,
+            null,
+            message,
+            -2,
+            from,
+            null
+        ).apply {
+            isFromHtml = true
+            discipline = clazz
+            dateString = date
+            processingTime = System.currentTimeMillis()
+        }
+    }
 
     private fun extractArticleForm2(regex: String, article: String): String? {
         val startRRE = article.indexOf(regex)

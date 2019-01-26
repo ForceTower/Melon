@@ -157,4 +157,8 @@ object SagresCalls {
     fun getRequestedServices(): Call {
         return getCall(SagresRequests.getRequestedServices())
     }
+
+    fun getMessagesPage(): Call {
+        return getCall(SagresRequests.getMessagesPage())
+    }
 }

@@ -57,7 +57,12 @@ data class Message(
     val discipline: String? = null,
     val uuid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "code_discipline")
-    val codeDiscipline: String? = null
+    val codeDiscipline: String? = null,
+    val html: Boolean = false,
+    @ColumnInfo(name = "date_string")
+    val dateString: String? = null,
+    @ColumnInfo(name = "processing_time")
+    val processingTime: Long? = null
 ) {
     @Ignore
     var disciplineResume: String? = null
@@ -69,10 +74,13 @@ data class Message(
                 sagresId = me.sagresId,
                 senderName = me.senderName,
                 senderProfile = me.senderProfile,
-                timestamp = me.timeStampInMillis,
+                timestamp = if (me.isFromHtml) me.processingTime else me.timeStampInMillis,
                 notified = notified,
                 discipline = me.discipline,
-                codeDiscipline = me.disciplineCode
+                codeDiscipline = me.disciplineCode,
+                html = me.isFromHtml,
+                dateString = me.dateString,
+                processingTime = me.processingTime
             ).apply { disciplineResume = me.objective }
     }
 }
