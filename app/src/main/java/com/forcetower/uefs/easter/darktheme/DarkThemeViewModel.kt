@@ -28,8 +28,11 @@
 package com.forcetower.uefs.easter.darktheme
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.FirebaseProfile
+import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.storage.resource.Status
 import javax.inject.Inject
 
 class DarkThemeViewModel @Inject constructor(
@@ -42,7 +45,17 @@ class DarkThemeViewModel @Inject constructor(
     val profile: LiveData<FirebaseProfile?>
         get() = repository.getFirebaseProfile()
 
+    private val _currentCall = MediatorLiveData<Resource<Boolean>>()
+    val currentCall: LiveData<Resource<Boolean>>
+        get() = _currentCall
+
     fun sendDarkThemeTo(username: String?) {
-        repository.sendDarkThemeTo(username)
+        val source = repository.sendDarkThemeTo(username)
+        _currentCall.addSource(source) {
+            if (it.status == Status.SUCCESS || it.status == Status.ERROR) {
+                _currentCall.removeSource(source)
+            }
+            _currentCall.value = it
+        }
     }
 }
