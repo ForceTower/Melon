@@ -121,7 +121,6 @@ class AdventureRepository @Inject constructor(
         val schedule = database.classLocationDao().getCurrentScheduleDirect()
         unlockScheduleBased(schedule, data)
 
-        val old = preferences.getBoolean("old_fella", false)
         data[R.string.achievement_atualizado] = -1
     }
 
