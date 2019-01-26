@@ -25,14 +25,126 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package com.forcetower.uefs.easter.darktheme
 
+import android.content.Context
+import android.content.SharedPreferences
+import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.crashlytics.android.Crashlytics
+import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
+import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.CollectionReference
+import com.google.firebase.firestore.SetOptions
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class DarkThemeRepository @Inject constructor(
-
+    private val preferences: SharedPreferences,
+    private val context: Context,
+    @Named(Profile.COLLECTION) private val collection: CollectionReference,
+    private val firebaseAuth: FirebaseAuth,
+    private val executors: AppExecutors,
+    private val database: UDatabase
 ) {
 
+    fun getPreconditions(): LiveData<List<Precondition>> {
+        val result = MutableLiveData<List<Precondition>>()
+        executors.diskIO().execute {
+            val precondition1 = create2048Precondition()
+            val precondition2 = createLocationPrecondition()
+            val precondition3 = createHoursPrecondition()
+            val list = listOf(precondition1, precondition2, precondition3)
+            sendInfoToFirebase(list)
+            result.postValue(list)
+        }
+        return result
+    }
+
+    private fun sendInfoToFirebase(list: List<Precondition>) {
+        val uid = firebaseAuth.currentUser?.uid
+        val completed = list.filter { it.completed }
+        val completedSize = completed.size
+
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+
+        val invites = if (completed.size < 2) 0 else completedSize
+        val data = mutableMapOf<String, Any>()
+        data += "darkInvites" to invites
+        if (enabled) {
+            preferences.edit()
+                    .putInt("dark_theme_invites", invites)
+                    .apply()
+        } else {
+            preferences.edit()
+                    .putInt("dark_theme_invites", invites)
+                    .putBoolean("ach_night_mode_enabled", (completedSize > 0))
+                    .apply()
+
+            data += "darkThemeEnabled" to (completedSize > 0)
+        }
+        if (uid != null) {
+            try {
+                Tasks.await(collection.document(uid).set(data, SetOptions.merge()))
+            } catch (throwable: Throwable) {
+                Crashlytics.logException(throwable)
+            }
+        }
+    }
+
+    private fun create2048Precondition(): Precondition {
+        val the2048score = context.getSharedPreferences(ScoreKeeper.PREFERENCES, Context.MODE_PRIVATE)
+                .getLong(ScoreKeeper.HIGH_SCORE, 0)
+        Timber.d("2048 score: $the2048score")
+        return Precondition(context.getString(R.string.precondition_1), context.getString(R.string.precondition_1_desc), the2048score >= 50000)
+    }
+
+    @WorkerThread
+    private fun createLocationPrecondition(): Precondition {
+        val bigTray = preferences.getBoolean("ach_dora_big_tray", false)
+        val library = preferences.getBoolean("ach_dora_library", false)
+        val zoology = preferences.getBoolean("ach_dora_zoology", false)
+        val hogwarts = preferences.getBoolean("ach_dora_hogwarts", false)
+        val module1 = preferences.getBoolean("ach_dora_mod1", false)
+        val module7 = preferences.getBoolean("ach_dora_mod7", false)
+        val management = preferences.getBoolean("ach_dora_management", false)
+        val all = bigTray and library and zoology and hogwarts and module1 and module7 and management
+
+        val schedule = database.classLocationDao().getCurrentScheduleDirect()
+        var eightHours = false
+        val day = schedule.groupBy { it.day }
+        day.entries.forEach { group ->
+            var minutes = 0
+            group.value.forEach { location ->
+                val start = location.startsAt.generateCalendarFromHour()?.timeInMillis
+                val end = location.endsAt.generateCalendarFromHour()?.timeInMillis
+                if (start != null && end != null) {
+                    val diff = end - start
+                    minutes += TimeUnit.MINUTES.convert(diff, TimeUnit.MILLISECONDS).toInt()
+                }
+            }
+            if (minutes >= 480) eightHours = true
+        }
+
+        return Precondition(context.getString(R.string.precondition_2), context.getString(R.string.precondition_2_desc), all && eightHours)
+    }
+
+    @WorkerThread
+    private fun createHoursPrecondition(): Precondition {
+        val list = database.classDao().getAllDirect()
+        val credits = list.asSequence().map { it.discipline().credits }.sum()
+        Timber.d("Credits: $credits")
+        return Precondition(context.getString(R.string.precondition_3), context.getString(R.string.precondition_3_desc, credits), credits >= 2200)
+    }
 }

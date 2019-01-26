@@ -94,7 +94,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
     }
 
     companion object {
-        private const val HIGH_SCORE = "score.highscore"
-        private const val PREFERENCES = "score"
+        public const val HIGH_SCORE = "score.highscore"
+        public const val PREFERENCES = "score"
     }
 }
