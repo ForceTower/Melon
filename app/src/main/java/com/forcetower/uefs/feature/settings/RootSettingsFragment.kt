@@ -27,13 +27,81 @@
 
 package com.forcetower.uefs.feature.settings
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
 import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import javax.inject.Inject
 
-class RootSettingsFragment : PreferenceFragmentCompat() {
+class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
+    @Inject
+    lateinit var factory: UViewModelFactory
+    lateinit var viewModel: SettingsViewModel
+
+    private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
+        onPreferenceChange(shared, key)
+    }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_start, rootKey)
+        viewModel = provideActivityViewModel(factory)
+        viewModel.isDarkModeEnabled.observe(this, Observer { toggleDarkModeVisibility(it) })
     }
+
+    private fun toggleDarkModeVisibility(visible: Boolean?) {
+        val isVisible = visible ?: false
+        val pNightMode = findPreference("stg_night_mode")
+        if (pNightMode != null) {
+            pNightMode.isVisible = isVisible
+        }
+    }
+
+    private fun onPreferenceChange(preference: SharedPreferences, key: String) {
+        when (key) {
+            "stg_night_mode" -> onNightModeChanged(preference.getInt(key, 0))
+        }
+    }
+
+    private fun onNightModeChanged(mode: Int) {
+        when(mode) {
+            0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+            1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        setupPreferenceSummary()
+        activity?.recreate()
+    }
+
+    private fun setupPreferenceSummary() {
+        val pNightMode = findPreference("stg_night_mode")
+        if (pNightMode != null) {
+            val current = getSharedPreferences().getInt("stg_night_mode", 0)
+            val resource = when (current) {
+                0 -> R.string.night_mode_follow_system
+                1 -> R.string.night_mode_always_light
+                2 -> R.string.night_mode_always_dark
+                else -> R.string.night_mode_follow_system
+            }
+            pNightMode.setSummary(resource)
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener)
+        setupPreferenceSummary()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener)
+    }
+
+    private fun getSharedPreferences() = preferenceManager.sharedPreferences
 }
