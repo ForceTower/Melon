@@ -54,20 +54,22 @@ abstract class ClassGroupDao {
     open fun defineGroups(groups: List<SDisciplineGroup>) {
         for (group in groups) {
             val inserted = insert(group)
-            Timber.d("Group id: ${inserted.uid}")
-            for (classItem in group.classItems) {
-                val item = ClassItem.createFromSagres(inserted.uid, classItem)
-                insert(item)
-                for (classMaterial in classItem.materials) {
-                    val material = ClassMaterial.createFromSagres(inserted.uid, null, classMaterial)
-                    insert(material)
+            if (inserted != null) {
+                Timber.d("Group id: ${inserted.uid}")
+                for (classItem in group.classItems) {
+                    val item = ClassItem.createFromSagres(inserted.uid, classItem)
+                    insert(item)
+                    for (classMaterial in classItem.materials) {
+                        val material = ClassMaterial.createFromSagres(inserted.uid, null, classMaterial)
+                        insert(material)
+                    }
                 }
             }
         }
     }
 
     @Transaction
-    open fun insert(grp: SDisciplineGroup): ClassGroup {
+    open fun insert(grp: SDisciplineGroup): ClassGroup? {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code)
         var group = selectGroupDirect(grp.semester, grp.code, sgr)
@@ -78,7 +80,8 @@ abstract class ClassGroupDao {
         } else if (grp.group == null && grops.isNotEmpty()) {
             group = grops[0]
         } else if (group == null) {
-            val clazz = selectClassDirect(grp.semester, grp.code)
+            val clazz = selectClassDirect(grp.semester, grp.code) ?: return null
+
             group = ClassGroup(classId = clazz.uid, group = sgr)
             group.uid = insert(group)
         }
@@ -128,7 +131,7 @@ abstract class ClassGroupDao {
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
             "d.code = :code")
-    protected abstract fun selectClassDirect(semester: String, code: String): Class
+    protected abstract fun selectClassDirect(semester: String, code: String): Class?
 
     @Query("SELECT * FROM Discipline WHERE code = :code")
     protected abstract fun selectDisciplineDirect(code: String): Discipline
