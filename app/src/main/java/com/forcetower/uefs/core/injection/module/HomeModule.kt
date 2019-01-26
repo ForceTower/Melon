@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.easter.darktheme.DarkThemeUnlockFragment
+import com.forcetower.uefs.easter.darktheme.InviteDarkThemeFragment
 import com.forcetower.uefs.feature.adventure.AdventureFragment
 import com.forcetower.uefs.feature.adventure.AdventureSignInDialog
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
@@ -95,4 +96,6 @@ abstract class HomeModule {
     abstract fun requestedServicesFragment(): RequestedServicesFragment
     @ContributesAndroidInjector
     abstract fun darkThemeUnlockFragment(): DarkThemeUnlockFragment
+    @ContributesAndroidInjector
+    abstract fun inviteDarkThemeFragment(): InviteDarkThemeFragment
 }
