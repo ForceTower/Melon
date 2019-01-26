@@ -58,6 +58,7 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     private boolean fromHtml;
     @Nullable
     private String dateString;
+    private long processingTime;
 
     public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName, SLinker scopes) {
         this.sagresId = sagresId;
@@ -68,6 +69,7 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
         this.senderName = senderName;
         this.scopes = scopes;
         this.fromHtml = false;
+        this.processingTime = System.currentTimeMillis();
     }
 
     public long getSagresId() {
@@ -189,5 +191,13 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
 
     public void setDateString(@Nullable String dateString) {
         this.dateString = dateString;
+    }
+
+    public long getProcessingTime() {
+        return processingTime;
+    }
+
+    public void setProcessingTime(long processingTime) {
+        this.processingTime = processingTime;
     }
 }
