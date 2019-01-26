@@ -35,6 +35,7 @@ import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.service.FirebaseProfile
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
@@ -43,6 +44,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
+import io.fabric.sdk.android.services.common.Crash
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -58,6 +60,26 @@ class DarkThemeRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase
 ) {
+
+    fun getFirebaseProfile(): LiveData<FirebaseProfile?> {
+        val result = MutableLiveData<FirebaseProfile?>()
+        val userId = firebaseAuth.currentUser?.uid
+        if (userId == null) {
+            result.value = null
+        } else {
+            collection.document(userId).addSnapshotListener { snapshot, exception ->
+                if (snapshot != null) {
+                    val data = snapshot.toObject(FirebaseProfile::class.java)?.apply { uid = userId }
+                    result.value = data
+                }
+
+                if (exception != null) {
+                    Crashlytics.logException(exception)
+                }
+            }
+        }
+        return result
+    }
 
     fun getPreconditions(): LiveData<List<Precondition>> {
         val result = MutableLiveData<List<Precondition>>()

@@ -25,19 +25,15 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.easter.darktheme
+package com.forcetower.uefs.core.model.service
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.FirebaseProfile
-import javax.inject.Inject
-
-class DarkThemeViewModel @Inject constructor(
-    private val repository: DarkThemeRepository
-) : ViewModel() {
-    val preconditions: LiveData<List<Precondition>>
-        get() = repository.getPreconditions()
-
-    val profile: LiveData<FirebaseProfile?>
-        get() = repository.getFirebaseProfile()
-}
+data class FirebaseProfile(
+    var uid: String?,
+    var course: String?,
+    var courseId: Int?,
+    var darkInvites: Int?,
+    var darkThemeEnabled: Int?,
+    var email: String?,
+    var name: String?,
+    var username: String
+)
