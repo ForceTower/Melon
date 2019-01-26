@@ -403,6 +403,8 @@
     <string name="switch_dark_theme">Tema escuro</string>
     <string name="enter_using_username_instead">Entre utilizando o seu nome de usuário no lugar do seu email</string>
     <string name="attention_user_login_with_email">Atenção %1$s!</string>
+    <string name="label_location_nearby">Quando você estiver perto de um lugar que desbloqueie alguma das conquistas...</string>
+    <string name="adventure_other_actions">Outras ações</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
