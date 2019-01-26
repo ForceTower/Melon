@@ -425,6 +425,15 @@
     <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório da UEFS.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
     <string name="precondition_3">Mestre honorário</string>
     <string name="precondition_3_desc">Tenha 2200 horas em disciplinas. Não importa se você passou, perdeu, ficou em final, abandonou, basta ela ter existido e você ter pego\n\nVocê atualmente tem %1$d horas</string>
+    <string name="send">Enviar</string>
+    <string name="dark_theme_send_warning">Se você digitar o nome errado ou se a pessoa já tiver o tema escuro, seu convite pode ser consumido mesmo assim :)\n\nInclusive, pode acontecer da pessoa não receber o presente porque ela não está mais conectada no UNESVerso</string>
+    <string name="dark_theme_send_label">Quem você deseja presentear?</string>
+    <string name="dark_theme_send_instructions">Digite o nome de usuário do Sagres de quem será presenteado. Esta pessoa precisa estar na versão 7.0.4 ou superior do UNES</string>
+    <string name="invites_left">convites restantes</string>
+    <string name="you_got">Você tem</string>
+    <string name="dark_theme_invite_a_friend_title">Presenteie alguém com o tema escuro</string>
+    <string name="dark_theme_username_is_empty">O nome não pode ser vazio</string>
+    <string name="send_to_random">Enviar aleatório</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
