@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.SnackbarViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.easter.darktheme.DarkThemeViewModel
 import com.forcetower.uefs.feature.about.ContributorViewModel
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
@@ -168,6 +169,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SettingsViewModel::class)
     abstract fun bindSettingsViewModel(vm: SettingsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(DarkThemeViewModel::class)
+    abstract fun bindDarkThemeViewModel(vm: DarkThemeViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

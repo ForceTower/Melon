@@ -419,6 +419,12 @@
     <string name="dark_theme_invites_action">Convide alguem para o lado escuro</string>
     <string name="dark_theme_good_luck">Boa sorte!</string>
     <string name="label_dark_theme_event">Tema Escuro</string>
+    <string name="precondition_1">Desafiante do 2048</string>
+    <string name="precondition_1_desc">Faça 50.000 pontos ou mais em uma partida de 2048. Dica: é possível ir além dos 2048.</string>
+    <string name="precondition_2">Dedicado(a) visitante dos 7 mares</string>
+    <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório da UEFS.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
+    <string name="precondition_3">Mestre honorário</string>
+    <string name="precondition_3_desc">Tenha 2200 horas em disciplinas. Não importa se você passou, perdeu, ficou em final, abandonou, basta ela ter existido e você ter pego\n\nVocê atualmente tem %1$d horas</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
