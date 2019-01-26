@@ -32,6 +32,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDarkThemeUnlockBinding
@@ -58,5 +60,9 @@ class DarkThemeUnlockFragment : UFragment(), Injectable {
             adapter = preconditionsAdapter
         }
         viewModel.preconditions.observe(this, Observer { preconditionsAdapter.submitList(it) })
+
+        binding.inviteToDark.setOnClickListener {
+            findNavController().navigate(R.id.action_dark_event_to_dark_invite)
+        }
     }
 }

@@ -38,13 +38,15 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.FirebaseProfile
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
-import io.fabric.sdk.android.services.common.Crash
+import com.google.firebase.functions.FirebaseFunctions
+import com.google.firebase.functions.FirebaseFunctionsException
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -55,6 +57,7 @@ import javax.inject.Singleton
 class DarkThemeRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val context: Context,
+    private val functions: FirebaseFunctions,
     @Named(Profile.COLLECTION) private val collection: CollectionReference,
     private val firebaseAuth: FirebaseAuth,
     private val executors: AppExecutors,
@@ -168,5 +171,28 @@ class DarkThemeRepository @Inject constructor(
         val credits = list.asSequence().map { it.discipline().credits }.sum()
         Timber.d("Credits: $credits")
         return Precondition(context.getString(R.string.precondition_3), context.getString(R.string.precondition_3_desc, credits), credits >= 2200)
+    }
+
+    fun sendDarkThemeTo(username: String?): LiveData<Resource<Boolean>> {
+        val result = MutableLiveData<Resource<Boolean>>()
+        result.value = Resource.loading(false)
+        functions.getHttpsCallable("sendDarkTheme").call(mapOf(
+            "username" to username
+        )).addOnCompleteListener {
+            if (it.isSuccessful) {
+                val sent = preferences.getInt("dark_theme_invites_sent", 0)
+                preferences.edit().putInt("dark_theme_invites_sent", sent + 1).apply()
+                result.postValue(Resource.success(true))
+            } else {
+                val exception = it.exception
+                if (exception is FirebaseFunctionsException) {
+                    val code = exception.code
+                    Timber.d("Failed with code $code")
+                    val message = exception.message
+                    result.postValue(Resource.error(message ?: "Unknown", 400, exception))
+                }
+            }
+        }
+        return result
     }
 }

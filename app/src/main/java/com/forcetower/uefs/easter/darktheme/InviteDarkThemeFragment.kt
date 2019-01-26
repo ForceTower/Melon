@@ -55,7 +55,12 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.run {
             btnSend.setOnClickListener { onSend() }
+            btnSendRandom.setOnClickListener { onSendRandom() }
         }
+    }
+
+    private fun onSendRandom() {
+        viewModel.sendDarkThemeTo(null)
     }
 
     private fun onSend() {
@@ -64,5 +69,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
             return
         }
+
+        viewModel.sendDarkThemeTo(username)
     }
 }

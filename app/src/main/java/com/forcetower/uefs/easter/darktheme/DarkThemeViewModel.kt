@@ -35,9 +35,14 @@ import javax.inject.Inject
 class DarkThemeViewModel @Inject constructor(
     private val repository: DarkThemeRepository
 ) : ViewModel() {
+
     val preconditions: LiveData<List<Precondition>>
         get() = repository.getPreconditions()
 
     val profile: LiveData<FirebaseProfile?>
         get() = repository.getFirebaseProfile()
+
+    fun sendDarkThemeTo(username: String?) {
+        repository.sendDarkThemeTo(username)
+    }
 }
