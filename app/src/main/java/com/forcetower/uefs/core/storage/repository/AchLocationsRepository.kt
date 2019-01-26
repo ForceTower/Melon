@@ -27,11 +27,16 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import android.location.Location
 import com.forcetower.uefs.R
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class AchLocationsRepository @Inject constructor() {
+@Singleton
+class AchLocationsRepository @Inject constructor(
+    private val preferences: SharedPreferences
+) {
 
     fun onReceiveLocation(location: Location): Int? {
         return matchesBigTray(location)
@@ -46,8 +51,11 @@ class AchLocationsRepository @Inject constructor() {
             longitude = -38.96974
         }
         val distance = location.distanceTo(place)
-        if (distance - location.accuracy <= 30)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_big_tray", true).apply()
+            preferences.edit().putFloat("ach_dora_big_tray_dist", distance).apply()
             return R.string.achievement_bandejo
+        }
         return null
     }
 
@@ -57,8 +65,11 @@ class AchLocationsRepository @Inject constructor() {
             longitude = -38.972065
         }
         val distance = location.distanceTo(place)
-        if (distance - location.accuracy <= 30)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_library", true).apply()
+            preferences.edit().putFloat("ach_dora_library_dist", distance).apply()
             return R.string.achievement_dora_a_estudiosa
+        }
         return null
     }
 
@@ -68,8 +79,11 @@ class AchLocationsRepository @Inject constructor() {
             longitude = -38.967986
         }
         val distance = location.distanceTo(place)
-        if (distance - location.accuracy <= 30)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_zoology", true).apply()
+            preferences.edit().putFloat("ach_dora_zoology_dist", distance).apply()
             return R.string.achievement_dora_a_aventureira
+        }
         return null
     }
 
@@ -79,8 +93,11 @@ class AchLocationsRepository @Inject constructor() {
             longitude = -38.971951
         }
         val distance = location.distanceTo(place)
-        if (distance - location.accuracy <= 30)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_hogwarts", true).apply()
+            preferences.edit().putFloat("ach_dora_hogwarts_dist", distance).apply()
             return R.string.achievement_dora_a_misteriosa
+        }
         return null
     }
 }

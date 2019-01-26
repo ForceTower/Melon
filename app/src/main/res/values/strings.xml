@@ -410,6 +410,15 @@
     <string name="night_mode_follow_system">Seguir o tema do sistema</string>
     <string name="night_mode_always_light">Sempre claro</string>
     <string name="night_mode_always_dark">Sempre escuro</string>
+    <string name="unlock_the_dark_theme">Desbloqueie o tema escuro!</string>
+    <string name="unlock_the_dark_theme_desc">Sim, tem que desbloquear, eu demorei tempo demais fazendo isso para ser um campo que você marca e ganha</string>
+    <string name="dark_theme_instructions">Instruções</string>
+    <string name="dark_theme_instructions_desc">Realize alguma das ações abaixo para desbloquear o tema</string>
+    <string name="dark_theme_invites">Tudo é melhor com amigos</string>
+    <string name="dark_theme_invites_desc">Realizar mais de uma ação te dará convites, clique no botão abaixo para desbloquear o tema escuro para alguem</string>
+    <string name="dark_theme_invites_action">Convide alguem para o lado escuro</string>
+    <string name="dark_theme_good_luck">Boa sorte!</string>
+    <string name="label_dark_theme_event">Tema Escuro</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

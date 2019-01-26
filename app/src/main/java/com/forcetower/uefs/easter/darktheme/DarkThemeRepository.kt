@@ -25,17 +25,14 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.easter.darktheme
+package com.forcetower.uefs.core.storage.repository
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
-import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.feature.shared.UFragment
+import javax.inject.Inject
+import javax.inject.Singleton
 
-class DarkThemeUnlockFragment : UFragment(), Injectable {
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return null
-    }
+@Singleton
+class DarkThemeRepository @Inject constructor(
+
+) {
+
 }

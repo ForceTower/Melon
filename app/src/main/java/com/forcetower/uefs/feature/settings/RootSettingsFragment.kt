@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.feature.settings
 
-import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
@@ -64,12 +63,12 @@ class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
 
     private fun onPreferenceChange(preference: SharedPreferences, key: String) {
         when (key) {
-            "stg_night_mode" -> onNightModeChanged(preference.getInt(key, 0))
+            "stg_night_mode" -> onNightModeChanged(preference.getString(key, "0")?.toIntOrNull() ?: 0)
         }
     }
 
     private fun onNightModeChanged(mode: Int) {
-        when(mode) {
+        when (mode) {
             0 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             1 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
@@ -81,11 +80,11 @@ class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
     private fun setupPreferenceSummary() {
         val pNightMode = findPreference("stg_night_mode")
         if (pNightMode != null) {
-            val current = getSharedPreferences().getInt("stg_night_mode", 0)
+            val current = getSharedPreferences().getString("stg_night_mode", "0")
             val resource = when (current) {
-                0 -> R.string.night_mode_follow_system
-                1 -> R.string.night_mode_always_light
-                2 -> R.string.night_mode_always_dark
+                "0" -> R.string.night_mode_follow_system
+                "1" -> R.string.night_mode_always_light
+                "2" -> R.string.night_mode_always_dark
                 else -> R.string.night_mode_follow_system
             }
             pNightMode.setSummary(resource)
