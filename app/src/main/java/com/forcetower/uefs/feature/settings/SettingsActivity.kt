@@ -44,7 +44,8 @@ import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : UActivity(), HasSupportFragmentInjector,
+        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
@@ -54,14 +55,17 @@ class SettingsActivity : UActivity(), HasSupportFragmentInjector, PreferenceFrag
         super.onCreate(savedInstanceState)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
-
+        binding.btnBack.setOnClickListener {
+            supportFragmentManager.run {
+                if (backStackEntryCount == 0) finish()
+                else popBackStack()
+            }
+        }
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
                 add(R.id.fragment_container, RootSettingsFragment())
             }
         }
-
-        binding.incToolbar.textToolbarTitle.text = getString(R.string.label_settings)
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
