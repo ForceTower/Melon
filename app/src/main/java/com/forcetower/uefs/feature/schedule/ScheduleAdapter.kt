@@ -57,11 +57,13 @@ private const val SCHEDULE_LINE_DAY_HOLDER: Int = 1
 private const val SCHEDULE_LINE_CLASS_HOLDER: Int = 2
 
 class ScheduleLineAdapter(
+    private val lifecycleOwner: LifecycleOwner,
+    private val viewModel: ScheduleViewModel,
     private val pool: RecyclerView.RecycledViewPool
 ) : ListAdapter<ScheduleDay, DayLineHolder>(DayLineDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayLineHolder {
         val binding = ItemScheduleLineDayBinding.inflate(parent.inflater(), parent, false)
-        return DayLineHolder(binding, pool)
+        return DayLineHolder(binding, pool, viewModel, lifecycleOwner)
     }
 
     override fun onBindViewHolder(holder: DayLineHolder, position: Int) {
@@ -85,10 +87,13 @@ class ScheduleLineAdapter(
     }
 }
 
-class ScheduleLineClassAdapter : ListAdapter<LocationWithGroup, LocationLineHolder>(ClassLineDiff) {
+class ScheduleLineClassAdapter(
+    private val viewModel: ScheduleViewModel,
+    private val lifecycleOwner: LifecycleOwner
+) : ListAdapter<LocationWithGroup, LocationLineHolder>(ClassLineDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LocationLineHolder {
         val binding = ItemScheduleLineClassBinding.inflate(parent.inflater(), parent, false)
-        return LocationLineHolder(binding)
+        return LocationLineHolder(binding, viewModel, lifecycleOwner)
     }
 
     override fun onBindViewHolder(holder: LocationLineHolder, position: Int) {
@@ -100,9 +105,11 @@ class ScheduleLineClassAdapter : ListAdapter<LocationWithGroup, LocationLineHold
 
 class DayLineHolder(
     private val binding: ItemScheduleLineDayBinding,
-    pool: RecyclerView.RecycledViewPool
+    pool: RecyclerView.RecycledViewPool,
+    private val viewModel: ScheduleViewModel,
+    private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.ViewHolder(binding.root) {
-    private val adapter by lazy { ScheduleLineClassAdapter() }
+    private val adapter by lazy { ScheduleLineClassAdapter(viewModel, lifecycleOwner) }
     init {
         binding.recyclerDay.setRecycledViewPool(pool)
         binding.recyclerDay.adapter = adapter
@@ -116,12 +123,18 @@ class DayLineHolder(
 }
 
 class LocationLineHolder(
-    private val binding: ItemScheduleLineClassBinding
+    private val binding: ItemScheduleLineClassBinding,
+    private val viewModel: ScheduleViewModel,
+    private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(location: LocationWithGroup) {
-        binding.location = location
-        binding.executePendingBindings()
+    fun bind(locationWithGroup: LocationWithGroup) {
+        binding.run{
+            location = locationWithGroup
+            interactor = viewModel
+            setLifecycleOwner(lifecycleOwner)
+            binding.executePendingBindings()
+        }
     }
 }
 
