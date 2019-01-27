@@ -54,7 +54,7 @@ class ScheduleFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentScheduleBinding
 
     private val linePool = RecyclerView.RecycledViewPool()
-    private val lineAdapter by lazy { ScheduleLineAdapter(linePool) }
+    private val lineAdapter by lazy { ScheduleLineAdapter(this, viewModel, linePool) }
     private val blockPool = RecyclerView.RecycledViewPool()
     private val blockAdapter by lazy { ScheduleBlockAdapter(blockPool, this, viewModel, requireContext()) }
 
