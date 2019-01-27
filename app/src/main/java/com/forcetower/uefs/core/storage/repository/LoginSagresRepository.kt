@@ -41,6 +41,7 @@ import com.forcetower.sagres.database.model.SDisciplineClassLocation
 import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.database.model.SCalendar
+import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
@@ -51,6 +52,7 @@ import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import org.jsoup.nodes.Document
@@ -256,11 +258,10 @@ class LoginSagresRepository @Inject constructor(
                         defineFrequency(g.frequency)
                         database.gradesDao().markAllNotified()
                         Timber.d("Execute default")
-                        val result = SagresNavigator.instance.getRequestedServices()
-                        Timber.d("Result: ${result.status}")
                         defineGradesWorkers(g.semesters.map { pair -> pair.first })
-                        data.postValue(Callback.Builder(g.status).document(g.document).build())
                     }
+
+                    services(data)
                 }
                 g.status == Status.LOADING -> {
                     data.value = Callback.Builder(g.status)
@@ -272,11 +273,6 @@ class LoginSagresRepository @Inject constructor(
                 }
                 else -> {
                     Timber.d("Data status: ${g.status} ${g.code} ${g.throwable?.message}")
-                    executor.diskIO().execute {
-                        Timber.d("Execute default")
-                        val result = SagresNavigator.instance.getRequestedServices()
-                        Timber.d("Result: ${result.status}")
-                    }
                     data.value = Callback.Builder(Status.GRADES_FAILED)
                             .code(g.code)
                             .message(g.message)
@@ -286,6 +282,45 @@ class LoginSagresRepository @Inject constructor(
                 }
             }
         }
+    }
+
+    @MainThread
+    private fun services(data: MediatorLiveData<Callback>) {
+        Timber.d("Services fetch")
+        val services = SagresNavigator.instance.aGetRequestedServices()
+        data.addSource(services) { s ->
+            when (s.status) {
+                Status.SUCCESS -> {
+                    data.removeSource(services)
+                    executor.diskIO().execute {
+                        defineServices(s.services)
+                        database.serviceRequestDao().markAllNotified()
+                    }
+                    data.value = Callback.Builder(s.status).document(s.document).build()
+                }
+                Status.LOADING -> {
+                    data.value = Callback.Builder(s.status)
+                            .code(s.code)
+                            .message(s.message)
+                            .throwable(s.throwable)
+                            .document(s.document)
+                            .build()
+                }
+                else -> {
+                    data.value = Callback.Builder(Status.COMPLETED)
+                            .code(s.code)
+                            .message(s.message)
+                            .throwable(s.throwable)
+                            .document(s.document)
+                            .build()
+                }
+            }
+        }
+    }
+
+    private fun defineServices(services: List<SRequestedService>) {
+        val list = services.map { ServiceRequest.fromSagres(it) }
+        database.serviceRequestDao().insertList(list)
     }
 
     private fun defineGradesWorkers(semesters: List<Long>) {
