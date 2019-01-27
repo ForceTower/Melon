@@ -92,3 +92,9 @@ object M9TO10 : Migration(9, 10) {
         database.execSQL("DELETE FROM Access WHERE username LIKE '%@%'")
     }
 }
+
+object M10TO11 : Migration(10, 11) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Class ADD COLUMN partial_score REAL DEFAULT NULL")
+    }
+}
