@@ -63,4 +63,8 @@
         <key>app_see_key</key>
         <value>undefined</value>
     </entry>
+    <entry>
+        <key>dark_theme_chance</key>
+        <value>15</value>
+    </entry>
 </defaultsMap>

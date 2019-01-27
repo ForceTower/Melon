@@ -121,7 +121,11 @@ class AdventureRepository @Inject constructor(
         val schedule = database.classLocationDao().getCurrentScheduleDirect()
         unlockScheduleBased(schedule, data)
 
-        val old = preferences.getBoolean("old_fella", false)
+        val darkTheme = preferences.getBoolean("ach_night_mode_enabled", false)
+        if (darkTheme) {
+            data[R.string.achievement_escuridao]
+        }
+
         data[R.string.achievement_atualizado] = -1
     }
 

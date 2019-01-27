@@ -35,7 +35,7 @@ import dagger.android.ContributesAndroidInjector
 @Module
 abstract class SettingsModule {
     @ContributesAndroidInjector
-    abstract fun settingsFragment(): RootSettingsFragment
+    abstract fun rootSettingsFragment(): RootSettingsFragment
     @ContributesAndroidInjector
     abstract fun syncSettingsFragment(): SyncSettingsFragment
 }

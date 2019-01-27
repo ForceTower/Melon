@@ -31,9 +31,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.UpgradeRepository
-import com.forcetower.uefs.service.NotificationCreator
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -48,17 +46,5 @@ class OnUpgradeReceiver : BroadcastReceiver() {
         AndroidInjection.inject(this, context)
 
         repository.onUpgrade()
-
-        val v2 = preferences.getBoolean("upgrade_msg_unes_v2", false)
-        if (!v2) {
-            NotificationCreator.showUpgradeNotification(context.getString(R.string.upgrade_unes_second_title), context.getString(R.string.upgrade_unes_the_second), context)
-            preferences.edit().putBoolean("upgrade_msg_unes_v2", true).apply()
-        }
-
-//        val demand = preferences.getBoolean("upgrade_demand_v2", false)
-//        if (!demand) {
-//            NotificationCreator.showUpgradeNotification(context.getString(R.string.demand_update_title), context.getString(R.string.demand_update_content), context)
-//            preferences.edit().putBoolean("upgrade_demand_v2", true).apply()
-//        }
     }
 }

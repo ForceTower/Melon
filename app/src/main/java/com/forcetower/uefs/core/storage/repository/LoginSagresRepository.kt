@@ -330,7 +330,7 @@ class LoginSagresRepository @Inject constructor(
     private fun defineDisciplines(disciplines: List<SDiscipline>) {
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
-        disciplines.forEach { database.classDao().insert(it) }
+        disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread

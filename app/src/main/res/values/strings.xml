@@ -87,13 +87,13 @@
     <string name="label_terms_and_conditions_p2">[Termos de Serviço](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md) e a [Política de Privacidade](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md)</string>
 
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
-    <string name="about_unes_1">O UNES foi feito por João Paulo Sena</string>
-    <string name="about_unes_2">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
+    <string name="about_unes_1">O UNES foi feito por João Paulo Sena (Seará)</string>
+    <string name="about_unes_2" translatable="false">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
     <string name="about_unes_3">Espero que gostem</string>
     <string name="acc_contributor_image">Imagem do contribuidor</string>
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
-    <string name="label_contributors_calling">Pessoas que contribuíram com código ou ideias</string>
+    <string name="label_contributors_calling">Pessoas que contribuíram com o projeto no GitHub</string>
 
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
@@ -123,7 +123,7 @@
     <string name="remote">Avisos Remotos</string>
     <string name="channel_events_general">Eventos Gerais</string>
     <string name="channel_messages_dce">Mensagens DCE</string>
-    <string name="unes_image_transition">unes_image_transition</string>
+    <string name="unes_image_transition" translatable="false">unes_image_transition</string>
     <string name="setup_about_you">Sobre você</string>
     <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada. Selecione uma foto e um curso</string>
     <string name="setup_select_course_label">Selecione um curso</string>
@@ -159,9 +159,9 @@
     <string name="no_pdf_reader">Nenhum Leitor de PDF instalado, por favor, instale algum disponível na PlayStore</string>
     <string name="notification_grade_posted_title">Nota postada!</string>
     <string name="notification_grade_posted_message_lv_0">A nota da %1$s da disciplina %2$s está disponível</string>
-    <string name="notification_grade_posted_message_lv_1_perfect">A nota da %1$s da disciplina %2$s está disponível\n\nPerfeito</string>
+    <string name="notification_grade_posted_message_lv_1_perfect">A nota da %1$s da disciplina %2$s está disponível  Perfeito</string>
     <string name="notification_grade_posted_message_lv_1_good">A nota da %1$s da disciplina %2$s está disponível\n\nSafe demais! Pode ficar de boas!</string>
-    <string name="notification_grade_posted_message_lv_1_pass">A nota da %1$s da disciplina %2$s está disponível\n\nSei não hein Rick</string>
+    <string name="notification_grade_posted_message_lv_1_pass">A nota da %1$s da disciplina %2$s está disponível\n\nSei não hein. Rick</string>
     <string name="notification_grade_posted_message_lv_1_bad">A nota da %1$s da disciplina %2$s está disponível\n\nSenhor Stark, eu não quero morrer</string>
     <string name="notification_grade_posted_message_lv_2">Você tirou %1$s na avaliação disciplina %2$s</string>
     <string name="notification_grade_created">A %1$s da disciplina %2$s foi criada mas não há notas associadas</string>
@@ -195,7 +195,7 @@
     <string name="discipline_no_file_posted">Não foram postados arquivos nesta turma</string>
     <string name="discipline_no_missed_classes">Você não tem faltas registradas nesta disciplina!</string>
     <string name="discipline_classes_not_registered">As aulas desta disciplina ainda não foram definidas</string>
-    <string name="discipline_absence_item_format">%1$s - %2$s</string>
+    <string name="discipline_absence_item_format" translatable="false">%1$s - %2$s</string>
     <string name="no_events_registered">Não existem eventos cadastrados</string>
     <string name="teachers_label">Professores [Em breve]</string>
     <string name="discipline_credits_undefined">Carga horária desconhecida o_o</string>
@@ -223,7 +223,7 @@
     <string name="game_over">Fim de Jogo</string>
     <string name="start_new_game">Iniciar Novo</string>
 
-    <string name="integer_format">%1$d</string>
+    <string name="integer_format" translatable="false">%1$d</string>
     <string name="screen_under_development">Esta página está em construção</string>
     <string name="tasks_completed_label">Concluídas</string>
     <string name="label_create_reminder">Criar Lembrete</string>
@@ -403,6 +403,42 @@
     <string name="switch_dark_theme">Tema escuro</string>
     <string name="enter_using_username_instead">Entre utilizando o seu nome de usuário no lugar do seu email</string>
     <string name="attention_user_login_with_email">Atenção %1$s!</string>
+    <string name="label_location_nearby">Quando você estiver perto de um lugar que desbloqueie alguma das conquistas...</string>
+    <string name="adventure_other_actions">Outras ações</string>
+    <string name="settings_theme">Tema</string>
+    <string name="back">Voltar</string>
+    <string name="night_mode_follow_system">Seguir o tema do sistema</string>
+    <string name="night_mode_always_light">Sempre claro</string>
+    <string name="night_mode_always_dark">Sempre escuro</string>
+    <string name="unlock_the_dark_theme">Desbloqueie o tema escuro!</string>
+    <string name="unlock_the_dark_theme_desc">Sim, tem que desbloquear, eu demorei tempo demais fazendo isso para ser um campo que você marca e ganha</string>
+    <string name="dark_theme_instructions">Instruções</string>
+    <string name="dark_theme_instructions_desc">Realize alguma das ações abaixo para desbloquear o tema</string>
+    <string name="dark_theme_invites">Tudo é melhor com amigos</string>
+    <string name="dark_theme_invites_desc">Realizar mais de uma ação te dará convites, clique no botão abaixo para desbloquear o tema escuro para alguem</string>
+    <string name="dark_theme_invites_action">Convide alguem para o lado escuro</string>
+    <string name="dark_theme_good_luck">Boa sorte!</string>
+    <string name="label_dark_theme_event">Tema Escuro</string>
+    <string name="precondition_1">Desafiante do 2048</string>
+    <string name="precondition_1_desc">Faça 50.000 pontos ou mais em uma partida de 2048. Dica: é possível ir além dos 2048.</string>
+    <string name="precondition_2">Dedicado(a) visitante dos 7 mares</string>
+    <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório da UEFS.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
+    <string name="precondition_3">Mestre honorário</string>
+    <string name="precondition_3_desc">Tenha 2200 horas em disciplinas. Não importa se você passou, perdeu, ficou em final, abandonou, basta ela ter existido e você ter pego\n\nVocê atualmente tem %1$d horas</string>
+    <string name="send">Enviar</string>
+    <string name="dark_theme_send_warning">Se você digitar o nome errado ou se a pessoa já tiver o tema escuro, seu convite pode ser consumido mesmo assim :)\n\nInclusive, pode acontecer da pessoa não receber o presente porque ela não está mais conectada no UNESVerso</string>
+    <string name="dark_theme_send_label">Quem você deseja presentear?</string>
+    <string name="dark_theme_send_instructions">Digite o nome de usuário do Sagres de quem será presenteado. Esta pessoa precisa estar na versão 7.0.4 ou superior do UNES</string>
+    <string name="invites_left">convites restantes</string>
+    <string name="you_got">Você tem</string>
+    <string name="dark_theme_invite_a_friend_title">Presenteie alguém com o tema escuro</string>
+    <string name="dark_theme_username_is_empty">O nome não pode ser vazio</string>
+    <string name="send_to_random">Enviar aleatório</string>
+    <string name="what_firebase_says_the_app_commits">Erro. O servidor não permitiu a operação. Muita coisa pode ter acontecido</string>
+    <string name="you_are_not_connected_to_the_unesverso">Você não está conectado ao UNESVerso. Fazer login novamente talvez resolva</string>
+    <string name="dark_theme_no_more_invites">O servidor disse que você não tem mais convites. E ele manda em tudo.</string>
+    <string name="dark_theme_user_not_found">Este usuário não foi encontrado no UNESVerso</string>
+    <string name="dark_theme_invite_sent">O seu presente foi enviado</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -445,6 +481,18 @@
     </string-array>
 
     <string-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="settings_theme_titles">
+        <item>Seguir o tema do sistema</item>
+        <item>Sempre claro</item>
+        <item>Sempre escuro</item>
+    </string-array>
+
+    <string-array name="settings_theme_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>

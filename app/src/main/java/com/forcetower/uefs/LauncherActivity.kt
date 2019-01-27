@@ -71,7 +71,7 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         createNewVersionNotification()
 
         val apiKey = remoteConfig.getString("app_see_key")
-        if (apiKey != "undefined") Appsee.start(apiKey)
+        if (!BuildConfig.DEBUG && apiKey != "undefined") Appsee.start(apiKey)
 
         val disabledCode = remoteConfig.getLong("version_disable")
         if (disabledCode > BuildConfig.VERSION_CODE) {

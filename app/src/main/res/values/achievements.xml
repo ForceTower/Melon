@@ -107,4 +107,12 @@
     <string name="achievement_o_criador" translatable="false">CgkIz4rBs-YKEAIQKA</string>
     <!--! achievement Atualizado! -->
     <string name="achievement_atualizado" translatable="false">CgkIz4rBs-YKEAIQKQ</string>
+    <!--! achievement Dora, Temporada 1 -->
+    <string name="achievement_dora_temporada_1" translatable="false">CgkIz4rBs-YKEAIQKw</string>
+    <!--! achievement Dora, Temporada 7 -->
+    <string name="achievement_dora_temporada_7" translatable="false">CgkIz4rBs-YKEAIQLA</string>
+    <!--! achievement Dora, descansando -->
+    <string name="achievement_dora_descansando" translatable="false">CgkIz4rBs-YKEAIQLQ</string>
+    <!--! achievement Escuridão -->
+    <string name="achievement_escuridao" translatable="false">CgkIz4rBs-YKEAIQKg</string>
 </resources>
