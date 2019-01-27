@@ -27,13 +27,23 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.content.Intent
+import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.annotation.IdRes
+import androidx.appcompat.app.AppCompatDelegate
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
@@ -42,19 +52,11 @@ import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.storage.FirebaseStorage
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
-import android.content.Intent
-import android.content.SharedPreferences
-import android.net.Uri
-import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.lifecycle.Observer
-import com.forcetower.uefs.BuildConfig
-import com.forcetower.uefs.core.constants.Constants
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
@@ -86,11 +88,28 @@ class HomeBottomFragment : UFragment(), Injectable {
         }.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        nightSwitcherListener()
+    }
+
+    private fun nightSwitcherListener() {
+        val config = preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0
+        val active = config == 2
+        binding.switchNight.isChecked = active
+        binding.switchNight.setOnCheckedChangeListener { _, isChecked ->
+            val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
+            val state = if (isChecked) 2 else 1
+            preferences.edit().putString("stg_night_mode", state.toString()).apply()
+            AppCompatDelegate.setDefaultNightMode(flag)
+            activity?.recreate()
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        nightModeSwitcher()
+        viewModel.isDarkModeEnabled.observe(this, Observer { toggleNightModeSwitcher(it) })
     }
 
     private fun featureFlags() {
@@ -108,19 +127,10 @@ class HomeBottomFragment : UFragment(), Injectable {
         toggleItem(R.id.hourglass, hourglass)
     }
 
-    private fun nightModeSwitcher() {
-        val config = preferences.getInt("cfg_night_mode", 0)
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-        val active = config == 2
-        binding.switchNight.isChecked = active
-        binding.switchNight.visibility = if (enabled) View.VISIBLE else View.GONE
-
-        binding.switchNight.setOnCheckedChangeListener { _, isChecked ->
-            val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-            val state = if (isChecked) 2 else 0
-            preferences.edit().putInt("cfg_night_mode", state).apply()
-            AppCompatDelegate.setDefaultNightMode(flag)
-            activity?.recreate()
+    private fun toggleNightModeSwitcher(enabled: Boolean?) {
+        binding.switchNight.run {
+            if (enabled == true) visibility = VISIBLE
+            else visibility = GONE
         }
     }
 

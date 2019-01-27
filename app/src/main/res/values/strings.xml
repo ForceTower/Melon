@@ -403,6 +403,42 @@
     <string name="switch_dark_theme">Tema escuro</string>
     <string name="enter_using_username_instead">Entre utilizando o seu nome de usuário no lugar do seu email</string>
     <string name="attention_user_login_with_email">Atenção %1$s!</string>
+    <string name="label_location_nearby">Quando você estiver perto de um lugar que desbloqueie alguma das conquistas...</string>
+    <string name="adventure_other_actions">Outras ações</string>
+    <string name="settings_theme">Tema</string>
+    <string name="back">Voltar</string>
+    <string name="night_mode_follow_system">Seguir o tema do sistema</string>
+    <string name="night_mode_always_light">Sempre claro</string>
+    <string name="night_mode_always_dark">Sempre escuro</string>
+    <string name="unlock_the_dark_theme">Desbloqueie o tema escuro!</string>
+    <string name="unlock_the_dark_theme_desc">Sim, tem que desbloquear, eu demorei tempo demais fazendo isso para ser um campo que você marca e ganha</string>
+    <string name="dark_theme_instructions">Instruções</string>
+    <string name="dark_theme_instructions_desc">Realize alguma das ações abaixo para desbloquear o tema</string>
+    <string name="dark_theme_invites">Tudo é melhor com amigos</string>
+    <string name="dark_theme_invites_desc">Realizar mais de uma ação te dará convites, clique no botão abaixo para desbloquear o tema escuro para alguem</string>
+    <string name="dark_theme_invites_action">Convide alguem para o lado escuro</string>
+    <string name="dark_theme_good_luck">Boa sorte!</string>
+    <string name="label_dark_theme_event">Tema Escuro</string>
+    <string name="precondition_1">Desafiante do 2048</string>
+    <string name="precondition_1_desc">Faça 50.000 pontos ou mais em uma partida de 2048. Dica: é possível ir além dos 2048.</string>
+    <string name="precondition_2">Dedicado(a) visitante dos 7 mares</string>
+    <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório da UEFS.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
+    <string name="precondition_3">Mestre honorário</string>
+    <string name="precondition_3_desc">Tenha 2200 horas em disciplinas. Não importa se você passou, perdeu, ficou em final, abandonou, basta ela ter existido e você ter pego\n\nVocê atualmente tem %1$d horas</string>
+    <string name="send">Enviar</string>
+    <string name="dark_theme_send_warning">Se você digitar o nome errado ou se a pessoa já tiver o tema escuro, seu convite pode ser consumido mesmo assim :)\n\nInclusive, pode acontecer da pessoa não receber o presente porque ela não está mais conectada no UNESVerso</string>
+    <string name="dark_theme_send_label">Quem você deseja presentear?</string>
+    <string name="dark_theme_send_instructions">Digite o nome de usuário do Sagres de quem será presenteado. Esta pessoa precisa estar na versão 7.0.4 ou superior do UNES</string>
+    <string name="invites_left">convites restantes</string>
+    <string name="you_got">Você tem</string>
+    <string name="dark_theme_invite_a_friend_title">Presenteie alguém com o tema escuro</string>
+    <string name="dark_theme_username_is_empty">O nome não pode ser vazio</string>
+    <string name="send_to_random">Enviar aleatório</string>
+    <string name="what_firebase_says_the_app_commits">Erro. O servidor não permitiu a operação. Muita coisa pode ter acontecido</string>
+    <string name="you_are_not_connected_to_the_unesverso">Você não está conectado ao UNESVerso. Fazer login novamente talvez resolva</string>
+    <string name="dark_theme_no_more_invites">O servidor disse que você não tem mais convites. E ele manda em tudo.</string>
+    <string name="dark_theme_user_not_found">Este usuário não foi encontrado no UNESVerso</string>
+    <string name="dark_theme_invite_sent">O seu presente foi enviado</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -445,6 +481,18 @@
     </string-array>
 
     <string-array name="settings_ntf_grade_spoiler_values">
+        <item>0</item>
+        <item>1</item>
+        <item>2</item>
+    </string-array>
+
+    <string-array name="settings_theme_titles">
+        <item>Seguir o tema do sistema</item>
+        <item>Sempre claro</item>
+        <item>Sempre escuro</item>
+    </string-array>
+
+    <string-array name="settings_theme_values">
         <item>0</item>
         <item>1</item>
         <item>2</item>
