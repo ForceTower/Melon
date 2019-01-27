@@ -83,6 +83,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="vertical"
+            android:layout_marginEnd="16dp"
             app:layout_constraintBottom_toBottomOf="@+id/image_user_picture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/third_keyline"
