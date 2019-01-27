@@ -30,11 +30,14 @@ package com.forcetower.uefs.easter.darktheme
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -64,10 +67,14 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.currentCall.observe(this, Observer {
+        viewModel.currentCall.observe(this, EventObserver {
             when (it.status) {
-                Status.SUCCESS -> showSnack(getString(R.string.dark_theme_invite_sent))
+                Status.SUCCESS -> {
+                    binding.loadingPb.visibility = GONE
+                    showSnack(getString(R.string.dark_theme_invite_sent))
+                }
                 Status.ERROR -> {
+                    binding.loadingPb.visibility = GONE
                     val exception = it.throwable as? FirebaseFunctionsException
                     val messageRes = when (exception?.code) {
                         FirebaseFunctionsException.Code.NOT_FOUND -> R.string.dark_theme_user_not_found
@@ -94,8 +101,9 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
     }
 
     private fun onSendRandom() {
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 1
-        binding.textInvitesLeft.text = "${text - 1}"
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+        binding.loadingPb.visibility = VISIBLE
         viewModel.sendDarkThemeTo(null)
     }
 
@@ -106,9 +114,9 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             return
         }
 
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 1
-        binding.textInvitesLeft.text = "${text - 1}"
-
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+        binding.loadingPb.visibility = VISIBLE
         viewModel.sendDarkThemeTo(username)
     }
 }

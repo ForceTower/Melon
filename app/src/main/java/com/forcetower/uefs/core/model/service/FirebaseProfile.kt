@@ -28,13 +28,13 @@
 package com.forcetower.uefs.core.model.service
 
 data class FirebaseProfile(
-    var uid: String?,
-    var course: String?,
-    var courseId: Int?,
-    var darkInvites: Int?,
-    var sentDarkInvites: Int?,
-    var darkThemeEnabled: Int?,
-    var email: String?,
-    var name: String?,
-    var username: String
+    var uid: String? = null,
+    var course: String? = null,
+    var courseId: Long? = null,
+    var darkInvites: Long? = null,
+    var sentDarkInvites: Long? = null,
+    var darkThemeEnabled: Boolean? = null,
+    var email: String? = null,
+    var name: String? = null,
+    var username: String = ""
 )

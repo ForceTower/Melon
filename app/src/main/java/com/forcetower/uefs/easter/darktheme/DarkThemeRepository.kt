@@ -72,7 +72,17 @@ class DarkThemeRepository @Inject constructor(
         } else {
             collection.document(userId).addSnapshotListener { snapshot, exception ->
                 if (snapshot != null) {
-                    val data = snapshot.toObject(FirebaseProfile::class.java)?.apply { uid = userId }
+                    val data = FirebaseProfile(
+                        userId,
+                        snapshot["course"] as? String,
+                        snapshot["courseId"] as? Long,
+                        snapshot["darkInvites"] as? Long,
+                        snapshot["sentDarkInvites"] as? Long,
+                        snapshot["darkThemeEnabled"] as? Boolean,
+                        snapshot["email"] as? String,
+                        snapshot["name"] as? String,
+                        snapshot["username"] as? String ?: ""
+                    )
                     result.value = data
                 }
 
@@ -106,7 +116,7 @@ class DarkThemeRepository @Inject constructor(
 
         val invites = if (completed.size < 2) 0 else completedSize
         val data = mutableMapOf<String, Any>()
-        data += "darkInvites" to invites
+        data += "darkInvites" to (invites - 1)
         if (enabled) {
             preferences.edit()
                     .putInt("dark_theme_invites", invites)

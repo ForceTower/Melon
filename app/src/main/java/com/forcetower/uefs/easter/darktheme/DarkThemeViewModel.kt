@@ -33,6 +33,7 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.FirebaseProfile
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 
 class DarkThemeViewModel @Inject constructor(
@@ -45,8 +46,8 @@ class DarkThemeViewModel @Inject constructor(
     val profile: LiveData<FirebaseProfile?>
         get() = repository.getFirebaseProfile()
 
-    private val _currentCall = MediatorLiveData<Resource<Boolean>>()
-    val currentCall: LiveData<Resource<Boolean>>
+    private val _currentCall = MediatorLiveData<Event<Resource<Boolean>>>()
+    val currentCall: LiveData<Event<Resource<Boolean>>>
         get() = _currentCall
 
     fun sendDarkThemeTo(username: String?) {
@@ -55,7 +56,7 @@ class DarkThemeViewModel @Inject constructor(
             if (it.status == Status.SUCCESS || it.status == Status.ERROR) {
                 _currentCall.removeSource(source)
             }
-            _currentCall.value = it
+            _currentCall.value = Event(it)
         }
     }
 }
