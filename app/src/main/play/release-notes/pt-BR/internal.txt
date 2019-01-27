@@ -1,1 +1,5 @@
-Consulta de Serviços
+A partir deste update o tema escuro pode ser desbloqueado.
+
+Existem no momento 3 condições que fazem o tema ser desbloqueado, complete alguma e o tema será habilitado para você. Lembrem-se estamos em fase de testes dessa função, então em caso de qualquer erro me mande um email :)
+
+Boa sorte a todos :D
