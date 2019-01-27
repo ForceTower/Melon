@@ -56,6 +56,8 @@ data class Class(
     var status: String? = null,
     @ColumnInfo(name = "final_score")
     var finalScore: Double? = null,
+    @ColumnInfo(name = "partial_score")
+    var partialScore: Double? = null,
     val uuid: String = UUID.randomUUID().toString(),
     var missedClasses: Int = 0,
     var lastClass: String = "",
@@ -70,5 +72,14 @@ data class Class(
         if (dis.missedClasses >= 0) missedClasses = dis.missedClasses
         if (!dis.situation.isNullOrBlank()) status = dis.situation
         scheduleOnly = !validated
+    }
+
+    fun isInFinal(): Boolean {
+        val operation = partialScore
+        return if (operation == null) {
+            false
+        } else {
+            operation >= 3.0 && operation < 7
+        }
     }
 }

@@ -106,20 +106,21 @@
                 tools:text="Métodologia da Pesquisa e Desenvolvimento em Engenharia de Computação"/>
 
             <com.forcetower.uefs.widget.CircleProgressBar
+                android:id="@+id/circleProgressBar"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                app:classStudentGrade="@{clazzGroup}"
                 app:layout_constraintBottom_toTopOf="@+id/guide_title"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guide_score"
                 app:layout_constraintTop_toTopOf="parent"
-                app:min="0"
                 app:max="100"
+                app:min="0"
                 app:progressbarColor="?attr/colorAccent"
-                app:classStudentGrade="@{clazzGroup}"
                 tools:progress="87" />
 
             <TextView
@@ -139,11 +140,12 @@
                 app:classStudentGrade="@{clazzGroup}"/>
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_grades"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
+                android:onClick="@{() -> listener.classClicked(clazzGroup)}"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/guide_title"
@@ -151,6 +153,44 @@
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
                 tools:listitem="@layout/item_grade" />
+
+            <TextView
+                android:id="@+id/text_label_final"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/guide_score"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recycler_grades"
+                android:text="@string/mean_needed_in_finals" />
+
+            <TextView
+                android:id="@+id/grade_needed_final"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:textColor="?attr/colorAccent"
+                android:textSize="14sp"
+                app:gradeNeededInFinal="@{clazzGroup}"
+                app:layout_constraintBaseline_toBaselineOf="@id/text_label_final"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guide_score"
+                tools:text="3.1" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/final_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:goneUnless="@{clazzGroup.clazz.isInFinal()}"
+                app:constraint_referenced_ids="grade_needed_final,text_label_final"/>
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
