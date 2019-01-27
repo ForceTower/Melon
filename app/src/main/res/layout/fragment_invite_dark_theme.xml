@@ -32,7 +32,8 @@
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:animateLayoutChanges="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -128,6 +129,14 @@
                         android:inputType="text"
                         android:textColor="?attr/colorOnSurface" />
                 </com.google.android.material.textfield.TextInputLayout>
+
+                <ProgressBar
+                    android:id="@+id/loading_pb"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    style="@style/Base.Widget.AppCompat.ProgressBar.Horizontal"
+                    android:indeterminate="true"
+                    android:visibility="gone"/>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
