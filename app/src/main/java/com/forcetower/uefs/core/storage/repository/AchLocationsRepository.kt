@@ -43,6 +43,9 @@ class AchLocationsRepository @Inject constructor(
                 ?: matchesLibrary(location)
                 ?: matchesZoologyMuseum(location)
                 ?: matchesHogwarts(location)
+                ?: matchesMod1(location)
+                ?: matchesMod7(location)
+                ?: matchesManagement(location)
     }
 
     private fun matchesBigTray(location: Location): Int? {
@@ -97,6 +100,48 @@ class AchLocationsRepository @Inject constructor(
             preferences.edit().putBoolean("ach_dora_hogwarts", true).apply()
             preferences.edit().putFloat("ach_dora_hogwarts_dist", distance).apply()
             return R.string.achievement_dora_a_misteriosa
+        }
+        return null
+    }
+
+    private fun matchesMod1(location: Location): Int? {
+        val place = Location("").apply {
+            latitude = -12.199827
+            longitude = -38.969190
+        }
+        val distance = location.distanceTo(place)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_mod1", true).apply()
+            preferences.edit().putFloat("ach_dora_mod1_dist", distance).apply()
+            return R.string.achievement_dora_temporada_1
+        }
+        return null
+    }
+
+    private fun matchesMod7(location: Location): Int? {
+        val place = Location("").apply {
+            latitude = -12.201418
+            longitude = -38.975059
+        }
+        val distance = location.distanceTo(place)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_mod7", true).apply()
+            preferences.edit().putFloat("ach_dora_mod7_dist", distance).apply()
+            return R.string.achievement_dora_temporada_7
+        }
+        return null
+    }
+
+    private fun matchesManagement(location: Location): Int? {
+        val place = Location("").apply {
+            latitude = -12.202269
+            longitude = -38.971030
+        }
+        val distance = location.distanceTo(place)
+        if (distance - location.accuracy <= 30) {
+            preferences.edit().putBoolean("ach_dora_management", true).apply()
+            preferences.edit().putFloat("ach_dora_management_dist", distance).apply()
+            return R.string.achievement_dora_descansando
         }
         return null
     }
