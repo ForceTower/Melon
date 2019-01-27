@@ -134,7 +134,7 @@ class DarkThemeRepository @Inject constructor(
             try {
                 val current = Tasks.await(collection.document(uid).get())
                 val serverInvites = current["darkInvites"] as? Long ?: 0
-                val actualInvites = max(serverInvites, invites)
+                val actualInvites = max(serverInvites, invites.toLong())
                 data += "darkInvites" to actualInvites
                 Tasks.await(collection.document(uid).set(data, SetOptions.merge()))
             } catch (throwable: Throwable) {
