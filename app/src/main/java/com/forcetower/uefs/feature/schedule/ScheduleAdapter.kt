@@ -129,7 +129,7 @@ class LocationLineHolder(
 ) : RecyclerView.ViewHolder(binding.root) {
 
     fun bind(locationWithGroup: LocationWithGroup) {
-        binding.run{
+        binding.run {
             location = locationWithGroup
             interactor = viewModel
             setLifecycleOwner(lifecycleOwner)
