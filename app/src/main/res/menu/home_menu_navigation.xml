@@ -81,6 +81,7 @@
                 <item
                     android:id="@+id/events"
                     android:title="@string/label_events"
+                    android:visible="false"
                     android:icon="@drawable/ic_event_black_24dp"/>
     
                 <item
@@ -92,6 +93,11 @@
                     android:id="@+id/adventure"
                     android:title="@string/label_adventure"
                     android:icon="@drawable/ic_games_black_24dp"/>
+
+                <item
+                    android:id="@+id/dark_theme_event"
+                    android:title="@string/label_dark_theme_event"
+                    android:icon="@drawable/ic_theme_black_24dp"/>
 
                 <item
                     android:id="@+id/hourglass"

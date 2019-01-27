@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.shared
 
 import android.view.View
+import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.animation.Animation
@@ -44,6 +45,23 @@ fun View.fadeIn() {
 fun View.fadeOut() {
     if (visibility == INVISIBLE) return
     val fade: Animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
+    visibility = INVISIBLE
+    startAnimation(fade)
+    requestLayout()
+}
+
+fun View.fadeOutGone() {
+    if (visibility == GONE) return
+    val fade: Animation = AnimationUtils.loadAnimation(context, android.R.anim.fade_out)
+    fade.setAnimationListener(object : Animation.AnimationListener {
+        override fun onAnimationRepeat(animation: Animation?) {}
+
+        override fun onAnimationEnd(animation: Animation?) {
+            visibility = GONE
+        }
+
+        override fun onAnimationStart(animation: Animation?) {}
+    })
     visibility = INVISIBLE
     startAnimation(fade)
     requestLayout()

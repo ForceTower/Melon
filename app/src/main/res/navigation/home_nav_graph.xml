@@ -110,6 +110,22 @@
         android:label="ServicesFollowUp"
         tools:layout="@layout/fragment_services_followup"/>
 
+    <fragment
+        android:id="@+id/dark_theme_event"
+        android:name="com.forcetower.uefs.easter.darktheme.DarkThemeUnlockFragment"
+        android:label="DarkThemeEvent"
+        tools:layout="@layout/fragment_dark_theme_unlock">
+        <action
+            android:id="@+id/action_dark_event_to_dark_invite"
+            app:destination="@id/dark_theme_event_invite" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/dark_theme_event_invite"
+        android:name="com.forcetower.uefs.easter.darktheme.InviteDarkThemeFragment"
+        android:label="InviteDarkThemeEvent"
+        tools:layout="@layout/fragment_invite_dark_theme"/>
+
     <activity
         android:id="@+id/demand"
         android:name="com.forcetower.uefs.feature.demand.DemandActivity"

@@ -88,16 +88,8 @@ public class Resource<T> {
         return new Resource<>(Status.ERROR, data, msg);
     }
 
-    public static <T> Resource<T> error(String msg, int code, @Nullable T data) {
-        return new Resource<>(Status.ERROR, data, msg, code);
-    }
-
     public static <T> Resource<T> error(String msg, int code, Throwable throwable) {
         return new Resource<>(Status.ERROR, null, msg, code, throwable);
-    }
-
-    public static <T> Resource<T> error(String msg, int code, @Nullable ActionError actionError) {
-        return new Resource<>(Status.ERROR, null, msg, code, actionError);
     }
 
     public static <T> Resource<T> loading(@Nullable T data) {

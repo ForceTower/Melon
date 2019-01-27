@@ -61,13 +61,14 @@ data class Class(
     var lastClass: String = "",
     var nextClass: String = "",
     @ColumnInfo(name = "schedule_only")
-    val scheduleOnly: Boolean = false
+    var scheduleOnly: Boolean = false
 ) {
 
-    fun selectiveCopy(dis: SDiscipline) {
+    fun selectiveCopy(dis: SDiscipline, validated: Boolean) {
         if (!dis.nextClass.isNullOrBlank()) nextClass = dis.nextClass
         if (!dis.lastClass.isNullOrBlank()) lastClass = dis.lastClass
         if (dis.missedClasses >= 0) missedClasses = dis.missedClasses
         if (!dis.situation.isNullOrBlank()) status = dis.situation
+        scheduleOnly = !validated
     }
 }

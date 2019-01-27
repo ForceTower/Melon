@@ -31,15 +31,9 @@ import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
-import android.content.res.Configuration
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -117,49 +111,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun onActivityStart() {
         initShortcuts()
         moveToTask()
-        drawDarkModeEvent()
-    }
-
-    private fun drawDarkModeEvent() {
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-        if (enabled) return
-
-        val event = remoteConfig.getBoolean("dark_event")
-
-        val random = Math.random() * 100
-        if (event && random < 15) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                moveToDarkTheme()
-            }, 5000)
-        } else {
-            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            when (currentNightMode) {
-                Configuration.UI_MODE_NIGHT_NO -> Unit
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                }
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                }
-            }
-        }
-    }
-
-    private fun moveToDarkTheme() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            analytics.logEvent("user_got_dark", null)
-            onDarkTheme()
-            recreate()
-        }
-    }
-
-    private fun onDarkTheme() {
-        val player = MediaPlayer.create(this, R.raw.darkness_theme)
-        player.setVolume(0.3f, 0.3f)
-        player.start()
     }
 
     private fun moveToTask() {
