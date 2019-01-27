@@ -82,9 +82,17 @@ abstract class GradeDao {
                     .replace(",", ".")
                     .replace("-", "")
                     .replace("*", "")
+
+                val partialMean = it.partialMean
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+                val partialScore = partialMean.toDoubleOrNull()
                 val score = finalScore.toDoubleOrNull()
                 if (score != null)
                     updateClassScore(clazz.uid, score)
+                if (partialScore != null)
+                    updateClassPartialScore(clazz.uid, partialScore)
 
                 prepareInsertion(clazz, it, notify)
             } else {
@@ -134,6 +142,9 @@ abstract class GradeDao {
             }
         }
     }
+
+    @Query("UPDATE Class SET partial_score = :partialScore WHERE uid = :classId")
+    protected abstract fun updateClassPartialScore(classId: Long, partialScore: Double)
 
     @Query("UPDATE Class SET final_score = :score WHERE uid = :classId")
     protected abstract fun updateClassScore(classId: Long, score: Double)
