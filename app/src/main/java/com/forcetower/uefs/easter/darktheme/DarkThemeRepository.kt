@@ -52,6 +52,7 @@ import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlin.math.max
 
 @Singleton
 class DarkThemeRepository @Inject constructor(
@@ -107,6 +108,7 @@ class DarkThemeRepository @Inject constructor(
         return result
     }
 
+    @WorkerThread
     private fun sendInfoToFirebase(list: List<Precondition>) {
         val uid = firebaseAuth.currentUser?.uid
         val completed = list.filter { it.completed }
@@ -114,9 +116,8 @@ class DarkThemeRepository @Inject constructor(
 
         val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
 
-        val invites = if (completed.size < 2) 0 else completedSize
+        val invites = if (completed.size < 2) 0 else (completedSize - 1)
         val data = mutableMapOf<String, Any>()
-        data += "darkInvites" to (invites - 1)
         if (enabled) {
             preferences.edit()
                     .putInt("dark_theme_invites", invites)
@@ -131,6 +132,10 @@ class DarkThemeRepository @Inject constructor(
         }
         if (uid != null) {
             try {
+                val current = Tasks.await(collection.document(uid).get())
+                val serverInvites = current["darkInvites"] as? Int ?: 0
+                val actualInvites = max(serverInvites, invites)
+                data += "darkInvites" to actualInvites
                 Tasks.await(collection.document(uid).set(data, SetOptions.merge()))
             } catch (throwable: Throwable) {
                 Crashlytics.logException(throwable)
