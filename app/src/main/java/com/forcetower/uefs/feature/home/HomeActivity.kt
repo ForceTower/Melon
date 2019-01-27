@@ -27,20 +27,13 @@
 
 package com.forcetower.uefs.feature.home
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
-import android.content.res.Configuration
-import android.media.MediaPlayer
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -104,7 +97,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
-        setupDayNightTheme()
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -119,90 +111,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun onActivityStart() {
         initShortcuts()
         moveToTask()
-        drawDarkModeEvent()
-    }
-
-    private fun drawDarkModeEvent() {
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-        if (enabled) return
-
-        val event = remoteConfig.getBoolean("dark_event")
-
-        val random = Math.random() * 100
-        if (event && random < remoteConfig.getDouble("dark_theme_chance")) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                moveToDarkTheme()
-            }, 5000)
-        } else {
-            val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-            when (currentNightMode) {
-                Configuration.UI_MODE_NIGHT_NO -> Unit
-                Configuration.UI_MODE_NIGHT_YES -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                }
-                Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                }
-            }
-        }
-    }
-
-    @SuppressLint("SwitchIntDef")
-    private fun setupDayNightTheme() {
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-        if (!enabled) return
-
-        val uiMode = preferences.getInt("cfg_night_mode", 0)
-        val current = AppCompatDelegate.getDefaultNightMode()
-
-        Timber.d("This is happening: $uiMode $current")
-        when (current) {
-            AppCompatDelegate.MODE_NIGHT_NO -> {
-                if (uiMode == 1) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    recreate()
-                } else if (uiMode == 2) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    recreate()
-                }
-            }
-            AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM -> {
-                if (uiMode == 0) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                } else if (uiMode == 2) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                    recreate()
-                }
-            }
-            AppCompatDelegate.MODE_NIGHT_YES -> {
-                if (uiMode == 0) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                    recreate()
-                } else if (uiMode == 1) {
-                    AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                    recreate()
-                }
-            }
-            else -> Unit
-        }
-    }
-
-    private fun moveToDarkTheme() {
-        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            analytics.logEvent("user_got_dark", null)
-            onDarkTheme()
-            recreate()
-        }
-    }
-
-    private fun onDarkTheme() {
-        val player = MediaPlayer.create(this, R.raw.darkness_theme)
-        player.setVolume(0.3f, 0.3f)
-        player.start()
     }
 
     private fun moveToTask() {

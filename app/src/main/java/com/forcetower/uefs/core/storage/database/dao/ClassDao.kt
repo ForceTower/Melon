@@ -91,7 +91,7 @@ abstract class ClassDao {
     protected abstract fun selectSemesterDirect(name: String): Semester?
 
     @Transaction
-    open fun insert(dis: SDiscipline) {
+    open fun insert(dis: SDiscipline, validated: Boolean) {
         var clazz = getClassDirect(dis.semester, dis.code)
         if (clazz == null) {
             val discipline = selectDisciplineDirect(dis.code)
@@ -111,7 +111,7 @@ abstract class ClassDao {
         }
 
         if (clazz != null) {
-            clazz.selectiveCopy(dis)
+            clazz.selectiveCopy(dis, validated)
             update(clazz)
         }
     }
@@ -125,4 +125,8 @@ abstract class ClassDao {
     @Transaction
     @Query("SELECT * FROM Class")
     abstract fun getAll(): LiveData<List<ClassWithDiscipline>>
+
+    @Transaction
+    @Query("SELECT * FROM Class")
+    abstract fun getAllDirect(): List<ClassWithDiscipline>
 }
