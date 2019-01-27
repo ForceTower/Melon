@@ -40,10 +40,13 @@ import timber.log.Timber
 
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
-    val sort = classes?.sortedBy { it.name }
-    if (sort != null && sort.isNotEmpty() && sort[0].classId == 64L) {
-        Timber.d("Sorted List $sort")
-    }
+    val sort = classes?.sortedWith(Comparator { one, two ->
+        when {
+            one.name.trim().equals("prova final", ignoreCase = true) -> 1
+            two.name.trim().equals("prova final", ignoreCase = true) -> -1
+            else -> one.name.compareTo(two.name)
+        }
+    })
 
     val adapter: ClassGroupGradesAdapter
     if (recycler.adapter == null) {
@@ -57,8 +60,8 @@ fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
 }
 
 @BindingAdapter("classStudentGrade")
-fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
-    val value = clazz.clazz.finalScore
+fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups?) {
+    val value = clazz?.clazz?.finalScore
     if (value == null) {
         cpb.setProgress(0.0f)
     } else {
@@ -67,12 +70,23 @@ fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups) {
 }
 
 @BindingAdapter("classStudentGrade")
-fun classStudentGrade(tv: TextView, clazz: ClassWithGroups) {
-    val value = clazz.clazz.finalScore
+fun classStudentGrade(tv: TextView, clazz: ClassWithGroups?) {
+    val value = clazz?.clazz?.finalScore
     if (value == null) {
         tv.text = "??"
     } else {
         tv.text = value.toString()
+    }
+}
+
+@BindingAdapter("gradeNeededInFinal")
+fun gradeNeededInFinal(tv: TextView, clazz: ClassWithGroups?) {
+    val value = clazz?.clazz?.partialScore
+    if (value == null) {
+        tv.text = "??"
+    } else {
+        val needed = 12.5 - (1.5 * value)
+        tv.text = tv.context.getString(R.string.grade_format, needed)
     }
 }
 
@@ -96,7 +110,11 @@ fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
     } else {
         Timber.d("Credits: $credits __ Absence: $absences")
         val left = (credits / 4) - absences
-        tv.text = context.getString(R.string.discipline_absence_left, left)
+        when {
+            left > 0 -> tv.text = context.getString(R.string.discipline_absence_left, left)
+            left == 0 -> tv.text = context.getString(R.string.you_cant_miss_a_class)
+            else -> tv.text = context.getString(R.string.you_missed_to_many_classes)
+        }
     }
 }
 
