@@ -56,6 +56,21 @@ class RemindersRepository @Inject constructor(
             profileReference.document(user.uid).collection(Reminder.COLLECTION).orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, _ ->
                 if (snapshot != null) {
                     val list = snapshot.documents.map { it.toObject(Reminder::class.java)!!.apply { id = it.id } }
+                    list.sortedWith(Comparator { o1, o2 ->
+                        val date1 = o1.date
+                        val date2 = o2.date
+                        if (date1 != null && date2 != null) {
+                            date1.compareTo(date2)
+                        } else if (date1 != null && date2 == null) {
+                            -1
+                        } else if (date1 == null && date2 != null) {
+                            1
+                        } else {
+                            val create1 = o1.createdAt
+                            val create2 = o2.createdAt
+                            create1?.compareTo(create2) ?: 1
+                        }
+                    })
                     data.postValue(list)
                 }
             }
