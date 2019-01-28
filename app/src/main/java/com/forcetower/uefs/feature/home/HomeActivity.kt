@@ -215,4 +215,13 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    override fun onResume() {
+        super.onResume()
+        val recreate = preferences.getBoolean("will_recreate_home", false)
+        if (recreate) {
+            preferences.edit().putBoolean("will_recreate_home", false).apply()
+            recreate()
+        }
+    }
 }

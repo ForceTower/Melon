@@ -129,8 +129,8 @@ class HomeBottomFragment : UFragment(), Injectable {
 
     private fun toggleNightModeSwitcher(enabled: Boolean?) {
         binding.switchNight.run {
-            if (enabled == true) visibility = VISIBLE
-            else visibility = GONE
+            visibility = if (enabled == true) VISIBLE
+            else GONE
         }
     }
 
