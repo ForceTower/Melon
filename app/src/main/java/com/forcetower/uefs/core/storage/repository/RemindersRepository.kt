@@ -56,7 +56,7 @@ class RemindersRepository @Inject constructor(
             profileReference.document(user.uid).collection(Reminder.COLLECTION).orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, _ ->
                 if (snapshot != null) {
                     val list = snapshot.documents.map { it.toObject(Reminder::class.java)!!.apply { id = it.id } }
-                    val deadline = list.filter { it.date != null }.sortedBy { it.date!! * -1 }
+                    val deadline = list.filter { it.date != null }.sortedBy { it.date!! }
                     val common = list.filter { it.date == null }
                     val result = deadline + common
                     data.postValue(result)
