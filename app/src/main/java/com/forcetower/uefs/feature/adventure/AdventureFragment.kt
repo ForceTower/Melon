@@ -34,6 +34,8 @@ import android.location.Location
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
@@ -76,6 +78,9 @@ class AdventureFragment : UFragment(), Injectable {
     private lateinit var viewModel: AdventureViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private var activity: UGameActivity? = null
+    private lateinit var binding: FragmentAdventureBeginsBinding
+
+    private val distanceAdapter by lazy { DistanceAdapter() }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
     private var locationCallback: LocationCallback? = null
@@ -93,14 +98,22 @@ class AdventureFragment : UFragment(), Injectable {
         viewModel = provideActivityViewModel(factory)
         profileViewModel = provideViewModel(factory)
         locationSettings()
-        return FragmentAdventureBeginsBinding.inflate(inflater, container, false).apply {
+        return FragmentAdventureBeginsBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.apply {
             interactor = viewModel
             profile = profileViewModel
             storage = firebaseStorage
             firebaseUser = this@AdventureFragment.firebaseAuth.currentUser
-            setLifecycleOwner(this@AdventureFragment)
+            lifecycleOwner = this@AdventureFragment
             executePendingBindings()
         }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.adventureAchievements.distanceRecycler.run {
+            adapter = distanceAdapter
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -205,6 +218,7 @@ class AdventureFragment : UFragment(), Injectable {
         try {
             if (mLocationRequest == null) startLocationsUpdate()
             fusedLocationClient.requestLocationUpdates(mLocationRequest, locationCallback, null)
+            binding.adventureAchievements.distanceRecycler.visibility = VISIBLE
         } catch (e: SecurityException) {
             Timber.d("Method could not be called")
         }
@@ -212,6 +226,7 @@ class AdventureFragment : UFragment(), Injectable {
 
     private fun stopUpdates() {
         fusedLocationClient.removeLocationUpdates(locationCallback)
+        binding.adventureAchievements.distanceRecycler.visibility = GONE
     }
 
     private fun locationSettings() {
@@ -224,9 +239,9 @@ class AdventureFragment : UFragment(), Injectable {
                         if (!showedLocationMessage) {
                             showSnack(getString(R.string.adventure_not_accurate))
                             showedLocationMessage = true
-                        } else {
-                            onReceiveLocation(location)
                         }
+                    } else {
+                        onReceiveLocation(location)
                     }
                 }
             }
@@ -235,7 +250,10 @@ class AdventureFragment : UFragment(), Injectable {
 
     private fun onReceiveLocation(location: Location) {
         val value = viewModel.onReceiveLocation(location)
-        if (value != null) { activity?.unlockAchievement(value) }
+        distanceAdapter.submitList(value)
+        value.map { it.id }.filter { it != null }.forEach {
+            if (it != null) activity?.unlockAchievement(it)
+        }
     }
 
     override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {

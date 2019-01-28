@@ -31,6 +31,7 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.storage.repository.AdventureRepository
 import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
@@ -83,7 +84,7 @@ class AdventureViewModel @Inject constructor(
         return repository.justCheckAchievements()
     }
 
-    fun onReceiveLocation(location: Location): Int? {
+    fun onReceiveLocation(location: Location): List<AchDistance> {
         return repository.matchesAnyAchievement(location)
     }
 }
