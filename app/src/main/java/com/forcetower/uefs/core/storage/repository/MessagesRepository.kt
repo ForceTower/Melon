@@ -87,7 +87,11 @@ class MessagesRepository @Inject constructor(
             if (exception != null) {
                 Timber.e(exception)
             } else if (snapshot != null) {
-                val list = snapshot.documents.map { it.toObject(UMessage::class.java)!!.apply { id = it.id } }
+                val list = snapshot.documents.map { it.toObject(UMessage::class.java)!!.apply {
+                    id = it.id
+                    val replaced = message.replace("\\n", "\n")
+                    message = replaced
+                } }
                 result.postValue(list)
             }
         }
