@@ -103,9 +103,9 @@ fun classAbsence(tv: TextView, desc: String?, date: String?) {
 }
 
 @BindingAdapter(value = ["absences", "credits"], requireAll = true)
-fun totalAbsence(tv: TextView, absences: Int, credits: Int?) {
+fun totalAbsence(tv: TextView, absences: Int?, credits: Int?) {
     val context = tv.context
-    if (credits == null || credits == 0) {
+    if (absences == null || credits == null || credits == 0) {
         tv.text = context.getString(R.string.discipline_credits_undefined)
     } else {
         Timber.d("Credits: $credits __ Absence: $absences")

@@ -91,10 +91,23 @@
                     android:layout_marginTop="4dp"
                     android:text="@{viewModel.clazz.clazz.discipline().department}"
                     android:textColor="?attr/colorOnSurfaceLight"
-                    app:layout_constraintEnd_toEndOf="@id/text_discipline_name"
-                    app:layout_constraintStart_toStartOf="@id/text_discipline_name"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
                     app:layout_constraintTop_toBottomOf="@id/text_discipline_name"
                     tools:text="Departamento de Tecnologia" />
+
+                <TextView
+                    android:id="@+id/missed_classes_left"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:textColor="?attr/colorOnSurfaceLight"
+                    app:absences="@{viewModel.clazz.clazz.clazz.missedClasses}"
+                    app:credits="@{viewModel.clazz.clazz.discipline().credits}"
+                    app:layout_constraintEnd_toEndOf="@id/guideline_end"
+                    app:layout_constraintStart_toStartOf="@id/guideline_start"
+                    app:layout_constraintTop_toBottomOf="@id/department"
+                    tools:text="Você tem 15 faltas restantes"/>
 
                 <ProgressBar
                     android:id="@+id/pb_loading"
