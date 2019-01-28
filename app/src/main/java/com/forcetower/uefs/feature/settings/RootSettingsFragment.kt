@@ -50,6 +50,7 @@ class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_start, rootKey)
         viewModel = provideActivityViewModel(factory)
+        toggleDarkModeVisibility(false)
         viewModel.isDarkModeEnabled.observe(this, Observer { toggleDarkModeVisibility(it) })
     }
 
@@ -74,6 +75,7 @@ class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
             2 -> AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
         }
         setupPreferenceSummary()
+        getSharedPreferences().edit().putBoolean("will_recreate_home", true).apply()
         activity?.recreate()
     }
 
