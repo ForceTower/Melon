@@ -118,7 +118,7 @@
                     android:layout_marginTop="8dp"
                     tools:visibility="gone"
                     android:visibility="@{viewModel.loadClassDetails ? View.VISIBLE : View.GONE}"
-                    app:layout_constraintTop_toBottomOf="@+id/department"/>
+                    app:layout_constraintTop_toBottomOf="@+id/missed_classes_left"/>
             
                 <androidx.constraintlayout.widget.Barrier
                     android:id="@+id/barrier_title"
