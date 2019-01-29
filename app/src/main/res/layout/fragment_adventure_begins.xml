@@ -46,22 +46,26 @@
             name="interactor"
             type="com.forcetower.uefs.feature.adventure.AdventureInteractor"/>
     </data>
-    
-    <LinearLayout
+
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="vertical">
-    
-        <include
-            android:id="@+id/adventure_header"
-            layout="@layout/content_adventure_header"
-            app:profile="@{profile}"
-            app:firebaseUser="@{firebaseUser}"
-            app:storage="@{storage}"/>
-    
-        <include
-            android:id="@+id/adventure_achievements"
-            layout="@layout/content_adventure_data"
-            app:interactor="@{interactor}"/>
-    </LinearLayout>
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <include
+                android:id="@+id/adventure_header"
+                layout="@layout/content_adventure_header"
+                app:profile="@{profile}"
+                app:firebaseUser="@{firebaseUser}"
+                app:storage="@{storage}"/>
+
+            <include
+                android:id="@+id/adventure_achievements"
+                layout="@layout/content_adventure_data"
+                app:interactor="@{interactor}"/>
+        </LinearLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>

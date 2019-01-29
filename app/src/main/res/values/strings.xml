@@ -443,6 +443,11 @@
     <string name="you_cant_miss_a_class">Você não pode mais faltar</string>
     <string name="you_missed_to_many_classes">Você já faltou demais, sinto muito</string>
     <string name="grade_format">%1$.1f</string>
+    <string name="ach_distance_title_format">Distância até %1$s</string>
+    <string name="ach_distance_amount_format">%1$.1f m</string>
+    <string name="not_connected_to_the_adventure">Você não está conectado, por favor deixe a aventura e volte!</string>
+    <string name="achievements_client_invalid_reconnect">O cliente da aventura é nulo, deixe a aventura e tente novamente</string>
+    <string name="cant_open_achievements_invalid_intent">O google play não quer abrir as conquistas, deixe a aventura e tente novamente</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

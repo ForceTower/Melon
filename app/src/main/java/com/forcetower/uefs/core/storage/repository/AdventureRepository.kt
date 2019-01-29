@@ -36,6 +36,7 @@ import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
@@ -62,7 +63,7 @@ class AdventureRepository @Inject constructor(
 ) {
 
     @AnyThread
-    fun matchesAnyAchievement(location: Location): Int? {
+    fun matchesAnyAchievement(location: Location): List<AchDistance> {
         return locations.onReceiveLocation(location)
     }
 

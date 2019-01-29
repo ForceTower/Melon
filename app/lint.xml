@@ -3,4 +3,5 @@
     <issue id="InvalidPackage">
         <ignore path="*/io.grpc/grpc-core/*"/>
     </issue>
+    <issue id="DiffUtilEquals" severity="ignore"/>
 </lint>
