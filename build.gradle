@@ -10,6 +10,9 @@ buildscript {
 		classpath deps.plugin.play_publisher
         classpath deps.navigation.safe_args_plugin
     }
+    repositories {
+        google()
+    }
 }
 
 allprojects {
