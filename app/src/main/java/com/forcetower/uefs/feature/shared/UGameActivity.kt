@@ -98,9 +98,15 @@ abstract class UGameActivity : UActivity() {
     fun signOut() = mGamesInstance.disconnect()
 
     fun openAchievements() {
-        if (!mGamesInstance.isConnected()) return
+        if (!mGamesInstance.isConnected()) {
+            showSnack(getString(R.string.not_connected_to_the_adventure), true)
+            return
+        }
         val client = mGamesInstance.achievementsClient
-        client ?: return
+        if (client == null) {
+            showSnack(getString(R.string.achievements_client_invalid_reconnect), true)
+            return
+        }
 
         client.achievementsIntent.addOnCompleteListener {
             if (it.isSuccessful) {
@@ -108,6 +114,8 @@ abstract class UGameActivity : UActivity() {
                 if (intent != null) {
                     startActivityForResult(intent, PLAY_GAMES_ACHIEVEMENTS)
                     return@addOnCompleteListener
+                } else {
+                    showSnack(getString(R.string.cant_open_achievements_invalid_intent), true)
                 }
             } else {
                 showSnack("${getString(R.string.unable_to_open_achievements)} ${it.exception?.message}")
