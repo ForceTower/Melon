@@ -27,4 +27,10 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-data class MechValue(val grade: Double, val weight: Double)
+import java.util.UUID
+
+data class MechValue(
+    val grade: Double,
+    val weight: Double,
+    val uuid: String = UUID.randomUUID().toString()
+)

@@ -27,39 +27,35 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
+import androidx.lifecycle.LifecycleOwner
+import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.FragmentMechCalculatorBinding
-import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import com.forcetower.uefs.databinding.ItemMechValueBinding
+import com.forcetower.uefs.feature.shared.inflate
 
-class MechanicalFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var binding: FragmentMechCalculatorBinding
-    lateinit var viewModel: MechanicalViewModel
+class MechanicsAdapter(
+    val lifecycleOwner: LifecycleOwner,
+    val viewModel: MechanicalViewModel
+) : ListAdapter<MechValue, MechanicsAdapter.MechHolder>(DiffCallback) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = MechHolder(
+        parent.inflate(R.layout.item_mech_value)
+    )
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        return FragmentMechCalculatorBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.root
+    override fun onBindViewHolder(holder: MechHolder, position: Int) {
+        holder.binding.run {
+            item = getItem(position)
+            interactor = viewModel
+            lifecycleOwner = this@MechanicsAdapter.lifecycleOwner
+            executePendingBindings()
+        }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.incToolbar.textToolbarTitle.text = getString(R.string.label_mech_calculator)
-        val mechAdapter = MechanicsAdapter(this, viewModel)
-        binding.recyclerMech.run {
-            adapter = mechAdapter
-        }
-
-        viewModel.mechanics.observe(this, Observer { mechAdapter.submitList(it) })
+    inner class MechHolder(val binding: ItemMechValueBinding) : RecyclerView.ViewHolder(binding.root)
+    private object DiffCallback : DiffUtil.ItemCallback<MechValue>() {
+        override fun areItemsTheSame(oldItem: MechValue, newItem: MechValue) = oldItem.uuid == newItem.uuid
+        override fun areContentsTheSame(oldItem: MechValue, newItem: MechValue) = oldItem == newItem
     }
 }

@@ -27,22 +27,9 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-import androidx.lifecycle.ViewModel
-import javax.inject.Inject
-
-class MechanicalViewModel @Inject constructor(
-    private val repository: MechCalcRepository
-) : ViewModel() {
-    val mechanics = repository.mechanics
-    val result = repository.result
-
-    fun onAddValue(value: MechValue?) {
-        value ?: return
-        repository.onAddValue(value)
-    }
-
-    fun onDeleteValue(value: MechValue?) {
-        value ?: return
-        repository.onDeleteValue(value)
-    }
-}
+data class MechResult(
+    val mean: Double,
+    val wildcard: Double? = null,
+    val finalGrade: Double? = null,
+    val final: Boolean = false
+)

@@ -27,22 +27,44 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-import androidx.lifecycle.ViewModel
+import androidx.annotation.AnyThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import com.forcetower.uefs.AppExecutors
 import javax.inject.Inject
+import javax.inject.Singleton
 
-class MechanicalViewModel @Inject constructor(
-    private val repository: MechCalcRepository
-) : ViewModel() {
-    val mechanics = repository.mechanics
-    val result = repository.result
+@Singleton
+class MechCalcRepository @Inject constructor(
+    private val executors: AppExecutors
+) {
+    private val _result = MutableLiveData<MechResult>()
+    val result: LiveData<MechResult>
+        get() = _result
 
-    fun onAddValue(value: MechValue?) {
-        value ?: return
-        repository.onAddValue(value)
+    private val values = mutableListOf<MechValue>()
+    private val _mechanics = MutableLiveData<List<MechValue>>()
+    val mechanics: LiveData<List<MechValue>>
+        get() = _mechanics
+
+    @AnyThread
+    fun onAddValue(value: MechValue) {
+        values.add(value)
+        _mechanics.postValue(values)
+        calculate()
     }
 
-    fun onDeleteValue(value: MechValue?) {
-        value ?: return
-        repository.onDeleteValue(value)
+    @AnyThread
+    fun onDeleteValue(value: MechValue) {
+        values.remove(value)
+        _mechanics.postValue(values)
+        calculate()
+    }
+
+    @AnyThread
+    fun calculate() {
+        executors.others().execute {
+            _result.postValue(MechResult(5.0))
+        }
     }
 }
