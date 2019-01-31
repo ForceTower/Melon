@@ -29,6 +29,17 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="item"
+            type="com.forcetower.uefs.feature.mechcalculator.MechValue" />
+
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel" />
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="60dp"
@@ -45,7 +56,7 @@
                 android:id="@+id/text_label_grade"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Nota:"
+                android:text="@string/mech_grade_value"
                 android:textSize="14sp"
                 android:textColor="?attr/colorPrimary"
                 android:layout_marginStart="16dp"
@@ -60,6 +71,7 @@
                 android:layout_marginStart="8dp"
                 android:textColor="?attr/colorAccent"
                 android:textSize="20sp"
+                android:text="@{@string/grade_format(item.grade)}"
                 app:layout_constraintBaseline_toBaselineOf="@id/text_label_grade"
                 app:layout_constraintStart_toEndOf="@+id/text_label_grade"
                 app:layout_constraintTop_toTopOf="parent"
@@ -74,7 +86,7 @@
                 android:textColor="?attr/colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_label_grade"
                 app:layout_constraintStart_toEndOf="@+id/text_grade"
-                tools:text="Peso:" />
+                android:text="@string/mech_grade_weight" />
 
             <TextView
                 android:id="@+id/text_weight"
@@ -83,6 +95,7 @@
                 android:layout_marginStart="8dp"
                 android:textColor="?attr/colorAccent"
                 android:textSize="18sp"
+                android:text="@{@string/grade_format(item.weight)}"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_label_grade"
                 app:layout_constraintStart_toEndOf="@+id/text_label_weight"
                 tools:text="10" />
@@ -95,6 +108,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
+                android:onClick="@{() -> interactor.onDeleteValue(item)}"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
                 app:icon="@drawable/ic_delete_black_24dp"
                 app:iconTint="?attr/colorOnSurface"
