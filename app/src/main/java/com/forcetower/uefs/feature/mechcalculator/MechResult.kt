@@ -31,5 +31,6 @@ data class MechResult(
     val mean: Double,
     val wildcard: Double? = null,
     val finalGrade: Double? = null,
-    val final: Boolean = false
+    val final: Boolean = false,
+    val lost: Boolean = false
 )
