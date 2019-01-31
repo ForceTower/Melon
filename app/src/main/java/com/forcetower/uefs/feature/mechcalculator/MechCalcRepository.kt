@@ -33,11 +33,14 @@ import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.min
 
 @Singleton
 class MechCalcRepository @Inject constructor(
     private val executors: AppExecutors
 ) {
+    private var desiredMean = 7.0
+
     private val _result = MutableLiveData<MechResult>()
     val result: LiveData<MechResult>
         get() = _result
@@ -64,7 +67,58 @@ class MechCalcRepository @Inject constructor(
     @AnyThread
     fun calculate() {
         executors.others().execute {
-            _result.postValue(MechResult(5.0))
+            var wildcardWeight = 0.0
+            var gradesSum = 0.0
+            var weightSum = 0.0
+            for (value in values) {
+                val grade = value.grade
+                if (grade == null) {
+                    wildcardWeight += value.weight
+                } else {
+                    gradesSum += grade
+                    weightSum += value.weight
+                }
+            }
+
+            val rightEquation = (weightSum + wildcardWeight) * desiredMean
+            if (wildcardWeight == 0.0) {
+                val mean = gradesSum / weightSum
+                if (gradesSum >= rightEquation) {
+                    _result.postValue(MechResult(mean))
+                } else {
+                    val mech = onFinals(mean, false)
+                    _result.postValue(mech)
+                }
+            } else {
+                val newRight = rightEquation - gradesSum
+                val wildcard = newRight / wildcardWeight
+                val normWildcard = min(wildcard, 10.0)
+
+                val additional = values.filter { it.grade == null }.sumByDouble { normWildcard * it.weight }
+                val finalGrade = gradesSum + additional
+                val finalWeight = weightSum + wildcardWeight
+                val theMean = finalGrade / finalWeight
+                if (wildcard > 10) {
+                    val mech = onFinals(theMean, true)
+                    _result.postValue(mech)
+                } else {
+                    _result.postValue(MechResult(theMean, wildcard, null, final = false, lost = false))
+                }
+            }
+        }
+    }
+
+    private fun onFinals(mean: Double, needsWildcard: Boolean): MechResult {
+        val wildcard = if (needsWildcard) 10.0 else null
+        return if (mean < 3) {
+            MechResult(mean, null, null, final = false, lost = true)
+        } else {
+            val finalGrade = 12.5 - (1.5 * mean)
+            if (finalGrade <= 8) {
+                MechResult(mean, wildcard, finalGrade, final = true, lost = false)
+            } else {
+                MechResult(mean, wildcard, finalGrade, final = true, lost = true)
+            }
         }
     }
 }
