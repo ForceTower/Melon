@@ -30,10 +30,11 @@ package com.forcetower.uefs.feature.mechcalculator
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
+import timber.log.Timber
 
 @BindingAdapter("gradeOrWildcard")
 fun gradeOrWildcard(tv: TextView, value: Double?) {
-    if (value != null) {
+    if (value == null) {
         tv.text = "?"
     } else {
         tv.text = tv.context.getString(R.string.grade_format, value)
@@ -41,8 +42,15 @@ fun gradeOrWildcard(tv: TextView, value: Double?) {
 }
 
 @BindingAdapter("mechResult")
-fun mechResult(tv: TextView, result: MechResult) {
+fun mechResult(tv: TextView, result: MechResult?) {
     val ctx = tv.context
+
+    if (result == null) {
+        tv.text = ctx.getString(R.string.mech_nothing_to_calculate)
+        return
+    }
+
+    Timber.d("result: $result")
     val wildcard = result.wildcard
     val finalGrade = result.finalGrade
     val mean = result.mean
@@ -52,7 +60,7 @@ fun mechResult(tv: TextView, result: MechResult) {
     } else if (finalGrade == null && wildcard == null) {
         tv.text = ctx.getString(R.string.mech_result_mean_only, mean)
     } else if (finalGrade != null && wildcard == null) {
-        tv.text = ctx.getString(R.string.mech_result_value_in_final, mean, wildcard)
+        tv.text = ctx.getString(R.string.mech_result_value_in_final, mean, finalGrade)
     } else if (finalGrade == null && wildcard != null) {
         tv.text = ctx.getString(R.string.mech_result_wildcard_only, wildcard)
     } else if (finalGrade != null && wildcard != null) {
