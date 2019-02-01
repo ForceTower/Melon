@@ -126,6 +126,12 @@
         android:label="InviteDarkThemeEvent"
         tools:layout="@layout/fragment_invite_dark_theme"/>
 
+    <fragment
+        android:id="@+id/mech_calculator"
+        android:name="com.forcetower.uefs.feature.mechcalculator.MechanicalFragment"
+        android:label="MechanicalCalculator"
+        tools:layout="@layout/fragment_mech_calculator"/>
+
     <activity
         android:id="@+id/demand"
         android:name="com.forcetower.uefs.feature.demand.DemandActivity"
