@@ -71,7 +71,7 @@
                 android:layout_marginStart="8dp"
                 android:textColor="?attr/colorAccent"
                 android:textSize="20sp"
-                android:text="@{@string/grade_format(item.grade)}"
+                app:gradeOrWildcard="@{item.grade}"
                 app:layout_constraintBaseline_toBaselineOf="@id/text_label_grade"
                 app:layout_constraintStart_toEndOf="@+id/text_label_grade"
                 app:layout_constraintTop_toTopOf="parent"
@@ -81,12 +81,12 @@
                 android:id="@+id/text_label_weight"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="40dp"
-                android:textSize="14sp"
+                android:layout_marginStart="80dp"
+                android:text="@string/mech_grade_weight"
                 android:textColor="?attr/colorPrimary"
+                android:textSize="14sp"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_label_grade"
-                app:layout_constraintStart_toEndOf="@+id/text_grade"
-                android:text="@string/mech_grade_weight" />
+                app:layout_constraintStart_toEndOf="@+id/text_label_grade" />
 
             <TextView
                 android:id="@+id/text_weight"

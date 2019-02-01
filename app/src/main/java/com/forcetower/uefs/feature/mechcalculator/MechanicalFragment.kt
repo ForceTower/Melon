@@ -60,6 +60,18 @@ class MechanicalFragment : UFragment(), Injectable {
             adapter = mechAdapter
         }
 
+        binding.fabCreateValue.setOnClickListener {
+            val dialog = MechCreateDialog()
+            dialog.show(childFragmentManager, "mech_create_dialog")
+        }
+
+        binding.run {
+            result = viewModel.result
+            interactor = viewModel
+            lifecycleOwner = this@MechanicalFragment
+            executePendingBindings()
+        }
+
         viewModel.mechanics.observe(this, Observer { mechAdapter.submitList(it) })
     }
 }
