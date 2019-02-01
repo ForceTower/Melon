@@ -31,6 +31,7 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.min
@@ -41,8 +42,8 @@ class MechCalcRepository @Inject constructor(
 ) {
     private var desiredMean = 7.0
 
-    private val _result = MutableLiveData<MechResult>()
-    val result: LiveData<MechResult>
+    private val _result = MutableLiveData<MechResult?>()
+    val result: LiveData<MechResult?>
         get() = _result
 
     private val values = mutableListOf<MechValue>()
@@ -53,20 +54,21 @@ class MechCalcRepository @Inject constructor(
     @AnyThread
     fun onAddValue(value: MechValue) {
         values.add(value)
-        _mechanics.postValue(values)
+        _mechanics.postValue(values.toMutableList())
         calculate()
     }
 
     @AnyThread
     fun onDeleteValue(value: MechValue) {
         values.remove(value)
-        _mechanics.postValue(values)
+        _mechanics.postValue(values.toMutableList())
         calculate()
     }
 
     @AnyThread
     fun calculate() {
         executors.others().execute {
+            Timber.d("Values: $values")
             var wildcardWeight = 0.0
             var gradesSum = 0.0
             var weightSum = 0.0
@@ -75,7 +77,7 @@ class MechCalcRepository @Inject constructor(
                 if (grade == null) {
                     wildcardWeight += value.weight
                 } else {
-                    gradesSum += grade
+                    gradesSum += grade * value.weight
                     weightSum += value.weight
                 }
             }

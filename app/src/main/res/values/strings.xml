@@ -454,7 +454,7 @@
     <string name="mech_result_mean_only">Sua média é %1$.1f</string>
     <string name="mech_result_value_in_final">Sua média é %1$.1f. Você precisa de %2$.1f na final para passar</string>
     <string name="mech_result_wildcard_only">Você precisa tirar %1$.1f em cada nota curinga para passar</string>
-    <string name="mech_result_wildcard_and_final">Você precisa tirar %1$.1f nos curingas e %2$.1f na final para passar</string>
+    <string name="mech_result_wildcard_and_final">Se você tirar %1$.1f nos curingas vai precisar de %2$.1f na final para passar</string>
     <string name="mech_result_you_lost">Você perdeu! Volte semestre vem</string>
     <string name="label_create_mech_value">Adicionar Nota</string>
     <string name="label_create_mech_value_information">Adicione uma nota ao cálculo do mecanizador e descubra o que precisa enfrentar</string>
@@ -463,6 +463,7 @@
     <string name="ten" translatable="false">10</string>
     <string name="field_must_be_a_number">O campo tem que ser um número</string>
     <string name="mech_wildcard">Deixe o UNES me dizer essa nota (Curinga)</string>
+    <string name="mech_nothing_to_calculate">Nada para calcular por enquanto</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
