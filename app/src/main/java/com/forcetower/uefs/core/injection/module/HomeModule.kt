@@ -39,6 +39,8 @@ import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.document.DocumentsFragment
 import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
+import com.forcetower.uefs.feature.mechcalculator.MechCreateDialog
+import com.forcetower.uefs.feature.mechcalculator.MechanicalFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
 import com.forcetower.uefs.feature.messages.UnesMessagesFragment
@@ -98,4 +100,8 @@ abstract class HomeModule {
     abstract fun darkThemeUnlockFragment(): DarkThemeUnlockFragment
     @ContributesAndroidInjector
     abstract fun inviteDarkThemeFragment(): InviteDarkThemeFragment
+    @ContributesAndroidInjector
+    abstract fun mechanicalFragment(): MechanicalFragment
+    @ContributesAndroidInjector
+    abstract fun mechCreateDialog(): MechCreateDialog
 }
