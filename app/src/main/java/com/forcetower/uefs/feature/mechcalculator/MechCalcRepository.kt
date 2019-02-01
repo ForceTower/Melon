@@ -31,6 +31,8 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.util.round
+import com.forcetower.uefs.core.util.truncate
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -77,14 +79,14 @@ class MechCalcRepository @Inject constructor(
                 if (grade == null) {
                     wildcardWeight += value.weight
                 } else {
-                    gradesSum += grade * value.weight
+                    gradesSum += (grade * value.weight).truncate()
                     weightSum += value.weight
                 }
             }
 
-            val rightEquation = (weightSum + wildcardWeight) * desiredMean
+            val rightEquation = ((weightSum + wildcardWeight) * desiredMean).truncate()
             if (wildcardWeight == 0.0) {
-                val mean = gradesSum / weightSum
+                val mean = (gradesSum / weightSum).truncate()
                 if (gradesSum >= rightEquation) {
                     _result.postValue(MechResult(mean))
                 } else {
@@ -93,13 +95,13 @@ class MechCalcRepository @Inject constructor(
                 }
             } else {
                 val newRight = rightEquation - gradesSum
-                val wildcard = newRight / wildcardWeight
+                val wildcard = (newRight / wildcardWeight).truncate()
                 val normWildcard = min(wildcard, 10.0)
 
-                val additional = values.filter { it.grade == null }.sumByDouble { normWildcard * it.weight }
+                val additional = values.filter { it.grade == null }.sumByDouble { (normWildcard * it.weight).truncate() }
                 val finalGrade = gradesSum + additional
                 val finalWeight = weightSum + wildcardWeight
-                val theMean = finalGrade / finalWeight
+                val theMean = (finalGrade / finalWeight).truncate()
                 if (wildcard > 10) {
                     val mech = onFinals(theMean, true)
                     _result.postValue(mech)
@@ -115,7 +117,7 @@ class MechCalcRepository @Inject constructor(
         return if (mean < 3) {
             MechResult(mean, null, null, final = false, lost = true)
         } else {
-            val finalGrade = 12.5 - (1.5 * mean)
+            val finalGrade = (12.5 - (1.5 * mean)).round()
             if (finalGrade <= 8) {
                 MechResult(mean, wildcard, finalGrade, final = true, lost = false)
             } else {
