@@ -46,6 +46,7 @@ import com.forcetower.uefs.feature.document.DocumentsViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
+import com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel
 import com.forcetower.uefs.feature.messages.MessagesViewModel
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.reminders.RemindersViewModel
@@ -174,6 +175,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(DarkThemeViewModel::class)
     abstract fun bindDarkThemeViewModel(vm: DarkThemeViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MechanicalViewModel::class)
+    abstract fun bindMechanicalViewModel(vm: MechanicalViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019.
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the MIT License
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/padding_big"
+        android:paddingEnd="@dimen/padding_big"
+        android:paddingStart="@dimen/padding_big"
+        android:paddingBottom="@dimen/spacing_common"
+        android:background="@drawable/background_rounded_dialog">
+    
+        <TextView
+            android:id="@+id/label_create_reminder"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/label_create_mech_value"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+    
+        <TextView
+            android:id="@+id/label_create_reminder_information"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_common"
+            android:text="@string/label_create_mech_value_information"
+            android:textColor="?attr/colorOnSurfaceLight"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_create_reminder" />
+    
+    
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inp_grade"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_big"
+            android:layout_marginEnd="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/inp_weight"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_create_reminder_information"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_grade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="@string/label_grade_title"
+                android:textColor="?attr/colorOnSurface"
+                android:maxLines="1"
+                android:maxLength="5"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+    
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inp_weight"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_big"
+            android:layout_marginStart="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/inp_grade"
+            app:layout_constraintTop_toBottomOf="@+id/label_create_reminder_information"
+            style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_input_weight"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorOnSurface"
+                android:hint="@string/label_mech_weight"
+                android:maxLines="1"
+                android:maxLength="5"
+                android:text="@string/ten"
+                android:inputType="numberDecimal"/>
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.checkbox.MaterialCheckBox
+            android:id="@+id/checkbox_wildcard"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/mech_wildcard"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/inp_grade"/>
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_ok"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_big"
+            android:text="@string/ok"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/checkbox_wildcard" />
+    
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:layout_marginTop="@dimen/spacing_big"
+            android:text="@string/cancel"
+            style="@style/UTheme.MaterialButton.Default.DialogSecondary"
+            app:layout_constraintEnd_toStartOf="@+id/btn_ok"
+            app:layout_constraintTop_toBottomOf="@+id/checkbox_wildcard" />
+        
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
