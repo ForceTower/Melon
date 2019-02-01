@@ -52,10 +52,10 @@ fun Context.isConnectedToInternet(): Boolean {
 
 fun Double.truncate(decimals: Int = 1): Double {
     val power = pow(10.0, decimals.toDouble())
-    return Math.floor(this * power)/power
+    return Math.floor(this * power) / power
 }
 
 fun Double.round(decimals: Int = 1): Double {
     val power = pow(10.0, decimals.toDouble())
-    return Math.ceil(this * power)/power
+    return Math.round(this * power) / power
 }
