@@ -38,6 +38,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentMechCalculatorBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class MechanicalFragment : UFragment(), Injectable {
@@ -72,6 +73,9 @@ class MechanicalFragment : UFragment(), Injectable {
             executePendingBindings()
         }
 
-        viewModel.mechanics.observe(this, Observer { mechAdapter.submitList(it) })
+        viewModel.mechanics.observe(this, Observer {
+            Timber.d("List arrived: $it")
+            mechAdapter.submitList(it)
+        })
     }
 }

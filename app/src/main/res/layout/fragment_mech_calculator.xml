@@ -70,25 +70,34 @@
             android:id="@+id/fab_create_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
+            android:layout_marginEnd="16dp"
             app:backgroundTint="?attr/colorPrimary"
             android:src="@drawable/ic_add_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/bottom_results" />
 
-        <TextView
+        <com.google.android.material.card.MaterialCardView
             android:id="@+id/bottom_results"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:background="?attr/colorSurface"
-            app:mechResult="@{result}"
-            android:padding="24dp"
-            android:textSize="17sp"
-            android:textColor="?attr/colorAccent"
+            android:layout_margin="16dp"
+            app:cardCornerRadius="8dp"
+            android:elevation="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:text="Você precisa tirar X nas notas faltando e K na final para passar"/>
+            app:layout_constraintStart_toStartOf="parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorSurface"
+                app:mechResult="@{result}"
+                android:padding="24dp"
+                android:textSize="17sp"
+                android:textColor="?attr/colorAccent"
+                tools:text="Você precisa tirar X nas notas faltando e K na final para passar"/>
+
+        </com.google.android.material.card.MaterialCardView>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
