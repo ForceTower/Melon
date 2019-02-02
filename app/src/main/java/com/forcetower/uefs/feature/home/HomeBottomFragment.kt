@@ -27,19 +27,24 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
@@ -168,30 +173,22 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
-                    val fragment = SendFeedbackFragment()
-                    fragment.show(childFragmentManager, "feedback_modal")
-                    // TODO this is a hook to the activity this is in.
-                    // Such hooks should not exist in a application, because it creates a dependency
-                    // between the fragment and the activity it is in.
-                    //
-                    // Thus this fragment can't be used outside of the HomeActivity
-                    // If the casting fails, it will send the email as a fallback
-//                    val homeActivity = activity as? HomeActivity
-//                    if (homeActivity != null) {
-//                        homeActivity.openFeedbackModal()
-//                    } else {
-//                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-//                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
-//                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
-//                            putExtra(Intent.EXTRA_TEXT, text)
-//                        }
-//                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
-//                    }
+                    if (firebaseAuth.currentUser != null) {
+                        val fragment = SendFeedbackFragment()
+                        fragment.show(childFragmentManager, "feedback_modal")
+                    } else {
+                        Toast.makeText(requireContext(), R.string.you_are_not_connected_to_the_unesverso, Toast.LENGTH_SHORT).show()
+                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
+                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
+                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
+                            putExtra(Intent.EXTRA_TEXT, text)
+                        }
+                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
+                    }
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }
-        // NavigationUI.setupWithNavController(binding.navigationView, findNavController())
     }
 }

@@ -213,15 +213,25 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
-    <style name="BottomSheetDialogTheme" parent="@style/Theme.Design.Light.BottomSheetDialog">
-        <item name="android:windowIsFloating">false</item>
-        <item name="bottomSheetStyle">@style/BottomSheet</item>
-        <item name="iconColor">@color/iconColor</item>
+    <style name="BottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.Light.BottomSheetDialog">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+        <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
+        <item name="colorOnBackground">@color/onBackground</item>
+        <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
+        <item name="android:windowIsFloating">false</item>
+        <item name="bottomSheetStyle">@style/BottomSheet</item>
+        <item name="iconColor">@color/iconColor</item>
     </style>
 
     <style name="BottomSheet" parent="@style/Widget.Design.BottomSheet.Modal">
