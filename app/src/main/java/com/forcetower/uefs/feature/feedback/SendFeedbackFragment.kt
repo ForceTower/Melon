@@ -31,6 +31,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.view.ContextThemeWrapper
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -46,8 +48,10 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
     lateinit var binding: FragmentSendFeedbackBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val contextThemeWrapper = ContextThemeWrapper(activity, R.style.UTheme)
+        val themedInflater = inflater.cloneInContext(contextThemeWrapper)
         viewModel = provideViewModel(factory)
-        return FragmentSendFeedbackBinding.inflate(inflater, container, false).also {
+        return FragmentSendFeedbackBinding.inflate(themedInflater, container, false).also {
             binding = it
         }.root
     }
