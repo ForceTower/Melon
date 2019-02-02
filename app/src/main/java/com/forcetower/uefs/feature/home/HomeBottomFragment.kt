@@ -48,6 +48,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
+import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
@@ -79,7 +80,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
-            setLifecycleOwner(this@HomeBottomFragment)
+            lifecycleOwner = this@HomeBottomFragment
             viewModel = this@HomeBottomFragment.viewModel
             firebaseStorage = this@HomeBottomFragment.firebaseStorage
             firebaseUser = this@HomeBottomFragment.firebaseAuth.currentUser
@@ -171,12 +172,25 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
-                    val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-                    val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
-                        putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
-                        putExtra(Intent.EXTRA_TEXT, text)
-                    }
-                    startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
+                    val fragment = SendFeedbackFragment()
+                    fragment.show(childFragmentManager, "feedback_modal")
+                    // TODO this is a hook to the activity this is in.
+                    // Such hooks should not exist in a application, because it creates a dependency
+                    // between the fragment and the activity it is in.
+                    //
+                    // Thus this fragment can't be used outside of the HomeActivity
+                    // If the casting fails, it will send the email as a fallback
+//                    val homeActivity = activity as? HomeActivity
+//                    if (homeActivity != null) {
+//                        homeActivity.openFeedbackModal()
+//                    } else {
+//                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
+//                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
+//                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
+//                            putExtra(Intent.EXTRA_TEXT, text)
+//                        }
+//                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
+//                    }
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())

@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.model.service.Event
+import com.forcetower.uefs.core.model.service.Feedback
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
@@ -45,12 +46,7 @@ object FirestoreModule {
     @JvmStatic
     @Provides
     @Reusable
-    fun provideFirestore(): FirebaseFirestore {
-        val settings = FirebaseFirestoreSettings.Builder().setTimestampsInSnapshotsEnabled(true).build()
-        return FirebaseFirestore.getInstance().apply {
-            firestoreSettings = settings
-        }
-    }
+    fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
     @JvmStatic
     @Provides
@@ -81,4 +77,10 @@ object FirestoreModule {
     @Reusable
     @Named(ClassStatsData.STATS_CONTRIBUTION)
     fun provideStatsContributionCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(ClassStatsData.STATS_CONTRIBUTION)
+
+    @JvmStatic
+    @Provides
+    @Reusable
+    @Named(Feedback.COLLECTION)
+    fun provideFeedbackCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Feedback.COLLECTION)
 }
