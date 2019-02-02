@@ -464,6 +464,7 @@
     <string name="field_must_be_a_number">O campo tem que ser um número</string>
     <string name="mech_wildcard">Deixe o UNES me dizer essa nota (Curinga)</string>
     <string name="mech_nothing_to_calculate">Nada para calcular por enquanto</string>
+    <string name="mech_result_wildcard_not_needed">Você pode zerar o curinga e ainda vai passar direto!</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
