@@ -35,7 +35,6 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSendFeedbackBinding
-import com.forcetower.uefs.feature.shared.RoundedBottomSheetDialogFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import javax.inject.Inject
