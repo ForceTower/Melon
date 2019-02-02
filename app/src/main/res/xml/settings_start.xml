@@ -50,12 +50,4 @@
         android:summary="@string/settings_account_info_label"
         android:icon="@drawable/ic_account_accent_24dp"
         android:fragment="com.forcetower.uefs.feature.settings.AccountSettingsFragment"/>
-
-    <ListPreference
-        app:key="stg_night_mode"
-        app:defaultValue="0"
-        app:title="@string/settings_theme"
-        app:icon="@drawable/ic_theme_accent_24dp"
-        app:entries="@array/settings_theme_titles"
-        app:entryValues="@array/settings_theme_values"/>
 </androidx.preference.PreferenceScreen>
