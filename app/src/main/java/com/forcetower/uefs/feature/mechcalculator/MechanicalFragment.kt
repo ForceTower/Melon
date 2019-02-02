@@ -98,9 +98,9 @@ class MechanicalFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         if (!viewModel.playedMusic) {
-            viewModel.playedMusic
+            viewModel.playedMusic = true
             val player = MediaPlayer.create(requireContext(), R.raw.final_countdown)
-            player.setVolume(0.1f, 0.1f)
+            player.setVolume(0.15f, 0.15f)
             player.start()
         }
     }
