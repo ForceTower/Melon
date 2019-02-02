@@ -68,7 +68,7 @@ class DemandOverviewFragment : UFragment(), Injectable {
         binding = FragmentDemandOverviewBinding.inflate(inflater, container, false).apply {
             viewModel = this@DemandOverviewFragment.viewModel
             headerAlpha = this@DemandOverviewFragment.headerAlpha
-            setLifecycleOwner(this@DemandOverviewFragment)
+            lifecycleOwner = this@DemandOverviewFragment
         }
         return binding.root
     }
