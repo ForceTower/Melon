@@ -55,7 +55,6 @@ import com.forcetower.uefs.feature.shared.extensions.toShortcut
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -80,8 +79,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject
     lateinit var analytics: FirebaseAnalytics
 
@@ -223,5 +220,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             preferences.edit().putBoolean("will_recreate_home", false).apply()
             recreate()
         }
+    }
+
+    fun openFeedbackModal() {
     }
 }
