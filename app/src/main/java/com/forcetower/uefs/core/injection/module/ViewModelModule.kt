@@ -44,6 +44,7 @@ import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
+import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel
@@ -180,6 +181,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(MechanicalViewModel::class)
     abstract fun bindMechanicalViewModel(vm: MechanicalViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FeedbackViewModel::class)
+    abstract fun bindFeedbackViewModel(vm: FeedbackViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
