@@ -64,7 +64,9 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         if (signInClient == null) {
             signInClient = GoogleSignIn.getClient(
                 this,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN).build()
+                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
+                        // .requestEmail()
+                        .build()
             )
         }
     }
