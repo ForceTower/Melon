@@ -62,7 +62,11 @@ fun mechResult(tv: TextView, result: MechResult?) {
     } else if (finalGrade != null && wildcard == null) {
         tv.text = ctx.getString(R.string.mech_result_value_in_final, mean, finalGrade)
     } else if (finalGrade == null && wildcard != null) {
-        tv.text = ctx.getString(R.string.mech_result_wildcard_only, wildcard)
+        if (wildcard <= 0) {
+            tv.text = ctx.getString(R.string.mech_result_wildcard_not_needed)
+        } else {
+            tv.text = ctx.getString(R.string.mech_result_wildcard_only, wildcard)
+        }
     } else if (finalGrade != null && wildcard != null) {
         tv.text = ctx.getString(R.string.mech_result_wildcard_and_final, wildcard, finalGrade)
     }
