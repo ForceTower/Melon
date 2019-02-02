@@ -26,8 +26,8 @@
   ~ SOFTWARE.
   -->
 
-<androidx.preference.PreferenceScreen
-    xmlns:android="http://schemas.android.com/apk/res/android">
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <SwitchPreference
         android:defaultValue="true"
         android:key="stg_acc_semester"
@@ -47,4 +47,11 @@
         android:summary="@string/settings_ntf_grade_spoiler_info"
         android:entries="@array/settings_ntf_grade_spoiler_titles"
         android:entryValues="@array/settings_ntf_grade_spoiler_values"/>
+
+    <SwitchPreference
+        app:key="stg_night_mode_menu"
+        app:defaultValue="true"
+        app:title="@string/settings_theme_menu"
+        app:summaryOn="@string/settings_theme_menu_desc_enabled"
+        app:summaryOff="@string/settings_theme_menu_desc_disabled"/>
 </androidx.preference.PreferenceScreen>
