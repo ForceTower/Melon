@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.util
 import android.content.Context
 import android.net.ConnectivityManager
 import com.google.gson.Gson
+import java.lang.Math.pow
 
 fun Any.toJson(): String {
     val gson = Gson()
@@ -47,4 +48,14 @@ fun Context.isConnectedToInternet(): Boolean {
 
     val activeNetworkInfo = manager.activeNetworkInfo
     return activeNetworkInfo != null && activeNetworkInfo.isConnected
+}
+
+fun Double.truncate(decimals: Int = 1): Double {
+    val power = pow(10.0, decimals.toDouble())
+    return Math.floor(this * power) / power
+}
+
+fun Double.round(decimals: Int = 1): Double {
+    val power = pow(10.0, decimals.toDouble())
+    return Math.round(this * power) / power
 }
