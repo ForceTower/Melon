@@ -37,9 +37,10 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSendFeedbackBinding
 import com.forcetower.uefs.feature.shared.RoundedBottomSheetDialogFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import javax.inject.Inject
 
-class SendFeedbackFragment : RoundedBottomSheetDialogFragment(), Injectable {
+class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     lateinit var viewModel: FeedbackViewModel
@@ -53,6 +54,10 @@ class SendFeedbackFragment : RoundedBottomSheetDialogFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        binding.run {
+            interactor = viewModel
+            lifecycleOwner = this@SendFeedbackFragment
+        }
         viewModel.textError.observe(this, EventObserver {
             if (it == null) {
                 binding.textFeedback.error = ""
