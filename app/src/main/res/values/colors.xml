@@ -34,6 +34,7 @@
     <color name="onBackground">#de000000</color>
     <color name="onBackgroundLight">#8a000000</color>
     <color name="onPrimary">#FFF</color>
+    <color name="onSecondary">#FFF</color>
 
     <color name="statusBarColor">#FFF</color>
     <color name="navBarColor">#FFF</color>
