@@ -45,7 +45,6 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
-import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
@@ -56,7 +55,6 @@ import com.forcetower.uefs.feature.shared.extensions.toShortcut
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -225,6 +223,5 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     fun openFeedbackModal() {
-
     }
 }
