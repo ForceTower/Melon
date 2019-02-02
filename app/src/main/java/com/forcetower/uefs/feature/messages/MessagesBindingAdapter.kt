@@ -80,7 +80,7 @@ fun getTimeStampedDate(view: TextView, message: Message) {
         val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
         val value = when {
             days > 1L -> {
-                val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+                val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
                 val str = format.format(Date(time))
                 context.getString(R.string.message_received_date_format, str)
             }

@@ -35,6 +35,7 @@ class MechanicalViewModel @Inject constructor(
 ) : ViewModel() {
     val mechanics = repository.mechanics
     val result = repository.result
+    var playedMusic = false
 
     fun onAddValue(value: MechValue?) {
         value ?: return

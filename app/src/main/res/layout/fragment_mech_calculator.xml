@@ -52,6 +52,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
+        <TextView
+            android:id="@+id/text_no_data"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:padding="24dp"
+            android:text="@string/mech_empty_message"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="16sp"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            android:visibility="gone"
+            app:layout_constraintBottom_toTopOf="@+id/bottom_results"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/inc_toolbar"/>
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_mech"
             android:layout_width="0dp"
@@ -72,7 +88,6 @@
             android:layout_height="wrap_content"
             android:layout_margin="16dp"
             app:backgroundTint="?attr/colorPrimary"
-            android:tint="?attr/colorOnPrimary"
             android:src="@drawable/ic_add_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toTopOf="@+id/bottom_results" />
