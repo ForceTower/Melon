@@ -55,6 +55,7 @@
         <item name="android:windowBackground">@color/background</item>
         <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
         <item name="colorOnPrimary">@color/onPrimary</item>
+        <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
