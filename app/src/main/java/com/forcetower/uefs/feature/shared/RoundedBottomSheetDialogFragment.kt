@@ -27,15 +27,12 @@
 
 package com.forcetower.uefs.feature.shared
 
-import android.app.Dialog
 import android.os.Bundle
 import com.forcetower.uefs.R
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 open class RoundedBottomSheetDialogFragment : BottomSheetDialogFragment() {
-
-    override fun getTheme(): Int = R.style.BottomSheetDialogTheme
-
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog = BottomSheetDialog(requireContext(), theme)
+    override fun getTheme() = R.style.BottomSheetDialogTheme
+    override fun onCreateDialog(savedInstanceState: Bundle?) = BottomSheetDialog(requireContext(), theme)
 }

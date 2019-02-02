@@ -54,7 +54,7 @@ class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
         viewModel = provideActivityViewModel(factory)
         binding = FragmentDemandOffersBinding.inflate(inflater, container, false).apply {
             viewModel = this@DemandOffersFragment.viewModel
-            setLifecycleOwner(this@DemandOffersFragment)
+            lifecycleOwner = this@DemandOffersFragment
             incToolbar.textToolbarTitle.text = getString(R.string.label_demand_title)
         }
         return binding.root
@@ -79,7 +79,7 @@ class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
         }
         viewModel.offers.observe(this, Observer {
             val data = it.data
-            if (data != null) offersAdapter.currentList = it.data
+            if (data != null) offersAdapter.currentList = data
         })
     }
 }

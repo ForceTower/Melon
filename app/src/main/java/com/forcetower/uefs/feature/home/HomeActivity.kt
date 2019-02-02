@@ -45,6 +45,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
@@ -80,8 +81,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject
     lateinit var analytics: FirebaseAnalytics
 
@@ -223,5 +222,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             preferences.edit().putBoolean("will_recreate_home", false).apply()
             recreate()
         }
+    }
+
+    fun openFeedbackModal() {
+
     }
 }

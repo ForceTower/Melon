@@ -38,6 +38,7 @@ import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.document.DocumentsFragment
 import com.forcetower.uefs.feature.event.EventFragment
+import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.mechcalculator.MechCreateDialog
 import com.forcetower.uefs.feature.mechcalculator.MechanicalFragment
@@ -104,4 +105,6 @@ abstract class HomeModule {
     abstract fun mechanicalFragment(): MechanicalFragment
     @ContributesAndroidInjector
     abstract fun mechCreateDialog(): MechCreateDialog
+    @ContributesAndroidInjector
+    abstract fun sendFeedbackFragment(): SendFeedbackFragment
 }
