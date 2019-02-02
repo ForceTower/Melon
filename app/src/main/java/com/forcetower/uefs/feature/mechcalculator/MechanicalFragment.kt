@@ -27,9 +27,12 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
+import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
@@ -39,7 +42,6 @@ import com.forcetower.uefs.databinding.FragmentMechCalculatorBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
 
 class MechanicalFragment : UFragment(), Injectable {
@@ -75,7 +77,13 @@ class MechanicalFragment : UFragment(), Injectable {
         }
 
         viewModel.mechanics.observe(this, Observer {
-            Timber.d("List arrived: $it")
+            if (it.isEmpty()) {
+                binding.textNoData.visibility = VISIBLE
+                binding.recyclerMech.visibility = GONE
+            } else {
+                binding.textNoData.visibility = GONE
+                binding.recyclerMech.visibility = VISIBLE
+            }
             mechAdapter.submitList(it)
         })
 
@@ -85,5 +93,15 @@ class MechanicalFragment : UFragment(), Injectable {
                 (activity as? UGameActivity)?.unlockAchievement(R.string.achievement_claramente_na_disney)
             }
         })
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        if (!viewModel.playedMusic) {
+            viewModel.playedMusic
+            val player = MediaPlayer.create(requireContext(), R.raw.final_countdown)
+            player.setVolume(0.1f, 0.1f)
+            player.start()
+        }
     }
 }

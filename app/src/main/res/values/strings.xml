@@ -448,7 +448,7 @@
     <string name="not_connected_to_the_adventure">Você não está conectado, por favor deixe a aventura e volte!</string>
     <string name="achievements_client_invalid_reconnect">O cliente da aventura é nulo, deixe a aventura e tente novamente</string>
     <string name="cant_open_achievements_invalid_intent">O google play não quer abrir as conquistas, deixe a aventura e tente novamente</string>
-    <string name="label_mech_calculator">Calculista</string>
+    <string name="label_mech_calculator">Final Countdown</string>
     <string name="mech_grade_weight">Peso:</string>
     <string name="mech_grade_value">Nota:</string>
     <string name="mech_result_mean_only">Sua média é %1$.1f</string>
@@ -468,6 +468,7 @@
     <string name="settings_theme_menu">Menu do tema</string>
     <string name="settings_theme_menu_desc_enabled">Mostrando o menu do tema escuro</string>
     <string name="settings_theme_menu_desc_disabled">Ocultando o menu do tema escuro</string>
+    <string name="mech_empty_message">A mecânica começa quando você insere suas notas, os curingas e descobre o que te espera</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
