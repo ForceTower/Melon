@@ -37,6 +37,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentMechCalculatorBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import timber.log.Timber
 import javax.inject.Inject
@@ -76,6 +77,13 @@ class MechanicalFragment : UFragment(), Injectable {
         viewModel.mechanics.observe(this, Observer {
             Timber.d("List arrived: $it")
             mechAdapter.submitList(it)
+        })
+
+        viewModel.result.observe(this, Observer {
+            it ?: return@Observer
+            if (it.mean == Double.NaN) {
+                (activity as? UGameActivity)?.unlockAchievement(R.string.achievement_claramente_na_disney)
+            }
         })
     }
 }

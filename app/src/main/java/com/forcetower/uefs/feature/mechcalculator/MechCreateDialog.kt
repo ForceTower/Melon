@@ -88,6 +88,7 @@ class MechCreateDialog : RoundedDialog(), Injectable {
 
         binding.checkboxWildcard.setOnCheckedChangeListener { _, isChecked ->
             binding.textInputGrade.isEnabled = !isChecked
+            binding.textInputGrade.text?.clear()
         }
 
         binding.btnCancel.setOnClickListener {
