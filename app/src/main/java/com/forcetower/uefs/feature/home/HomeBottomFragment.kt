@@ -157,7 +157,7 @@ class HomeBottomFragment : UFragment(), Injectable {
                 }
                 R.id.open_source -> {
                     LibsBuilder()
-                        .withActivityStyle(Libs.ActivityStyle.LIGHT)
+                        .withActivityStyle(Libs.ActivityStyle.DARK)
                         .withAboutIconShown(true)
                         .withAboutVersionShown(true)
                         .withAboutDescription(getString(R.string.about_description))
