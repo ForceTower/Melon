@@ -74,7 +74,12 @@ public class LoginOperation extends Operation<LoginCallback> {
                 String string = body.string();
                 resolveLogin(string, response);
             } else {
-                finished = new LoginCallback.Builder(Status.RESPONSE_FAILED).code(response.code()).build();
+                Document doc = null;
+                ResponseBody body = response.body();
+                if (body != null) {
+                    doc = createDocument(body.string());
+                }
+                finished = new LoginCallback.Builder(Status.RESPONSE_FAILED).document(doc).code(response.code()).build();
                 result.postValue(finished);
             }
         } catch (IOException e) {
