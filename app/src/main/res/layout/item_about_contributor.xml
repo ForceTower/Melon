@@ -38,7 +38,8 @@
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
-        android:layout_height="80dp"
+        android:layout_height="wrap_content"
+        android:minHeight="80dp"
         app:cardCornerRadius="@dimen/contributor_card_corners"
         android:layout_marginBottom="@dimen/spacing_common"
         android:layout_marginStart="@dimen/spacing_common"
@@ -57,16 +58,14 @@
                 android:layout_width="@dimen/contributor_image_size"
                 android:layout_height="@dimen/contributor_image_size"
                 android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
                 android:contentDescription="@string/acc_contributor_image"
                 app:clipToCircle="@{true}"
                 app:imageUrl="@{contributor.image}"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/text_bio"
                 app:layout_constraintEnd_toStartOf="@+id/guideline"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                app:layout_constraintTop_toTopOf="@+id/text_user_name" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline"
@@ -84,27 +83,42 @@
                 android:layout_marginEnd="8dp"
                 android:text="@{contributor.name}"
                 android:textSize="16sp"
-                android:textColor="?attr/colorOnSurfaceLight"
+                android:textColor="?attr/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="João Paulo Santos Sena" />
-    
+
             <TextView
-                style="@style/UTheme.TextAppearance.Subtitle1"
+                android:id="@+id/text_user_commits"
                 android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="2dp"
                 android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:text="@{contributor.bio}"
-                android:textSize="13sp"
-                android:maxLines="2"
-                android:textColor="?attr/colorOnSurfaceLight"
-                app:layout_constraintBottom_toBottomOf="parent"
+                android:text="@{@string/contributor_commits(contributor.total)}"
+                android:textSize="12sp"
+                android:textColor="?attr/colorAccent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="@+id/guideline"
                 app:layout_constraintTop_toBottomOf="@+id/text_user_name"
+                tools:text="56 commits"/>
+
+            <TextView
+                android:id="@+id/text_bio"
+                style="@style/UTheme.TextAppearance.Subtitle1"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:maxLines="2"
+                android:text="@{contributor.bio}"
+                android:textColor="?attr/colorOnSurfaceLight"
+                android:textSize="13sp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="@+id/guideline"
+                app:layout_constraintTop_toBottomOf="@+id/text_user_commits"
                 tools:text="Programação das features core" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
