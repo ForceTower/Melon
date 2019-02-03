@@ -35,43 +35,51 @@
             android:id="@+id/profile"
             android:title="@string/label_profile"
             android:visible="false"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_face_black_24dp"/>
 
         <item
             android:id="@+id/documents"
             android:title="@string/label_documents"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_description_black_24dp"/>
 
         <item
             android:id="@+id/demand"
             android:title="@string/label_demand_title"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_demand_black_24dp"
             android:visible="false"/>
 
         <item
             android:id="@+id/big_tray"
             android:title="@string/label_big_tray"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_food_black_24dp"/>
 
         <item
             android:id="@+id/calendar"
             android:title="@string/label_calendar"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_calendar_black_24dp"/>
 
         <item
             android:id="@+id/request_services"
             android:title="@string/label_services_follow_up"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_receipt_black_24dp"/>
 
         <item
             android:id="@+id/purchases"
             android:title="@string/label_purchases"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_gift_card_black_24dp"/>
         
         <item
             android:id="@+id/teacher_email"
             android:title="@string/teachers_label"
             android:visible="false"
+            android:menuCategory="secondary"
             android:icon="@drawable/ic_teach_black_24dp"/>
     </group>
 
@@ -82,37 +90,44 @@
                     android:id="@+id/events"
                     android:title="@string/label_events"
                     android:visible="false"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_event_black_24dp"/>
     
                 <item
                     android:id="@+id/reminders"
                     android:title="@string/label_reminders"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_loyalty_black_24dp"/>
     
                 <item
                     android:id="@+id/adventure"
                     android:title="@string/label_adventure"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_games_black_24dp"/>
 
                 <item
                     android:id="@+id/dark_theme_event"
                     android:title="@string/label_dark_theme_event"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_theme_black_24dp"/>
 
                 <item
                     android:id="@+id/mech_calculator"
                     android:title="@string/label_mech_calculator"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_dvr_black_24dp"/>
 
                 <item
                     android:id="@+id/hourglass"
                     android:title="@string/label_hourglass"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_cast_education_black_24dp"/>
                 
                 <item
                     android:id="@+id/library"
                     android:title="@string/label_library"
                     android:visible="false"
+                    android:menuCategory="secondary"
                     android:icon="@drawable/ic_local_library_black_24dp"/>
             </group>
         </menu>
@@ -139,6 +154,7 @@
             <item
                 android:id="@+id/sync_registry"
                 android:title="@string/label_sync_registry"
+                android:menuCategory="secondary"
                 android:icon="@drawable/ic_sync_black_24dp"/>
 
             <item
