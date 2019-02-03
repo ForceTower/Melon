@@ -58,6 +58,9 @@ class LoginViewModel @Inject constructor(private val repository: LoginSagresRepo
                     else -> true
                 }
                 loginSrc.value = it
+                if (!loginRunning) {
+                    loginSrc.removeSource(login)
+                }
             }
         }
     }
