@@ -473,6 +473,7 @@
     <string name="feedback_text_hint">Conte-me a sua história</string>
     <string name="feedback_text_empty">O texto não pode ser vazio</string>
     <string name="fragment_tag_feedback_modal">feedback_modal</string>
+    <string name="sagres_functions">Extras</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
