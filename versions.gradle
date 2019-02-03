@@ -24,7 +24,7 @@ versions.navigation = "1.0.0-alpha11"
 versions.work_manager = "1.0.0-beta03"
 
 // Dependency Injection
-versions.dagger = "2.20"
+versions.dagger = "2.21"
 
 // Firebase
 versions.firebase_core = "16.0.6"
@@ -53,7 +53,7 @@ versions.gp_billing_client = "1.2"
 
 // Networking
 versions.okhttp = "3.12.1"
-versions.retrofit = "2.4.0"
+versions.retrofit = "2.5.0"
 versions.cookie_jar = "v1.0.1"
 
 // Others
