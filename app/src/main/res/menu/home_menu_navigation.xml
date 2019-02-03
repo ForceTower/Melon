@@ -27,7 +27,7 @@
   -->
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
-    <item android:title="">
+    <item android:title="@string/sagres_functions">
         <menu>
             <group
                 android:id="@+id/group_main"
