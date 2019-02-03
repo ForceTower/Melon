@@ -159,6 +159,11 @@ class SagresSyncRepository @Inject constructor(
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
+        val user1 = firebaseAuth.currentUser
+        if (user1 != null) {
+            scheduleRepository.saveSchedule(user1.uid)
+        }
+
         try {
             val call = service.getUpdate()
             val response = call.execute()
@@ -230,9 +235,6 @@ class SagresSyncRepository @Inject constructor(
                 Tasks.await(task)
                 preferences.edit().putInt("sync_daily_update", today).apply()
                 adventureRepository.performCheckAchievements(HashMap())
-            }
-            if (user != null) {
-                scheduleRepository.saveSchedule(user.uid)
             }
             createNewVersionNotification()
         } catch (t: Throwable) {
