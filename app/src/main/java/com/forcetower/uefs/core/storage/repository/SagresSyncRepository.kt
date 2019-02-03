@@ -230,6 +230,8 @@ class SagresSyncRepository @Inject constructor(
                 Tasks.await(task)
                 preferences.edit().putInt("sync_daily_update", today).apply()
                 adventureRepository.performCheckAchievements(HashMap())
+            }
+            if (user != null) {
                 scheduleRepository.saveSchedule(user.uid)
             }
             createNewVersionNotification()
