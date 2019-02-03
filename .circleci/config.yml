@@ -26,12 +26,12 @@ jobs:
       - run: 
           name: Downloading Dependencies
           command: |
-            ./gradlew dependencies --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew dependencies
             
       - run:
           name: Run JVM Checks & Lint
           command: |
-            ./gradlew clean check --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew clean check
 
       - run:
           name: Save Lint Results
@@ -40,14 +40,13 @@ jobs:
       - run:
           name: Build App or Publish
           command: |
-            ./gradlew clean --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
-            if [[ "${CIRCLE_BRANCH}" == "master" ]]
+            if [[ "${CIRCLE_BRANCH}" == "development" ]]
             then
               echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew publishReleaseBundle
             else
               echo "Starting a debug build"
-              ./gradlew :app:assembleDebug --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew :app:assembleRelease
             fi
 
       - store_artifacts:
