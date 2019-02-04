@@ -95,6 +95,13 @@
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com o projeto no GitHub</string>
 
+
+    <string name="settings_choice_score_title">Utilizar score calculado?</string>
+    <string name="settings_choice_score_info">O valor calculado é uma estimativa com base nas suas notas</string>
+    <string name="settings_choice_score_info_on">Vou calcular seu score (6)</string>
+    <string name="settings_choice_score_info_off">Melhor deixar esse trabalho pro SAGRES</string>
+    <string name="label_your_calculated_score">Seu score calculado é %1$.1f</string>
+
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
     <string name="label_schedule_not_found">Horário não foi encontrado</string>
