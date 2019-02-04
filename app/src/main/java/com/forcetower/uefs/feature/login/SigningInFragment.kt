@@ -201,13 +201,13 @@ class SigningInFragment : UFragment(), Injectable {
             Status.COMPLETED -> completeLogin()
         }
 
-        val document = callback.document
-        if (document != null) {
-            val html = document.html()
-            binding.testingWebview.run {
-                loadDataWithBaseURL("", html, "text/html", "ISO8859-1", "")
-            }
-        }
+//        val document = callback.document
+//        if (document != null) {
+//            val html = document.html()
+//            binding.testingWebview.run {
+//                loadDataWithBaseURL("", html, "text/html", "ISO8859-1", "")
+//            }
+//        }
     }
 
     private fun onProfileUpdate(profile: Profile?) {
@@ -253,13 +253,11 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun snackAndBack(string: String) {
-        Handler(Looper.getMainLooper()).postDelayed({
-            showSnack(string)
-            firebaseAuth.signOut()
-            binding.textHelloUser.text = ""
-            binding.textHelloUser.fadeOut()
-            binding.textTips.fadeOut()
-            view?.findNavController()?.popBackStack()
-        }, 3000)
+        showSnack(string)
+        firebaseAuth.signOut()
+        binding.textHelloUser.text = ""
+        binding.textHelloUser.fadeOut()
+        binding.textTips.fadeOut()
+        view?.findNavController()?.popBackStack()
     }
 }
