@@ -60,14 +60,15 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
         val reference = storage.getReference("users/${user.uid}/avatar.jpg")
         try {
             GlideApp.with(iv.context)
-                .load(reference)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(iv)
-        } catch (ignored: Throwable) {}
+                    .load(reference)
+                    .fallback(R.mipmap.ic_unes_large_image_512)
+                    .placeholder(R.mipmap.ic_unes_large_image_512)
+                    .signature(ObjectKey(System.currentTimeMillis() ushr 21))
+                    .circleCrop()
+                    .transition(DrawableTransitionOptions.withCrossFade())
+                    .into(iv)
+        } catch (ignored: Throwable) {
+        }
     } else {
         GlideApp.with(iv.context)
                 .load(R.mipmap.ic_unes_large_image_512)
@@ -87,6 +88,7 @@ fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
     val actual = score ?: -1.0
     val calc = calculated ?: -1.0
 
+    // power up da nota
     var currentIncrease = preferences.getFloat("score_increase_value", 0f)
     val currentExpire = preferences.getLong("score_increase_expires", -1)
 
@@ -94,11 +96,21 @@ fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
     if (currentExpire < now) currentIncrease = 0.0f
 
     if (preferences.getBoolean("stg_acc_score", true)) {
-        when {
-            actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
-            calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
-            else -> tv.text = context.getString(R.string.label_score_undefined)
-        }
+        // caso queira o calculado
+        if (preferences.getBoolean("stg_choice_score", false))
+            when {
+                calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
+                actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
+            }
+        // por padrão exibe o real que vem do SAGRES
+        else
+            when {
+                actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
+                calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
+            }
+
+        // verificando se existe realmente um score
+        if (calc / actual == 1.0 && calc == -1.0) tv.text = context.getString(R.string.label_score_undefined)
     } else {
         tv.visibility = View.INVISIBLE
     }
