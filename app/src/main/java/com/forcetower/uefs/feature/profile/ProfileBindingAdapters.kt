@@ -110,7 +110,7 @@ fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
             }
 
         // verificando se existe realmente um score
-        if(calc/actual == 1.0 && calc == -1.0) tv.text = context.getString(R.string.label_score_undefined)
+        if (calc / actual == 1.0 && calc == -1.0) tv.text = context.getString(R.string.label_score_undefined)
     } else {
         tv.visibility = View.INVISIBLE
     }
