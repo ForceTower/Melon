@@ -45,8 +45,8 @@
         android:key="stg_choice_score"
         android:title="@string/settings_choice_score_title"
         android:summary="@string/settings_choice_score_info"
-        android:summayOn= "@string/settings_choice_score_info_on"
-        android:summayOf= "@string/settings_choice_score_info_off"/>
+        android:summaryOn="@string/settings_choice_score_info_on"
+        android:summaryOff="@string/settings_choice_score_info_off"/>
 
     <ListPreference
         android:defaultValue="1"
