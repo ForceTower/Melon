@@ -20,8 +20,8 @@ versions.preference = "1.0.0"
 versions.room = "2.0.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
-versions.navigation = "1.0.0-alpha11"
-versions.work_manager = "1.0.0-beta03"
+versions.navigation = "1.0.0-beta01"
+versions.work_manager = "1.0.0-beta04"
 
 // Dependency Injection
 versions.dagger = "2.21"
