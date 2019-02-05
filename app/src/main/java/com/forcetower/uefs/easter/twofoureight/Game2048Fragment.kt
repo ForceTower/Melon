@@ -83,7 +83,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         super.onActivityCreated(savedInstanceState)
         val mScoreKeeper = ScoreKeeper(requireActivity())
         mScoreKeeper.setViews(binding.tvScore, binding.tvHighscore)
-        mScoreKeeper.setScoreListener(object: Game.ScoreListener {
+        mScoreKeeper.setScoreListener(object : Game.ScoreListener {
             override fun onNewScore(score: Long) {
                 if (score >= 200000) {
                     binding.ibUndo.visibility = INVISIBLE
