@@ -37,6 +37,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
     private var mScoreDisplay: TextView? = null
     private var mHighScoreDisplay: TextView? = null
     private val mPreferences: SharedPreferences?
+    private var mScoreListener: Game.ScoreListener? = null
     private var mScore: Long = 0
     private var mHighScore: Long = 0
 
@@ -61,6 +62,10 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
             val score = "" + mScore
             mScoreDisplay!!.text = score
         }
+    }
+
+    public fun setScoreListener(scoreListener: Game.ScoreListener?) {
+        this.mScoreListener = scoreListener
     }
 
     private fun loadHighScore(): Long {
@@ -91,6 +96,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
 
     override fun onNewScore(score: Long) {
         setScore(score)
+        mScoreListener?.onNewScore(score)
     }
 
     companion object {
