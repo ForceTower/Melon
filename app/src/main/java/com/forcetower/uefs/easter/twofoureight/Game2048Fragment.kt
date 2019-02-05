@@ -35,6 +35,8 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
+import android.view.View.INVISIBLE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.text.HtmlCompat
@@ -81,6 +83,16 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         super.onActivityCreated(savedInstanceState)
         val mScoreKeeper = ScoreKeeper(requireActivity())
         mScoreKeeper.setViews(binding.tvScore, binding.tvHighscore)
+        mScoreKeeper.setScoreListener(object: Game.ScoreListener {
+            override fun onNewScore(score: Long) {
+                if (score >= 200000) {
+                    binding.ibUndo.visibility = INVISIBLE
+                } else {
+                    binding.ibUndo.visibility = VISIBLE
+                }
+            }
+        })
+
         mGame = Game(requireActivity())
         mGame.setup(binding.gameview)
         mGame.setScoreListener(mScoreKeeper)
