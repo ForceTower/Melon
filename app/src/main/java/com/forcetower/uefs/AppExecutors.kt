@@ -43,7 +43,7 @@ class AppExecutors(
 ) {
 
     @Inject
-    constructor(): this(
+    constructor() : this(
         Executors.newFixedThreadPool(2),
         Executors.newFixedThreadPool(4),
         MainThreadExecutor(),
