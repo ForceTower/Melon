@@ -88,7 +88,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         setupViewModel()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
