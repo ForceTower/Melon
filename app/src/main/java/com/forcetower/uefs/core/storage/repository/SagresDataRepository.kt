@@ -47,7 +47,7 @@ class SagresDataRepository @Inject constructor(
     fun logout() {
         executor.diskIO().execute {
             firebaseAuth.signOut()
-            preferences.edit().remove("hourglass_state").apply()
+            preferences.edit().remove("hourglass_status").apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.profileDao().deleteMe()
