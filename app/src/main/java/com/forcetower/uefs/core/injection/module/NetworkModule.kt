@@ -117,7 +117,7 @@ object NetworkModule {
     @JvmStatic
     fun provideTemporaryService(client: OkHttpClient): TheService {
         return Retrofit.Builder()
-                .baseUrl("http://192.168.15.14/")
+                .baseUrl(Constants.UNES_SERVICE_TESTING)
                 .client(client)
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())

@@ -71,6 +71,7 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
         result.postValue(DisciplineDetailsCallback(Status.LOADING).flags(DisciplineDetailsCallback.SAVING))
         executors.diskIO().execute {
             saveResults(groups)
+            result.postValue(DisciplineDetailsCallback(Status.LOADING).flags(DisciplineDetailsCallback.GRADES))
             loadGrades()
             result.postValue(callback)
         }

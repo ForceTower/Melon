@@ -32,6 +32,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.databinding.FragmentHourglassContributeBinding
@@ -56,9 +58,9 @@ class ContributeFragment : UFragment(), Injectable {
             }
             confirmButton.setOnClickListener {
                 rep.contribute()
-//                preferences.edit().putInt("hourglass_state", 2).apply()
-//                analytics.logEvent("hourglass_contribute", null)
-//                findNavController().navigate(R.id.action_hourglass_contribute_to_development)
+                preferences.edit().putInt("hourglass_state", 2).apply()
+                analytics.logEvent("hourglass_contribute", null)
+                findNavController().navigate(R.id.action_hourglass_contribute_to_development)
             }
         }.root
     }

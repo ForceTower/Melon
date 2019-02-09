@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -38,13 +39,15 @@ import javax.inject.Singleton
 class SagresDataRepository @Inject constructor(
     private val database: UDatabase,
     private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val preferences: SharedPreferences
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
     fun logout() {
         executor.diskIO().execute {
             firebaseAuth.signOut()
+            preferences.edit().remove("hourglass_state").apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.profileDao().deleteMe()
