@@ -73,5 +73,6 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
         const val PROCESSING = 4
         const val DOWNLOADING = 8
         const val SAVING = 16
+        const val GRADES = 32
     }
 }

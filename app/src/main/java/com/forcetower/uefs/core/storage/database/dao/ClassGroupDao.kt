@@ -108,7 +108,7 @@ abstract class ClassGroupDao {
     @Query("SELECT * FROM ClassGroup WHERE uid = :classGroupId")
     abstract fun getWithRelationsDirect(classGroupId: Long): GroupWithClass?
 
-    @Query("SELECT d.code as code, s.sagres_id as semester, s.codename as semester_name, cg.teacher as teacher, c.final_score as grade, d.name as discipline FROM ClassGroup cg, Class c, Discipline d, Semester s WHERE cg.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND c.final_score IS NOT NULL AND cg.teacher IS NOT NULL")
+    @Query("SELECT d.code as code, s.sagres_id as semester, s.codename as semester_name, cg.teacher as teacher, c.final_score as grade, c.partial_score as partialScore, d.name as discipline FROM ClassGroup cg, Class c, Discipline d, Semester s WHERE cg.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND c.final_score IS NOT NULL AND cg.teacher IS NOT NULL")
     abstract fun getClassStatsDirect(): List<ClassStatsData>
 
     @Insert(onConflict = IGNORE)
