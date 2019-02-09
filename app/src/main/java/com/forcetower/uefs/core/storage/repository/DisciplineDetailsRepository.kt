@@ -96,15 +96,15 @@ class DisciplineDetailsRepository @Inject constructor(
 
     @WorkerThread
     fun sendDisciplineDetails() {
-        val user = firebaseAuth.currentUser ?: return
         val stats = database.classGroupDao().getClassStatsDirect()
         val semesters = database.semesterDao().getSemestersDirect()
+        val access = database.accessDao().getAccessDirect() ?: return
         val profile = database.profileDao().selectMeDirect() ?: return
 
         val amountSemesters = semesters.size
         val score = if (profile.score != -1.0) profile.score else profile.calcScore
 
-        val data = DisciplineDetailsData(amountSemesters, score, stats)
+        val data = DisciplineDetailsData(amountSemesters, score, access.username, stats)
         try {
             val response = service.sendHourglassInitial(data).execute()
             if (response.isSuccessful) {
