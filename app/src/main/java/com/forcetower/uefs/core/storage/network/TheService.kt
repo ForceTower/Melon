@@ -25,38 +25,15 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package com.forcetower.uefs.core.storage.network
 
-import android.content.SharedPreferences
-import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
-import javax.inject.Inject
-import javax.inject.Singleton
+import com.forcetower.uefs.core.model.api.UResponse
+import com.forcetower.uefs.core.storage.resource.discipline.DisciplineDetailsData
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.POST
 
-@Singleton
-class SagresDataRepository @Inject constructor(
-    private val database: UDatabase,
-    private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth,
-    private val preferences: SharedPreferences
-) {
-    fun getMessages() = database.messageDao().getAllMessages()
-
-    fun logout() {
-        executor.diskIO().execute {
-            firebaseAuth.signOut()
-            preferences.edit().remove("hourglass_state").apply()
-            database.accessDao().deleteAll()
-            database.accessTokenDao().deleteAll()
-            database.profileDao().deleteMe()
-            database.classDao().deleteAll()
-            database.semesterDao().deleteAll()
-            database.messageDao().deleteAll()
-            SagresNavigator.instance.logout()
-        }
-    }
-
-    fun getFlags() = database.flagsDao().getFlags()
+interface TheService {
+    @POST("save_data")
+    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<Void>>
 }

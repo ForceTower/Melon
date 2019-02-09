@@ -37,7 +37,8 @@ data class ClassStatsData(
     @ColumnInfo(name = "semester_name")
     var semesterName: String,
     var teacher: String,
-    var grade: Double
+    var grade: Double,
+    var partialScore: Double?
 ) {
     companion object {
         const val STATS_CONTRIBUTION = "stats_contribution"
