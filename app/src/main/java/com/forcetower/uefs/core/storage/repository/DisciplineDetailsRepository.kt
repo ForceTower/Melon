@@ -29,19 +29,18 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.TheService
 import com.forcetower.uefs.core.storage.resource.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
+import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -49,7 +48,8 @@ class DisciplineDetailsRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     private val firebaseAuth: FirebaseAuth,
-    @Named(ClassStatsData.STATS_CONTRIBUTION) private val collection: CollectionReference
+    private val gradesRepository: SagresGradesRepository,
+    private val service: TheService
 ) {
 
     /**
@@ -72,27 +72,50 @@ class DisciplineDetailsRepository @Inject constructor(
      * name, which is the common use for this function.
      */
     @MainThread
-    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null): LiveData<DisciplineDetailsCallback> {
-        return object : LoadDisciplineDetailsResource(executors, semester, code, group) {
+    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false): LiveData<DisciplineDetailsCallback> {
+        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad) {
             @WorkerThread
             override fun saveResults(groups: List<SDisciplineGroup>) {
                 database.classGroupDao().defineGroups(groups)
             }
+
+            @WorkerThread
+            override fun loadGrades() {
+                val semesters = database.semesterDao().getSemestersDirect()
+                semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
+            }
         }.asLiveData()
+    }
+
+    @AnyThread
+    fun contribute() {
+        executors.diskIO().execute {
+            sendDisciplineDetails()
+        }
     }
 
     @WorkerThread
     fun sendDisciplineDetails() {
-        val user = firebaseAuth.currentUser ?: return
         val stats = database.classGroupDao().getClassStatsDirect()
         val semesters = database.semesterDao().getSemestersDirect()
+        val access = database.accessDao().getAccessDirect() ?: return
         val profile = database.profileDao().selectMeDirect() ?: return
 
         val amountSemesters = semesters.size
         val score = if (profile.score != -1.0) profile.score else profile.calcScore
 
-        val data = DisciplineDetailsData(amountSemesters, score, stats)
-        val task = collection.document(user.uid).set(data)
-        Tasks.await(task)
+        val data = DisciplineDetailsData(amountSemesters, score, access.username, stats)
+        try {
+            val response = service.sendHourglassInitial(data).execute()
+            if (response.isSuccessful) {
+                Timber.d("Success Response")
+                val result = response.body()!!
+                Timber.d("Result ${result.success}")
+            } else {
+                Timber.d("Failed Response Code: ${response.code()}")
+            }
+        } catch (exception: Exception) {
+            Timber.e(exception)
+        }
     }
 }

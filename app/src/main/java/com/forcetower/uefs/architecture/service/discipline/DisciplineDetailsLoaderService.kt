@@ -36,6 +36,7 @@ import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.DOWNLOADING
+import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.GRADES
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.INITIAL
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.LOGIN
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.PROCESSING
@@ -67,6 +68,8 @@ class DisciplineDetailsLoaderService : LifecycleService() {
     lateinit var repository: DisciplineDetailsRepository
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var rep: DisciplineDetailsRepository
 
     private var running = false
     private var contributing = false
@@ -90,7 +93,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         if (!running) {
             running = true
             Timber.d("Started Discipline Load")
-            repository.loadDisciplineDetails().observe(this, Observer { onDataUpdate(it) })
+            repository.loadDisciplineDetails(partialLoad = contributing).observe(this, Observer { onDataUpdate(it) })
         }
     }
 
@@ -105,8 +108,9 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 if (isConnectedToInternet()) {
                     val current = preferences.getInt("hourglass_state", 0)
                     if (current < 1) preferences.edit().putInt("hourglass_state", 1).apply()
-                    if (contributing)
-                        NotificationCreator.createCompletedDisciplineLoadNotification(this)
+                    if (contributing) NotificationCreator.createCompletedDisciplineLoadNotification(this)
+                    // TODO This is a test call and will be removed when it reaches release status
+                    rep.contribute()
                 }
 
                 stopForeground(true)
@@ -130,6 +134,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 INITIAL -> getString(R.string.step_discipline_details_initial)
                 PROCESSING -> getString(R.string.step_discipline_details_processing)
                 SAVING -> getString(R.string.step_discipline_details_saving)
+                GRADES -> getString(R.string.step_discipline_details_grades)
                 else -> getString(R.string.step_undefined)
             }
             builder.setContentText(message)

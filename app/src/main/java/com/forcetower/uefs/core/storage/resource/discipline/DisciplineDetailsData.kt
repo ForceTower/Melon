@@ -32,5 +32,6 @@ import com.forcetower.uefs.core.model.service.ClassStatsData
 data class DisciplineDetailsData(
     var semester: Int,
     var score: Double,
+    var userId: String,
     var disciplines: List<ClassStatsData>
 )
