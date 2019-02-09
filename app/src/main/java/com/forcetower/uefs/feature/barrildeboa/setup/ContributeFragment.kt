@@ -58,7 +58,7 @@ class ContributeFragment : UFragment(), Injectable {
             }
             confirmButton.setOnClickListener {
                 rep.contribute()
-                preferences.edit().putInt("hourglass_state", 2).apply()
+                preferences.edit().putInt("hourglass_status", 2).apply()
                 analytics.logEvent("hourglass_contribute", null)
                 findNavController().navigate(R.id.action_hourglass_contribute_to_development)
             }

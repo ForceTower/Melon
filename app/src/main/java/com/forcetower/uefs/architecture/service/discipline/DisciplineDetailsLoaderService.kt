@@ -106,8 +106,8 @@ class DisciplineDetailsLoaderService : LifecycleService() {
             }
             Status.COMPLETED -> {
                 if (isConnectedToInternet()) {
-                    val current = preferences.getInt("hourglass_state", 0)
-                    if (current < 1) preferences.edit().putInt("hourglass_state", 1).apply()
+                    val current = preferences.getInt("hourglass_status", 0)
+                    if (current < 1) preferences.edit().putInt("hourglass_status", 1).apply()
                     if (contributing) NotificationCreator.createCompletedDisciplineLoadNotification(this)
                     // TODO This is a test call and will be removed when it reaches release status
                     rep.contribute()
