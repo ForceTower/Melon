@@ -192,9 +192,9 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         for (xx in field.indices) {
             for (yy in 0 until field[0].size) {
                 if (field[xx][yy] != null) {
-                    editor.putInt(xx.toString() + " " + yy, field[xx][yy].value)
+                    editor.putInt("$xx $yy", field[xx][yy].value)
                 } else {
-                    editor.putInt(xx.toString() + " " + yy, 0)
+                    editor.putInt("$xx $yy", 0)
                 }
 
                 if (undoField[xx][yy] != null) {
@@ -219,7 +219,7 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
         for (xx in 0 until mGame.gameGrid!!.grid.size) {
             for (yy in 0 until mGame.gameGrid!!.grid[0].size) {
-                val value = settings.getInt(xx.toString() + " " + yy, -1)
+                val value = settings.getInt("$xx $yy", -1)
                 if (value > 0) {
                     mGame.gameGrid!!.grid[xx][yy] = Tile(xx, yy, value)
                 } else if (value == 0) {
