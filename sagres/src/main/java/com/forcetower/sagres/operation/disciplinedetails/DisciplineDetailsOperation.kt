@@ -54,6 +54,7 @@ class DisciplineDetailsOperation(
     private val semester: String?,
     private val code: String?,
     private val group: String?,
+    private val partialLoad: Boolean,
     executor: Executor?
 ) : Operation<DisciplineDetailsCallback>(executor) {
 
@@ -86,11 +87,11 @@ class DisciplineDetailsOperation(
             val document = initialFormConnect(form.first)
             if (document != null) {
                 val params = SagresDisciplineDetailsFetcherParser.extractParamsForDiscipline(document)
-                val discipline = disciplinePageParams(params)
+                val discipline = if (partialLoad) document else disciplinePageParams(params)
                 if (discipline != null) {
                     val group = processGroup(discipline)
                     if (group != null) {
-                        downloadMaterials(discipline, group)
+                        if (!partialLoad) downloadMaterials(discipline, group)
                         groups.add(group)
                     } else {
                         Timber.d("Processed group was null")

@@ -41,7 +41,8 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
     private val executors: AppExecutors,
     private val semester: String? = null,
     private val code: String? = null,
-    private val group: String? = null
+    private val group: String? = null,
+    private val partialLoad: Boolean = false
 ) {
     private val result = MediatorLiveData<DisciplineDetailsCallback>()
 
@@ -51,7 +52,7 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
 
     @MainThread
     private fun loadFromSagres() {
-        val loader = SagresNavigator.instance.aLoadDisciplineDetails(semester, code, group)
+        val loader = SagresNavigator.instance.aLoadDisciplineDetails(semester, code, group, partialLoad)
         result.addSource(loader) { callback ->
             Timber.d("Current Status: ${callback.status}")
             when (callback.status) {
@@ -70,9 +71,13 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
         result.postValue(DisciplineDetailsCallback(Status.LOADING).flags(DisciplineDetailsCallback.SAVING))
         executors.diskIO().execute {
             saveResults(groups)
+            loadGrades()
             result.postValue(callback)
         }
     }
+
+    @WorkerThread
+    abstract fun loadGrades()
 
     @WorkerThread
     abstract fun saveResults(groups: List<SDisciplineGroup>)

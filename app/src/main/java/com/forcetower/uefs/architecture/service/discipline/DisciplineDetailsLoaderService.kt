@@ -90,7 +90,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         if (!running) {
             running = true
             Timber.d("Started Discipline Load")
-            repository.loadDisciplineDetails().observe(this, Observer { onDataUpdate(it) })
+            repository.loadDisciplineDetails(partialLoad = true).observe(this, Observer { onDataUpdate(it) })
         }
     }
 
