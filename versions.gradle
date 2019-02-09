@@ -67,7 +67,7 @@ versions.date_time_picker = "4.1.1"
 
 // Build Versions
 versions.android_gradle_plugin = "3.4.0-beta03"
-versions.kotlin = "1.3.20"
+versions.kotlin = "1.3.21"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.26.1"
 versions.kotlinter = "1.21.0"
