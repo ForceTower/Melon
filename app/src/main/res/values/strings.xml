@@ -94,12 +94,10 @@
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com o projeto no GitHub</string>
-
-
     <string name="settings_choice_score_title">Utilizar score calculado?</string>
     <string name="settings_choice_score_info">O valor calculado é uma estimativa com base nas suas notas</string>
-    <string name="settings_choice_score_info_on">Vou calcular seu score (6)</string>
-    <string name="settings_choice_score_info_off">Melhor deixar esse trabalho pro SAGRES</string>
+    <string name="settings_choice_score_info_on">Usando o score calculado</string>
+    <string name="settings_choice_score_info_off">Usando o score SAGRES</string>
 
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
@@ -471,9 +469,9 @@
     <string name="mech_wildcard">Deixe o UNES me dizer essa nota (Curinga)</string>
     <string name="mech_nothing_to_calculate">Nada para calcular por enquanto</string>
     <string name="mech_result_wildcard_not_needed">Você pode zerar o curinga e ainda vai passar direto!</string>
-    <string name="settings_theme_menu">Menu do tema</string>
-    <string name="settings_theme_menu_desc_enabled">Mostrando o menu do tema escuro</string>
-    <string name="settings_theme_menu_desc_disabled">Ocultando o menu do tema escuro</string>
+    <string name="settings_theme_menu">Menu do tema escuro</string>
+    <string name="settings_theme_menu_desc_enabled">Menu do tema está visível</string>
+    <string name="settings_theme_menu_desc_disabled">Menu do tema está oculto</string>
     <string name="mech_empty_message">A contagem começa quando você insere suas notas, os curingas e descobre o que te espera</string>
     <string name="feedback_title">O que você deseja dizer?</string>
     <string name="feedback_text_hint">Conte-me a sua história</string>
