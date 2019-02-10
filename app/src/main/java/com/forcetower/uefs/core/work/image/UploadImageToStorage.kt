@@ -45,6 +45,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.storage.FirebaseStorage
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
+import java.io.InputStream
 
 class UploadImageToStorage(
     context: Context,
@@ -63,7 +64,14 @@ class UploadImageToStorage(
         val ref = storage.getReference(tRef)
 
         val resolver = applicationContext.contentResolver
-        val image = BitmapFactory.decodeStream(resolver.openInputStream(uri))
+        val stream: InputStream
+        try {
+            stream = resolver.openInputStream(uri) ?: return Result.failure()
+        } catch (exception: Throwable) {
+            return Result.failure()
+        }
+
+        val image = BitmapFactory.decodeStream(stream)
         image ?: return Result.failure()
 
         val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
