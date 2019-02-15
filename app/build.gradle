@@ -126,6 +126,7 @@ dependencies {
     implementation deps.firebase.storage_ui
     implementation deps.firebase.remote_config
     implementation deps.firebase.functions
+    implementation deps.firebase.in_app_messaging
 
     implementation (deps.logs.crashlytics) { transitive true }
     implementation deps.logs.timber
