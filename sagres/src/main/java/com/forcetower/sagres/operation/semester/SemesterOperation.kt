@@ -59,21 +59,28 @@ class SemesterOperation(executor: Executor?, private val userId: Long) : Operati
 
     private fun successMeasures(body: String) {
         val type = object : TypeToken<Dumb<MutableList<SSemester>>>() {}.type
-        val dSemesters = gson.fromJson<Dumb<MutableList<SSemester>>>(body, type)
-        val semesters = dSemesters.items
-        semesters.forEach {
-            it.name = it.name.trim()
-            it.codename = it.codename.trim()
-            it.endClasses = it.endClasses.trim()
-            it.end = it.end.trim()
-            it.startClasses = it.startClasses.trim()
-            it.start = it.start.trim()
+        try {
+            val dSemesters = gson.fromJson<Dumb<MutableList<SSemester>>>(body, type)
+            val semesters = dSemesters.items
+            semesters.forEach {
+                it.name = it.name.trim()
+                it.codename = it.codename.trim()
+                it.endClasses = it.endClasses.trim()
+                it.end = it.end.trim()
+                it.startClasses = it.startClasses.trim()
+                it.start = it.start.trim()
+            }
+
+            val callback = SemesterCallback(Status.SUCCESS).semesters(semesters)
+            this.finished = callback
+            this.success = true
+
+            publishProgress(callback)
+        } catch (t: Throwable) {
+            val callback = SemesterCallback(Status.UNKNOWN_FAILURE).message(t.message)
+            this.finished = callback
+            this.success = false
+            publishProgress(callback)
         }
-
-        val callback = SemesterCallback(Status.SUCCESS).semesters(semesters)
-        this.finished = callback
-        this.success = true
-
-        publishProgress(callback)
     }
 }
