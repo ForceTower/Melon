@@ -38,7 +38,7 @@ versions.in_app_messaging = "17.0.5"
 versions.firebase_ui_storage = "4.3.1"
 
 // Logs
-versions.crashlytics = "2.9.8@aar"
+versions.crashlytics = "2.9.9@aar"
 versions.timber = "4.7.1"
 
 // Image
