@@ -20,24 +20,25 @@ versions.preference = "1.0.0"
 versions.room = "2.0.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
-versions.navigation = "1.0.0-beta01"
-versions.work_manager = "1.0.0-beta05"
+versions.navigation = "1.0.0-beta02"
+versions.work_manager = "1.0.0-rc01"
 
 // Dependency Injection
 versions.dagger = "2.21"
 
 // Firebase
-versions.firebase_core = "16.0.6"
+versions.firebase_core = "16.0.7"
 versions.firebase_auth = "16.1.0"
 versions.firebase_messaging = "17.3.4"
-versions.firebase_firestore = "18.0.0"
+versions.firebase_firestore = "18.0.1"
 versions.firebase_storage = "16.0.5"
-versions.firebase_remote_config = "16.1.3"
+versions.firebase_remote_config = "16.3.0"
 versions.firebase_functions = "16.1.3"
-versions.firebase_ui_storage = "4.2.0"
+versions.in_app_messaging = "17.0.5"
+versions.firebase_ui_storage = "4.3.1"
 
 // Logs
-versions.crashlytics = "2.9.8@aar"
+versions.crashlytics = "2.9.9@aar"
 versions.timber = "4.7.1"
 
 // Image
@@ -66,7 +67,7 @@ versions.card_slider = "0.3.0"
 versions.date_time_picker = "4.1.1"
 
 // Build Versions
-versions.android_gradle_plugin = "3.4.0-beta03"
+versions.android_gradle_plugin = "3.4.0-beta04"
 versions.kotlin = "1.3.21"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.26.1"
@@ -136,6 +137,7 @@ firebase.firestore = "com.google.firebase:firebase-firestore:$versions.firebase_
 firebase.storage = "com.google.firebase:firebase-storage:$versions.firebase_storage"
 firebase.remote_config = "com.google.firebase:firebase-config:$versions.firebase_remote_config"
 firebase.functions = "com.google.firebase:firebase-functions:$versions.firebase_functions"
+firebase.in_app_messaging = "com.google.firebase:firebase-inappmessaging-display:$versions.in_app_messaging"
 firebase.storage_ui = "com.firebaseui:firebase-ui-storage:$versions.firebase_ui_storage"
 deps.firebase = firebase
 
