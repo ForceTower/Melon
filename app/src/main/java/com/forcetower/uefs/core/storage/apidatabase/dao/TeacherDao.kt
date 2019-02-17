@@ -25,25 +25,33 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.barrildeboa
+package com.forcetower.uefs.core.storage.apidatabase.dao
 
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
-import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.api.UDiscipline
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.forcetower.uefs.core.model.api.UTeacher
 
-@BindingAdapter("hourglassElementIcon")
-fun hourglassElementIcon(iv: ImageView, element: UDiscipline?) {
-    element ?: return
-//    val icon = if (element.typeFlag == 0) {
-//        R.drawable.ic_discipline_black_24dp
-//    } else {
-//        R.drawable.ic_teach_black_24dp
-//    }
-    val icon = R.drawable.ic_discipline_black_24dp
-    val context = iv.context
-    val drawable = ContextCompat.getDrawable(context, icon)
-    drawable ?: return
-    iv.setImageDrawable(drawable)
+@Dao
+abstract class TeacherDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(teachers: List<UTeacher>)
+
+    open fun query(query: String?): LiveData<List<UTeacher>> {
+        return if (query.isNullOrBlank()) {
+            getAll()
+        } else {
+            val string = "%${query.toUpperCase()}%"
+            doQuery(string)
+        }
+    }
+
+    // TODO This should be changed to a FTS table for fast scans
+    @Query("SELECT * FROM UTeacher WHERE UPPER(name) LIKE :query")
+    protected abstract fun doQuery(query: String): LiveData<List<UTeacher>>
+
+    @Query("SELECT * FROM UTeacher")
+    abstract fun getAll(): LiveData<List<UTeacher>>
 }

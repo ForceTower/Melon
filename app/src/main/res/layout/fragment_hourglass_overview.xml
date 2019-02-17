@@ -61,7 +61,7 @@
             app:layout_constraintTop_toBottomOf="@id/hourglass_title" />
 
         <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/view_pager"
+            android:id="@+id/recycler_items"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="16dp"
