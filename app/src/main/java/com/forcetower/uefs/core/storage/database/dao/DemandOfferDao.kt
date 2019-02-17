@@ -41,7 +41,7 @@ abstract class DemandOfferDao {
     protected abstract fun insert(offers: List<SDemandOffer>)
 
     @Query("DELETE FROM SDemandOffer")
-    protected abstract fun deleteAll()
+    abstract fun deleteAll()
 
     @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
     abstract fun getAll(): LiveData<List<SDemandOffer>>

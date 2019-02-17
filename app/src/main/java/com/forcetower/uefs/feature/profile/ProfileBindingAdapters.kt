@@ -36,6 +36,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.Semester
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
 import java.util.Calendar
@@ -81,7 +82,12 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
 }
 
 @BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated"], requireAll = true)
-fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
+fun profileScoreOptional(
+    tv: TextView,
+    score: Double?,
+    calculated: Double?,
+    semesters: List<Semester>?
+) {
     val context = tv.context
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
@@ -111,6 +117,10 @@ fun profileScoreOptional(tv: TextView, score: Double?, calculated: Double?) {
 
         // verificando se existe realmente um score
         if (calc / actual == 1.0 && calc == -1.0) tv.text = context.getString(R.string.label_score_undefined)
+    } else if (preferences.getBoolean("stg_acc_semester", true)) {
+        val filtered = semesters?.filter { !it.name.endsWith("F") }
+        val number = filtered?.size ?: 1
+        tv.text = context.getString(R.string.your_semester_is, number)
     } else {
         tv.visibility = View.INVISIBLE
     }
