@@ -25,13 +25,12 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.resource.discipline
+package com.forcetower.uefs.core.model.api.helpers
 
-import com.forcetower.uefs.core.model.service.ClassStatsData
+import com.forcetower.uefs.core.model.api.UDiscipline
+import com.forcetower.uefs.core.model.api.UTeacher
 
-data class DisciplineDetailsData(
-    var semester: Int,
-    var score: Double,
-    var userId: String,
-    var disciplines: List<ClassStatsData>
+data class UHourOverview(
+    val disciplines: List<UDiscipline>,
+    val teachers: List<UTeacher>
 )

@@ -25,14 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.core.model.api.helpers
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
-
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
-}
+data class UResponse<T> (
+    val success: Boolean = false,
+    val message: String? = null,
+    val data: T? = null
+)

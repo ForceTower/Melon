@@ -35,8 +35,8 @@ import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.TheService
-import com.forcetower.uefs.core.storage.resource.discipline.DisciplineDetailsData
+import com.forcetower.uefs.core.storage.network.APIService
+import com.forcetower.uefs.core.model.service.DisciplineDetailsData
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -49,7 +49,7 @@ class DisciplineDetailsRepository @Inject constructor(
     private val executors: AppExecutors,
     private val firebaseAuth: FirebaseAuth,
     private val gradesRepository: SagresGradesRepository,
-    private val service: TheService
+    private val service: APIService
 ) {
 
     /**

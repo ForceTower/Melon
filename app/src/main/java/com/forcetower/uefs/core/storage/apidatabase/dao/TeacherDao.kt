@@ -25,14 +25,33 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.core.storage.apidatabase.dao
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.forcetower.uefs.core.model.api.UTeacher
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
+@Dao
+abstract class TeacherDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(teachers: List<UTeacher>)
+
+    open fun query(query: String?): LiveData<List<UTeacher>> {
+        return if (query.isNullOrBlank()) {
+            getAll()
+        } else {
+            val string = "%${query.toUpperCase()}%"
+            doQuery(string)
+        }
+    }
+
+    // TODO This should be changed to a FTS table for fast scans
+    @Query("SELECT * FROM UTeacher WHERE UPPER(name) LIKE :query ORDER BY name")
+    protected abstract fun doQuery(query: String): LiveData<List<UTeacher>>
+
+    @Query("SELECT * FROM UTeacher ORDER BY name")
+    abstract fun getAll(): LiveData<List<UTeacher>>
 }

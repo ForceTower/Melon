@@ -25,15 +25,25 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.network
+package com.forcetower.uefs.feature.barrildeboa
 
-import com.forcetower.uefs.core.model.api.UResponse
-import com.forcetower.uefs.core.storage.resource.discipline.DisciplineDetailsData
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.POST
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.api.UDiscipline
 
-interface TheService {
-    @POST("save_data")
-    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<Void>>
+@BindingAdapter("hourglassElementIcon")
+fun hourglassElementIcon(iv: ImageView, element: UDiscipline?) {
+    element ?: return
+//    val icon = if (element.typeFlag == 0) {
+//        R.drawable.ic_discipline_black_24dp
+//    } else {
+//        R.drawable.ic_teach_black_24dp
+//    }
+    val icon = R.drawable.ic_discipline_black_24dp
+    val context = iv.context
+    val drawable = ContextCompat.getDrawable(context, icon)
+    drawable ?: return
+    iv.setImageDrawable(drawable)
 }

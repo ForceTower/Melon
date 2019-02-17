@@ -71,19 +71,6 @@
                     app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
                     tools:listitem="@layout/item_about_contributor">
                 </androidx.recyclerview.widget.RecyclerView>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:background="@drawable/gradient_top_bottom"
-                    android:backgroundTint="?attr/background"/>
-
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="24dp"
-                    android:background="@drawable/gradient_bottom_top"
-                    android:backgroundTint="?attr/background"
-                    android:layout_alignBottom="@id/recycler_contributors"/>
             </RelativeLayout>
 
         </LinearLayout>
