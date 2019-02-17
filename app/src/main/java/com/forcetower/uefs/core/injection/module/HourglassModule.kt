@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.feature.barrildeboa.overview.OverviewFragment
 import com.forcetower.uefs.feature.barrildeboa.setup.ContributeFragment
 import com.forcetower.uefs.feature.barrildeboa.setup.HourglassNotContributeDialog
 import dagger.Module
@@ -38,4 +39,6 @@ abstract class HourglassModule {
     abstract fun contributeFragment(): ContributeFragment
     @ContributesAndroidInjector
     abstract fun hourglassNotContributeDialog(): HourglassNotContributeDialog
+    @ContributesAndroidInjector
+    abstract fun overviewFragment(): OverviewFragment
 }
