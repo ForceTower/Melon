@@ -25,10 +25,11 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.api
+package com.forcetower.uefs.core.model.service
 
-data class UResponse<T> (
-    val success: Boolean = false,
-    val message: String? = null,
-    val data: T? = null
+data class DisciplineDetailsData(
+    var semester: Int,
+    var score: Double,
+    var userId: String,
+    var disciplines: List<ClassStatsData>
 )

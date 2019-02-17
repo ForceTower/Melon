@@ -25,25 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.barrildeboa
+package com.forcetower.uefs.core.model.api
 
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
-import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.api.UDiscipline
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
-@BindingAdapter("hourglassElementIcon")
-fun hourglassElementIcon(iv: ImageView, element: UDiscipline?) {
-    element ?: return
-//    val icon = if (element.typeFlag == 0) {
-//        R.drawable.ic_discipline_black_24dp
-//    } else {
-//        R.drawable.ic_teach_black_24dp
-//    }
-    val icon = R.drawable.ic_discipline_black_24dp
-    val context = iv.context
-    val drawable = ContextCompat.getDrawable(context, icon)
-    drawable ?: return
-    iv.setImageDrawable(drawable)
-}
+@Entity
+data class UDiscipline(
+    @PrimaryKey(autoGenerate = false)
+    @SerializedName("id", alternate = ["_id"])
+    val id: String,
+    val name: String,
+    val code: String
+)

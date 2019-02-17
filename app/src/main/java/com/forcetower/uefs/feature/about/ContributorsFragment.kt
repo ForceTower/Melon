@@ -35,7 +35,6 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.DefaultItemAnimator
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Contributor
@@ -69,7 +68,6 @@ class ContributorsFragment : UFragment(), Injectable {
 
     private fun setupRecyclerView() {
         binding.recyclerContributors.adapter = adapter
-        binding.recyclerContributors.itemAnimator = DefaultItemAnimator()
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -29,7 +29,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.storage.network.TheService
+import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
 import com.forcetower.uefs.core.storage.network.github.GithubService
@@ -115,13 +115,13 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideTemporaryService(client: OkHttpClient): TheService {
+    fun provideTemporaryService(client: OkHttpClient): APIService {
         return Retrofit.Builder()
                 .baseUrl(Constants.UNES_SERVICE_TESTING)
                 .client(client)
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build()
-                .create(TheService::class.java)
+                .create(APIService::class.java)
     }
 }
