@@ -108,6 +108,7 @@
                 app:profileScoreOptional="@{viewModel.profile.score}"
                 app:profileScoreCalculated="@{viewModel.profile.calcScore}"
                 app:semestersList="@{viewModel.semesters}"
+                app:profileCourse="@{viewModel.course}"
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnBackgroundLight"
                 app:layout_constraintStart_toStartOf="@+id/third_keyline"

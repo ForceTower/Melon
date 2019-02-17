@@ -62,4 +62,5 @@ class SagresDataRepository @Inject constructor(
 
     fun getFlags() = database.flagsDao().getFlags()
     fun getSemesters() = database.semesterDao().getParticipatingSemesters()
+    fun getCourse() = database.profileDao().getProfileCourse()
 }
