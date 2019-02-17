@@ -59,6 +59,7 @@ class OverviewFragment : UFragment(), Injectable {
         val adapter = OverviewAdapter(this, viewModel)
         binding.recyclerItems.adapter = adapter
 
+        viewModel.query(null)
         viewModel.overview().observe(this, Observer { Unit })
 
         viewModel.onSelectDiscipline.observe(this, EventObserver {
@@ -69,7 +70,7 @@ class OverviewFragment : UFragment(), Injectable {
             adapter.submitList(it)
         })
 
-        binding.searchBar.setOnQueryChangeListener { oldQuery, newQuery ->
+        binding.searchOverview.setOnQueryChangeListener { oldQuery, newQuery ->
             if (oldQuery != newQuery) viewModel.query(newQuery)
         }
     }

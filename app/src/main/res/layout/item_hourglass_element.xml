@@ -44,6 +44,7 @@
         android:layout_height="wrap_content"
         android:minHeight="56dp"
         android:padding="16dp"
+        android:background="?selectableItemBackground"
         android:onClick="@{() -> interactor.onSelectDiscipline(element)}">
 
         <androidx.appcompat.widget.AppCompatImageView
