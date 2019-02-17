@@ -125,6 +125,6 @@ fun profileScoreOptional(
     } else if (course != null) {
         tv.text = course
     } else {
-        tv.visibility = View.INVISIBLE
+        tv.text = ""
     }
 }
