@@ -81,7 +81,7 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
     }
 }
 
-@BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated"], requireAll = true)
+@BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated", "semestersList"], requireAll = true)
 fun profileScoreOptional(
     tv: TextView,
     score: Double?,
