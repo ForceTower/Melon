@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.util.truncate
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.max
 import kotlin.math.min
 
 @Singleton
@@ -117,7 +118,7 @@ class MechCalcRepository @Inject constructor(
         return if (mean < 3) {
             MechResult(mean, null, null, final = false, lost = true)
         } else {
-            val finalGrade = (12.5 - (1.5 * mean)).round()
+            val finalGrade = max((12.5 - (1.5 * mean)).round(), 3.0)
             if (finalGrade <= 8) {
                 MechResult(mean, wildcard, finalGrade, final = true, lost = false)
             } else {
