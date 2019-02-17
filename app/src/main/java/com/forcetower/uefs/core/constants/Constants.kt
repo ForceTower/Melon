@@ -34,5 +34,5 @@ object Constants {
     const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
 
     const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 3600L
+    const val REMOTE_CONFIG_REFRESH = 1800L
 }
