@@ -61,6 +61,9 @@ abstract class ProfileDao {
         }
     }
 
+    @Query("SELECT c.name FROM Profile p, Course c WHERE p.me = 1 AND p.course IS NOT NULL AND p.course = c.id LIMIT 1")
+    abstract fun getProfileCourse(): LiveData<String?>
+
     @Query("UPDATE Profile SET score = :score WHERE me = 1")
     abstract fun updateScore(score: Double)
 

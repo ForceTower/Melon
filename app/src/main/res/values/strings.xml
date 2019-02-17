@@ -481,6 +481,13 @@
     <string name="contributor_commits">%1$d commits</string>
     <string name="step_discipline_details_grades">Baixando notas</string>
     <string name="hourglass_search_hint">Disciplinas ou professores</string>
+    <string name="invalid_install_title">Aplicativo não oficial</string>
+    <string name="download_from_play_store">Ir para PlayStore!</string>
+    <string name="invalid_install_information">O aplicativo não foi instalado através da Google Play Store e por isso esta versão não é suportada.\n\nO UNES utiliza os recursos de otimização de entrega o que faz com que o aplicativo possa não se comportar corretamente ou ocasionar em falhas no aplicativo ou em seu dispositivo.\n\nÉ altamente recomendavel instalar o aplicativo diretamente pela loja oficial e não baixar o APK por outros lugares.\n\nEu paguei 25 dolares para publicar isso e você nem quer usar</string>
+    <string name="failed_to_download_disciplines">Erro ao baixar disciplinas</string>
+    <string name="failed_to_download_disciplines_message">Um erro ocorreu e o aplicativo não conseguiu acessar as informações. Tente novamente</string>
+    <string name="your_semester_is">Você está no %1$dº semestre</string>
+    <string name="all_the_grades_will_be_downloaded">Todas as notas serão baixadas para que a função funcione corretamente</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
