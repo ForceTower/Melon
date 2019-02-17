@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
@@ -62,6 +63,8 @@ class HomeViewModel @Inject constructor(
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
+    val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
+    val course: LiveData<String?> by lazy { dataRepository.getCourse() }
 
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
 

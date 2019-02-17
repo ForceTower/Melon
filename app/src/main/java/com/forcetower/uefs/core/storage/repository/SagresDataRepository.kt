@@ -54,9 +54,13 @@ class SagresDataRepository @Inject constructor(
             database.classDao().deleteAll()
             database.semesterDao().deleteAll()
             database.messageDao().deleteAll()
+            database.demandOfferDao().deleteAll()
+            database.serviceRequestDao().deleteAll()
             SagresNavigator.instance.logout()
         }
     }
 
     fun getFlags() = database.flagsDao().getFlags()
+    fun getSemesters() = database.semesterDao().getParticipatingSemesters()
+    fun getCourse() = database.profileDao().getProfileCourse()
 }

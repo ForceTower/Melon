@@ -130,7 +130,7 @@ class AdventureRepository @Inject constructor(
         data[R.string.achievement_atualizado] = -1
     }
 
-    private fun unlockSemesterBased(semesters: Collection<Semester>, data: HashMap<Int, Int>) {
+    private fun unlockSemesterBased(semesters: List<Semester>, data: HashMap<Int, Int>) {
         val profile = database.profileDao().selectMeDirect()
         val score = profile?.score ?: profile?.calcScore ?: -1.0
 
@@ -194,8 +194,8 @@ class AdventureRepository @Inject constructor(
 
                     if (clazz.grades.size == 3) {
                         val one = clazz.grades[0].gradeDouble()
-                        val two = clazz.grades[0].gradeDouble()
-                        val thr = clazz.grades[0].gradeDouble()
+                        val two = clazz.grades[1].gradeDouble()
+                        val thr = clazz.grades[2].gradeDouble()
 
                         if (one != null && two != null && thr != null) {
                             if (one < 5 && two > 8.5 && thr > 8.5)
@@ -238,8 +238,9 @@ class AdventureRepository @Inject constructor(
             data[R.string.achievement_introduo_a_introdues] = introduction
         }
 
-        if (semesters.isNotEmpty()) {
-            val semester = semesters.sortedByDescending { it.sagresId }[0]
+        if (semesters.size == 1) {
+            val semester = semesters[0]
+            var hours = 0
             val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
             classes.forEach { clazz ->
                 val points = clazz.clazz.finalScore ?: -1.0
@@ -249,7 +250,36 @@ class AdventureRepository @Inject constructor(
                     accumulatedMean += points * credits
                     accumulatedHours += credits
                 }
+
+                hours += credits
+
+                if (points == 10.0) data[R.string.achievement_mdia_10] = -1
+                if (points >= 5 && points < 7) data[R.string.achievement_luta_at_o_fim] = -1
+                if (points == 5.0) data[R.string.achievement_quase] = -1
+                if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
+
+                clazz.grades.forEach { grade ->
+                    val number = grade.gradeDouble() ?: -1
+                    if (number == 7) data[R.string.achievement_medocre] = -1
+                    if (number == 10) data[R.string.achievement_achei_fcil] = -1
+                }
+
+                if (clazz.grades.size == 3) {
+                    val one = clazz.grades[0].gradeDouble()
+                    val two = clazz.grades[1].gradeDouble()
+                    val thr = clazz.grades[2].gradeDouble()
+
+                    if (one != null && two != null && thr != null) {
+                        if (one < 5 && two > 8.5 && thr > 8.5)
+                            data[R.string.achievement_agora_todas_as_peas_se_encaixaram] = -1
+                        if (one == 7.0 && two == 7.0 && thr == 7.0)
+                            data[R.string.achievement_jackpot]
+                    }
+                }
             }
+
+            if (hours >= 480) data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
+            else if (hours <= 275) data[R.string.achievement_engatinhando] = -1
         }
 
         if (accumulatedHours != 0) {

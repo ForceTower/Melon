@@ -36,11 +36,13 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
     private var flags: Int = 0
     private var current: Int = 0
     private var total: Int = 0
+    private var failureCount: Int = 0
 
     fun getFlags() = flags
     fun getGroups() = groups
     fun getCurrent() = current
     fun getTotal() = total
+    fun getFailureCount() = failureCount
 
     fun groups(groups: List<SDisciplineGroup>?): DisciplineDetailsCallback {
         this.groups = groups
@@ -59,6 +61,11 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
 
     fun total(total: Int): DisciplineDetailsCallback {
         this.total = total
+        return this
+    }
+
+    fun failureCount(failureCount: Int): DisciplineDetailsCallback {
+        this.failureCount = failureCount
         return this
     }
 

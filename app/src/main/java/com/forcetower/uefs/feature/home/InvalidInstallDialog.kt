@@ -25,24 +25,36 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.settings
+package com.forcetower.uefs.feature.home
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.storage.repository.SettingsRepository
-import javax.inject.Inject
+import android.content.ActivityNotFoundException
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.forcetower.uefs.databinding.DialogInvalidInstallBinding
+import android.content.Intent
+import android.net.Uri
 
-class SettingsViewModel @Inject constructor(
-    private val repository: SettingsRepository
-) : ViewModel() {
-    private var done: Boolean = false
+class InvalidInstallDialog : RoundedDialog() {
+    private lateinit var binding: DialogInvalidInstallBinding
 
-    fun getAllTheGrades() {
-        if (done) return
-        done = true
-        repository.requestAllGradesAndCalculateScore()
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return DialogInvalidInstallBinding.inflate(inflater, container, false).also {
+            binding = it
+            it.btnOk.setOnClickListener {
+                navigateToPlayStore()
+            }
+        }.root
     }
 
-    val isDarkModeEnabled: LiveData<Boolean>
-        get() = repository.hasDarkModeEnabled()
+    private fun navigateToPlayStore() {
+        val packageName = requireContext().packageName
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+        } catch (exception: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+        }
+    }
 }
