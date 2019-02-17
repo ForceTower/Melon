@@ -28,7 +28,6 @@
 package com.forcetower.uefs.feature.profile
 
 import android.preference.PreferenceManager
-import android.view.View
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -125,6 +124,6 @@ fun profileScoreOptional(
     } else if (course != null) {
         tv.text = course
     } else {
-        tv.visibility = View.INVISIBLE
+        tv.text = ""
     }
 }

@@ -25,14 +25,22 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.core.storage.network
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.model.api.helpers.UHourOverview
+import com.forcetower.uefs.core.model.api.helpers.UResponse
+import com.forcetower.uefs.core.model.service.DisciplineDetailsData
+import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
+interface APIService {
+    @POST("save_data")
+    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<UHourOverview>>
+
+    @GET("overview")
+    fun overview(): LiveData<ApiResponse<UResponse<UHourOverview>>>
 }

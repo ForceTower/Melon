@@ -25,14 +25,20 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.core.storage.apidatabase
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import com.forcetower.uefs.core.model.api.UDiscipline
+import com.forcetower.uefs.core.model.api.UTeacher
+import com.forcetower.uefs.core.storage.apidatabase.dao.DisciplineDao
+import com.forcetower.uefs.core.storage.apidatabase.dao.TeacherDao
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
+@Database(entities = [
+    UDiscipline::class,
+    UTeacher::class
+], version = 1, exportSchema = true)
+abstract class APIDatabase : RoomDatabase() {
+    abstract fun disciplineDao(): DisciplineDao
+    abstract fun teacherDao(): TeacherDao
 }
