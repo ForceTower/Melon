@@ -25,25 +25,20 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.barrildeboa
+package com.forcetower.uefs.core.storage.apidatabase
 
-import android.widget.ImageView
-import androidx.core.content.ContextCompat
-import androidx.databinding.BindingAdapter
-import com.forcetower.uefs.R
+import androidx.room.Database
+import androidx.room.RoomDatabase
 import com.forcetower.uefs.core.model.api.UDiscipline
+import com.forcetower.uefs.core.model.api.UTeacher
+import com.forcetower.uefs.core.storage.apidatabase.dao.DisciplineDao
+import com.forcetower.uefs.core.storage.apidatabase.dao.TeacherDao
 
-@BindingAdapter("hourglassElementIcon")
-fun hourglassElementIcon(iv: ImageView, element: UDiscipline?) {
-    element ?: return
-//    val icon = if (element.typeFlag == 0) {
-//        R.drawable.ic_discipline_black_24dp
-//    } else {
-//        R.drawable.ic_teach_black_24dp
-//    }
-    val icon = R.drawable.ic_discipline_black_24dp
-    val context = iv.context
-    val drawable = ContextCompat.getDrawable(context, icon)
-    drawable ?: return
-    iv.setImageDrawable(drawable)
+@Database(entities = [
+    UDiscipline::class,
+    UTeacher::class
+], version = 1, exportSchema = true)
+abstract class APIDatabase : RoomDatabase() {
+    abstract fun disciplineDao(): DisciplineDao
+    abstract fun teacherDao(): TeacherDao
 }

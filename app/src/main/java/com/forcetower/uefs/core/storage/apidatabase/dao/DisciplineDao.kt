@@ -25,15 +25,33 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.api
+package com.forcetower.uefs.core.storage.apidatabase.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import com.forcetower.uefs.core.model.api.UDiscipline
 
-@Entity
-data class UHourglassElement(
-    @PrimaryKey(autoGenerate = false)
-    val id: String,
-    val typeFlag: Int,
-    val name: String
-)
+@Dao
+abstract class DisciplineDao {
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun insert(disciplines: List<UDiscipline>)
+
+    open fun query(query: String?): LiveData<List<UDiscipline>> {
+        return if (query.isNullOrBlank()) {
+            getAll()
+        } else {
+            val string = "%${query.toUpperCase()}%"
+            doQuery(string)
+        }
+    }
+
+    // TODO This should be changed to a FTS table for fast scans
+    @Query("SELECT * FROM UDiscipline WHERE UPPER(code) LIKE :query OR UPPER(name) LIKE :query")
+    protected abstract fun doQuery(query: String): LiveData<List<UDiscipline>>
+
+    @Query("SELECT * FROM UDiscipline")
+    abstract fun getAll(): LiveData<List<UDiscipline>>
+}

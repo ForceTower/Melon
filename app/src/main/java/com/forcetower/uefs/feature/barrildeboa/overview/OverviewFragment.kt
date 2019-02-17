@@ -31,20 +31,51 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentHourglassOverviewBinding
+import com.forcetower.uefs.feature.barrildeboa.HourglassViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class OverviewFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var binding: FragmentHourglassOverviewBinding
+    private lateinit var viewModel: HourglassViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
         return FragmentHourglassOverviewBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val adapter = OverviewAdapter(this, viewModel)
+        binding.recyclerItems.adapter = adapter
+
+        viewModel.overview().observe(this, Observer { Unit })
+
+        viewModel.onSelectDiscipline.observe(this, EventObserver {
+            Timber.d("Selected Discipline: ${it.code}")
+        })
+
+        viewModel.queryDiscipline.observe(this, Observer {
+            adapter.submitList(it)
+        })
+
+        binding.searchBar.setOnQueryChangeListener { oldQuery, newQuery ->
+            if (oldQuery != newQuery) viewModel.query(newQuery)
+        }
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        viewModel.sendData()
     }
 }
