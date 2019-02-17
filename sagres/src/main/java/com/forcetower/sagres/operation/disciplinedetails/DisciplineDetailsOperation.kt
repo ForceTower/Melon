@@ -81,6 +81,8 @@ class DisciplineDetailsOperation(
         val forms = SagresDisciplineDetailsFetcherParser.extractFormBodies(initial.document!!, semester, code, group)
         val groups = mutableListOf<SDisciplineGroup>()
 
+        var failureCount = 0
+
         val total = forms.size
         for ((index, form) in forms.withIndex()) {
             publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(DOWNLOADING).current(index).total(total))
@@ -94,17 +96,20 @@ class DisciplineDetailsOperation(
                         if (!partialLoad) downloadMaterials(discipline, group)
                         groups.add(group)
                     } else {
+                        failureCount++
                         Timber.d("Processed group was null")
                     }
                 } else {
+                    failureCount++
                     Timber.d("Discipline from params was null")
                 }
             } else {
+                failureCount++
                 Timber.d("Document from initial was null")
             }
         }
         Timber.d("Completed ${forms.size} -- $semester $code $group")
-        publishProgress(DisciplineDetailsCallback(Status.COMPLETED).groups(groups))
+        publishProgress(DisciplineDetailsCallback(Status.COMPLETED).groups(groups).failureCount(failureCount))
     }
 
     private fun login(access: SAccess): BaseCallback<*>? {

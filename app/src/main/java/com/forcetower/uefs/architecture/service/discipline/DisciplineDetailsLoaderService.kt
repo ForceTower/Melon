@@ -105,19 +105,31 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 generateNotification(callback)
             }
             Status.COMPLETED -> {
-                if (isConnectedToInternet()) {
+                if (isConnectedToInternet() && callback.getFailureCount() <= 5) {
                     val current = preferences.getInt("hourglass_status", 0)
                     if (current < 1) preferences.edit().putInt("hourglass_status", 1).apply()
                     if (contributing) NotificationCreator.createCompletedDisciplineLoadNotification(this)
-                    // TODO This is a test call and will be removed when it reaches release status
-                    rep.contribute()
+                } else {
+                    finishShowingError()
                 }
-
+                // TODO This is a test call and will be removed when it reaches release status
+                rep.contribute()
                 stopForeground(true)
                 stopSelf()
             }
-            else -> Unit
+            Status.APPROVING -> Unit
+            Status.STARTED -> Unit
+            Status.SUCCESS -> Unit
+            else -> finishShowingError()
         }
+    }
+
+    private fun finishShowingError() {
+        val title = getString(R.string.failed_to_download_disciplines)
+        val message = getString(R.string.failed_to_download_disciplines_message)
+        NotificationCreator.createFailedWarningNotification(this, title, message)
+        stopForeground(true)
+        stopSelf()
     }
 
     private fun generateNotification(callback: DisciplineDetailsCallback) {
