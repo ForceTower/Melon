@@ -52,6 +52,10 @@ android {
             shrinkResources true
             minifyEnabled true
         }
+        debug {
+            shrinkResources true
+            minifyEnabled true
+        }
     }
 
     dataBinding {
