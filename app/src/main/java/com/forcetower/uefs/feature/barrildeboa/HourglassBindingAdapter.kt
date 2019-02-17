@@ -25,14 +25,24 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.feature.barrildeboa
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+import android.widget.ImageView
+import androidx.core.content.ContextCompat
+import androidx.databinding.BindingAdapter
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.api.UHourglassElement
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
+@BindingAdapter("hourglassElementIcon")
+fun hourglassElementIcon(iv: ImageView, element: UHourglassElement?) {
+    element ?: return
+    val icon = if (element.typeFlag == 0) {
+        R.drawable.ic_discipline_black_24dp
+    } else {
+        R.drawable.ic_teach_black_24dp
+    }
+    val context = iv.context
+    val drawable = ContextCompat.getDrawable(context, icon)
+    drawable ?: return
+    iv.setImageDrawable(drawable)
 }

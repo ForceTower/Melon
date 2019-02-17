@@ -25,14 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.constants
+package com.forcetower.uefs.feature.barrildeboa.overview
 
-object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
-    private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.databinding.FragmentHourglassOverviewBinding
+import com.forcetower.uefs.feature.shared.UFragment
+import javax.inject.Inject
 
-    const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
-    const val REMOTE_CONFIG_REFRESH = 900L
+class OverviewFragment : UFragment(), Injectable {
+    @Inject
+    lateinit var factory: UViewModelFactory
+    private lateinit var binding: FragmentHourglassOverviewBinding
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentHourglassOverviewBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
+    }
 }
