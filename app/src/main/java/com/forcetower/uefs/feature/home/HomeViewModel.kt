@@ -64,6 +64,7 @@ class HomeViewModel @Inject constructor(
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
+    val course: LiveData<String?> by lazy { dataRepository.getCourse() }
 
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
 

@@ -81,12 +81,13 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
     }
 }
 
-@BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated", "semestersList"], requireAll = true)
+@BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated", "semestersList", "profileCourse"], requireAll = true)
 fun profileScoreOptional(
     tv: TextView,
     score: Double?,
     calculated: Double?,
-    semesters: List<Semester>?
+    semesters: List<Semester>?,
+    course: String?
 ) {
     val context = tv.context
     val preferences = PreferenceManager.getDefaultSharedPreferences(context)
@@ -121,6 +122,8 @@ fun profileScoreOptional(
         val filtered = semesters?.filter { !it.name.endsWith("F") }
         val number = filtered?.size ?: 1
         tv.text = context.getString(R.string.your_semester_is, number)
+    } else if (course != null) {
+        tv.text = course
     } else {
         tv.visibility = View.INVISIBLE
     }
