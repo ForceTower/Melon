@@ -74,9 +74,6 @@
   public *;
 }
 
-# for DexGuard only
--keepresourcexmlelements manifest/application/meta-data@value=GlideModule
-
 # ------------------------------- Lottie -------------------
 -dontwarn com.airbnb.lottie.**
 -keep class com.airbnb.lottie.** {*;}
@@ -109,6 +106,7 @@
 
 # ------------ JSOUP ---------------------
 -keeppackagenames org.jsoup.nodes
+-keepnames class org.jsoup.nodes.Entities
 
 # --------- Chart view ----------------------
 -keep class com.github.mikephil.charting.** { *; }
@@ -137,12 +135,12 @@
 
 # Crashlytics 2.+
 
--keep class com.crashlytics.** { *; }
--keep class com.crashlytics.android.**
--keepattributes SourceFile, LineNumberTable, *Annotation*
-
-# If you are using custom exceptions, add this line so that custom exception types are skipped during obfuscation:
+-keepattributes *Annotation*
+-keepattributes SourceFile,LineNumberTable
 -keep public class * extends java.lang.Exception
+
+-keep class com.crashlytics.** { *; }
+-dontwarn com.crashlytics.**
 
 # Okio
 -keep class sun.misc.Unsafe { *; }
@@ -162,4 +160,13 @@
 }
 
 # Proguard for Bypass
--keep class in.uncod.android.** { *; }
+-keep, includedescriptorclasses class in.uncod.android.bypass.** { *; }
+
+-dontwarn com.android.org.conscrypt.SSLParametersImpl
+-dontwarn dalvik.system.CloseGuard
+-dontwarn kotlin.internal.**
+-dontwarn kotlin.reflect.jvm.internal.ReflectionFactoryImpl
+-dontwarn org.apache.harmony.xnet.provdier.jsse.SSLParametersImpl
+-dontwarn org.conscrypt.**
+-dontwarn sun.misc.Unsafe
+-dontwarn sun.security.ssl.SSLContext.Impl
