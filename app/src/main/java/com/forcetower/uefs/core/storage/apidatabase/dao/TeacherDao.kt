@@ -49,9 +49,9 @@ abstract class TeacherDao {
     }
 
     // TODO This should be changed to a FTS table for fast scans
-    @Query("SELECT * FROM UTeacher WHERE UPPER(name) LIKE :query")
+    @Query("SELECT * FROM UTeacher WHERE UPPER(name) LIKE :query ORDER BY name")
     protected abstract fun doQuery(query: String): LiveData<List<UTeacher>>
 
-    @Query("SELECT * FROM UTeacher")
+    @Query("SELECT * FROM UTeacher ORDER BY name")
     abstract fun getAll(): LiveData<List<UTeacher>>
 }
