@@ -134,7 +134,7 @@ abstract class SagresNavigator {
     abstract fun getRequestedServices(login: Boolean = false): RequestedServicesCallback
 
     @AnyThread
-    abstract fun stopTags(tag: String)
+    abstract fun stopTags(tag: String?)
 
     @AnyThread
     abstract fun aLogout()
