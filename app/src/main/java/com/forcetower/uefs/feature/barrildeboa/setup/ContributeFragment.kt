@@ -60,7 +60,7 @@ class ContributeFragment : UFragment(), Injectable {
                 rep.contribute()
                 preferences.edit().putInt("hourglass_status", 2).apply()
                 analytics.logEvent("hourglass_contribute", null)
-                findNavController().navigate(R.id.action_hourglass_contribute_to_development)
+                findNavController().navigate(R.id.action_hourglass_contribute_to_hourglass_overview)
             }
         }.root
     }
