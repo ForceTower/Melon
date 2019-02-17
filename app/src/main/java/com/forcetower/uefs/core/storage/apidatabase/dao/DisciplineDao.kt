@@ -49,9 +49,9 @@ abstract class DisciplineDao {
     }
 
     // TODO This should be changed to a FTS table for fast scans
-    @Query("SELECT * FROM UDiscipline WHERE UPPER(code) LIKE :query OR UPPER(name) LIKE :query")
+    @Query("SELECT * FROM UDiscipline WHERE UPPER(code) LIKE :query OR UPPER(name) LIKE :query ORDER BY name")
     protected abstract fun doQuery(query: String): LiveData<List<UDiscipline>>
 
-    @Query("SELECT * FROM UDiscipline")
+    @Query("SELECT * FROM UDiscipline ORDER BY name")
     abstract fun getAll(): LiveData<List<UDiscipline>>
 }
