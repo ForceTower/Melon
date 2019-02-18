@@ -35,4 +35,6 @@ object Constants {
 
     const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
     const val REMOTE_CONFIG_REFRESH = 900L
+
+    val HARD_DISCIPLINES = mapOf("TEC501" to "__ANY__")
 }
