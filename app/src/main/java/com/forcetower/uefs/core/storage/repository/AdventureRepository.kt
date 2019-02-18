@@ -36,6 +36,7 @@ import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
@@ -184,6 +185,20 @@ class AdventureRepository @Inject constructor(
                     if (points == 5.0) data[R.string.achievement_quase] = -1
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
+
+                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline().code.toUpperCase()]
+                    if (teacher != null && points >= 5) {
+                        if (teacher == "__ANY__") {
+                            data[R.string.achievement_vale_das_sombras] = -1
+                        } else {
+                            clazz.groups.forEach { group ->
+                                val current = group.teacher
+                                if (current != null && teacher.equals(current, ignoreCase = true)) {
+                                    data[R.string.achievement_vale_das_sombras] = -1
+                                }
+                            }
+                        }
+                    }
 
                     clazz.grades.forEach { grade ->
                         valid = true
