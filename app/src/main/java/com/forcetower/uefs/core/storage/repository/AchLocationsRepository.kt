@@ -81,8 +81,8 @@ class AchLocationsRepository @Inject constructor(
 
     private fun matchesZoologyMuseum(location: Location): AchDistance {
         val place = Location("").apply {
-            latitude = -12.198888
-            longitude = -38.967986
+            latitude = -12.196325
+            longitude = -38.970038
         }
         val distance = location.distanceTo(place)
         preferences.edit().putFloat("ach_dora_zoology_dist", distance).apply()
