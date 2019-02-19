@@ -25,9 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.network.github
-
-import com.forcetower.uefs.core.model.unes.Contributor
+package com.forcetower.uefs.core.model.unes
 
 data class GithubContributor(
     var total: Int = 0,
