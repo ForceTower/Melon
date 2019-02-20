@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -43,6 +44,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.siecomp.SIECOMPActivity
 import javax.inject.Inject
 
 class ScheduleFragment : UFragment(), Injectable {
@@ -107,6 +109,11 @@ class ScheduleFragment : UFragment(), Injectable {
                         appBar.elevation = 0f
                 }
             }
+        }
+
+        binding.btnSiecompSchedule.setOnClickListener {
+            val intent = Intent(requireContext(), SIECOMPActivity::class.java)
+            startActivity(intent)
         }
 
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
