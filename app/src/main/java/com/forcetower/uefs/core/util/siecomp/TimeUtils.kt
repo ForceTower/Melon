@@ -66,4 +66,12 @@ object TimeUtils {
                     ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_END)
             )
     )
+
+    fun eventHasStarted(): Boolean {
+        return ZonedDateTime.now().isAfter(EventDays.first().start)
+    }
+
+    fun eventHasEnded(): Boolean {
+        return ZonedDateTime.now().isAfter(EventDays.last().end)
+    }
 }
