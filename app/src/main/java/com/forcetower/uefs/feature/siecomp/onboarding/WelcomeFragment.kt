@@ -25,27 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.siecomp
+package com.forcetower.uefs.feature.siecomp.onboarding
 
-import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
-import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
-import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.forcetower.uefs.databinding.FragmentEventWelcomeBinding
+import com.forcetower.uefs.feature.shared.UFragment
 
-class SIECOMPActivity : UActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-        if (savedInstanceState == null) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            if (preferences.getBoolean("siecomp_event_xxi_onboarding_completed", false)) {
-                startActivity(Intent(this, EventScheduleActivity::class.java))
-            } else {
-                startActivity(Intent(this, OnboardingActivity::class.java))
-            }
-        }
-        finish()
+class WelcomeFragment : UFragment() {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentEventWelcomeBinding.inflate(inflater, container, false).root
     }
 }

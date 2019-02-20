@@ -25,27 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.siecomp
+package com.forcetower.uefs.feature.siecomp.schedule
 
-import android.content.Intent
-import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.fragment.app.Fragment
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
-import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class SIECOMPActivity : UActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+class EventScheduleActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
-        if (savedInstanceState == null) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            if (preferences.getBoolean("siecomp_event_xxi_onboarding_completed", false)) {
-                startActivity(Intent(this, EventScheduleActivity::class.java))
-            } else {
-                startActivity(Intent(this, OnboardingActivity::class.java))
-            }
-        }
-        finish()
-    }
+    override fun supportFragmentInjector() = fragmentInjector
 }

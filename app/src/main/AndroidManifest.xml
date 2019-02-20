@@ -52,6 +52,14 @@
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
         <activity
+            android:name=".feature.siecomp.onboarding.OnboardingActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.SIECOMPOnboarding"/>
+        <activity
+            android:name=".feature.siecomp.schedule.EventScheduleActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav"/>
+        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
         <activity
