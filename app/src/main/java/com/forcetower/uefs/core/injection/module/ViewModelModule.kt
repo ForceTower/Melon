@@ -56,6 +56,7 @@ import com.forcetower.uefs.feature.schedule.ScheduleViewModel
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpViewModel
 import com.forcetower.uefs.feature.settings.SettingsViewModel
 import com.forcetower.uefs.feature.setup.SetupViewModel
+import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingViewModel
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryViewModel
 import dagger.Binds
 import dagger.Module
@@ -192,6 +193,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(HourglassViewModel::class)
     abstract fun bindHourglassViewModel(vm: HourglassViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(OnboardingViewModel::class)
+    abstract fun bindOnboardingViewModel(vm: OnboardingViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
