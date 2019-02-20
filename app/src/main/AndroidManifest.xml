@@ -48,6 +48,10 @@
             android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
         <activity
+            android:name=".feature.siecomp.SIECOMPActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
         <activity
@@ -72,7 +76,7 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.obsolete.ObsoleteActivity"
-            android:theme="@style/UTheme.LightNav"/>
+            android:theme="@style/UTheme.LightNav" />
 
         <meta-data
             android:name="preloaded_fonts"

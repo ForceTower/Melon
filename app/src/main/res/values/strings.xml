@@ -488,6 +488,12 @@
     <string name="failed_to_download_disciplines_message">Um erro ocorreu e o aplicativo não conseguiu acessar as informações. Tente novamente</string>
     <string name="your_semester_is">Você está no %1$dº semestre</string>
     <string name="all_the_grades_will_be_downloaded">Todas as notas serão baixadas para que a função funcione corretamente</string>
+    <string name="onboarding_siecomp_event">Participe da XXI SIECOMP</string>
+    <string name="onboarding_join_the_event">Junte-se à confraternização semestral do curso de Engenharia de Computação. Assista a palestras e participe de workshops</string>
+    <string name="onboarding_label_days">D</string>
+    <string name="onboarding_label_hours">H</string>
+    <string name="onboarding_label_mins">M</string>
+    <string name="onboarding_label_seconds">S</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

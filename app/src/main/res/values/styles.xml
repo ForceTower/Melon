@@ -323,5 +323,19 @@
         <item name="android:textColor">@color/text_input_hint_color</item>
     </style>
 
-    <dimen name="padding_borderless_button">16dp</dimen>
+    <style name="TextAppearance.SIECOMP.H1" parent="@style/TextAppearance.AppCompat.Headline">
+        <item name="android:textColor">?attr/colorOnBackground</item>
+    </style>
+
+    <style name="Widget.SIECOMP.OnboardingDeck" parent="@android:style/Widget.Material.TextView">
+        <item name="android:textAppearance">@style/TextAppearance.SIECOMP.OnboardingDeck</item>
+        <item name="android:lineSpacingMultiplier">@dimen/text_line_spacing</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="TextAppearance.SIECOMP.OnboardingDeck" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textColor">?attr/colorOnBackgroundLight</item>
+        <item name="android:textSize">18sp</item>
+        <item name="android:lineSpacingMultiplier">@dimen/text_line_spacing</item>
+    </style>
 </resources>

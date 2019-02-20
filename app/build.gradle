@@ -20,6 +20,18 @@ android {
         versionName name
         multiDexEnabled true
 
+        buildConfigField "String", "SIECOMP_TIMEZONE", "\"America/Bahia\""
+        buildConfigField "String", "SIECOMP_DAY1_START", "\"2019-03-14T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY1_END", "\"2019-03-14T18:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY2_START", "\"2019-03-15T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY2_END", "\"2019-03-15T18:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY3_START", "\"2019-03-18T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY3_END", "\"2019-03-18T18:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY4_START", "\"2019-03-19T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY4_END", "\"2019-03-19T18:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY5_START", "\"2019-03-20T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY5_END", "\"2019-03-20T18:00:00-03:00\""
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -130,7 +142,7 @@ dependencies {
     implementation deps.firebase.functions
     implementation deps.firebase.in_app_messaging
 
-    implementation (deps.logs.crashlytics) { transitive true }
+    implementation(deps.logs.crashlytics) { transitive true }
     implementation deps.logs.timber
 
     implementation deps.play.games
@@ -156,6 +168,7 @@ dependencies {
     implementation deps.others.card_slider
     implementation deps.others.date_time_picker
     implementation deps.others.floating_search
+    api deps.others.zoned_time_date
 
     implementation project(path: ':sagres')
     implementation project(path: ':bypass')
