@@ -66,6 +66,7 @@ versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
 versions.date_time_picker = "4.1.1"
 versions.floating_search = "2.1.1"
+versions.zoned_time_date = "1.1.0"
 
 // Build Versions
 versions.android_gradle_plugin = "3.4.0-beta04"
@@ -183,6 +184,7 @@ others.easy_permissions = "pub.devrel:easypermissions:$versions.easy_permissions
 others.card_slider = "com.ramotion.cardslider:card-slider:$versions.card_slider"
 others.date_time_picker = "com.wdullaer:materialdatetimepicker:$versions.date_time_picker"
 others.floating_search = "com.github.arimorty:floatingsearchview:$versions.floating_search"
+others.zoned_time_date = "com.jakewharton.threetenabp:threetenabp:$versions.zoned_time_date"
 deps.others = others
 
 // Kotlin
