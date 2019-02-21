@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ Copyright (c) 2019.
+  ~ João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This file is part of the UNES Open Source Project.
+  ~
+  ~ UNES is licensed under the MIT License
+  ~
+  ~ Permission is hereby granted, free of charge, to any person obtaining a copy
+  ~ of this software and associated documentation files (the "Software"), to deal
+  ~ in the Software without restriction, including without limitation the rights
+  ~ to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  ~ copies of the Software, and to permit persons to whom the Software is
+  ~ furnished to do so, subject to the following conditions:
+  ~
+  ~ The above copyright notice and this permission notice shall be included in all
+  ~ copies or substantial portions of the Software.
+  ~
+  ~ THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  ~ IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  ~ FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  ~ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  ~ LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  ~ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  ~ SOFTWARE.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="data"
+            type="com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData"/>
+
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.siecomp.common.SessionActions"/>
+
+        <variable
+            name="zone"
+            type="org.threeten.bp.ZoneId"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="?selectableItemBackground"
+        android:paddingEnd="@dimen/spacing_normal"
+        android:paddingVertical="@dimen/spacing_normal"
+        android:onClick="@{() -> listener.openSessionDetails(data.session.uid)}"
+        tools:targetApi="o">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/keyline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/session_keyline"/>
+
+        <TextView
+            android:id="@+id/text_title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toEndOf="@id/keyline"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@{data.session.title}"
+            tools:text="Técnicas para aumento de desempenho pessoal"
+            app:layout_constraintEnd_toStartOf="@+id/bookmark_session"
+            style="@style/TextAppearance.AppCompat.Subhead"
+            android:fontFamily="@font/product_sans_regular" />
+
+        <com.google.android.material.internal.CheckableImageButton
+            android:id="@+id/bookmark_session"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/acc_event_mark_session"
+            android:checked="@{data.isStarred()}"
+            android:onClick="@{() -> listener.onStarClicked(data)}"
+            android:src="@drawable/asld_star_event"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/text_duration_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body1"
+            android:textColor="?attr/colorOnSurfaceLight"
+            android:fontFamily="@font/product_sans_regular"
+            app:layout_constraintEnd_toEndOf="@id/text_title"
+            app:layout_constraintStart_toStartOf="@+id/keyline"
+            app:layout_constraintTop_toBottomOf="@id/text_title"
+            app:sessionStart="@{data.session.startTime}"
+            app:sessionEnd="@{data.session.endTime}"
+            app:sessionRoom="@{data.session.room}"
+            app:timeZoneId="@{zone}"
+            tools:text="1 hora / Auditório 3 / Módulo 4" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_tags"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:orientation="horizontal"
+            android:paddingBottom="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/keyline"
+            app:layout_constraintTop_toBottomOf="@+id/text_duration_location"
+            tools:listitem="@layout/item_event_session_tag"
+            app:sessionTags="@{data.tags()}"
+            tools:itemCount="1"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
