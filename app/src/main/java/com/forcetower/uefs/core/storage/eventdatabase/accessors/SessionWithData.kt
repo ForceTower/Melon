@@ -34,7 +34,7 @@ import com.forcetower.uefs.core.model.siecomp.SessionSpeaker
 import com.forcetower.uefs.core.model.siecomp.SessionStar
 import com.forcetower.uefs.core.model.siecomp.SessionTag
 
-class SessionWithData: Comparable<SessionWithData>{
+class SessionWithData : Comparable<SessionWithData> {
     @Embedded
     lateinit var session: Session
     @Relation(entityColumn = "session_id", parentColumn = "uid", entity = SessionSpeaker::class)

@@ -45,5 +45,5 @@ data class EventDay(
 ) {
     // TODO I need to come back here!
     // fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-     fun formatMonthDay(): String = FORMATTER_MONTH_DAY.format(start)
+    fun formatMonthDay(): String = FORMATTER_MONTH_DAY.format(start)
 }
