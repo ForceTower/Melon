@@ -27,10 +27,14 @@
 
 package com.forcetower.uefs.core.model.siecomp
 
-import androidx.room.*
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import java.util.*
+import java.util.UUID
 
 @Entity(foreignKeys = [
     ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = CASCADE, onUpdate = CASCADE),

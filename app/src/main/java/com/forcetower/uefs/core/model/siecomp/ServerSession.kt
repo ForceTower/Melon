@@ -31,23 +31,23 @@ import com.google.gson.annotations.SerializedName
 import org.threeten.bp.ZonedDateTime
 
 data class ServerSession(
-        @SerializedName(value = "id")
-    val uid: Long,
-        val day: Int,
-        @SerializedName("start_time")
-    val startTime: ZonedDateTime,
-        @SerializedName("end_time")
-    val endTime: ZonedDateTime,
-        val title: String,
-        val room: String,
-        val abstract: String,
-        @SerializedName("photo_url")
-    val photoUrl: String,
-        val uuid: String,
-        val type: Int,
+    @SerializedName(value = "id")
+val uid: Long,
+    val day: Int,
+    @SerializedName("start_time")
+val startTime: ZonedDateTime,
+    @SerializedName("end_time")
+val endTime: ZonedDateTime,
+    val title: String,
+    val room: String,
+    val abstract: String,
+    @SerializedName("photo_url")
+val photoUrl: String,
+    val uuid: String,
+    val type: Int,
 
-        val tags: List<Tag>,
-        val speakers: List<Speaker>
+    val tags: List<Tag>,
+    val speakers: List<Speaker>
 ) {
     fun toSession() = Session(uid, day, startTime, endTime, title, room, abstract, photoUrl, uuid, type)
 

@@ -60,7 +60,7 @@ class ScheduleDayFragment : UFragment(), Injectable {
     }
 
     private val eventDay: Int by lazy {
-        val args = arguments?: throw IllegalStateException("No Arguments")
+        val args = arguments ?: throw IllegalStateException("No Arguments")
         args.getInt(ARG_EVENT_DAY)
     }
 
@@ -100,13 +100,13 @@ class ScheduleDayFragment : UFragment(), Injectable {
             }
         }
 
-        //TODO Maybe move to current event
+        // TODO Maybe move to current event
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.getSessionsFromDayLocal(eventDay).observe(this, Observer {
-            it?: return@Observer
+            it ?: return@Observer
             populateInterface(it)
         })
     }
@@ -126,5 +126,4 @@ class ScheduleDayFragment : UFragment(), Injectable {
             }
         }
     }
-
 }

@@ -58,7 +58,7 @@ class ScheduleDayAdapter(
     }
 }
 
-class TagsAdapter: ListAdapter<Tag, TagHolder>(TagDiff) {
+class TagsAdapter : ListAdapter<Tag, TagHolder>(TagDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): TagHolder {
         val binding = ItemEventSessionTagBinding.inflate(parent.inflater(), parent, false)
         return TagHolder(binding)
@@ -67,14 +67,13 @@ class TagsAdapter: ListAdapter<Tag, TagHolder>(TagDiff) {
     override fun onBindViewHolder(holder: TagHolder, position: Int) {
         holder.bind(getItem(position))
     }
-
 }
 
 class SessionHolder(
-        private val binding: ItemEventSessionBinding,
-        private val tagViewPool: RecyclerView.RecycledViewPool,
-        private val zone: ZoneId
-): RecyclerView.ViewHolder(binding.root) {
+    private val binding: ItemEventSessionBinding,
+    private val tagViewPool: RecyclerView.RecycledViewPool,
+    private val zone: ZoneId
+) : RecyclerView.ViewHolder(binding.root) {
     init {
         binding.recyclerTags.apply {
             setRecycledViewPool(tagViewPool)
@@ -94,14 +93,14 @@ class SessionHolder(
 
 class TagHolder(
     private val binding: ItemEventSessionTagBinding
-): RecyclerView.ViewHolder(binding.root) {
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(tag: Tag) {
         binding.tag = tag
         binding.executePendingBindings()
     }
 }
 
-object SessionDiff: DiffUtil.ItemCallback<SessionWithData>() {
+object SessionDiff : DiffUtil.ItemCallback<SessionWithData>() {
     override fun areItemsTheSame(oldItem: SessionWithData, newItem: SessionWithData): Boolean {
         return oldItem.session.uid == newItem.session.uid
     }
@@ -111,7 +110,7 @@ object SessionDiff: DiffUtil.ItemCallback<SessionWithData>() {
     }
 }
 
-object TagDiff: DiffUtil.ItemCallback<Tag>() {
+object TagDiff : DiffUtil.ItemCallback<Tag>() {
     override fun areItemsTheSame(oldItem: Tag, newItem: Tag): Boolean {
         return oldItem.uid == newItem.uid
     }
@@ -119,5 +118,4 @@ object TagDiff: DiffUtil.ItemCallback<Tag>() {
     override fun areContentsTheSame(oldItem: Tag, newItem: Tag): Boolean {
         return oldItem == newItem
     }
-
 }

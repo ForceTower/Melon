@@ -28,9 +28,12 @@
 package com.forcetower.uefs.core.storage.eventdatabase.dao
 
 import androidx.lifecycle.LiveData
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import androidx.room.Transaction
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Session
 import com.forcetower.uefs.core.model.siecomp.SessionSpeaker
