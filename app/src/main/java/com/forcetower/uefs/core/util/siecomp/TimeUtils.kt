@@ -31,6 +31,8 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.siecomp.EventDay
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
 
 /**
  * Provides default timers...
@@ -73,5 +75,16 @@ object TimeUtils {
 
     fun eventHasEnded(): Boolean {
         return ZonedDateTime.now().isAfter(EventDays.last().end)
+    }
+
+    fun zonedTime(time: ZonedDateTime, zoneId: ZoneId = ZoneId.systemDefault()): ZonedDateTime {
+        return ZonedDateTime.ofInstant(time.toInstant(), zoneId)
+    }
+
+    fun timeString(startTime: ZonedDateTime, endTime: ZonedDateTime): String {
+        val sb = StringBuilder()
+        sb.append(DateTimeFormatter.ofPattern("EEE, d 'de' MMM, H:mm").withLocale(Locale.getDefault()).format(startTime))
+        sb.append(DateTimeFormatter.ofPattern(" - H:mm").format(endTime))
+        return sb.toString()
     }
 }
