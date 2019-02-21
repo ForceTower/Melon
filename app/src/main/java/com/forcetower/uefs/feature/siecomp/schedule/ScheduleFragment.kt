@@ -34,11 +34,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -102,7 +99,7 @@ class ScheduleFragment : UFragment(), Injectable {
 //        }
     }
 
-    inner class ScheduleAdapter(fm: FragmentManager): FragmentPagerAdapter(fm) {
+    inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
         override fun getCount() = COUNT
 
         override fun getItem(position: Int): Fragment {
@@ -112,7 +109,6 @@ class ScheduleFragment : UFragment(), Injectable {
         override fun getPageTitle(position: Int): CharSequence? {
             return TimeUtils.EventDays[position].formatMonthDay()
         }
-
     }
 
     companion object {

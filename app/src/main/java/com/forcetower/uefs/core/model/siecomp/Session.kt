@@ -27,11 +27,13 @@
 
 package com.forcetower.uefs.core.model.siecomp
 
-import androidx.room.*
-import androidx.room.ForeignKey.CASCADE
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Ignore
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import org.threeten.bp.ZonedDateTime
-import java.util.*
 
 @Entity(indices = [
     Index(value = ["uuid"], unique = true)
@@ -55,7 +57,7 @@ data class Session(
     var photoUrl: String = "",
     var uuid: String = "",
     var type: Int = 0
-): Comparable<Session> {
+) : Comparable<Session> {
 
     @Ignore
     val year = startTime.year

@@ -27,13 +27,15 @@
 
 package com.forcetower.uefs.core.model.siecomp
 
-import androidx.room.*
-import androidx.room.ForeignKey.NO_ACTION
+import androidx.room.ColumnInfo
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(indices = [
     Index(value = ["session_id"], unique = true)
 ])
-data class SessionStar (
+data class SessionStar(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,
     @ColumnInfo(name = "session_id")

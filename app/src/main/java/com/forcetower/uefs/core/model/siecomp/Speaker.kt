@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.core.model.siecomp
 
-import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey

@@ -57,10 +57,10 @@ import timber.log.Timber
 import java.util.Locale
 
 class ScheduleItemHeaderDecoration(
-        context: Context,
-        sessions: List<SessionWithData>,
-        zoneId: ZoneId
-): RecyclerView.ItemDecoration() {
+    context: Context,
+    sessions: List<SessionWithData>,
+    zoneId: ZoneId
+) : RecyclerView.ItemDecoration() {
     private val paint: TextPaint
     private val width: Int
     private val paddingTop: Int
@@ -101,7 +101,6 @@ class ScheduleItemHeaderDecoration(
             indexSessionHeaders(sessions, zoneId).map {
                 it.first to createHeader(it.second)
             }.toMap()
-
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         if (timeSlots.isEmpty() || parent.isEmpty()) return
