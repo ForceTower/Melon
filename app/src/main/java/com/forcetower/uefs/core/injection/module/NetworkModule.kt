@@ -33,13 +33,17 @@ import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
 import com.forcetower.uefs.core.storage.network.github.GithubService
+import com.forcetower.uefs.core.util.ObjectUtils
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
 import com.franmontiel.persistentcookiejar.cache.SetCookieCache
 import com.franmontiel.persistentcookiejar.persistence.SharedPrefsCookiePersistor
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import org.threeten.bp.ZonedDateTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
@@ -89,12 +93,21 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideService(client: OkHttpClient): UService {
+    fun provideGson(): Gson {
+        return GsonBuilder()
+                .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
+                .create()
+    }
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideService(client: OkHttpClient, gson: Gson): UService {
         return Retrofit.Builder()
                 .baseUrl(Constants.UNES_SERVICE_URL)
                 .client(client)
                 .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
                 .build()
                 .create(UService::class.java)
     }

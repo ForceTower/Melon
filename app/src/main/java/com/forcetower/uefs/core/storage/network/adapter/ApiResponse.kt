@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.storage.network.adapter
 
 import retrofit2.Response
+import timber.log.Timber
 
 /**
  * Common class used by API responses.
@@ -37,6 +38,7 @@ import retrofit2.Response
 sealed class ApiResponse<T> {
     companion object {
         fun <T> create(error: Throwable): ApiErrorResponse<T> {
+            Timber.d("A throwable... ${error.message}")
             return ApiErrorResponse(error.message ?: "unknown error")
         }
 
@@ -44,8 +46,10 @@ sealed class ApiResponse<T> {
             return if (response.isSuccessful) {
                 val body = response.body()
                 if (body == null || response.code() == 204) {
+                    Timber.d("An empty response")
                     ApiEmptyResponse()
                 } else {
+                    Timber.d("A successful response")
                     ApiSuccessResponse(body = body)
                 }
             } else {
@@ -55,6 +59,7 @@ sealed class ApiResponse<T> {
                 } else {
                     msg
                 }
+                Timber.d("A error code... ${response.code()}")
                 ApiErrorResponse(errorMsg ?: "unknown error")
             }
         }

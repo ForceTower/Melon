@@ -32,7 +32,7 @@
     <data>
         <variable
             name="viewModel"
-            type="com.forcetower.uefs.feature.siecomp.EventViewModel"/>
+            type="com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -66,7 +66,13 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                app:tabTextAppearance="@style/TextAppearanceTabLayout"/>
+                app:tabTextAppearance="@style/TextAppearanceTabLayout"
+                app:tabTextColor="?attr/colorPrimary"
+                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabMode="scrollable"
+                app:tabIndicatorFullWidth="false"
+                app:tabIndicator="@drawable/tab_indicator"
+                android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
 
         <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
