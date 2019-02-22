@@ -510,6 +510,10 @@
     <string name="speaker_link_github">GitHub</string>
     <string name="speaker_link_linkedin">LinkedIn</string>
     <string name="speaker_link_facebook">Facebook</string>
+    <string name="ev_editor_sessions">Sessões</string>
+    <string name="ev_editor_speakers">Apresentadores</string>
+    <string name="ev_editor_tags">Tags</string>
+    <string name="ev_editor_info">Editor de sessões e outras coisas.\n\nVocê precisa estar autenticado, autorizado e pulando corda para que consiga fazer qualquer modificação.\n\nNote que a edição do horário e local ou apagar uma sessão irá notificar os usuários que a marcaram :)</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

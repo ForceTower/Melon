@@ -47,6 +47,8 @@ class ProfileViewModel @Inject constructor(
     val profile: LiveData<Profile?>
         get() = _profile
 
+    private val me = repository.getMeProfile()
+
     private val _course = MediatorLiveData<Course>()
     val course: LiveData<Course>
         get() = _course
