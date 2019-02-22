@@ -31,6 +31,8 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -73,7 +75,7 @@ class ScheduleFragment : UFragment(), Injectable {
             binding = it
         }.apply {
             actions = this@ScheduleFragment.viewModel
-            setLifecycleOwner(this@ScheduleFragment)
+            lifecycleOwner = this@ScheduleFragment
         }.root
     }
 
@@ -117,6 +119,14 @@ class ScheduleFragment : UFragment(), Injectable {
         }
 
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
+        profileViewModel.profile.observe(this, Observer {
+            val courseId = it?.course ?: 1
+            binding.btnSiecompSchedule.visibility = if (courseId == 1L) {
+                VISIBLE
+            } else {
+                GONE
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

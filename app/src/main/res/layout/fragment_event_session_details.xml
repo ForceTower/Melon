@@ -27,7 +27,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -40,7 +41,9 @@
             android:paddingBottom="?actionBarSize"
             android:scrollbars="vertical"
             app:hasFixedSize="@{true}"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:listitem="@layout/item_event_session_info"
+            tools:itemCount="1"/>
 
         <ImageButton
             android:id="@+id/up"
@@ -49,6 +52,7 @@
             android:layout_gravity="start|top"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/navigate_up"
+            app:tint="?attr/colorOnSurface"
             app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

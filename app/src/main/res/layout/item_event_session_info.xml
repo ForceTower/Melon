@@ -128,7 +128,7 @@
             android:id="@+id/session_detail_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/session_detail_with_video_title"
@@ -143,7 +143,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_micro"
             android:text="@{viewModel.session.room}"
-            android:textColor="@color/text_primary_dark"
+            android:textColor="?attr/colorOnSurface"
             app:layout_constrainedWidth="true"
             app:layout_constraintBottom_toTopOf="@id/session_detail_level_barrier"
             app:layout_constraintHorizontal_bias="0"
@@ -177,6 +177,7 @@
             android:layout_marginTop="@dimen/margin_normal"
             android:paddingTop="@dimen/spacing_normal"
             android:text="@{viewModel.session.resume}"
+            android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/session_detail_countdown_timer"
@@ -192,7 +193,9 @@
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/session_detail_description"
             app:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
-            app:sessionTags="@{viewModel.tags}" />
+            app:sessionTags="@{viewModel.tags}"
+            tools:listitem="@layout/item_event_session_tag"
+            tools:itemCount="2"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
