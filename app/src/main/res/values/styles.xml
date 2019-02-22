@@ -131,6 +131,10 @@
         <item name="android:windowExitAnimation">@android:anim/fade_out</item>
     </style>
 
+    <style name="UTheme.Speaker" parent="UTheme.LightNav">
+        <item name="android:windowSharedElementEnterTransition">@transition/speaker_shared_enter</item>
+    </style>
+
     <style name="UTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
     </style>
 
@@ -277,6 +281,12 @@
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMaxTextSize">34sp</item>
     </style>
+
+    <style name="Widget.Schedule.HeaderGrid">
+        <item name="android:color">@color/light_grey</item>
+        <item name="gridSize">8dp</item>
+        <item name="gridStrokeWidth">1dp</item>
+    </style>
     
     <style name="TextAppearance.Melon.DisciplineTitle.Display" parent="@style/TextAppearance.AppCompat.Display1">
         <item name="android:fontFamily">@font/product_sans_regular</item>
@@ -367,15 +377,27 @@
 
     <style name="Widget.Schedule.SessionDetailTitle">
         <item name="android:gravity">start|bottom</item>
-        <item name="android:textAppearance">@style/TextAppearance.Schedule.SessionTitle.Display</item>
+        <item name="android:textAppearance">@style/TextAppearance.SIECOMP.SessionTitle.Display</item>
         <item name="android:breakStrategy" tools:targetApi="m">balanced</item>
         <item name="android:lineSpacingMultiplier">1</item>
         <item name="autoSizeTextType">uniform</item>
         <item name="autoSizeMaxTextSize">34sp</item>
     </style>
 
-    <style name="TextAppearance.Schedule.SessionTitle.Display" parent="@style/TextAppearance.AppCompat.Display1">
+    <style name="TextAppearance.SIECOMP.SessionTitle.Display" parent="@style/TextAppearance.AppCompat.Display1">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textColor">?attr/colorOnSurface</item>
+    </style>
+
+    <style name="TextAppearance.SIECOMP.Subhead" parent="@style/TextAppearance.AppCompat.Body1">
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">?attr/colorOnSurfaceLight</item>
+        <item name="android:textAllCaps">true</item>
+    </style>
+
+    <style name="TextAppearance.SIECOMP.SpeakerTitle" parent="@style/TextAppearance.AppCompat.Subhead">
+        <item name="android:textColor">?attr/colorOnSurface</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>

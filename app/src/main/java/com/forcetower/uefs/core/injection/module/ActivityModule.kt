@@ -30,6 +30,8 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.LauncherActivity
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPOnboardingModule
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPScheduleModule
+import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPSessionModule
+import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPSpeakerModule
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
@@ -43,6 +45,8 @@ import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.setup.SetupActivity
 import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
 import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
+import com.forcetower.uefs.feature.siecomp.session.EventSessionDetailsActivity
+import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -76,4 +80,8 @@ abstract class ActivityModule {
     abstract fun bindSIECOMPOnboardingActivity(): OnboardingActivity
     @ContributesAndroidInjector(modules = [SIECOMPScheduleModule::class])
     abstract fun bindSIECOMPScheduleActivity(): EventScheduleActivity
+    @ContributesAndroidInjector(modules = [SIECOMPSessionModule::class])
+    abstract fun bindSessionDetailsActivity(): EventSessionDetailsActivity
+    @ContributesAndroidInjector(modules = [SIECOMPSpeakerModule::class])
+    abstract fun bindSpeakerActivity(): EventSpeakerActivity
 }

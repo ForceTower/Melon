@@ -501,6 +501,15 @@
     <string name="onboarding_build_sched_benefits">Você será notificado em caso de mudança no horário ou localização da sessão</string>
     <string name="event_starred">Sessão marcada!</string>
     <string name="event_unstarred">Sessão desmarcada</string>
+    <string name="session_detail_header_aspect" translatable="false">H,16:9</string>
+    <string name="session_detail_speakers_header">Apresentadores / Palestrantes</string>
+    <string name="speaker_headshot_transition">speak_headshot</string>
+    <string name="speaker_link_separator">/</string>
+    <string name="speaker_link_website">Website</string>
+    <string name="speaker_link_twitter">Twitter</string>
+    <string name="speaker_link_github">GitHub</string>
+    <string name="speaker_link_linkedin">LinkedIn</string>
+    <string name="speaker_link_facebook">Facebook</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -567,5 +576,9 @@
     <plurals name="duration_minutes">
         <item quantity="one">%1$s minuto</item>
         <item quantity="other">%1$s minutos</item>
+    </plurals>
+    <plurals name="session_starting_in">
+        <item quantity="one">A sessão começa em %1$s minuto</item>
+        <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
 </resources>
