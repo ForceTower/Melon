@@ -26,8 +26,29 @@
   ~ SOFTWARE.
   -->
 
-<resources>
-    <item name="np__increment" type="id" />
-    <item name="np__decrement" type="id" />
-    <item name="tag_speaker_id" type="id" />
-</resources>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/speaker_detail_recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_gravity="start|top"
+            app:hasFixedSize="@{true}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+
+        <ImageButton
+            android:id="@+id/up"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="start|top"
+            android:background="?selectableItemBackgroundBorderless"
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            android:importantForAccessibility="no"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

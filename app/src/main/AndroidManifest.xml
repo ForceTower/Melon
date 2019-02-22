@@ -60,6 +60,14 @@
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav"/>
         <activity
+            android:name=".feature.siecomp.session.EventSessionDetailsActivity"
+            android:parentActivityName=".feature.siecomp.schedule.EventScheduleActivity"
+            android:theme="@style/UTheme.LightNav"/>
+        <activity
+            android:name=".feature.siecomp.speaker.EventSpeakerActivity"
+            android:parentActivityName=".feature.siecomp.schedule.EventScheduleActivity"
+            android:theme="@style/UTheme.Speaker"/>
+        <activity
             android:name="com.theartofdev.edmodo.cropper.CropImageActivity"
             android:theme="@style/CropTheme.Default" />
         <activity

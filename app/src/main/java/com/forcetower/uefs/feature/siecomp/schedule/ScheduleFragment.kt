@@ -46,6 +46,7 @@ import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
+import com.forcetower.uefs.feature.siecomp.session.EventSessionDetailsActivity
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 
@@ -70,7 +71,7 @@ class ScheduleFragment : UFragment(), Injectable {
         }
 
         viewModel.navigateToSessionAction.observe(this, EventObserver {
-            // TODO openSessionDetails(it)
+            openSessionDetails(it)
         })
 
         viewModel.snackbarMessenger.observe(this, EventObserver {
@@ -99,6 +100,10 @@ class ScheduleFragment : UFragment(), Injectable {
             viewModel.sessionsLoaded = true
             viewModel.loadSessions()
         }
+    }
+
+    private fun openSessionDetails(id: Long) {
+        startActivity(EventSessionDetailsActivity.startIntent(requireContext(), id))
     }
 
     inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
