@@ -69,7 +69,6 @@
             android:importantForAccessibility="no"
             android:padding="@dimen/onboarding_animation_padding"
             android:src="@mipmap/event_logo"
-            android:scaleType="center"
             app:layout_constraintBottom_toTopOf="@id/welcome"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"

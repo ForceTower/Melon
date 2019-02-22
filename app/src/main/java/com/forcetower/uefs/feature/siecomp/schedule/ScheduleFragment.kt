@@ -34,22 +34,25 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.feature.siecomp.EventViewModel
+import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 
 class ScheduleFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: EventViewModel
+    private lateinit var viewModel: SIECOMPEventViewModel
     private lateinit var binding: FragmentEventScheduleBinding
     private lateinit var viewPager: ViewPager
     private lateinit var tabs: TabLayout
@@ -85,18 +88,17 @@ class ScheduleFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-//        TODO
-//        viewModel.refreshSource.observe(this, Observer {
-//            when (it.status) {
-//                Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
-//                Status.LOADING, Status.SUCCESS -> {}
-//            }
-//        })
-//
-//        if (!viewModel.sessionsLoaded) {
-//            viewModel.sessionsLoaded = true
-//            viewModel.loadSessions()
-//        }
+        viewModel.refreshSource.observe(this, Observer {
+            when (it.status) {
+                Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
+                Status.LOADING, Status.SUCCESS -> {}
+            }
+        })
+
+        if (!viewModel.sessionsLoaded) {
+            viewModel.sessionsLoaded = true
+            viewModel.loadSessions()
+        }
     }
 
     inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
