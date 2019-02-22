@@ -25,17 +25,41 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.core.model.siecomp
 
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import com.google.gson.annotations.SerializedName
+import org.threeten.bp.ZonedDateTime
 
-@Module
-abstract class SIECOMPScheduleModule {
-    @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
-    @ContributesAndroidInjector
-    abstract fun scheduleDayFragment(): ScheduleDayFragment
+data class ServerSession(
+    @SerializedName(value = "id")
+val uid: Long,
+    val day: Int,
+    @SerializedName("start_time")
+val startTime: ZonedDateTime,
+    @SerializedName("end_time")
+val endTime: ZonedDateTime,
+    val title: String,
+    val room: String,
+    val abstract: String,
+    @SerializedName("photo_url")
+val photoUrl: String,
+    val uuid: String,
+    val type: Int,
+
+    val tags: List<Tag>,
+    val speakers: List<Speaker>
+) {
+    fun toSession() = Session(uid, day, startTime, endTime, title, room, abstract, photoUrl, uuid, type)
+
+    override fun toString() = "$uid _ $day: $title\n[$speakers]\n[$tags]"
+
+    companion object {
+        fun from(session: Session, tags: List<Tag>, speakers: List<Speaker>): ServerSession {
+            return ServerSession(
+                    session.uid, session.day, session.startTime, session.endTime,
+                    session.title, session.room, session.resume, session.photoUrl,
+                    session.uuid, session.type, tags, speakers
+            )
+        }
+    }
 }

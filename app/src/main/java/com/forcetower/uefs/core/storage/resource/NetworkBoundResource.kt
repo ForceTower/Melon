@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiEmptyResponse
 import com.forcetower.uefs.core.storage.network.adapter.ApiErrorResponse
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.storage.network.adapter.ApiSuccessResponse
+import timber.log.Timber
 
 abstract class NetworkBoundResource<ResultType, RequestType>
 @MainThread constructor(private val executors: AppExecutors) {
@@ -65,6 +66,7 @@ abstract class NetworkBoundResource<ResultType, RequestType>
         result.addSource(apiResponse) { response ->
             result.removeSource(apiResponse)
             result.removeSource(dbSource)
+            Timber.d("Received response: ${response.javaClass}")
             when (response) {
                 is ApiSuccessResponse -> {
                     executors.diskIO().execute {
