@@ -181,7 +181,7 @@
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:visibility="visible"
+            android:visibility="gone"
             app:backgroundTint="?attr/colorPrimary"
             app:cornerRadius="32dp"
             app:icon="@drawable/ic_local_activity_black_24dp"
