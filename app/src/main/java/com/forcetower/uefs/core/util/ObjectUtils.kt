@@ -25,25 +25,37 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.siecomp
+package com.forcetower.uefs.core.util
 
-import android.annotation.SuppressLint
+import com.forcetower.uefs.BuildConfig
+import com.google.gson.JsonDeserializer
+import com.google.gson.JsonParseException
+import org.threeten.bp.Instant
+import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
-import java.util.Locale
 
-private const val formatPattern = "d 'de' MMMM"
+object ObjectUtils {
+    @JvmStatic
+    val ZDT_DESERIALIZER: JsonDeserializer<ZonedDateTime> = JsonDeserializer { json, _, _ ->
+        val jsonPrimitive = json.asJsonPrimitive
+        try {
 
-@SuppressLint("ConstantLocale")
-val FORMATTER_MONTH_DAY: DateTimeFormatter =
-        DateTimeFormatter.ofPattern(formatPattern, Locale.getDefault())
+            // if provided as String - '2011-12-03 10:15:30'
+            if (jsonPrimitive.isString) {
+                val pattern = "yyyy-MM-dd HH:mm:ss"
+                val parser = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of(BuildConfig.SIECOMP_TIMEZONE))
+                return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString, parser)
+            }
 
-data class EventDay(
-    val order: Int,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime
-) {
-    // TODO I need to come back here!
-    // fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-    fun formatMonthDay(): String = FORMATTER_MONTH_DAY.format(start)
+            // if provided as Long
+            if (jsonPrimitive.isNumber) {
+                return@JsonDeserializer ZonedDateTime.ofInstant(Instant.ofEpochMilli(jsonPrimitive.asLong), ZoneId.systemDefault())
+            }
+        } catch (e: RuntimeException) {
+            throw JsonParseException("Unable to parse ZonedDateTime", e)
+        }
+
+        throw JsonParseException("Unable to parse ZonedDateTime")
+    }
 }

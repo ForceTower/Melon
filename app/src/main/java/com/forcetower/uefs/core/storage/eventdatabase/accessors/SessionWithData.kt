@@ -25,17 +25,30 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.core.storage.eventdatabase.accessors
 
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.room.Embedded
+import androidx.room.Relation
+import com.forcetower.uefs.core.model.siecomp.Session
+import com.forcetower.uefs.core.model.siecomp.SessionSpeaker
+import com.forcetower.uefs.core.model.siecomp.SessionStar
+import com.forcetower.uefs.core.model.siecomp.SessionTag
 
-@Module
-abstract class SIECOMPScheduleModule {
-    @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
-    @ContributesAndroidInjector
-    abstract fun scheduleDayFragment(): ScheduleDayFragment
+class SessionWithData : Comparable<SessionWithData> {
+    @Embedded
+    lateinit var session: Session
+    @Relation(entityColumn = "session_id", parentColumn = "uid", entity = SessionSpeaker::class)
+    lateinit var speakersRel: List<SessionSpeakerTalker>
+    @Relation(entityColumn = "session_id", parentColumn = "uid", entity = SessionTag::class)
+    lateinit var displayTags: List<SessionTagged>
+    @Relation(entityColumn = "session_id", parentColumn = "uid")
+    lateinit var stars: List<SessionStar>
+
+    fun tags() = displayTags.map { it.singleTag() }.filter { !it.internal }
+    fun speakers() = speakersRel.map { it.singleSpeaker() }
+    fun isStarred() = stars.isNotEmpty()
+
+    override fun compareTo(other: SessionWithData): Int {
+        return session.compareTo(other.session)
+    }
 }

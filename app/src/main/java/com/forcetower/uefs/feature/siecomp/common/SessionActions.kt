@@ -25,17 +25,11 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.feature.siecomp.common
 
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 
-@Module
-abstract class SIECOMPScheduleModule {
-    @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
-    @ContributesAndroidInjector
-    abstract fun scheduleDayFragment(): ScheduleDayFragment
+interface SessionActions {
+    fun openSessionDetails(id: Long)
+    fun onStarClicked(session: SessionWithData)
 }
