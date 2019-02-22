@@ -58,6 +58,8 @@ import com.forcetower.uefs.feature.settings.SettingsViewModel
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingViewModel
+import com.forcetower.uefs.feature.siecomp.session.SIECOMPSessionViewModel
+import com.forcetower.uefs.feature.siecomp.speaker.SIECOMPSpeakerViewModel
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryViewModel
 import dagger.Binds
 import dagger.Module
@@ -204,6 +206,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SIECOMPEventViewModel::class)
     abstract fun bindSIECOMPEventViewModel(vm: SIECOMPEventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SIECOMPSessionViewModel::class)
+    abstract fun bindSIECOMPSessionViewModel(vm: SIECOMPSessionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(SIECOMPSpeakerViewModel::class)
+    abstract fun bindSIECOMPSpeakerViewModel(vm: SIECOMPSpeakerViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
