@@ -27,8 +27,14 @@
 
 package com.forcetower.uefs.feature.siecomp.schedule
 
+import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.ActivityEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
@@ -36,6 +42,26 @@ import javax.inject.Inject
 class EventScheduleActivity : UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+
+    private lateinit var binding: ActivityEventScheduleBinding
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_event_schedule)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.beginTransaction()
+                    .replace(R.id.fragment_container, ScheduleFragment())
+                    .commit()
+        }
+    }
+
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+        snack.config()
+        snack.show()
+    }
 
     override fun supportFragmentInjector() = fragmentInjector
 }

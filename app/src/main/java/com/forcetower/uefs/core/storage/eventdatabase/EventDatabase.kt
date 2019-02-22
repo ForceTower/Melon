@@ -25,17 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.core.storage.eventdatabase
 
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.room.Database
+import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
+import com.forcetower.uefs.core.model.siecomp.Session
+import com.forcetower.uefs.core.model.siecomp.SessionSpeaker
+import com.forcetower.uefs.core.model.siecomp.SessionStar
+import com.forcetower.uefs.core.model.siecomp.SessionTag
+import com.forcetower.uefs.core.model.siecomp.Speaker
+import com.forcetower.uefs.core.model.siecomp.Tag
+import com.forcetower.uefs.core.storage.eventdatabase.dao.Converters
+import com.forcetower.uefs.core.storage.eventdatabase.dao.EventDao
 
-@Module
-abstract class SIECOMPScheduleModule {
-    @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
-    @ContributesAndroidInjector
-    abstract fun scheduleDayFragment(): ScheduleDayFragment
+@Database(entities = [
+    Session::class,
+    Tag::class,
+    Speaker::class,
+    SessionTag::class,
+    SessionSpeaker::class,
+    SessionStar::class
+], version = 1, exportSchema = true)
+@TypeConverters(value = [Converters::class])
+abstract class EventDatabase : RoomDatabase() {
+    abstract fun eventDao(): EventDao
 }

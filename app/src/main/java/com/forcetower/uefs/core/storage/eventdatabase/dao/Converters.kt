@@ -25,17 +25,22 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.core.storage.eventdatabase.dao
 
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
-import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.room.TypeConverter
+import org.threeten.bp.ZonedDateTime
 
-@Module
-abstract class SIECOMPScheduleModule {
-    @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
-    @ContributesAndroidInjector
-    abstract fun scheduleDayFragment(): ScheduleDayFragment
+object Converters {
+
+    @TypeConverter
+    @JvmStatic
+    fun zonedDateTimeToString(zoned: ZonedDateTime): String {
+        return zoned.toString()
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun stringToZonedDateTime(value: String): ZonedDateTime {
+        return ZonedDateTime.parse(value)
+    }
 }

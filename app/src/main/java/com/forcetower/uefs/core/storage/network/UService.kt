@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.network
 
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.service.UNESUpdate
+import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
@@ -59,4 +60,7 @@ interface UService {
 
     @GET("update")
     fun getUpdate(): Call<UNESUpdate>
+
+    @GET("siecomp/list_sessions")
+    fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>
 }
