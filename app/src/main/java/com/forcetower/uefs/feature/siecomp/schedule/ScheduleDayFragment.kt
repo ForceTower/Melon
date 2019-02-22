@@ -46,7 +46,7 @@ import com.forcetower.uefs.databinding.FragmentEventScheduleDayBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.clearDecorations
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.feature.siecomp.EventViewModel
+import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import javax.inject.Inject
 
 class ScheduleDayFragment : UFragment(), Injectable {
@@ -66,7 +66,7 @@ class ScheduleDayFragment : UFragment(), Injectable {
 
     @Inject
     lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: EventViewModel
+    private lateinit var viewModel: SIECOMPEventViewModel
     private lateinit var binding: FragmentEventScheduleDayBinding
     private lateinit var adapter: ScheduleDayAdapter
     private val tagViewPool = RecyclerView.RecycledViewPool()

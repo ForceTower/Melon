@@ -101,7 +101,7 @@
             app:timeZoneId="@{zone}"
             tools:text="1 hora / Auditório 3 / Módulo 4" />
 
-        <androidx.recyclerview.widget.RecyclerView
+        <com.forcetower.uefs.widget.DisabledRecyclerView
             android:id="@+id/recycler_tags"
             android:layout_width="0dp"
             android:layout_height="wrap_content"

@@ -37,12 +37,12 @@ import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.databinding.ItemEventSessionBinding
 import com.forcetower.uefs.databinding.ItemEventSessionTagBinding
 import com.forcetower.uefs.feature.shared.inflater
-import com.forcetower.uefs.feature.siecomp.EventViewModel
+import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import com.forcetower.uefs.widget.UnscrollableFlexboxLayoutManager
 import org.threeten.bp.ZoneId
 
 class ScheduleDayAdapter(
-    private val viewModel: EventViewModel,
+    private val viewModel: SIECOMPEventViewModel,
     private val tagViewPool: RecyclerView.RecycledViewPool,
     private val zone: ZoneId
 ) : ListAdapter<SessionWithData, SessionHolder>(SessionDiff) {

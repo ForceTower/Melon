@@ -40,7 +40,7 @@ import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.siecomp.common.SessionActions
 import javax.inject.Inject
 
-class EventViewModel @Inject constructor(
+class SIECOMPEventViewModel @Inject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel(), SessionActions {
     var sessionsLoaded: Boolean = false
@@ -94,8 +94,6 @@ class EventViewModel @Inject constructor(
         }
 
         _snackbarMessenger.value = Event(stringResId)
-
-        // TODO
-        // repository.markSessionStar(session.session.uid, newIsStarredState)
+        repository.markSessionStar(session.session.uid, newIsStarredState)
     }
 }

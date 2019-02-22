@@ -27,7 +27,15 @@
 
 package com.forcetower.uefs.core.injection.module.siecomp
 
+import com.forcetower.uefs.feature.siecomp.schedule.ScheduleDayFragment
+import com.forcetower.uefs.feature.siecomp.schedule.ScheduleFragment
 import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class SIECOMPScheduleModule
+abstract class SIECOMPScheduleModule {
+    @ContributesAndroidInjector
+    abstract fun scheduleFragment(): ScheduleFragment
+    @ContributesAndroidInjector
+    abstract fun scheduleDayFragment(): ScheduleDayFragment
+}

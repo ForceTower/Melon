@@ -496,7 +496,7 @@
     <string name="onboarding_label_seconds">S</string>
     <string name="onboarding_get_started">Vamos lá!</string>
     <string name="onboarding_welcome_to_siecomp">Boas-vindas à SIECOMP</string>
-    <string name="onboarding_date_location">De 14 à 20 de março na UEFS</string>
+    <string name="onboarding_date_location">De 14 à 20 de março na UEFS. (Em testes, a programação real não é essa, essa é do semestre passado, #pas)</string>
     <string name="onboarding_customize_schedule">Crie sua programação</string>
     <string name="onboarding_build_sched_benefits">Você será notificado em caso de mudança no horário ou localização da sessão</string>
     <string name="event_starred">Sessão marcada!</string>
