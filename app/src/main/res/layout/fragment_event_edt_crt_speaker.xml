@@ -56,7 +56,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{speaker.name}"
-                    android:inputType="text|textPersonName|textAutoCorrect|textAutoComplete"
+                    android:inputType="text|textPersonName|textAutoCorrect|textAutoComplete|textCapSentences"
                     android:hint="Nome"/>
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -81,7 +81,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@{speaker.lab}"
-                    android:inputType="text|textAutoCorrect|textAutoComplete|textShortMessage"
+                    android:inputType="text|textAutoCorrect|textAutoComplete|textShortMessage|textCapSentences"
                     android:hint="Laborátorio/Grupo/Trabalho"/>
             </com.google.android.material.textfield.TextInputLayout>
 
