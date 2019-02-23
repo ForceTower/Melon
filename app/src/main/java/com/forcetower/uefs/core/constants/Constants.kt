@@ -28,7 +28,7 @@
 package com.forcetower.uefs.core.constants
 
 object Constants {
-    private const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
+    const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
     private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
     const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
     const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"

@@ -91,5 +91,17 @@
                 app:pageMargin="@{@dimen/spacing_normal}"/>
         </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
 
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/create_session_float"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_add_black_24dp"
+            app:backgroundTint="?attr/colorPrimary"
+            android:layout_margin="16dp"
+            android:visibility="gone"
+            app:layout_anchor="@+id/swipe_refresh"
+            app:layout_anchorGravity="end|bottom" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

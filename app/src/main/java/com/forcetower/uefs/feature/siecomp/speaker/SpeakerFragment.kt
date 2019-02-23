@@ -30,6 +30,8 @@ package com.forcetower.uefs.feature.siecomp.speaker
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.app.NavUtils
 import androidx.core.os.bundleOf
@@ -40,8 +42,10 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventSpeakerBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.forcetower.uefs.feature.siecomp.editor.CreateSpeakerFragment
 import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
 import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity.Companion.SPEAKER_ID
 import javax.inject.Inject
@@ -89,6 +93,23 @@ class SpeakerFragment : UFragment(), Injectable {
         }
         binding.up.setOnClickListener {
             NavUtils.navigateUpFromSameTask(requireActivity())
+        }
+
+        speakerViewModel.access.observe(this, Observer {
+            binding.editFloat.visibility = if (it != null) {
+                VISIBLE
+            } else {
+                GONE
+            }
+        })
+
+        binding.editFloat.setOnClickListener {
+            fragmentManager?.inTransaction {
+                replace(R.id.speaker_container, CreateSpeakerFragment().apply {
+                    arguments = this@SpeakerFragment.arguments
+                })
+                addToBackStack(null)
+            }
         }
 
         return binding.root

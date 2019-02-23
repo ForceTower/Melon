@@ -39,7 +39,7 @@ import org.threeten.bp.ZonedDateTime
     Index(value = ["uuid"], unique = true)
 ])
 data class Session(
-    @SerializedName(value = "id")
+    @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,
     @ColumnInfo(name = "day_id")

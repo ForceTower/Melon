@@ -28,13 +28,28 @@
 package com.forcetower.uefs.feature.siecomp.editor
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class SIECOMPEditorActivity : UActivity() {
+class SIECOMPEditorActivity : UActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_siecomp_editor)
+
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                add(R.id.fragment_container, IndexFragment())
+            }
+        }
     }
+
+    override fun supportFragmentInjector() = fragmentInjector
 }

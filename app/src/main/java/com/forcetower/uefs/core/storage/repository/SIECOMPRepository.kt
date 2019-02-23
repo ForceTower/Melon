@@ -27,14 +27,18 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.siecomp.AccessToken
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
+import com.forcetower.uefs.service.NotificationCreator
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -42,7 +46,8 @@ import javax.inject.Singleton
 class SIECOMPRepository @Inject constructor(
     private val database: EventDatabase,
     private val executors: AppExecutors,
-    private val service: UService
+    private val service: UService,
+    private val context: Context
 ) {
     fun getSessionsFromDayLocal(day: Int) = database.eventDao().getSessionsFromDay(day)
 
@@ -68,5 +73,50 @@ class SIECOMPRepository @Inject constructor(
         executors.diskIO().execute {
             database.eventDao().markSessionStar(sessionId, star)
         }
+    }
+
+    fun loginToService(username: String, password: String) {
+        executors.networkIO().execute {
+            try {
+                val response = service.actualLogin(username, password).execute()
+                if (response.isSuccessful) {
+                    val token = response.body()!!
+                    Timber.d("Token: $token")
+                    database.accessTokenDao().deleteAll()
+                    database.accessTokenDao().insert(token)
+                    NotificationCreator.showSimpleNotification(context, "Login Concluido", "Você agr tem acesso a funções exclusivas")
+                } else {
+                    NotificationCreator.showSimpleNotification(context, "Login falhou", "O login retornou com o código ${response.code()}")
+                    Timber.e(response.message())
+                }
+            } catch (t: Throwable) {
+                Timber.e("Exception@${t.message}")
+            }
+        }
+    }
+
+    fun sendSpeaker(speaker: Speaker, create: Boolean) {
+        executors.networkIO().execute {
+            try {
+                Timber.d("Speaker $speaker")
+                val response = if (create) {
+                    service.createSpeaker(speaker).execute()
+                } else {
+                    service.updateSpeaker(speaker).execute()
+                }
+                if (response.isSuccessful) {
+                    NotificationCreator.showSimpleNotification(context, "Operação concluida", "A requisição concluiu com sucesso")
+                } else {
+                    NotificationCreator.showSimpleNotification(context, "Operação falhou", "A operação falhou com o código ${response.code()}")
+                    Timber.e(response.message())
+                }
+            } catch (t: Throwable) {
+                Timber.e("Connection failed")
+            }
+        }
+    }
+
+    fun getAccess(): LiveData<AccessToken?> {
+        return database.accessTokenDao().getAccess()
     }
 }
