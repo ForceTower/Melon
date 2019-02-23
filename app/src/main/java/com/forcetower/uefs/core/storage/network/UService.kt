@@ -29,11 +29,13 @@ package com.forcetower.uefs.core.storage.network
 
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.service.UNESUpdate
+import com.forcetower.uefs.core.model.siecomp.AccessToken
 import com.forcetower.uefs.core.model.siecomp.ServerSession
-import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -55,6 +57,17 @@ interface UService {
         @Field("appToken") token: String
     ): Call<AccessToken>
 
+    @POST("oauth/token")
+    @FormUrlEncoded
+    fun actualLogin(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("grant_type") grand: String = "password",
+        @Field("client_id") client: String = "2",
+        @Field("scope") scope: String = "*",
+        @Field("client_secret") secret: String = "kYVjtz6Uqthl0U3KpfuBwBeUXgbjgcLsuvh0eOZj"
+    ): Call<AccessToken>
+
     @GET("course")
     fun getCourses(): LiveData<ApiResponse<List<Course>>>
 
@@ -63,4 +76,10 @@ interface UService {
 
     @GET("siecomp/list_sessions")
     fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>
+
+    @POST("siecomp/speaker")
+    fun createSpeaker(@Body speaker: Speaker): Call<Void>
+
+    @POST("siecomp/edit_speaker")
+    fun updateSpeaker(@Body speaker: Speaker): Call<Void>
 }

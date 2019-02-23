@@ -25,17 +25,20 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.injection.module.siecomp
+package com.forcetower.uefs.core.model.siecomp
 
-import com.forcetower.uefs.feature.siecomp.editor.CreateSpeakerFragment
-import com.forcetower.uefs.feature.siecomp.speaker.SpeakerFragment
-import dagger.Module
-import dagger.android.ContributesAndroidInjector
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
-@Module
-abstract class SIECOMPSpeakerModule {
-    @ContributesAndroidInjector
-    abstract fun speakerFragment(): SpeakerFragment
-    @ContributesAndroidInjector
-    abstract fun createSpeakerFragment(): CreateSpeakerFragment
-}
+@Entity
+data class AccessToken(
+    @PrimaryKey(autoGenerate = true)
+    val uid: Int = 0,
+    @SerializedName("token_type")
+    val type: String,
+    @SerializedName("access_token")
+    val token: String,
+    @SerializedName("refresh_token")
+    val refreshToken: String?
+)

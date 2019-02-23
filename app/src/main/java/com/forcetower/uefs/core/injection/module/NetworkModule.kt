@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
@@ -51,6 +52,7 @@ import java.net.CookieHandler
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
+import io.fabric.sdk.android.services.settings.IconRequest.build
 
 @Module
 object NetworkModule {
@@ -83,11 +85,27 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideInterceptor(): Interceptor = Interceptor { chain ->
+    fun provideInterceptor(database: EventDatabase): Interceptor = Interceptor { chain ->
         val request = chain.request()
         Timber.d("Going to: ${request.url().url()}")
-        val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
-        chain.proceed(nRequest)
+        val host = request.url().host()
+        if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+            val builder = request.headers().newBuilder()
+                    .add("Accept", "application/json")
+
+            val token = database.accessTokenDao().getAccessDirect()
+            if (token?.token != null) {
+                builder.add("Authorization", token.type + " " + token.token)
+            }
+
+            val newHeaders = builder.build()
+            val renewed = request.newBuilder().headers(newHeaders).build()
+
+            chain.proceed(renewed)
+        } else {
+            val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
+            chain.proceed(nRequest)
+        }
     }
 
     @Provides

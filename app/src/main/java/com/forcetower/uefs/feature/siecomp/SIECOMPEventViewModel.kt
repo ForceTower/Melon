@@ -46,6 +46,8 @@ class SIECOMPEventViewModel @Inject constructor(
     var sessionsLoaded: Boolean = false
     private var loading: Boolean = false
 
+    val access = repository.getAccess()
+
     val refreshing: MutableLiveData<Boolean> = MutableLiveData()
     val refreshSource: MediatorLiveData<Resource<List<SessionWithData>>> = MediatorLiveData()
 
@@ -95,5 +97,9 @@ class SIECOMPEventViewModel @Inject constructor(
 
         _snackbarMessenger.value = Event(stringResId)
         repository.markSessionStar(session.session.uid, newIsStarredState)
+    }
+
+    fun loginToService(user: String, pass: String) {
+        repository.loginToService(user, pass)
     }
 }

@@ -54,5 +54,16 @@
             app:tint="?attr/colorOnSurface"
             android:importantForAccessibility="no"/>
 
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/edit_float"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            android:src="@drawable/ic_create_black_24dp"
+            app:backgroundTint="?attr/colorPrimary"
+            app:layout_anchor="@+id/speaker_detail_recycler_view"
+            app:layout_anchorGravity="end|bottom" />
+
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -47,6 +47,42 @@
                 android:text="@string/ev_editor_info"
                 android:layout_marginBottom="16dp"/>
 
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/username"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ev_editor_username"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp">
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/password"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:hint="@string/ev_editor_password"/>
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/editor_auth"
+                android:layout_margin="8dp"
+                android:layout_width="200dp"
+                android:layout_height="wrap_content"
+                android:text="@string/ev_editor_auth"
+                android:textAllCaps="false"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="32dp"
+                android:text="@string/ev_editor_actions"/>
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/editor_session"
                 android:layout_margin="8dp"
@@ -70,7 +106,6 @@
                 android:layout_height="wrap_content"
                 android:text="@string/ev_editor_tags"
                 android:textAllCaps="false"/>
-
         </LinearLayout>
     </ScrollView>
 </layout>

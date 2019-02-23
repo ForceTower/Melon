@@ -36,7 +36,7 @@ import com.google.gson.annotations.SerializedName
     Index(value = ["uuid"], unique = true)
 ])
 data class Speaker(
-    @SerializedName(value = "id")
+    @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,
     var name: String = "",

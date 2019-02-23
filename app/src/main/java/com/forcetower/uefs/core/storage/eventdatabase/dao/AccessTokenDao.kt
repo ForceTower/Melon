@@ -25,29 +25,26 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.siecomp
+package com.forcetower.uefs.core.storage.eventdatabase.dao
 
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
-import java.util.UUID
+import androidx.lifecycle.LiveData
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
+import com.forcetower.uefs.core.model.siecomp.AccessToken
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true)
-])
-data class Tag(
-    @SerializedName(value = "uid", alternate = ["id"])
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val name: String,
-    val color: Int,
-    val internal: Boolean = false,
-    @SerializedName("font_color")
-    val fontColor: Int? = null,
-    val uuid: String = UUID.randomUUID().toString()
-) {
-    override fun toString(): String {
-        return name
-    }
+@Dao
+interface AccessTokenDao {
+    @Insert(onConflict = REPLACE)
+    fun insert(access: AccessToken)
+
+    @Query("SELECT * FROM AccessToken LIMIT 1")
+    fun getAccess(): LiveData<AccessToken?>
+
+    @Query("SELECT * FROM AccessToken LIMIT 1")
+    fun getAccessDirect(): AccessToken?
+
+    @Query("DELETE FROM AccessToken")
+    fun deleteAll()
 }
