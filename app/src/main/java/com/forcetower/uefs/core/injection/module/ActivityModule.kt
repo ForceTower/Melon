@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.LauncherActivity
+import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPEditorModule
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPOnboardingModule
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPScheduleModule
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPSessionModule
@@ -43,6 +44,7 @@ import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.reminders.RemindersActivity
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.setup.SetupActivity
+import com.forcetower.uefs.feature.siecomp.editor.SIECOMPEditorActivity
 import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
 import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
 import com.forcetower.uefs.feature.siecomp.session.EventSessionDetailsActivity
@@ -84,4 +86,6 @@ abstract class ActivityModule {
     abstract fun bindSessionDetailsActivity(): EventSessionDetailsActivity
     @ContributesAndroidInjector(modules = [SIECOMPSpeakerModule::class])
     abstract fun bindSpeakerActivity(): EventSpeakerActivity
+    @ContributesAndroidInjector(modules = [SIECOMPEditorModule::class])
+    abstract fun bindEventEditorActivity(): SIECOMPEditorActivity
 }

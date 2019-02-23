@@ -514,6 +514,10 @@
     <string name="ev_editor_speakers">Apresentadores</string>
     <string name="ev_editor_tags">Tags</string>
     <string name="ev_editor_info">Editor de sessões e outras coisas.\n\nVocê precisa estar autenticado, autorizado e pulando corda para que consiga fazer qualquer modificação.\n\nNote que a edição do horário e local ou apagar uma sessão irá notificar os usuários que a marcaram :)</string>
+    <string name="ev_editor_auth">Autenticar</string>
+    <string name="ev_editor_username">Usuário</string>
+    <string name="ev_editor_password">Senha</string>
+    <string name="ev_editor_actions">Ações disponíveis</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

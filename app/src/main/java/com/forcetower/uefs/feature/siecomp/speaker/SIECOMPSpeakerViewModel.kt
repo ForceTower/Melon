@@ -42,6 +42,7 @@ class SIECOMPSpeakerViewModel @Inject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel() {
     private val speakerId = MutableLiveData<Long?>()
+    val access = repository.getAccess()
 
     private val _speaker = MediatorLiveData<Speaker?>()
     val speaker: LiveData<Speaker?>
@@ -65,10 +66,16 @@ class SIECOMPSpeakerViewModel @Inject constructor(
                 _speaker.value = value
                 Timber.d("Speaker $value")
             }
+        } else {
+            _speaker.value = null
         }
     }
 
     fun setSpeakerId(id: Long?) {
         speakerId.setValueIfNew(id)
+    }
+
+    fun sendSpeaker(speaker: Speaker, create: Boolean) {
+        repository.sendSpeaker(speaker, create)
     }
 }

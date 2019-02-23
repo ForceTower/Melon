@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.siecomp.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -46,6 +47,7 @@ import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
+import com.forcetower.uefs.feature.siecomp.editor.SIECOMPEditorActivity
 import com.forcetower.uefs.feature.siecomp.session.EventSessionDetailsActivity
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
@@ -57,6 +59,7 @@ class ScheduleFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentEventScheduleBinding
     private lateinit var viewPager: ViewPager
     private lateinit var tabs: TabLayout
+    private var count = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
@@ -85,6 +88,19 @@ class ScheduleFragment : UFragment(), Injectable {
         viewPager.offscreenPageLimit = COUNT - 1
         tabs.setupWithViewPager(viewPager)
         viewPager.adapter = ScheduleAdapter(childFragmentManager)
+        binding.textToolbarTitle.setOnClickListener {
+            if (++count == 10) {
+                count = 0
+                startActivity(Intent(requireContext(), SIECOMPEditorActivity::class.java))
+            }
+        }
+        viewModel.access.observe(this, Observer {
+            binding.createSessionFloat.visibility = if (it != null) {
+                View.VISIBLE
+            } else {
+                View.GONE
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -31,43 +31,52 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.R
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.FragmentEventEditorIndexBinding
+import com.forcetower.uefs.databinding.FragmentEventEdtCrtSpeakerBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
+import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity.Companion.SPEAKER_ID
+import com.forcetower.uefs.feature.siecomp.speaker.SIECOMPSpeakerViewModel
 import javax.inject.Inject
 
-class IndexFragment : UFragment(), Injectable {
+class CreateSpeakerFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: SIECOMPEventViewModel
-    private lateinit var binding: FragmentEventEditorIndexBinding
+    private lateinit var binding: FragmentEventEdtCrtSpeakerBinding
+    private lateinit var viewModel: SIECOMPSpeakerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
-        return FragmentEventEditorIndexBinding.inflate(inflater, container, false).also {
+        return FragmentEventEdtCrtSpeakerBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.run {
-            editorAuth.setOnClickListener {
-                val user = binding.username.text.toString()
-                val pass = binding.password.text.toString()
-                viewModel.loginToService(user, pass)
-            }
+        val uuid = arguments?.getString(SPEAKER_UUID) ?: ""
+        val id = arguments?.getLong(SPEAKER_ID)
+        viewModel.setSpeakerId(id)
+        viewModel.speaker.observe(this, Observer {
+            binding.speaker = it
+            binding.executePendingBindings()
+        })
 
-            editorSpeaker.setOnClickListener {
-                fragmentManager?.inTransaction {
-                    replace(R.id.fragment_container, CreateSpeakerFragment())
-                    addToBackStack(null)
-                }
-            }
+        binding.save.setOnClickListener {
+            val name = binding.name.text.toString()
+            val image = binding.image.text.toString()
+            val lab = binding.lab.text.toString()
+            val resume = binding.resume.text.toString()
+            val url = binding.url.text.toString()
+            val github = binding.github.text.toString()
+            val speaker = Speaker(id ?: 0, name, image, lab, resume, url, github, uuid)
+            viewModel.sendSpeaker(speaker, id == null)
         }
+    }
+
+    companion object {
+        const val SPEAKER_UUID = "speaker_uuid"
     }
 }

@@ -28,14 +28,14 @@
 package com.forcetower.uefs.core.injection.module.siecomp
 
 import com.forcetower.uefs.feature.siecomp.editor.CreateSpeakerFragment
-import com.forcetower.uefs.feature.siecomp.speaker.SpeakerFragment
+import com.forcetower.uefs.feature.siecomp.editor.IndexFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
 @Module
-abstract class SIECOMPSpeakerModule {
+abstract class SIECOMPEditorModule {
     @ContributesAndroidInjector
-    abstract fun speakerFragment(): SpeakerFragment
+    abstract fun indexFragment(): IndexFragment
     @ContributesAndroidInjector
     abstract fun createSpeakerFragment(): CreateSpeakerFragment
 }
