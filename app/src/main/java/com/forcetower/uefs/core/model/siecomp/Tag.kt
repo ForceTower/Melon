@@ -25,21 +25,29 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.network.github
+package com.forcetower.uefs.core.model.siecomp
 
-import com.forcetower.uefs.core.model.unes.Contributor
+import androidx.room.Entity
+import androidx.room.Index
+import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
+import java.util.UUID
 
-data class GithubContributor(
-    var total: Int = 0,
-    var author: Contributor? = null
+@Entity(indices = [
+    Index(value = ["uuid"], unique = true)
+])
+data class Tag(
+    @SerializedName(value = "uid", alternate = ["id"])
+    @PrimaryKey(autoGenerate = true)
+    val uid: Long = 0,
+    val name: String,
+    val color: Int,
+    val internal: Boolean = false,
+    @SerializedName("font_color")
+    val fontColor: Int? = null,
+    val uuid: String = UUID.randomUUID().toString()
 ) {
-    fun toContributor(): Contributor? {
-        return author?.apply { total = this@GithubContributor.total }
+    override fun toString(): String {
+        return name
     }
 }
-
-data class GithubUser(
-    var login: String = "",
-    var name: String = "",
-    var bio: String? = null
-)

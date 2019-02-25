@@ -125,9 +125,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
         toggleItem(R.id.purchases, storeFlag)
 
-        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass")
-        toggleItem(R.id.hourglass, hourglass)
-
         val dark = preferences.getBoolean("stg_night_mode_menu", true)
         toggleItem(R.id.dark_theme_event, dark)
     }
@@ -157,7 +154,7 @@ class HomeBottomFragment : UFragment(), Injectable {
                 }
                 R.id.open_source -> {
                     LibsBuilder()
-                        .withActivityStyle(Libs.ActivityStyle.LIGHT)
+                        .withActivityStyle(Libs.ActivityStyle.DARK)
                         .withAboutIconShown(true)
                         .withAboutVersionShown(true)
                         .withAboutDescription(getString(R.string.about_description))

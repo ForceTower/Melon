@@ -39,7 +39,15 @@
         android:key="stg_acc_score"
         android:title="@string/settings_acc_score"
         android:summary="@string/settings_acc_score_info" />
-    
+
+    <SwitchPreference
+        android:defaultValue="false"
+        android:key="stg_choice_score"
+        android:title="@string/settings_choice_score_title"
+        android:summary="@string/settings_choice_score_info"
+        android:summaryOn="@string/settings_choice_score_info_on"
+        android:summaryOff="@string/settings_choice_score_info_off"/>
+
     <ListPreference
         android:defaultValue="1"
         android:key="stg_ntf_grade_spoiler"

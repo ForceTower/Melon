@@ -35,6 +35,13 @@ import javax.inject.Inject
 class SettingsViewModel @Inject constructor(
     private val repository: SettingsRepository
 ) : ViewModel() {
+    private var done: Boolean = false
+
+    fun getAllTheGrades() {
+        if (done) return
+        done = true
+        repository.requestAllGradesAndCalculateScore()
+    }
 
     val isDarkModeEnabled: LiveData<Boolean>
         get() = repository.hasDarkModeEnabled()

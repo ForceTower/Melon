@@ -279,6 +279,16 @@ object NotificationCreator {
         showNotification(context, 7569, builder)
     }
 
+    fun createFailedWarningNotification(context: Context, title: String, message: String) {
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+
+        addOptions(context, builder)
+        showNotification(context, 7570, builder)
+    }
+
     fun createServiceRequestNotification(context: Context, service: ServiceRequest, update: Boolean) {
         val preference = if (update) "stg_ntf_svc_req_update" else "stg_ntf_svc_req_create"
         if (!shouldShowNotification(preference, context, default = update)) return

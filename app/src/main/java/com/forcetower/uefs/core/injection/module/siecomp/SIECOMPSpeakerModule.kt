@@ -25,12 +25,17 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.resource.discipline
+package com.forcetower.uefs.core.injection.module.siecomp
 
-import com.forcetower.uefs.core.model.service.ClassStatsData
+import com.forcetower.uefs.feature.siecomp.editor.CreateSpeakerFragment
+import com.forcetower.uefs.feature.siecomp.speaker.SpeakerFragment
+import dagger.Module
+import dagger.android.ContributesAndroidInjector
 
-data class DisciplineDetailsData(
-    var semester: Int,
-    var score: Double,
-    var disciplines: List<ClassStatsData>
-)
+@Module
+abstract class SIECOMPSpeakerModule {
+    @ContributesAndroidInjector
+    abstract fun speakerFragment(): SpeakerFragment
+    @ContributesAndroidInjector
+    abstract fun createSpeakerFragment(): CreateSpeakerFragment
+}

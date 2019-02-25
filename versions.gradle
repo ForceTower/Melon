@@ -20,24 +20,25 @@ versions.preference = "1.0.0"
 versions.room = "2.0.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
-versions.navigation = "1.0.0-alpha11"
-versions.work_manager = "1.0.0-beta03"
+versions.navigation = "1.0.0-rc01"
+versions.work_manager = "1.0.0-rc02"
 
 // Dependency Injection
-versions.dagger = "2.20"
+versions.dagger = "2.21"
 
 // Firebase
-versions.firebase_core = "16.0.6"
+versions.firebase_core = "16.0.7"
 versions.firebase_auth = "16.1.0"
 versions.firebase_messaging = "17.3.4"
-versions.firebase_firestore = "18.0.0"
+versions.firebase_firestore = "18.0.1"
 versions.firebase_storage = "16.0.5"
-versions.firebase_remote_config = "16.1.3"
+versions.firebase_remote_config = "16.3.0"
 versions.firebase_functions = "16.1.3"
-versions.firebase_ui_storage = "4.2.0"
+versions.in_app_messaging = "17.0.5"
+versions.firebase_ui_storage = "4.3.1"
 
 // Logs
-versions.crashlytics = "2.9.8@aar"
+versions.crashlytics = "2.9.9@aar"
 versions.timber = "4.7.1"
 
 // Image
@@ -53,24 +54,26 @@ versions.gp_billing_client = "1.2"
 
 // Networking
 versions.okhttp = "3.12.1"
-versions.retrofit = "2.4.0"
+versions.retrofit = "2.5.0"
 versions.cookie_jar = "v1.0.1"
 
 // Others
 versions.gson = "2.8.5"
 versions.jsoup = "1.11.3"
 versions.chart_view = "v3.0.3"
-versions.about_libraries = "6.2.0"
+versions.about_libraries = "7.0.0-rc1"
 versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
 versions.date_time_picker = "4.1.1"
+versions.floating_search = "2.1.1"
+versions.zoned_time_date = "1.1.0"
 
 // Build Versions
-versions.android_gradle_plugin = "3.4.0-beta03"
-versions.kotlin = "1.3.11"
+versions.android_gradle_plugin = "3.4.0-beta05"
+versions.kotlin = "1.3.21"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.26.1"
-versions.kotlinter = "1.20.1"
+versions.kotlinter = "1.21.0"
 versions.play_publisher = "2.0.0"
 
 // --------- End of Dependencies Versions -----------
@@ -136,6 +139,7 @@ firebase.firestore = "com.google.firebase:firebase-firestore:$versions.firebase_
 firebase.storage = "com.google.firebase:firebase-storage:$versions.firebase_storage"
 firebase.remote_config = "com.google.firebase:firebase-config:$versions.firebase_remote_config"
 firebase.functions = "com.google.firebase:firebase-functions:$versions.firebase_functions"
+firebase.in_app_messaging = "com.google.firebase:firebase-inappmessaging-display:$versions.in_app_messaging"
 firebase.storage_ui = "com.firebaseui:firebase-ui-storage:$versions.firebase_ui_storage"
 deps.firebase = firebase
 
@@ -179,6 +183,8 @@ others.about_libraries = "com.mikepenz:aboutlibraries:$versions.about_libraries"
 others.easy_permissions = "pub.devrel:easypermissions:$versions.easy_permissions"
 others.card_slider = "com.ramotion.cardslider:card-slider:$versions.card_slider"
 others.date_time_picker = "com.wdullaer:materialdatetimepicker:$versions.date_time_picker"
+others.floating_search = "com.github.arimorty:floatingsearchview:$versions.floating_search"
+others.zoned_time_date = "com.jakewharton.threetenabp:threetenabp:$versions.zoned_time_date"
 deps.others = others
 
 // Kotlin
