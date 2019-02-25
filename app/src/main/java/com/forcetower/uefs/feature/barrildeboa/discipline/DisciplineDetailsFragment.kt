@@ -25,63 +25,53 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.feature.barrildeboa.overview
+package com.forcetower.uefs.feature.barrildeboa.discipline
 
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
-import androidx.navigation.fragment.findNavController
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.databinding.FragmentHourglassOverviewBinding
+import com.forcetower.uefs.databinding.FragmentHourglassDisciplineDetailsBinding
 import com.forcetower.uefs.feature.barrildeboa.HourglassViewModel
-import com.forcetower.uefs.feature.barrildeboa.discipline.DisciplineDetailsFragment
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
 
-class OverviewFragment : UFragment(), Injectable {
+class DisciplineDetailsFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    private lateinit var binding: FragmentHourglassOverviewBinding
     private lateinit var viewModel: HourglassViewModel
+    private lateinit var binding: FragmentHourglassDisciplineDetailsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        return FragmentHourglassOverviewBinding.inflate(inflater, container, false).also {
+        viewModel = provideViewModel(factory)
+        viewModel.setDisciplineCode(requireNotNull(arguments).getString(DISCIPLINE_CODE))
+        return FragmentHourglassDisciplineDetailsBinding.inflate(inflater, container, false).also {
             binding = it
+        }.apply {
+            lifecycleOwner = this@DisciplineDetailsFragment
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val adapter = OverviewAdapter(this, viewModel)
-        binding.recyclerItems.adapter = adapter
-
-        viewModel.query(null)
-        viewModel.overview().observe(this, Observer { Unit })
-
-        viewModel.onSelectDiscipline.observe(this, EventObserver {
-            findNavController().navigate(R.id.action_hourglass_overview_to_hourglass_discipline, bundleOf(
-                    DisciplineDetailsFragment.DISCIPLINE_CODE to it.code
-            ))
-        })
-
-        viewModel.queryDiscipline.observe(this, Observer {
-            adapter.submitList(it)
-        })
-
-        binding.searchOverview.setOnQueryChangeListener { oldQuery, newQuery ->
-            if (oldQuery != newQuery) viewModel.query(newQuery)
+        val teachersAdapter = TeacherAdapter()
+        binding.run {
+            teachersRecycler.adapter = teachersAdapter
         }
+
+        viewModel.discipline.observe(this, Observer {
+            binding.apply {
+                discipline = it
+                executePendingBindings()
+                if (it != null) teachersAdapter.submitList(it.teachers)
+            }
+        })
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.sendData()
+    companion object {
+        const val DISCIPLINE_CODE = "discipline_code"
     }
 }

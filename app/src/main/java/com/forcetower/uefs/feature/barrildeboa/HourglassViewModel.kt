@@ -32,8 +32,10 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.api.UDiscipline
+import com.forcetower.uefs.core.model.api.UDisciplineWithData
 import com.forcetower.uefs.core.storage.repository.api.HourglassRepository
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import javax.inject.Inject
 
 class HourglassViewModel @Inject constructor(
@@ -48,6 +50,27 @@ class HourglassViewModel @Inject constructor(
         get() = _queryDiscipline
 
     private var currentSource: LiveData<List<UDiscipline>>? = null
+
+    private val disciplineCode = MutableLiveData<String?>()
+
+    private val _discipline = MediatorLiveData<UDisciplineWithData?>()
+    val discipline: LiveData<UDisciplineWithData?>
+        get() = _discipline
+
+    init {
+        _discipline.addSource(disciplineCode) {
+            if (it != null) {
+                refreshCurrentDiscipline(it)
+            }
+        }
+    }
+
+    private fun refreshCurrentDiscipline(code: String) {
+        val source = repository.getDisciplineDetails(code)
+        _discipline.addSource(source) {
+            _discipline.value = it?.data?.data
+        }
+    }
 
     fun sendData() = repository.sendData()
     fun overview() = repository.overview()
@@ -67,5 +90,9 @@ class HourglassViewModel @Inject constructor(
         _queryDiscipline.addSource(newSource) {
             _queryDiscipline.value = it
         }
+    }
+
+    fun setDisciplineCode(code: String?) {
+        disciplineCode.setValueIfNew(code)
     }
 }

@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.repository.api
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.api.UDiscipline
+import com.forcetower.uefs.core.model.api.UDisciplineWithData
 import com.forcetower.uefs.core.model.api.helpers.UHourOverview
 import com.forcetower.uefs.core.model.api.helpers.UResponse
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
@@ -37,6 +38,7 @@ import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
+import com.forcetower.uefs.core.storage.resource.NetworkOnlyResource
 import com.forcetower.uefs.core.storage.resource.Resource
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -59,10 +61,17 @@ class HourglassRepository @Inject constructor(
                 data ?: return
                 database.disciplineDao().insert(data.disciplines)
                 database.teacherDao().insert(data.teachers)
+                disciplinesRepository.contribute()
             }
         }.asLiveData()
     }
 
     fun sendData() = disciplinesRepository.contribute()
     fun query(query: String?) = database.disciplineDao().query(query)
+    fun getDisciplineDetails(code: String): LiveData<Resource<UResponse<UDisciplineWithData>>> {
+        return object : NetworkOnlyResource<UResponse<UDisciplineWithData>>(executors) {
+            override fun createCall() = service.getDisciplineDetails(code)
+            override fun saveCallResult(value: UResponse<UDisciplineWithData>) = Unit
+        }.asLiveData()
+    }
 }
