@@ -25,29 +25,32 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.network
+package com.forcetower.uefs.core.model.api
 
-import androidx.lifecycle.LiveData
-import com.forcetower.uefs.core.model.api.UDisciplineWithData
-import com.forcetower.uefs.core.model.api.helpers.UHourOverview
-import com.forcetower.uefs.core.model.api.helpers.UResponse
-import com.forcetower.uefs.core.model.service.DisciplineDetailsData
-import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+data class UDisciplineWithData(
+    val id: String,
+    val code: String,
+    val name: String,
+    val semesters: List<InternalSemester>,
+    val teachers: List<InternalTeacher>,
+    val mean: Double,
+    val total: Int = 0,
+    val passed: Int = 0,
+    val direct: Int = 0,
+    val finals: Int = 0
+)
 
-interface APIService {
-    @POST("save_data")
-    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<UHourOverview>>
+data class InternalSemester(
+    val semester: String,
+    val average: Double,
+    val total: Int = 0,
+    val passed: Int = 0,
+    val direct: Int = 0,
+    val finals: Int = 0
+)
 
-    @GET("overview")
-    fun overview(): LiveData<ApiResponse<UResponse<UHourOverview>>>
-
-    @POST("discipline")
-    @FormUrlEncoded
-    fun getDisciplineDetails(@Field("code") code: String): LiveData<ApiResponse<UResponse<UDisciplineWithData>>>
-}
+data class InternalTeacher(
+    val teacher: String,
+    val average: Double,
+    val semesters: List<InternalSemester>
+)

@@ -518,6 +518,10 @@
     <string name="ev_editor_username">Usuário</string>
     <string name="ev_editor_password">Senha</string>
     <string name="ev_editor_actions">Ações disponíveis</string>
+    <string name="hourglass_registered_means">%1$d médias registradas</string>
+    <string name="hourglass_general_mean">Média geral</string>
+    <string name="hourglass_approval_rate">Aprovação</string>
+    <string name="hourglass_preview">Função prévia, ainda em desenvolvimento</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

@@ -25,29 +25,34 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.storage.network
+package com.forcetower.uefs.feature.barrildeboa.discipline
 
-import androidx.lifecycle.LiveData
-import com.forcetower.uefs.core.model.api.UDisciplineWithData
-import com.forcetower.uefs.core.model.api.helpers.UHourOverview
-import com.forcetower.uefs.core.model.api.helpers.UResponse
-import com.forcetower.uefs.core.model.service.DisciplineDetailsData
-import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
-import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.POST
+import android.widget.ProgressBar
+import android.widget.TextView
+import androidx.databinding.BindingAdapter
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.api.InternalTeacher
 
-interface APIService {
-    @POST("save_data")
-    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<UHourOverview>>
+@BindingAdapter("approvalProgress")
+fun approvalProgress(progress: ProgressBar, teacher: InternalTeacher?) {
+    if (teacher == null) {
+        progress.progress = 0
+    } else {
+        val semesters = teacher.semesters
+        val total = semesters.sumBy { it.total }
+        val passed = semesters.sumBy { it.passed }
+        val approval = passed * 100 / total
+        progress.progress = approval
+    }
+}
 
-    @GET("overview")
-    fun overview(): LiveData<ApiResponse<UResponse<UHourOverview>>>
-
-    @POST("discipline")
-    @FormUrlEncoded
-    fun getDisciplineDetails(@Field("code") code: String): LiveData<ApiResponse<UResponse<UDisciplineWithData>>>
+@BindingAdapter("registeredMeans")
+fun registeredMeans(tv: TextView, teacher: InternalTeacher?) {
+    if (teacher == null) {
+        tv.text = "0"
+    } else {
+        val semesters = teacher.semesters
+        val total = semesters.sumBy { it.total }
+        tv.text = tv.context.getString(R.string.hourglass_registered_means, total)
+    }
 }

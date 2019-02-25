@@ -79,8 +79,8 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/get_started"
-            app:currentPageIndicatorColor="#aa000000"
-            app:pageIndicatorColor="#80000000"
+            app:currentPageIndicatorColor="?attr/colorOnSurface"
+            app:pageIndicatorColor="?attr/colorOnSurfaceLight"
             app:viewPager="@{pager}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
