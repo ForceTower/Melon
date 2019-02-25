@@ -31,6 +31,7 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.uefs.AppExecutors
@@ -117,5 +118,15 @@ class DisciplineDetailsRepository @Inject constructor(
         } catch (exception: Exception) {
             Timber.e(exception)
         }
+    }
+
+    @WorkerThread
+    fun loadDisciplineDetailsSync() {
+        val result = SagresNavigator.instance.loadDisciplineDetails(null, null, null, true)
+        val groups = result.getGroups() ?: emptyList()
+        database.classGroupDao().defineGroups(groups)
+        val semesters = database.semesterDao().getSemestersDirect()
+        semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
+        contribute()
     }
 }

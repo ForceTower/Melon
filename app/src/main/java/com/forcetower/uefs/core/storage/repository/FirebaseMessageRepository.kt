@@ -32,10 +32,10 @@ import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
-import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
@@ -89,7 +89,7 @@ class FirebaseMessageRepository @Inject constructor(
     }
 
     private fun hourglassRunner() {
-        DisciplineDetailsLoaderService.startService(context, false)
+        HourglassContributeWorker.createWorker()
     }
 
     private fun rescheduleSync(data: Map<String, String>) {

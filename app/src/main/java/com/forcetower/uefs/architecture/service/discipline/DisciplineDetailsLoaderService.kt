@@ -68,8 +68,6 @@ class DisciplineDetailsLoaderService : LifecycleService() {
     lateinit var repository: DisciplineDetailsRepository
     @Inject
     lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var rep: DisciplineDetailsRepository
 
     private var running = false
     private var contributing = false
@@ -113,7 +111,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                     finishShowingError()
                 }
                 // TODO This is a test call and will be removed when it reaches release status
-                rep.contribute()
+                repository.contribute()
                 stopForeground(true)
                 stopSelf()
             }
