@@ -80,4 +80,12 @@
     <dimen name="schedule_block_second_text">8sp</dimen>
 
     <dimen name="event_listing_width">250dp</dimen>
+    <dimen name="onboarding_margins">48dp</dimen>
+    <dimen name="padding_borderless_button">16dp</dimen>
+    <dimen name="onboarding_actions_height">112dp</dimen>
+    <dimen name="onboarding_animation_padding">40dp</dimen>
+    <dimen name="spacing_micro">4dp</dimen>
+    <dimen name="speaker_headshot_size">40dp</dimen>
+    <dimen name="speaker_large_headshot_size">112dp</dimen>
+    <item name="text_line_spacing" type="dimen" format="float">1.2</item>
 </resources>

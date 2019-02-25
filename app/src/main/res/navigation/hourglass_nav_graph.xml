@@ -55,6 +55,13 @@
             app:launchSingleTop="true"
             app:popUpToInclusive="true"
             app:popUpTo="@+id/hourglass_init" />
+
+        <action
+            android:id="@+id/action_hourglass_init_to_hourglass_overview"
+            app:destination="@id/hourglass_overview"
+            app:launchSingleTop="true"
+            app:popUpToInclusive="true"
+            app:popUpTo="@+id/hourglass_init" />
     </fragment>
 
     <fragment
@@ -69,11 +76,31 @@
         android:label="ContributeFragment"
         tools:layout="@layout/fragment_hourglass_contribute">
         <action
-            android:id="@+id/action_hourglass_contribute_to_development"
-            app:destination="@id/development"
+            android:id="@+id/action_hourglass_contribute_to_hourglass_overview"
+            app:destination="@id/hourglass_overview"
             app:launchSingleTop="true"
             app:popUpToInclusive="true"
-            app:popUpTo="@+id/hourglass_contribute"/>
+            app:popUpTo="@+id/hourglass_contribute" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/hourglass_overview"
+        android:name="com.forcetower.uefs.feature.barrildeboa.overview.OverviewFragment"
+        android:label="Overview"
+        tools:layout="@layout/fragment_hourglass_overview">
+        <action
+            android:id="@+id/action_hourglass_overview_to_hourglass_discipline"
+            app:destination="@id/hourglass_discipline" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/hourglass_discipline"
+        android:name="com.forcetower.uefs.feature.barrildeboa.discipline.DisciplineDetailsFragment"
+        android:label="Discipline"
+        tools:layout="@layout/fragment_hourglass_discipline_details">
+        <argument
+            android:name="discipline_code"
+            app:argType="string" />
     </fragment>
 
     <fragment

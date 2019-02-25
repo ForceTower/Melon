@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -38,22 +39,28 @@ import javax.inject.Singleton
 class SagresDataRepository @Inject constructor(
     private val database: UDatabase,
     private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth
+    private val firebaseAuth: FirebaseAuth,
+    private val preferences: SharedPreferences
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
     fun logout() {
         executor.diskIO().execute {
             firebaseAuth.signOut()
+            preferences.edit().remove("hourglass_status").apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.profileDao().deleteMe()
             database.classDao().deleteAll()
             database.semesterDao().deleteAll()
             database.messageDao().deleteAll()
+            database.demandOfferDao().deleteAll()
+            database.serviceRequestDao().deleteAll()
             SagresNavigator.instance.logout()
         }
     }
 
     fun getFlags() = database.flagsDao().getFlags()
+    fun getSemesters() = database.semesterDao().getParticipatingSemesters()
+    fun getCourse() = database.profileDao().getProfileCourse()
 }

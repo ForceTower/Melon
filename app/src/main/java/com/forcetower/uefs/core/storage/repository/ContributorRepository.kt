@@ -33,7 +33,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.github.GithubContributor
+import com.forcetower.uefs.core.model.unes.GithubContributor
 import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource

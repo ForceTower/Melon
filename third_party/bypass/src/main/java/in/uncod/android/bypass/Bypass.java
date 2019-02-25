@@ -46,6 +46,8 @@ import android.util.TypedValue;
 import android.widget.TextView;
 
 import androidx.annotation.ColorInt;
+import androidx.annotation.Keep;
+
 import in.uncod.android.bypass.style.FancyQuoteSpan;
 import in.uncod.android.bypass.style.ImageLoadingSpan;
 
@@ -133,6 +135,7 @@ public class Bypass {
         return TextUtils.concat(spans);
     }
 
+    @Keep
     private native Document processMarkdown(String markdown);
 
     // The 'numberOfSiblings' parameters refers to the number of siblings within the parent, including

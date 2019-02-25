@@ -40,6 +40,7 @@ import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.service.NotificationHelper
+import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
 import dagger.android.HasBroadcastReceiverInjector
@@ -76,6 +77,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
+        AndroidThreeTen.init(this)
         // Redefine os trabalhos de sincronização
         defineWorker()
         setupDayNightTheme()

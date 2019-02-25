@@ -94,6 +94,10 @@
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>
     <string name="label_contributors_calling">Pessoas que contribuíram com o projeto no GitHub</string>
+    <string name="settings_choice_score_title">Utilizar score calculado?</string>
+    <string name="settings_choice_score_info">O valor calculado é uma estimativa com base nas suas notas</string>
+    <string name="settings_choice_score_info_on">Usando o score calculado</string>
+    <string name="settings_choice_score_info_off">Usando o score SAGRES</string>
 
     <string name="label_your_score">Seu score é %1$.1f</string>
     <string name="acc_no_schedule_defined">Horários não foram encontrados</string>
@@ -465,14 +469,59 @@
     <string name="mech_wildcard">Deixe o UNES me dizer essa nota (Curinga)</string>
     <string name="mech_nothing_to_calculate">Nada para calcular por enquanto</string>
     <string name="mech_result_wildcard_not_needed">Você pode zerar o curinga e ainda vai passar direto!</string>
-    <string name="settings_theme_menu">Menu do tema</string>
-    <string name="settings_theme_menu_desc_enabled">Mostrando o menu do tema escuro</string>
-    <string name="settings_theme_menu_desc_disabled">Ocultando o menu do tema escuro</string>
+    <string name="settings_theme_menu">Menu do tema escuro</string>
+    <string name="settings_theme_menu_desc_enabled">Menu do tema está visível</string>
+    <string name="settings_theme_menu_desc_disabled">Menu do tema está oculto</string>
     <string name="mech_empty_message">A contagem começa quando você insere suas notas, os curingas e descobre o que te espera</string>
     <string name="feedback_title">O que você deseja dizer?</string>
     <string name="feedback_text_hint">Conte-me a sua história</string>
     <string name="feedback_text_empty">O texto não pode ser vazio</string>
-    <string name="fragment_tag_feedback_modal">feedback_modal</string>
+    <string name="fragment_tag_feedback_modal" translatable="false">feedback_modal</string>
+    <string name="sagres_functions">Extras</string>
+    <string name="contributor_commits">%1$d commits</string>
+    <string name="step_discipline_details_grades">Baixando notas</string>
+    <string name="hourglass_search_hint">Disciplinas ou professores</string>
+    <string name="invalid_install_title">Aplicativo não oficial</string>
+    <string name="download_from_play_store">Ir para PlayStore!</string>
+    <string name="invalid_install_information">O aplicativo não foi instalado através da Google Play Store e por isso esta versão não é suportada.\n\nO UNES utiliza os recursos de otimização de entrega o que faz com que o aplicativo possa não se comportar corretamente ou ocasionar em falhas no aplicativo ou em seu dispositivo.\n\nÉ altamente recomendavel instalar o aplicativo diretamente pela loja oficial e não baixar o APK por outros lugares.\n\nEu paguei 25 dolares para publicar isso e você nem quer usar</string>
+    <string name="failed_to_download_disciplines">Erro ao baixar disciplinas</string>
+    <string name="failed_to_download_disciplines_message">Um erro ocorreu e o aplicativo não conseguiu acessar as informações. Tente novamente</string>
+    <string name="your_semester_is">Você está no %1$dº semestre</string>
+    <string name="all_the_grades_will_be_downloaded">Todas as notas serão baixadas para que a função funcione corretamente</string>
+    <string name="onboarding_siecomp_event">Participe da XXI SIECOMP</string>
+    <string name="onboarding_join_the_event">Junte-se à Semana de Integração de Engenharia de Computação. Assista a palestras, talks, apresentações de projetos e participe de workshops exclusivos</string>
+    <string name="onboarding_label_days">D</string>
+    <string name="onboarding_label_hours">H</string>
+    <string name="onboarding_label_mins">M</string>
+    <string name="onboarding_label_seconds">S</string>
+    <string name="onboarding_get_started">Vamos lá!</string>
+    <string name="onboarding_welcome_to_siecomp">Boas-vindas à SIECOMP</string>
+    <string name="onboarding_date_location">De 14 à 20 de março na UEFS. (Em testes, a programação real não é essa, essa é do semestre passado, #pas)</string>
+    <string name="onboarding_customize_schedule">Crie sua programação</string>
+    <string name="onboarding_build_sched_benefits">Você será notificado em caso de mudança no horário ou localização da sessão</string>
+    <string name="event_starred">Sessão marcada!</string>
+    <string name="event_unstarred">Sessão desmarcada</string>
+    <string name="session_detail_header_aspect" translatable="false">H,16:9</string>
+    <string name="session_detail_speakers_header">Apresentadores / Palestrantes</string>
+    <string name="speaker_headshot_transition">speak_headshot</string>
+    <string name="speaker_link_separator">/</string>
+    <string name="speaker_link_website">Website</string>
+    <string name="speaker_link_twitter">Twitter</string>
+    <string name="speaker_link_github">GitHub</string>
+    <string name="speaker_link_linkedin">LinkedIn</string>
+    <string name="speaker_link_facebook">Facebook</string>
+    <string name="ev_editor_sessions">Sessões</string>
+    <string name="ev_editor_speakers">Apresentadores</string>
+    <string name="ev_editor_tags">Tags</string>
+    <string name="ev_editor_info">Editor de sessões e outras coisas.\n\nVocê precisa estar autenticado, autorizado e pulando corda para que consiga fazer qualquer modificação.\n\nNote que a edição do horário e local ou apagar uma sessão irá notificar os usuários que a marcaram :)</string>
+    <string name="ev_editor_auth">Autenticar</string>
+    <string name="ev_editor_username">Usuário</string>
+    <string name="ev_editor_password">Senha</string>
+    <string name="ev_editor_actions">Ações disponíveis</string>
+    <string name="hourglass_registered_means">%1$d médias registradas</string>
+    <string name="hourglass_general_mean">Média geral</string>
+    <string name="hourglass_approval_rate">Aprovação</string>
+    <string name="hourglass_preview">Função prévia, ainda em desenvolvimento</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -539,5 +588,9 @@
     <plurals name="duration_minutes">
         <item quantity="one">%1$s minuto</item>
         <item quantity="other">%1$s minutos</item>
+    </plurals>
+    <plurals name="session_starting_in">
+        <item quantity="one">A sessão começa em %1$s minuto</item>
+        <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
 </resources>
