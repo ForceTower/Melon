@@ -91,4 +91,7 @@ abstract class ServiceRequestDao {
 
     @Query("UPDATE ServiceRequest SET notify = 0")
     abstract fun markAllNotified()
+
+    @Query("DELETE FROM ServiceRequest")
+    abstract fun deleteAll()
 }

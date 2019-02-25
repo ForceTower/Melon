@@ -237,8 +237,10 @@ class AdventureFragment : UFragment(), Injectable {
                 result.locations.forEach { location ->
                     if (location.accuracy >= 100) {
                         if (!showedLocationMessage) {
-                            showSnack(getString(R.string.adventure_not_accurate))
-                            showedLocationMessage = true
+                            if (context != null) {
+                                showSnack(getString(R.string.adventure_not_accurate))
+                                showedLocationMessage = true
+                            }
                         }
                     } else {
                         onReceiveLocation(location)

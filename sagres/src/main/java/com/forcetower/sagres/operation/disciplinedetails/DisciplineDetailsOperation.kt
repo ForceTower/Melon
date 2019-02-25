@@ -54,6 +54,7 @@ class DisciplineDetailsOperation(
     private val semester: String?,
     private val code: String?,
     private val group: String?,
+    private val partialLoad: Boolean,
     executor: Executor?
 ) : Operation<DisciplineDetailsCallback>(executor) {
 
@@ -80,30 +81,35 @@ class DisciplineDetailsOperation(
         val forms = SagresDisciplineDetailsFetcherParser.extractFormBodies(initial.document!!, semester, code, group)
         val groups = mutableListOf<SDisciplineGroup>()
 
+        var failureCount = 0
+
         val total = forms.size
         for ((index, form) in forms.withIndex()) {
             publishProgress(DisciplineDetailsCallback(Status.LOADING).flags(DOWNLOADING).current(index).total(total))
             val document = initialFormConnect(form.first)
             if (document != null) {
                 val params = SagresDisciplineDetailsFetcherParser.extractParamsForDiscipline(document)
-                val discipline = disciplinePageParams(params)
+                val discipline = if (partialLoad) document else disciplinePageParams(params)
                 if (discipline != null) {
                     val group = processGroup(discipline)
                     if (group != null) {
-                        downloadMaterials(discipline, group)
+                        if (!partialLoad) downloadMaterials(discipline, group)
                         groups.add(group)
                     } else {
+                        failureCount++
                         Timber.d("Processed group was null")
                     }
                 } else {
+                    failureCount++
                     Timber.d("Discipline from params was null")
                 }
             } else {
+                failureCount++
                 Timber.d("Document from initial was null")
             }
         }
         Timber.d("Completed ${forms.size} -- $semester $code $group")
-        publishProgress(DisciplineDetailsCallback(Status.COMPLETED).groups(groups))
+        publishProgress(DisciplineDetailsCallback(Status.COMPLETED).groups(groups).failureCount(failureCount))
     }
 
     private fun login(access: SAccess): BaseCallback<*>? {

@@ -28,6 +28,8 @@
 package com.forcetower.uefs.core.storage.network.github
 
 import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.model.unes.GithubContributor
+import com.forcetower.uefs.core.model.unes.GithubUser
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
 import retrofit2.http.GET

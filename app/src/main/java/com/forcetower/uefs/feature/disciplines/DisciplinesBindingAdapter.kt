@@ -34,9 +34,11 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
+import kotlin.math.max
 
 @BindingAdapter("disciplineGroupsGrades")
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
@@ -85,7 +87,7 @@ fun gradeNeededInFinal(tv: TextView, clazz: ClassWithGroups?) {
     if (value == null) {
         tv.text = "??"
     } else {
-        val needed = 12.5 - (1.5 * value)
+        val needed = max((12.5 - (1.5 * value)).round(), 3.0)
         tv.text = tv.context.getString(R.string.grade_format, needed)
     }
 }

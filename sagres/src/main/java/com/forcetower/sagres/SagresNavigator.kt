@@ -113,10 +113,10 @@ abstract class SagresNavigator {
     abstract fun downloadHistory(file: File): DocumentCallback
 
     @WorkerThread
-    abstract fun loadDisciplineDetails(semester: String?, code: String?, group: String?): DisciplineDetailsCallback
+    abstract fun loadDisciplineDetails(semester: String?, code: String?, group: String?, partialLoad: Boolean = false): DisciplineDetailsCallback
 
     @AnyThread
-    abstract fun aLoadDisciplineDetails(semester: String?, code: String?, group: String?): LiveData<DisciplineDetailsCallback>
+    abstract fun aLoadDisciplineDetails(semester: String?, code: String?, group: String?, partialLoad: Boolean = false): LiveData<DisciplineDetailsCallback>
 
     @AnyThread
     abstract fun aLoadDemandOffers(): LiveData<DemandOffersCallback>
@@ -134,7 +134,7 @@ abstract class SagresNavigator {
     abstract fun getRequestedServices(login: Boolean = false): RequestedServicesCallback
 
     @AnyThread
-    abstract fun stopTags(tag: String)
+    abstract fun stopTags(tag: String?)
 
     @AnyThread
     abstract fun aLogout()

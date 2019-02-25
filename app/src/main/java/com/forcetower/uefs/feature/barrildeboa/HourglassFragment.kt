@@ -47,11 +47,11 @@ class HourglassFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
 
         val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
-        val state = preferences.getInt("hourglass_state", 0)
+        val state = preferences.getInt("hourglass_status", 0)
         val direction = when (state) {
             0 -> R.id.action_hourglass_init_to_hourglass_landing
             1 -> R.id.action_hourglass_init_to_hourglass_contribute
-            2 -> R.id.action_hourglass_init_to_development
+            2 -> R.id.action_hourglass_init_to_hourglass_overview
             else -> R.id.action_hourglass_init_to_hourglass_landing
         }
 

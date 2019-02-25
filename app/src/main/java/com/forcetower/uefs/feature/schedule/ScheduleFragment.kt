@@ -27,9 +27,12 @@
 
 package com.forcetower.uefs.feature.schedule
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
@@ -43,6 +46,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.siecomp.SIECOMPActivity
 import javax.inject.Inject
 
 class ScheduleFragment : UFragment(), Injectable {
@@ -71,7 +75,7 @@ class ScheduleFragment : UFragment(), Injectable {
             binding = it
         }.apply {
             actions = this@ScheduleFragment.viewModel
-            setLifecycleOwner(this@ScheduleFragment)
+            lifecycleOwner = this@ScheduleFragment
         }.root
     }
 
@@ -109,7 +113,20 @@ class ScheduleFragment : UFragment(), Injectable {
             }
         }
 
+        binding.btnSiecompSchedule.setOnClickListener {
+            val intent = Intent(requireContext(), SIECOMPActivity::class.java)
+            startActivity(intent)
+        }
+
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
+        profileViewModel.getMeProfile().observe(this, Observer {
+            val courseId = it?.course ?: 1L
+            binding.btnSiecompSchedule.visibility = if (courseId == 1L) {
+                VISIBLE
+            } else {
+                GONE
+            }
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -36,11 +36,13 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
     private var flags: Int = 0
     private var current: Int = 0
     private var total: Int = 0
+    private var failureCount: Int = 0
 
     fun getFlags() = flags
     fun getGroups() = groups
     fun getCurrent() = current
     fun getTotal() = total
+    fun getFailureCount() = failureCount
 
     fun groups(groups: List<SDisciplineGroup>?): DisciplineDetailsCallback {
         this.groups = groups
@@ -62,6 +64,11 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
         return this
     }
 
+    fun failureCount(failureCount: Int): DisciplineDetailsCallback {
+        this.failureCount = failureCount
+        return this
+    }
+
     companion object {
         fun copyFrom(callback: BaseCallback<*>): DisciplineDetailsCallback {
             return DisciplineDetailsCallback(callback.status).message(callback.message).code(callback.code).throwable(
@@ -73,5 +80,6 @@ class DisciplineDetailsCallback(status: Status) : BaseCallback<DisciplineDetails
         const val PROCESSING = 4
         const val DOWNLOADING = 8
         const val SAVING = 16
+        const val GRADES = 32
     }
 }

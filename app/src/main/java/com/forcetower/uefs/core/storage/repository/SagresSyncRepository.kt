@@ -92,7 +92,8 @@ class SagresSyncRepository @Inject constructor(
     private val collection: CollectionReference,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val scheduleRepository: ScheduleRepository
 ) {
 
     @WorkerThread
@@ -228,8 +229,8 @@ class SagresSyncRepository @Inject constructor(
                 val task = collection.document(user.uid).set(data, SetOptions.merge())
                 Tasks.await(task)
                 preferences.edit().putInt("sync_daily_update", today).apply()
-
                 adventureRepository.performCheckAchievements(HashMap())
+                scheduleRepository.saveSchedule(user.uid)
             }
             createNewVersionNotification()
         } catch (t: Throwable) {

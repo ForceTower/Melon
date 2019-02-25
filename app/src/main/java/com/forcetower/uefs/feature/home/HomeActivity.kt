@@ -38,6 +38,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
@@ -88,7 +89,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         setupViewModel()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
@@ -106,7 +106,24 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun onActivityStart() {
         initShortcuts()
+        verifyIntegrity()
         moveToTask()
+    }
+
+    private fun verifyIntegrity() {
+        if (BuildConfig.DEBUG) return
+
+        val validInstallers = listOf("com.android.vending", "com.google.android.feedback")
+        val valid = try {
+            val string = packageManager.getInstallerPackageName(packageName)
+            string != null && validInstallers.contains(string)
+        } catch (t: Throwable) {
+            false
+        }
+        if (!valid) {
+            val dialog = InvalidInstallDialog()
+            dialog.show(supportFragmentManager, "dialog_integrity")
+        }
     }
 
     private fun moveToTask() {
@@ -220,8 +237,5 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             preferences.edit().putBoolean("will_recreate_home", false).apply()
             recreate()
         }
-    }
-
-    fun openFeedbackModal() {
     }
 }

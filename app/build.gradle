@@ -20,6 +20,18 @@ android {
         versionName name
         multiDexEnabled true
 
+        buildConfigField "String", "SIECOMP_TIMEZONE", "\"America/Bahia\""
+        buildConfigField "String", "SIECOMP_DAY1_START", "\"2019-03-14T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY1_END", "\"2019-03-14T17:30:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY2_START", "\"2019-03-15T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY2_END", "\"2019-03-15T17:30:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY3_START", "\"2019-03-18T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY3_END", "\"2019-03-18T17:30:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY4_START", "\"2019-03-19T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY4_END", "\"2019-03-19T17:30:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY5_START", "\"2019-03-20T08:00:00-03:00\""
+        buildConfigField "String", "SIECOMP_DAY5_END", "\"2019-03-20T17:30:00-03:00\""
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
@@ -27,7 +39,7 @@ android {
         }
 
         ndk {
-            abiFilters "arm64-v8a", "armeabi","armeabi-v7a", "mips", "mips64", "x86", "x86_64"
+            abiFilters "arm64-v8a", "armeabi", "armeabi-v7a", "mips", "mips64", "x86", "x86_64"
         }
     }
 
@@ -49,7 +61,9 @@ android {
     buildTypes {
         release {
             signingConfig signingConfigs.release
-            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            shrinkResources true
+            minifyEnabled true
         }
     }
 
@@ -126,10 +140,9 @@ dependencies {
     implementation deps.firebase.storage_ui
     implementation deps.firebase.remote_config
     implementation deps.firebase.functions
+    implementation deps.firebase.in_app_messaging
 
-    implementation (deps.logs.crashlytics) {
-        transitive true
-    }
+    implementation(deps.logs.crashlytics) { transitive true }
     implementation deps.logs.timber
 
     implementation deps.play.games
@@ -154,6 +167,8 @@ dependencies {
     implementation deps.others.easy_permissions
     implementation deps.others.card_slider
     implementation deps.others.date_time_picker
+    implementation deps.others.floating_search
+    api deps.others.zoned_time_date
 
     implementation project(path: ':sagres')
     implementation project(path: ':bypass')

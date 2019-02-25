@@ -43,6 +43,8 @@ import com.forcetower.uefs.core.storage.database.M8TO9
 import com.forcetower.uefs.core.storage.database.M9TO10
 import com.forcetower.uefs.core.storage.database.M10TO11
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
+import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import dagger.Module
 import dagger.Provides
 import javax.inject.Singleton
@@ -70,6 +72,22 @@ object AppModule {
                 .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11)
                 .fallbackToDestructiveMigration()
                 .build()
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideApiDatabase(context: Context): APIDatabase =
+            Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
+                .fallbackToDestructiveMigration()
+                .build()
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideEventDatabase(context: Context): EventDatabase =
+            Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
+                    .fallbackToDestructiveMigration()
+                    .build()
 
     @Provides
     @Singleton

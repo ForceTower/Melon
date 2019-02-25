@@ -1,5 +1,5 @@
-A partir deste update o tema escuro pode ser desbloqueado.
+O Horário da SIECOMP está quase completo, faltam alguns detalhes.
+Mas, e possível ver todas as sessões (as desse semestre serão colocadas em breve)
 
-Existem no momento 3 condições que fazem o tema ser desbloqueado, complete alguma e o tema será habilitado para você. Lembrem-se estamos em fase de testes dessa função, então em caso de qualquer erro me mande um email :)
-
-Boa sorte a todos :D
+Falta a implementação da notificação quando alguma coisa de uma sessão for modificada, neste caso vou precisar pensar se continuarei com este data source, ou migrarei tudo para o Firestore :)
+Falta a implementação do painel administrativo disso, pq né...

@@ -196,13 +196,13 @@ private constructor(context: Context) : SagresNavigator() {
         }
     }
 
-    override fun stopTags(tag: String) {
+    override fun stopTags(tag: String?) {
         val callList = ArrayList<Call>()
         callList.addAll(client.dispatcher().runningCalls())
         callList.addAll(client.dispatcher().queuedCalls())
         for (call in callList) {
             val local = call.request().tag()
-            if (local != null && local == tag) {
+            if ((local != null && local == tag) || tag == null) {
                 call.cancel()
             }
         }
@@ -218,6 +218,7 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     override fun logout() {
         database.clearAllTables()
+        stopTags(null)
         cookieJar.clear()
     }
 
@@ -343,14 +344,14 @@ private constructor(context: Context) : SagresNavigator() {
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun loadDisciplineDetails(semester: String?, code: String?, group: String?): DisciplineDetailsCallback {
-        return DisciplineDetailsOperation(semester, code, group, null).finishedResult
+    override fun loadDisciplineDetails(semester: String?, code: String?, group: String?, partialLoad: Boolean): DisciplineDetailsCallback {
+        return DisciplineDetailsOperation(semester, code, group, partialLoad, null).finishedResult
     }
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun aLoadDisciplineDetails(semester: String?, code: String?, group: String?): LiveData<DisciplineDetailsCallback> {
-        return DisciplineDetailsOperation(semester, code, group, SagresTaskExecutor.getNetworkThreadExecutor()).result
+    override fun aLoadDisciplineDetails(semester: String?, code: String?, group: String?, partialLoad: Boolean): LiveData<DisciplineDetailsCallback> {
+        return DisciplineDetailsOperation(semester, code, group, partialLoad, SagresTaskExecutor.getNetworkThreadExecutor()).result
     }
 
     @AnyThread
