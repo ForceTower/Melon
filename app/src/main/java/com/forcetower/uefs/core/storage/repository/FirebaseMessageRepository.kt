@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
+import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -82,8 +83,13 @@ class FirebaseMessageRepository @Inject constructor(
             "synchronize" -> universalSync(data)
             "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
+            "hourglass_ignite" -> hourglassRunner()
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun hourglassRunner() {
+        DisciplineDetailsLoaderService.startService(context, false)
     }
 
     private fun rescheduleSync(data: Map<String, String>) {
