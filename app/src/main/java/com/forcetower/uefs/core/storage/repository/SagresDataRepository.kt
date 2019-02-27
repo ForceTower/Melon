@@ -31,7 +31,9 @@ import android.content.SharedPreferences
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.truncate
 import com.google.firebase.auth.FirebaseAuth
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -63,4 +65,16 @@ class SagresDataRepository @Inject constructor(
     fun getFlags() = database.flagsDao().getFlags()
     fun getSemesters() = database.semesterDao().getParticipatingSemesters()
     fun getCourse() = database.profileDao().getProfileCourse()
+
+    fun lightweightCalcScore() {
+        executor.diskIO().execute {
+            val classes = database.classDao().getAllDirect()
+            val hours = classes.sumBy { it.discipline().credits }
+            val mean = classes.filter { it.clazz.finalScore != null }
+                    .sumByDouble { it.discipline().credits * it.clazz.finalScore!! }
+            val score = (mean / hours).truncate()
+            Timber.d("Score is $score")
+            database.profileDao().updateCalculatedScore(score)
+        }
+    }
 }
