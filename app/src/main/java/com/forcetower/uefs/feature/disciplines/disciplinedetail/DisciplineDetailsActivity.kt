@@ -32,24 +32,33 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityDisciplineDetailsBinding
-import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
 
-class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
+class DisciplineDetailsActivity : UGameActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var factory: UViewModelFactory
     private lateinit var binding: ActivityDisciplineDetailsBinding
+    private lateinit var viewModel: DisciplineViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_discipline_details)
+        viewModel = provideViewModel(factory)
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
@@ -58,6 +67,23 @@ class DisciplineDetailsActivity : UActivity(), HasSupportFragmentInjector {
                 add(R.id.fragment_container, DisciplineDetailsFragment.newInstance(classId, classGroupId))
             }
         }
+
+        viewModel.clazz.observe(this, Observer {
+            if (it != null) {
+                val teacher = Constants.HARD_DISCIPLINES[it.clazz.discipline().code]
+                if (teacher != null) {
+                    if (teacher == "__ANY__") {
+                        unlockAchievement(R.string.achievement_vale_das_sombras)
+                    } else {
+                        it.groups.forEach { group ->
+                            if (group.teacher != null && group.teacher == teacher) {
+                                unlockAchievement(R.string.achievement_vale_das_sombras)
+                            }
+                        }
+                    }
+                }
+            }
+        })
     }
 
     override fun showSnack(string: String, long: Boolean) {
