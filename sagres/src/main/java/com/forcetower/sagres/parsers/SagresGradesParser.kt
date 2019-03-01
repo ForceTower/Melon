@@ -162,8 +162,8 @@ object SagresGradesParser {
                 val foot = table.selectFirst("tfoot")
                 if (foot != null) {
                     val tr = foot.selectFirst("tr")
-                    if (tr != null && tr.children().size == 4)
-                        grade.finalScore = tr.children()[2].text().trim()
+                    if (tr != null && tr.children().size == 4){
+                        grade.finalScore = if (tr.children()[2].text().trim() == "-") "0.0" else tr.children()[2].text().trim()
                 }
             } catch (t: Throwable) {
                 Timber.d("Exception happened")
