@@ -42,12 +42,12 @@ interface SemesterDao {
     @Insert(onConflict = IGNORE)
     fun insertIgnoring(semester: Semester)
 
-    @Query("SELECT * FROM Semester")
+    @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
     fun getParticipatingSemesters(): LiveData<List<Semester>>
 
     @Query("DELETE FROM Semester")
     fun deleteAll()
 
-    @Query("SELECT * FROM Semester")
+    @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
     fun getSemestersDirect(): List<Semester>
 }
