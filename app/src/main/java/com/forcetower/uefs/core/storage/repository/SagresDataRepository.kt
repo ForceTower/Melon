@@ -72,9 +72,11 @@ class SagresDataRepository @Inject constructor(
             val hours = classes.filter { it.clazz.finalScore != null }.sumBy { it.discipline().credits }
             val mean = classes.filter { it.clazz.finalScore != null }
                     .sumByDouble { it.discipline().credits * it.clazz.finalScore!! }
-            val score = (mean / hours).truncate()
-            Timber.d("Score is $score")
-            database.profileDao().updateCalculatedScore(score)
+            if (hours > 0) {
+                val score = (mean / hours).truncate()
+                Timber.d("Score is $score")
+                database.profileDao().updateCalculatedScore(score)
+            }
         }
     }
 }
