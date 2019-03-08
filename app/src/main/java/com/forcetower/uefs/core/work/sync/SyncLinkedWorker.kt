@@ -52,9 +52,12 @@ class SyncLinkedWorker(
     lateinit var repository: SagresSyncRepository
 
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
-        repository.performSync("Linked")
-
+        try {
+            (applicationContext as UApplication).component.inject(this)
+            repository.performSync("Linked")
+        } catch (t: Throwable) {
+            Timber.d("Worker ignored the error so it may continue")
+        }
         val period = inputData.getInt(PERIOD, 60)
         val count = inputData.getInt(COUNT, 0)
         val other = if (count == 2) 1 else 2
