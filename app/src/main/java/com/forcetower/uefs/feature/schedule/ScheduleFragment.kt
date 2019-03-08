@@ -39,6 +39,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -119,14 +120,18 @@ class ScheduleFragment : UFragment(), Injectable {
         }
 
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
-        profileViewModel.getMeProfile().observe(this, Observer {
-            val courseId = it?.course ?: 1L
-            binding.btnSiecompSchedule.visibility = if (courseId == 1L) {
-                VISIBLE
-            } else {
-                GONE
-            }
-        })
+        if (TimeUtils.eventHasEnded()) {
+            binding.btnSiecompSchedule.visibility = GONE
+        } else {
+            profileViewModel.getMeProfile().observe(this, Observer {
+                val courseId = it?.course ?: 1L
+                binding.btnSiecompSchedule.visibility = if (courseId == 1L) {
+                    VISIBLE
+                } else {
+                    GONE
+                }
+            })
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
