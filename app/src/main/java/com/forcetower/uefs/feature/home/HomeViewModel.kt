@@ -41,13 +41,15 @@ import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
     private val loginSagresRepository: LoginSagresRepository,
     private val dataRepository: SagresDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository,
-    private val settingsRepository: SettingsRepository
+    private val settingsRepository: SettingsRepository,
+    private val darkThemeRepository: DarkThemeRepository
 ) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
@@ -86,4 +88,7 @@ class HomeViewModel @Inject constructor(
     fun subscribeToTopics(vararg topics: String) {
         firebaseMessageRepository.subscribe(topics)
     }
+
+    fun verifyDarkTheme() = darkThemeRepository.getPreconditions()
+    fun lightWeightCalcScore() = dataRepository.lightweightCalcScore()
 }

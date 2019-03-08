@@ -104,7 +104,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
-            setLifecycleOwner(this@DisciplineDetailsFragment)
+            lifecycleOwner = this@DisciplineDetailsFragment
         }
 
         createFragments()

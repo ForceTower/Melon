@@ -29,13 +29,14 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.work.WorkManager
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
-import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
@@ -83,13 +84,56 @@ class FirebaseMessageRepository @Inject constructor(
             "synchronize" -> universalSync(data)
             "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
-            "hourglass_ignite" -> hourglassRunner()
+            "hourglass_initiator" -> hourglassRunner()
+            "worker_cancel" -> cancelWorker(data)
+            "remote_preferences" -> promotePreferences(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
     }
 
+    private fun promotePreferences(data: Map<String, String>) {
+        val type = data["type"]
+        val key = data["key"]
+        val value = data["value"]
+
+        type ?: return
+        key ?: return
+        value ?: return
+
+        val editor = preferences.edit()
+        when (type) {
+            "int" -> {
+                val integer = value.toIntOrNull()
+                if (integer != null) editor.putInt(key, integer)
+            }
+            "float" -> {
+                val float = value.toFloatOrNull()
+                if (float != null) editor.putFloat(key, float)
+            }
+            "boolean" -> {
+                val bool = value.toBooleanOrNull()
+                if (bool != null) editor.putBoolean(key, bool)
+            }
+            "long" -> {
+                val long = value.toLongOrNull()
+                if (long != null) editor.putLong(key, long)
+            }
+            "string" -> {
+                editor.putString(key, value)
+            }
+        }
+
+        editor.apply()
+    }
+
+    private fun cancelWorker(data: Map<String, String>) {
+        val tag = data["tag"]
+        tag ?: return
+        WorkManager.getInstance().cancelAllWorkByTag(tag)
+    }
+
     private fun hourglassRunner() {
-        DisciplineDetailsLoaderService.startService(context, false)
+        HourglassContributeWorker.createWorker()
     }
 
     private fun rescheduleSync(data: Map<String, String>) {

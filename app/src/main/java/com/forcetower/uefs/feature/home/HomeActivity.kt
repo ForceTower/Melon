@@ -110,6 +110,20 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         moveToTask()
     }
 
+    override fun onStart() {
+        super.onStart()
+        verifyDarkTheme()
+        lightWeightCalcScore()
+    }
+
+    private fun lightWeightCalcScore() {
+        viewModel.lightWeightCalcScore()
+    }
+
+    private fun verifyDarkTheme() {
+        viewModel.verifyDarkTheme().observe(this, Observer { Unit })
+    }
+
     private fun verifyIntegrity() {
         if (BuildConfig.DEBUG) return
 
