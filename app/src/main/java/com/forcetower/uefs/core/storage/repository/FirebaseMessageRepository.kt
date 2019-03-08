@@ -86,8 +86,44 @@ class FirebaseMessageRepository @Inject constructor(
             "reschedule_sync" -> rescheduleSync(data)
             "hourglass_initiator" -> hourglassRunner()
             "worker_cancel" -> cancelWorker(data)
+            "remote_preferences" -> promotePreferences(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun promotePreferences(data: Map<String, String>) {
+        val type = data["type"]
+        val key = data["key"]
+        val value = data["value"]
+
+        type ?: return
+        key ?: return
+        value ?: return
+
+        val editor = preferences.edit()
+        when (type) {
+            "int" -> {
+                val integer = value.toIntOrNull()
+                if (integer != null) editor.putInt(key, integer)
+            }
+            "float" -> {
+                val float = value.toFloatOrNull()
+                if (float != null) editor.putFloat(key, float)
+            }
+            "boolean" -> {
+                val bool = value.toBooleanOrNull()
+                if (bool != null) editor.putBoolean(key, bool)
+            }
+            "long" -> {
+                val long = value.toLongOrNull()
+                if (long != null) editor.putLong(key, long)
+            }
+            "string" -> {
+                editor.putString(key, value)
+            }
+        }
+
+        editor.apply()
     }
 
     private fun cancelWorker(data: Map<String, String>) {
