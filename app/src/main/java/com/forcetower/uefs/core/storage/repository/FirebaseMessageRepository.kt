@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.work.WorkManager
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
@@ -83,9 +84,16 @@ class FirebaseMessageRepository @Inject constructor(
             "synchronize" -> universalSync(data)
             "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
-            "hourglass_ignite" -> hourglassRunner()
+            "hourglass_initiator" -> hourglassRunner()
+            "worker_cancel" -> cancelWorker(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun cancelWorker(data: Map<String, String>) {
+        val tag = data["tag"]
+        tag ?: return
+        WorkManager.getInstance().cancelAllWorkByTag(tag)
     }
 
     private fun hourglassRunner() {
