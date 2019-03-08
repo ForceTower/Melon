@@ -39,7 +39,7 @@ import java.util.Locale
  * TODO This should be overridden by the cloud at any time!
  */
 object TimeUtils {
-    val SIECOMP_TIMEZONE = ZoneId.of(BuildConfig.SIECOMP_TIMEZONE)
+    val SIECOMP_TIMEZONE: ZoneId = ZoneId.of(BuildConfig.SIECOMP_TIMEZONE)
 
     val EventDays = listOf(
             EventDay(

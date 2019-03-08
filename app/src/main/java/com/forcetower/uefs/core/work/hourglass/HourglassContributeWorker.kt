@@ -25,76 +25,53 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.work.sync
+package com.forcetower.uefs.core.work.hourglass
 
 import android.content.Context
-import androidx.annotation.IntRange
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import androidx.work.workDataOf
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
+import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.work.enqueueUnique
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SyncLinkedWorker(
+class HourglassContributeWorker(
     context: Context,
     params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
-    lateinit var repository: SagresSyncRepository
-
+    lateinit var repository: DisciplineDetailsRepository
     override fun doWork(): Result {
-        try {
-            (applicationContext as UApplication).component.inject(this)
-            repository.performSync("Linked")
+        (applicationContext as UApplication).component.inject(this)
+        return try {
+            repository.loadDisciplineDetailsSync()
+            Result.success()
         } catch (t: Throwable) {
-            Timber.d("Worker ignored the error so it may continue")
+            Result.retry()
         }
-        val period = inputData.getInt(PERIOD, 60)
-        val count = inputData.getInt(COUNT, 0)
-        val other = if (count == 2) 1 else 2
-        createWorker(period, true, other)
-        return Result.success()
     }
 
     companion object {
-        private const val PERIOD = "linked_work_period"
-        private const val COUNT = "linked_work_count"
+        private const val TAG = "hourglass_contribute_downloader"
+        private const val NAME = "worker_hourglass_contribute_downloader"
 
-        private const val TAG = "linked_sagres_sync_worker"
-        private const val NAME = "worker_sagres_linked"
-
-        fun createWorker(@IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true, count: Int = 0) {
+        fun createWorker() {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
 
-            val data = workDataOf(PERIOD to period, COUNT to count)
-
-            val request = OneTimeWorkRequestBuilder<SyncLinkedWorker>()
-                    .setInputData(data)
-                    .addTag(TAG)
-                    .setInitialDelay(period.toLong(), TimeUnit.MINUTES)
+            val request = OneTimeWorkRequestBuilder<HourglassContributeWorker>()
                     .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
                     .setConstraints(constraints)
+                    .addTag(TAG)
                     .build()
 
-            request.enqueueUnique("${NAME}_$count", replace)
-            if (replace) {
-                Timber.d("Scheduled linked worker on a $period period")
-            }
-        }
-
-        fun stopWorker() {
-            WorkManager.getInstance().cancelAllWorkByTag(TAG).result.get()
+            request.enqueueUnique(NAME, true)
         }
     }
 }

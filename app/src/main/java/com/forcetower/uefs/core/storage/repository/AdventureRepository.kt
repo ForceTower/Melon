@@ -42,6 +42,7 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.truncate
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -108,9 +109,9 @@ class AdventureRepository @Inject constructor(
             } else {
                 Timber.d("Invalid combination of $email and ${user.email}")
             }
-        } catch (exception: Exception) {
-            Timber.d("Ignored exception: ${exception.message}")
-            Crashlytics.logException(exception)
+        } catch (throwable: Throwable) {
+            Timber.d("Ignored exception: ${throwable.message}")
+            Crashlytics.logException(throwable)
         }
 
         return data
@@ -150,13 +151,14 @@ class AdventureRepository @Inject constructor(
             var noFinalCount = 0
             var introduction = 0
 
+            // Only previous semesters
             sorted.forEach { semester ->
                 val start = semester.start
                 val end = semester.end
                 if (start != null && end != null) {
                     val diff = end - start
                     val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
-                    if (days < 180) data[R.string.achievement_semestre_de_6_meses] = -1
+                    if (days <= 180) data[R.string.achievement_semestre_de_6_meses] = -1
 
                     val calendarStart = Calendar.getInstance().apply { timeInMillis = start }.get(Calendar.YEAR)
                     val calendarEnd = Calendar.getInstance().apply { timeInMillis = end }.get(Calendar.YEAR)
@@ -253,10 +255,11 @@ class AdventureRepository @Inject constructor(
             data[R.string.achievement_introduo_a_introdues] = introduction
         }
 
-        if (semesters.size == 1) {
-            val semester = semesters[0]
+        // Takes only the current semester
+        val current = semesters.maxBy { it.sagresId }
+        if (current != null) {
             var hours = 0
-            val classes = database.classDao().getClassesWithGradesFromSemesterDirect(semester.uid)
+            val classes = database.classDao().getClassesWithGradesFromSemesterDirect(current.uid)
             classes.forEach { clazz ->
                 val points = clazz.clazz.finalScore ?: -1.0
                 val credits = clazz.discipline().credits
@@ -298,7 +301,7 @@ class AdventureRepository @Inject constructor(
         }
 
         if (accumulatedHours != 0) {
-            val calcScore = accumulatedMean / accumulatedHours
+            val calcScore = (accumulatedMean / accumulatedHours).truncate()
             Timber.d("Score calculated is: $calcScore")
             database.profileDao().updateCalculatedScore(calcScore)
         }

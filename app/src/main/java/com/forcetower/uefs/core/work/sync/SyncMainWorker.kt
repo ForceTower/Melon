@@ -55,10 +55,14 @@ class SyncMainWorker(
 
     @WorkerThread
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
-        Timber.d("Main Worker started")
-        repository.performSync("Principal")
-        Timber.d("Main Worker completed")
+        try {
+            (applicationContext as UApplication).component.inject(this)
+            Timber.d("Main Worker started")
+            repository.performSync("Principal")
+            Timber.d("Main Worker completed")
+        } catch (t: Throwable) {
+            Timber.d("Worker ignored the error so it may continue")
+        }
         return Result.success()
     }
 
