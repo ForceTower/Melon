@@ -69,7 +69,7 @@ class SagresDataRepository @Inject constructor(
     fun lightweightCalcScore() {
         executor.diskIO().execute {
             val classes = database.classDao().getAllDirect()
-            val hours = classes.sumBy { it.discipline().credits }
+            val hours = classes.filter { it.clazz.finalScore != null }.sumBy { it.discipline().credits }
             val mean = classes.filter { it.clazz.finalScore != null }
                     .sumByDouble { it.discipline().credits * it.clazz.finalScore!! }
             val score = (mean / hours).truncate()
