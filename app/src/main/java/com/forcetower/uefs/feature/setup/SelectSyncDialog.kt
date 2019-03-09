@@ -31,8 +31,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.R
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.service.SyncFrequency
+import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
@@ -41,9 +43,11 @@ import javax.inject.Inject
 class SelectSyncDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var repository: SyncFrequencyRepository
 
     private lateinit var binding: DialogSelectSynchronizationBinding
-    private var data: Array<Frequency>? = null
+    private var data: Array<SyncFrequency>? = null
     private var callback: FrequencySelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -56,19 +60,12 @@ class SelectSyncDialog : RoundedDialog(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val array = arrayListOf(
-                Frequency(getString(R.string.at_every_time_minutes, 15), 15),
-                Frequency(getString(R.string.at_every_time_minutes, 30), 30),
-                Frequency(getString(R.string.at_every_time_hour), 60),
-                Frequency(getString(R.string.at_every_time_hours, 2), 120),
-                Frequency(getString(R.string.at_every_time_hours, 3), 180),
-                Frequency(getString(R.string.at_every_time_hours, 6), 360),
-                Frequency(getString(R.string.at_every_time_hours, 12), 720)
-        )
-        populateFrequency(array)
+        repository.getFrequencies().observe(this, Observer {
+            populateFrequency(it)
+        })
     }
 
-    private fun populateFrequency(data: List<Frequency>) {
+    private fun populateFrequency(data: List<SyncFrequency>) {
         this.data = data.toTypedArray()
         val strings = data.map { it.name }.toTypedArray()
         binding.pickerSync.minValue = 1
@@ -95,5 +92,5 @@ data class Frequency(
 )
 
 interface FrequencySelectionCallback {
-    fun onSelected(frequency: Frequency)
+    fun onSelected(frequency: SyncFrequency)
 }
