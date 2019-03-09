@@ -55,6 +55,9 @@ class SelectSyncDialog : RoundedDialog(), Injectable {
             binding = it
             it.btnCancel.setOnClickListener { dismiss() }
             it.btnOk.setOnClickListener { select() }
+            binding.pickerSync.minValue = 1
+            binding.pickerSync.maxValue = 1
+            binding.pickerSync.displayedValues = arrayOf("A cada 15 minutos")
         }.root
     }
 
