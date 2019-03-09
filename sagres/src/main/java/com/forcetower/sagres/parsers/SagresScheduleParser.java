@@ -54,7 +54,7 @@ public class SagresScheduleParser {
         Element schedule = document.selectFirst("table[class=\"meus-horarios\"]");
         Element subtitle = document.selectFirst("table[class=\"meus-horarios-legenda\"]");
 
-        if (schedule == null) {
+        if (schedule == null || subtitle == null) {
             Timber.d("Schedule not found! Prob is \"Schedule Undefined\"");
             return null;
         }
