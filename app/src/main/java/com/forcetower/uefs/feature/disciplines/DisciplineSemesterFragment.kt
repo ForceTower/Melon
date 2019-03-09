@@ -36,6 +36,7 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
@@ -73,11 +74,11 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: DisciplineSemesterAdapter
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
+    private lateinit var binding: FragmentDisciplineSemesterBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
-        val binding = FragmentDisciplineSemesterBinding.inflate(inflater, container, false).apply {
-            setLifecycleOwner(this@DisciplineSemesterFragment)
+        binding = FragmentDisciplineSemesterBinding.inflate(inflater, container, false).apply {
             viewModel = this@DisciplineSemesterFragment.viewModel
         }.also {
             recyclerView = it.disciplinesRecycler
@@ -88,6 +89,8 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Crashlytics.logException(t) }
+
         adapter = DisciplineSemesterAdapter(viewModel)
         recyclerView.apply {
             adapter = this@DisciplineSemesterFragment.adapter
