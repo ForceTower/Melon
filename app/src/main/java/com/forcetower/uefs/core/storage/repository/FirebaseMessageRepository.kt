@@ -51,7 +51,6 @@ import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
-import kotlin.math.max
 
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
@@ -152,13 +151,12 @@ class FirebaseMessageRepository @Inject constructor(
         if (current > period && !forced) {
             Timber.d("No action needed")
         } else {
-            val nextPeriod = max(period, current)
             val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
             when (worker) {
-                0 -> SyncMainWorker.createWorker(context, nextPeriod, true)
+                0 -> SyncMainWorker.createWorker(context, period, true)
                 1 -> {
                     SyncLinkedWorker.stopWorker()
-                    SyncLinkedWorker.createWorker(nextPeriod, true)
+                    SyncLinkedWorker.createWorker(period, true)
                 }
             }
             preferences.edit().putString("stg_sync_frequency", period.toString()).apply()
