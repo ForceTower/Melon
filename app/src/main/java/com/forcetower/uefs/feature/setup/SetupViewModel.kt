@@ -28,11 +28,10 @@
 package com.forcetower.uefs.feature.setup
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.Uri
 import android.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
@@ -44,13 +43,12 @@ import javax.inject.Inject
 
 class SetupViewModel @Inject constructor(
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val preferences: SharedPreferences,
     private val context: Context,
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
     private var course: Course? = null
-    private var frequency: Frequency = Frequency(context.getString(R.string.at_every_time_hour), 60)
+    private var frequency: SyncFrequency = SyncFrequency()
 
     fun uploadImageToStorage(reference: String) {
         val uri = selectImageUri
@@ -73,15 +71,15 @@ class SetupViewModel @Inject constructor(
         profileRepository.updateUserCourse(course)
     }
 
-    fun setSelectedFrequency(frequency: Frequency) {
+    fun setSelectedFrequency(frequency: SyncFrequency) {
         this.frequency = frequency
     }
 
-    fun getSelectedFrequency(): Frequency {
+    fun getSelectedFrequency(): SyncFrequency {
         return frequency
     }
 
-    fun setFrequencyAndComplete(frequency: Frequency) {
+    fun setFrequencyAndComplete(frequency: SyncFrequency) {
         firebaseAuthRepository.updateFrequency(frequency.value)
         SyncLinkedWorker.stopWorker()
         SyncMainWorker.createWorker(context, frequency.value)

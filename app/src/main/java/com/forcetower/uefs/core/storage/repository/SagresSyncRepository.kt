@@ -53,6 +53,7 @@ import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -105,7 +106,7 @@ class SagresSyncRepository @Inject constructor(
         if (access != null) {
             Crashlytics.setUserIdentifier(access.username)
             // Only one sync may be active at a time
-            synchronized(S_LOCK) { execute(access, registry) }
+            synchronized(S_LOCK) { execute(access, registry, executor) }
         } else {
             registry.completed = true
             registry.error = -1
@@ -156,28 +157,30 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun execute(access: Access, registry: SyncRegistry) {
+    private fun execute(access: Access, registry: SyncRegistry, executor: String) {
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
-        try {
-            val call = service.getUpdate()
-            val response = call.execute()
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && !body.manager) {
-                    registry.completed = true
-                    registry.error = -4
-                    registry.success = false
-                    registry.message = "Atualização negada"
-                    registry.end = System.currentTimeMillis()
-                    database.syncRegistryDao().update(registry)
-                    return
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase())) {
+            try {
+                val call = service.getUpdate()
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && !body.manager) {
+                        registry.completed = true
+                        registry.error = -4
+                        registry.success = false
+                        registry.message = "Atualização negada"
+                        registry.end = System.currentTimeMillis()
+                        database.syncRegistryDao().update(registry)
+                        return
+                    }
                 }
+            } catch (t: Throwable) {
+                Timber.e(t)
+                Timber.d("An error just happened... It will complete anyways")
             }
-        } catch (t: Throwable) {
-            Timber.e(t)
-            Timber.d("An error just happened... It will complete anyways")
         }
 
         database.gradesDao().markAllNotified()

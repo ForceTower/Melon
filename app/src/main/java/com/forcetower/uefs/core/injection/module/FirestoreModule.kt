@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.injection.module
 import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.model.service.Event
 import com.forcetower.uefs.core.model.service.Feedback
+import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
@@ -82,4 +83,10 @@ object FirestoreModule {
     @Reusable
     @Named(Feedback.COLLECTION)
     fun provideFeedbackCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Feedback.COLLECTION)
+
+    @JvmStatic
+    @Provides
+    @Reusable
+    @Named(SyncFrequency.COLLECTION)
+    fun provideSyncFrequencyCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(SyncFrequency.COLLECTION)
 }
