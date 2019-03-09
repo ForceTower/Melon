@@ -49,6 +49,7 @@ import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
+import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -193,6 +194,8 @@ class SagresSyncRepository @Inject constructor(
             database.syncRegistryDao().update(registry)
             return
         }
+
+        defineSchedule(SagresScheduleParser.getSchedule(homeDoc))
 
         val person = me(score, homeDoc, access)
         if (person == null) {
