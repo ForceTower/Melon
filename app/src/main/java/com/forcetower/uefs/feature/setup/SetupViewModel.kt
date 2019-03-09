@@ -49,6 +49,7 @@ class SetupViewModel @Inject constructor(
     private var selectImageUri: Uri? = null
     private var course: Course? = null
     private var frequency: SyncFrequency = SyncFrequency()
+    var syncFrequencies = listOf(SyncFrequency())
 
     fun uploadImageToStorage(reference: String) {
         val uri = selectImageUri

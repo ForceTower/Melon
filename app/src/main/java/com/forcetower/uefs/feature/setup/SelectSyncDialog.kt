@@ -31,41 +31,31 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.SyncFrequency
-import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class SelectSyncDialog : RoundedDialog(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var repository: SyncFrequencyRepository
 
+    private lateinit var setupViewModel: SetupViewModel
     private lateinit var binding: DialogSelectSynchronizationBinding
     private var data: Array<SyncFrequency>? = null
     private var callback: FrequencySelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        setupViewModel = provideActivityViewModel(factory)
         return DialogSelectSynchronizationBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener { dismiss() }
             it.btnOk.setOnClickListener { select() }
-            binding.pickerSync.minValue = 1
-            binding.pickerSync.maxValue = 1
-            binding.pickerSync.displayedValues = arrayOf("A cada 15 minutos")
+            populateFrequency(setupViewModel.syncFrequencies)
         }.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        repository.getFrequencies().observe(this, Observer {
-            populateFrequency(it)
-        })
     }
 
     private fun populateFrequency(data: List<SyncFrequency>) {
