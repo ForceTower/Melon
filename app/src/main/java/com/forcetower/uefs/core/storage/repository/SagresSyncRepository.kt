@@ -269,9 +269,20 @@ class SagresSyncRepository @Inject constructor(
             Status.SUCCESS -> {
                 return login.document
             }
+            Status.INVALID_LOGIN -> {
+                onInvalidLogin()
+            }
             else -> produceErrorMessage(login)
         }
         return null
+    }
+
+    private fun onInvalidLogin() {
+        val access = database.accessDao().getAccessDirect()
+        if (access != null && access.valid) {
+            database.accessDao().setAccessValidation(false)
+            NotificationCreator.showInvalidAccessNotification(context)
+        }
     }
 
     private fun me(score: Double, document: Document, access: Access): SPerson? {
