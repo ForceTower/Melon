@@ -31,13 +31,31 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
+import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Discipline
 
 @Dao
-interface DisciplineDao {
+abstract class DisciplineDao {
     @Insert(onConflict = IGNORE)
-    fun insert(discipline: List<Discipline>)
+    abstract fun insert(discipline: Discipline)
+
+    @Transaction
+    open fun insert(disciplines: List<Discipline>) {
+        disciplines.forEach { discipline ->
+            val old = getDisciplineByCodeDirect(discipline.code)
+            if (old == null) {
+                insert(discipline)
+            } else {
+                if (old.credits == 0) {
+                    updateDiscipline(old.uid, discipline.credits, discipline.name)
+                }
+            }
+        }
+    }
+
+    @Query("UPDATE Discipline SET credits = :credits, name = :name WHERE uid = :uid")
+    abstract fun updateDiscipline(uid: Long, credits: Int, name: String)
 
     @Query("SELECT * FROM Discipline WHERE code = :code LIMIT 1")
-    fun getDisciplineByCodeDirect(code: String): Discipline
+    abstract fun getDisciplineByCodeDirect(code: String): Discipline?
 }
