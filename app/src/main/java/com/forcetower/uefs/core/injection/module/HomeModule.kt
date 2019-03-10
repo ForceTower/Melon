@@ -40,6 +40,7 @@ import com.forcetower.uefs.feature.document.DocumentsFragment
 import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
+import com.forcetower.uefs.feature.home.InvalidAccessDialog
 import com.forcetower.uefs.feature.mechcalculator.MechCreateDialog
 import com.forcetower.uefs.feature.mechcalculator.MechanicalFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
@@ -107,4 +108,6 @@ abstract class HomeModule {
     abstract fun mechCreateDialog(): MechCreateDialog
     @ContributesAndroidInjector
     abstract fun sendFeedbackFragment(): SendFeedbackFragment
+    @ContributesAndroidInjector
+    abstract fun invalidAccessDialog(): InvalidAccessDialog
 }
