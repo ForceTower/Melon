@@ -203,6 +203,7 @@ object NotificationCreator {
         val message = context.getString(R.string.access_invalidated_notification_message)
 
         val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, title, message, null)
+                .setColor(ContextCompat.getColor(context, R.color.red))
         showNotification(context, message.hashCode().toLong(), builder)
     }
 
