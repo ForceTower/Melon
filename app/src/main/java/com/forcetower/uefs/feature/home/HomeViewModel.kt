@@ -40,6 +40,8 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
+import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import javax.inject.Inject
@@ -61,6 +63,10 @@ class HomeViewModel @Inject constructor(
     private val _openProfileCase = MediatorLiveData<Event<String>>()
     val openProfileCase: LiveData<Event<String>>
         get() = _openProfileCase
+
+    private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()
+    val passwordChangeProcess: LiveData<Event<Resource<Boolean>>>
+        get() = _passwordChangeProcess
 
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
@@ -91,4 +97,15 @@ class HomeViewModel @Inject constructor(
 
     fun verifyDarkTheme() = darkThemeRepository.getPreconditions()
     fun lightWeightCalcScore() = dataRepository.lightweightCalcScore()
+    fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
+
+    fun attemptNewPasswordLogin(password: String) {
+        val source = dataRepository.attemptLoginWithNewPassword(password)
+        _passwordChangeProcess.addSource(source) {
+            if (it.status == Status.SUCCESS) {
+                _passwordChangeProcess.removeSource(source)
+            }
+            _passwordChangeProcess.value = Event(it)
+        }
+    }
 }
