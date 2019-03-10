@@ -48,7 +48,7 @@ import java.util.UUID
 )
 data class Class(
     @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
+    var uid: Long = 0,
     @ColumnInfo(name = "discipline_id")
     val disciplineId: Long,
     @ColumnInfo(name = "semester_id")
