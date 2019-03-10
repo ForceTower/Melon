@@ -211,7 +211,15 @@ class SagresSyncRepository @Inject constructor(
             return
         }
 
-        executors.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
+        executors.others().execute {
+            try {
+                val reconnect = preferences.getBoolean("firebase_reconnect", true)
+                firebaseAuthRepository.loginToFirebase(person, access, reconnect)
+                preferences.edit().putBoolean("firebase_reconnect", false).apply()
+            } catch (t: Throwable) {
+                Crashlytics.logException(t)
+            }
+        }
 
         var result = 0
         if (access.username.contains("@")) {
