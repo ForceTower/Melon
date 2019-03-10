@@ -71,7 +71,7 @@ class FirebaseAuthRepository @Inject constructor(
 
             val email = context.getString(R.string.email_unes_format, username)
 
-            val profiler = "${person.sagresId}__${username}__${access.password.toLowerCase()}"
+            val profiler = "${person.sagresId}__$username"
             val password = context.getString(R.string.firebase_password_pattern, username, profiler, secret)
 
             attemptSignIn(
