@@ -35,5 +35,6 @@ data class Access(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,
     val username: String,
-    val password: String
+    val password: String,
+    val valid: Boolean = true
 )
