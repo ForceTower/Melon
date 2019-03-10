@@ -59,4 +59,10 @@ abstract class AccessDao {
 
     @Query("SELECT * FROM Access LIMIT 1")
     abstract fun getAccessDirect(): Access?
+
+    @Query("UPDATE Access SET valid = :valid")
+    abstract fun setAccessValidation(valid: Boolean)
+
+    @Query("UPDATE Access SET password = :password")
+    abstract fun updateAccessPassword(password: String)
 }
