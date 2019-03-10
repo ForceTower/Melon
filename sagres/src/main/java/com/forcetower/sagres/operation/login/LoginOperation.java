@@ -100,8 +100,8 @@ public class LoginOperation extends Operation<LoginCallback> {
                 successMeasures(document);
             }
         } else {
-            finished = new LoginCallback.Builder(Status.INVALID_LOGIN).build();
-            result.postValue(finished);
+            LoginCallback callback = new LoginCallback.Builder(Status.INVALID_LOGIN).build();
+            publishProgress(callback);
         }
     }
 
