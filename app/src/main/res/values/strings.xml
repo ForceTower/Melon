@@ -522,6 +522,8 @@
     <string name="hourglass_general_mean">Média geral</string>
     <string name="hourglass_approval_rate">Aprovação</string>
     <string name="hourglass_preview">Função prévia, ainda em desenvolvimento</string>
+    <string name="access_invalidated_notification_title">Você mudou sua senha?</string>
+    <string name="access_invalidated_notification_message">O UNES não conseguiu acessar o Sagres utilizando a senha atual :(</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
