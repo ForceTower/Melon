@@ -223,6 +223,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                     showInvalidAccessDialog()
                     snack.dismiss()
                 }
+                snack.config()
                 snack.show()
             }
         }
