@@ -530,7 +530,7 @@
     <string name="invalid_access_keep_current">Não mudar</string>
     <string name="invalid_access_change_password">Alterar senha</string>
     <string name="invalid_access_snack">Você trocou sua senha?</string>
-    <string name="invalid_access_snack_solve">Resolver</string>
+    <string name="invalid_access_snack_solve">Ver</string>
     <string name="invalid_access_password_change">Senha alterada!</string>
     <string name="invalid_access_new_password_is_incorrect">A nova senha não funcionou</string>
 
