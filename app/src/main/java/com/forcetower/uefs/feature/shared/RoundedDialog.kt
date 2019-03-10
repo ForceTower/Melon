@@ -34,6 +34,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.Window
+import android.view.WindowManager
 import androidx.fragment.app.DialogFragment
 
 abstract class RoundedDialog : DialogFragment() {
@@ -42,6 +43,7 @@ abstract class RoundedDialog : DialogFragment() {
         val view = onChildCreateView(inflater, container, savedInstanceState)
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         dialog?.window?.requestFeature(Window.FEATURE_NO_TITLE)
+        dialog?.window?.setLayout(WindowManager.LayoutParams.MATCH_PARENT, WindowManager.LayoutParams.WRAP_CONTENT)
         return view
     }
 
