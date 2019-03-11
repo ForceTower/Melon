@@ -284,7 +284,7 @@
     </style>
 
     <style name="Widget.Schedule.HeaderGrid">
-        <item name="android:color">?attr/colorSurfaceDarker</item>
+        <item name="android:color">@color/surfaceEspecial</item>
         <item name="gridSize">8dp</item>
         <item name="gridStrokeWidth">1dp</item>
     </style>
