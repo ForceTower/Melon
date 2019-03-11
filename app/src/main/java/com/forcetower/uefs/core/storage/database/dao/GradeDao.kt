@@ -93,10 +93,9 @@ abstract class GradeDao {
 
             var clazz = getClass(code, it.semesterId)
             if (clazz != null) {
-                if (score != null)
-                    updateClassScore(clazz.uid, score)
-                if (partialScore != null)
-                    updateClassPartialScore(clazz.uid, partialScore)
+                if (clazz.scheduleOnly) updateClassScheduleOnly(clazz.uid, false)
+                if (score != null) updateClassScore(clazz.uid, score)
+                if (partialScore != null) updateClassPartialScore(clazz.uid, partialScore)
 
                 prepareInsertion(clazz, it, notify)
             } else {
@@ -171,6 +170,9 @@ abstract class GradeDao {
             }
         }
     }
+
+    @Query("UPDATE Class SET schedule_only = :scheduleOnly WHERE uid = :classId")
+    abstract fun updateClassScheduleOnly(classId: Long, scheduleOnly: Boolean)
 
     @Query("UPDATE Class SET partial_score = :partialScore WHERE uid = :classId")
     protected abstract fun updateClassPartialScore(classId: Long, partialScore: Double)
