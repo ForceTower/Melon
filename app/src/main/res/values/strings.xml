@@ -204,7 +204,7 @@
     <string name="teachers_label">Professores [Em breve]</string>
     <string name="discipline_credits_undefined">Carga horária desconhecida o_o</string>
     <string name="discipline_absence_left">Ainda restam %1$d faltas</string>
-    <string name="no_class_groups">Não há turmas nesta disciplina, isso pode ser um erro</string>
+    <string name="no_class_groups">As turmas desta disciplinas não foram encontradas, pode me contar mais sobre isso?</string>
     <string name="not_registed">Não registrado</string>
     <string name="unknown_error">Erro desconhecido o_O</string>
     <string name="discipline_classes_header">Aulas</string>
