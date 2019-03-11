@@ -101,7 +101,9 @@ abstract class GradeDao {
             } else {
                 Timber.d("<grades_clazz_404> :: Clazz not found for ${code}_${it.semesterId}")
                 val nameOne = split[1].trim()
-                val name = nameOne.substring(0, nameOne.lastIndexOf("(")).trim()
+                val index = nameOne.lastIndexOf("(")
+                val realIndex = if (index == -1) nameOne.length else index
+                val name = nameOne.substring(0, realIndex).trim()
 
                 var discipline = selectDisciplineDirect(code)
                 val semester = selectSemesterDirect(it.semesterId)
