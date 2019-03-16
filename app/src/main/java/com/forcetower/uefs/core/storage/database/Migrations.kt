@@ -116,3 +116,9 @@ object M13TOM14 : Migration(13, 14) {
         database.execSQL("ALTER TABLE Profile ADD COLUMN mocked INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+object M14TOM15 : Migration(14, 15) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE UNIQUE INDEX `index_Message_hash_message` ON Message (`hash_message`)")
+    }
+}
