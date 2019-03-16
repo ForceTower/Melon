@@ -111,7 +111,7 @@ abstract class GradeDao {
                 val name = nameOne.substring(0, realIndex).trim()
 
                 var discipline = selectDisciplineDirect(code)
-                Timber.d("code: $code -> disciplineId ${discipline}")
+                Timber.d("code: $code -> disciplineId $discipline")
                 val semester = selectSemesterDirect(it.semesterId)
 
                 if (discipline == null) {
