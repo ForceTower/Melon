@@ -88,29 +88,38 @@ abstract class ClassLocationDao {
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
 
-                var discipline = selectDisciplineDirect(it.classCode)
+                var discipline = selectDisciplineDirect(it.classCode.trim())
+
+                val other = selectDisciplineByName(it.className)
+                Timber.d("other is other code: ${other?.code} current code ${it.classCode} $other")
                 if (discipline == null) {
-                    val fakeDiscipline = Discipline(name = it.className, code = it.classCode, credits = 0)
+                    Timber.d("Creating a new discipline")
+                    val fakeDiscipline = Discipline(name = it.className.trim(), code = it.classCode.trim(), credits = 0)
                     val id = insertDiscipline(fakeDiscipline)
                     fakeDiscipline.uid = id
                     discipline = fakeDiscipline
                 }
 
+                Timber.d("After effects Discipline $discipline")
+
                 if (discipline.uid > 0) {
                     var clazz = selectClass(discipline.uid, semester.uid)
                     if (clazz == null) {
+                        Timber.d("Creating a new class")
                         val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
                         val id = insertClass(newClazz)
                         clazz = newClazz
                         clazz.uid = id
                     }
 
+                    Timber.d("After effects clazz $clazz")
+
                     val id = clazz.uid
                     if (id > 0) {
-                        var group = selectGroup(id, it.classGroup)
+                        var group = selectGroup(id, it.classGroup.trim())
                         Timber.d("class_id is $id and group is ${it.classGroup}")
                         if (group == null) {
-                            group = ClassGroup(classId = id, group = it.classGroup)
+                            group = ClassGroup(classId = id, group = it.classGroup.trim())
                             val groupId = insertGroup(group!!)
                             group!!.uid = groupId
                         }
@@ -128,6 +137,9 @@ abstract class ClassLocationDao {
             }
         }
     }
+
+    @Query("SELECT * FROM Discipline WHERE name = :className")
+    abstract fun selectDisciplineByName(className: String): Discipline?
 
     @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
     abstract fun selectClass(disciplineId: Long, semesterId: Long): Class?
