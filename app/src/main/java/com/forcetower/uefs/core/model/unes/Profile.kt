@@ -50,7 +50,9 @@ data class Profile(
     @ColumnInfo(name = "sagres_id")
     val sagresId: Long,
     val uuid: String = UUID.randomUUID().toString(),
-    val me: Boolean = false
+    val me: Boolean = false,
+    @ColumnInfo(name = "mocked")
+    val mocked: Boolean = false
 ) {
     companion object {
         const val COLLECTION = "users"
