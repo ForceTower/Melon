@@ -62,7 +62,9 @@ data class Message(
     @ColumnInfo(name = "date_string")
     val dateString: String? = null,
     @ColumnInfo(name = "processing_time")
-    val processingTime: Long? = null
+    val processingTime: Long? = null,
+    @ColumnInfo(name = "hash_message")
+    val hashMessage: Long? = null
 ) {
     @Ignore
     var disciplineResume: String? = null
@@ -80,7 +82,8 @@ data class Message(
                 codeDiscipline = me.disciplineCode,
                 html = me.isFromHtml,
                 dateString = me.dateString,
-                processingTime = me.processingTime
+                processingTime = me.processingTime,
+                hashMessage = me.message.toLowerCase().trim().hashCode().toLong()
             ).apply { disciplineResume = me.objective }
     }
 }

@@ -128,13 +128,10 @@ class LoginSagresRepository @Inject constructor(
         val username = access.username
 
         if (username.contains("@")) {
-            val name = SagresBasicParser.getName(document) ?: username
-            val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
-            executor.diskIO().execute { database.profileDao().insert(person, score) }
-            executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
-            messages(data, null)
+            continueUsingHtml(document, username, score, access, data)
         } else {
             data.addSource(me) { m ->
+                Timber.d("Me status ${m.status} ${m.code}")
                 if (m.status == Status.SUCCESS) {
                     data.removeSource(me)
                     Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
@@ -146,6 +143,8 @@ class LoginSagresRepository @Inject constructor(
                     } else {
                         Timber.d("SPerson is null")
                     }
+                } else if (m.status == Status.RESPONSE_FAILED) {
+                    continueUsingHtml(document, username, score, access, data)
                 } else {
                     data.value = Callback.Builder(m.status)
                             .code(m.code)
@@ -156,6 +155,14 @@ class LoginSagresRepository @Inject constructor(
                 }
             }
         }
+    }
+
+    private fun continueUsingHtml(document: Document, username: String, score: Double, access: Access, data: MediatorLiveData<Callback>) {
+        val name = SagresBasicParser.getName(document) ?: username
+        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+        executor.diskIO().execute { database.profileDao().insert(person, score) }
+        executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
+        messages(data, null)
     }
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long?) {

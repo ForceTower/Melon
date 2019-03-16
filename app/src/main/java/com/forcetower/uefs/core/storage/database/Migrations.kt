@@ -104,3 +104,9 @@ object M11TO12 : Migration(11, 12) {
         database.execSQL("ALTER TABLE Access ADD COLUMN valid INTEGER NOT NULL DEFAULT 1")
     }
 }
+
+object M12TO13 : Migration(12, 13) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE MESSAGE ADD COLUMN hash_message INTEGER DEFAULT NULL")
+    }
+}
