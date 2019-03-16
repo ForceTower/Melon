@@ -107,6 +107,13 @@ object M11TO12 : Migration(11, 12) {
 
 object M12TO13 : Migration(12, 13) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE MESSAGE ADD COLUMN hash_message INTEGER DEFAULT NULL")
+        database.execSQL("ALTER TABLE Message ADD COLUMN hash_message INTEGER DEFAULT NULL")
     }
+}
+
+object M13TOM14 : Migration(13, 14) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Profile ADD COLUMN mocked INTEGER NOT NULL DEFAULT 0")
+    }
+
 }

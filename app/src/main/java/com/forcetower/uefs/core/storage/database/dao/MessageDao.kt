@@ -42,7 +42,7 @@ abstract class MessageDao {
     fun insertIgnoring(messages: List<Message>) {
         updateOldMessages()
         for (message in messages) {
-            val direct = getMessageDirect(message.sagresId)
+            val direct = getMessageByHashDirect(message.hashMessage)
             if (direct != null) {
                 if (message.senderName != null) {
                     if (direct.senderName.isNullOrBlank()) {
@@ -69,6 +69,9 @@ abstract class MessageDao {
 
         insertIgnore(messages)
     }
+
+    @Query("SELECT * FROM Message WHERE hash_message = :hashMessage")
+    protected abstract fun getMessageByHashDirect(hashMessage: Long?): Message?
 
     private fun updateOldMessages() {
         val messages = getAllUndefinedMessages()
