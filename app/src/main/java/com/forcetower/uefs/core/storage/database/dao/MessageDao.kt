@@ -34,6 +34,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
 
 @Dao
@@ -77,9 +78,17 @@ abstract class MessageDao {
         val messages = getAllUndefinedMessages()
         messages.forEach { message ->
             val hash = message.content.toLowerCase().trim().hashCode().toLong()
-            setMessageHash(message.uid, hash)
+            val existing = getMessageByHashDirect(hash)
+            if (existing == null) setMessageHash(message.uid, hash)
+            else {
+                deleteMessage(message.uid)
+                Crashlytics.logException(Exception("Collision of messages ${existing.senderName} and ${message.senderName}"))
+            }
         }
     }
+
+    @Query("DELETE FROM Message WHERE uid = :uid")
+    protected abstract fun deleteMessage(uid: Long)
 
     @Query("UPDATE Message SET hash_message = :hash WHERE uid = :uid")
     protected abstract fun setMessageHash(uid: Long, hash: Long)
