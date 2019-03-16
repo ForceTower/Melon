@@ -88,7 +88,7 @@ class DocumentsRepository @Inject constructor(
         } else {
             database.documentDao().updateDownloading(true, document.value)
             val login = SagresNavigator.instance.login(access.username, access.password)
-            if (login.status != Status.SUCCESS) {
+            if (login.status == Status.INVALID_LOGIN) {
                 Timber.d("Login failed. Login status is: ${login.status}")
                 data?.postValue(Resource.error("Login Failed", 800, Exception("Login Failed")))
             } else {
