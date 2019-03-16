@@ -35,6 +35,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SDisciplineClassLocation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -95,24 +96,35 @@ abstract class ClassLocationDao {
                     discipline = fakeDiscipline
                 }
 
-                var clazz = selectClass(discipline.uid, semester.uid)
-                if (clazz == null) {
-                    val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
-                    val id = insertClass(newClazz)
-                    clazz = newClazz
-                    clazz.uid = id
-                }
+                if (discipline.uid > 0) {
+                    var clazz = selectClass(discipline.uid, semester.uid)
+                    if (clazz == null) {
+                        val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
+                        val id = insertClass(newClazz)
+                        clazz = newClazz
+                        clazz.uid = id
+                    }
 
-                val id = clazz.uid
-
-                var group = selectGroup(id, it.classGroup)
-                Timber.d("class_id is $id and group is ${it.classGroup}")
-                if (group == null) {
-                    group = ClassGroup(classId = id, group = it.classGroup)
-                    val groupId = insertGroup(group!!)
-                    group!!.uid = groupId
+                    val id = clazz.uid
+                    if (id > 0) {
+                        var group = selectGroup(id, it.classGroup)
+                        Timber.d("class_id is $id and group is ${it.classGroup}")
+                        if (group == null) {
+                            group = ClassGroup(classId = id, group = it.classGroup)
+                            val groupId = insertGroup(group!!)
+                            group!!.uid = groupId
+                        }
+                        if (group!!.uid > 0) {
+                            prepareInsertion(group!!, profile, it)
+                        } else {
+                            Crashlytics.logException(Exception("Avoided exception:: Class Group -${it.classGroup}- Discipline Code: -${it.classCode}- Name: -${it.className}-"))
+                        }
+                    } else {
+                        Crashlytics.logException(Exception("Avoided exception:: disc_id -${discipline.uid}- smt_id: -${semester.uid}- Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
+                    }
+                } else {
+                    Crashlytics.logException(Exception("Avoided exception:: Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
                 }
-                prepareInsertion(group!!, profile, it)
             }
         }
     }
