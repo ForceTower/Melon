@@ -35,6 +35,7 @@ import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupConfigurationBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -63,7 +64,7 @@ class ConfigurationFragment : UFragment(), Injectable {
         binding.textSetupSync.setOnClickListener {
             val dialog = SelectSyncDialog()
             dialog.setCallback(object : FrequencySelectionCallback {
-                override fun onSelected(frequency: Frequency) {
+                override fun onSelected(frequency: SyncFrequency) {
                     viewModel.setSelectedFrequency(frequency)
                     binding.textSetupSync.setText(frequency.name)
                 }

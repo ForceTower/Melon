@@ -50,11 +50,16 @@ class GradesSagresWorker(
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
         val semesterId = inputData.getLong(SEMESTER_ID, 0)
-        val result = repository.getGrades(semesterId)
-        return when {
-            result >= 0 -> Result.success()
-            result >= -2 -> Result.failure()
-            else -> Result.retry()
+        return try {
+            val result = repository.getGrades(semesterId)
+            when {
+                result >= 0 -> Result.success()
+                result >= -2 -> Result.failure()
+                else -> Result.retry()
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            Result.retry()
         }
     }
 

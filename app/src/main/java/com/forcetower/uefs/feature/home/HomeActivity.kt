@@ -216,7 +216,22 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
+
+            if (!access.valid) {
+                val snack = Snackbar.make(binding.snack, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)
+                snack.setAction(R.string.invalid_access_snack_solve) {
+                    showInvalidAccessDialog()
+                    snack.dismiss()
+                }
+                snack.config()
+                snack.show()
+            }
         }
+    }
+
+    private fun showInvalidAccessDialog() {
+        val dialog = InvalidAccessDialog()
+        dialog.show(supportFragmentManager, "invalid_access")
     }
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()

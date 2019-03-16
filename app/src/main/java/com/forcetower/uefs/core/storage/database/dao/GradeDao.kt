@@ -36,8 +36,10 @@ import androidx.room.Update
 import com.forcetower.sagres.database.model.SGrade
 import com.forcetower.sagres.database.model.SGradeInfo
 import com.forcetower.uefs.core.model.unes.Class
+import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import timber.log.Timber
 
@@ -74,34 +76,68 @@ abstract class GradeDao {
     @Transaction
     open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
         grades.forEach {
-            val code = it.discipline.split("-")[0].trim()
+            val split = it.discipline.split("-")
+            val code = split[0].trim()
 
-            val clazz = getClass(code, it.semesterId)
+            val finalScore = it.finalScore
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+
+            val partialMean = it.partialMean
+                    .replace(",", ".")
+                    .replace("-", "")
+                    .replace("*", "")
+            val partialScore = partialMean.toDoubleOrNull()
+            val score = finalScore.toDoubleOrNull()
+
+            var clazz = getClass(code, it.semesterId)
             if (clazz != null) {
-                val finalScore = it.finalScore
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
-
-                val partialMean = it.partialMean
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
-                val partialScore = partialMean.toDoubleOrNull()
-                val score = finalScore.toDoubleOrNull()
-                if (score != null)
-                    updateClassScore(clazz.uid, score)
-                if (partialScore != null)
-                    updateClassPartialScore(clazz.uid, partialScore)
+                if (clazz.scheduleOnly) updateClassScheduleOnly(clazz.uid, false)
+                if (score != null) updateClassScore(clazz.uid, score)
+                if (partialScore != null) updateClassPartialScore(clazz.uid, partialScore)
 
                 prepareInsertion(clazz, it, notify)
             } else {
                 Timber.d("<grades_clazz_404> :: Clazz not found for ${code}_${it.semesterId}")
+                val nameOne = split[1].trim()
+                val index = nameOne.lastIndexOf("(")
+                val realIndex = if (index == -1) nameOne.length else index
+                val name = nameOne.substring(0, realIndex).trim()
+
+                var discipline = selectDisciplineDirect(code)
+                val semester = selectSemesterDirect(it.semesterId)
+
+                if (discipline == null) {
+                    val fakeDiscipline = Discipline(name = name, code = code, credits = 0)
+                    val id = insertDiscipline(fakeDiscipline)
+                    fakeDiscipline.uid = id
+                    discipline = fakeDiscipline
+                }
+
+                if (semester != null) {
+                    clazz = getClazz(discipline.uid, semesterId = semester.uid)
+                    if (clazz == null) {
+                        clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid)
+                        val id = insertClass(clazz)
+                        clazz.uid = id
+                    }
+
+                    if (score != null)
+                        updateClassScore(clazz.uid, score)
+                    if (partialScore != null)
+                        updateClassPartialScore(clazz.uid, partialScore)
+
+                    prepareInsertion(clazz, it, notify)
+                }
             }
         }
     }
 
-    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
+    @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
+    abstract fun getClazz(disciplineId: Long, semesterId: Long): Class?
+
+    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:code) AND s.sagres_id = :semester")
     protected abstract fun getClass(code: String, semester: Long): Class?
 
     private fun prepareInsertion(clazz: Class, it: SGrade, notify: Boolean) {
@@ -143,6 +179,9 @@ abstract class GradeDao {
         }
     }
 
+    @Query("UPDATE Class SET schedule_only = :scheduleOnly WHERE uid = :classId")
+    abstract fun updateClassScheduleOnly(classId: Long, scheduleOnly: Boolean)
+
     @Query("UPDATE Class SET partial_score = :partialScore WHERE uid = :classId")
     protected abstract fun updateClassPartialScore(classId: Long, partialScore: Double)
 
@@ -154,4 +193,16 @@ abstract class GradeDao {
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
+
+    @Query("SELECT * FROM Discipline WHERE code = :code")
+    protected abstract fun selectDisciplineDirect(code: String): Discipline?
+
+    @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
+    protected abstract fun selectSemesterDirect(sagresId: Long): Semester?
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insertDiscipline(discipline: Discipline): Long
+
+    @Insert(onConflict = IGNORE)
+    protected abstract fun insertClass(clazz: Class): Long
 }

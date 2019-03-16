@@ -60,6 +60,7 @@
         <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>
+        <item name="colorSurfaceDarker">@color/surfaceEspecial</item>
         <item name="colorOnSurface">@color/onSurface</item>
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
         <item name="colorOnBackground">@color/onBackground</item>
@@ -283,7 +284,7 @@
     </style>
 
     <style name="Widget.Schedule.HeaderGrid">
-        <item name="android:color">?attr/colorSurface</item>
+        <item name="android:color">@color/surfaceEspecial</item>
         <item name="gridSize">8dp</item>
         <item name="gridStrokeWidth">1dp</item>
     </style>

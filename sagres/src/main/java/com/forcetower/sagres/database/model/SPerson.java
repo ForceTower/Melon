@@ -52,6 +52,7 @@ public class SPerson {
     @ColumnInfo(name = "sagres_id")
     @Nullable
     private String sagresId;
+    private boolean mocked;
 
     public SPerson(long id, String name, String exhibitionName, String cpf, String email) {
         this.id = id;
@@ -59,6 +60,7 @@ public class SPerson {
         this.exhibitionName = exhibitionName;
         this.cpf = cpf;
         this.email = email;
+        this.mocked = false;
     }
 
     public long getId() {
@@ -122,5 +124,13 @@ public class SPerson {
 
     public String getUnique() {
         return cpf.toLowerCase() + ".." + id;
+    }
+
+    public boolean isMocked() {
+        return mocked;
+    }
+
+    public void setMocked(boolean mocked) {
+        this.mocked = mocked;
     }
 }

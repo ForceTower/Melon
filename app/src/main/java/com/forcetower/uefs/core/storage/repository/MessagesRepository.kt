@@ -69,7 +69,13 @@ class MessagesRepository @Inject constructor(
     fun fetchMessagesCase(all: Boolean = false): Boolean {
         val profile = database.profileDao().selectMeDirect()
         return if (profile != null) {
-            val messages = SagresNavigator.instance.messages(profile.sagresId, all)
+            val messages = if (!profile.mocked)
+                SagresNavigator.instance.messages(profile.sagresId, all)
+            else
+                SagresNavigator.instance.messagesHtml()
+
+            Timber.d("Profile status: ${profile.mocked}")
+
             if (messages.status == Status.SUCCESS) {
                 messages.messages.defineInDatabase(database, true)
                 true
