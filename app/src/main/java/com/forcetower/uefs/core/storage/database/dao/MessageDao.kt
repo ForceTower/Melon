@@ -82,7 +82,7 @@ abstract class MessageDao {
             if (existing == null) setMessageHash(message.uid, hash)
             else {
                 deleteMessage(message.uid)
-                Crashlytics.logException(Exception("Collision of messages ${existing.senderName} and ${message.senderName}"))
+                Crashlytics.logException(Exception("Collision of messages ${existing.senderName} and ${message.codeDiscipline}"))
             }
         }
     }

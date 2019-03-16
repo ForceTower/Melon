@@ -76,8 +76,8 @@ abstract class GradeDao {
     @Transaction
     open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
         grades.forEach {
-            val split = it.discipline.split("-").toMutableList()
-            val code = split[0]
+            val split = it.discipline.split("-")
+            val code = split[0].trim()
             var nameOne = split[1]
             if (split.size > 2) {
                 val created = split.subList(1, split.size).joinTo(StringBuffer(), separator = "-").trim().toString()
