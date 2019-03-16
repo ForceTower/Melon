@@ -59,7 +59,7 @@ class DocumentOperation(
                 val document = Utils.createDocument(string)
                 onFirstResponse(document)
             } else {
-                publishProgress(DocumentCallback(Status.RESPONSE_FAILED).message("Load error").code(response.code()))
+                publishProgress(DocumentCallback(Status.RESPONSE_FAILED).message("Load error").code(500))
             }
         } catch (e: IOException) {
             publishProgress(DocumentCallback(Status.NETWORK_ERROR).message(e.message).throwable(e))
@@ -70,7 +70,7 @@ class DocumentOperation(
         val link = SagresLinkFinder.findLink(document)
         if (link == null) {
             Timber.d("Link is null")
-            publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(100).message("Link not found"))
+            publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(600).message("Link not found"))
         } else {
             Timber.d("Link found: $link")
             downloadDocument(link)

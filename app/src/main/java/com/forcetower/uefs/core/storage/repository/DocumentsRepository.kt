@@ -105,7 +105,7 @@ class DocumentsRepository @Inject constructor(
                 if (response.status == Status.SUCCESS) {
                     data?.postValue(Resource.success(value))
                 } else {
-                    data?.postValue(Resource.error(response.message ?: "Generic error", null))
+                    data?.postValue(Resource.error(response.message ?: "Generic error", response.code, null))
                 }
             }
         }
