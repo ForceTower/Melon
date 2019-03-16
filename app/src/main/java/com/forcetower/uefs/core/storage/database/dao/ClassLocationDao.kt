@@ -142,7 +142,7 @@ abstract class ClassLocationDao {
     @Update(onConflict = REPLACE)
     protected abstract fun update(group: ClassGroup)
 
-    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
+    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:disciplineCode)")
     protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String): List<ClassGroup>
 
     // There's almost 0 chance for this to happen, but, if user log's out during update this will
@@ -158,7 +158,7 @@ abstract class ClassLocationDao {
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
     protected abstract fun wipeScheduleProfile(profileId: Long)
 
-    @Query("SELECT * FROM Discipline WHERE code = :code")
+    @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
     @Insert(onConflict = IGNORE)
