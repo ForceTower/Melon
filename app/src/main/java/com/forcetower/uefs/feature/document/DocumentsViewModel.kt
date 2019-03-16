@@ -27,18 +27,23 @@
 
 package com.forcetower.uefs.feature.document
 
+import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.storage.repository.DocumentsRepository
+import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import java.io.File
 import javax.inject.Inject
 
 class DocumentsViewModel @Inject constructor(
-    private val repository: DocumentsRepository
+    private val repository: DocumentsRepository,
+    private val context: Context
 ) : ViewModel(), DocumentActions {
     val documents by lazy { repository.getDocuments() }
 
@@ -46,7 +51,7 @@ class DocumentsViewModel @Inject constructor(
     val openDocumentAction: LiveData<Event<File>>
         get() = _openDocumentAction
 
-    private val _snackMessages = MutableLiveData<Event<String>>()
+    private val _snackMessages = MediatorLiveData<Event<String>>()
     val snackMessages: LiveData<Event<String>>
         get() = _snackMessages
 
@@ -56,7 +61,21 @@ class DocumentsViewModel @Inject constructor(
 
     override fun onDownload(document: SagresDocument) {
         val value = getDocumentValue(document)
-        repository.downloadDocument(value)
+        val source = repository.downloadDocument(value)
+        _snackMessages.addSource(source) {
+            _snackMessages.removeSource(source)
+            if (it.status == Status.ERROR) {
+                val code = it.code
+                val resource = when (code) {
+                    500 -> R.string.failed_to_load_page
+                    600 -> R.string.document_not_found
+                    700 -> R.string.need_sagres_access
+                    800 -> R.string.unable_to_login
+                    else -> R.string.unknown_error
+                }
+                _snackMessages.value = Event(context.getString(resource))
+            }
+        }
     }
 
     override fun onDelete(document: SagresDocument) {

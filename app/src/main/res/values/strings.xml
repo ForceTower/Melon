@@ -533,6 +533,10 @@
     <string name="invalid_access_snack_solve">Ver</string>
     <string name="invalid_access_password_change">Senha alterada!</string>
     <string name="invalid_access_new_password_is_incorrect">A nova senha não funcionou</string>
+    <string name="need_sagres_access">Você não possui usuário nem senha????</string>
+    <string name="unable_to_login">O UNES não conseguiu fazer login</string>
+    <string name="failed_to_load_page">A página não está disponível no SAGRES</string>
+    <string name="document_not_found">O documento não está disponível no SAGRES</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
