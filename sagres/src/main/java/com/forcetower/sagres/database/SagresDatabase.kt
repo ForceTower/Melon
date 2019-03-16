@@ -49,7 +49,7 @@ import com.forcetower.sagres.database.model.SPerson
     SMessageScope::class,
     SClass::class,
     SDisciplineResumed::class
-], version = 3, exportSchema = true)
+], version = 4, exportSchema = true)
 abstract class SagresDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun personDao(): PersonDao
@@ -63,7 +63,7 @@ abstract class SagresDatabase : RoomDatabase() {
         @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
         fun create(context: Context): SagresDatabase {
             return Room.databaseBuilder(context, SagresDatabase::class.java, DB_NAME)
-                .addMigrations(M1TO2, M2TO3)
+                .addMigrations(M1TO2, M2TO3, M3TO4)
                 .allowMainThreadQueries()
                 .build()
         }

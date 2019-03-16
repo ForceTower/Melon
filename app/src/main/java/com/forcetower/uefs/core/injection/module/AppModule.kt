@@ -61,7 +61,7 @@ object AppModule {
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
                 .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
-                        M12TO13)
+                        M12TO13, M13TOM14)
                 .fallbackToDestructiveMigration()
                 .build()
 

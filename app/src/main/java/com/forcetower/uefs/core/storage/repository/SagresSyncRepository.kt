@@ -213,16 +213,16 @@ class SagresSyncRepository @Inject constructor(
 
         executors.others().execute {
             try {
-                val reconnect = preferences.getBoolean("firebase_reconnect", true)
+                val reconnect = preferences.getBoolean("firebase_reconnect_update", true)
                 firebaseAuthRepository.loginToFirebase(person, access, reconnect)
-                preferences.edit().putBoolean("firebase_reconnect", false).apply()
+                preferences.edit().putBoolean("firebase_reconnect_update", false).apply()
             } catch (t: Throwable) {
                 Crashlytics.logException(t)
             }
         }
 
         var result = 0
-        if (access.username.contains("@")) {
+        if (access.username.contains("@") || person.isMocked) {
             if (!messages(null)) result += 1 shl 1
         } else {
             if (!messages(person.id)) result += 1 shl 1
@@ -296,8 +296,8 @@ class SagresSyncRepository @Inject constructor(
     private fun me(score: Double, document: Document, access: Access): SPerson? {
         val username = access.username
         if (username.contains("@")) {
-            val name = SagresBasicParser.getName(document) ?: username
-            return SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+            val person = continueWithHtml(document, username, score)
+            return person
         } else {
             val me = SagresNavigator.instance.me()
             when (me.status) {
@@ -311,10 +311,21 @@ class SagresSyncRepository @Inject constructor(
                         Timber.e("Page loaded but API returned invalid types")
                     }
                 }
+                Status.RESPONSE_FAILED -> {
+                    val name = SagresBasicParser.getName(document) ?: username
+                    return SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+                }
                 else -> produceErrorMessage(me)
             }
         }
         return null
+    }
+
+    private fun continueWithHtml(document: Document, username: String, score: Double): SPerson {
+        val name = SagresBasicParser.getName(document) ?: username
+        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+        database.profileDao().insert(person, score)
+        return person
     }
 
     @WorkerThread
