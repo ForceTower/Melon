@@ -56,6 +56,6 @@ abstract class DisciplineDao {
     @Query("UPDATE Discipline SET credits = :credits, name = :name WHERE uid = :uid")
     abstract fun updateDiscipline(uid: Long, credits: Int, name: String)
 
-    @Query("SELECT * FROM Discipline WHERE code = :code LIMIT 1")
+    @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code) LIMIT 1")
     abstract fun getDisciplineByCodeDirect(code: String): Discipline?
 }
