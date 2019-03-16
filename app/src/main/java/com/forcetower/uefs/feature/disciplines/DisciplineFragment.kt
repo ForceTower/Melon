@@ -73,7 +73,7 @@ class DisciplineFragment : UFragment(), Injectable {
             viewPager = it.pagerSemester
             tabs = it.tabLayout
         }.apply {
-            setLifecycleOwner(this@DisciplineFragment)
+            lifecycleOwner = this@DisciplineFragment
             viewModel = this@DisciplineFragment.viewModel
         }.root
     }

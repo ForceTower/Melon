@@ -30,6 +30,7 @@ package com.forcetower.uefs.feature.siecomp.onboarding
 import android.annotation.SuppressLint
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
 import android.view.LayoutInflater
@@ -51,6 +52,8 @@ import javax.inject.Inject
 class OnboardingFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var preferences: SharedPreferences
     private lateinit var viewModel: OnboardingViewModel
     private lateinit var binding: FragmentEventOnboardingBinding
     private lateinit var pagerPager: ViewPagerPager
@@ -80,6 +83,7 @@ class OnboardingFragment : UFragment(), Injectable {
 
         viewModel.navigateToEventActivity.observe(this, EventObserver {
             requireActivity().run {
+                preferences.edit().putBoolean("siecomp_event_xxi_onboarding_completed", true).apply()
                 startActivity(Intent(this, EventScheduleActivity::class.java))
                 finish()
             }

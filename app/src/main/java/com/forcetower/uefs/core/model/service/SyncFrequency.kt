@@ -25,36 +25,13 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.unes
+package com.forcetower.uefs.core.model.service
 
-import androidx.room.ColumnInfo
-import androidx.room.Entity
-import androidx.room.Index
-import androidx.room.PrimaryKey
-import java.util.UUID
-
-@Entity(indices = [
-    Index(value = ["sagres_id"], unique = true),
-    Index(value = ["uuid"], unique = true)
-])
-data class Profile(
-    @PrimaryKey(autoGenerate = true)
-    val uid: Long = 0,
-    val name: String?,
-    val email: String?,
-    val score: Double = -1.0,
-    @ColumnInfo(name = "calc_score")
-    val calcScore: Double = -1.0,
-    val course: Long? = null,
-    val imageUrl: String? = null,
-    @ColumnInfo(name = "sagres_id")
-    val sagresId: Long,
-    val uuid: String = UUID.randomUUID().toString(),
-    val me: Boolean = false,
-    @ColumnInfo(name = "mocked")
-    val mocked: Boolean = false
+data class SyncFrequency(
+    var name: String = "A cada 1 hora",
+    var value: Int = 60
 ) {
     companion object {
-        const val COLLECTION = "users"
+        const val COLLECTION = "sync_frequency"
     }
 }

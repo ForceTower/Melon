@@ -49,9 +49,11 @@ import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
+import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -104,7 +106,7 @@ class SagresSyncRepository @Inject constructor(
         if (access != null) {
             Crashlytics.setUserIdentifier(access.username)
             // Only one sync may be active at a time
-            synchronized(S_LOCK) { execute(access, registry) }
+            synchronized(S_LOCK) { execute(access, registry, executor) }
         } else {
             registry.completed = true
             registry.error = -1
@@ -155,28 +157,30 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun execute(access: Access, registry: SyncRegistry) {
+    private fun execute(access: Access, registry: SyncRegistry, executor: String) {
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
-        try {
-            val call = service.getUpdate()
-            val response = call.execute()
-            if (response.isSuccessful) {
-                val body = response.body()
-                if (body != null && !body.manager) {
-                    registry.completed = true
-                    registry.error = -4
-                    registry.success = false
-                    registry.message = "Atualização negada"
-                    registry.end = System.currentTimeMillis()
-                    database.syncRegistryDao().update(registry)
-                    return
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase())) {
+            try {
+                val call = service.getUpdate()
+                val response = call.execute()
+                if (response.isSuccessful) {
+                    val body = response.body()
+                    if (body != null && !body.manager) {
+                        registry.completed = true
+                        registry.error = -4
+                        registry.success = false
+                        registry.message = "Atualização negada"
+                        registry.end = System.currentTimeMillis()
+                        database.syncRegistryDao().update(registry)
+                        return
+                    }
                 }
+            } catch (t: Throwable) {
+                Timber.e(t)
+                Timber.d("An error just happened... It will complete anyways")
             }
-        } catch (t: Throwable) {
-            Timber.e(t)
-            Timber.d("An error just happened... It will complete anyways")
         }
 
         database.gradesDao().markAllNotified()
@@ -194,6 +198,8 @@ class SagresSyncRepository @Inject constructor(
             return
         }
 
+        defineSchedule(SagresScheduleParser.getSchedule(homeDoc))
+
         val person = me(score, homeDoc, access)
         if (person == null) {
             registry.completed = true
@@ -205,10 +211,18 @@ class SagresSyncRepository @Inject constructor(
             return
         }
 
-        executors.others().execute { firebaseAuthRepository.loginToFirebase(person, access) }
+        executors.others().execute {
+            try {
+                val reconnect = preferences.getBoolean("firebase_reconnect_update", true)
+                firebaseAuthRepository.loginToFirebase(person, access, reconnect)
+                preferences.edit().putBoolean("firebase_reconnect_update", false).apply()
+            } catch (t: Throwable) {
+                Crashlytics.logException(t)
+            }
+        }
 
         var result = 0
-        if (access.username.contains("@")) {
+        if (access.username.contains("@") || person.isMocked) {
             if (!messages(null)) result += 1 shl 1
         } else {
             if (!messages(person.id)) result += 1 shl 1
@@ -263,16 +277,26 @@ class SagresSyncRepository @Inject constructor(
             Status.SUCCESS -> {
                 return login.document
             }
+            Status.INVALID_LOGIN -> {
+                onInvalidLogin()
+            }
             else -> produceErrorMessage(login)
         }
         return null
     }
 
+    private fun onInvalidLogin() {
+        val access = database.accessDao().getAccessDirect()
+        if (access != null && access.valid) {
+            database.accessDao().setAccessValidation(false)
+            NotificationCreator.showInvalidAccessNotification(context)
+        }
+    }
+
     private fun me(score: Double, document: Document, access: Access): SPerson? {
         val username = access.username
         if (username.contains("@")) {
-            val name = SagresBasicParser.getName(document) ?: username
-            return SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+            return continueWithHtml(document, username, score)
         } else {
             val me = SagresNavigator.instance.me()
             when (me.status) {
@@ -286,10 +310,20 @@ class SagresSyncRepository @Inject constructor(
                         Timber.e("Page loaded but API returned invalid types")
                     }
                 }
+                Status.RESPONSE_FAILED -> {
+                    return continueWithHtml(document, username, score)
+                }
                 else -> produceErrorMessage(me)
             }
         }
         return null
+    }
+
+    private fun continueWithHtml(document: Document, username: String, score: Double): SPerson {
+        val name = SagresBasicParser.getName(document) ?: username
+        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+        database.profileDao().insert(person, score)
+        return person
     }
 
     @WorkerThread

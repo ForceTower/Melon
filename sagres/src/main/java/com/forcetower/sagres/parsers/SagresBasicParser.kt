@@ -48,15 +48,7 @@ object SagresBasicParser {
         if (document == null) return false
 
         val element = document.selectFirst("div[class=\"externo-erro\"]")
-        return if (element != null) {
-            if (element.text().isNotEmpty()) {
-                false
-            } else {
-                false
-            }
-        } else {
-            true
-        }
+        return element == null
     }
 
     @JvmStatic

@@ -33,6 +33,8 @@ import android.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.M1TO2
 import com.forcetower.uefs.core.storage.database.M2TO3
 import com.forcetower.uefs.core.storage.database.M3TO4
@@ -42,8 +44,10 @@ import com.forcetower.uefs.core.storage.database.M7TO8
 import com.forcetower.uefs.core.storage.database.M8TO9
 import com.forcetower.uefs.core.storage.database.M9TO10
 import com.forcetower.uefs.core.storage.database.M10TO11
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
+import com.forcetower.uefs.core.storage.database.M11TO12
+import com.forcetower.uefs.core.storage.database.M12TO13
+import com.forcetower.uefs.core.storage.database.M13TOM14
+import com.forcetower.uefs.core.storage.database.M14TOM15
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import dagger.Module
 import dagger.Provides
@@ -69,7 +73,8 @@ object AppModule {
     @JvmStatic
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
-                .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11)
+                .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
+                        M12TO13, M13TOM14, M14TOM15)
                 .fallbackToDestructiveMigration()
                 .build()
 

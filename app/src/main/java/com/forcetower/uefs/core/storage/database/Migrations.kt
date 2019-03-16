@@ -98,3 +98,27 @@ object M10TO11 : Migration(10, 11) {
         database.execSQL("ALTER TABLE Class ADD COLUMN partial_score REAL DEFAULT NULL")
     }
 }
+
+object M11TO12 : Migration(11, 12) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Access ADD COLUMN valid INTEGER NOT NULL DEFAULT 1")
+    }
+}
+
+object M12TO13 : Migration(12, 13) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Message ADD COLUMN hash_message INTEGER DEFAULT NULL")
+    }
+}
+
+object M13TOM14 : Migration(13, 14) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Profile ADD COLUMN mocked INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M14TOM15 : Migration(14, 15) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE UNIQUE INDEX `index_Message_hash_message` ON Message (`hash_message`)")
+    }
+}

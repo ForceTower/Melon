@@ -28,9 +28,13 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.truncate
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -78,5 +82,35 @@ class SagresDataRepository @Inject constructor(
                 database.profileDao().updateCalculatedScore(score)
             }
         }
+    }
+
+    fun changeAccessValidation(valid: Boolean) {
+        executor.diskIO().execute {
+            database.accessDao().setAccessValidation(valid)
+        }
+    }
+
+    fun attemptLoginWithNewPassword(password: String): LiveData<Resource<Boolean>> {
+        val result = MutableLiveData<Resource<Boolean>>()
+        executor.networkIO().execute {
+            val access = database.accessDao().getAccessDirect()
+            if (access == null) {
+                result.postValue(Resource.error("", false))
+            } else {
+                result.postValue(Resource.loading(null))
+                val username = access.username
+                val callback = SagresNavigator.instance.login(username, password)
+                if (callback.status == Status.INVALID_LOGIN) {
+                    result.postValue(Resource.success(false))
+                } else {
+                    database.accessDao().run {
+                        setAccessValidation(true)
+                        updateAccessPassword(password)
+                    }
+                    result.postValue(Resource.success(true))
+                }
+            }
+        }
+        return result
     }
 }

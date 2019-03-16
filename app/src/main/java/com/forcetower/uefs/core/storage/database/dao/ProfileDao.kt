@@ -53,7 +53,12 @@ abstract class ProfileDao {
         val name = WordUtils.toTitleCase(person.name.trim())
         var profile = selectMeDirect()
         if (profile != null) {
-            updateProfile(name, person.email.trim())
+            updateProfileName(name)
+            updateProfileMockStatus(person.isMocked)
+            if (!person.isMocked) {
+                updateProfileEmail(person.email.trim())
+                updateProfileSagresId(person.id)
+            }
             if (score >= 0) updateScore(score)
         } else {
             profile = Profile(name = name, email = person.email.trim(), sagresId = person.id, me = true, score = score)
@@ -61,14 +66,23 @@ abstract class ProfileDao {
         }
     }
 
-    @Query("SELECT c.name FROM Profile p, Course c WHERE p.me = 1 AND p.course IS NOT NULL AND p.course = c.id LIMIT 1")
+    @Query("SELECT c.name FROM Profile p, Course c WHERE p.course IS NOT NULL AND p.course = c.id LIMIT 1")
     abstract fun getProfileCourse(): LiveData<String?>
 
-    @Query("UPDATE Profile SET score = :score WHERE me = 1")
+    @Query("UPDATE Profile SET score = :score")
     abstract fun updateScore(score: Double)
 
-    @Query("UPDATE Profile SET name = :name, email = :email WHERE me = 1")
-    abstract fun updateProfile(name: String, email: String)
+    @Query("UPDATE Profile SET mocked = :mocked")
+    abstract fun updateProfileMockStatus(mocked: Boolean)
+
+    @Query("UPDATE Profile SET name = :name")
+    abstract fun updateProfileName(name: String)
+
+    @Query("UPDATE Profile SET email = :email")
+    abstract fun updateProfileEmail(email: String)
+
+    @Query("UPDATE Profile SET sagres_id = :sagresId")
+    abstract fun updateProfileSagresId(sagresId: Long)
 
     @Query("DELETE FROM Profile WHERE me = 1")
     abstract fun deleteMe()

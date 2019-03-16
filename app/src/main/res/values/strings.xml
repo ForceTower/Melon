@@ -204,7 +204,7 @@
     <string name="teachers_label">Professores [Em breve]</string>
     <string name="discipline_credits_undefined">Carga horária desconhecida o_o</string>
     <string name="discipline_absence_left">Ainda restam %1$d faltas</string>
-    <string name="no_class_groups">Não há turmas nesta disciplina, isso pode ser um erro</string>
+    <string name="no_class_groups">As turmas desta disciplinas não foram encontradas, pode me contar mais sobre isso?</string>
     <string name="not_registed">Não registrado</string>
     <string name="unknown_error">Erro desconhecido o_O</string>
     <string name="discipline_classes_header">Aulas</string>
@@ -522,6 +522,17 @@
     <string name="hourglass_general_mean">Média geral</string>
     <string name="hourglass_approval_rate">Aprovação</string>
     <string name="hourglass_preview">Função prévia, ainda em desenvolvimento</string>
+    <string name="access_invalidated_notification_title">Você mudou sua senha?</string>
+    <string name="access_invalidated_notification_message">O UNES não conseguiu acessar o Sagres utilizando a senha atual :(</string>
+    <string name="invalid_access_title">Senha incorreta!</string>
+    <string name="invalid_access_information">O UNES não está conseguindo acessar o portal com a senha anterior. Por favor, insira sua nova senha para que o serviço funcione corretamente</string>
+    <string name="invalid_access_new_password">Nova senha</string>
+    <string name="invalid_access_keep_current">Não mudar</string>
+    <string name="invalid_access_change_password">Alterar senha</string>
+    <string name="invalid_access_snack">Você trocou sua senha?</string>
+    <string name="invalid_access_snack_solve">Ver</string>
+    <string name="invalid_access_password_change">Senha alterada!</string>
+    <string name="invalid_access_new_password_is_incorrect">A nova senha não funcionou</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

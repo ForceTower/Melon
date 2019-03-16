@@ -35,6 +35,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -42,6 +43,7 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
@@ -62,6 +64,8 @@ class IntroductionFragment : UFragment(), Injectable {
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseStorage: FirebaseStorage
+    @Inject
+    lateinit var repository: SyncFrequencyRepository
 
     private lateinit var binding: FragmentSetupIntroductionBinding
     private lateinit var viewModel: SetupViewModel
@@ -71,6 +75,13 @@ class IntroductionFragment : UFragment(), Injectable {
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        repository.getFrequencies().observe(this, Observer {
+            viewModel.syncFrequencies = it
+        })
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

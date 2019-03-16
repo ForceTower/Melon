@@ -32,12 +32,15 @@ import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
+import androidx.lifecycle.Observer
+import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
+import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -48,6 +51,8 @@ import javax.inject.Inject
 class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
     @Inject
     lateinit var firebaseRepository: FirebaseAuthRepository
+    @Inject
+    lateinit var repository: SyncFrequencyRepository
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         onPreferenceChange(shared, key)
@@ -55,6 +60,22 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_synchronization, rootKey)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        repository.getFrequencies().observe(this, Observer { frequencies ->
+            val entries = frequencies.map { it.name }
+            val values = frequencies.map { it.value.toString() }
+            configureFrequencies(entries, values)
+        })
+    }
+
+    private fun configureFrequencies(entries: List<String>, values: List<String>) {
+        val preference = findPreference("stg_sync_frequency") as? ListPreference
+        preference ?: return
+        preference.entries = entries.toTypedArray()
+        preference.entryValues = values.toTypedArray()
     }
 
     private fun onPreferenceChange(preference: SharedPreferences, key: String) {

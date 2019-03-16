@@ -198,6 +198,15 @@ object NotificationCreator {
         showNotification(context, id, builder)
     }
 
+    fun showInvalidAccessNotification(context: Context) {
+        val title = context.getString(R.string.access_invalidated_notification_title)
+        val message = context.getString(R.string.access_invalidated_notification_message)
+
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, title, message, null)
+                .setColor(ContextCompat.getColor(context, R.color.red))
+        showNotification(context, message.hashCode().toLong(), builder)
+    }
+
     private fun showDefaultImageNotification(context: Context, channel: String, title: String, content: String, image: String?): NotificationCompat.Builder {
         var style = createBigText(content)
         if (image != null && image != "null") {
