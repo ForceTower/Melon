@@ -116,9 +116,12 @@ abstract class GradeDao {
                 }
 
                 if (semester != null) {
-                    clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid)
-                    val id = insertClass(clazz)
-                    clazz.uid = id
+                    clazz = getClazz(discipline.uid, semesterId = semester.uid)
+                    if (clazz == null) {
+                        clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid)
+                        val id = insertClass(clazz)
+                        clazz.uid = id
+                    }
 
                     if (score != null)
                         updateClassScore(clazz.uid, score)
@@ -131,7 +134,10 @@ abstract class GradeDao {
         }
     }
 
-    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
+    @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
+    abstract fun getClazz(disciplineId: Long, semesterId: Long): Class?
+
+    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:code) AND s.sagres_id = :semester")
     protected abstract fun getClass(code: String, semester: Long): Class?
 
     private fun prepareInsertion(clazz: Class, it: SGrade, notify: Boolean) {
