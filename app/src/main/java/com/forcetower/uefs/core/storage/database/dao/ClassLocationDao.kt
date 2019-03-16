@@ -95,15 +95,33 @@ abstract class ClassLocationDao {
                     discipline = fakeDiscipline
                 }
 
-                val clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
-                val id = insertClass(clazz)
-                val group = ClassGroup(classId = id, group = it.classGroup)
-                val groupId = insertGroup(group)
-                group.uid = groupId
-                prepareInsertion(group, profile, it)
+                var clazz = selectClass(discipline.uid, semester.uid)
+                if (clazz == null) {
+                    val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
+                    val id = insertClass(newClazz)
+                    clazz = newClazz
+                    clazz.uid = id
+                }
+
+                val id = clazz.uid
+
+                var group = selectGroup(id, it.classGroup)
+                Timber.d("class_id is $id and group is ${it.classGroup}")
+                if (group == null) {
+                    group = ClassGroup(classId = id, group = it.classGroup)
+                    val groupId = insertGroup(group!!)
+                    group!!.uid = groupId
+                }
+                prepareInsertion(group!!, profile, it)
             }
         }
     }
+
+    @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
+    abstract fun selectClass(disciplineId: Long, semesterId: Long): Class?
+
+    @Query("SELECT * FROM ClassGroup WHERE class_id = :classId AND `group` = :group")
+    abstract fun selectGroup(classId: Long, group: String): ClassGroup?
 
     private fun prepareInsertion(group: ClassGroup, profile: Profile, location: SDisciplineClassLocation) {
         val entity = ClassLocation(

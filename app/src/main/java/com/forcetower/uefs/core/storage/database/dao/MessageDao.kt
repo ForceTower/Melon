@@ -40,6 +40,7 @@ import com.forcetower.uefs.core.model.unes.Message
 abstract class MessageDao {
 
     fun insertIgnoring(messages: List<Message>) {
+        updateOldMessages()
         for (message in messages) {
             val direct = getMessageDirect(message.sagresId)
             if (direct != null) {
@@ -68,6 +69,20 @@ abstract class MessageDao {
 
         insertIgnore(messages)
     }
+
+    private fun updateOldMessages() {
+        val messages = getAllUndefinedMessages()
+        messages.forEach { message ->
+            val hash = message.content.toLowerCase().trim().hashCode().toLong()
+            setMessageHash(message.uid, hash)
+        }
+    }
+
+    @Query("UPDATE Message SET hash_message = :hash WHERE uid = :uid")
+    protected abstract fun setMessageHash(uid: Long, hash: Long)
+
+    @Query("SELECT * FROM Message WHERE hash_message IS NULL")
+    protected abstract fun getAllUndefinedMessages(): List<Message>
 
     @Query("UPDATE Message SET date_string = :dateString WHERE sagres_id = :sagresId")
     protected abstract fun updateDateString(sagresId: Long, dateString: String?)

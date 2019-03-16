@@ -30,5 +30,5 @@
     <string name="app_service_token" translatable="false">66fds5f56sdf7s6d75654s4f6s6466sa34</string>
     <string name="firebase_account_secret" translatable="false">3(=ffKQs3pk)Q3xz</string>
     <string name="firebase_password_pattern" translatable="false">**_%1$s_xx_vv__%2$s__qw_po__%3$s__ff_ss_##</string>
-    <string name="email_unes_format" translatable="false">%1$s_unesxx@unesmail.com</string>
+    <string name="email_unes_format" translatable="false">%1$s_unes_free@unesmail.com</string>
 </resources>
