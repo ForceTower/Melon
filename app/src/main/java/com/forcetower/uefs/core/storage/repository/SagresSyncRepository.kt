@@ -296,8 +296,7 @@ class SagresSyncRepository @Inject constructor(
     private fun me(score: Double, document: Document, access: Access): SPerson? {
         val username = access.username
         if (username.contains("@")) {
-            val person = continueWithHtml(document, username, score)
-            return person
+            return continueWithHtml(document, username, score)
         } else {
             val me = SagresNavigator.instance.me()
             when (me.status) {
@@ -312,8 +311,7 @@ class SagresSyncRepository @Inject constructor(
                     }
                 }
                 Status.RESPONSE_FAILED -> {
-                    val name = SagresBasicParser.getName(document) ?: username
-                    return SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+                    return continueWithHtml(document, username, score)
                 }
                 else -> produceErrorMessage(me)
             }
