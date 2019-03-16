@@ -31,7 +31,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy
+import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Message
@@ -40,8 +40,9 @@ import com.forcetower.uefs.core.model.unes.Message
 abstract class MessageDao {
 
     fun insertIgnoring(messages: List<Message>) {
+        updateOldMessages()
         for (message in messages) {
-            val direct = getMessageDirect(message.sagresId)
+            val direct = getMessageByHashDirect(message.hashMessage)
             if (direct != null) {
                 if (message.senderName != null) {
                     if (direct.senderName.isNullOrBlank()) {
@@ -69,6 +70,23 @@ abstract class MessageDao {
         insertIgnore(messages)
     }
 
+    @Query("SELECT * FROM Message WHERE hash_message = :hashMessage")
+    protected abstract fun getMessageByHashDirect(hashMessage: Long?): Message?
+
+    private fun updateOldMessages() {
+        val messages = getAllUndefinedMessages()
+        messages.forEach { message ->
+            val hash = message.content.toLowerCase().trim().hashCode().toLong()
+            setMessageHash(message.uid, hash)
+        }
+    }
+
+    @Query("UPDATE Message SET hash_message = :hash WHERE uid = :uid")
+    protected abstract fun setMessageHash(uid: Long, hash: Long)
+
+    @Query("SELECT * FROM Message WHERE hash_message IS NULL")
+    protected abstract fun getAllUndefinedMessages(): List<Message>
+
     @Query("UPDATE Message SET date_string = :dateString WHERE sagres_id = :sagresId")
     protected abstract fun updateDateString(sagresId: Long, dateString: String?)
 
@@ -81,7 +99,7 @@ abstract class MessageDao {
     @Query("UPDATE Message SET sender_name = :senderName WHERE sagres_id = :sagresId")
     protected abstract fun updateSenderName(sagresId: Long, senderName: String)
 
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = IGNORE)
     protected abstract fun insertIgnore(messages: List<Message>)
 
     @Insert(onConflict = REPLACE)

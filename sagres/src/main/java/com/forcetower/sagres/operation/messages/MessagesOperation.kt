@@ -56,20 +56,6 @@ class MessagesOperation(
 
     override fun execute() {
         executor()
-//        result.postValue(MessagesCallback(Status.STARTED))
-//        val call = SagresCalls.getMessages(userId)
-//        try {
-//            val response = call.execute()
-//            if (response.isSuccessful) {
-//                val body = response.body()!!.string()
-//                successMeasures(body)
-//            } else {
-//                publishProgress(MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
-//            }
-//        } catch (e: IOException) {
-//            e.printStackTrace()
-//            publishProgress(MessagesCallback(Status.NETWORK_ERROR).throwable(e))
-//        }
     }
 
     fun executor() {

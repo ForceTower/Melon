@@ -37,4 +37,5 @@ object Constants {
     const val REMOTE_CONFIG_REFRESH = 900L
 
     val HARD_DISCIPLINES = mapOf("TEC501" to "__ANY__")
+    val EXECUTOR_WHITELIST = listOf("manual", "universal")
 }
