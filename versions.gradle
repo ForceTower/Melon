@@ -42,7 +42,7 @@ versions.crashlytics = "2.9.9@aar"
 versions.timber = "4.7.1"
 
 // Image
-versions.glide = "4.8.0"
+versions.glide = "4.9.0"
 versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 

@@ -76,8 +76,14 @@ abstract class GradeDao {
     @Transaction
     open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
         grades.forEach {
-            val split = it.discipline.split("-")
-            val code = split[0].trim()
+            val split = it.discipline.split("-").toMutableList()
+            val code = split[0]
+            var nameOne = split[1]
+            if (split.size > 2) {
+                val created = split.subList(1, split.size).joinTo(StringBuffer(), separator = "-").trim().toString()
+                Timber.d("created is $created")
+                nameOne = created
+            }
 
             val finalScore = it.finalScore
                     .replace(",", ".")
@@ -100,35 +106,39 @@ abstract class GradeDao {
                 prepareInsertion(clazz, it, notify)
             } else {
                 Timber.d("<grades_clazz_404> :: Clazz not found for ${code}_${it.semesterId}")
-                val nameOne = split[1].trim()
                 val index = nameOne.lastIndexOf("(")
                 val realIndex = if (index == -1) nameOne.length else index
                 val name = nameOne.substring(0, realIndex).trim()
 
                 var discipline = selectDisciplineDirect(code)
+                Timber.d("code: $code -> disciplineId ${discipline}")
                 val semester = selectSemesterDirect(it.semesterId)
 
                 if (discipline == null) {
                     val fakeDiscipline = Discipline(name = name, code = code, credits = 0)
                     val id = insertDiscipline(fakeDiscipline)
+                    Timber.d("Id discipline inserted $id")
                     fakeDiscipline.uid = id
                     discipline = fakeDiscipline
                 }
 
-                if (semester != null) {
-                    clazz = getClazz(discipline.uid, semesterId = semester.uid)
+                Timber.d("Discipline after all $discipline")
+                if (semester != null && discipline.uid > 0) {
+                    clazz = getClazz(discipline.uid, semester.uid)
                     if (clazz == null) {
                         clazz = Class(disciplineId = discipline.uid, semesterId = semester.uid)
+                        Timber.d("disciplineId ${discipline.uid} semesterId ${semester.uid}")
                         val id = insertClass(clazz)
                         clazz.uid = id
                     }
+                    if (clazz.uid > 0) {
+                        if (score != null)
+                            updateClassScore(clazz.uid, score)
+                        if (partialScore != null)
+                            updateClassPartialScore(clazz.uid, partialScore)
 
-                    if (score != null)
-                        updateClassScore(clazz.uid, score)
-                    if (partialScore != null)
-                        updateClassPartialScore(clazz.uid, partialScore)
-
-                    prepareInsertion(clazz, it, notify)
+                        prepareInsertion(clazz, it, notify)
+                    }
                 }
             }
         }
@@ -194,7 +204,7 @@ abstract class GradeDao {
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
 
-    @Query("SELECT * FROM Discipline WHERE code = :code")
+    @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
