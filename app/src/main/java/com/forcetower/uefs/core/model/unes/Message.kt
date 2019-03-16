@@ -39,6 +39,7 @@ import com.forcetower.uefs.service.NotificationCreator
 import java.util.UUID
 
 @Entity(indices = [
+    Index(value = ["hash_message"], unique = true),
     Index(value = ["sagres_id"], unique = true),
     Index(value = ["uuid"], unique = true)
 ])
