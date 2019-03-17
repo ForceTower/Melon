@@ -84,11 +84,11 @@
                     app:layout_constraintTop_toBottomOf="@id/label_login_using_sagres"
                     app:layout_constraintVertical_chainStyle="packed">
             
-                    <com.google.android.material.textfield.TextInputEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edit_user"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:autofillHints="@string/login_user"
+                        android:autofillHints="username"
                         android:importantForAutofill="yes"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="text" />
@@ -109,11 +109,11 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/text_user_layout">
             
-                    <com.google.android.material.textfield.TextInputEditText
+                    <androidx.appcompat.widget.AppCompatEditText
                         android:id="@+id/edit_pass"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:autofillHints="@string/login_password"
+                        android:autofillHints="password"
                         android:importantForAutofill="yes"
                         android:textColor="?attr/colorOnSurface"
                         android:inputType="textPassword" />
