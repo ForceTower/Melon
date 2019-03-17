@@ -73,6 +73,7 @@ class DocumentsFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.documents.observe(this, Observer { adapter.documents = it ?: emptyList() })
         viewModel.openDocumentAction.observe(this, EventObserver { openDocument(it) })
+        viewModel.snackMessages.observe(this, EventObserver { showSnack(it) })
     }
 
     private fun openDocument(document: File) {
