@@ -59,14 +59,14 @@ abstract class ClassDao {
             "c.discipline_id = d.uid AND " +
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
-            "d.code = :code")
+            "LOWER(d.code) = LOWER(:code)")
     abstract fun getClassDirect(semester: String, code: String): Class?
 
     @Query("SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
             "c.discipline_id = d.uid AND " +
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
-            "d.code = :code")
+            "LOWER(d.code) = LOWER(:code)")
     abstract fun getClass(semester: String, code: String): LiveData<Class?>
 
     @Transaction
@@ -84,7 +84,7 @@ abstract class ClassDao {
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId AND c.schedule_only = 0")
     abstract fun getClassesWithGradesFromSemesterDirect(semesterId: Long): List<ClassWithGroups>
 
-    @Query("SELECT * FROM Discipline WHERE code = :code")
+    @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
     @Query("SELECT * FROM Semester WHERE LOWER(codename) = LOWER(:name)")

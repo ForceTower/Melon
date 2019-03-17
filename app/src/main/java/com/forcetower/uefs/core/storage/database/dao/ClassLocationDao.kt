@@ -35,6 +35,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
+import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SDisciplineClassLocation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -87,35 +88,58 @@ abstract class ClassLocationDao {
             } else {
                 Timber.d("<location_404> :: Groups not found ${semester.codename}_${it.classCode}_${profile.name}")
 
-                var discipline = selectDisciplineDirect(it.classCode)
+                var discipline = selectDisciplineDirect(it.classCode.trim())
+
+                val other = selectDisciplineByName(it.className)
+                Timber.d("other is other code: ${other?.code} current code ${it.classCode} $other")
                 if (discipline == null) {
-                    val fakeDiscipline = Discipline(name = it.className, code = it.classCode, credits = 0)
+                    Timber.d("Creating a new discipline")
+                    val fakeDiscipline = Discipline(name = it.className.trim(), code = it.classCode.trim(), credits = 0)
                     val id = insertDiscipline(fakeDiscipline)
                     fakeDiscipline.uid = id
                     discipline = fakeDiscipline
                 }
 
-                var clazz = selectClass(discipline.uid, semester.uid)
-                if (clazz == null) {
-                    val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
-                    val id = insertClass(newClazz)
-                    clazz = newClazz
-                    clazz.uid = id
-                }
+                Timber.d("After effects Discipline $discipline")
 
-                val id = clazz.uid
+                if (discipline.uid > 0) {
+                    var clazz = selectClass(discipline.uid, semester.uid)
+                    if (clazz == null) {
+                        Timber.d("Creating a new class")
+                        val newClazz = Class(disciplineId = discipline.uid, semesterId = semester.uid, scheduleOnly = true)
+                        val id = insertClass(newClazz)
+                        clazz = newClazz
+                        clazz.uid = id
+                    }
 
-                var group = selectGroup(id, it.classGroup)
-                Timber.d("class_id is $id and group is ${it.classGroup}")
-                if (group == null) {
-                    group = ClassGroup(classId = id, group = it.classGroup)
-                    val groupId = insertGroup(group!!)
-                    group!!.uid = groupId
+                    Timber.d("After effects clazz $clazz")
+
+                    val id = clazz.uid
+                    if (id > 0) {
+                        var group = selectGroup(id, it.classGroup.trim())
+                        Timber.d("class_id is $id and group is ${it.classGroup}")
+                        if (group == null) {
+                            group = ClassGroup(classId = id, group = it.classGroup.trim())
+                            val groupId = insertGroup(group!!)
+                            group!!.uid = groupId
+                        }
+                        if (group!!.uid > 0) {
+                            prepareInsertion(group!!, profile, it)
+                        } else {
+                            Crashlytics.logException(Exception("Avoided exception:: Class Group -${it.classGroup}- Discipline Code: -${it.classCode}- Name: -${it.className}-"))
+                        }
+                    } else {
+                        Crashlytics.logException(Exception("Avoided exception:: disc_id -${discipline.uid}- smt_id: -${semester.uid}- Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
+                    }
+                } else {
+                    Crashlytics.logException(Exception("Avoided exception:: Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
                 }
-                prepareInsertion(group!!, profile, it)
             }
         }
     }
+
+    @Query("SELECT * FROM Discipline WHERE name = :className")
+    abstract fun selectDisciplineByName(className: String): Discipline?
 
     @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
     abstract fun selectClass(disciplineId: Long, semesterId: Long): Class?
@@ -142,7 +166,7 @@ abstract class ClassLocationDao {
     @Update(onConflict = REPLACE)
     protected abstract fun update(group: ClassGroup)
 
-    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND d.code = :disciplineCode")
+    @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:disciplineCode)")
     protected abstract fun selectGroups(semesterUid: Long, disciplineCode: String): List<ClassGroup>
 
     // There's almost 0 chance for this to happen, but, if user log's out during update this will
@@ -158,7 +182,7 @@ abstract class ClassLocationDao {
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
     protected abstract fun wipeScheduleProfile(profileId: Long)
 
-    @Query("SELECT * FROM Discipline WHERE code = :code")
+    @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
     @Insert(onConflict = IGNORE)

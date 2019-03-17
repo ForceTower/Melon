@@ -72,7 +72,7 @@ abstract class ClassAbsenceDao {
         }
     }
 
-    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND d.code = :code AND s.sagres_id = :semester")
+    @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:code) AND s.sagres_id = :semester")
     protected abstract fun getClass(code: String, semester: Long): Class?
 
     @Query("SELECT * FROM Profile WHERE me = 1")
