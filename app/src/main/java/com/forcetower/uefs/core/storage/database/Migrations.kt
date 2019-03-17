@@ -122,3 +122,9 @@ object M14TOM15 : Migration(14, 15) {
         database.execSQL("CREATE UNIQUE INDEX `index_Message_hash_message` ON Message (`hash_message`)")
     }
 }
+
+object M15TOM16 : Migration(15, 16) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("UPDATE Discipline SET code = TRIM(Discipline.code)")
+    }
+}
