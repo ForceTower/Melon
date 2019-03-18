@@ -35,7 +35,7 @@ import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
@@ -77,11 +77,13 @@ class DisciplineDetailsRepository @Inject constructor(
      * name, which is the common use for this function.
      */
     @MainThread
-    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false): LiveData<DisciplineDetailsCallback> {
-        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad) {
+    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = true, discover: Boolean = false): LiveData<FastDisciplinesCallback> {
+        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad, discover) {
             @WorkerThread
-            override fun saveResults(groups: List<SDisciplineGroup>) {
-                database.classGroupDao().defineGroups(groups)
+            override fun saveResults(callback: FastDisciplinesCallback) {
+                defineSemesters(callback.getSemesters())
+                defineDisciplines(callback.getDisciplines())
+                defineDisciplineGroups(callback.getGroups())
             }
 
             @WorkerThread
@@ -137,7 +139,7 @@ class DisciplineDetailsRepository @Inject constructor(
     @WorkerThread
     fun experimentalDisciplines() {
         val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false)
-        if (experimental.status == Status.SUCCESS) {
+        if (experimental.status == Status.COMPLETED) {
             defineSemesters(experimental.getSemesters())
             defineDisciplines(experimental.getDisciplines())
             defineDisciplineGroups(experimental.getGroups())

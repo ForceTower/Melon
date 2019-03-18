@@ -25,7 +25,7 @@ class FastDisciplinesCallback(status: Status) : BaseCallback<FastDisciplinesCall
             val value = entry.value
             val code = entry.key
 
-            val creditsSum = value.groupBy { it.semester }.map { it.value.sumBy { group -> group.credits } }.max() ?: 0
+            val creditsSum = value.groupBy { it.semester }.map { it.value.distinctBy { clazz -> clazz.group }.sumBy { group -> group.credits } }.max() ?: 0
             val first = value.first()
             SDiscipline(first.semester, first.name, code).apply {
                 credits = creditsSum

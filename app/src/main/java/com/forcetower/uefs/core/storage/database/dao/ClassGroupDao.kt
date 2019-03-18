@@ -57,16 +57,30 @@ abstract class ClassGroupDao {
             if (inserted != null && group.classItems != null) {
                 Timber.d("Group id: ${inserted.uid}")
                 for (classItem in group.classItems) {
-                    val item = ClassItem.createFromSagres(inserted.uid, classItem)
-                    insert(item)
+                    val insertedUid = inserted.uid
+                    val item = ClassItem.createFromSagres(insertedUid, classItem)
+                    val currentItem = getClassItemDirect(insertedUid, classItem.number)
+                    val classId = if (currentItem == null) {
+                        insert(item)
+                    } else {
+                        currentItem.selectiveCopy(item)
+                        update(currentItem)
+                        currentItem.uid
+                    }
                     for (classMaterial in classItem.materials) {
-                        val material = ClassMaterial.createFromSagres(inserted.uid, null, classMaterial)
+                        val material = ClassMaterial.createFromSagres(inserted.uid, classId, classMaterial)
                         insert(material)
                     }
                 }
             }
         }
     }
+
+    @Update(onConflict = IGNORE)
+    abstract fun update(item: ClassItem)
+
+    @Query("SELECT * FROM ClassItem WHERE group_id = :groupId AND number = :number")
+    abstract fun getClassItemDirect(groupId: Long, number: Int): ClassItem?
 
     @Transaction
     open fun insert(grp: SDisciplineGroup): ClassGroup? {
@@ -112,7 +126,7 @@ abstract class ClassGroupDao {
     abstract fun getClassStatsDirect(): List<ClassStatsData>
 
     @Insert(onConflict = IGNORE)
-    protected abstract fun insert(item: ClassItem)
+    protected abstract fun insert(item: ClassItem): Long
 
     @Insert(onConflict = IGNORE)
     protected abstract fun insert(material: ClassMaterial)

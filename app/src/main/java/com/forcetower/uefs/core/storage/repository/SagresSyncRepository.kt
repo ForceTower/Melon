@@ -394,7 +394,7 @@ class SagresSyncRepository @Inject constructor(
         Timber.d("Experimental Experimental Start")
         val experimental = SagresNavigator.instance.disciplinesExperimental()
         return when (experimental.status) {
-            Status.SUCCESS -> {
+            Status.COMPLETED -> {
                 Timber.d("Experimental Completed")
                 defineSemesters(experimental.getSemesters())
                 defineDisciplines(experimental.getDisciplines())

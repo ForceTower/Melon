@@ -140,10 +140,14 @@ object SagresDisciplineDetailsParser {
             val strNumber = tds[0].text().trim()
             val situation = tds[1].text()
             val date = tds[2].text()
-            val description = tds[3].text()
+            var description = tds[3].text()
             val strMaterials = tds[5].text().trim()
             val number = toInteger(strNumber, -1)
             val materials = toInteger(strMaterials, -1)
+
+            if (description.isNullOrBlank()) {
+                description = "Não cadastrada"
+            }
 
             if (materials > 0) {
                 Timber.d("Has $materials materials at $description")

@@ -93,7 +93,7 @@ class FastDisciplinesOperation(
         }
         Timber.d("Completed ${bodies.filter { it != null }.size} -- $semester $code $group")
         publishProgress(
-                FastDisciplinesCallback(Status.SUCCESS)
+                FastDisciplinesCallback(Status.COMPLETED)
                         .groups(groups)
                         .failureCount(failureCount)
                         .semesters(semesters)
