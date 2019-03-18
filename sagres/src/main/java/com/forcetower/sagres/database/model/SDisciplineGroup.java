@@ -44,6 +44,7 @@ public class SDisciplineGroup {
     private int ignored = 0;
     private String semester;
     private String code;
+    private String name;
     @Nullable
     private List<SDisciplineClassLocation> locations;
     @Nullable
@@ -145,7 +146,7 @@ public class SDisciplineGroup {
 
     @Override
     public String toString() {
-        return group + "";
+        return code + ":" + group;
     }
 
     public int getIgnored() {
@@ -162,5 +163,13 @@ public class SDisciplineGroup {
 
     public void setClassItems(List<SDisciplineClassItem> classItems) {
         this.classItems = classItems;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
 }

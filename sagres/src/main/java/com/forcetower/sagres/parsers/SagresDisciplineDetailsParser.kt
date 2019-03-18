@@ -45,8 +45,6 @@ object SagresDisciplineDetailsParser {
         val elementName = document.selectFirst("h2[class=\"cabecalho-titulo\"]")
         if (elementName == null) {
             Timber.d("Element name is null")
-            Timber.d(document.text())
-            Timber.d("Element name is null")
             return null
         }
 
@@ -59,6 +57,7 @@ object SagresDisciplineDetailsParser {
         val refGroupPos = group.lastIndexOf("-")
         val refGroup = group.substring(refGroupPos + 1, group.length - 1).trim { it <= ' ' }
         val name = classNameFull.substring(codePos + 1, groupPos).trim { it <= ' ' }
+        Timber.d("Name $name")
         var teacher = ""
         var elementTeacher: Element? = document.selectFirst("div[class=\"cabecalho-dado nome-capitalizars\"]")
         if (elementTeacher != null) {
@@ -113,6 +112,7 @@ object SagresDisciplineDetailsParser {
         created.setDisciplineCodeAndSemester(code, semesterByName)
         created.classItems = extractClassItems(document)
         created.isDraft = false
+        created.name = name
         return created
     }
 
