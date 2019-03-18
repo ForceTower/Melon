@@ -400,6 +400,8 @@ class SagresSyncRepository @Inject constructor(
                 defineDisciplines(experimental.getDisciplines())
                 defineDisciplineGroups(experimental.getGroups())
 
+                materialsNotifications()
+
                 Timber.d("Semesters: ${experimental.getSemesters()}")
                 Timber.d("Disciplines:  ${experimental.getDisciplines()}")
                 Timber.d("Groups: ${experimental.getGroups()}")
@@ -411,6 +413,10 @@ class SagresSyncRepository @Inject constructor(
                 false
             }
         }
+    }
+
+    private fun materialsNotifications() {
+        // TODO Materials notifications
     }
 
     @WorkerThread
