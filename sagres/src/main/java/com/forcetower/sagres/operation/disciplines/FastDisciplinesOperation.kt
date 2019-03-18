@@ -30,6 +30,7 @@ class FastDisciplinesOperation(
     private val code: String?,
     private val group: String?,
     private val partialLoad: Boolean,
+    private val discover: Boolean,
     executor: Executor?
 ) : Operation<FastDisciplinesCallback>(executor) {
 
@@ -56,7 +57,8 @@ class FastDisciplinesOperation(
         val disciplines = disciplines(initial) ?: return
         publishProgress(FastDisciplinesCallback(Status.LOADING).flags(PROCESSING))
         val semesters = processSemesters(disciplines)
-        val bodies = processDisciplines(disciplines) ?: return
+        val discovered = if (discover) semesters.maxBy { it.first }?.second else semester
+        val bodies = processDisciplines(disciplines, discovered) ?: return
         executeCalls(bodies, semesters)
     }
 
@@ -75,19 +77,14 @@ class FastDisciplinesOperation(
             if (document != null) {
                 val params = SagresDisciplineDetailsFetcherParser.extractParamsForDiscipline(document, true)
                 val discipline = if (partialLoad) document else disciplinePageParams(params) ?: document
-                if (discipline != null) {
-                    val group = processGroup(discipline)
-                    if (group != null) {
-                        Timber.d("Classes: ${group.classItems.size}")
-                        if (!partialLoad) downloadMaterials(discipline, group)
-                        groups.add(group)
-                    } else {
-                        failureCount++
-                        Timber.d("Processed group was null")
-                    }
+                val group = processGroup(discipline)
+                if (group != null) {
+                    Timber.d("Classes: ${group.classItems.size}")
+                    if (!partialLoad) downloadMaterials(discipline, group)
+                    groups.add(group)
                 } else {
                     failureCount++
-                    Timber.d("Discipline from params was null")
+                    Timber.d("Processed group was null")
                 }
             } else {
                 failureCount++
@@ -179,7 +176,7 @@ class FastDisciplinesOperation(
         return null
     }
 
-    private fun processDisciplines(document: Document): List<RequestBody?>? {
+    private fun processDisciplines(document: Document, semester: String?): List<RequestBody?>? {
         return SagresDisciplineDetailsFetcherParser.extractFastForms(document, semester, code, group)
     }
 

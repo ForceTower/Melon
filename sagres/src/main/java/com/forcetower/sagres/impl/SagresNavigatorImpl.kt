@@ -386,10 +386,16 @@ private constructor(context: Context) : SagresNavigator() {
         return RequestedServicesOperation(null, login).finishedResult
     }
 
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aDisciplinesExperimental(semester: String?, code: String?, group: String?, partialLoad: Boolean, discover: Boolean): LiveData<FastDisciplinesCallback> {
+        return FastDisciplinesOperation(semester, code, group, partialLoad, discover, SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun disciplinesExperimental(semester: String?, code: String?, group: String?, partialLoad: Boolean): FastDisciplinesCallback {
-        return FastDisciplinesOperation(semester, code, group, partialLoad, null).finishedResult
+    override fun disciplinesExperimental(semester: String?, code: String?, group: String?, partialLoad: Boolean, discover: Boolean): FastDisciplinesCallback {
+        return FastDisciplinesOperation(semester, code, group, partialLoad, discover, null).finishedResult
     }
 
     companion object {
