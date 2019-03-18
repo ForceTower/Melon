@@ -223,7 +223,7 @@ class LoginSagresRepository @Inject constructor(
         currentStep.value = createStep(R.string.step_discipline_experimental)
         data.addSource(experimental) { e ->
             Timber.d("Experimental Status: ${e.status}")
-            if (e.status == Status.SUCCESS) {
+            if (e.status == Status.COMPLETED) {
                 data.removeSource(experimental)
                 executor.diskIO().execute {
                     defineSemesters(e.getSemesters())

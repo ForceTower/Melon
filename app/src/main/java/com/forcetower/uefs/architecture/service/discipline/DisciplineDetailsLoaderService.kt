@@ -34,13 +34,13 @@ import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.DOWNLOADING
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.GRADES
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.INITIAL
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.LOGIN
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.PROCESSING
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.SAVING
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.util.isConnectedToInternet
@@ -91,11 +91,11 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         if (!running) {
             running = true
             Timber.d("Started Discipline Load")
-            repository.loadDisciplineDetails(partialLoad = contributing).observe(this, Observer { onDataUpdate(it) })
+            repository.loadDisciplineDetails(partialLoad = contributing, discover = false).observe(this, Observer { onDataUpdate(it) })
         }
     }
 
-    private fun onDataUpdate(callback: DisciplineDetailsCallback?) {
+    private fun onDataUpdate(callback: FastDisciplinesCallback?) {
         callback ?: return
 
         when (callback.status) {
@@ -130,7 +130,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         stopSelf()
     }
 
-    private fun generateNotification(callback: DisciplineDetailsCallback) {
+    private fun generateNotification(callback: FastDisciplinesCallback) {
         val builder = NotificationCreator.disciplineDetailsLoadNotification(this)
         val total = callback.getTotal()
         val current = callback.getCurrent()
