@@ -134,8 +134,11 @@ abstract class SagresNavigator {
     @WorkerThread
     abstract fun getRequestedServices(login: Boolean = false): RequestedServicesCallback
 
+    @AnyThread
+    abstract fun aDisciplinesExperimental(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false, discover: Boolean = true): LiveData<FastDisciplinesCallback>
+
     @WorkerThread
-    abstract fun disciplinesExperimental(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false): FastDisciplinesCallback
+    abstract fun disciplinesExperimental(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false, discover: Boolean = true): FastDisciplinesCallback
 
     @AnyThread
     abstract fun stopTags(tag: String?)
