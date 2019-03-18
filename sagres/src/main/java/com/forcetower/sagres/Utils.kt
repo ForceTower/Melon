@@ -40,3 +40,7 @@ object Utils {
         return document
     }
 }
+
+fun String.createDocument(): Document {
+    return Utils.createDocument(this)
+}

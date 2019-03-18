@@ -54,7 +54,7 @@ abstract class ClassGroupDao {
     open fun defineGroups(groups: List<SDisciplineGroup>) {
         for (group in groups) {
             val inserted = insert(group)
-            if (inserted != null) {
+            if (inserted != null && group.classItems != null) {
                 Timber.d("Group id: ${inserted.uid}")
                 for (classItem in group.classItems) {
                     val item = ClassItem.createFromSagres(inserted.uid, classItem)
