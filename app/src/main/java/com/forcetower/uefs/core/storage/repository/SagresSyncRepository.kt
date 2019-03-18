@@ -228,6 +228,7 @@ class SagresSyncRepository @Inject constructor(
             if (!messages(person.id)) result += 1 shl 1
             if (!semesters(person.id)) result += 1 shl 2
         }
+        if (!disciplinesExperimental()) result += 1 shl 6
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
@@ -389,6 +390,36 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
+    private fun disciplinesExperimental(): Boolean {
+        Timber.d("Experimental Experimental Start")
+        val experimental = SagresNavigator.instance.disciplinesExperimental()
+        return when (experimental.status) {
+            Status.SUCCESS -> {
+                Timber.d("Experimental Completed")
+                defineSemesters(experimental.getSemesters())
+                defineDisciplines(experimental.getDisciplines())
+                defineDisciplineGroups(experimental.getGroups())
+
+                materialsNotifications()
+
+                Timber.d("Semesters: ${experimental.getSemesters()}")
+                Timber.d("Disciplines:  ${experimental.getDisciplines()}")
+                Timber.d("Groups: ${experimental.getGroups()}")
+                true
+            }
+            else -> {
+                Timber.d("Experimental Failed")
+                produceErrorMessage(experimental)
+                false
+            }
+        }
+    }
+
+    private fun materialsNotifications() {
+        // TODO Materials notifications
+    }
+
+    @WorkerThread
     private fun grades(): Boolean {
         val grades = SagresNavigator.instance.getCurrentGrades()
         return when (grades.status) {
@@ -502,9 +533,7 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        groups.forEach {
-            database.classGroupDao().insert(it)
-        }
+        database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread

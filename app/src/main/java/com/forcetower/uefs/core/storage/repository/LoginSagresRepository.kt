@@ -54,6 +54,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -182,7 +183,7 @@ class LoginSagresRepository @Inject constructor(
                 if (userId != null)
                     semesters(data, userId)
                 else
-                    startPage(data)
+                    disciplinesExperimental(data)
             } else {
                 data.value = Callback.Builder(m.status)
                         .code(m.code)
@@ -204,7 +205,7 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute { database.semesterDao().insertIgnoring(values) }
                 Timber.d("Semesters Completed")
                 Timber.d("You got: ${s.getSemesters()}")
-                startPage(data)
+                disciplinesExperimental(data)
             } else {
                 data.value = Callback.Builder(s.status)
                         .code(s.code)
@@ -214,6 +215,29 @@ class LoginSagresRepository @Inject constructor(
                         .build()
             }
         }
+    }
+
+    private fun disciplinesExperimental(data: MediatorLiveData<Callback>) {
+        Timber.d("Disciplines Experimental")
+        val experimental = SagresNavigator.instance.aDisciplinesExperimental()
+        currentStep.value = createStep(R.string.step_discipline_experimental)
+        data.addSource(experimental) { e ->
+            Timber.d("Experimental Status: ${e.status}")
+            if (e.status == Status.SUCCESS) {
+                data.removeSource(experimental)
+                executor.diskIO().execute {
+                    defineSemesters(e.getSemesters())
+                    defineDisciplines(e.getDisciplines())
+                    defineDisciplineGroups(e.getGroups())
+                }
+                defineExperimentalWorkers()
+                startPage(data)
+            }
+        }
+    }
+
+    private fun defineExperimentalWorkers() {
+        DisciplinesDetailsWorker.createWorker()
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {
@@ -363,9 +387,7 @@ class LoginSagresRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        groups.forEach {
-            database.classGroupDao().insert(it)
-        }
+        database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread
@@ -383,7 +405,7 @@ class LoginSagresRepository @Inject constructor(
 
     companion object {
         private var currentStep = 0
-        private const val stepCount = 6
+        private const val stepCount = 7
 
         private fun resetSteps() {
             currentStep = 0
