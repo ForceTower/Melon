@@ -97,14 +97,10 @@ class DisciplinesRepository @Inject constructor(
 
                 Timber.d("Code: $code. Semester: $semester. Group: $group")
 
-                val callback = SagresNavigator.instance.loadDisciplineDetails(semester, code, group)
+                val callback = SagresNavigator.instance.disciplinesExperimental(semester, code, group)
                 if (callback.status == Status.COMPLETED) {
                     val groups = callback.getGroups()
-                    if (groups != null) {
-                        database.classGroupDao().defineGroups(groups)
-                    } else {
-                        Timber.d("It says it's completed but groups were null...")
-                    }
+                    database.classGroupDao().defineGroups(groups)
                 } else {
                     Timber.d("Load group has failed along the way")
                 }
