@@ -157,12 +157,12 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
                 when (holder) {
                     is ItemHolder.HoursHolder -> holder.binding.apply {
                         viewModel = this@DisciplineDetailsFragment.viewModel
-                        setLifecycleOwner(this@DisciplineDetailsFragment)
+                        lifecycleOwner = this@DisciplineDetailsFragment
                         executePendingBindings()
                     }
                     is ItemHolder.MissedHolder -> holder.binding.apply {
                         viewModel = this@DisciplineDetailsFragment.viewModel
-                        setLifecycleOwner(this@DisciplineDetailsFragment)
+                        lifecycleOwner = this@DisciplineDetailsFragment
                         executePendingBindings()
                     }
                 }
