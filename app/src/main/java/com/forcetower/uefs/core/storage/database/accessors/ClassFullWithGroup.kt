@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.database.accessors
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 
 class ClassFullWithGroup {
@@ -37,4 +38,6 @@ class ClassFullWithGroup {
     // TODO Watch this guy
     @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassGroup::class)
     lateinit var groups: List<ClassGroup>
+    @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassAbsence::class)
+    lateinit var absences: List<ClassAbsence>
 }
