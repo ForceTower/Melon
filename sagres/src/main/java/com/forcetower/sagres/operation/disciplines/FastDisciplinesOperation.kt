@@ -57,7 +57,7 @@ class FastDisciplinesOperation(
         val disciplines = disciplines(initial) ?: return
         publishProgress(FastDisciplinesCallback(Status.LOADING).flags(PROCESSING))
         val semesters = processSemesters(disciplines)
-        val discovered = if (discover) semesters.maxBy { it.first }?.second else semester
+        val discovered = if (discover && semester == null) semesters.maxBy { it.first }?.second else semester
         val bodies = processDisciplines(disciplines, discovered) ?: return
         executeCalls(bodies, semesters)
     }
