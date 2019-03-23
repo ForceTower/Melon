@@ -159,7 +159,8 @@ class ScheduleBlockAdapter(
     private val pool: RecyclerView.RecycledViewPool,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: ScheduleViewModel,
-    context: Context
+    context: Context,
+    private val showHidden: Boolean
 ) : RecyclerView.Adapter<DayBlockHolder>() {
     private val list = ArrayList<ArrayList<InnerLocation>>()
     private val colors = context.resources.getIntArray(R.array.discipline_colors)
@@ -208,7 +209,7 @@ class ScheduleBlockAdapter(
         for (i in 1..7) {
             val day = i.toWeekDay()
             val classes = mapping[day]
-            if (classes != null && classes.isNotEmpty()) {
+            if (classes != null && (classes.isNotEmpty() || showHidden)) {
                 classes.sort()
 
                 val full = ArrayList<InnerLocation>()
