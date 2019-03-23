@@ -31,7 +31,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
@@ -101,22 +100,24 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
     }
 
     private fun onSendRandom() {
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-        binding.loadingPb.visibility = VISIBLE
-        viewModel.sendDarkThemeTo(null)
+        showSnack(getString(R.string.cant_do_this_now))
+//        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+//        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+//        binding.loadingPb.visibility = VISIBLE
+//        viewModel.sendDarkThemeTo(null)
     }
 
     private fun onSend() {
-        val username = binding.textSendTo.text?.toString()
-        if (username.isNullOrBlank()) {
-            binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
-            return
-        }
-
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-        binding.loadingPb.visibility = VISIBLE
-        viewModel.sendDarkThemeTo(username)
+        showSnack(getString(R.string.cant_do_this_now))
+//        val username = binding.textSendTo.text?.toString()
+//        if (username.isNullOrBlank()) {
+//            binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
+//            return
+//        }
+//
+//        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+//        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+//        binding.loadingPb.visibility = VISIBLE
+//        viewModel.sendDarkThemeTo(username)
     }
 }
