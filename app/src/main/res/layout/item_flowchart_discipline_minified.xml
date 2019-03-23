@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="24dp"
+        app:cardElevation="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:paddingStart="24dp"
+            android:paddingEnd="24dp"
+            android:textColor="?attr/colorOnSurface"
+            tools:text="Aspectos Teóricos da Computação"/>
+
+    </com.google.android.material.card.MaterialCardView>
+</layout>
