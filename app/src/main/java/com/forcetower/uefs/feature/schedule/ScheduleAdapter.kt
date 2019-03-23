@@ -209,7 +209,7 @@ class ScheduleBlockAdapter(
         for (i in 1..7) {
             val day = i.toWeekDay()
             val classes = mapping[day]
-            if (classes != null && (classes.isNotEmpty() || showHidden)) {
+            if (classes != null && classes.isNotEmpty()) {
                 classes.sort()
 
                 val full = ArrayList<InnerLocation>()
@@ -219,6 +219,11 @@ class ScheduleBlockAdapter(
                     if (position == -1) full.add(InnerLocation())
                     else full.add(classes[position])
                 }
+                list.add(full)
+            } else if (showHidden) {
+                val full = ArrayList<InnerLocation>()
+                full.add(InnerLocation(day = day, header = true))
+                times.forEach { _ -> full.add(InnerLocation()) }
                 list.add(full)
             }
         }
@@ -263,7 +268,7 @@ class ScheduleBlockClassAdapter(
             HEADER -> (holder as BHeaderHolder).bind(element)
             TIME -> (holder as BTimeHolder) .bind(element)
             CLASS -> (holder as BClassHolder) .bind(element, colors).also {
-                holder.binding.setLifecycleOwner(lifecycleOwner)
+                holder.binding.lifecycleOwner = lifecycleOwner
                 holder.binding.scheduleActions = viewModel
                 holder.binding.group = element.location!!.singleGroup()
                 holder.binding.executePendingBindings()
