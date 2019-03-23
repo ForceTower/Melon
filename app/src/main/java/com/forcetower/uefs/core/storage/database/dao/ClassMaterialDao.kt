@@ -31,7 +31,9 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
+import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.ClassMaterial
+import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
 
 @Dao
 abstract class ClassMaterialDao {
@@ -45,4 +47,9 @@ abstract class ClassMaterialDao {
     @WorkerThread
     @Query("DELETE FROM ClassMaterial WHERE group_id = :groupId")
     abstract fun clearFromGroup(groupId: Long)
+
+    @WorkerThread
+    @Transaction
+    @Query("SELECT * FROM ClassMaterial WHERE notified = 0")
+    abstract fun getAllUnnotified(): List<ClassMaterialWithClass>
 }

@@ -44,6 +44,17 @@
             android:summary="@string/settings_ntf_message_uefs_info"
             android:title="@string/settings_ntf_message_uefs"/>
     </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_notification_disciplines_label">
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_material_posted"
+            android:title="@string/settings_ntf_material_posted"
+            android:summary="@string/settings_ntf_material_posted_info"/>
+
+    </PreferenceCategory>
     
     <PreferenceCategory
         android:title="@string/settings_notification_grades_label">

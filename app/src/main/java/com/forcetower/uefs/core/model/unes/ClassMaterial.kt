@@ -62,7 +62,8 @@ data class ClassMaterial(
     val link: String,
     @ColumnInfo(name = "is_new")
     val isNew: Boolean,
-    val uuid: String = UUID.randomUUID().toString()
+    val uuid: String = UUID.randomUUID().toString(),
+    val notified: Boolean = false
 ) {
     companion object {
         fun createFromSagres(groupId: Long, classId: Long?, material: SMaterialLink): ClassMaterial {
