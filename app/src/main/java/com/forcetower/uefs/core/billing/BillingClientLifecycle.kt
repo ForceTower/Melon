@@ -48,7 +48,7 @@ class BillingClientLifecycle(
     private val application: Application
 ) : LifecycleObserver, PurchasesUpdatedListener, BillingClientStateListener {
 
-    val purchaseUpdateEvent = SingleLiveEvent<List<Purchase>>()
+    private val purchaseUpdateEvent = SingleLiveEvent<List<Purchase>>()
     val purchases = MutableLiveData<List<Purchase>>()
     val state = MutableLiveData<Boolean>()
 
@@ -115,7 +115,7 @@ class BillingClientLifecycle(
         return result
     }
 
-    fun updatePurchases() {
+    private fun updatePurchases() {
         if (!billingClient.isReady) {
             Timber.e("BillingClient is not ready to query for existing purchases")
         }
@@ -171,7 +171,7 @@ class BillingClientLifecycle(
      * Check if purchases have changed before updating other part of the app.
      */
     private fun handlePurchases(purchasesList: List<Purchase>?) {
-        if (isUnchangedPurchaseList(purchasesList)) {
+        if (isUnchangedPurchaseList()) {
             Timber.d("Same ${purchasesList?.size} purchase(s), no need to post an update to the live data")
         } else {
             Timber.d("Handling ${purchasesList?.size} purchase(s)")
@@ -179,7 +179,7 @@ class BillingClientLifecycle(
         }
     }
 
-    private fun isUnchangedPurchaseList(purchasesList: List<Purchase>?): Boolean {
+    private fun isUnchangedPurchaseList(): Boolean {
         return false
     }
 
