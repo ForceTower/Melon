@@ -537,6 +537,18 @@
     <string name="unable_to_login">O UNES não conseguiu fazer login</string>
     <string name="failed_to_load_page">A página não está disponível no SAGRES</string>
     <string name="document_not_found">O documento não está disponível no SAGRES</string>
+    <string name="step_discipline_experimental">Experimentando coisas novas</string>
+    <string name="channel_discipline_material_posted">Materiais Postados</string>
+    <string name="material_posted_ntf_title">Novo material postado</string>
+    <string name="undefined">u n d e f i n e d</string>
+    <string name="material_posted_ntf_content">O material %1$s foi postado na disciplina %2$s</string>
+    <string name="settings_notification_disciplines_label">Disciplinas</string>
+    <string name="settings_ntf_material_posted">Material Postado</string>
+    <string name="settings_ntf_material_posted_info">Notificar quando um novo material for detectado</string>
+    <string name="cant_do_this_now">Convites desativados até a próxima atualização</string>
+    <string name="settings_schedule_empty_spaces">Dias vazios</string>
+    <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
+    <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

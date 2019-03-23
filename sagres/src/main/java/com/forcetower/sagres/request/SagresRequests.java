@@ -210,4 +210,26 @@ public class SagresRequests {
                 .addHeader("cache-control", "no-cache")
                 .build();
     }
+
+    @NonNull
+    public static Request getAllDisciplinesPage() {
+        return new Request.Builder()
+                .url(Constants.SAGRES_ALL_DISCIPLINES_PAGE)
+                .tag("disciplines")
+                .get()
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
+
+    @NotNull
+    public static Request postAllDisciplinesParams(RequestBody body) {
+        return new Request.Builder()
+                .url(Constants.SAGRES_ALL_DISCIPLINES_PAGE)
+                .tag("disciplines")
+                .post(body)
+                .addHeader("Content-Type", "application/x-www-form-urlencoded")
+                .addHeader("cache-control", "no-cache")
+                .build();
+    }
 }

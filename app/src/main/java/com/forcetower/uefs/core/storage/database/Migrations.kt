@@ -128,3 +128,9 @@ object M15TOM16 : Migration(15, 16) {
         database.execSQL("UPDATE Discipline SET code = TRIM(Discipline.code)")
     }
 }
+
+object M16TOM17 : Migration(16, 17) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ClassMaterial ADD COLUMN notified INTEGER NOT NULL DEFAULT 1")
+    }
+}

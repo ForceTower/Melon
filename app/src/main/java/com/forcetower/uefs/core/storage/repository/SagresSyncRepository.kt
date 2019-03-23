@@ -68,12 +68,10 @@ import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.service.NotificationCreator
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -185,6 +183,7 @@ class SagresSyncRepository @Inject constructor(
 
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
+        database.classMaterialDao().markAllNotified()
         val homeDoc = login(access)
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
@@ -228,23 +227,22 @@ class SagresSyncRepository @Inject constructor(
             if (!messages(person.id)) result += 1 shl 1
             if (!semesters(person.id)) result += 1 shl 2
         }
+        if (!disciplinesExperimental()) result += 1 shl 6
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
+        if (preferences.getBoolean("primary_fetch", true)) {
+            DisciplinesDetailsWorker.createWorker()
+            preferences.edit().putBoolean("primary_fetch", false).apply()
+        }
+
         try {
             val day = preferences.getInt("sync_daily_update", -1)
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val user = firebaseAuth.currentUser
-            if (user != null && day != today) {
-                val instance = FirebaseInstanceId.getInstance().instanceId
-                val instanceId = Tasks.await(instance)
-                val data = mapOf("firebaseToken" to instanceId.token)
-                val task = collection.document(user.uid).set(data, SetOptions.merge())
-                Tasks.await(task)
-                preferences.edit().putInt("sync_daily_update", today).apply()
+            if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
-                scheduleRepository.saveSchedule(user.uid)
+                preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
         } catch (t: Throwable) {
@@ -389,6 +387,42 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
+    private fun disciplinesExperimental(): Boolean {
+        Timber.d("Experimental Experimental Start")
+        val experimental = SagresNavigator.instance.disciplinesExperimental()
+        return when (experimental.status) {
+            Status.COMPLETED -> {
+                Timber.d("Experimental Completed")
+                defineSemesters(experimental.getSemesters())
+                defineDisciplines(experimental.getDisciplines())
+                defineDisciplineGroups(experimental.getGroups())
+
+                materialsNotifications()
+
+                Timber.d("Semesters: ${experimental.getSemesters()}")
+                Timber.d("Disciplines:  ${experimental.getDisciplines()}")
+                Timber.d("Groups: ${experimental.getGroups()}")
+                true
+            }
+            else -> {
+                Timber.d("Experimental Failed")
+                produceErrorMessage(experimental)
+                false
+            }
+        }
+    }
+
+    @WorkerThread
+    private fun materialsNotifications() {
+        database.classMaterialDao().run {
+            getAllUnnotified().filter { it.group() != null }.forEach {
+                NotificationCreator.showMaterialPostedNotification(context, it)
+            }
+            markAllNotified()
+        }
+    }
+
+    @WorkerThread
     private fun grades(): Boolean {
         val grades = SagresNavigator.instance.getCurrentGrades()
         return when (grades.status) {
@@ -502,9 +536,7 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        groups.forEach {
-            database.classGroupDao().insert(it)
-        }
+        database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread

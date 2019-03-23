@@ -62,4 +62,11 @@
         app:title="@string/settings_theme_menu"
         app:summaryOn="@string/settings_theme_menu_desc_enabled"
         app:summaryOff="@string/settings_theme_menu_desc_disabled"/>
+
+    <SwitchPreference
+        app:key="stg_show_empty_day_schedule"
+        app:defaultValue="false"
+        app:title="@string/settings_schedule_empty_spaces"
+        app:summaryOn="@string/settings_schedule_empty_spaces_info_on"
+        app:summaryOff="@string/settings_schedule_empty_spaces_info_off"/>
 </androidx.preference.PreferenceScreen>
