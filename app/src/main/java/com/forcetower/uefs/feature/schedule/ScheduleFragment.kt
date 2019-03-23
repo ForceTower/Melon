@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.schedule
 
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -53,15 +54,19 @@ import javax.inject.Inject
 class ScheduleFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var viewModel: ScheduleViewModel
     private lateinit var profileViewModel: ProfileViewModel
     private lateinit var binding: FragmentScheduleBinding
 
+    private var showHidden: Boolean = false
+
     private val linePool = RecyclerView.RecycledViewPool()
     private val lineAdapter by lazy { ScheduleLineAdapter(this, viewModel, linePool) }
     private val blockPool = RecyclerView.RecycledViewPool()
-    private val blockAdapter by lazy { ScheduleBlockAdapter(blockPool, this, viewModel, requireContext()) }
+    private lateinit var blockAdapter: ScheduleBlockAdapter
 
     init {
         linePool.setMaxRecycledViews(1, 4)
@@ -71,6 +76,8 @@ class ScheduleFragment : UFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
         profileViewModel = provideActivityViewModel(factory)
+        showHidden = preferences.getBoolean("stg_show_empty_day_schedule", false)
+        blockAdapter = ScheduleBlockAdapter(blockPool, this, viewModel, requireContext(), showHidden)
 
         return FragmentScheduleBinding.inflate(inflater, container, false).also {
             binding = it

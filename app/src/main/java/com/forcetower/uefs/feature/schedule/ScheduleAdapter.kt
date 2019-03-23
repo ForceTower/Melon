@@ -159,7 +159,8 @@ class ScheduleBlockAdapter(
     private val pool: RecyclerView.RecycledViewPool,
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: ScheduleViewModel,
-    context: Context
+    context: Context,
+    private val showHidden: Boolean
 ) : RecyclerView.Adapter<DayBlockHolder>() {
     private val list = ArrayList<ArrayList<InnerLocation>>()
     private val colors = context.resources.getIntArray(R.array.discipline_colors)
@@ -219,6 +220,11 @@ class ScheduleBlockAdapter(
                     else full.add(classes[position])
                 }
                 list.add(full)
+            } else if (showHidden && i > 1) {
+                val full = ArrayList<InnerLocation>()
+                full.add(InnerLocation(day = day, header = true))
+                times.forEach { _ -> full.add(InnerLocation()) }
+                list.add(full)
             }
         }
         notifyDataSetChanged()
@@ -262,7 +268,7 @@ class ScheduleBlockClassAdapter(
             HEADER -> (holder as BHeaderHolder).bind(element)
             TIME -> (holder as BTimeHolder) .bind(element)
             CLASS -> (holder as BClassHolder) .bind(element, colors).also {
-                holder.binding.setLifecycleOwner(lifecycleOwner)
+                holder.binding.lifecycleOwner = lifecycleOwner
                 holder.binding.scheduleActions = viewModel
                 holder.binding.group = element.location!!.singleGroup()
                 holder.binding.executePendingBindings()

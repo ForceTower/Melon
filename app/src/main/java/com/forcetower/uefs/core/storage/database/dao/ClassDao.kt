@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithDiscipline
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import timber.log.Timber
 
 @Dao
 abstract class ClassDao {
@@ -103,10 +104,14 @@ abstract class ClassDao {
                 )
                 insert(clazz)
             } else {
-                if (semester == null)
+                if (semester == null) {
+                    Timber.d("Semester not found ${dis.semester.trim()}")
                     Crashlytics.logException(Throwable("Semester not found ${dis.semester.trim()}"))
-                if (discipline != null)
+                }
+                if (discipline != null) {
+                    Timber.d("Discipline not found ${discipline.code}")
                     Crashlytics.logException(Throwable("Discipline not found ${discipline.code}"))
+                }
             }
         }
 

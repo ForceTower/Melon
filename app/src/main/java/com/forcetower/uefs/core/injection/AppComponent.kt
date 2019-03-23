@@ -37,6 +37,7 @@ import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.work.demand.CreateDemandWorker
+import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
@@ -79,4 +80,5 @@ interface AppComponent {
     fun inject(worker: GradesSagresWorker)
     fun inject(worker: CreateDemandWorker)
     fun inject(worker: HourglassContributeWorker)
+    fun inject(worker: DisciplinesDetailsWorker)
 }

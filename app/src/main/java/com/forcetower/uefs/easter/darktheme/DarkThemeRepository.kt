@@ -48,6 +48,7 @@ import com.google.firebase.firestore.SetOptions
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.functions.FirebaseFunctionsException
 import timber.log.Timber
+import java.util.Calendar
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Named
@@ -102,7 +103,9 @@ class DarkThemeRepository @Inject constructor(
             val precondition2 = createLocationPrecondition()
             val precondition3 = createHoursPrecondition()
             val list = listOf(precondition1, precondition2, precondition3)
-            sendInfoToFirebase(list)
+            executors.others().execute {
+                sendInfoToFirebase(list)
+            }
             result.postValue(list)
         }
         return result
@@ -110,6 +113,8 @@ class DarkThemeRepository @Inject constructor(
 
     @WorkerThread
     private fun sendInfoToFirebase(list: List<Precondition>) {
+        val day = Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+
         val uid = firebaseAuth.currentUser?.uid
         val completed = list.filter { it.completed }
         val completedSize = completed.size
@@ -127,14 +132,20 @@ class DarkThemeRepository @Inject constructor(
                     .putInt("dark_theme_invites", invites)
                     .putBoolean("ach_night_mode_enabled", (completedSize > 0))
                     .apply()
-
-            data += "darkThemeEnabled" to (completedSize > 0)
         }
+
+        if (!enabled && completed.isEmpty()) return
+        if (day == preferences.getInt("dark_information_sent", 0)) return
+        preferences.edit().putInt("dark_information_sent", day).apply()
+
         if (uid != null) {
             try {
                 val current = Tasks.await(collection.document(uid).get())
                 val serverInvites = current["darkInvites"] as? Long ?: 0
+                val darkThemeEnabled = current["darkThemeEnabled"] as? Boolean ?: false
                 val actualInvites = max(serverInvites, invites.toLong())
+                val dark = darkThemeEnabled || (completedSize > 0)
+                data += "darkThemeEnabled" to dark
                 data += "darkInvites" to actualInvites
                 Tasks.await(collection.document(uid).set(data, SetOptions.merge()))
             } catch (throwable: Throwable) {

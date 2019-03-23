@@ -35,6 +35,7 @@ import okhttp3.Call
 import okhttp3.FormBody
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.RequestBody
 import org.jsoup.nodes.Document
 
 @RestrictTo(RestrictTo.Scope.LIBRARY)
@@ -115,7 +116,7 @@ object SagresCalls {
     }
 
     @JvmStatic
-    @RestrictTo
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun getGrades(semester: Long?, document: Document?, variant: Long? = null): Call {
         val request = if (semester == null) {
             SagresRequests.getCurrentGrades()
@@ -160,5 +161,20 @@ object SagresCalls {
 
     fun getMessagesPage(): Call {
         return getCall(SagresRequests.getMessagesPage())
+    }
+
+    fun getAllDisciplinesPage(): Call {
+        return getCall(SagresRequests.getAllDisciplinesPage())
+    }
+
+    fun postAllDisciplinesParams(document: Document): Call {
+        val body = SagresForms.makeFormBodyForAllDisciplines(document)
+        val request = SagresRequests.postAllDisciplinesParams(body)
+        return getCall(request)
+    }
+
+    fun goToDisciplineAlternate(body: RequestBody): Call {
+        val request = SagresRequests.postAllDisciplinesParams(body)
+        return getCall(request)
     }
 }

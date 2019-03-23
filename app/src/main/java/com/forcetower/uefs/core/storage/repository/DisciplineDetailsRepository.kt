@@ -32,12 +32,16 @@ import androidx.annotation.WorkerThread
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.sagres.database.model.SDisciplineGroup
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
+import com.forcetower.sagres.operation.Status
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.model.service.DisciplineDetailsData
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -73,11 +77,13 @@ class DisciplineDetailsRepository @Inject constructor(
      * name, which is the common use for this function.
      */
     @MainThread
-    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = false): LiveData<DisciplineDetailsCallback> {
-        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad) {
+    fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = true, discover: Boolean = false): LiveData<FastDisciplinesCallback> {
+        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad, discover) {
             @WorkerThread
-            override fun saveResults(groups: List<SDisciplineGroup>) {
-                database.classGroupDao().defineGroups(groups)
+            override fun saveResults(callback: FastDisciplinesCallback) {
+                defineSemesters(callback.getSemesters())
+                defineDisciplines(callback.getDisciplines())
+                defineDisciplineGroups(callback.getGroups())
             }
 
             @WorkerThread
@@ -128,5 +134,36 @@ class DisciplineDetailsRepository @Inject constructor(
         val semesters = database.semesterDao().getSemestersDirect()
         semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
         contribute()
+    }
+
+    @WorkerThread
+    fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
+        val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false, partialLoad = partialLoad)
+        if (experimental.status == Status.COMPLETED) {
+            defineSemesters(experimental.getSemesters())
+            defineDisciplines(experimental.getDisciplines())
+            defineDisciplineGroups(experimental.getGroups(), notify)
+        }
+        database.classMaterialDao().markAllNotified()
+    }
+
+    @WorkerThread
+    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
+        semesters.forEach {
+            val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
+            database.semesterDao().insertIgnoring(semester)
+        }
+    }
+
+    @WorkerThread
+    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+        val values = disciplines.map { Discipline.fromSagres(it) }
+        database.disciplineDao().insert(values)
+        disciplines.forEach { database.classDao().insert(it, true) }
+    }
+
+    @WorkerThread
+    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>, notify: Boolean = true) {
+        database.classGroupDao().defineGroups(groups, notify)
     }
 }

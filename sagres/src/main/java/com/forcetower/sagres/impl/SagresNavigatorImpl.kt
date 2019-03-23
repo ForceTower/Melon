@@ -51,6 +51,8 @@ import com.forcetower.sagres.operation.demand.DemandOffersCallback
 import com.forcetower.sagres.operation.demand.LoadDemandOffersOperation
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsOperation
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesOperation
 import com.forcetower.sagres.operation.document.DocumentCallback
 import com.forcetower.sagres.operation.document.DocumentOperation
 import com.forcetower.sagres.operation.grades.GradesCallback
@@ -382,6 +384,18 @@ private constructor(context: Context) : SagresNavigator() {
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun getRequestedServices(login: Boolean): RequestedServicesCallback {
         return RequestedServicesOperation(null, login).finishedResult
+    }
+
+    @AnyThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun aDisciplinesExperimental(semester: String?, code: String?, group: String?, partialLoad: Boolean, discover: Boolean): LiveData<FastDisciplinesCallback> {
+        return FastDisciplinesOperation(semester, code, group, partialLoad, discover, SagresTaskExecutor.getNetworkThreadExecutor()).result
+    }
+
+    @WorkerThread
+    @RestrictTo(RestrictTo.Scope.LIBRARY)
+    override fun disciplinesExperimental(semester: String?, code: String?, group: String?, partialLoad: Boolean, discover: Boolean): FastDisciplinesCallback {
+        return FastDisciplinesOperation(semester, code, group, partialLoad, discover, null).finishedResult
     }
 
     companion object {

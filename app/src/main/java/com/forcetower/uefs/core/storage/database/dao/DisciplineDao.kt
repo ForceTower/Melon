@@ -46,7 +46,7 @@ abstract class DisciplineDao {
             if (old == null) {
                 insert(discipline)
             } else {
-                if (old.credits == 0) {
+                if (old.credits == 0 || discipline.credits > 0) {
                     updateDiscipline(old.uid, discipline.credits, discipline.name)
                 }
             }
