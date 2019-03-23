@@ -102,7 +102,9 @@ class DarkThemeRepository @Inject constructor(
             val precondition2 = createLocationPrecondition()
             val precondition3 = createHoursPrecondition()
             val list = listOf(precondition1, precondition2, precondition3)
-            sendInfoToFirebase(list)
+            executors.others().execute {
+                sendInfoToFirebase(list)
+            }
             result.postValue(list)
         }
         return result

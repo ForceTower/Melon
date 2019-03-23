@@ -243,15 +243,9 @@ class SagresSyncRepository @Inject constructor(
         try {
             val day = preferences.getInt("sync_daily_update", -1)
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-            val user = firebaseAuth.currentUser
-            if (user != null && day != today) {
-                val instance = FirebaseInstanceId.getInstance().instanceId
-                val instanceId = Tasks.await(instance)
-                val data = mapOf("firebaseToken" to instanceId.token)
-                val task = collection.document(user.uid).set(data, SetOptions.merge())
-                Tasks.await(task)
-                preferences.edit().putInt("sync_daily_update", today).apply()
+            if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
+                preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
         } catch (t: Throwable) {
