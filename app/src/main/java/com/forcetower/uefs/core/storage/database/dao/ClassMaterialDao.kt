@@ -52,4 +52,8 @@ abstract class ClassMaterialDao {
     @Transaction
     @Query("SELECT * FROM ClassMaterial WHERE notified = 0")
     abstract fun getAllUnnotified(): List<ClassMaterialWithClass>
+
+    @WorkerThread
+    @Query("UPDATE ClassMaterial SET notified = 1")
+    abstract fun markAllNotified()
 }

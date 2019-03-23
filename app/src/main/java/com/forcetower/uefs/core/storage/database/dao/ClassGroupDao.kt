@@ -51,11 +51,12 @@ abstract class ClassGroupDao {
     abstract fun insert(group: ClassGroup): Long
 
     @Transaction
-    open fun defineGroups(groups: List<SDisciplineGroup>) {
+    open fun defineGroups(groups: List<SDisciplineGroup>, notifyMaterials: Boolean = true) {
         for (group in groups) {
             val inserted = insert(group)
             if (inserted != null && group.classItems != null) {
                 Timber.d("Group id: ${inserted.uid}")
+                Timber.d("Group Code: ${group.code} has ${group.classItems.sumBy { it.materials.size }} materials")
                 for (classItem in group.classItems) {
                     val insertedUid = inserted.uid
                     val item = ClassItem.createFromSagres(insertedUid, classItem)
@@ -68,7 +69,7 @@ abstract class ClassGroupDao {
                         currentItem.uid
                     }
                     for (classMaterial in classItem.materials) {
-                        val material = ClassMaterial.createFromSagres(inserted.uid, classId, classMaterial)
+                        val material = ClassMaterial.createFromSagres(inserted.uid, classId, classMaterial, !notifyMaterials)
                         insert(material)
                     }
                 }

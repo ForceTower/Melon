@@ -26,7 +26,8 @@ class DisciplinesDetailsWorker(
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
         return try {
-            repository.experimentalDisciplines()
+            inputData.getBoolean("partial", true)
+            repository.experimentalDisciplines(partialLoad = true, notify = false)
             Result.success()
         } catch (t: Throwable) {
             Result.retry()

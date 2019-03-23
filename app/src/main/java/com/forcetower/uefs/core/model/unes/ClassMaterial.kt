@@ -66,13 +66,14 @@ data class ClassMaterial(
     val notified: Boolean = false
 ) {
     companion object {
-        fun createFromSagres(groupId: Long, classId: Long?, material: SMaterialLink): ClassMaterial {
+        fun createFromSagres(groupId: Long, classId: Long?, material: SMaterialLink, notified: Boolean = false): ClassMaterial {
             return ClassMaterial(
                 groupId = groupId,
                 classItemId = classId,
                 name = material.name,
                 link = material.link,
-                isNew = true
+                isNew = true,
+                notified = notified
             )
         }
     }

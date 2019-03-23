@@ -446,7 +446,7 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(context)
-                .addParentStack(HomeActivity::class.java)
+                .addParentStack(DisciplineDetailsActivity::class.java)
                 .addNextIntent(intent)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
