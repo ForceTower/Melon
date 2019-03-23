@@ -32,7 +32,6 @@ import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -60,20 +59,21 @@ class SettingsRepository @Inject constructor(
         val result = MutableLiveData<Boolean>()
         val default = preferences.getBoolean("ach_night_mode_enabled", false)
         val uid = firebaseAuth.currentUser?.uid
-        if (uid != null) {
-            profileReference.document(uid).addSnapshotListener { snapshot, exception ->
-                if (snapshot != null) {
-                    val enabled = snapshot["darkThemeEnabled"] as? Boolean ?: false
-                    preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
-                    result.postValue(enabled)
-                } else {
-                    Crashlytics.logException(exception)
-                    result.postValue(default)
-                }
-            }
-        } else {
-            result.value = default
-        }
+        result.value = default
+//        if (uid != null) {
+//            profileReference.document(uid).addSnapshotListener { snapshot, exception ->
+//                if (snapshot != null) {
+//                    val enabled = snapshot["darkThemeEnabled"] as? Boolean ?: false
+//                    preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
+//                    result.postValue(enabled)
+//                } else {
+//                    Crashlytics.logException(exception)
+//                    result.postValue(default)
+//                }
+//            }
+//        } else {
+//            result.value = default
+//        }
 
         return result
     }
