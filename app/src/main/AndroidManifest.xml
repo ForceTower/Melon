@@ -72,20 +72,24 @@
             android:theme="@style/CropTheme.Default" />
         <activity
             android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.profile.ProfileActivity"
             android:theme="@style/UTheme.LightNav" />
         <activity android:name=".easter.twofoureight.Game2048Activity" />
         <activity
             android:name=".feature.reminders.RemindersActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.settings.SettingsActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.demand.DemandActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.barrildeboa.HourglassActivity"
             android:parentActivityName=".feature.home.HomeActivity"
