@@ -545,7 +545,10 @@
     <string name="settings_notification_disciplines_label">Disciplinas</string>
     <string name="settings_ntf_material_posted">Material Postado</string>
     <string name="settings_ntf_material_posted_info">Notificar quando um novo material for detectado</string>
-    <string name="cant_do_this_now">Convites desativados até a proxima atualização</string>
+    <string name="cant_do_this_now">Convites desativados até a próxima atualização</string>
+    <string name="settings_schedule_empty_spaces">Dias vazios</string>
+    <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
+    <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
