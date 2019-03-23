@@ -33,6 +33,7 @@ import com.forcetower.sagres.database.model.SDemandOffer;
 import okhttp3.FormBody;
 import okhttp3.RequestBody;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
@@ -42,6 +43,15 @@ import java.util.List;
 import java.util.Map;
 
 public class SagresForms {
+
+    private static void extractHiddenFields(@NonNull Document document, @NonNull FormBody.Builder formBody) {
+        Elements elements = document.select("input[value][type=\"hidden\"]");
+        for (Element element : elements) {
+            String key = element.attr("id");
+            String value = element.attr("value");
+            formBody.add(key, value);
+        }
+    }
 
     public static RequestBody loginBody(@NonNull String username, @NonNull String password) {
         return new FormBody.Builder()
@@ -130,5 +140,29 @@ public class SagresForms {
         form.add("__ASYNCPOST", "false");
         form.add("ctl00$MasterPlaceHolder$btnSalvar", "Salvar");
         return form.build();
+    }
+
+    @NotNull
+    public static RequestBody makeFormBodyForAllDisciplines(@NotNull Document document) {
+        FormBody.Builder formBody = new FormBody.Builder();
+        extractHiddenFields(document, formBody);
+
+        formBody.add("ctl00$MasterPlaceHolder$ctl00$ddMostrar", "0");
+        formBody.add("ctl00$MasterPlaceHolder$FiltroClasses$imRecuperar", "Exibir");
+        formBody.add("ctl00$MasterPlaceHolder$FiltroClasses$ddPeriodosLetivos", "");
+        formBody.add("ctl00$MasterPlaceHolder$FiltroClasses$txbFiltroNome", "");
+        return formBody.build();
+    }
+
+    @NotNull
+    public static RequestBody goToDisciplineAlternative(@NonNull String position, @NonNull Document document) {
+        FormBody.Builder formBody = new FormBody.Builder();
+        extractHiddenFields(document, formBody);
+
+        formBody.add("__EVENTTARGET", "Selecionar");
+        formBody.add("__EVENTARGUMENT", position);
+        formBody.add("ctl00$MasterPlaceHolder$FiltroClasses$txbFiltroNome", "");
+        formBody.add("ctl00$MasterPlaceHolder$ctl00$ddMostrar", "0");
+        return formBody.build();
     }
 }

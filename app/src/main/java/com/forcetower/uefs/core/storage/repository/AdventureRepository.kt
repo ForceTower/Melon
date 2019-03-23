@@ -33,7 +33,6 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
@@ -44,10 +43,8 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.truncate
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
 import timber.log.Timber
 import java.util.Calendar
 import java.util.concurrent.TimeUnit
@@ -97,22 +94,23 @@ class AdventureRepository @Inject constructor(
         val user = auth.currentUser ?: return data
         val id = user.uid
 
-        try {
-            val snapshot = Tasks.await(collection.document(id).get())
-            val games = snapshot?.data?.get("adventure") as? String
-            if (games == null && email != null) {
-                Timber.d("Setting up account")
-                Tasks.await(collection.document(id).set(mapOf("adventure" to email), SetOptions.merge()))
-                performCheckAchievements(data)
-            } else if (games == email) {
-                performCheckAchievements(data)
-            } else {
-                Timber.d("Invalid combination of $email and ${user.email}")
-            }
-        } catch (throwable: Throwable) {
-            Timber.d("Ignored exception: ${throwable.message}")
-            Crashlytics.logException(throwable)
-        }
+        performCheckAchievements(data)
+//        try {
+//            val snapshot = Tasks.await(collection.document(id).get())
+//            val games = snapshot?.data?.get("adventure") as? String
+//            if (games == null && email != null) {
+//                Timber.d("Setting up account")
+//                Tasks.await(collection.document(id).set(mapOf("adventure" to email), SetOptions.merge()))
+//
+//            } else if (games == email) {
+//                performCheckAchievements(data)
+//            } else {
+//                Timber.d("Invalid combination of $email and ${user.email}")
+//            }
+//        } catch (throwable: Throwable) {
+//            Timber.d("Ignored exception: ${throwable.message}")
+//            Crashlytics.logException(throwable)
+//        }
 
         return data
     }

@@ -51,17 +51,25 @@ data class ClassItem(
     @ColumnInfo(name = "group_id")
     val groupId: Long,
     val number: Int,
-    val situation: String?,
-    val subject: String?,
-    val date: String?,
+    var situation: String?,
+    var subject: String?,
+    var date: String?,
     @ColumnInfo(name = "number_of_materials")
-    val numberOfMaterials: Int,
+    var numberOfMaterials: Int,
     @ColumnInfo(name = "material_links")
-    val materialLinks: String,
+    var materialLinks: String,
     @ColumnInfo(name = "is_new")
     val isNew: Boolean,
     val uuid: String = UUID.randomUUID().toString()
 ) {
+    fun selectiveCopy(other: ClassItem) {
+        situation = other.situation
+        subject = other.subject
+        date = other.date
+        numberOfMaterials = other.numberOfMaterials
+        materialLinks = other.materialLinks
+    }
+
     companion object {
         fun createFromSagres(group: Long, value: SDisciplineClassItem): ClassItem {
             return ClassItem(

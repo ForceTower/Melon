@@ -31,9 +31,8 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MediatorLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback
+import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
 import timber.log.Timber
 
@@ -42,9 +41,10 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
     private val semester: String? = null,
     private val code: String? = null,
     private val group: String? = null,
-    private val partialLoad: Boolean = false
+    private val partialLoad: Boolean = false,
+    private val discover: Boolean = false
 ) {
-    private val result = MediatorLiveData<DisciplineDetailsCallback>()
+    private val result = MediatorLiveData<FastDisciplinesCallback>()
 
     init {
         loadFromSagres()
@@ -52,7 +52,7 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
 
     @MainThread
     private fun loadFromSagres() {
-        val loader = SagresNavigator.instance.aLoadDisciplineDetails(semester, code, group, partialLoad)
+        val loader = SagresNavigator.instance.aDisciplinesExperimental(semester, code, group, partialLoad, discover)
         result.addSource(loader) { callback ->
             Timber.d("Current Status: ${callback.status}")
             when (callback.status) {
@@ -66,12 +66,11 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
     }
 
     @MainThread
-    private fun startSaveResults(callback: DisciplineDetailsCallback) {
-        val groups = callback.getGroups() ?: emptyList()
-        result.postValue(DisciplineDetailsCallback(Status.LOADING).flags(DisciplineDetailsCallback.SAVING))
+    private fun startSaveResults(callback: FastDisciplinesCallback) {
+        result.postValue(FastDisciplinesCallback(Status.LOADING).flags(FastDisciplinesCallback.SAVING))
         executors.diskIO().execute {
-            saveResults(groups)
-            result.postValue(DisciplineDetailsCallback(Status.LOADING).flags(DisciplineDetailsCallback.GRADES))
+            saveResults(callback)
+            result.postValue(FastDisciplinesCallback(Status.LOADING).flags(FastDisciplinesCallback.GRADES))
             loadGrades()
             result.postValue(callback)
         }
@@ -81,7 +80,7 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
     abstract fun loadGrades()
 
     @WorkerThread
-    abstract fun saveResults(groups: List<SDisciplineGroup>)
+    abstract fun saveResults(callback: FastDisciplinesCallback)
 
     fun asLiveData() = result
 }
