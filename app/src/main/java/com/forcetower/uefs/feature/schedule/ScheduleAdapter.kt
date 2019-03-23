@@ -220,7 +220,7 @@ class ScheduleBlockAdapter(
                     else full.add(classes[position])
                 }
                 list.add(full)
-            } else if (showHidden) {
+            } else if (showHidden && i > 1) {
                 val full = ArrayList<InnerLocation>()
                 full.add(InnerLocation(day = day, header = true))
                 times.forEach { _ -> full.add(InnerLocation()) }
