@@ -237,7 +237,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun defineExperimentalWorkers() {
-        DisciplinesDetailsWorker.createWorker()
+        // DisciplinesDetailsWorker.createWorker()
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {

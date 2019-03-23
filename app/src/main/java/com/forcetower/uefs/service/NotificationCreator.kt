@@ -41,11 +41,15 @@ import androidx.core.content.ContextCompat
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
+import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
+import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
@@ -323,6 +327,22 @@ object NotificationCreator {
         showNotification(context, service.uid + message.hashCode(), builder)
     }
 
+    fun showMaterialPostedNotification(context: Context, it: ClassMaterialWithClass) {
+        if (!shouldShowNotification("stg_ntf_material_posted", context)) return
+        val discipline = it.group()?.clazz()?.discipline()?.name ?: context.getString(R.string.undefined)
+        val title = it.material.name
+        val content = context.getString(R.string.material_posted_ntf_content, title, discipline)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_DISCIPLINE_MATERIAL_POSTED)
+                .setContentTitle(context.getString(R.string.material_posted_ntf_title))
+                .setContentText(content)
+                .setStyle(createBigText(content))
+                .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
+                .setContentIntent(createDisciplineDetailsIntent(context, it.group()?.group))
+
+        addOptions(context, builder)
+        showNotification(context, it.material.uid, builder)
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
@@ -413,6 +433,20 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(ctx)
+                .addParentStack(HomeActivity::class.java)
+                .addNextIntent(intent)
+                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+    }
+
+    private fun createDisciplineDetailsIntent(context: Context, classGroup: ClassGroup?): PendingIntent? {
+        classGroup ?: return createOpenIntent(context)
+
+        val intent = Intent(context, DisciplineDetailsActivity::class.java).apply {
+            putExtra(DisciplineDetailsActivity.CLASS_GROUP_ID, classGroup.uid)
+            putExtra(DisciplineDetailsActivity.CLASS_ID, classGroup.classId)
+        }
+
+        return TaskStackBuilder.create(context)
                 .addParentStack(HomeActivity::class.java)
                 .addNextIntent(intent)
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
