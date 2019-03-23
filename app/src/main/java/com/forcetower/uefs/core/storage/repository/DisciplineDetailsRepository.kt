@@ -137,13 +137,14 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun experimentalDisciplines() {
-        val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false)
+    fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
+        val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false, partialLoad = partialLoad)
         if (experimental.status == Status.COMPLETED) {
             defineSemesters(experimental.getSemesters())
             defineDisciplines(experimental.getDisciplines())
-            defineDisciplineGroups(experimental.getGroups())
+            defineDisciplineGroups(experimental.getGroups(), notify)
         }
+        database.classMaterialDao().markAllNotified()
     }
 
     @WorkerThread
@@ -162,7 +163,7 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
-        database.classGroupDao().defineGroups(groups)
+    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>, notify: Boolean = true) {
+        database.classGroupDao().defineGroups(groups, notify)
     }
 }

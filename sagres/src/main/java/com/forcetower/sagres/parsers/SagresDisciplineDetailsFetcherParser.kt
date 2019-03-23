@@ -145,34 +145,25 @@ object SagresDisciplineDetailsFetcherParser {
         try {
             val elements = document.select("tr").filter { it.attr("id").startsWith("objdwForm_detail_") }
             return elements.map { row ->
-                Timber.d(row.attr("id"))
                 val index = (row.attr("id").split("_")[2].toIntOrNull() ?: 0) + 1
-                Timber.d("Index: $index")
 
                 try {
                     val semester = row.child(1).text().trim()
-                    Timber.d("semester: $semester")
                     if (classSemester == null || semester.replace(".", "").equals(classSemester.replace(".", ""), ignoreCase = true)) {
                         val fullName = row.child(2).text().trim()
                         val code = fullName.substring(0, fullName.indexOf("-")).trim()
-                        Timber.d("Code: $code")
-                        Timber.d("Name: $fullName")
                         if (classCode == null || code.equals(classCode, ignoreCase = true)) {
                             val groups = fullName.substring(fullName.lastIndexOf("(") + 1, fullName.length - 1).trim()
                             val group = groups.substring(groups.lastIndexOf("-") + 1).trim()
                             if (classGroup == null || group.equals(classGroup, ignoreCase = true)) {
-                                Timber.d("Adding $code $fullName")
                                 extractFastFormBodies(index.toString(), document)
                             } else {
-                                Timber.d("Specific class group didn't match")
                                 null
                             }
                         } else {
-                            Timber.d("Specific class code didn't match")
                             null
                         }
                     } else {
-                        Timber.d("Specific semester didn't match")
                         null
                     }
                 } catch (t: Throwable) {

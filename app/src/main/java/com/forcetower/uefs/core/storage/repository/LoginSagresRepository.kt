@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
 import androidx.annotation.WorkerThread
@@ -54,6 +55,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -64,6 +66,7 @@ import javax.inject.Singleton
 class LoginSagresRepository @Inject constructor(
     private val executor: AppExecutors,
     private val database: UDatabase,
+    private val preferences: SharedPreferences,
     private val firebaseAuthRepository: FirebaseAuthRepository
 ) {
     val currentStep: MutableLiveData<Step> = MutableLiveData()
@@ -236,7 +239,8 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun defineExperimentalWorkers() {
-        // DisciplinesDetailsWorker.createWorker()
+        DisciplinesDetailsWorker.createWorker()
+        preferences.edit().putBoolean("primary_fetch", false).apply()
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {

@@ -68,6 +68,7 @@ import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
@@ -185,6 +186,7 @@ class SagresSyncRepository @Inject constructor(
 
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
+        database.classMaterialDao().markAllNotified()
         val homeDoc = login(access)
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
@@ -233,6 +235,11 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
+        if (preferences.getBoolean("primary_fetch", true)) {
+            DisciplinesDetailsWorker.createWorker()
+            preferences.edit().putBoolean("primary_fetch", false).apply()
+        }
+
         try {
             val day = preferences.getInt("sync_daily_update", -1)
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
@@ -245,7 +252,6 @@ class SagresSyncRepository @Inject constructor(
                 Tasks.await(task)
                 preferences.edit().putInt("sync_daily_update", today).apply()
                 adventureRepository.performCheckAchievements(HashMap())
-                scheduleRepository.saveSchedule(user.uid)
             }
             createNewVersionNotification()
         } catch (t: Throwable) {
@@ -417,8 +423,11 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun materialsNotifications() {
-        database.classMaterialDao().getAllUnnotified().filter { it.group() != null }.forEach {
-            NotificationCreator.showMaterialPostedNotification(context, it)
+        database.classMaterialDao().run {
+            getAllUnnotified().filter { it.group() != null }.forEach {
+                NotificationCreator.showMaterialPostedNotification(context, it)
+            }
+            markAllNotified()
         }
     }
 
