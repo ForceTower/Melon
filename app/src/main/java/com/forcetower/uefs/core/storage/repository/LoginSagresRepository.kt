@@ -54,7 +54,6 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import org.jsoup.nodes.Document
 import timber.log.Timber
