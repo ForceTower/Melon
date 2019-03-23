@@ -36,7 +36,6 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
@@ -49,7 +48,6 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel

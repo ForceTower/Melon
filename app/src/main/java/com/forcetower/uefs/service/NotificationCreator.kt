@@ -46,7 +46,6 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
-import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
