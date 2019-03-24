@@ -82,7 +82,6 @@
             tools:text="https://www.uefs.br/files/secrets/dope_pics/obscure/dolphins.jpg"
             android:ellipsize="end"
             android:singleLine="true"
-            android:autoLink="web"
             android:textColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
