@@ -31,12 +31,11 @@ import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
+import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -45,35 +44,26 @@ import javax.inject.Singleton
 @Singleton
 class SettingsRepository @Inject constructor(
     @Named(Profile.COLLECTION)
-    private val profileReference: CollectionReference,
-    private val firebaseAuth: FirebaseAuth,
     private val preferences: SharedPreferences,
     private val executors: AppExecutors,
     private val database: UDatabase,
     private val gradesRepository: SagresGradesRepository,
-    private val adventureRepository: AdventureRepository
+    private val adventureRepository: AdventureRepository,
+    private val darkThemeRepository: DarkThemeRepository
 ) {
 
     @MainThread
     fun hasDarkModeEnabled(): LiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
+        val result = MediatorLiveData<Boolean>()
         val default = preferences.getBoolean("ach_night_mode_enabled", false)
-        val uid = firebaseAuth.currentUser?.uid
         result.value = default
-//        if (uid != null) {
-//            profileReference.document(uid).addSnapshotListener { snapshot, exception ->
-//                if (snapshot != null) {
-//                    val enabled = snapshot["darkThemeEnabled"] as? Boolean ?: false
-//                    preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
-//                    result.postValue(enabled)
-//                } else {
-//                    Crashlytics.logException(exception)
-//                    result.postValue(default)
-//                }
-//            }
-//        } else {
-//            result.value = default
-//        }
+
+        val source = darkThemeRepository.getFirebaseProfile()
+        result.addSource(source) {
+            val enabled = it?.darkThemeEnabled ?: false
+            preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
+            result.postValue(enabled)
+        }
 
         return result
     }
