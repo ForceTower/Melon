@@ -33,17 +33,14 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class SettingsRepository @Inject constructor(
-    @Named(Profile.COLLECTION)
     private val preferences: SharedPreferences,
     private val executors: AppExecutors,
     private val database: UDatabase,
