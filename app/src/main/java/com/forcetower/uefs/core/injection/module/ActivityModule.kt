@@ -76,7 +76,7 @@ abstract class ActivityModule {
     abstract fun bindDemandActivity(): DemandActivity
     @ContributesAndroidInjector(modules = [HourglassModule::class])
     abstract fun bindHourglassActivity(): HourglassActivity
-    @ContributesAndroidInjector
+    @ContributesAndroidInjector(modules = [Game2048Module::class])
     abstract fun bindGame2048Activity(): Game2048Activity
     @ContributesAndroidInjector(modules = [SIECOMPOnboardingModule::class])
     abstract fun bindSIECOMPOnboardingActivity(): OnboardingActivity
