@@ -27,9 +27,7 @@
 
 package com.forcetower.uefs.feature.home
 
-import android.content.Intent
 import android.content.SharedPreferences
-import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,13 +39,12 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
+import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
@@ -171,12 +168,17 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
-                    val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-                    val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
-                        putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
-                        putExtra(Intent.EXTRA_TEXT, text)
-                    }
-                    startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
+//                    if (firebaseAuth.currentUser != null) {
+                    val fragment = SendFeedbackFragment()
+                    fragment.show(childFragmentManager, "feedback_modal")
+//                    } else {
+//                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
+//                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
+//                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
+//                            putExtra(Intent.EXTRA_TEXT, text)
+//                        }
+//                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
+//                    }
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
