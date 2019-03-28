@@ -39,6 +39,8 @@ import com.forcetower.sagres.operation.Operation;
 import com.forcetower.sagres.operation.Status;
 import com.forcetower.sagres.parsers.SagresBasicParser;
 import com.forcetower.sagres.request.SagresCalls;
+import com.forcetower.sagres.utils.ConnectedStates;
+
 import okhttp3.Call;
 import okhttp3.Response;
 import okhttp3.ResponseBody;
@@ -92,16 +94,41 @@ public class LoginOperation extends Operation<LoginCallback> {
 
     private void resolveLogin(@NonNull String string, @NonNull Response response) {
         Document document = createDocument(string);
-        if (SagresBasicParser.isConnected(document)) {
-            if (SagresBasicParser.needApproval(document)) {
-                result.postValue(new LoginCallback.Builder(Status.LOADING).message("Need approval").build());
-                approval(document, response);
-            } else {
-                successMeasures(document);
-            }
+        ConnectedStates loginState = SagresBasicParser.isConnected(document);
+
+        switch (loginState) {
+            case CONNECTED:
+                continueWithResolve(document, response);
+            case INVALID:
+                continueWithInvalidation(document);
+            case SESSION_TIMEOUT:
+                continueWithStopFlags(document);
+            case UNKNOWN:
+                continueWithUnknownFlags(document);
+        }
+    }
+
+    private void continueWithUnknownFlags(Document document) {
+        LoginCallback callback = new LoginCallback.Builder(Status.INVALID_LOGIN).code(500).document(document).build();
+        publishProgress(callback);
+    }
+
+    private void continueWithStopFlags(Document document) {
+        LoginCallback callback = new LoginCallback.Builder(Status.INVALID_LOGIN).code(440).document(document).build();
+        publishProgress(callback);
+    }
+
+    private void continueWithInvalidation(Document document) {
+        LoginCallback callback = new LoginCallback.Builder(Status.INVALID_LOGIN).code(401).document(document).build();
+        publishProgress(callback);
+    }
+
+    private void continueWithResolve(Document document, Response response) {
+        if (SagresBasicParser.needApproval(document)) {
+            result.postValue(new LoginCallback.Builder(Status.LOADING).message("Need approval").build());
+            approval(document, response);
         } else {
-            LoginCallback callback = new LoginCallback.Builder(Status.INVALID_LOGIN).build();
-            publishProgress(callback);
+            successMeasures(document);
         }
     }
 
