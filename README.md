@@ -6,7 +6,7 @@ O UNES é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do 
 
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
-Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana(UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
+Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
 
 Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou sugestão basta colocar nas issues e tento resolver :v
 
