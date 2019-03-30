@@ -111,7 +111,7 @@ constructor(
 
     private fun continueWithResolve(document: Document, response: Response) {
         if (SagresBasicParser.needApproval(document)) {
-            result.postValue(LoginCallback.Builder(Status.LOADING).message("Need approval").build())
+            result.postValue(LoginCallback.Builder(Status.LOADING).message("Need approval").code(200).build())
             approval(document, response)
         } else {
             successMeasures(document)
