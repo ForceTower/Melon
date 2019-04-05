@@ -276,7 +276,9 @@ class SagresSyncRepository @Inject constructor(
                 return login.document
             }
             Status.INVALID_LOGIN -> {
-                onInvalidLogin()
+                if (login.code == 401) {
+                    onInvalidLogin()
+                }
             }
             else -> produceErrorMessage(login)
         }
