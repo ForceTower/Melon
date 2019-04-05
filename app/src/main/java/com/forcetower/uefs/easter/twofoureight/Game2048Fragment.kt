@@ -29,6 +29,7 @@ package com.forcetower.uefs.easter.twofoureight
 
 import android.annotation.SuppressLint
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.view.KeyEvent
@@ -42,28 +43,35 @@ import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.databinding.GameFragment2048Binding
+import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.forcetower.uefs.easter.twofoureight.tools.InputListener
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
 import com.forcetower.uefs.easter.twofoureight.view.Game
 import com.forcetower.uefs.easter.twofoureight.view.Tile
+import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
 import timber.log.Timber
+import javax.inject.Inject
 
 /**
  * Created by João Paulo on 02/06/2018.
  */
-class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.OnTouchListener {
+class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, Injectable {
+    @Inject
+    lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var darkRepository: DarkThemeRepository
+
     private var downX: Float = 0.toFloat()
     private var downY: Float = 0.toFloat()
     private var upX: Float = 0.toFloat()
     private var upY: Float = 0.toFloat()
 
     private lateinit var mGame: Game
-
     private lateinit var binding: GameFragment2048Binding
     private var activity: UGameActivity? = null
 
@@ -89,6 +97,10 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
                     binding.ibUndo.visibility = INVISIBLE
                 } else {
                     binding.ibUndo.visibility = VISIBLE
+                }
+
+                if (score >= 50000) {
+                    unlockDarkTheme()
                 }
             }
         })
@@ -126,6 +138,14 @@ class Game2048Fragment : Fragment(), KeyListener, Game.GameStateListener, View.O
         binding.ibReset.setOnLongClickListener {
             Toast.makeText(activity, getString(R.string.start_new_game), Toast.LENGTH_SHORT).show()
             true
+        }
+    }
+
+    private fun unlockDarkTheme() {
+        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        if (!enabled) {
+            preferences.edit().putBoolean("ach_night_mode_enabled", true).apply()
+            darkRepository.getPreconditions()
         }
     }
 

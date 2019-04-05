@@ -84,12 +84,11 @@ class FeedbackRepository @Inject constructor(
 
             try {
                 Tasks.await(collection.add(feedback))
-                result.postValue(true)
             } catch (throwable: Throwable) {
                 Crashlytics.logException(throwable)
-                result.postValue(false)
             }
         }
+        result.postValue(true)
         return result
     }
 }
