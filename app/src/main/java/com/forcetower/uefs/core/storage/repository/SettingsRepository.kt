@@ -55,12 +55,12 @@ class SettingsRepository @Inject constructor(
         val default = preferences.getBoolean("ach_night_mode_enabled", false)
         result.value = default
 
-        val source = darkThemeRepository.getFirebaseProfile()
-        result.addSource(source) {
-            val enabled = it?.darkThemeEnabled ?: false
-            preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
-            result.postValue(enabled)
-        }
+//        val source = darkThemeRepository.getFirebaseProfile()
+//        result.addSource(source) {
+//            val enabled = it?.darkThemeEnabled ?: false
+//            preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
+//            result.postValue(enabled)
+//        }
 
         return result
     }
