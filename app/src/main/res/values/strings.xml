@@ -379,7 +379,7 @@
     <string name="discipline_load_all_completed">Disciplinas baixadas</string>
     <string name="discipline_load_all_completed_info">Concluído! Podemos ir para o próximo passo!</string>
     <string name="are_you_sure">Você tem certeza?</string>
-    <string name="label_hourglass_not_contribute_information">Se você optar por esta ação, você tambem não poderá acessar as estatísticas.</string>
+    <string name="label_hourglass_not_contribute_information">Se você optar por esta ação, você também não poderá acessar as estatísticas.</string>
     <string name="changed_my_mind">Mudei de ideia</string>
     <string name="all_right">Tudo bem</string>
     <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
@@ -402,7 +402,7 @@
     <string name="service_requests_incomplete">Pendentes</string>
     <string name="not_ready_feature">Esta função está em construção!\nObserve o projeto no GitHub para ver o progresso!</string>
     <string name="project_github">www.github.com/ForceTower/Melon</string>
-    <string name="obsolete_message">Esta versão do UNES está muito desatualizada e não é mais suportada. Por favor atualize o aplicativo para continuar usando a interface.\n\nVocê ainda receberá notificações :)</string>
+    <string name="obsolete_message">Esta versão do UNES está muito desatualizada e não é mais suportada. Por favor atualize o aplicativo para continuar usando a interface.</string>
     <string name="new_version_ntf_title_format">A versão %1$s do UNES está disponível</string>
     <string name="switch_dark_theme">Tema escuro</string>
     <string name="enter_using_username_instead">Entre utilizando o seu nome de usuário no lugar do seu email</string>
@@ -419,8 +419,8 @@
     <string name="dark_theme_instructions">Instruções</string>
     <string name="dark_theme_instructions_desc">Realize alguma das ações abaixo para desbloquear o tema</string>
     <string name="dark_theme_invites">Tudo é melhor com amigos</string>
-    <string name="dark_theme_invites_desc">Realizar mais de uma ação te dará convites, clique no botão abaixo para desbloquear o tema escuro para alguem</string>
-    <string name="dark_theme_invites_action">Convide alguem para o lado escuro</string>
+    <string name="dark_theme_invites_desc">Realizar mais de uma ação te dará convites, clique no botão abaixo para desbloquear o tema escuro para alguém</string>
+    <string name="dark_theme_invites_action">Convide alguém para o lado escuro</string>
     <string name="dark_theme_good_luck">Boa sorte!</string>
     <string name="label_dark_theme_event">Tema Escuro</string>
     <string name="precondition_1">Desafiante do 2048</string>
@@ -549,6 +549,7 @@
     <string name="settings_schedule_empty_spaces">Dias vazios</string>
     <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
     <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
+    <string name="update_the_app">Atualizar o aplicativo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
