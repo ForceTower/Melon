@@ -21,7 +21,7 @@ versions.room = "2.0.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
 versions.navigation = "1.0.0"
-versions.work_manager = "1.0.0"
+versions.work_manager = "2.0.1"
 
 // Dependency Injection
 versions.dagger = "2.21"
@@ -116,8 +116,8 @@ room.compiler = "androidx.room:room-compiler:$versions.room"
 deps.room = room
 
 def work_manager = [:]
-work_manager.runtime = "android.arch.work:work-runtime:$versions.work_manager"
-work_manager.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work_manager"
+work_manager.runtime = "androidx.work:work-runtime:$versions.work_manager"
+work_manager.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work_manager"
 deps.work_manager = work_manager
 
 
