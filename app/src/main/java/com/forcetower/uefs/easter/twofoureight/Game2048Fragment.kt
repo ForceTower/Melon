@@ -44,7 +44,6 @@ import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.adapters.RewardedVideoAdListenerAdapter
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.databinding.GameFragment2048Binding
@@ -60,14 +59,21 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
+import com.google.android.gms.ads.reward.RewardedVideoAd
+import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import timber.log.Timber
 import javax.inject.Inject
-import com.google.android.gms.ads.reward.RewardedVideoAd
 
 /**
  * Created by João Paulo on 02/06/2018.
  */
-class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, Injectable, RewardedVideoAdListenerAdapter {
+class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, Injectable, RewardedVideoAdListener {
+    override fun onRewardedVideoAdLeftApplication() = Unit
+    override fun onRewardedVideoAdLoaded() = Unit
+    override fun onRewardedVideoAdOpened() = Unit
+    override fun onRewardedVideoCompleted() = Unit
+    override fun onRewardedVideoStarted() = Unit
+
     @Inject
     lateinit var preferences: SharedPreferences
     @Inject
@@ -132,7 +138,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         }
 
         binding.ibUndo.setOnClickListener {
-            if (mGame.score > 100000 && backs == 0) {
+            if (mGame.score > 100000 && backs <= 0) {
                 promptBuyBacks()
             } else {
                 mGame.revertUndoState()
