@@ -149,6 +149,7 @@ dependencies {
     implementation deps.play.auth
     implementation deps.play.location
     implementation deps.play.billing
+    implementation deps.play.admob
 
     implementation deps.network.okhttp
     implementation deps.network.retrofit

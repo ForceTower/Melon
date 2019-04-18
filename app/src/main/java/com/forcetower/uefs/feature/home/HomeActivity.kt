@@ -32,8 +32,11 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -53,9 +56,15 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -82,6 +91,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var analytics: FirebaseAnalytics
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
@@ -94,10 +105,30 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         setupBottomNav()
         setupUserData()
 
+        val willShowAds = preferences.getBoolean("admob_warning_showed", false)
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        setupAds(willShowAds && admobEnabled)
+        if (!willShowAds && admobEnabled) {
+            preferences.edit().putBoolean("admob_warning_showed", true).apply()
+            displayAdvertisementsInfo()
+        }
+
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
+    }
+
+    private fun displayAdvertisementsInfo() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_admob_integrated, null)
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
+    private fun setupAds(willShowAds: Boolean = true) {
+        MobileAds.initialize(this)
+        onShouldDisplayAd(willShowAds)
     }
 
     private fun subscribeToTopics() {
@@ -141,8 +172,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun moveToTask() {
-        val directions = intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)
-        val direction = when (directions) {
+        val direction = when (intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)) {
             EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
             EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
             EXTRA_BIGTRAY_DIRECTION -> {
@@ -225,6 +255,23 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                 }
                 snack.config()
                 snack.show()
+            }
+        }
+    }
+
+    private fun onShouldDisplayAd(willShowAd: Boolean = true) {
+        val interstitial = InterstitialAd(this)
+        val request = AdRequest.Builder()
+                .addTestDevice("38D27336B4D54E6E431E86E4ABEE0B20")
+                .build()
+        interstitial.adUnitId = getString(R.string.admob_interstitial_daily)
+        interstitial.loadAd(request)
+        interstitial.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && willShowAd)
+                        interstitial.show()
+                }, 2000)
             }
         }
     }
