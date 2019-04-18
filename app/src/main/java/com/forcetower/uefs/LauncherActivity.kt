@@ -66,7 +66,6 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         val viewModel: LaunchViewModel = provideViewModel(factory)
         if (savedInstanceState != null) return
-
         createNewVersionNotification()
 
         val disabledCode = remoteConfig.getLong("version_disable")
