@@ -32,8 +32,11 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -53,6 +56,10 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
@@ -93,11 +100,17 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
+        setupAds()
 
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
+    }
+
+    private fun setupAds() {
+        MobileAds.initialize(this)
+        onShouldDisplayAd()
     }
 
     private fun subscribeToTopics() {
@@ -141,8 +154,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun moveToTask() {
-        val directions = intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)
-        val direction = when (directions) {
+        val direction = when (intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)) {
             EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
             EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
             EXTRA_BIGTRAY_DIRECTION -> {
@@ -225,6 +237,21 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                 }
                 snack.config()
                 snack.show()
+            }
+        }
+    }
+
+    private fun onShouldDisplayAd() {
+        val interstitial = InterstitialAd(this)
+        val request = AdRequest.Builder().build()
+        interstitial.adUnitId = getString(R.string.admob_interstitial_daily)
+        interstitial.loadAd(request)
+        interstitial.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                        interstitial.show()
+                }, 2000)
             }
         }
     }

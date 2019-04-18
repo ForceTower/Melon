@@ -31,4 +31,7 @@
     <string name="firebase_account_secret" translatable="false">3(=ffKQs3pk)Q3xz</string>
     <string name="firebase_password_pattern" translatable="false">**_%1$s_xx_vv__%2$s__qw_po__%3$s__ff_ss_##</string>
     <string name="email_unes_format" translatable="false">%1$s_unes_free@unesmail.com</string>
+
+    <string name="admob_app_id" translatable="false">ca-app-pub-4999342983670806~7414556361</string>
+    <string name="admob_interstitial_daily" translatable="false">ca-app-pub-4999342983670806/3712876237</string>
 </resources>
