@@ -102,11 +102,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         setupBottomNav()
         setupUserData()
 
-        MobileAds.initialize(this)
-
-        if (preferences.getBoolean("admob_warning_showed", false)) {
-            setupAds()
-        } else {
+        val willShowAds = preferences.getBoolean("admob_warning_showed", false)
+        setupAds(willShowAds)
+        if (!willShowAds) {
             preferences.edit().putBoolean("admob_warning_showed", true).apply()
             displayAdvertisementsInfo()
         }
@@ -124,8 +122,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         dialog.show()
     }
 
-    private fun setupAds() {
-        onShouldDisplayAd()
+    private fun setupAds(willShowAds: Boolean = true) {
+        MobileAds.initialize(this)
+        onShouldDisplayAd(willShowAds)
     }
 
     private fun subscribeToTopics() {
@@ -256,7 +255,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         }
     }
 
-    private fun onShouldDisplayAd() {
+    private fun onShouldDisplayAd(willShowAd: Boolean = true) {
         val interstitial = InterstitialAd(this)
         val request = AdRequest.Builder()
                 .addTestDevice("38D27336B4D54E6E431E86E4ABEE0B20")
@@ -266,7 +265,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         interstitial.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 Handler(Looper.getMainLooper()).postDelayed({
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && willShowAd)
                         interstitial.show()
                 }, 2000)
             }
