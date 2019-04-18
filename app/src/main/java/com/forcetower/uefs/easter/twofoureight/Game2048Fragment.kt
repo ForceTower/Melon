@@ -61,6 +61,7 @@ import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -78,6 +79,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var darkRepository: DarkThemeRepository
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private var downX: Float = 0.toFloat()
     private var downY: Float = 0.toFloat()
@@ -125,6 +128,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         input.setView(binding.gameview)
         input.setGame(mGame)
 
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+
         binding.tvTitle.setOnClickListener {
             if (!mGame.isEndlessMode) {
                 mGame.setEndlessMode()
@@ -138,7 +143,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         }
 
         binding.ibUndo.setOnClickListener {
-            if (mGame.score > 100000 && backs <= 0) {
+            if (mGame.score > 100000 && backs <= 0 && admobEnabled) {
                 promptBuyBacks()
             } else {
                 mGame.revertUndoState()
@@ -241,6 +246,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
 
     override fun onGameStateChanged(state: Game.State?) {
         Timber.d("Game state changed to: %s", state!!)
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
         if (state == Game.State.WON || state == Game.State.ENLESS_WON) {
             binding.tvEndgameOverlay.visibility = VISIBLE
             binding.tvEndgameOverlay.setText(R.string.you_win)
@@ -252,7 +258,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             binding.tvEndgameOverlay.setText(R.string.game_over)
             activity?.unlockAchievement(R.string.achievement_eu_tentei)
             activity?.incrementAchievementProgress(R.string.achievement_a_prtica_leva__perfeio, 1)
-            if (interstitial.isLoaded) {
+            if (interstitial.isLoaded && admobEnabled) {
                 interstitial.show()
             }
         } else {
