@@ -60,6 +60,7 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
@@ -100,7 +101,15 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
-        setupAds()
+
+        MobileAds.initialize(this)
+
+        if (preferences.getBoolean("admob_warning_showed", false)) {
+            setupAds()
+        } else {
+            preferences.edit().putBoolean("admob_warning_showed", true).apply()
+            displayAdvertisementsInfo()
+        }
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -108,8 +117,14 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         }
     }
 
+    private fun displayAdvertisementsInfo() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_admob_integrated, null)
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
     private fun setupAds() {
-        MobileAds.initialize(this)
         onShouldDisplayAd()
     }
 
