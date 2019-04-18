@@ -36,6 +36,8 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.feature.shared.UGameActivity
+import com.forcetower.uefs.feature.shared.extensions.config
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
@@ -73,6 +75,12 @@ class Game2048Activity : UGameActivity(), HasSupportFragmentInjector {
         revealAchievement(R.string.achievement_o_campeo_de_2048_no_unes)
         revealAchievement(R.string.achievement_eu_tentei)
         revealAchievement(R.string.achievement_a_prtica_leva__perfeio)
+    }
+
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = Snackbar.make(findViewById(R.id.container), string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+        snack.config()
+        snack.show()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
