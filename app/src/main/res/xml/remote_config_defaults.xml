@@ -67,4 +67,8 @@
         <key>dark_theme_chance</key>
         <value>15</value>
     </entry>
+    <entry>
+        <key>admob_enabled</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

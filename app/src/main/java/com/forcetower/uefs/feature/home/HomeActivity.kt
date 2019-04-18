@@ -64,6 +64,7 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -90,6 +91,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var analytics: FirebaseAnalytics
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
@@ -103,8 +106,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         setupUserData()
 
         val willShowAds = preferences.getBoolean("admob_warning_showed", false)
-        setupAds(willShowAds)
-        if (!willShowAds) {
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        setupAds(willShowAds && admobEnabled)
+        if (!willShowAds && admobEnabled) {
             preferences.edit().putBoolean("admob_warning_showed", true).apply()
             displayAdvertisementsInfo()
         }
