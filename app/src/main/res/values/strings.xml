@@ -550,6 +550,8 @@
     <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
     <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
     <string name="update_the_app">Atualizar o aplicativo</string>
+    <string name="rewarded_with_back_2048">Você pode voltar jogadas!</string>
+    <string name="rewarded_failed">Recompensa falhou...</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

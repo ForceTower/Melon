@@ -38,4 +38,6 @@ object Constants {
 
     val HARD_DISCIPLINES = mapOf("TEC501" to "__ANY__")
     val EXECUTOR_WHITELIST = listOf("manual", "universal")
+
+    const val ADMOB_TEST_ID = "38D27336B4D54E6E431E86E4ABEE0B20"
 }

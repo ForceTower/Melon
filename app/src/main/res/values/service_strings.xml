@@ -34,4 +34,6 @@
 
     <string name="admob_app_id" translatable="false">ca-app-pub-4999342983670806~7414556361</string>
     <string name="admob_interstitial_daily" translatable="false">ca-app-pub-4999342983670806/3712876237</string>
+    <string name="admob_interstitial_2048_lost_game" translatable="false">ca-app-pub-4999342983670806/6933047897</string>
+    <string name="admob_rewarded_2048_back_10_times" translatable="false">ca-app-pub-4999342983670806/1022245660</string>
 </resources>
