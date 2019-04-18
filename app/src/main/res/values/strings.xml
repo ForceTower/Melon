@@ -553,7 +553,7 @@
     <string name="rewarded_with_back_2048">Você pode voltar jogadas!</string>
     <string name="rewarded_failed">A recompensa foi cancelada</string>
     <string name="changes_on_this_update">Mudanças nesta atualização</string>
-    <string name="changes_on_this_update_desc">O UNES já cresceu a um ponto que ferramentas grátis não conseguem mais suporta-lo. (As doações arrecadaram R$21,54)\n\nA partir de agora, teremos no máximo 2 anúncios por dia, elas aparecerão assim que o app abrir.\nEspero que isso seja o suficiente para conseguir colocar o UNES nos trilhos de novo :)</string>
+    <string name="changes_on_this_update_desc">O UNES já cresceu a um ponto que ferramentas grátis não conseguem mais suporta-lo. (As doações não funcionaram, apesar de eu gostar da Wikipédia, eu nunca doei)\n\nA partir de agora, teremos no máximo 2 anúncios por dia, elas aparecerão assim que o app abrir.\nEspero que isso seja o suficiente para conseguir colocar o UNES nos trilhos de novo :)</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
