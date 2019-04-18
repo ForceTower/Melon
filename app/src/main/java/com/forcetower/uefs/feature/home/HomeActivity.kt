@@ -243,7 +243,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun onShouldDisplayAd() {
         val interstitial = InterstitialAd(this)
-        val request = AdRequest.Builder().build()
+        val request = AdRequest.Builder()
+                .addTestDevice("38D27336B4D54E6E431E86E4ABEE0B20")
+                .build()
         interstitial.adUnitId = getString(R.string.admob_interstitial_daily)
         interstitial.loadAd(request)
         interstitial.adListener = object : AdListener() {
