@@ -803,9 +803,9 @@ class InkPageIndicator @JvmOverloads constructor(
     companion object {
 
         // defaults
-        private const val DEFAULT_DOT_SIZE = 8                      // dp
-        private const val DEFAULT_GAP = 12                          // dp
-        private const val DEFAULT_ANIM_DURATION = 400               // ms
+        private const val DEFAULT_DOT_SIZE = 8 // dp
+        private const val DEFAULT_GAP = 12 // dp
+        private const val DEFAULT_ANIM_DURATION = 400 // ms
         private const val DEFAULT_UNSELECTED_COLOUR = -0x7f000001 // 50% white
         private const val DEFAULT_SELECTED_COLOUR = -0x1 // 100% white
 
