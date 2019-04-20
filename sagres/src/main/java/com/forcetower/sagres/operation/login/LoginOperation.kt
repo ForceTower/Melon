@@ -84,9 +84,8 @@ constructor(
 
     private fun resolveLogin(string: String, response: Response) {
         val document = createDocument(string)
-        val loginState = SagresBasicParser.isConnected(document)
 
-        when (loginState) {
+        when (SagresBasicParser.isConnected(document)) {
             ConnectedStates.CONNECTED -> continueWithResolve(document, response)
             ConnectedStates.INVALID -> continueWithInvalidation(document)
             ConnectedStates.SESSION_TIMEOUT -> continueWithStopFlags(document)
