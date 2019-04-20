@@ -266,8 +266,8 @@ class ScheduleBlockClassAdapter(
         val element = list[position]
         when (getItemViewType(position)) {
             HEADER -> (holder as BHeaderHolder).bind(element)
-            TIME -> (holder as BTimeHolder) .bind(element)
-            CLASS -> (holder as BClassHolder) .bind(element, colors).also {
+            TIME -> (holder as BTimeHolder).bind(element)
+            CLASS -> (holder as BClassHolder).bind(element, colors).also {
                 holder.binding.lifecycleOwner = lifecycleOwner
                 holder.binding.scheduleActions = viewModel
                 holder.binding.group = element.location!!.singleGroup()
