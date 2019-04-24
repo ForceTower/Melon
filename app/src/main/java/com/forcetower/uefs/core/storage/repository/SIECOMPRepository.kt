@@ -30,7 +30,7 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.Context
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.siecomp.AccessToken
+import com.forcetower.uefs.core.model.cloud.AccessToken
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase

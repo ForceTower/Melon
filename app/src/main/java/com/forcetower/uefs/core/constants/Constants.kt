@@ -40,4 +40,7 @@ object Constants {
     val EXECUTOR_WHITELIST = listOf("manual", "universal")
 
     const val ADMOB_TEST_ID = "38D27336B4D54E6E431E86E4ABEE0B20"
+
+    const val SERVICE_CLIENT_ID = "1"
+    const val SERVICE_CLIENT_SECRET = "9qlodlQSCgIaSeQSf2Npl6GT8oeftfSG9bqMoDeZ"
 }
