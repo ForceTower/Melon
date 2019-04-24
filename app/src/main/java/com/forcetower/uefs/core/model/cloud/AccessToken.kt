@@ -25,7 +25,7 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.siecomp
+package com.forcetower.uefs.core.model.cloud
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey

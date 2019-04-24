@@ -32,7 +32,7 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
-import com.forcetower.uefs.core.model.siecomp.AccessToken
+import com.forcetower.uefs.core.model.cloud.AccessToken
 
 @Dao
 interface AccessTokenDao {
