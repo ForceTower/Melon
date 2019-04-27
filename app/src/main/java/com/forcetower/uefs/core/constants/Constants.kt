@@ -43,4 +43,5 @@ object Constants {
 
     const val SERVICE_CLIENT_ID = "1"
     const val SERVICE_CLIENT_SECRET = "9qlodlQSCgIaSeQSf2Npl6GT8oeftfSG9bqMoDeZ"
+    const val SERVICE_CLIENT_INSTITUTION = "uefs"
 }
