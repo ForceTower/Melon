@@ -25,20 +25,10 @@
  * SOFTWARE.
  */
 
-package com.forcetower.uefs.core.model.cloud
+package com.forcetower.uefs.core.model.api
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import com.google.gson.annotations.SerializedName
-
-@Entity
-data class AccessToken(
-    @PrimaryKey(autoGenerate = true)
-    val uid: Int = 0,
-    @SerializedName("token_type")
-    val type: String,
-    @SerializedName("access_token")
-    val token: String,
-    @SerializedName("refresh_token")
-    val refreshToken: String?
+data class UResponse<T> (
+    val success: Boolean = false,
+    val message: String? = null,
+    val data: T? = null
 )
