@@ -147,7 +147,8 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.logout -> {
-                    viewModel.logout()
+                    val fragment = LogoutConfirmationFragment()
+                    fragment.show(childFragmentManager, "logout_modal")
                     true
                 }
                 R.id.open_source -> {
@@ -168,17 +169,8 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
-//                    if (firebaseAuth.currentUser != null) {
                     val fragment = SendFeedbackFragment()
                     fragment.show(childFragmentManager, "feedback_modal")
-//                    } else {
-//                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-//                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
-//                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
-//                            putExtra(Intent.EXTRA_TEXT, text)
-//                        }
-//                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
-//                    }
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
