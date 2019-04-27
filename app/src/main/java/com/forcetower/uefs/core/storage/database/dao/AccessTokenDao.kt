@@ -32,19 +32,26 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.AccessToken
 
 @Dao
-interface AccessTokenDao {
+abstract class AccessTokenDao {
+    @Transaction
+    open fun insert(access: AccessToken) {
+        deleteAll()
+        internalInsert(access)
+    }
+
     @Insert(onConflict = REPLACE)
-    fun insert(access: AccessToken)
+    protected abstract fun internalInsert(access: AccessToken)
 
     @Query("SELECT * FROM AccessToken LIMIT 1")
-    fun getAccess(): LiveData<AccessToken?>
+    abstract fun getAccessToken(): LiveData<AccessToken?>
 
     @Query("SELECT * FROM AccessToken LIMIT 1")
-    fun getAccessDirect(): AccessToken?
+    abstract fun getAccessTokenDirect(): AccessToken?
 
     @Query("DELETE FROM AccessToken")
-    fun deleteAll()
+    abstract fun deleteAll()
 }
