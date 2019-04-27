@@ -85,7 +85,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideInterceptor(database: UDatabase): Interceptor = Interceptor { chain ->
+    fun provideInterceptor(database: UDatabase) = Interceptor { chain ->
         val request = chain.request()
         Timber.d("Going to: ${request.url().url()}")
         val host = request.url().host()
