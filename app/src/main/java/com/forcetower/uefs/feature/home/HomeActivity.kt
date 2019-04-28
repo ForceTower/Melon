@@ -29,6 +29,8 @@ package com.forcetower.uefs.feature.home
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
@@ -238,9 +240,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             Timber.d("Access Invalidated")
             firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
             mGamesInstance.changePlayerName(access.username)
@@ -305,13 +307,4 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
-
-    override fun onResume() {
-        super.onResume()
-        val recreate = preferences.getBoolean("will_recreate_home", false)
-        if (recreate) {
-            preferences.edit().putBoolean("will_recreate_home", false).apply()
-            recreate()
-        }
-    }
 }
