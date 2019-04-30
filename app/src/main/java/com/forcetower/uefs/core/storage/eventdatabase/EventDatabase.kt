@@ -30,13 +30,13 @@ package com.forcetower.uefs.core.storage.eventdatabase
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.forcetower.uefs.core.model.siecomp.AccessToken
 import com.forcetower.uefs.core.model.siecomp.Session
 import com.forcetower.uefs.core.model.siecomp.SessionSpeaker
 import com.forcetower.uefs.core.model.siecomp.SessionStar
 import com.forcetower.uefs.core.model.siecomp.SessionTag
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.siecomp.Tag
+import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.eventdatabase.dao.AccessTokenDao
 import com.forcetower.uefs.core.storage.eventdatabase.dao.Converters
 import com.forcetower.uefs.core.storage.eventdatabase.dao.EventDao

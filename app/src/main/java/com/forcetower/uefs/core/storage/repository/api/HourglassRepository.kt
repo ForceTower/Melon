@@ -32,7 +32,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.api.UDiscipline
 import com.forcetower.uefs.core.model.api.UDisciplineWithData
 import com.forcetower.uefs.core.model.api.helpers.UHourOverview
-import com.forcetower.uefs.core.model.api.helpers.UResponse
+import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
