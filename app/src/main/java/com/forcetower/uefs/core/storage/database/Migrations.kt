@@ -134,3 +134,11 @@ object M16TOM17 : Migration(16, 17) {
         database.execSQL("ALTER TABLE ClassMaterial ADD COLUMN notified INTEGER NOT NULL DEFAULT 1")
     }
 }
+
+object M17TOM18 : Migration(17, 18) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Course ADD COLUMN description TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE Course ADD COLUMN image TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE Course ADD COLUMN since TEXT DEFAULT NULL")
+    }
+}
