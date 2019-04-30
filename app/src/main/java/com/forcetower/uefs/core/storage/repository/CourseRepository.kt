@@ -31,6 +31,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -44,7 +45,7 @@ class CourseRepository @Inject constructor(
     fun getCourses() = object : NetworkBoundResource<List<Course>, List<Course>>(executors) {
         override fun loadFromDb() = database.courseDao().selectAll()
         override fun shouldFetch(it: List<Course>?) = true
-        override fun createCall() = service.getCourses()
+        override fun createCall() = service.getCourses().asLiveData()
         override fun saveCallResult(value: List<Course>) = database.courseDao().insert(value)
     }.asLiveData()
 }
