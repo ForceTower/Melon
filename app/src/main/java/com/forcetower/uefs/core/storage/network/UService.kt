@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.UNESUpdate
+import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.unes.Access
@@ -81,6 +82,9 @@ interface UService {
 
     @GET("synchronization")
     fun getUpdate(): Call<UNESUpdate>
+
+    @POST("grades")
+    fun sendGrades(@Body grades: DisciplineDetailsData): Call<UResponse<Void>>
 
     // ---------------------------------------------------------------------------------------------
 
