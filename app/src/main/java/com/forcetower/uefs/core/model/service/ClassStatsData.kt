@@ -28,17 +28,32 @@
 package com.forcetower.uefs.core.model.service
 
 import androidx.room.ColumnInfo
+import com.google.gson.annotations.SerializedName
 
 data class ClassStatsData(
     var code: String,
     @ColumnInfo(name = "discipline")
+    @SerializedName("discipline_name")
     var disciplineName: String,
+    @SerializedName("credits")
+    @ColumnInfo(name = "credits")
+    var disciplineCredits: Int,
     var semester: Int,
     @ColumnInfo(name = "semester_name")
+    @SerializedName("semester_name")
     var semesterName: String,
     var teacher: String,
-    var grade: Double,
-    var partialScore: Double?
+    var grade: Double?,
+    @SerializedName("partial_score")
+    var partialScore: Double?,
+    var group: String,
+    var identifier: Int,
+    @ColumnInfo(name = "eval_grade")
+    var evaluationGrade: String?,
+    @ColumnInfo(name = "eval_name")
+    var evaluationName: String,
+    @ColumnInfo(name = "eval_date")
+    var evaluationDate: String?
 ) {
     companion object {
         const val STATS_CONTRIBUTION = "stats_contribution"

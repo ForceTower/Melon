@@ -27,9 +27,9 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
-import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SDiscipline
@@ -37,11 +37,12 @@ import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.APIService
-import com.forcetower.uefs.core.model.service.DisciplineDetailsData
+import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
+import com.forcetower.uefs.core.model.service.discipline.transformToNewStyle
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -54,7 +55,7 @@ class DisciplineDetailsRepository @Inject constructor(
     private val executors: AppExecutors,
     private val firebaseAuth: FirebaseAuth,
     private val gradesRepository: SagresGradesRepository,
-    private val service: APIService
+    private val service: UService
 ) {
 
     /**
@@ -103,17 +104,18 @@ class DisciplineDetailsRepository @Inject constructor(
 
     @WorkerThread
     fun sendDisciplineDetails() {
-        val stats = database.classGroupDao().getClassStatsDirect()
+        val stats = database.classGroupDao().getClassStatsWithAllDirect()
         val semesters = database.semesterDao().getSemestersDirect()
-        val access = database.accessDao().getAccessDirect() ?: return
         val profile = database.profileDao().selectMeDirect() ?: return
+
+        val treated = stats.transformToNewStyle()
 
         val amountSemesters = semesters.size
         val score = if (profile.score != -1.0) profile.score else profile.calcScore
 
-        val data = DisciplineDetailsData(amountSemesters, score, access.username, stats)
+        val data = DisciplineDetailsData(amountSemesters, score, profile.course, treated)
         try {
-            val response = service.sendHourglassInitial(data).execute()
+            val response = service.sendGrades(data).execute()
             if (response.isSuccessful) {
                 Timber.d("Success Response")
                 val result = response.body()!!
