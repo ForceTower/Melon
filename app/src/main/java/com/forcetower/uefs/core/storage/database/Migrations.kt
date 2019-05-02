@@ -142,3 +142,9 @@ object M17TOM18 : Migration(17, 18) {
         database.execSQL("ALTER TABLE Course ADD COLUMN since TEXT DEFAULT NULL")
     }
 }
+
+object M18TOM19 : Migration(18, 19) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DELETE FROM AccessToken")
+    }
+}
