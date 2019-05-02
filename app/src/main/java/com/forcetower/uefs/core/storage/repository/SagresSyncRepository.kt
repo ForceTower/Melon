@@ -69,6 +69,7 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
+import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
@@ -231,6 +232,12 @@ class SagresSyncRepository @Inject constructor(
         if (preferences.getBoolean("primary_fetch", true)) {
             DisciplinesDetailsWorker.createWorker()
             preferences.edit().putBoolean("primary_fetch", false).apply()
+        }
+
+        if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.0", false) &&
+                authRepository.getAccessTokenDirect() != null) {
+            HourglassContributeWorker.createWorker()
+            preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
         }
 
         try {

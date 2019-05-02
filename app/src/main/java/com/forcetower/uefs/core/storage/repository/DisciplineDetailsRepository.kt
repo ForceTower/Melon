@@ -127,13 +127,11 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun loadDisciplineDetailsSync() {
-        val result = SagresNavigator.instance.loadDisciplineDetails(null, null, null, true)
-        val groups = result.getGroups() ?: emptyList()
-        database.classGroupDao().defineGroups(groups)
+    fun loadDisciplineDetailsSync(partialLoad: Boolean = true, notify: Boolean = false) {
+        experimentalDisciplines(partialLoad, notify)
         val semesters = database.semesterDao().getSemestersDirect()
         semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
-        contribute()
+        sendDisciplineDetails()
     }
 
     @WorkerThread
