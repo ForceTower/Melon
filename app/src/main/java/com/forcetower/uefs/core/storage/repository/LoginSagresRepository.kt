@@ -57,6 +57,7 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
+import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import javax.inject.Inject
@@ -239,8 +240,8 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun defineExperimentalWorkers() {
-        DisciplinesDetailsWorker.createWorker()
-        preferences.edit().putBoolean("primary_fetch", false).apply()
+        HourglassContributeWorker.createWorker()
+        preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {
