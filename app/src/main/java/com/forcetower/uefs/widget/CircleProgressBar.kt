@@ -36,6 +36,7 @@ import android.graphics.RectF
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.DecelerateInterpolator
+import androidx.annotation.Keep
 import com.forcetower.uefs.R
 import kotlin.math.min
 
@@ -113,6 +114,7 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
         canvas.drawArc(rectF!!, startAngle.toFloat(), angle, false, foregroundPaint!!)
     }
 
+    @Keep
     fun setProgress(progress: Float) {
         this.progress = progress
         invalidate()

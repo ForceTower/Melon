@@ -126,6 +126,9 @@ abstract class ClassGroupDao {
     @Query("SELECT c.uid as identifier, gd.date as eval_date, gd.grade as eval_grade, gd.name as eval_name, d.code as code, d.credits as credits, s.sagres_id as semester, s.codename as semester_name, cg.teacher as teacher, cg.`group` as `group`, c.final_score as grade, c.partial_score as partialScore, d.name as discipline FROM ClassGroup cg, Class c, Discipline d, Semester s, Grade gd WHERE c.uid = gd.class_id AND cg.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND cg.teacher IS NOT NULL AND cg.`group` IS NOT NULL")
     abstract fun getClassStatsWithAllDirect(): List<ClassStatsData>
 
+    @Query("SELECT c.uid as identifier, gd.date as eval_date, gd.grade as eval_grade, gd.name as eval_name, d.code as code, d.credits as credits, s.sagres_id as semester, s.codename as semester_name, cg.teacher as teacher, cg.`group` as `group`, c.final_score as grade, c.partial_score as partialScore, d.name as discipline FROM ClassGroup cg, Class c, Discipline d, Semester s, Grade gd WHERE c.uid = gd.class_id AND cg.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.sagres_id = :semesterId AND cg.teacher IS NOT NULL AND cg.`group` IS NOT NULL")
+    abstract fun getClassStatsWithAllDirect(semesterId: Long): List<ClassStatsData>
+
     @Insert(onConflict = IGNORE)
     protected abstract fun insert(item: ClassItem): Long
 
