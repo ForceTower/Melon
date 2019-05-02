@@ -44,7 +44,6 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
-import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -53,7 +52,6 @@ import javax.inject.Singleton
 class DisciplineDetailsRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
-    private val firebaseAuth: FirebaseAuth,
     private val gradesRepository: SagresGradesRepository,
     private val service: UService
 ) {

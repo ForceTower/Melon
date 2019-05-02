@@ -114,6 +114,7 @@ object NetworkModule {
     fun provideGson(): Gson {
         return GsonBuilder()
                 .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
+                .serializeNulls()
                 .create()
     }
 
