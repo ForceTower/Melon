@@ -106,7 +106,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.isDarkModeEnabled.observe(this, Observer { toggleNightModeSwitcher(it) })
+        // viewModel.isDarkModeEnabled.observe(this, Observer { toggleNightModeSwitcher(it) })
     }
 
     private fun featureFlags() {
