@@ -45,6 +45,7 @@ import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.vm.EventObserver
@@ -106,6 +107,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
+        (application as UApplication).setupDayNightTheme()
 
         val willShowAds = preferences.getBoolean("admob_warning_showed", false)
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
