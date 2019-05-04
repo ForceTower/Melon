@@ -143,7 +143,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     }
 
     @SuppressLint("SwitchIntDef")
-    private fun setupDayNightTheme() {
+    fun setupDayNightTheme() {
         val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
         if (!enabled) {
             AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
