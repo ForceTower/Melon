@@ -154,6 +154,8 @@
             android:name=".architecture.service.discipline.DisciplineDetailsLoaderService"
             android:exported="false" />
 
+        <uses-library android:name="org.apache.http.legacy" android:required="false" />
+
     </application>
 
 </manifest>
