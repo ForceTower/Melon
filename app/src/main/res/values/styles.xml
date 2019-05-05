@@ -84,8 +84,9 @@
 
         <item name="iconColor">?attr/colorOnBackground</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
-        <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
     </style>
+
+    <style name="mdtp_ActionButton.Text" parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
 
     <style name="UNumberPicker">
         <item name="android:solidColor">?attr/colorOnSurface</item>
