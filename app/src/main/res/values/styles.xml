@@ -65,8 +65,6 @@
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
         <item name="colorOnBackground">@color/onBackground</item>
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
-        <item name="elevationOverlaysEnabled">false</item>
-        <item name="elevationOverlaysColor">#00000000</item>
 
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
@@ -107,7 +105,9 @@
         <item name="smallBlurRadius">8</item>
     </style>
 
-    <style name="UTheme.LightNav"/>
+    <style name="UTheme.LightNav">
+        <item name="elevationOverlaysEnabled">false</item>
+    </style>
 
     <style name="UTheme.Translucent" parent="UTheme.LightNav">
         <item name="android:windowBackground">@color/scrim</item>
