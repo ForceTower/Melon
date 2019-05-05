@@ -28,7 +28,7 @@
 
 <resources>
     <color name="background">#1A1A1A</color>
-    <color name="surface">#36343a</color>
+    <color name="surface">#1A1A1A</color>
     <color name="surfaceEspecial">#36343a</color>
     <color name="onSurface">#FFFFFF</color>
     <color name="onSurfaceLight">#b3ffffff</color>
