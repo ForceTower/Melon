@@ -150,14 +150,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     style="@style/Widget.MaterialComponents.TabLayout"
+                    android:elevation="4dp"
                     app:layout_constraintTop_toBottomOf="@+id/recycler_discipline_items"
                     app:tabSelectedTextColor="?attr/colorPrimary"
                     app:tabTextColor="?attr/colorOnSurfaceLight"
                     app:tabIndicator="@null"
                     app:tabMode="scrollable"
-                    app:tabBackground="@null"
                     app:tabTextAppearance="@style/TextAppearance.TabLayout.Disciplines"
-                    app:tabPaddingStart="16dp" />
+                    app:tabPaddingStart="16dp"/>
         
             </androidx.constraintlayout.widget.ConstraintLayout>
         </com.google.android.material.card.MaterialCardView>
