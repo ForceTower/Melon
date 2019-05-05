@@ -60,9 +60,9 @@ public class SagresForms {
                 .add("ctl00$PageContent$LoginPanel$LoginButton", "Entrar")
                 .add("__EVENTTARGET", "")
                 .add("__EVENTARGUMENT", "")
-                .add("__VIEWSTATE", Constants.LOGIN_VIEW_STATE)
-                .add("__VIEWSTATEGENERATOR", Constants.LOGIN_VW_STT_GEN)
-                .add("__EVENTVALIDATION", Constants.LOGIN_VIEW_VALID)
+                .add("__VIEWSTATE", Constants.getParameter("LOGIN_VIEW_STATE"))
+                .add("__VIEWSTATEGENERATOR", Constants.getParameter("LOGIN_VW_STT_GEN"))
+                .add("__EVENTVALIDATION", Constants.getParameter("LOGIN_VIEW_VALID"))
                 .build();
     }
 
