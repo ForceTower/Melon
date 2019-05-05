@@ -150,7 +150,6 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
                     style="@style/Widget.MaterialComponents.TabLayout"
-                    android:elevation="4dp"
                     app:layout_constraintTop_toBottomOf="@+id/recycler_discipline_items"
                     app:tabSelectedTextColor="?attr/colorPrimary"
                     app:tabTextColor="?attr/colorOnSurfaceLight"
