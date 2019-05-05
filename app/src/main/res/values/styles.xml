@@ -65,6 +65,7 @@
         <item name="colorOnSurfaceLight">@color/onSurfaceLight</item>
         <item name="colorOnBackground">@color/onBackground</item>
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
+        <item name="elevationOverlaysEnabled">false</item>
 
         <item name="android:textColorPrimary">?attr/colorOnSurface</item>
         <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
