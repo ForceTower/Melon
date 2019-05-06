@@ -28,7 +28,9 @@
 package com.forcetower.uefs.core.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
 import java.lang.Math.pow
 
@@ -58,4 +60,9 @@ fun Double.truncate(decimals: Int = 1): Double {
 fun Double.round(decimals: Int = 1): Double {
     val power = pow(10.0, decimals.toDouble())
     return Math.round(this * power) / power
+}
+
+fun SharedPreferences.isStudentFromUEFS(): Boolean {
+    val inst = getString(SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
+    return inst == "UEFS"
 }
