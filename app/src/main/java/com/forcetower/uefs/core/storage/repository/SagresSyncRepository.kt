@@ -68,6 +68,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
@@ -227,17 +228,22 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
-        serviceLogin()
+        val uefsStudent = preferences.isStudentFromUEFS()
+        if (uefsStudent) {
+            serviceLogin()
+        }
 
         if (preferences.getBoolean("primary_fetch", true)) {
             DisciplinesDetailsWorker.createWorker()
             preferences.edit().putBoolean("primary_fetch", false).apply()
         }
 
-        if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.0", false) &&
-                authRepository.getAccessTokenDirect() != null) {
-            HourglassContributeWorker.createWorker()
-            preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
+        if (uefsStudent) {
+            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.0", false) &&
+                    authRepository.getAccessTokenDirect() != null) {
+                HourglassContributeWorker.createWorker()
+                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
+            }
         }
 
         try {

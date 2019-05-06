@@ -52,18 +52,18 @@ object Constants {
 
     // Sagres Default Endpoints
     private val SAGRES_ENDPOINTS = mapOf(
-        "SAGRES_LOGIN_PAGE" to "%s/Acesso.aspx",
-        "SAGRES_MESSAGES_PAGE" to "%s/Modules/Diario/Aluno/Consultas/Recados.aspx",
-        "SAGRES_GRADE_PAGE" to "%s/Modules/Diario/Aluno/Relatorio/Boletim.aspx",
-        "SAGRES_DIARY_PAGE" to "%s/Modules/Diario/Aluno/Default.aspx",
-        "SAGRES_CLASS_PAGE" to "%s/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx",
-        "SAGRES_GRADE_ANY" to "%s/Modules/Diario/Aluno/Relatorio/Boletim.aspx?op=notas",
-        "SAGRES_ENROLL_CERT" to "%s/Modules/Diario/Aluno/Relatorio/ComprovanteMatricula.aspx",
-        "SAGRES_FLOWCHART" to "%s/Modules/Diario/Aluno/Relatorio/FluxogramaAluno.aspx",
-        "SAGRES_HISTORY" to "%s/Modules/Diario/Aluno/Relatorio/HistoricoEscolar.aspx",
-        "SAGRES_DEMAND_OFFERS" to "%s/Modules/Diario/Aluno/Matricula/Demanda.aspx",
-        "SAGRES_REQUESTED_SERVICES" to "%s/Modules/Diario/Aluno/Academico/SolicitacaoServico.aspx",
-        "SAGRES_ALL_DISCIPLINES_PAGE" to "%s/Modules/Diario/Aluno/Classe/SelecaoClasse.aspx?redirect=%s/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx"
+        "SAGRES_LOGIN_PAGE" to "__REPLACE__UNES__/Acesso.aspx",
+        "SAGRES_MESSAGES_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Consultas/Recados.aspx",
+        "SAGRES_GRADE_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Relatorio/Boletim.aspx",
+        "SAGRES_DIARY_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Default.aspx",
+        "SAGRES_CLASS_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx",
+        "SAGRES_GRADE_ANY" to "__REPLACE__UNES__/Modules/Diario/Aluno/Relatorio/Boletim.aspx?op=notas",
+        "SAGRES_ENROLL_CERT" to "__REPLACE__UNES__/Modules/Diario/Aluno/Relatorio/ComprovanteMatricula.aspx",
+        "SAGRES_FLOWCHART" to "__REPLACE__UNES__/Modules/Diario/Aluno/Relatorio/FluxogramaAluno.aspx",
+        "SAGRES_HISTORY" to "__REPLACE__UNES__/Modules/Diario/Aluno/Relatorio/HistoricoEscolar.aspx",
+        "SAGRES_DEMAND_OFFERS" to "__REPLACE__UNES__/Modules/Diario/Aluno/Matricula/Demanda.aspx",
+        "SAGRES_REQUESTED_SERVICES" to "__REPLACE__UNES__/Modules/Diario/Aluno/Academico/SolicitacaoServico.aspx",
+        "SAGRES_ALL_DISCIPLINES_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Classe/SelecaoClasse.aspx?redirect=__REPLACE__UNES__/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx"
     )
 
     val WIFI_PROXY_NAMES = arrayListOf(
@@ -81,7 +81,7 @@ object Constants {
         val institution = SagresNavigator.instance.getSelectedInstitution()
         val base = getPage(institution)
         val path = SAGRES_ENDPOINTS[endpoint.toUpperCase()] ?: throw IllegalArgumentException("This endpoint is not supported")
-        return String.format(path, base)
+        return path.replace("__REPLACE__UNES__", base)
     }
 
     @JvmStatic
