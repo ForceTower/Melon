@@ -200,7 +200,7 @@ private constructor(context: Context) : SagresNavigator() {
     }
 
     override fun getSelectedInstitution(): String {
-        return preferences.getString("current_selected_institution", "uefs") ?: "uefs"
+        return preferences.getString("current_selected_institution", "UEFS") ?: "UEFS"
     }
 
     override fun setSelectedInstitution(institution: String) {
