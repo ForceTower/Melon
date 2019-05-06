@@ -32,9 +32,15 @@ import kotlin.IllegalArgumentException
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 object Constants {
-    val SUPPORTED_INSTITUTIONS = arrayOf("UEFS", "UESC")
-
-    // Sagres Default Value Constants
+    /**
+     * The Sagres Server Constants
+     * This provides a map of all attributes needed for UNES to connect to SAGRES.
+     *
+     * BASE_URL: The base address of the site
+     * LOGIN_VIEW_STATE: A random generated string encoded in base64. You can get your one by inspecting the SAGRES login page it is the __VIEWSTATE variable
+     * LOGIN_VW_STT_GEN: Another generated string. You can find it by the __VIEWSTATEGENERATOR variable
+     * LOGIN_VIEW_VALID: Random generated string. It's variable name on HTML is __EVENTVALIDATION
+     */
     private val SAGRES_SERVER_CONSTANTS = mapOf(
         "UEFS" to mapOf(
             "BASE_URL" to "http://academico2.uefs.br/Portal",
@@ -66,6 +72,10 @@ object Constants {
         "SAGRES_ALL_DISCIPLINES_PAGE" to "__REPLACE__UNES__/Modules/Diario/Aluno/Classe/SelecaoClasse.aspx?redirect=__REPLACE__UNES__/Modules/Diario/Aluno/Classe/ConsultaAulas.aspx"
     )
 
+    @JvmStatic
+    val SUPPORTED_INSTITUTIONS = SAGRES_SERVER_CONSTANTS.map { it.key }.toTypedArray()
+
+    @JvmStatic
     val WIFI_PROXY_NAMES = arrayListOf(
         "UEFS_VISITANTES"
     )
