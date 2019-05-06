@@ -6,8 +6,6 @@ O UNES é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do 
 
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
-Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
-
 Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou sugestão basta colocar nas issues e tento resolver :v
 
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
@@ -18,11 +16,15 @@ Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou 
 * ~~Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal~~
 * ~~Demanda Web direto no App~~ [Completo]
 * ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
-* Matrícula no App [||                 ] 6% (Sob análise, estrutura de dados estranha para parse)
+* Matrícula no App [XX-------------] 6% (Sob análise, estrutura de dados estranha para parse)
 * ~~Corrigir o erro que afeta alguns estudantes que mudaram de modalidade durante a graduação [Licenciatura/Bacharelado]~~
 * ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * ~~Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal~~
 * ~~Tema escuro/preto porque tema dark é legal em todo lugar~~
+
+### Suporte a outras universidades
+Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
+Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Melon/blob/development/sagres/src/main/java/com/forcetower/sagres/Constants.kt) do aplicativo.
 
 ### Adicionando uma mensagem nova ao login
 Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.
