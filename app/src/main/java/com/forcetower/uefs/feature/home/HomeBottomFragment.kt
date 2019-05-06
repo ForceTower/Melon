@@ -41,6 +41,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
@@ -116,14 +117,20 @@ class HomeBottomFragment : UFragment(), Injectable {
             }
         })
 
+        val uefsStudent = preferences.isStudentFromUEFS()
+
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
         toggleItem(R.id.purchases, storeFlag)
 
         val dark = preferences.getBoolean("stg_night_mode_menu", true)
         toggleItem(R.id.dark_theme_event, dark)
 
-        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass")
+        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass") && uefsStudent
         toggleItem(R.id.hourglass, hourglass)
+
+        toggleItem(R.id.adventure, uefsStudent)
+        toggleItem(R.id.big_tray, uefsStudent)
+        toggleItem(R.id.events, uefsStudent)
     }
 
     private fun toggleNightModeSwitcher(enabled: Boolean?) {
