@@ -45,9 +45,9 @@ class LoginFragment : UFragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentLoginFormBinding.inflate(inflater, container, false).also {
             binding = it
-//            binding.btnNoAccount.setOnClickListener {
-//                showSnack(getString(R.string.there_is_no_vestibular_anymore))
-//            }
+            binding.btnInstitution.setOnClickListener {
+                showInstitutionSelector()
+            }
             binding.btnConnect.setOnClickListener {
                 prepareLogin()
             }
@@ -55,6 +55,11 @@ class LoginFragment : UFragment() {
                 toAbout()
             }
         }.root
+    }
+
+    private fun showInstitutionSelector() {
+        val dialog = InstitutionSelectDialog()
+        dialog.show(childFragmentManager, "dialog_institution_selector")
     }
 
     private fun prepareLogin() {
