@@ -32,6 +32,8 @@ import kotlin.IllegalArgumentException
 
 @RestrictTo(RestrictTo.Scope.LIBRARY_GROUP)
 object Constants {
+    val SUPPORTED_INSTITUTIONS = arrayOf("UEFS", "UESC")
+
     // Sagres Default Value Constants
     private val SAGRES_SERVER_CONSTANTS = mapOf(
         "UEFS" to mapOf(
