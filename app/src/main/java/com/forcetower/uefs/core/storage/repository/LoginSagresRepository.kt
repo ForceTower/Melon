@@ -55,6 +55,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import org.jsoup.nodes.Document
@@ -239,7 +240,8 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun defineExperimentalWorkers() {
-        HourglassContributeWorker.createWorker()
+        if (preferences.isStudentFromUEFS())
+            HourglassContributeWorker.createWorker()
         preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
     }
 

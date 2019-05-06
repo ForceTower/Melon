@@ -555,6 +555,9 @@
     <string name="changes_on_this_update">Mudanças nesta atualização</string>
     <string name="changes_on_this_update_desc">O UNES já cresceu a um ponto que ferramentas grátis não conseguem mais suporta-lo. (As doações não funcionaram, apesar de eu gostar da Wikipédia, eu nunca doei)\n\nA partir de agora, teremos no máximo 2 anúncios por dia, elas aparecerão assim que o app abrir.\nEspero que isso seja o suficiente para conseguir colocar o UNES nos trilhos de novo :)</string>
     <string name="logout_confirmation_title">Tem certeza que deseja sair?</string>
+    <string name="institution_select">Instituição</string>
+    <string name="label_institution">Instituição de Ensino</string>
+    <string name="label_institution_select_information">Selecione sua instituição de ensino para que o UNES consiga fazer login corretamente.\n\nSe sua instituição não está na lista, adicione uma issue no projeto o GitHub para conversarmos e enfim adicionar suporte à sua universidade</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
