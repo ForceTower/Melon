@@ -13,7 +13,6 @@ import timber.log.Timber
 
 class InstitutionSelectDialog : RoundedDialog() {
     private lateinit var binding: DialogInstitutionSelectorBinding
-    private val institutions = arrayOf("UEFS", "UESC")
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DialogInstitutionSelectorBinding.inflate(inflater, container, false).also {
@@ -34,12 +33,14 @@ class InstitutionSelectDialog : RoundedDialog() {
     }
 
     private fun populateInstitutions() {
+        val institutions = SagresNavigator.getSupportedInstitutions()
         binding.pickerInstitution.minValue = 1
         binding.pickerInstitution.maxValue = institutions.size
         binding.pickerInstitution.displayedValues = institutions
     }
 
     private fun saveSelectedInstitution() {
+        val institutions = SagresNavigator.getSupportedInstitutions()
         val selected = institutions[binding.pickerInstitution.value - 1]
         Timber.d("Selected $selected")
         val preferences = PreferenceManager.getDefaultSharedPreferences(context)
