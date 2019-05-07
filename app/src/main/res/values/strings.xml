@@ -118,7 +118,7 @@
     <string name="channel_group_general">Gerais</string>
     <string name="channel_group_events">Eventos</string>
     <string name="channel_messages_teachers">Mensagens Professores</string>
-    <string name="channel_messages_uefs">Mensagens UEFS</string>
+    <string name="channel_messages_uefs">Mensagens Universidade</string>
     <string name="channel_grades_posted">Notas Postadas</string>
     <string name="channel_grades_date_changed">Mudança de data</string>
     <string name="channel_grades_value_changed">Nota Alterada</string>
@@ -249,14 +249,14 @@
     <string name="settings_sync_type_info_label">Escolha como os dados são atualizados</string>
     <string name="settings_sync_frequency_label">Frequência</string>
     <string name="settings_sync_frequency_info_label">Define a frequência de atualização dos dados</string>
-    <string name="settings_sync_auto_proxy_label">UEFS Proxy [Em testes]</string>
-    <string name="settings_sync_auto_proxy_info_label">Detectar a rede da UEFS automaticamente para utilizar o proxy</string>
+    <string name="settings_sync_auto_proxy_label">Proxy [Em testes]</string>
+    <string name="settings_sync_auto_proxy_info_label">Detectar a rede interna automaticamente para utilizar o proxy</string>
     <string name="settings_proxy_label">Proxy</string>
     <string name="settings_proxy_info_label">Defina o proxy a ser utilizado</string>
     <string name="settings_ntf_message_teacher">Recados</string>
     <string name="settings_ntf_message_teacher_info">Notificar quando um professor postar um recado</string>
     <string name="settings_ntf_message_uefs">Avisos</string>
-    <string name="settings_ntf_message_uefs_info">Notificar quando receber um aviso da UEFS</string>
+    <string name="settings_ntf_message_uefs_info">Notificar quando receber um aviso da Universidade</string>
     <string name="settings_ntf_grade_create">Avaliação Criada</string>
     <string name="settings_notification_messages_label">Notificações de Mensagens</string>
     <string name="settings_notification_grades_label">Notificações de Nota</string>
@@ -315,7 +315,7 @@
     <string name="ru_close_notification">Fechar</string>
     <string name="select_discipline_group_label">Selecione uma turma</string>
     <string name="label_select_discipline_group_info">Seleciona uma das turmas disponíveis da disciplina %1$s</string>
-    <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da UEFS e na rede UEFS_VISITANTES</string>
+    <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da universidade e na rede interna</string>
     <string name="settings_proxy_invalid">O proxy especificado é inválido. O proxy deve seguir o padrão IP:porta</string>
     <string name="settings_proxy_changed">O proxy foi modificado, feche o aplicativo para a configuração ser aplicada</string>
     <string name="label_app_special_config">Configurações Especiais</string>
@@ -426,7 +426,7 @@
     <string name="precondition_1">Desafiante do 2048</string>
     <string name="precondition_1_desc">Faça 50.000 pontos ou mais em uma partida de 2048. Dica: é possível ir além dos 2048.</string>
     <string name="precondition_2">Dedicado(a) visitante dos 7 mares</string>
-    <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório da UEFS.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
+    <string name="precondition_2_desc">Tenha 8h ou mais de aulas em um unico dia e complete todas as 7 conquistas que envolvem ir até algum local aleatório do campus.\nSe você ja completou alguma, terá que ir ao local novamente.\n\nA sua distância até os locais é informada na Aventura, basta clicar em verificar localização.</string>
     <string name="precondition_3">Mestre honorário</string>
     <string name="precondition_3_desc">Tenha 2200 horas em disciplinas. Não importa se você passou, perdeu, ficou em final, abandonou, basta ela ter existido e você ter pego\n\nVocê atualmente tem %1$d horas</string>
     <string name="send">Enviar</string>
