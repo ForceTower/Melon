@@ -49,7 +49,7 @@ A partir de agora vamos demorar um tempo (ou não):
  5. [Espere muito tempo](https://www.youtube.com/watch?v=BdhGQMDjBSQ), se esta for a primeira vez abrindo ou criando um projeto, instale tudo que o Android Studio pedir
  6. [Fique calmo, espere mais um pouco](https://www.youtube.com/watch?v=dQw4w9WgXcQ)
  
-O UNES utiliza o Firebase como backend, então temos uns passos adicionais...
+O UNES utiliza o Firebase como backend, então temos uns passos adicionais, ou você será apresentado a um erro de processamento no Android Studio... (google-services.json not found)
 
 * [Crie um projeto no Firebase](https://console.firebase.google.com/), você pode dar o nome que você quiser.
 * Após criar o projeto você vai ser apresentado com uma tela onde ele fala para adicionar o firebase ao seu aplicativo. Como estamos num aplicativo nativo Android, selecione `Adicionar o Firebase ao seu aplicativo Android`.
