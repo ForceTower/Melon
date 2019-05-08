@@ -41,14 +41,17 @@ jobs:
       - run:
           name: Build App or Publish
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "development" ]]
-            then
-              echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
-            else
-              echo "Starting a debug build"
-              ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
-            fi
+#           Publisher is bugged...
+            echo "Starting a debug build"
+            ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+#            if [[ "${CIRCLE_BRANCH}" == "development" ]]
+#            then
+#              echo "Starting the publish build!"
+#              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+#            else
+#              echo "Starting a debug build"
+#              ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+#            fi
 
       - store_artifacts:
           path: ci_results/lint
