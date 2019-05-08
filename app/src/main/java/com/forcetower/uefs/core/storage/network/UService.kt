@@ -28,6 +28,7 @@
 package com.forcetower.uefs.core.storage.network
 
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.UNESUpdate
@@ -55,7 +56,7 @@ interface UService {
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = Constants.SERVICE_CLIENT_INSTITUTION
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution()
     ): Call<AccessToken>
 
     @POST("oauth/token")
