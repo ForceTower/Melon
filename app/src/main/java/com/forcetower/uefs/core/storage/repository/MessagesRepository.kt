@@ -89,6 +89,7 @@ class MessagesRepository @Inject constructor(
 
     fun getUnesMessages(): LiveData<List<UMessage>> {
         val result = MutableLiveData<List<UMessage>>()
+        val institution = SagresNavigator.instance.getSelectedInstitution()
         collection.orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, exception ->
             if (exception != null) {
                 Timber.e(exception)
@@ -97,7 +98,7 @@ class MessagesRepository @Inject constructor(
                     id = it.id
                     val replaced = message.replace("\\n", "\n")
                     message = replaced
-                } }
+                } }.filter { it.institution == null || it.institution == institution }
                 result.postValue(list)
             }
         }

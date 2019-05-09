@@ -27,6 +27,7 @@
 
 package com.forcetower.sagres.operation.document
 
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.Utils
 import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
@@ -41,7 +42,7 @@ import java.util.concurrent.Executor
 
 class DocumentOperation(
     private val file: File,
-    private val url: String,
+    private val endpoint: String,
     executor: Executor?
 ) : Operation<DocumentCallback>(executor) {
 
@@ -50,6 +51,7 @@ class DocumentOperation(
     }
 
     override fun execute() {
+        val url = Constants.getUrl(endpoint)
         val call = SagresCalls.getPageCall(url)
         publishProgress(DocumentCallback(Status.LOADING))
         try {

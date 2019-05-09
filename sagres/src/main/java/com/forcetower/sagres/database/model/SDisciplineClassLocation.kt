@@ -38,8 +38,7 @@ data class SDisciplineClassLocation(
     var classCode: String,
     var classGroup: String,
     var fromDisciplineParser: Boolean
-)
-: Comparable<SDisciplineClassLocation> {
+) : Comparable<SDisciplineClassLocation> {
 
     override fun compareTo(other: SDisciplineClassLocation): Int {
         return startTime.compareTo(other.startTime)

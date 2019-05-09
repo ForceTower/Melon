@@ -77,8 +77,7 @@ class LoginActivity : UActivity(), HasSupportFragmentInjector {
         val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
         if (enabled) return
 
-        val currentNightMode = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK
-        when (currentNightMode) {
+        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
             Configuration.UI_MODE_NIGHT_NO -> Unit
             Configuration.UI_MODE_NIGHT_YES -> {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)

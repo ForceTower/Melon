@@ -49,7 +49,7 @@ class HourglassContributeWorker(
     override fun doWork(): Result {
         (applicationContext as UApplication).component.inject(this)
         return try {
-            repository.loadDisciplineDetailsSync()
+            repository.loadDisciplineDetailsSync(partialLoad = true, notify = false)
             Result.success()
         } catch (t: Throwable) {
             Result.retry()

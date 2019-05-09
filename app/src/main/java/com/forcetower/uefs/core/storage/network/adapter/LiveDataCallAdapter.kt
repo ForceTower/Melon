@@ -46,21 +46,25 @@ class LiveDataCallAdapter<R>(private val responseType: Type) : CallAdapter<R, Li
     }
 
     override fun adapt(call: Call<R>): LiveData<ApiResponse<R>> {
-        return object : LiveData<ApiResponse<R>>() {
-            var started = AtomicBoolean(false)
-            override fun onActive() {
-                super.onActive()
-                if (started.compareAndSet(false, true)) {
-                    call.enqueue(object : Callback<R> {
-                        override fun onResponse(call: Call<R>, response: Response<R>) {
-                            postValue(ApiResponse.create(response))
-                        }
+        return call.asLiveData()
+    }
+}
 
-                        override fun onFailure(call: Call<R>, throwable: Throwable) {
-                            postValue(ApiResponse.create(throwable))
-                        }
-                    })
-                }
+fun <T> Call<T>.asLiveData(): LiveData<ApiResponse<T>> {
+    return object : LiveData<ApiResponse<T>>() {
+        var started = AtomicBoolean(false)
+        override fun onActive() {
+            super.onActive()
+            if (started.compareAndSet(false, true)) {
+                enqueue(object : Callback<T> {
+                    override fun onResponse(call: Call<T>, response: Response<T>) {
+                        postValue(ApiResponse.create(response))
+                    }
+
+                    override fun onFailure(call: Call<T>, throwable: Throwable) {
+                        postValue(ApiResponse.create(throwable))
+                    }
+                })
             }
         }
     }

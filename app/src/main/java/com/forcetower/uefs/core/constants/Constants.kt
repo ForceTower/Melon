@@ -28,10 +28,11 @@
 package com.forcetower.uefs.core.constants
 
 object Constants {
-    const val UNES_SERVICE_BASE_URL = "unes.herokuapp.com"
+    const val SELECTED_INSTITUTION_KEY = "selected_institution_worker"
+    const val UNES_SERVICE_BASE_URL = "unes-env.frarj7zp5x.us-east-2.elasticbeanstalk.com"
     private const val UNES_SERVICE_BASE_TEST = "unes-js.herokuapp.com"
-    const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
-    const val UNES_SERVICE_TESTING = "https://$UNES_SERVICE_BASE_TEST/"
+    const val UNES_SERVICE_URL = "http://$UNES_SERVICE_BASE_URL/api/"
+    const val UNES_SERVICE_TESTING = "http://$UNES_SERVICE_BASE_TEST/"
 
     const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
     const val REMOTE_CONFIG_REFRESH = 900L
@@ -40,4 +41,8 @@ object Constants {
     val EXECUTOR_WHITELIST = listOf("manual", "universal")
 
     const val ADMOB_TEST_ID = "38D27336B4D54E6E431E86E4ABEE0B20"
+
+    const val SERVICE_CLIENT_ID = "1"
+    const val SERVICE_CLIENT_SECRET = "bCP23X90J5anU0H3uxzWg0RwE6BxEo0HDkqr0PZg"
+    const val SERVICE_CLIENT_INSTITUTION = "uefs"
 }

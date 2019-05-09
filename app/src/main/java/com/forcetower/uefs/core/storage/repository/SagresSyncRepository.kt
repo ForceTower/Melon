@@ -59,7 +59,6 @@ import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.NetworkType
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
@@ -67,17 +66,17 @@ import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
+import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -85,15 +84,12 @@ class SagresSyncRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase,
     private val executors: AppExecutors,
+    private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val firebaseAuth: FirebaseAuth,
-    @Named(Profile.COLLECTION)
-    private val collection: CollectionReference,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
-    private val preferences: SharedPreferences,
-    private val scheduleRepository: ScheduleRepository
+    private val preferences: SharedPreferences
 ) {
 
     @WorkerThread
@@ -232,9 +228,22 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
+        val uefsStudent = preferences.isStudentFromUEFS()
+        if (uefsStudent) {
+            serviceLogin()
+        }
+
         if (preferences.getBoolean("primary_fetch", true)) {
             DisciplinesDetailsWorker.createWorker()
             preferences.edit().putBoolean("primary_fetch", false).apply()
+        }
+
+        if (uefsStudent) {
+            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.0", false) &&
+                    authRepository.getAccessTokenDirect() != null) {
+                HourglassContributeWorker.createWorker()
+                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
+            }
         }
 
         try {
@@ -255,6 +264,15 @@ class SagresSyncRepository @Inject constructor(
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
+    }
+
+    private fun serviceLogin() {
+        val token = authRepository.getAccessTokenDirect()
+        if (token == null) {
+            executors.networkIO().execute {
+                authRepository.performAccountSyncState()
+            }
+        }
     }
 
     private fun createNewVersionNotification() {

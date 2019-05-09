@@ -91,7 +91,7 @@ class OnboardingFragment : UFragment(), Injectable {
         return binding.root
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         handler.postDelayed(advancePager, AUTO_ADVANCE_DELAY)
     }
