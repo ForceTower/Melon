@@ -29,6 +29,8 @@ package com.forcetower.uefs.feature.home
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
@@ -43,6 +45,7 @@ import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.vm.EventObserver
@@ -104,6 +107,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
+        UApplication.setupDayNightTheme(this)
 
         val willShowAds = preferences.getBoolean("admob_warning_showed", false)
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
@@ -238,9 +242,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             Timber.d("Access Invalidated")
             firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
             mGamesInstance.changePlayerName(access.username)
@@ -305,13 +309,4 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
-
-    override fun onResume() {
-        super.onResume()
-        val recreate = preferences.getBoolean("will_recreate_home", false)
-        if (recreate) {
-            preferences.edit().putBoolean("will_recreate_home", false).apply()
-            recreate()
-        }
-    }
 }

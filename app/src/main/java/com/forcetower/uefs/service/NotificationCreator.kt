@@ -40,6 +40,7 @@ import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
@@ -71,8 +72,11 @@ object NotificationCreator {
             return
         }
 
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val institution = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
+
         val builder = notificationBuilder(context, channel)
-            .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
+            .setContentTitle(if (message.senderProfile == 3) institution else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
             .setContentText(message.content)
             .setStyle(createBigText(message.content))
             .setContentIntent(createMessagesIntent(context))

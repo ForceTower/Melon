@@ -51,7 +51,7 @@ class AdventureSignInDialog : RoundedDialog(), Injectable {
     private lateinit var binding: DialogAdventureSignInBinding
     private var activity: UGameActivity? = null
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as? UGameActivity
         activity ?: Timber.e("Adventure Fragment must be attached to a UGameActivity for it to work")
@@ -61,7 +61,7 @@ class AdventureSignInDialog : RoundedDialog(), Injectable {
         viewModel = provideActivityViewModel(factory)
         return DialogAdventureSignInBinding.inflate(inflater, container, false).apply {
             interactor = viewModel
-            setLifecycleOwner(this@AdventureSignInDialog)
+            lifecycleOwner = this@AdventureSignInDialog
             executePendingBindings()
         }.also { binding = it }.root
     }

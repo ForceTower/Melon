@@ -83,6 +83,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = DetailsAdapter(childFragmentManager)
+        createFragments()
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
         viewPager.offscreenPageLimit = 4
@@ -106,8 +107,6 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
             viewModel = this@DisciplineDetailsFragment.viewModel
             lifecycleOwner = this@DisciplineDetailsFragment
         }
-
-        createFragments()
     }
 
     private fun createFragments() {
