@@ -67,7 +67,8 @@ class SetupViewModel @Inject constructor(
 
     fun getSelectedCourse() = course
 
-    fun updateCourse(course: Course, user: FirebaseUser) {
+    fun updateCourse(course: Course?, user: FirebaseUser) {
+        course ?: return
         firebaseAuthRepository.updateCourse(course, user)
         profileRepository.updateUserCourse(course)
     }

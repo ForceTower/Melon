@@ -54,4 +54,5 @@ google-services.json
 
 app/src/main/play/*
 !app/src/main/play/release-notes/*
-app/src/main/res/values/admob_strings\.xml
+
+app/release/output\.json

@@ -28,11 +28,17 @@
 package com.forcetower.uefs.core.storage.network
 
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.SagresNavigator
+import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.UNESUpdate
-import com.forcetower.uefs.core.model.siecomp.AccessToken
+import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
 import retrofit2.http.Body
@@ -42,37 +48,46 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface UService {
-    @POST("login")
+    @POST("oauth/token")
     @FormUrlEncoded
-    fun login(@Field("username") username: String, @Field("password") password: String): Call<AccessToken>
-
-    @POST("login_create")
-    @FormUrlEncoded
-    fun loginOrCreate(
+    fun loginWithSagres(
         @Field("username") username: String,
         @Field("password") password: String,
-        @Field("name") name: String,
-        @Field("email") email: String,
-        @Field("cpf") cpf: String,
-        @Field("appToken") token: String
+        @Field("grant_type") grant: String = "sagres",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution()
     ): Call<AccessToken>
 
     @POST("oauth/token")
     @FormUrlEncoded
-    fun actualLogin(
+    fun login(
         @Field("username") username: String,
         @Field("password") password: String,
-        @Field("grant_type") grand: String = "password",
-        @Field("client_id") client: String = "2",
-        @Field("scope") scope: String = "*",
-        @Field("client_secret") secret: String = "kYVjtz6Uqthl0U3KpfuBwBeUXgbjgcLsuvh0eOZj"
+        @Field("grant_type") grant: String = "password",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
     ): Call<AccessToken>
 
-    @GET("course")
-    fun getCourses(): LiveData<ApiResponse<List<Course>>>
+    @GET("account")
+    fun account(): Call<Profile>
 
-    @GET("update")
+    @POST("account/credentials")
+    fun setupAccount(@Body access: Access): Call<UResponse<Void>>
+
+    @POST("account/profile")
+    fun setupProfile(@Body profile: Profile): Call<UResponse<Void>>
+
+    @GET("courses")
+    fun getCourses(): Call<List<Course>>
+
+    @GET("synchronization")
     fun getUpdate(): Call<UNESUpdate>
+
+    @POST("grades")
+    fun sendGrades(@Body grades: DisciplineDetailsData): Call<UResponse<Void>>
+
+    // ---------------------------------------------------------------------------------------------
 
     @GET("siecomp/list_sessions")
     fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>

@@ -30,8 +30,8 @@ package com.forcetower.uefs.core.storage.network
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.api.UDisciplineWithData
 import com.forcetower.uefs.core.model.api.helpers.UHourOverview
-import com.forcetower.uefs.core.model.api.helpers.UResponse
-import com.forcetower.uefs.core.model.service.DisciplineDetailsData
+import com.forcetower.uefs.core.model.api.UResponse
+import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
 import retrofit2.http.Body

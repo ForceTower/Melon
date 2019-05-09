@@ -41,6 +41,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
@@ -106,7 +107,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.isDarkModeEnabled.observe(this, Observer { toggleNightModeSwitcher(it) })
     }
 
     private fun featureFlags() {
@@ -117,14 +117,20 @@ class HomeBottomFragment : UFragment(), Injectable {
             }
         })
 
+        val uefsStudent = preferences.isStudentFromUEFS()
+
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
         toggleItem(R.id.purchases, storeFlag)
 
         val dark = preferences.getBoolean("stg_night_mode_menu", true)
-        toggleItem(R.id.dark_theme_event, dark)
+        toggleItem(R.id.dark_theme_event, dark && uefsStudent)
 
-        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass")
-        toggleItem(R.id.hourglass, hourglass)
+        val hourglass = remoteConfig.getBoolean("feature_flag_hourglass") && uefsStudent
+        toggleItem(R.id.hourglass, hourglass && uefsStudent)
+
+        toggleItem(R.id.adventure, uefsStudent)
+        toggleItem(R.id.big_tray, uefsStudent)
+        toggleItem(R.id.events, uefsStudent)
     }
 
     private fun toggleNightModeSwitcher(enabled: Boolean?) {
@@ -147,7 +153,8 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.logout -> {
-                    viewModel.logout()
+                    val fragment = LogoutConfirmationFragment()
+                    fragment.show(childFragmentManager, "logout_modal")
                     true
                 }
                 R.id.open_source -> {
@@ -168,17 +175,8 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
-//                    if (firebaseAuth.currentUser != null) {
                     val fragment = SendFeedbackFragment()
                     fragment.show(childFragmentManager, "feedback_modal")
-//                    } else {
-//                        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}"
-//                        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
-//                            putExtra(Intent.EXTRA_SUBJECT, "[UNES]App_Feedback")
-//                            putExtra(Intent.EXTRA_TEXT, text)
-//                        }
-//                        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
-//                    }
                     true
                 }
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
