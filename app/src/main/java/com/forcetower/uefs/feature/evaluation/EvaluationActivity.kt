@@ -2,6 +2,7 @@ package com.forcetower.uefs.feature.evaluation
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.forcetower.uefs.R
 
 class EvaluationActivity : AppCompatActivity() {
 
