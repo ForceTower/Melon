@@ -91,10 +91,6 @@
             android:theme="@style/UTheme.LightNav"
             android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
-            android:name=".feature.barrildeboa.HourglassActivity"
-            android:parentActivityName=".feature.home.HomeActivity"
-            android:theme="@style/UTheme.LightNav" />
-        <activity
             android:name=".feature.siecomp.editor.SIECOMPEditorActivity"
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
