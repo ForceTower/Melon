@@ -558,6 +558,9 @@
     <string name="institution_select">Instituição</string>
     <string name="label_institution">Instituição de Ensino</string>
     <string name="label_institution_select_information">Selecione sua instituição de ensino para que o UNES consiga fazer login corretamente.\n\nSe sua instituição não está na lista, adicione uma issue no projeto o GitHub para conversarmos e enfim adicionar suporte à sua universidade</string>
+    <string name="evaluation_options">Suas opções</string>
+    <string name="evaluation_teachers">Professores</string>
+    <string name="evaluation_disciplines">Disciplinas</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
