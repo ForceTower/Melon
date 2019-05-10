@@ -38,7 +38,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.easter.darktheme.DarkThemeViewModel
 import com.forcetower.uefs.feature.about.ContributorViewModel
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
-import com.forcetower.uefs.feature.barrildeboa.HourglassViewModel
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
 import com.forcetower.uefs.feature.demand.DemandViewModel
@@ -191,11 +190,6 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FeedbackViewModel::class)
     abstract fun bindFeedbackViewModel(vm: FeedbackViewModel): ViewModel
-
-    @Binds
-    @IntoMap
-    @ViewModelKey(HourglassViewModel::class)
-    abstract fun bindHourglassViewModel(vm: HourglassViewModel): ViewModel
 
     @Binds
     @IntoMap

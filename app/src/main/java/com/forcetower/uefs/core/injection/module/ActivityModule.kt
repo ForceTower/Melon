@@ -35,7 +35,6 @@ import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPSessionModule
 import com.forcetower.uefs.core.injection.module.siecomp.SIECOMPSpeakerModule
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.about.AboutActivity
-import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
@@ -74,8 +73,6 @@ abstract class ActivityModule {
     abstract fun bindSettingsActivity(): SettingsActivity
     @ContributesAndroidInjector(modules = [DemandModule::class])
     abstract fun bindDemandActivity(): DemandActivity
-    @ContributesAndroidInjector(modules = [HourglassModule::class])
-    abstract fun bindHourglassActivity(): HourglassActivity
     @ContributesAndroidInjector(modules = [Game2048Module::class])
     abstract fun bindGame2048Activity(): Game2048Activity
     @ContributesAndroidInjector(modules = [SIECOMPOnboardingModule::class])

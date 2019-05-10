@@ -48,7 +48,6 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
-import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
@@ -289,7 +288,7 @@ object NotificationCreator {
                 .setContentTitle(context.getString(R.string.discipline_load_all_completed))
                 .setContentText(context.getString(R.string.discipline_load_all_completed_info))
                 .setColor(ContextCompat.getColor(context, R.color.blue_accent))
-                .setContentIntent(createHourglassIntent(context))
+                // .setContentIntent(createHourglassIntent(context))
 
         addOptions(context, builder)
         showNotification(context, 7569, builder)
@@ -455,14 +454,14 @@ object NotificationCreator {
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun createHourglassIntent(ctx: Context): PendingIntent {
-        val intent = Intent(ctx, HourglassActivity::class.java)
-
-        return TaskStackBuilder.create(ctx)
-                .addParentStack(HourglassActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-    }
+//    private fun createHourglassIntent(ctx: Context): PendingIntent {
+//        val intent = Intent(ctx, HourglassActivity::class.java)
+//
+//        return TaskStackBuilder.create(ctx)
+//                .addParentStack(HourglassActivity::class.java)
+//                .addNextIntent(intent)
+//                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+//    }
 
     private fun createOpenIntent(ctx: Context): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java)
