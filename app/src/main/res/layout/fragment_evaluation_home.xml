@@ -105,7 +105,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:paddingHorizontal="16dp"/>
+            tools:listitem="@layout/item_evaluate_discipline_home"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
