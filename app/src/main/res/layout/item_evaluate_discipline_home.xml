@@ -58,7 +58,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
-                android:text="Deixar a sua opinião"
+                tools:text="Deixar a sua opinião"
                 app:iconGravity="end"
                 app:iconPadding="10dp"
                 app:icon="@drawable/ic_chevron_right_black_24dp"
