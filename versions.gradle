@@ -61,7 +61,7 @@ versions.cookie_jar = "v1.0.1"
 // Others
 versions.gson = "2.8.5"
 versions.jsoup = "1.11.3"
-versions.chart_view = "v3.0.3"
+versions.chart_view = "v3.1.0"
 versions.about_libraries = "7.0.0-rc1"
 versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
