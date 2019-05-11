@@ -31,6 +31,7 @@
         <attr name="colorSurfaceDarker" format="color"/>
         <attr name="colorPrimaryAlpha" format="color"/>
         <attr name="colorPrimaryLight" format="color"/>
+        <attr name="colorAccentAlpha" format="color"/>
         <attr name="colorOnSurfaceLight" format="color"/>
         <attr name="colorOnBackgroundLight" format="color"/>
 
