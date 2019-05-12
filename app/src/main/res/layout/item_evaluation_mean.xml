@@ -1,11 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="grades"
+            type="java.util.List&lt;com.forcetower.uefs.feature.evaluation.discipline.SemesterMean&gt;" />
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:layout_margin="16dp">
+        app:cardElevation="4dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -15,11 +24,11 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textSize="18sp"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?attr/colorPrimary"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:text="Desempenho" />
+                android:text="@string/evaluation_performance" />
 
             <TextView
                 android:id="@+id/mean"
@@ -27,16 +36,18 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:textColor="?attr/colorOnSurface"
+                app:evaluationGradesMean="@{grades}"
+                app:evaluationGradesTitle="@{0}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/title"
-                tools:text="A média geral desta disciplina é 8.6 *"/>
+                app:layout_constraintTop_toBottomOf="@id/title" />
 
             <com.github.mikephil.charting.charts.LineChart
                 android:id="@+id/line_chart"
                 android:layout_width="0dp"
                 android:layout_height="160dp"
                 android:layout_marginTop="16dp"
+                app:semesterGradesForChart="@{grades}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/mean" />
@@ -50,8 +61,7 @@
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/line_chart"
-                tools:text="* Calculada usando dados de 32 alunos"/>
+                app:layout_constraintTop_toBottomOf="@id/line_chart"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
