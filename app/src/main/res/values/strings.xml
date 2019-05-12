@@ -561,6 +561,14 @@
     <string name="evaluation_options">Suas opções</string>
     <string name="evaluation_teachers">Professores</string>
     <string name="evaluation_disciplines">Disciplinas</string>
+    <string name="evaluation_performance">Desempenho</string>
+    <string name="evaluation_general_mean">A média geral desta %1$s é %2$.1f*</string>
+    <string name="evaluation_mean_amount">* Calculada usando dados de %1$d alunos</string>
+    <string name="evaluation_teacher_single">professor</string>
+    <string name="evaluation_discipline_single">disciplina</string>
+    <string name="evaluation_discipline_teachers">Professores da disciplina</string>
+    <string name="evaluation_last_seen">última vez em %1$s</string>
+    <string name="evaluation_see_teacher_details">Ver detalhes do professor</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
