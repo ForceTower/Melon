@@ -81,17 +81,17 @@ class OverviewAdapter(
         when (holder) {
             is OverviewHolder.SimpleHolder -> Unit
             is OverviewHolder.ShortHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
+                lifecycleOwner = this@OverviewAdapter.lifecycleOwner
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
             is OverviewHolder.TeacherHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
+                lifecycleOwner = this@OverviewAdapter.lifecycleOwner
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
             is OverviewHolder.ResumeHolder -> holder.binding.apply {
-                setLifecycleOwner(lifecycleOwner)
+                lifecycleOwner = this@OverviewAdapter.lifecycleOwner
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
