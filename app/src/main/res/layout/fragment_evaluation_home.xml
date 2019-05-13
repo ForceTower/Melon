@@ -31,7 +31,7 @@
             app:layout_constraintEnd_toStartOf="@id/user_image"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"
-            tools:text="Início" />
+            android:text="@string/evaluation_start" />
 
         <TextView
             android:id="@+id/welcome_home"
@@ -41,7 +41,7 @@
             app:layout_constraintEnd_toStartOf="@id/user_image"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/home_label"
-            tools:text="Bem vindo de volta, João Paulo" />
+            android:text="@string/evaluation_welcome" />
 
         <ImageView
             android:id="@+id/user_image"
@@ -65,7 +65,7 @@
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/welcome_home"
-            tools:text="Procurando por algo ou alguem?" />
+            android:text="@string/evaluation_search_hint" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_search_teachers"
@@ -79,7 +79,7 @@
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/label_search_types"
             app:strokeColor="?attr/colorPrimary"
-            tools:text="Professores" />
+            android:text="@string/evaluation_teachers" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_search_disciplines"
@@ -92,7 +92,7 @@
             app:layout_constraintStart_toEndOf="@+id/btn_search_teachers"
             app:layout_constraintTop_toTopOf="@+id/btn_search_teachers"
             app:strokeColor="?attr/colorPrimary"
-            tools:text="Disciplinas" />
+            android:text="@string/evaluation_disciplines" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:layout_width="0dp"

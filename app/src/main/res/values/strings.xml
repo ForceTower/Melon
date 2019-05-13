@@ -569,6 +569,9 @@
     <string name="evaluation_discipline_teachers">Professores da disciplina</string>
     <string name="evaluation_last_seen">última vez em %1$s</string>
     <string name="evaluation_see_teacher_details">Ver detalhes do professor</string>
+    <string name="evaluation_start">Início</string>
+    <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
+    <string name="evaluation_search_hint">Procurando por algo ou alguem?</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
