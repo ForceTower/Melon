@@ -1,5 +1,6 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
+import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -42,6 +43,14 @@ class AuthRepository @Inject constructor(
             }
             override fun saveCallResult(value: AccessToken) { database.accessTokenDao().insert(value) }
         }.asLiveData()
+    }
+
+    @AnyThread
+    fun performAccountSyncStateIfNeededAsync() {
+        executors.networkIO().execute {
+            val tk = database.accessTokenDao().getAccessTokenDirect()
+            if (tk == null) performAccountSyncState()
+        }
     }
 
     @WorkerThread
