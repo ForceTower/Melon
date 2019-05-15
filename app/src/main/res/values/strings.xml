@@ -369,7 +369,7 @@
     <string name="hourglass_what_is_this">O que é isso?</string>
     <string name="ohh_i_see">Ahh ta</string>
     <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.\n\nEsta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.\n\nNo final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
-    <string name="label_hourglass">Ampulheta de Zhonyas</string>
+    <string name="label_evaluation">Teemo Camuflado</string>
     <string name="hourglass_landing_desc">Antes de começar, o UNES irá baixar os detalhes de todas as disciplinas. Nos encontraremos de novo quando terminar</string>
     <string name="hourglass_landing_title">Oi, você vem sempre aqui?</string>
     <string name="hourglass_not_contribute">Não</string>
@@ -572,6 +572,11 @@
     <string name="evaluation_start">Início</string>
     <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
     <string name="evaluation_search_hint">Procurando por algo ou alguem?</string>
+    <string name="welcome_to_unesverse">Boas vindas ao UNESVerso</string>
+    <string name="unesverse_description">O gerenciador de funcionalidades compartilhadas do UNES.</string>
+    <string name="login_to_unesverse">Entrar agora!</string>
+    <string name="evaluation_welcome_back">Você de novo aqui?</string>
+    <string name="evaluation_presentation_description">Avalie seus professores! Diga o que você achou das suas aulas e das diversas metodologias de ensino que você encontrou</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
