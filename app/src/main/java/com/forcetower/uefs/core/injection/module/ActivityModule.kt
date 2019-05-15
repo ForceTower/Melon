@@ -37,6 +37,7 @@ import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
+import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
@@ -73,6 +74,8 @@ abstract class ActivityModule {
     abstract fun bindSettingsActivity(): SettingsActivity
     @ContributesAndroidInjector(modules = [DemandModule::class])
     abstract fun bindDemandActivity(): DemandActivity
+    @ContributesAndroidInjector(modules = [EvaluationModule::class])
+    abstract fun bindEvaluationActivity(): EvaluationActivity
     @ContributesAndroidInjector(modules = [Game2048Module::class])
     abstract fun bindGame2048Activity(): Game2048Activity
     @ContributesAndroidInjector(modules = [SIECOMPOnboardingModule::class])

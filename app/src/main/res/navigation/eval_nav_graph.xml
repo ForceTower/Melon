@@ -54,7 +54,7 @@
             android:id="@+id/action_home_to_eval_discipline"
             app:destination="@id/eval_discipline" />
         <action
-            android:id="@+id/action_home_to_searchFragment"
+            android:id="@+id/action_home_to_search"
             app:destination="@id/search" />
         <action
             android:id="@+id/action_home_to_eval_teacher"

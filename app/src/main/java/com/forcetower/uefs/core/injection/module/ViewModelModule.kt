@@ -43,6 +43,7 @@ import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
 import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
+import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
@@ -210,6 +211,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SIECOMPSpeakerViewModel::class)
     abstract fun bindSIECOMPSpeakerViewModel(vm: SIECOMPSpeakerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EvaluationViewModel::class)
+    abstract fun bindEvaluationViewModel(vm: EvaluationViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
