@@ -3,14 +3,21 @@ package com.forcetower.uefs.feature.evaluation
 import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityEvaluationBinding
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
+import dagger.android.DispatchingAndroidInjector
+import dagger.android.support.HasSupportFragmentInjector
+import javax.inject.Inject
 
-class EvaluationActivity : UGameActivity() {
+class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
+    @Inject
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+
     private lateinit var binding: ActivityEvaluationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -25,4 +32,6 @@ class EvaluationActivity : UGameActivity() {
         snack.config()
         snack.show()
     }
+
+    override fun supportFragmentInjector() = fragmentInjector
 }
