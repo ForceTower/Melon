@@ -83,6 +83,12 @@
 
         <item name="iconColor">?attr/colorOnBackground</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
+        <item name="alertDialogTheme">@style/UTheme.AlertDialog</item>
+    </style>
+
+    <style name="UTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="mdtp_ActionButton.Text" parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
