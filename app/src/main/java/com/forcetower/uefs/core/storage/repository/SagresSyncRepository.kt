@@ -239,10 +239,10 @@ class SagresSyncRepository @Inject constructor(
         }
 
         if (uefsStudent) {
-            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.0", false) &&
+            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.1", false) &&
                     authRepository.getAccessTokenDirect() != null) {
                 HourglassContributeWorker.createWorker()
-                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
+                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.1", true).apply()
             }
         }
 
