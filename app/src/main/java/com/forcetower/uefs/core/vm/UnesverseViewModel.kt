@@ -10,6 +10,7 @@ import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
+import timber.log.Timber
 import javax.inject.Inject
 
 class UnesverseViewModel @Inject constructor(
@@ -31,19 +32,22 @@ class UnesverseViewModel @Inject constructor(
 
     fun login() {
         if (_isLoggingIn.value == true) return
+        _isLoggingIn.value = true
         val source = auth.autoLogin()
         _loggingIn.addSource(source) {
             _loggingIn.value = it
+            Timber.d("The current login status: ${it.status}")
             when {
-                it.status !== Status.LOADING -> {
-                    _loggingIn.removeSource(source)
+                it.status === Status.LOADING -> {
                     _isLoggingIn.value = true
                 }
                 it.status === Status.ERROR -> {
-                    _isLoggingIn.value = false
+                    _loggingIn.removeSource(source)
                     _loginMessenger.setValueIfNew(Event(R.string.failed_to_connect_to_unesverse))
+                    _isLoggingIn.value = false
                 }
                 else -> {
+                    _loggingIn.removeSource(source)
                     _isLoggingIn.value = false
                 }
             }
