@@ -48,6 +48,7 @@ class UnesverseViewModel @Inject constructor(
                 }
                 else -> {
                     _loggingIn.removeSource(source)
+                    _loginMessenger.setValueIfNew(Event(R.string.connected_to_the_unesverse))
                     _isLoggingIn.value = false
                 }
             }

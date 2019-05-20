@@ -1,6 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/eval_nav_graph"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/eval_nav_graph"
     app:startDestination="@id/initial">
 
     <fragment
@@ -10,7 +12,8 @@
         <action
             android:id="@+id/action_initial_to_presentation"
             app:destination="@id/presentation"
-            app:popUpTo="@+id/presentation" />
+            app:popUpTo="@+id/initial"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_initial_to_unesverse_required"
             app:destination="@id/unesverse_required"
@@ -19,25 +22,30 @@
         <action
             android:id="@+id/action_initial_to_home"
             app:destination="@id/home"
-            app:popUpTo="@+id/home" />
+            app:popUpTo="@+id/initial"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/presentation"
         android:name="com.forcetower.uefs.feature.evaluation.PresentationFragment"
-        android:label="PresentationFragment" >
+        android:label="PresentationFragment"
+        tools:layout="@layout/fragment_evaluation_presentation">
         <action
             android:id="@+id/action_presentation_to_home"
             app:destination="@id/home"
-            app:popUpTo="@+id/home" />
+            app:popUpTo="@+id/presentation"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/unesverse_required"
         android:name="com.forcetower.uefs.feature.universe.UnesverseRequiredFragment"
-        android:label="UnesverseRequiredFragment" >
+        android:label="UnesverseRequiredFragment"
+        tools:layout="@layout/fragment_universe_required">
         <action
             android:id="@+id/action_unesverse_required_to_presentation"
             app:destination="@id/presentation"
-            app:popUpTo="@+id/presentation" />
+            app:popUpTo="@+id/unesverse_required"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/eval_discipline"
