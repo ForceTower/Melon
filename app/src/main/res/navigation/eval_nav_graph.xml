@@ -14,7 +14,8 @@
         <action
             android:id="@+id/action_initial_to_unesverse_required"
             app:destination="@id/unesverse_required"
-            app:popUpTo="@+id/unesverse_required" />
+            app:popUpTo="@+id/initial"
+            app:popUpToInclusive="true" />
         <action
             android:id="@+id/action_initial_to_home"
             app:destination="@id/home"
