@@ -46,6 +46,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import java.util.Locale
 
 interface UService {
     @POST("oauth/token")
@@ -56,7 +57,7 @@ interface UService {
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution()
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
     ): Call<AccessToken>
 
     @POST("oauth/token")
