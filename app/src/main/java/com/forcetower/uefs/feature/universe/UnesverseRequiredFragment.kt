@@ -14,6 +14,7 @@ import com.forcetower.uefs.core.vm.UnesverseViewModel
 import com.forcetower.uefs.databinding.FragmentUniverseRequiredBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class UnesverseRequiredFragment : UFragment(), Injectable {
@@ -23,6 +24,7 @@ class UnesverseRequiredFragment : UFragment(), Injectable {
     private lateinit var viewModel: UnesverseViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        Timber.d("That's hot... That really hot")
         viewModel = provideViewModel(factory)
         return FragmentUniverseRequiredBinding.inflate(inflater, container, false).also {
             binding = it
@@ -34,6 +36,8 @@ class UnesverseRequiredFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.connecting = viewModel.isLoggingIn
+        binding.lifecycleOwner = this
+        viewModel.loggingIn.observe(this, Observer { Unit })
         viewModel.loginMessenger.observe(this, EventObserver {
             val message = getString(it)
             showSnack(message)

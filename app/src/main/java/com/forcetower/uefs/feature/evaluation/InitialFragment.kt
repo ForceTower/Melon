@@ -9,6 +9,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class InitialFragment : UFragment(), Injectable {
@@ -23,6 +24,7 @@ class InitialFragment : UFragment(), Injectable {
         val onboarding = preferences.getBoolean("completed_evaluation_onboarding", false)
         viewModel = provideActivityViewModel(factory)
         viewModel.getToken().observe(this, Observer {
+            Timber.d("Token received: $it")
             if (it == null) {
                 findNavController().navigate(R.id.action_initial_to_unesverse_required)
             } else if (!onboarding) {
