@@ -48,6 +48,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
@@ -231,6 +232,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
+        if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
     }
 
     private fun openProfile(profileId: String) {

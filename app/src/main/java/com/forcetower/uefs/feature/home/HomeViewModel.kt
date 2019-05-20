@@ -40,6 +40,7 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
@@ -51,7 +52,8 @@ class HomeViewModel @Inject constructor(
     private val dataRepository: SagresDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository,
     private val settingsRepository: SettingsRepository,
-    private val darkThemeRepository: DarkThemeRepository
+    private val darkThemeRepository: DarkThemeRepository,
+    private val authRepository: AuthRepository
 ) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
@@ -107,5 +109,9 @@ class HomeViewModel @Inject constructor(
             }
             _passwordChangeProcess.value = Event(it)
         }
+    }
+
+    fun connectToServiceIfNeeded() {
+        authRepository.performAccountSyncStateIfNeededAsync()
     }
 }
