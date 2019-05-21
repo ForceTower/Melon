@@ -12,6 +12,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.vm.UnesverseViewModel
 import com.forcetower.uefs.databinding.FragmentUniverseRequiredBinding
+import com.forcetower.uefs.feature.information.InformationDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import javax.inject.Inject
@@ -28,7 +29,15 @@ class UnesverseRequiredFragment : UFragment(), Injectable {
             binding = it
         }.apply {
             btnConnect.setOnClickListener { connect() }
+            btnQuestion.setOnClickListener { onQuestion() }
         }.root
+    }
+
+    private fun onQuestion() {
+        val dialog = InformationDialog()
+        dialog.title = getString(R.string.unesverse_what_is_title)
+        dialog.description = getString(R.string.unesverse_what_is_description)
+        dialog.show(childFragmentManager, "what_is_unesverse")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

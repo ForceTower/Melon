@@ -25,7 +25,7 @@
   ~ SOFTWARE.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
     <string name="app_name">UNES</string>
     <string name="login_welcome_to_unes">Boas-vindas ao UNES</string>
     <string name="login_first_steps">Primeiros passos</string>
@@ -571,7 +571,7 @@
     <string name="evaluation_see_teacher_details">Ver detalhes do professor</string>
     <string name="evaluation_start">Início</string>
     <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
-    <string name="evaluation_search_hint">Procurando por algo ou alguem?</string>
+    <string name="evaluation_search_hint">Procurando por algo ou alguém?</string>
     <string name="welcome_to_unesverse">Boas vindas ao UNESVerso</string>
     <string name="unesverse_description">O gerenciador de funcionalidades compartilhadas do UNES.</string>
     <string name="login_to_unesverse">Entrar agora!</string>
@@ -580,7 +580,12 @@
     <string name="failed_to_connect_to_unesverse">Falhou ao conectar-se ao Unesverso</string>
     <string name="label_hourglass">A ampulheta de Zhonyas</string>
     <string name="connected_to_the_unesverse">Você entrou no UNESVerso!</string>
-    <string name="next_steps_under_development">Os proximos passos estão em desenvolvimento</string>
+    <string name="next_steps_under_development">Os próximos passos estão em desenvolvimento</string>
+    <string name="got_it">Entendi!</string>
+    <string name="unesverse_what_is_title">Universo UNES</string>
+    <string name="unesverse_what_is_description">O UNESVerso é o gerenciador de ações compartilhadas do UNES.\n\nTodas as funções que precisam que você interaja com outros alunos é intermediado pelo universo UNES, afinal, todos estão no mesmo universo compartilhado.\n\nNesta dimensão do universo você poderá encontrar várias funções desde email dos professores até conversar com alguem (será?)</string>
+    <string name="evaluation_what_is">Avaliação das Disciplinas</string>
+    <string name="evaluation_what_is_description">Bem, nós sempre somos avaliados em nossas disciplinas, agora é nossa vez de avaliar os professores e suas metodologias interessantes.\n\nAqui você poderá consultar e dar notas aos seus professores e disciplinas de acordo com sua experiência na sala de aula. Seja o mais sincero(a) possível, suas avaliações são publicas e também anônimas. Ao clicar em entrar, você irá compartilhar com o UNES todas as disciplinas que você já participou e poderá começar as avaliações.\n\nIsso é basicamente o Barril de Boas v3\n\nDúvidas? Mande uma pergunta no feedback!</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
