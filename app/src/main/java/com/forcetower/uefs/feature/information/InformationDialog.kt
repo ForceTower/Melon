@@ -12,7 +12,8 @@ class InformationDialog : RoundedDialog() {
     private lateinit var binding: DialogInformationBaseBinding
     lateinit var title: String
     lateinit var description: String
-    var buttonText: String = getString(R.string.got_it)
+    @Suppress("MemberVisibilityCanBePrivate")
+    var buttonText: String? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return DialogInformationBaseBinding.inflate(inflater, container, false).also {
@@ -26,6 +27,6 @@ class InformationDialog : RoundedDialog() {
         super.onViewCreated(view, savedInstanceState)
         binding.title = title
         binding.description = description
-        binding.buttonText = buttonText
+        binding.buttonText = buttonText ?: getString(R.string.got_it)
     }
 }
