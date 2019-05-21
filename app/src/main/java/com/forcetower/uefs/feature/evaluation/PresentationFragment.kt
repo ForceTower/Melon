@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentEvaluationPresentationBinding
+import com.forcetower.uefs.feature.information.InformationDialog
 import com.forcetower.uefs.feature.shared.UFragment
 
 class PresentationFragment : UFragment() {
@@ -16,10 +17,18 @@ class PresentationFragment : UFragment() {
             binding = it
         }.apply {
             btnConnect.setOnClickListener { next() }
+            btnQuestion.setOnClickListener { onQuestion() }
         }.root
     }
 
     fun next() {
         showSnack(getString(R.string.next_steps_under_development))
+    }
+
+    private fun onQuestion() {
+        val dialog = InformationDialog()
+        dialog.title = getString(R.string.evaluation_what_is)
+        dialog.description = getString(R.string.evaluation_what_is_description)
+        dialog.show(childFragmentManager, "what_is_evaluation")
     }
 }
