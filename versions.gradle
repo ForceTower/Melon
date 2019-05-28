@@ -70,7 +70,7 @@ versions.floating_search = "2.1.1"
 versions.zoned_time_date = "1.1.0"
 
 // Build Versions
-versions.android_gradle_plugin = "3.5.0-beta02"
+versions.android_gradle_plugin = "3.5.0-beta03"
 versions.kotlin = "1.3.31"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.28.0"
