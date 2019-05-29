@@ -88,8 +88,8 @@ fun Bitmap.unesLogo(context: Context, pos: Int): Bitmap {
     val canvas = Canvas(result)
     canvas.drawBitmap(this, 0f, 0f, null)
     val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(50, 50)
-    val left = if (pos == 0) 26f else width - logo.width - 20f
-    val top = if (pos == 0) height - logo.height - 20f else 42f
+    val left = if (pos == 0) 26f else width - logo.width - 24f
+    val top = if (pos == 0) height - logo.height - 24f else 42f
     canvas.drawBitmap(logo, left, top, null)
     canvas.save()
     return result
