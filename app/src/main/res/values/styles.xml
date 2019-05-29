@@ -116,6 +116,10 @@
         <item name="elevationOverlaysEnabled">false</item>
     </style>
 
+    <style name="UTheme.LightNav.Launcher">
+        <item name="android:windowBackground">@drawable/preview_window</item>
+    </style>
+
     <style name="UTheme.Translucent" parent="UTheme.LightNav">
         <item name="android:windowBackground">@color/scrim</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
