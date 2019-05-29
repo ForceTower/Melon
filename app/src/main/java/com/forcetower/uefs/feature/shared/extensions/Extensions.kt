@@ -48,6 +48,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import java.io.File
 import java.io.FileOutputStream
 
@@ -87,9 +88,10 @@ fun Bitmap.unesLogo(context: Context, pos: Int): Bitmap {
     val result = createBitmap(width, height)
     val canvas = Canvas(result)
     canvas.drawBitmap(this, 0f, 0f, null)
+    val px16dp = getPixelsFromDp(context, 16)
     val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(50, 50)
-    val left = if (pos == 0) 26f else width - logo.width - 24f
-    val top = if (pos == 0) height - logo.height - 24f else 42f
+    val left = if (pos == 0) px16dp else width - logo.width - px16dp
+    val top = if (pos == 0) height - logo.height - px16dp else 42f
     canvas.drawBitmap(logo, left, top, null)
     canvas.save()
     return result
