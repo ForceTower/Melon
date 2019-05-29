@@ -102,9 +102,9 @@ class MessagesViewModel @Inject constructor(
         return shareMessage(context, content)
     }
 
-    override fun onMessageShare(view: View) {
+    override fun onMessageShare(view: View, pos: Int) {
         val context = view.context
-        val file = view.drawToBitmap().unesLogo(context).toFile(context)
+        val file = view.drawToBitmap().unesLogo(context, pos).toFile(context)
 
         val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", file)
         val intent = Intent(Intent.ACTION_SEND)

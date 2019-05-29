@@ -35,5 +35,5 @@ interface MessagesActions {
     fun onMessageClick(message: String?)
     fun onMessageLongClick(view: View, message: Message?): Boolean
     fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean
-    fun onMessageShare(view: View)
+    fun onMessageShare(view: View, pos: Int)
 }
