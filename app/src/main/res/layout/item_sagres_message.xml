@@ -116,10 +116,11 @@
                 android:id="@+id/share_message"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
-                android:layout_marginStart="16dp"
+                android:layout_marginStart="4dp"
                 android:contentDescription="@string/share_message"
                 android:onClick="@{() -> listener.onMessageShare(card)}"
                 android:padding="8dp"
+                android:tint="?attr/colorAccent"
                 android:src="@drawable/ic_share_black_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_message_content" />
