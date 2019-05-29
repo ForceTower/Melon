@@ -39,6 +39,7 @@
             type="com.forcetower.uefs.feature.messages.MessagesActions"/>
     </data>
     <com.google.android.material.card.MaterialCardView
+        android:id="@+id/card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
@@ -116,6 +117,18 @@
                 app:layout_constraintStart_toEndOf="@+id/text_date_number"
                 app:layout_constraintTop_toTopOf="@+id/text_date_number"
                 tools:text="Maio 2019" />
+
+            <ImageView
+                android:id="@+id/share_message"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:padding="8dp"
+                android:src="@drawable/ic_share_black_24dp"
+                android:contentDescription="@string/share_message"
+                android:onClick="@{() -> listener.onMessageShare(card)}"
+                app:layout_constraintTop_toTopOf="@id/text_date_number"
+                app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+                app:layout_constraintBottom_toBottomOf="@id/text_date_number"/>
         
             <TextView
                 android:id="@+id/text_time"
