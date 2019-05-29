@@ -28,4 +28,5 @@
 
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
     <external-files-path name="documents" path="documents/"/>
+    <external-files-path name="messages" path="messages/"/>
 </paths>
