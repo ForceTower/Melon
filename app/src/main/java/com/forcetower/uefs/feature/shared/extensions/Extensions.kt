@@ -38,6 +38,7 @@ import android.os.Build
 import android.os.Parcel
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
 import androidx.core.view.postDelayed
@@ -83,12 +84,12 @@ fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: St
 }
 
 fun Bitmap.unesLogo(context: Context, pos: Int): Bitmap {
-    val left = if (pos == 0) 26f else width - 64f
-    val top = if (pos == 0) height - 64f else 42f
-    val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val result = createBitmap(width, height)
     val canvas = Canvas(result)
     canvas.drawBitmap(this, 0f, 0f, null)
     val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(50, 50)
+    val left = if (pos == 0) 26f else width - logo.width - 20f
+    val top = if (pos == 0) height - logo.height - 20f else 42f
     canvas.drawBitmap(logo, left, top, null)
     canvas.save()
     return result
