@@ -588,6 +588,7 @@
     <string name="evaluation_what_is_description">Bem, nós sempre somos avaliados em nossas disciplinas, agora é nossa vez de avaliar os professores e suas metodologias interessantes.\n\nAqui você poderá consultar e dar notas aos seus professores e disciplinas de acordo com sua experiência na sala de aula. Seja o mais sincero(a) possível, suas avaliações são publicas e também anônimas. Ao clicar em entrar, você irá compartilhar com o UNES todas as disciplinas que você já participou e poderá começar as avaliações.\n\nIsso é basicamente o Barril de Boas v3  Dúvidas? Mande uma pergunta no feedback!</string>
     <string name="share_using">Compartilhar mensagem</string>
     <string name="message_copied_to_clipboard">Mensagem copiada para a área de transferência</string>
+    <string name="share_message">Compartilhar mensagem</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
