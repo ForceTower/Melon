@@ -31,17 +31,24 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Parcel
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.scale
 import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.forcetower.uefs.R
+import java.io.File
+import java.io.FileOutputStream
 
 fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
     return Transformations.map(this, body)
@@ -73,4 +80,25 @@ fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: St
         .setIcon(Icon.createWithResource(ctx, icon))
         .setIntent(this)
         .build()
+}
+
+fun Bitmap.unesLogo(context: Context): Bitmap {
+    val result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(result)
+    val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(50, 50)
+    canvas.drawBitmap(logo, width - 64.toFloat(), height.toFloat() - 64, null)
+    canvas.save()
+    return result
+}
+
+fun Bitmap.toFile(context: Context): File {
+    val parent = File(context.getExternalFilesDir(null), "messages")
+    parent.deleteRecursively()
+    parent.mkdirs()
+    val file = File(parent, "message_share.jpg")
+    val fos = FileOutputStream(file)
+    compress(Bitmap.CompressFormat.JPEG, 100, fos)
+    fos.flush()
+    fos.close()
+    return file
 }
