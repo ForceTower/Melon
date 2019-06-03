@@ -139,9 +139,9 @@
         tools:layout="@layout/activity_demand"/>
 
     <activity
-        android:id="@+id/hourglass"
-        android:name="com.forcetower.uefs.feature.barrildeboa.HourglassActivity"
-        android:label="HourglassActivity"
-        tools:layout="@layout/activity_hourglass"/>
+        android:id="@+id/evaluation"
+        android:name="com.forcetower.uefs.feature.evaluation.EvaluationActivity"
+        android:label="EvaluationActivity"
+        tools:layout="@layout/activity_evaluation"/>
 
 </navigation>

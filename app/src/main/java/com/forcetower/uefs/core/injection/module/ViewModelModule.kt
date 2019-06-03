@@ -35,15 +35,16 @@ import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.SnackbarViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.vm.UnesverseViewModel
 import com.forcetower.uefs.easter.darktheme.DarkThemeViewModel
 import com.forcetower.uefs.feature.about.ContributorViewModel
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
-import com.forcetower.uefs.feature.barrildeboa.HourglassViewModel
 import com.forcetower.uefs.feature.bigtray.BigTrayViewModel
 import com.forcetower.uefs.feature.calendar.AcademicCalendarViewModel
 import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
+import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
@@ -194,11 +195,6 @@ abstract class ViewModelModule {
 
     @Binds
     @IntoMap
-    @ViewModelKey(HourglassViewModel::class)
-    abstract fun bindHourglassViewModel(vm: HourglassViewModel): ViewModel
-
-    @Binds
-    @IntoMap
     @ViewModelKey(OnboardingViewModel::class)
     abstract fun bindOnboardingViewModel(vm: OnboardingViewModel): ViewModel
 
@@ -216,6 +212,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(SIECOMPSpeakerViewModel::class)
     abstract fun bindSIECOMPSpeakerViewModel(vm: SIECOMPSpeakerViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EvaluationViewModel::class)
+    abstract fun bindEvaluationViewModel(vm: EvaluationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UnesverseViewModel::class)
+    abstract fun bindUneverseViewModel(vm: UnesverseViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
