@@ -46,7 +46,6 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.toFile
-import com.forcetower.uefs.feature.shared.extensions.unesLogo
 import javax.inject.Inject
 
 class MessagesViewModel @Inject constructor(
