@@ -27,6 +27,13 @@
 
 package com.forcetower.uefs.feature.messages
 
+import android.view.View
+import com.forcetower.uefs.core.model.service.UMessage
+import com.forcetower.uefs.core.model.unes.Message
+
 interface MessagesActions {
-    fun onMessageClick(message: String)
+    fun onMessageClick(message: String?)
+    fun onMessageLongClick(view: View, message: Message?): Boolean
+    fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean
+    fun onMessageShare(view: View, pos: Int)
 }

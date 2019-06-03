@@ -57,6 +57,7 @@
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+        <item name="colorAccentAlpha">@color/colorAccentAlpha</item>
         <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>
@@ -82,6 +83,12 @@
 
         <item name="iconColor">?attr/colorOnBackground</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
+        <item name="alertDialogTheme">@style/UTheme.AlertDialog</item>
+    </style>
+
+    <style name="UTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
+        <item name="android:windowMinWidthMajor">90%</item>
+        <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
     <style name="mdtp_ActionButton.Text" parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
@@ -107,6 +114,10 @@
 
     <style name="UTheme.LightNav">
         <item name="elevationOverlaysEnabled">false</item>
+    </style>
+
+    <style name="UTheme.LightNav.Launcher">
+        <item name="android:windowBackground">@drawable/preview_window</item>
     </style>
 
     <style name="UTheme.Translucent" parent="UTheme.LightNav">
@@ -235,6 +246,7 @@
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+        <item name="colorAccentAlpha">@color/colorAccentAlpha</item>
         <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>

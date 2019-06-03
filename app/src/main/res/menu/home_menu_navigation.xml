@@ -41,6 +41,12 @@
                     android:icon="@drawable/ic_face_black_24dp"/>
 
                 <item
+                    android:id="@+id/evaluation"
+                    android:title="@string/label_evaluation"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_whatshot_black_24dp"/>
+
+                <item
                     android:id="@+id/documents"
                     android:title="@string/label_documents"
                     android:menuCategory="secondary"
@@ -120,12 +126,6 @@
                     android:title="@string/label_mech_calculator"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_dvr_black_24dp"/>
-
-                <item
-                    android:id="@+id/hourglass"
-                    android:title="@string/label_hourglass"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_cast_education_black_24dp"/>
                 
                 <item
                     android:id="@+id/library"

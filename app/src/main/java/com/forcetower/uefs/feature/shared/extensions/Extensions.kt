@@ -31,17 +31,26 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.pm.ShortcutInfo
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
 import android.os.Parcel
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.core.graphics.createBitmap
+import androidx.core.graphics.drawable.toBitmap
+import androidx.core.graphics.scale
 import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import java.io.File
+import java.io.FileOutputStream
 
 fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
     return Transformations.map(this, body)
@@ -73,4 +82,30 @@ fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: St
         .setIcon(Icon.createWithResource(ctx, icon))
         .setIntent(this)
         .build()
+}
+
+fun Bitmap.unesLogo(context: Context, pos: Int): Bitmap {
+    val result = createBitmap(width, height)
+    val canvas = Canvas(result)
+    canvas.drawBitmap(this, 0f, 0f, null)
+    val px16dp = getPixelsFromDp(context, 16)
+    val px42dp = getPixelsFromDp(context, 42).toInt()
+    val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(px42dp, px42dp)
+    val left = if (pos == 0) px16dp else width - logo.width - px16dp
+    val top = if (pos == 0) height - logo.height - px16dp else 42f
+    canvas.drawBitmap(logo, left, top, null)
+    canvas.save()
+    return result
+}
+
+fun Bitmap.toFile(context: Context): File {
+    val parent = File(context.getExternalFilesDir(null), "messages")
+    parent.deleteRecursively()
+    parent.mkdirs()
+    val file = File(parent, "message_share.jpg")
+    val fos = FileOutputStream(file)
+    compress(Bitmap.CompressFormat.JPEG, 100, fos)
+    fos.flush()
+    fos.close()
+    return file
 }

@@ -31,6 +31,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.work.WorkManager
 import com.crashlytics.android.Crashlytics
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
@@ -218,13 +219,16 @@ class FirebaseMessageRepository @Inject constructor(
         val title = data["title"]
         val message = data["message"]
         val image = data["image"]
+        val institution = data["institution"]
 
         if (title == null || message == null) {
             Crashlytics.log("Bad notification created. It was ignored")
             return
         }
 
-        NotificationCreator.showServiceMessageNotification(context, message.hashCode().toLong(), title, message, image)
+        if (institution == null || institution == SagresNavigator.instance.getSelectedInstitution()) {
+            NotificationCreator.showServiceMessageNotification(context, message.hashCode().toLong(), title, message, image)
+        }
     }
 
     private fun eventNotification(data: Map<String, String>) {

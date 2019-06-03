@@ -94,8 +94,7 @@
             <androidx.viewpager.widget.ViewPager
                 android:id="@+id/pager_message"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent">
-        </androidx.viewpager.widget.ViewPager>
+                android:layout_height="match_parent"/>
         </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
