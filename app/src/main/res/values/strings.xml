@@ -25,7 +25,7 @@
   ~ SOFTWARE.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt">
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
     <string name="app_name">UNES</string>
     <string name="login_welcome_to_unes">Boas-vindas ao UNES</string>
     <string name="login_first_steps">Primeiros passos</string>
@@ -369,7 +369,7 @@
     <string name="hourglass_what_is_this">O que é isso?</string>
     <string name="ohh_i_see">Ahh ta</string>
     <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.\n\nEsta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.\n\nNo final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
-    <string name="label_hourglass">Ampulheta de Zhonyas</string>
+    <string name="label_evaluation">Teemo Camuflado</string>
     <string name="hourglass_landing_desc">Antes de começar, o UNES irá baixar os detalhes de todas as disciplinas. Nos encontraremos de novo quando terminar</string>
     <string name="hourglass_landing_title">Oi, você vem sempre aqui?</string>
     <string name="hourglass_not_contribute">Não</string>
@@ -432,7 +432,7 @@
     <string name="send">Enviar</string>
     <string name="dark_theme_send_warning">Se você digitar o nome errado ou se a pessoa já tiver o tema escuro, seu convite pode ser consumido mesmo assim :)\n\nInclusive, pode acontecer da pessoa não receber o presente porque ela não está mais conectada no UNESVerso</string>
     <string name="dark_theme_send_label">Quem você deseja presentear?</string>
-    <string name="dark_theme_send_instructions">Digite o nome de usuário do Sagres de quem será presenteado. Esta pessoa precisa estar na versão 7.0.4 ou superior do UNES</string>
+    <string name="dark_theme_send_instructions">Digite o nome de usuário do Sagres de quem será presenteado. Esta pessoa precisa estar conectada ao UNESVerso</string>
     <string name="invites_left">convites restantes</string>
     <string name="you_got">Você tem</string>
     <string name="dark_theme_invite_a_friend_title">Presenteie alguém com o tema escuro</string>
@@ -448,7 +448,7 @@
     <string name="you_missed_to_many_classes">Você já faltou demais, sinto muito</string>
     <string name="grade_format">%1$.1f</string>
     <string name="ach_distance_title_format">Distância até %1$s</string>
-    <string name="ach_distance_amount_format">%1$.1f m</string>
+    <string name="ach_distance_amount_format" translatable="false">%1$.1f m</string>
     <string name="not_connected_to_the_adventure">Você não está conectado, por favor deixe a aventura e volte!</string>
     <string name="achievements_client_invalid_reconnect">O cliente da aventura é nulo, deixe a aventura e tente novamente</string>
     <string name="cant_open_achievements_invalid_intent">O google play não quer abrir as conquistas, deixe a aventura e tente novamente</string>
@@ -553,11 +553,42 @@
     <string name="rewarded_with_back_2048">Você pode voltar jogadas!</string>
     <string name="rewarded_failed">A recompensa foi cancelada</string>
     <string name="changes_on_this_update">Mudanças nesta atualização</string>
-    <string name="changes_on_this_update_desc">O UNES já cresceu a um ponto que ferramentas grátis não conseguem mais suporta-lo. (As doações não funcionaram, apesar de eu gostar da Wikipédia, eu nunca doei)\n\nA partir de agora, teremos no máximo 2 anúncios por dia, elas aparecerão assim que o app abrir.\nEspero que isso seja o suficiente para conseguir colocar o UNES nos trilhos de novo :)</string>
+    <string name="changes_on_this_update_desc">O UNES já cresceu a um ponto que ferramentas grátis não conseguem mais suporta-lo. (As doações não funcionaram, apesar de eu gostar da Wikipédia, eu nunca doei)  A partir de agora, teremos no máximo 2 anúncios por dia, elas aparecerão assim que o app abrir. Espero que isso seja o suficiente para conseguir colocar o UNES nos trilhos de novo :)</string>
     <string name="logout_confirmation_title">Tem certeza que deseja sair?</string>
     <string name="institution_select">Instituição</string>
     <string name="label_institution">Instituição de Ensino</string>
     <string name="label_institution_select_information">Selecione sua instituição de ensino para que o UNES consiga fazer login corretamente.\n\nSe sua instituição não está na lista, adicione uma issue no projeto o GitHub para conversarmos e enfim adicionar suporte à sua universidade</string>
+    <string name="evaluation_options">Suas opções</string>
+    <string name="evaluation_teachers">Professores</string>
+    <string name="evaluation_disciplines">Disciplinas</string>
+    <string name="evaluation_performance">Desempenho</string>
+    <string name="evaluation_general_mean">A média geral desta %1$s é %2$.1f*</string>
+    <string name="evaluation_mean_amount">* Calculada usando dados de %1$d alunos</string>
+    <string name="evaluation_teacher_single">professor</string>
+    <string name="evaluation_discipline_single">disciplina</string>
+    <string name="evaluation_discipline_teachers">Professores da disciplina</string>
+    <string name="evaluation_last_seen">última vez em %1$s</string>
+    <string name="evaluation_see_teacher_details">Ver detalhes do professor</string>
+    <string name="evaluation_start">Início</string>
+    <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
+    <string name="evaluation_search_hint">Procurando por algo ou alguém?</string>
+    <string name="welcome_to_unesverse">Boas vindas ao UNESVerso</string>
+    <string name="unesverse_description">O gerenciador de funcionalidades compartilhadas do UNES.</string>
+    <string name="login_to_unesverse">Entrar agora!</string>
+    <string name="evaluation_welcome_back">Você de novo aqui?</string>
+    <string name="evaluation_presentation_description">Avalie seus professores! Diga o que você achou das suas aulas e das diversas metodologias de ensino que você encontrou</string>
+    <string name="failed_to_connect_to_unesverse">Falhou ao conectar-se ao Unesverso</string>
+    <string name="label_hourglass">A ampulheta de Zhonyas</string>
+    <string name="connected_to_the_unesverse">Você entrou no UNESVerso!</string>
+    <string name="next_steps_under_development">Os próximos passos estão em desenvolvimento</string>
+    <string name="got_it">Entendi!</string>
+    <string name="unesverse_what_is_title">Universo UNES</string>
+    <string name="unesverse_what_is_description">O UNESVerso é o gerenciador de ações compartilhadas do UNES.\n\nTodas as funções que precisam que você interaja com outros alunos é intermediado pelo universo UNES, afinal, todos estão no mesmo universo compartilhado.\n\nNesta dimensão do universo você poderá encontrar várias funções desde email dos professores até conversar com alguem (será?)</string>
+    <string name="evaluation_what_is">Avaliação das Disciplinas</string>
+    <string name="evaluation_what_is_description">Bem, nós sempre somos avaliados em nossas disciplinas, agora é nossa vez de avaliar os professores e suas metodologias interessantes.\n\nAqui você poderá consultar e dar notas aos seus professores e disciplinas de acordo com sua experiência na sala de aula. Seja o mais sincero(a) possível, suas avaliações são publicas e também anônimas. Ao clicar em entrar, você irá compartilhar com o UNES todas as disciplinas que você já participou e poderá começar as avaliações.\n\nIsso é basicamente o Barril de Boas v3  Dúvidas? Mande uma pergunta no feedback!</string>
+    <string name="share_using">Compartilhar mensagem</string>
+    <string name="message_copied_to_clipboard">Mensagem copiada para a área de transferência</string>
+    <string name="share_message">Compartilhar mensagem</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

@@ -6,7 +6,7 @@ def versions = [:]
 versions.ktx = "1.0.1"
 
 // Android X [Old Support]
-versions.app_compat = "1.1.0-alpha04"
+versions.app_compat = "1.1.0-alpha05"
 versions.google_material = "1.1.0-alpha06"
 versions.constraint_layout = "1.1.3"
 versions.annotation = "1.0.2"
@@ -61,7 +61,7 @@ versions.cookie_jar = "v1.0.1"
 // Others
 versions.gson = "2.8.5"
 versions.jsoup = "1.11.3"
-versions.chart_view = "v3.0.3"
+versions.chart_view = "v3.1.0"
 versions.about_libraries = "7.0.0-rc1"
 versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
@@ -70,7 +70,7 @@ versions.floating_search = "2.1.1"
 versions.zoned_time_date = "1.1.0"
 
 // Build Versions
-versions.android_gradle_plugin = "3.5.0-beta01"
+versions.android_gradle_plugin = "3.5.0-beta03"
 versions.kotlin = "1.3.31"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.28.0"

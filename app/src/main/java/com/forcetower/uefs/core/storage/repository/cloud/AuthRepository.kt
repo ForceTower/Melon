@@ -1,8 +1,10 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
+import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.annotations.USLoginMethod
 import com.forcetower.uefs.core.model.unes.Access
@@ -42,6 +44,32 @@ class AuthRepository @Inject constructor(
             }
             override fun saveCallResult(value: AccessToken) { database.accessTokenDao().insert(value) }
         }.asLiveData()
+    }
+
+    @MainThread
+    fun autoLogin(): LiveData<Resource<AccessToken?>> {
+        val result = MediatorLiveData<Resource<AccessToken?>>()
+        val accessSrc = database.accessDao().getAccess()
+        result.addSource(accessSrc) {
+            result.removeSource(accessSrc)
+            if (it != null) {
+                val loginSrc = login(it.username, it.password, LOGIN_METHOD_SAGRES)
+                result.addSource(loginSrc) { res ->
+                    result.value = res
+                }
+            } else {
+                result.value = Resource.error("Invalid access", null)
+            }
+        }
+        return result
+    }
+
+    @AnyThread
+    fun performAccountSyncStateIfNeededAsync() {
+        executors.networkIO().execute {
+            val tk = database.accessTokenDao().getAccessTokenDirect()
+            if (tk == null) performAccountSyncState()
+        }
     }
 
     @WorkerThread
@@ -84,6 +112,7 @@ class AuthRepository @Inject constructor(
     @WorkerThread
     fun syncLogin(username: String, password: String): AccessToken? {
         try {
+            Timber.d("Sign in using $username and $password")
             val response = service.loginWithSagres(username, password).execute()
             if (response.isSuccessful) {
                 val token = response.body()
