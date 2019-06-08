@@ -589,6 +589,7 @@
     <string name="share_using">Compartilhar mensagem</string>
     <string name="message_copied_to_clipboard">Mensagem copiada para a área de transferência</string>
     <string name="share_message">Compartilhar mensagem</string>
+    <string name="eval_loading_evaluation">Carregando informações</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

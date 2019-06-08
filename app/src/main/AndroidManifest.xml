@@ -22,7 +22,9 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".feature.evaluation.EvaluationActivity"></activity>
+        <activity
+            android:name=".feature.evaluation.EvaluationActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav.Launcher">
