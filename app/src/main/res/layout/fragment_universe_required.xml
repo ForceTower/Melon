@@ -46,7 +46,7 @@
             android:text="@string/welcome_to_unesverse"
             android:textColor="?attr/colorPrimary"
             android:textSize="20sp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/unesverse_description"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start" />
@@ -55,7 +55,7 @@
             android:id="@+id/unesverse_description"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/unesverse_description"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"

@@ -38,7 +38,7 @@
             android:text="@string/evaluation_welcome_back"
             android:textColor="?attr/colorPrimary"
             android:textSize="20sp"
-            android:layout_marginBottom="8dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toTopOf="@+id/subtitle"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start" />
@@ -47,7 +47,7 @@
             android:id="@+id/subtitle"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="16dp"
+            android:layout_marginBottom="32dp"
             android:text="@string/evaluation_presentation_description"
             android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
