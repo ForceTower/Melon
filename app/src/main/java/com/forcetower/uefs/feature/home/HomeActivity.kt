@@ -113,10 +113,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         val willShowAds = preferences.getBoolean("admob_warning_showed", false)
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
         setupAds(willShowAds && admobEnabled)
-        if (!willShowAds && admobEnabled) {
-            preferences.edit().putBoolean("admob_warning_showed", true).apply()
-            displayAdvertisementsInfo()
-        }
+//        if (!willShowAds && admobEnabled) {
+//            preferences.edit().putBoolean("admob_warning_showed", true).apply()
+//            displayAdvertisementsInfo()
+//        }
 
         if (savedInstanceState == null) {
             onActivityStart()
