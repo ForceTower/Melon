@@ -58,7 +58,8 @@
     <fragment
         android:id="@+id/home"
         android:name="com.forcetower.uefs.feature.evaluation.home.HomeFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_evaluation_home">
         <action
             android:id="@+id/action_home_to_eval_discipline"
             app:destination="@id/eval_discipline" />

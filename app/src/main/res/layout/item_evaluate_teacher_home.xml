@@ -5,8 +5,8 @@
 
     <data>
         <variable
-            name="discipline"
-            type="com.forcetower.uefs.core.model.service.EvaluationDiscipline" />
+            name="teacher"
+            type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -22,14 +22,14 @@
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
             android:paddingTop="16dp"
-            android:paddingBottom="4dp">
+            android:paddingBottom="16dp">
             <TextView
                 android:id="@+id/text_grade"
                 android:layout_width="36dp"
                 android:layout_height="36dp"
                 android:background="@drawable/rectangle_rounded_accent"
                 android:gravity="center"
-                android:text="@{@string/grade_format(discipline.mean)}"
+                android:text="@{@string/grade_format(teacher.mean)}"
                 android:textAlignment="gravity"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintStart_toStartOf="parent"
@@ -41,14 +41,14 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="16dp"
-                android:text="@{discipline.name}"
+                android:text="@{teacher.name}"
                 android:textColor="?attr/colorOnSurface"
                 android:maxLines="2"
                 android:ellipsize="end"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_grade"
                 app:layout_constraintTop_toTopOf="@+id/text_grade"
-                tools:text="Metodologia da Pesquisa e Desenvolvimento em Engenharia de Computação" />
+                tools:text="Angelo do Ártico" />
 
             <TextView
                 android:id="@+id/text_vote_count"
@@ -56,41 +56,11 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:layout_marginStart="16dp"
-                android:text="@{@string/evaluation_discipline_mean_count(discipline.qtdStudents)}"
+                android:text="@{@string/evaluation_teacher_mean_count(teacher.qtdStudents)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_grade"
                 app:layout_constraintTop_toBottomOf="@+id/text_title"
                 tools:text="com 45 votos" />
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_open"
-                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:text="@string/evaluation_open_discipline"
-                app:goneIf="@{discipline.participant}"
-                app:iconGravity="end"
-                app:iconPadding="10dp"
-                app:icon="@drawable/ic_chevron_right_black_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_vote_count"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_vote"
-                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
-                app:goneUnless="@{discipline.participant}"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="44dp"
-                android:text="@string/evaluation_leave_feedback"
-                app:iconGravity="end"
-                app:iconPadding="10dp"
-                app:icon="@drawable/ic_chevron_right_black_24dp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_vote_count"
-                tools:visibility="gone"/>
-
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>

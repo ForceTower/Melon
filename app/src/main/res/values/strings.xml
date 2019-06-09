@@ -590,6 +590,11 @@
     <string name="message_copied_to_clipboard">Mensagem copiada para a área de transferência</string>
     <string name="share_message">Compartilhar mensagem</string>
     <string name="eval_loading_evaluation">Carregando informações</string>
+    <string name="evaluation_topics_load_failed">Não foi possível carregar as informações</string>
+    <string name="evaluation_discipline_mean_count">com %1$d votos</string>
+    <string name="evaluation_teacher_mean_count">com %1$d votos</string>
+    <string name="evaluation_leave_feedback">Deixar a sua opinião</string>
+    <string name="evaluation_open_discipline">Ver disciplina</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

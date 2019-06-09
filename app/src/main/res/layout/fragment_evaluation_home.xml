@@ -3,6 +3,12 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="account"
+            type="com.forcetower.uefs.core.model.unes.Account" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -41,7 +47,8 @@
             app:layout_constraintEnd_toStartOf="@id/user_image"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/home_label"
-            android:text="@string/evaluation_welcome" />
+            android:text="@{@string/evaluation_welcome(account.name)}"
+            tools:text="@string/evaluation_welcome" />
 
         <ImageView
             android:id="@+id/user_image"
@@ -49,6 +56,8 @@
             android:layout_height="36dp"
             android:importantForAccessibility="no"
             app:clipToCircle="@{true}"
+            app:goneIf="@{account.imageUrl == null}"
+            app:imageUrl="@{account.imageUrl}"
             app:layout_constraintBottom_toBottomOf="@+id/welcome_home"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintTop_toTopOf="@id/home_label"
@@ -123,13 +132,14 @@
             android:clipToPadding="false"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/btn_search_teachers"
             tools:listitem="@layout/item_evaluate_discipline_home"
-            tools:visibility="gone" />
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

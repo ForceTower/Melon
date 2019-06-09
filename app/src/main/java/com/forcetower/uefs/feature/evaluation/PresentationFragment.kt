@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentEvaluationPresentationBinding
 import com.forcetower.uefs.feature.information.InformationDialog
@@ -22,7 +23,8 @@ class PresentationFragment : UFragment() {
     }
 
     fun next() {
-        showSnack(getString(R.string.next_steps_under_development))
+        val direction = PresentationFragmentDirections.actionPresentationToHome()
+        findNavController().navigate(direction)
     }
 
     private fun onQuestion() {

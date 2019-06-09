@@ -52,6 +52,7 @@ import com.forcetower.uefs.core.storage.database.M15TOM16
 import com.forcetower.uefs.core.storage.database.M16TOM17
 import com.forcetower.uefs.core.storage.database.M17TOM18
 import com.forcetower.uefs.core.storage.database.M18TOM19
+import com.forcetower.uefs.core.storage.database.M19TO20
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import dagger.Module
 import dagger.Provides
@@ -78,7 +79,7 @@ object AppModule {
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
                 .addMigrations(M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
-                        M12TO13, M13TOM14, M14TOM15, M15TOM16, M16TOM17, M17TOM18, M18TOM19)
+                        M12TO13, M13TOM14, M14TOM15, M15TOM16, M16TOM17, M17TOM18, M18TOM19, M19TO20)
                 .fallbackToDestructiveMigration()
                 .build()
 
