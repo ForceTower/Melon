@@ -154,5 +154,4 @@ object M19TO20 : Migration(19, 20) {
         val table = "Account"
         database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `name` TEXT, `imageUrl` TEXT, `username` TEXT NOT NULL, `email` TEXT, `darkThemeEnabled` INTEGER NOT NULL, `darkThemeInvites` INTEGER NOT NULL, PRIMARY KEY(`id`))")
     }
-
 }
