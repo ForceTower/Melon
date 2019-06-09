@@ -18,6 +18,7 @@ import com.forcetower.uefs.databinding.FragmentEvaluationHomeBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class HomeFragment : UFragment(), Injectable {
@@ -80,6 +81,7 @@ class HomeFragment : UFragment(), Injectable {
             }
         }
         if (data != null) {
+            Timber.d("Data received $data")
             adapter.currentList = data
         }
     }
