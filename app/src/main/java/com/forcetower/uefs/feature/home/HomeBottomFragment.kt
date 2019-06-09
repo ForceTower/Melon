@@ -41,6 +41,8 @@ import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
@@ -107,6 +109,12 @@ class HomeBottomFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
+        viewModel.account.observe(this, Observer { handleAccount(it) })
+    }
+
+    private fun handleAccount(resource: Resource<Account>) {
+        val data = resource.data ?: return
+        toggleNightModeSwitcher(data.darkThemeEnabled)
     }
 
     private fun featureFlags() {

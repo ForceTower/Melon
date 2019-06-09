@@ -32,10 +32,12 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
@@ -53,7 +55,8 @@ class HomeViewModel @Inject constructor(
     private val firebaseMessageRepository: FirebaseMessageRepository,
     private val settingsRepository: SettingsRepository,
     private val darkThemeRepository: DarkThemeRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
@@ -75,6 +78,7 @@ class HomeViewModel @Inject constructor(
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
+    val account: LiveData<Resource<Account>> = accountRepository.getAccount()
 
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
 
@@ -100,7 +104,6 @@ class HomeViewModel @Inject constructor(
     fun verifyDarkTheme() = darkThemeRepository.getPreconditions()
     fun lightWeightCalcScore() = dataRepository.lightweightCalcScore()
     fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
-
     fun attemptNewPasswordLogin(password: String) {
         val source = dataRepository.attemptLoginWithNewPassword(password)
         _passwordChangeProcess.addSource(source) {
