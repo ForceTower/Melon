@@ -32,27 +32,29 @@ import androidx.room.RoomDatabase
 import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.model.unes.SagresFlags
-import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.dao.AccessDao
 import com.forcetower.uefs.core.storage.database.dao.AccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.AccountDao
 import com.forcetower.uefs.core.storage.database.dao.CalendarDao
 import com.forcetower.uefs.core.storage.database.dao.ClassAbsenceDao
 import com.forcetower.uefs.core.storage.database.dao.ClassDao
@@ -95,8 +97,9 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     SDemandOffer::class,
     SagresFlags::class,
     Contributor::class,
-    ServiceRequest::class
-], version = 19, exportSchema = true)
+    ServiceRequest::class,
+    Account::class
+], version = 20, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -119,4 +122,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun flagsDao(): FlagsDao
     abstract fun contributorDao(): ContributorDao
     abstract fun serviceRequestDao(): ServiceRequestDao
+    abstract fun accountDao(): AccountDao
 }
