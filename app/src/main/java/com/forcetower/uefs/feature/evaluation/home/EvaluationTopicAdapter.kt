@@ -20,7 +20,7 @@ class EvaluationTopicAdapter : RecyclerView.Adapter<EvaluationHolder>() {
     var currentList: List<EvaluationHomeTopic> = listOf()
         set(value) {
             field = value
-            differ.submitList(buildMergedList(currentList))
+            differ.submitList(buildMergedList(value))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EvaluationHolder {
@@ -69,14 +69,14 @@ class EvaluationTopicAdapter : RecyclerView.Adapter<EvaluationHolder>() {
         }
     }
 
-    private fun buildMergedList(list: List<EvaluationHomeTopic>): List<Any> {
+    private fun buildMergedList(list: List<EvaluationHomeTopic>?): List<Any> {
         val result = mutableListOf<Any>()
-        list.forEach {
+        list?.forEach {
             result += it
             val teachers = it.teachers
             val disciplines = it.disciplines
-            result.addAll(teachers.map { value -> TeacherWrapper(value, it.id) })
-            result.addAll(disciplines.map { value -> DisciplineWrapper(value, it.id) })
+            if (teachers != null) result.addAll(teachers.map { value -> TeacherWrapper(value, it.id) })
+            if (disciplines != null) result.addAll(disciplines.map { value -> DisciplineWrapper(value, it.id) })
         }
         return result
     }

@@ -21,7 +21,7 @@ class InitialFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        val onboarding = preferences.getBoolean("completed_evaluation_onboarding", false)
+        val onboarding = preferences.getBoolean("evaluation_presentation_shown", false)
         viewModel = provideActivityViewModel(factory)
         viewModel.getToken().observe(this, Observer {
             Timber.d("Token received: $it")
