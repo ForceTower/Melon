@@ -64,7 +64,7 @@ class DemandOffersAdapter(
         when (holder) {
             is DemandHolder.OfferHolder -> holder.binding.apply {
                 offer = differ.currentList[position] as SDemandOffer
-                setLifecycleOwner(lifecycleOwner)
+                lifecycleOwner = this@DemandOffersAdapter.lifecycleOwner
                 actions = viewModel
                 executePendingBindings()
             }
