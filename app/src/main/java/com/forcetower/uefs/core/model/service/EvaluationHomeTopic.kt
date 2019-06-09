@@ -8,6 +8,6 @@ data class EvaluationHomeTopic(
     val description: String,
     @SerializedName("data_type")
     val dataType: Int = 0,
-    val teachers: List<EvaluationTeacher> = emptyList(),
-    val disciplines: List<EvaluationDiscipline> = emptyList()
+    val teachers: List<EvaluationTeacher>?,
+    val disciplines: List<EvaluationDiscipline>?
 )
