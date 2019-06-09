@@ -31,12 +31,14 @@ import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.UResponse
+import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
@@ -87,6 +89,12 @@ interface UService {
 
     @POST("grades")
     fun sendGrades(@Body grades: DisciplineDetailsData): Call<UResponse<Void>>
+
+    @GET("account")
+    fun getAccount(): Call<Account>
+
+    @GET("evaluation/hot")
+    fun getEvaluationTopics(): Call<List<EvaluationHomeTopic>>
 
     // ---------------------------------------------------------------------------------------------
 

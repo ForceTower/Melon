@@ -148,3 +148,11 @@ object M18TOM19 : Migration(18, 19) {
         database.execSQL("DELETE FROM AccessToken")
     }
 }
+
+object M19TO20 : Migration(19, 20) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val table = "Account"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `name` TEXT, `imageUrl` TEXT, `username` TEXT NOT NULL, `email` TEXT, `darkThemeEnabled` INTEGER NOT NULL, `darkThemeInvites` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+    }
+
+}
