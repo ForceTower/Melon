@@ -2,16 +2,16 @@
 <set xmlns:android="http://schemas.android.com/apk/res/android"
     android:shareInterpolator="true">
     <scale
-        android:fromXScale="80%p"
+        android:fromXScale="95%p"
         android:toXScale="100%p"
-        android:fromYScale="80%p"
+        android:fromYScale="96%p"
         android:toYScale="100%p"
         android:pivotX="50%p"
-        android:pivotY="50%p"
-        android:duration="@android:integer/config_mediumAnimTime" />
+        android:pivotY="100%p"
+        android:duration="@android:integer/config_shortAnimTime" />
 
     <alpha
-        android:fromAlpha="0.5"
+        android:fromAlpha="0.7"
         android:toAlpha="1.0"
-        android:duration="@android:integer/config_mediumAnimTime"/>
+        android:duration="@android:integer/config_shortAnimTime"/>
 </set>
