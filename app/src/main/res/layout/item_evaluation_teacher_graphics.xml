@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp" />
+
+        <TextView
+            android:id="@+id/general_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="Informações gerais"
+            android:textColor="?attr/colorPrimary"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.forcetower.uefs.widget.CircleProgressBar
+            android:id="@+id/approval"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="12dp"
+            app:progressbarColor="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/failed"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/general_info" />
+
+        <com.forcetower.uefs.widget.CircleProgressBar
+            android:id="@+id/failed"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            app:progressbarColor="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/give_up"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/approval"
+            app:layout_constraintTop_toTopOf="@+id/approval" />
+
+        <com.forcetower.uefs.widget.CircleProgressBar
+            android:id="@+id/give_up"
+            android:layout_width="80dp"
+            android:layout_height="0dp"
+            app:progressbarColor="?attr/colorPrimary"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/failed"
+            app:layout_constraintTop_toTopOf="@+id/approval" />
+
+        <TextView
+            android:id="@+id/text_approvals"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/evaluation_approvals"
+            android:textSize="10sp"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/approval"
+            app:layout_constraintEnd_toEndOf="@+id/approval"
+            app:layout_constraintStart_toStartOf="@+id/approval" />
+
+        <TextView
+            android:id="@+id/text_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/evaluation_fails"
+            android:textSize="10sp"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/failed"
+            app:layout_constraintEnd_toEndOf="@+id/failed"
+            app:layout_constraintStart_toStartOf="@+id/failed" />
+
+        <TextView
+            android:id="@+id/text_give_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/evaluation_give_up"
+            android:textSize="10sp"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginBottom="16dp"
+            app:layout_constraintBottom_toBottomOf="@+id/give_up"
+            app:layout_constraintEnd_toEndOf="@+id/give_up"
+            app:layout_constraintStart_toStartOf="@+id/give_up" />
+
+        <TextView
+            android:id="@+id/qtd_approval"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:textColor="?attr/colorAccent"
+            app:layout_constraintBottom_toTopOf="@+id/text_approvals"
+            app:layout_constraintEnd_toEndOf="@+id/approval"
+            app:layout_constraintStart_toStartOf="@+id/approval"
+            tools:text="78" />
+
+        <TextView
+            android:id="@+id/qtd_failed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:textColor="?attr/colorAccent"
+            app:layout_constraintBottom_toTopOf="@+id/text_failed"
+            app:layout_constraintEnd_toEndOf="@+id/failed"
+            app:layout_constraintStart_toStartOf="@+id/failed"
+            tools:text="21" />
+
+        <TextView
+            android:id="@+id/qtd_give_up"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:textSize="16sp"
+            android:textColor="?attr/colorAccent"
+            app:layout_constraintBottom_toTopOf="@+id/text_give_up"
+            app:layout_constraintEnd_toEndOf="@+id/give_up"
+            app:layout_constraintStart_toStartOf="@+id/give_up"
+            tools:text="14" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
