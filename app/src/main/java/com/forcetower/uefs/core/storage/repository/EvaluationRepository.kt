@@ -2,6 +2,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
@@ -17,6 +18,13 @@ class EvaluationRepository @Inject constructor(
         return object : NetworkOnlyResource<List<EvaluationHomeTopic>>(executors) {
             override fun createCall() = service.getEvaluationTopics().asLiveData()
             override fun saveCallResult(value: List<EvaluationHomeTopic>) = Unit
+        }.asLiveData()
+    }
+
+    fun getDiscipline(department: String, code: String): LiveData<Resource<EvaluationDiscipline>> {
+        return object : NetworkOnlyResource<EvaluationDiscipline>(executors) {
+            override fun createCall() = service.getEvaluationDiscipline(department, code).asLiveData()
+            override fun saveCallResult(value: EvaluationDiscipline) = Unit
         }.asLiveData()
     }
 }

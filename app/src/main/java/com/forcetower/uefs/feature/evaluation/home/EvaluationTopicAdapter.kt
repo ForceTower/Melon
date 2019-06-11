@@ -14,7 +14,9 @@ import com.forcetower.uefs.databinding.ItemEvaluateTeacherHomeBinding
 import com.forcetower.uefs.databinding.ItemEvaluationHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
 
-class EvaluationTopicAdapter : RecyclerView.Adapter<EvaluationHolder>() {
+class EvaluationTopicAdapter(
+    private val interactor: HomeInteractor
+) : RecyclerView.Adapter<EvaluationHolder>() {
     private val differ = AsyncListDiffer<Any>(this, DiffCallback)
 
     var currentList: List<EvaluationHomeTopic> = listOf()
@@ -26,7 +28,7 @@ class EvaluationTopicAdapter : RecyclerView.Adapter<EvaluationHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EvaluationHolder {
         return when (viewType) {
             R.layout.item_evaluation_header -> EvaluationHolder.EvaluationHeader(parent.inflate(viewType))
-            R.layout.item_evaluate_discipline_home -> EvaluationHolder.EvaluationDiscipline(parent.inflate(viewType))
+            R.layout.item_evaluate_discipline_home -> EvaluationHolder.EvaluationDiscipline(parent.inflate(viewType), interactor)
             R.layout.item_evaluate_teacher_home -> EvaluationHolder.EvaluationTeacher(parent.inflate(viewType))
             else -> throw IllegalStateException("Unable to inflate $viewType")
         }
@@ -87,7 +89,9 @@ private data class DisciplineWrapper(val discipline: EvaluationDiscipline, val g
 
 sealed class EvaluationHolder(view: View) : RecyclerView.ViewHolder(view) {
     class EvaluationHeader(val binding: ItemEvaluationHeaderBinding) : EvaluationHolder(binding.root)
-    class EvaluationDiscipline(val binding: ItemEvaluateDisciplineHomeBinding) : EvaluationHolder(binding.root)
+    class EvaluationDiscipline(val binding: ItemEvaluateDisciplineHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
+        init { binding.interactor = interactor }
+    }
     class EvaluationTeacher(val binding: ItemEvaluateTeacherHomeBinding) : EvaluationHolder(binding.root)
 }
 

@@ -7,12 +7,15 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluationHomeBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
@@ -29,7 +32,7 @@ class HomeFragment : UFragment(), Injectable {
     private lateinit var adapter: EvaluationTopicAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        adapter = EvaluationTopicAdapter()
+        adapter = EvaluationTopicAdapter(viewModel)
         return FragmentEvaluationHomeBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@HomeFragment
             disciplinesRecycler.apply {
@@ -51,6 +54,14 @@ class HomeFragment : UFragment(), Injectable {
         viewModel = provideActivityViewModel(factory)
         viewModel.getAccount().observe(this, Observer { handleAccount(it) })
         viewModel.getTrendingList().observe(this, Observer { handleTopics(it) })
+        viewModel.disciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
+    }
+
+    private fun onDisciplineSelected(discipline: EvaluationDiscipline) {
+        val code = discipline.code
+        val department = discipline.department
+        val directions = HomeFragmentDirections.actionHomeToEvalDiscipline(code, department)
+        findNavController().navigate(directions)
     }
 
     private fun handleTopics(resource: Resource<List<EvaluationHomeTopic>>) {
