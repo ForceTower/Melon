@@ -41,7 +41,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
-import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -55,6 +54,7 @@ import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
+import com.forcetower.uefs.feature.shared.CustomNavigationUI
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
@@ -220,7 +220,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun setupBottomNav() {
-        NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
+        CustomNavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
     }
 
     private fun setupViewModel() {

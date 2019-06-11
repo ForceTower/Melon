@@ -20,7 +20,7 @@ versions.preference = "1.0.0"
 versions.room = "2.0.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
-versions.navigation = "1.0.0"
+versions.navigation = "2.1.0-alpha05"
 versions.work_manager = "2.0.1"
 
 // Dependency Injection
@@ -102,11 +102,11 @@ lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
 deps.lifecycle = lifecycle
 
 def navigation = [:]
-navigation.ui = "android.arch.navigation:navigation-ui:$versions.navigation"
-navigation.ui_ktx = "android.arch.navigation:navigation-ui:$versions.navigation"
-navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
-navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
-navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
+navigation.ui = "androidx.navigation:navigation-ui:$versions.navigation"
+navigation.ui_ktx = "androidx.navigation:navigation-ui-ktx:$versions.navigation"
+navigation.fragment = "androidx.navigation:navigation-fragment:$versions.navigation"
+navigation.fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 deps.navigation = navigation
 
 deps.paging = "androidx.paging:paging-runtime:$versions.paging"
