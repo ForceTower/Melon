@@ -32,6 +32,7 @@ class HomeFragment : UFragment(), Injectable {
     private lateinit var adapter: EvaluationTopicAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        viewModel = provideActivityViewModel(factory)
         adapter = EvaluationTopicAdapter(viewModel)
         return FragmentEvaluationHomeBinding.inflate(inflater, container, false).apply {
             lifecycleOwner = this@HomeFragment
@@ -51,7 +52,6 @@ class HomeFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = provideActivityViewModel(factory)
         viewModel.getAccount().observe(this, Observer { handleAccount(it) })
         viewModel.getTrendingList().observe(this, Observer { handleTopics(it) })
         viewModel.disciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
