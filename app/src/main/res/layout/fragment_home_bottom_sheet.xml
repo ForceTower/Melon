@@ -48,7 +48,9 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="16dp"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:background="?attr/background"
+        android:elevation="1dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/header_bottom"
