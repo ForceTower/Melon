@@ -6,6 +6,8 @@ data class EvaluationDiscipline(
     @SerializedName("discipline_id")
     val disciplineId: Long,
     val department: String,
+    @SerializedName("department_name")
+    val departmentName: String?,
     val code: String,
     val name: String,
     val mean: Double,
