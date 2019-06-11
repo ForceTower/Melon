@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.UResponse
+import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
@@ -48,6 +49,7 @@ import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import java.util.Locale
 
 interface UService {
@@ -93,8 +95,12 @@ interface UService {
     @GET("account")
     fun getAccount(): Call<Account>
 
+    // -------- Evaluation ---------
     @GET("evaluation/hot")
     fun getEvaluationTopics(): Call<List<EvaluationHomeTopic>>
+
+    @GET("evaluation/discipline")
+    fun getEvaluationDiscipline(@Query("department") department: String, @Query("code") code: String): Call<EvaluationDiscipline>
 
     // ---------------------------------------------------------------------------------------------
 
