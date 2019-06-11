@@ -10,6 +10,19 @@ data class EvaluationDiscipline(
     val name: String,
     val mean: Double,
     @SerializedName("qtd_students")
+    val qtdStudents: Int = 0,
+    val participant: Boolean = false,
+    val teachers: List<EvaluationDisciplineTeacher>?
+)
+
+data class EvaluationDisciplineTeacher(
+    @SerializedName("teacher_id")
+    val teacherId: Long,
+    val name: String,
+    val mean: Double,
+    @SerializedName("qtd_students")
     val qtdStudents: Int,
-    val participant: Boolean = false
+    val semester: String,
+    @SerializedName("semester_system_id")
+    val semesterSystemId: Long
 )

@@ -7,6 +7,10 @@
         <variable
             name="discipline"
             type="com.forcetower.uefs.core.model.service.EvaluationDiscipline" />
+        
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.evaluation.home.HomeInteractor" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -15,6 +19,7 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
+        android:onClick="@{() -> interactor.onClickDiscipline(discipline)}"
         app:cardCornerRadius="8dp">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -31,7 +36,7 @@
                 android:gravity="center"
                 android:text="@{@string/grade_format(discipline.mean)}"
                 android:textAlignment="gravity"
-                android:textColor="?attr/colorOnSurface"
+                android:textColor="?attr/colorOnSecondary"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
                 tools:text="9.6" />
@@ -69,6 +74,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"
                 android:text="@string/evaluation_open_discipline"
+                android:onClick="@{() -> interactor.onClickDiscipline(discipline)}"
                 app:goneIf="@{discipline.participant}"
                 app:iconGravity="end"
                 app:iconPadding="10dp"
