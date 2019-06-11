@@ -6,7 +6,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/background">
+        android:background="?attr/background"
+        android:elevation="1dp">
 
         <LinearLayout
             android:id="@+id/loading_group"
@@ -63,7 +64,7 @@
             android:clipToPadding="false"
             tools:listitem="@layout/item_evaluation_mean"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>

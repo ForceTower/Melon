@@ -17,6 +17,7 @@ import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineEvaluationFragment : UFragment(), Injectable {
@@ -52,28 +53,29 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
     private fun handleData(resource: Resource<EvaluationDiscipline>) {
         val data = resource.data
         if (data != null) {
+            Timber.d("The data is $data")
             val teachers = data.teachers
             val evaluation = if (teachers != null) {
                 DisciplineEvaluation(
                         data.name,
-                        data.department,
+                        data.departmentName ?: data.department,
                         data.qtdStudents,
                         teachers.groupBy { it.semesterSystemId }.entries.map { entry ->
                             val key = entry.key
                             val semester = entry.value
                             val mean = semester.sumByDouble { it.mean } / semester.size
                             val first = semester.first()
-                            SemesterMean(key, first.name, mean)
+                            SemesterMean(key, first.semester, mean)
                         },
                         teachers.groupBy { it.teacherId }.entries.map { entry ->
                             val appearances = entry.value
-                            val semester = appearances.maxBy { it.semesterSystemId }!!
+                            val appear = appearances.maxBy { it.semesterSystemId }!!
                             val mean = appearances.sumByDouble { it.mean } / appearances.size
-                            TeacherInt(semester.teacherId, semester.name, semester.name, mean)
+                            TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
                         }
                 )
             } else {
-                DisciplineEvaluation(data.name, data.department, data.qtdStudents, listOf(), listOf())
+                DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())
             }
             elements.discipline = evaluation
         }
