@@ -1,8 +1,134 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp"/>
+
+        <com.forcetower.uefs.widget.CircleProgressBar
+            android:id="@+id/grade_progress_top"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:layout_marginTop="24dp"
+            android:visibility="visible"
+            app:progressbarColor="?attr/colorPrimary"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:progress="76"/>
+
+        <TextView
+            android:id="@+id/teacher_count_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="9sp"
+            android:textColor="?attr/colorOnBackgroundLight"
+            android:layout_marginBottom="24dp"
+            app:layout_constraintBottom_toBottomOf="@+id/teacher_image"
+            app:layout_constraintEnd_toEndOf="@+id/teacher_image"
+            app:layout_constraintStart_toStartOf="@+id/teacher_image"
+            tools:text="com 120 alunos"/>
+
+        <TextView
+            android:id="@+id/teacher_mean_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorAccent"
+            android:textSize="22sp"
+            app:layout_constraintBottom_toTopOf="@+id/teacher_count_top"
+            app:layout_constraintEnd_toEndOf="@+id/teacher_image"
+            app:layout_constraintStart_toStartOf="@+id/teacher_image"
+            tools:text="7.6"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/no_image_group"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="invisible"
+            app:constraint_referenced_ids="teacher_count_top,teacher_mean_top,grade_progress_top"/>
+
+        <ImageView
+            android:id="@+id/teacher_image"
+            android:layout_width="90dp"
+            android:layout_height="90dp"
+            android:visibility="invisible"
+            android:layout_marginTop="24dp"
+            app:clipToCircle="@{true}"
+            android:contentDescription="@string/evaluated_teacher_image"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/teacher_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="16dp"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="21sp"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:layout_constraintStart_toEndOf="@+id/grade_progress_top"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Angelo do Ártico Polonês" />
+
+        <TextView
+            android:id="@+id/first_registered_semester"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="?attr/colorOnBackgroundLight"
+            app:layout_constraintEnd_toEndOf="@+id/teacher_name"
+            app:layout_constraintStart_toStartOf="@+id/teacher_name"
+            app:layout_constraintTop_toBottomOf="@+id/teacher_name"
+            tools:text="Primeiro semestre registrado: 20131" />
+
+        <TextView
+            android:id="@+id/last_registered_semester"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:textColor="?attr/colorOnBackgroundLight"
+            app:layout_constraintEnd_toEndOf="@+id/teacher_name"
+            app:layout_constraintStart_toStartOf="@+id/teacher_name"
+            app:layout_constraintTop_toBottomOf="@+id/first_registered_semester"
+            tools:text="Último semestre registrado: 20191" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/title_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="last_registered_semester,grade_progress_top"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_disciplines"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/title_barrier"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

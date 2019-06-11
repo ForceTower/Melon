@@ -596,6 +596,11 @@
     <string name="evaluation_leave_feedback">Deixar a sua opinião</string>
     <string name="evaluation_open_discipline">Ver disciplina</string>
     <string name="evaluation_failed_to_load">Falhou ao carregar dados</string>
+    <string name="evaluated_teacher_image">Imagem do Professor</string>
+    <string name="evaluation_approvals">aprovações</string>
+    <string name="evaluation_fails">reprovações</string>
+    <string name="evaluation_give_up">desistências</string>
+    <string name="evaluation_teacher_disciplines">Disciplinas lecionadas</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
