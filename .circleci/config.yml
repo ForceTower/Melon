@@ -2,7 +2,7 @@ version: 2
 references:
   config_android: &config_android
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-28-ndk
     working_directory: ~/unes
     enviroment:
       JVM_OPTS: -Xmx2586m
