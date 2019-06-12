@@ -8,5 +8,15 @@ data class EvaluationTeacher(
     val name: String,
     val mean: Double,
     @SerializedName("qtd_students")
-    val qtdStudents: Int
+    val qtdStudents: Int,
+    @SerializedName("image_url")
+    val imageUrl: String?,
+    @SerializedName("last_seen")
+    val lastSeen: String?,
+    @SerializedName("first_seen")
+    val firstSeen: String?,
+    val approved: Int?,
+    val failed: Int?,
+    val finals: Int?,
+    val disciplines: List<EvaluationDiscipline>?
 )

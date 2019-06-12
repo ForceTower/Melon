@@ -7,6 +7,9 @@
         <variable
             name="teacher"
             type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.evaluation.home.HomeInteractor" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -15,7 +18,8 @@
         android:layout_marginBottom="8dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        app:cardCornerRadius="8dp">
+        app:cardCornerRadius="8dp"
+        android:onClick="@{() -> interactor.onClickTeacher(teacher)}">
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"

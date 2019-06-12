@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
+import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
@@ -19,11 +20,17 @@ class EvaluationViewModel @Inject constructor(
     private val evaluationRepository: EvaluationRepository
 ) : ViewModel(), HomeInteractor {
     private var _trending: LiveData<Resource<List<EvaluationHomeTopic>>>? = null
+
     private val _disciplineSelect = MutableLiveData<Event<EvaluationDiscipline>>()
     val disciplineSelect: LiveData<Event<EvaluationDiscipline>>
         get() = _disciplineSelect
 
+    private val _teacherSelect = MutableLiveData<Event<EvaluationTeacher>>()
+    val teacherSelect: LiveData<Event<EvaluationTeacher>>
+        get() = _teacherSelect
+
     private var _discipline: LiveData<Resource<EvaluationDiscipline>>? = null
+    private var _teacher: LiveData<Resource<EvaluationTeacher>>? = null
 
     fun getToken() = authRepository.getAccessToken()
     fun getAccount() = accountRepository.getAccount()
@@ -38,10 +45,21 @@ class EvaluationViewModel @Inject constructor(
         _disciplineSelect.value = Event(discipline)
     }
 
+    override fun onClickTeacher(teacher: EvaluationTeacher) {
+        _teacherSelect.value = Event(teacher)
+    }
+
     fun getDiscipline(department: String, code: String): LiveData<Resource<EvaluationDiscipline>> {
         if (_discipline == null) {
             _discipline = evaluationRepository.getDiscipline(department, code)
         }
         return _discipline!!
+    }
+
+    fun getTeacher(teacherId: Long): LiveData<Resource<EvaluationTeacher>> {
+        if (_teacher == null) {
+            _teacher = evaluationRepository.getTeacherById(teacherId)
+        }
+        return _teacher!!
     }
 }

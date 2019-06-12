@@ -599,8 +599,13 @@
     <string name="evaluated_teacher_image">Imagem do Professor</string>
     <string name="evaluation_approvals">aprovações</string>
     <string name="evaluation_fails">reprovações</string>
-    <string name="evaluation_give_up">desistências</string>
+    <string name="evaluation_finals">finais</string>
     <string name="evaluation_teacher_disciplines">Disciplinas lecionadas</string>
+    <string name="evaluation_teacher_general_mean">Média geral</string>
+    <string name="evaluation_teacher_amount_student_format">com %1$d alunos</string>
+    <string name="evaluation_general_information">Informações gerais</string>
+    <string name="evaluation_first_registered_semester">Primeiro semestre registrado: %1$s</string>
+    <string name="evaluation_last_registered_semester">Último semestre registrado: %1$s</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

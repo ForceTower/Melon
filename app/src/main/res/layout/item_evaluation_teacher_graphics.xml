@@ -4,6 +4,21 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="amountApprovals"
+            type="Integer" />
+        <variable
+            name="amountFails"
+            type="Integer" />
+        <variable
+            name="amountFinals"
+            type="Integer" />
+        <variable
+            name="total"
+            type="Integer" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -28,7 +43,7 @@
             android:id="@+id/general_info"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Informações gerais"
+            android:text="@string/evaluation_general_information"
             android:textColor="?attr/colorPrimary"
             android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
@@ -38,42 +53,49 @@
         <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/approval"
             android:layout_width="80dp"
-            android:layout_height="0dp"
+            android:layout_height="80dp"
             android:layout_marginTop="12dp"
-            app:progressbarColor="?attr/colorPrimary"
+            app:progressWithAnimationInt="@{amountApprovals}"
+            app:max="@{total}"
             app:layout_constraintEnd_toStartOf="@+id/failed"
             app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/general_info" />
+            app:layout_constraintHorizontal_chainStyle="spread"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/general_info"
+            app:progressbarColor="?attr/colorPrimary" />
 
         <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/failed"
             android:layout_width="80dp"
-            android:layout_height="0dp"
-            app:progressbarColor="?attr/colorPrimary"
+            android:layout_height="80dp"
+            app:progressWithAnimationInt="@{amountFails}"
+            app:max="@{total}"
             app:layout_constraintEnd_toStartOf="@+id/give_up"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/approval"
-            app:layout_constraintTop_toTopOf="@+id/approval" />
+            app:layout_constraintTop_toTopOf="@+id/approval"
+            app:progressbarColor="?attr/colorPrimary" />
 
         <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/give_up"
             android:layout_width="80dp"
-            android:layout_height="0dp"
-            app:progressbarColor="?attr/colorPrimary"
+            android:layout_height="80dp"
+            app:progressWithAnimationInt="@{amountFinals}"
+            app:max="@{total}"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toEndOf="@+id/failed"
-            app:layout_constraintTop_toTopOf="@+id/approval" />
+            app:layout_constraintTop_toTopOf="@+id/approval"
+            app:progressbarColor="?attr/colorPrimary" />
 
         <TextView
             android:id="@+id/text_approvals"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text="@string/evaluation_approvals"
-            android:textSize="10sp"
             android:textColor="?attr/colorOnBackground"
-            android:layout_marginBottom="16dp"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/approval"
             app:layout_constraintEnd_toEndOf="@+id/approval"
             app:layout_constraintStart_toStartOf="@+id/approval" />
@@ -82,10 +104,10 @@
             android:id="@+id/text_failed"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
             android:text="@string/evaluation_fails"
-            android:textSize="10sp"
             android:textColor="?attr/colorOnBackground"
-            android:layout_marginBottom="16dp"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/failed"
             app:layout_constraintEnd_toEndOf="@+id/failed"
             app:layout_constraintStart_toStartOf="@+id/failed" />
@@ -94,10 +116,10 @@
             android:id="@+id/text_give_up"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/evaluation_give_up"
-            android:textSize="10sp"
+            android:layout_marginBottom="24dp"
+            android:text="@string/evaluation_finals"
             android:textColor="?attr/colorOnBackground"
-            android:layout_marginBottom="16dp"
+            android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/give_up"
             app:layout_constraintEnd_toEndOf="@+id/give_up"
             app:layout_constraintStart_toStartOf="@+id/give_up" />
@@ -107,8 +129,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:textSize="16sp"
+            android:text="@{@string/integer_format(amountApprovals)}"
             android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_approvals"
             app:layout_constraintEnd_toEndOf="@+id/approval"
             app:layout_constraintStart_toStartOf="@+id/approval"
@@ -119,8 +142,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:textSize="16sp"
+            android:text="@{@string/integer_format(amountFails)}"
             android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_failed"
             app:layout_constraintEnd_toEndOf="@+id/failed"
             app:layout_constraintStart_toStartOf="@+id/failed"
@@ -131,8 +155,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="4dp"
-            android:textSize="16sp"
+            android:text="@{@string/integer_format(amountFinals)}"
             android:textColor="?attr/colorAccent"
+            android:textSize="16sp"
             app:layout_constraintBottom_toTopOf="@+id/text_give_up"
             app:layout_constraintEnd_toEndOf="@+id/give_up"
             app:layout_constraintStart_toStartOf="@+id/give_up"
