@@ -29,7 +29,7 @@ class EvaluationTopicAdapter(
         return when (viewType) {
             R.layout.item_evaluation_header -> EvaluationHolder.EvaluationHeader(parent.inflate(viewType))
             R.layout.item_evaluate_discipline_home -> EvaluationHolder.EvaluationDiscipline(parent.inflate(viewType), interactor)
-            R.layout.item_evaluate_teacher_home -> EvaluationHolder.EvaluationTeacher(parent.inflate(viewType))
+            R.layout.item_evaluate_teacher_home -> EvaluationHolder.EvaluationTeacher(parent.inflate(viewType), interactor)
             else -> throw IllegalStateException("Unable to inflate $viewType")
         }
     }
@@ -92,7 +92,9 @@ sealed class EvaluationHolder(view: View) : RecyclerView.ViewHolder(view) {
     class EvaluationDiscipline(val binding: ItemEvaluateDisciplineHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
         init { binding.interactor = interactor }
     }
-    class EvaluationTeacher(val binding: ItemEvaluateTeacherHomeBinding) : EvaluationHolder(binding.root)
+    class EvaluationTeacher(val binding: ItemEvaluateTeacherHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
+        init { binding.interactor = interactor }
+    }
 }
 
 private object DiffCallback : DiffUtil.ItemCallback<Any>() {

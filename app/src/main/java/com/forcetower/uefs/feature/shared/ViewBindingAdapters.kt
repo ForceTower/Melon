@@ -126,3 +126,8 @@ fun accountName(tv: TextView, name: String?) {
     val formatted = tv.context.getString(R.string.evaluation_welcome, titled)
     tv.text = formatted
 }
+
+// @BindingAdapter("circleMax")
+// fun circleMax(pv: CircleProgressBar, max: Int) {
+//
+// }

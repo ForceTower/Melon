@@ -3,9 +3,22 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="teacher"
+            type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
+        <variable
+            name="loading"
+            type="Boolean" />
+        <variable
+            name="failed"
+            type="Boolean" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:elevation="1dp"
+        android:background="?attr/background">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
@@ -27,6 +40,7 @@
             android:layout_height="90dp"
             android:layout_marginTop="24dp"
             android:visibility="visible"
+            app:progressWithAnimation="@{(float)(teacher.mean * 10)}"
             app:progressbarColor="?attr/colorPrimary"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"
@@ -39,6 +53,7 @@
             android:textSize="9sp"
             android:textColor="?attr/colorOnBackgroundLight"
             android:layout_marginBottom="24dp"
+            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.qtdStudents)}"
             app:layout_constraintBottom_toBottomOf="@+id/teacher_image"
             app:layout_constraintEnd_toEndOf="@+id/teacher_image"
             app:layout_constraintStart_toStartOf="@+id/teacher_image"
@@ -50,6 +65,7 @@
             android:layout_height="wrap_content"
             android:textColor="?attr/colorAccent"
             android:textSize="22sp"
+            android:text="@{@string/grade_format(teacher.mean)}"
             app:layout_constraintBottom_toTopOf="@+id/teacher_count_top"
             app:layout_constraintEnd_toEndOf="@+id/teacher_image"
             app:layout_constraintStart_toStartOf="@+id/teacher_image"
@@ -59,7 +75,7 @@
             android:id="@+id/no_image_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="invisible"
+            app:invisibleUnless="@{teacher.imageUrl == null}"
             app:constraint_referenced_ids="teacher_count_top,teacher_mean_top,grade_progress_top"/>
 
         <ImageView
@@ -69,6 +85,8 @@
             android:visibility="invisible"
             android:layout_marginTop="24dp"
             app:clipToCircle="@{true}"
+            app:imageUrl="@{teacher.imageUrl}"
+            app:invisibleUnless="@{teacher.imageUrl != null}"
             android:contentDescription="@string/evaluated_teacher_image"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"/>
@@ -81,6 +99,7 @@
             android:layout_marginStart="16dp"
             android:textColor="?attr/colorOnBackground"
             android:textSize="21sp"
+            android:text="@{teacher.name}"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toEndOf="@+id/grade_progress_top"
             app:layout_constraintTop_toTopOf="parent"
@@ -95,7 +114,7 @@
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/teacher_name"
-            tools:text="Primeiro semestre registrado: 20131" />
+            android:text="@{@string/evaluation_first_registered_semester(teacher.firstSeen)}" />
 
         <TextView
             android:id="@+id/last_registered_semester"
@@ -106,7 +125,7 @@
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/first_registered_semester"
-            tools:text="Último semestre registrado: 20191" />
+            android:text="@{@string/evaluation_last_registered_semester(teacher.lastSeen)}" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/title_barrier"
@@ -124,11 +143,48 @@
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
             android:clipToPadding="false"
+            app:invisibleUnless="@{loading == false}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintTop_toBottomOf="@id/title_barrier"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"/>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:invisibleUnless="@{loading}"
+            app:layout_constraintTop_toBottomOf="@id/title_barrier"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:gravity="center">
+            <ImageView
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                app:clipToCircle="@{true}"
+                app:goneUnless="@{failed}"
+                android:src="@mipmap/ic_unes_large_image_512"
+                android:importantForAccessibility="no"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:goneUnless="@{failed}"
+                android:text="@string/evaluation_failed_to_load"/>
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:goneUnless="@{failed == false}"
+                android:indeterminate="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                app:goneUnless="@{failed == false}"
+                android:text="@string/eval_loading_evaluation"/>
+        </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -12,6 +12,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
+import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -55,6 +56,13 @@ class HomeFragment : UFragment(), Injectable {
         viewModel.getAccount().observe(this, Observer { handleAccount(it) })
         viewModel.getTrendingList().observe(this, Observer { handleTopics(it) })
         viewModel.disciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
+        viewModel.teacherSelect.observe(this, EventObserver { onTeacherSelected(it) })
+    }
+
+    private fun onTeacherSelected(teacher: EvaluationTeacher) {
+        val id = teacher.teacherId
+        val directions = HomeFragmentDirections.actionHomeToEvalTeacher(id)
+        findNavController().navigate(directions)
     }
 
     private fun onDisciplineSelected(discipline: EvaluationDiscipline) {

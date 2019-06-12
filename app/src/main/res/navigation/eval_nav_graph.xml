@@ -115,6 +115,9 @@
         <action
             android:id="@+id/action_eval_teacher_to_rating"
             app:destination="@id/rating" />
+        <argument
+            android:name="teacherId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/rating"
