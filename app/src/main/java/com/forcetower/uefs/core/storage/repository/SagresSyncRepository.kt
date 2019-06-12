@@ -65,7 +65,7 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -87,7 +87,7 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val service: UService,
+    private val service: APIService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
 ) {
