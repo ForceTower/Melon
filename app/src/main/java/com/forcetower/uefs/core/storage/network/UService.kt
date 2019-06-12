@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
+import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
@@ -101,6 +102,9 @@ interface UService {
 
     @GET("evaluation/discipline")
     fun getEvaluationDiscipline(@Query("department") department: String, @Query("code") code: String): Call<EvaluationDiscipline>
+
+    @GET("evaluation/teacher")
+    fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
 
     // ---------------------------------------------------------------------------------------------
 

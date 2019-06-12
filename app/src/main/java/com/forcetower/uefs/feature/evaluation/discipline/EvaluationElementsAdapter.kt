@@ -78,6 +78,7 @@ sealed class ElementHolder(view: View) : RecyclerView.ViewHolder(view) {
     class DisciplineHeader(val view: ItemEvaluationDisciplineHeaderBinding) : ElementHolder(view.root)
 }
 
+// TODO create this
 private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return false
