@@ -66,13 +66,13 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                             val mean = semester.sumByDouble { it.mean } / semester.size
                             val first = semester.first()
                             SemesterMean(key, first.semester, mean)
-                        },
+                        }.sortedBy { id * -1 },
                         teachers.groupBy { it.teacherId }.entries.map { entry ->
                             val appearances = entry.value
                             val appear = appearances.maxBy { it.semesterSystemId }!!
                             val mean = appearances.sumByDouble { it.mean } / appearances.size
                             TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
-                        }
+                        }.sortedBy { it.name }
                 )
             } else {
                 DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())
