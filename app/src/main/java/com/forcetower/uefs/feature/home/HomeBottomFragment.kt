@@ -134,7 +134,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         toggleItem(R.id.dark_theme_event, dark && uefsStudent)
 
         val hourglass = remoteConfig.getBoolean("feature_flag_evaluation") && uefsStudent
-        toggleItem(R.id.evaluation, false)
+        toggleItem(R.id.evaluation, hourglass)
 
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.big_tray, uefsStudent)
