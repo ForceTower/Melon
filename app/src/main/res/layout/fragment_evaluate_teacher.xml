@@ -14,25 +14,26 @@
             name="failed"
             type="Boolean" />
     </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:elevation="1dp"
-        android:background="?attr/background">
+        android:background="?attr/background"
+        android:elevation="1dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_begin="16dp"/>
+            app:layout_constraintGuide_begin="16dp" />
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            app:layout_constraintGuide_end="16dp"/>
+            app:layout_constraintGuide_end="16dp" />
 
         <com.forcetower.uefs.widget.CircleProgressBar
             android:id="@+id/grade_progress_top"
@@ -40,66 +41,71 @@
             android:layout_height="90dp"
             android:layout_marginTop="24dp"
             android:visibility="visible"
-            app:progressWithAnimation="@{(float)(teacher.mean * 10)}"
-            app:progressbarColor="?attr/colorPrimary"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"
-            tools:progress="76"/>
-
-        <TextView
-            android:id="@+id/teacher_count_top"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="9sp"
-            android:textColor="?attr/colorOnBackgroundLight"
-            android:layout_marginBottom="24dp"
-            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.qtdStudents)}"
-            app:layout_constraintBottom_toBottomOf="@+id/teacher_image"
-            app:layout_constraintEnd_toEndOf="@+id/teacher_image"
-            app:layout_constraintStart_toStartOf="@+id/teacher_image"
-            tools:text="com 120 alunos"/>
+            app:progressWithAnimation="@{(float)(teacher.mean * 10)}"
+            app:progressbarColor="?attr/colorPrimary"
+            tools:progress="76" />
 
         <TextView
             android:id="@+id/teacher_mean_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="4dp"
+            android:text="@{@string/grade_format(teacher.mean)}"
             android:textColor="?attr/colorAccent"
             android:textSize="22sp"
-            android:text="@{@string/grade_format(teacher.mean)}"
             app:layout_constraintBottom_toTopOf="@+id/teacher_count_top"
             app:layout_constraintEnd_toEndOf="@+id/teacher_image"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/teacher_image"
-            tools:text="7.6"/>
+            app:layout_constraintTop_toTopOf="@+id/grade_progress_top"
+            app:layout_constraintVertical_chainStyle="packed"
+            tools:text="7.6" />
+
+        <TextView
+            android:id="@+id/teacher_count_top"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.qtdStudents)}"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="10sp"
+            app:layout_constraintBottom_toBottomOf="@+id/grade_progress_top"
+            app:layout_constraintEnd_toEndOf="@+id/teacher_image"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="@+id/teacher_image"
+            app:layout_constraintTop_toBottomOf="@+id/teacher_mean_top"
+            tools:text="com 120 alunos" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/no_image_group"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:invisibleUnless="@{teacher.imageUrl == null}"
-            app:constraint_referenced_ids="teacher_count_top,teacher_mean_top,grade_progress_top"/>
+            app:constraint_referenced_ids="teacher_count_top,teacher_mean_top,grade_progress_top"
+            app:invisibleUnless="@{teacher.imageUrl == null}" />
 
         <ImageView
             android:id="@+id/teacher_image"
             android:layout_width="90dp"
             android:layout_height="90dp"
-            android:visibility="invisible"
             android:layout_marginTop="24dp"
+            android:contentDescription="@string/evaluated_teacher_image"
+            android:visibility="invisible"
             app:clipToCircle="@{true}"
             app:imageUrl="@{teacher.imageUrl}"
             app:invisibleUnless="@{teacher.imageUrl != null}"
-            android:contentDescription="@string/evaluated_teacher_image"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent" />
 
         <TextView
             android:id="@+id/teacher_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:text="@{teacher.name}"
             android:textColor="?attr/colorOnBackground"
             android:textSize="21sp"
-            android:text="@{teacher.name}"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toEndOf="@+id/grade_progress_top"
             app:layout_constraintTop_toTopOf="parent"
@@ -110,22 +116,22 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="@{@string/evaluation_first_registered_semester(teacher.firstSeen)}"
             android:textColor="?attr/colorOnBackgroundLight"
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
-            app:layout_constraintTop_toBottomOf="@+id/teacher_name"
-            android:text="@{@string/evaluation_first_registered_semester(teacher.firstSeen)}" />
+            app:layout_constraintTop_toBottomOf="@+id/teacher_name" />
 
         <TextView
             android:id="@+id/last_registered_semester"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
+            android:text="@{@string/evaluation_last_registered_semester(teacher.lastSeen)}"
             android:textColor="?attr/colorOnBackgroundLight"
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
-            app:layout_constraintTop_toBottomOf="@+id/first_registered_semester"
-            android:text="@{@string/evaluation_last_registered_semester(teacher.lastSeen)}" />
+            app:layout_constraintTop_toBottomOf="@+id/first_registered_semester" />
 
         <androidx.constraintlayout.widget.Barrier
             android:id="@+id/title_barrier"
@@ -133,57 +139,61 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             app:barrierDirection="bottom"
-            app:constraint_referenced_ids="last_registered_semester,grade_progress_top"/>
+            app:constraint_referenced_ids="last_registered_semester,grade_progress_top" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_disciplines"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            android:clipToPadding="false"
             android:paddingTop="8dp"
             android:paddingBottom="16dp"
-            android:clipToPadding="false"
             app:invisibleUnless="@{loading == false}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/title_barrier"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/title_barrier" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="vertical"
             app:invisibleUnless="@{loading}"
-            app:layout_constraintTop_toBottomOf="@id/title_barrier"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:gravity="center">
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/title_barrier">
+
             <ImageView
                 android:layout_width="80dp"
                 android:layout_height="80dp"
-                app:clipToCircle="@{true}"
-                app:goneUnless="@{failed}"
+                android:importantForAccessibility="no"
                 android:src="@mipmap/ic_unes_large_image_512"
-                android:importantForAccessibility="no"/>
+                app:clipToCircle="@{true}"
+                app:goneUnless="@{failed}" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:goneUnless="@{failed}"
-                android:text="@string/evaluation_failed_to_load"/>
+                android:text="@string/evaluation_failed_to_load"
+                app:goneUnless="@{failed}" />
+
             <ProgressBar
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:goneUnless="@{failed == false}"
-                android:indeterminate="true"/>
+                android:indeterminate="true"
+                app:goneUnless="@{failed == false}" />
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                app:goneUnless="@{failed == false}"
-                android:text="@string/eval_loading_evaluation"/>
+                android:text="@string/eval_loading_evaluation"
+                app:goneUnless="@{failed == false}" />
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
