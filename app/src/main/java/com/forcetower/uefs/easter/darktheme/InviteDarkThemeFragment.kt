@@ -92,20 +92,17 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             if (it == null) {
                 binding.textInvitesLeft.text = "0"
             } else {
-                val invites = it.darkInvites ?: 0
-                val sent = it.sentDarkInvites ?: invites
-                val left = invites - sent
-                binding.textInvitesLeft.text = "$left"
+                val invites = it.darkThemeInvites
+                binding.textInvitesLeft.text = "$invites"
             }
         })
     }
 
     private fun onSendRandom() {
-        showSnack(getString(R.string.cant_do_this_now))
-//        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-//        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-//        binding.loadingPb.visibility = VISIBLE
-//        viewModel.sendDarkThemeTo(null)
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+        binding.loadingPb.visibility = VISIBLE
+        viewModel.sendDarkThemeTo(null)
     }
 
     private fun onSend() {

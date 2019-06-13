@@ -12,6 +12,9 @@ abstract class AccountDao {
     @Query("SELECT * FROM Account LIMIT 1")
     abstract fun getAccount(): LiveData<Account>
 
+    @Query("SELECT * FROM Account LIMIT 1")
+    abstract fun getAccountNullable(): LiveData<Account?>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(value: Account)
 

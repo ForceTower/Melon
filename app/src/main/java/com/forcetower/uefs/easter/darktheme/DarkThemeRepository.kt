@@ -126,6 +126,8 @@ class DarkThemeRepository @Inject constructor(
         val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
 
         val invites = if (completed.size < 2) 0 else (completedSize - 1)
+
+        // TODO change this to new server
         val data = mutableMapOf<String, Any>()
         if (enabled) {
             preferences.edit()
@@ -201,6 +203,7 @@ class DarkThemeRepository @Inject constructor(
         return Precondition(context.getString(R.string.precondition_3), context.getString(R.string.precondition_3_desc, credits), credits >= 2200)
     }
 
+    // TODO change this to the new server - The data of account must be updated after the send
     fun sendDarkThemeTo(username: String?): LiveData<Resource<Boolean>> {
         val result = MutableLiveData<Resource<Boolean>>()
         result.value = Resource.loading(false)
