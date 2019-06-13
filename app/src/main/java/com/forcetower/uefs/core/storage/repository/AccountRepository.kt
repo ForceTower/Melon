@@ -33,4 +33,8 @@ class AccountRepository @Inject constructor(
             }
         }.asLiveData()
     }
+
+    fun getAccountOnDatabase(): LiveData<Account?> {
+        return database.accountDao().getAccountNullable()
+    }
 }
