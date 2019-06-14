@@ -44,6 +44,8 @@ import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import com.forcetower.uefs.easter.darktheme.DarkInvite
+import com.forcetower.uefs.easter.darktheme.DarkUnlock
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -95,6 +97,12 @@ interface UService {
 
     @GET("account")
     fun getAccount(): Call<Account>
+
+    @POST("account/darktheme")
+    fun requestDarkThemeUnlock(@Body invites: DarkUnlock): Call<UResponse<Void>>
+
+    @POST("account/darktheme/invite")
+    fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
     // -------- Evaluation ---------
     @GET("evaluation/hot")
