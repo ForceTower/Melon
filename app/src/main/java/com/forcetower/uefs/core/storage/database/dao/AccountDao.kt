@@ -20,4 +20,7 @@ abstract class AccountDao {
 
     @Query("DELETE FROM Account")
     abstract fun deleteAll()
+
+    @Query("SELECT * FROM Account LIMIT 1")
+    abstract fun getAccountDirect(): Account?
 }

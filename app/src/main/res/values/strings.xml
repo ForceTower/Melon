@@ -606,6 +606,7 @@
     <string name="evaluation_general_information">Informações gerais</string>
     <string name="evaluation_first_registered_semester">Primeiro semestre registrado: %1$s</string>
     <string name="evaluation_last_registered_semester">Último semestre registrado: %1$s</string>
+    <string name="user_already_unlocked_dark_theme">Este usuário já participa do lado escuro</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
