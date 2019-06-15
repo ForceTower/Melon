@@ -116,7 +116,8 @@ class MessagesViewModel @Inject constructor(
     private fun shareMessage(context: Context, content: String): Boolean {
         val clipboard: ClipboardManager? = context.getSystemService()
         clipboard ?: return false
-        clipboard.primaryClip = ClipData.newPlainText("unes-message", content)
+        clipboard
+        clipboard.setPrimaryClip(ClipData.newPlainText("unes-message", content))
         _snackMessage.value = Event(R.string.message_copied_to_clipboard)
         return true
     }
