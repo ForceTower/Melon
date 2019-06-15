@@ -110,14 +110,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
             return
         }
-
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-        if (text > 0) {
-            binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-            binding.loadingPb.visibility = VISIBLE
-            viewModel.sendDarkThemeTo(username)
-        } else {
-            showSnack(getString(R.string.dark_theme_no_more_invites), true)
-        }
+        binding.loadingPb.visibility = VISIBLE
+        viewModel.sendDarkThemeTo(username)
     }
 }
