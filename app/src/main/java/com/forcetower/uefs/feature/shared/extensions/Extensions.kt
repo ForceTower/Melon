@@ -35,7 +35,6 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
-import android.os.Parcel
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.createBitmap
@@ -70,10 +69,6 @@ fun Activity.postponeEnterTransition(timeout: Long) {
         startPostponedEnterTransition()
     }
 }
-
-fun Parcel.writeBoolean(value: Boolean) = writeInt(if (value) 1 else 0)
-
-fun Parcel.readBoolean() = readInt() != 0
 
 @RequiresApi(Build.VERSION_CODES.N_MR1)
 fun Intent.toShortcut(ctx: Context, id: String, @DrawableRes icon: Int, name: String): ShortcutInfo {
@@ -110,4 +105,12 @@ fun Bitmap.toFile(context: Context): File {
     fos.flush()
     fos.close()
     return file
+}
+
+fun Boolean.asInt(): Int {
+    return if (this) 1 else 0
+}
+
+fun Int.asBoolean(): Boolean {
+    return this >= 1
 }
