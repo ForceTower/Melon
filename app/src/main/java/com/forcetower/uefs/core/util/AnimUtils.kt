@@ -233,10 +233,6 @@ object AnimUtils {
             return this
         }
 
-        override fun setTarget(target: Any) {
-            mAnimator.setTarget(target)
-        }
-
         override fun setupEndValues() {
             mAnimator.setupEndValues()
         }
