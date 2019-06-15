@@ -157,6 +157,7 @@ class DarkThemeRepository @Inject constructor(
             try {
                 val response = service.requestDarkSendTo(DarkInvite(username)).execute()
                 val code = response.code()
+                Timber.d("Response code $code")
                 if (code == 200) {
                     try {
                         val accResponse = service.getAccount().execute()
@@ -168,7 +169,9 @@ class DarkThemeRepository @Inject constructor(
                         }
                     } catch (ignored: Throwable) { }
                     result.postValue(Resource.success(true))
-                } else result.postValue(Resource.error("Invalid request", code, Exception("Nothing special")))
+                } else {
+                    result.postValue(Resource.error("Invalid request", code, Exception("Nothing special")))
+                }
             } catch (t: Throwable) {
                 result.postValue(Resource.error("Invalid for all", 500, t))
             }
