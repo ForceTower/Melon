@@ -111,7 +111,8 @@
     <fragment
         android:id="@+id/eval_teacher"
         android:name="com.forcetower.uefs.feature.evaluation.teacher.TeacherFragment"
-        android:label="TeacherFragment" >
+        android:label="TeacherFragment"
+        tools:layout="@layout/fragment_evaluate_teacher">
         <action
             android:id="@+id/action_eval_teacher_to_rating"
             app:destination="@id/rating" />
