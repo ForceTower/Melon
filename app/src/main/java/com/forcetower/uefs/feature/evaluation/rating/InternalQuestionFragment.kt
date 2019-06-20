@@ -8,12 +8,12 @@ import androidx.core.os.bundleOf
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.databinding.DialogEvaluationInternalQuestionBinding
-import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.forcetower.uefs.feature.shared.UFragment
 
-class InternalQuestionFragment : RoundedDialog(), Injectable {
+class InternalQuestionFragment : UFragment(), Injectable {
     private lateinit var binding: DialogEvaluationInternalQuestionBinding
 
-    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val args = requireNotNull(arguments)
         val quest = Question(args.getLong("id"), args.getString("question")!!, args.getString("description"), teacher = false, discipline = false)
         return DialogEvaluationInternalQuestionBinding.inflate(inflater, container, false).also {
