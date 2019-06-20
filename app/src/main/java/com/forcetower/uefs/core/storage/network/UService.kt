@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.easter.darktheme.DarkInvite
 import com.forcetower.uefs.easter.darktheme.DarkUnlock
@@ -113,6 +114,12 @@ interface UService {
 
     @GET("evaluation/teacher")
     fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
+
+    @GET("evaluation/question/teacher")
+    fun getQuestionsForTeachers(): Call<List<Question>>
+
+    @GET("evaluation/question/discipline")
+    fun getQuestionsForDisciplines(): Call<List<Question>>
 
     // ---------------------------------------------------------------------------------------------
 
