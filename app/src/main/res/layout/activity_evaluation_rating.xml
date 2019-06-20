@@ -5,10 +5,11 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <androidx.viewpager.widget.ViewPager
+        <com.forcetower.uefs.widget.CustomViewPager
             android:id="@+id/view_pager"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            app:pagingEnabled="@{false}"
             app:pageMargin="@{16}"
             android:clipToPadding="false"
             app:layout_constraintStart_toStartOf="parent"
