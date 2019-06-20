@@ -8,8 +8,9 @@
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_height="wrap_content"
             app:pageMargin="@{16}"
+            android:clipToPadding="false"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -19,6 +20,7 @@
             android:id="@+id/group_loading"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_marginHorizontal="16dp"
             android:orientation="vertical"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
