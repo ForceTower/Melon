@@ -18,5 +18,6 @@ data class EvaluationTeacher(
     val approved: Int?,
     val failed: Int?,
     val finals: Int?,
-    val disciplines: List<EvaluationDiscipline>?
+    val disciplines: List<EvaluationDiscipline>?,
+    val email: String?
 )
