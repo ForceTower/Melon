@@ -11,6 +11,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
@@ -39,7 +40,7 @@ class TeacherFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.getTeacher(args.teacherId).observe(this, Observer { handleData(it) })
-        viewModel.disciplineSelect.observe(this, Observer {
+        viewModel.disciplineSelect.observe(this, EventObserver {
             val directions = TeacherFragmentDirections.actionEvalTeacherToRating()
             findNavController().navigate(directions)
         })

@@ -20,8 +20,7 @@
             android:paddingTop="@dimen/padding_big"
             android:paddingEnd="@dimen/padding_big"
             android:paddingStart="@dimen/padding_big"
-            android:paddingBottom="@dimen/spacing_common"
-            android:background="@drawable/background_rounded_dialog">
+            android:paddingBottom="@dimen/spacing_common">
 
             <TextView
                 android:id="@+id/title"

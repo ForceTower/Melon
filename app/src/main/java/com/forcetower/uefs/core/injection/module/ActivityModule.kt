@@ -38,6 +38,7 @@ import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.demand.DemandActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.evaluation.EvaluationActivity
+import com.forcetower.uefs.feature.evaluation.rating.RatingActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
@@ -76,6 +77,8 @@ abstract class ActivityModule {
     abstract fun bindDemandActivity(): DemandActivity
     @ContributesAndroidInjector(modules = [EvaluationModule::class])
     abstract fun bindEvaluationActivity(): EvaluationActivity
+    @ContributesAndroidInjector(modules = [RatingModule::class])
+    abstract fun bindRatingActivity(): RatingActivity
     @ContributesAndroidInjector(modules = [Game2048Module::class])
     abstract fun bindGame2048Activity(): Game2048Activity
     @ContributesAndroidInjector(modules = [SIECOMPOnboardingModule::class])

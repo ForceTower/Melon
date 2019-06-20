@@ -120,8 +120,8 @@
             android:name="teacherId"
             app:argType="long" />
     </fragment>
-    <fragment
+    <activity
         android:id="@+id/rating"
-        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingDialog"
-        android:label="RatingFragment" />
+        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingActivity"
+        android:label="RatingActivity" />
 </navigation>
