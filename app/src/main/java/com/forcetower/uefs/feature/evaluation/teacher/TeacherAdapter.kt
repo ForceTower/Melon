@@ -65,7 +65,7 @@ class TeacherAdapter(
         }
     }
 
-    private val diff = AsyncListDiffer<Any>(this, DiffCallback)
+    private val diff = AsyncListDiffer(this, DiffCallback)
 
     private fun buildList(value: EvaluationTeacher?): List<Any> {
         val list = mutableListOf<Any>()

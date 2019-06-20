@@ -122,6 +122,6 @@
     </fragment>
     <fragment
         android:id="@+id/rating"
-        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingFragment"
+        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingDialog"
         android:label="RatingFragment" />
 </navigation>
