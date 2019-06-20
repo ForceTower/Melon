@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
@@ -38,6 +39,10 @@ class TeacherFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.getTeacher(args.teacherId).observe(this, Observer { handleData(it) })
+        viewModel.disciplineSelect.observe(this, Observer {
+            val directions = TeacherFragmentDirections.actionEvalTeacherToRating()
+            findNavController().navigate(directions)
+        })
     }
 
     private fun handleData(resource: Resource<EvaluationTeacher>) {

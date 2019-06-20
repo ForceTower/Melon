@@ -4,6 +4,8 @@ import com.forcetower.uefs.feature.evaluation.InitialFragment
 import com.forcetower.uefs.feature.evaluation.PresentationFragment
 import com.forcetower.uefs.feature.evaluation.discipline.DisciplineEvaluationFragment
 import com.forcetower.uefs.feature.evaluation.home.HomeFragment
+import com.forcetower.uefs.feature.evaluation.rating.InternalQuestionFragment
+import com.forcetower.uefs.feature.evaluation.rating.RatingDialog
 import com.forcetower.uefs.feature.evaluation.rating.RatingFragment
 import com.forcetower.uefs.feature.evaluation.search.SearchFragment
 import com.forcetower.uefs.feature.evaluation.teacher.TeacherFragment
@@ -29,4 +31,8 @@ abstract class EvaluationModule {
     abstract fun discipline(): DisciplineEvaluationFragment
     @ContributesAndroidInjector
     abstract fun rating(): RatingFragment
+    @ContributesAndroidInjector
+    abstract fun ratingDialog(): RatingDialog
+    @ContributesAndroidInjector
+    abstract fun internalQuestion(): InternalQuestionFragment
 }

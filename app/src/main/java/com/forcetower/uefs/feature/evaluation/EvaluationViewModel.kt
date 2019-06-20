@@ -6,6 +6,7 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
+import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
@@ -61,5 +62,9 @@ class EvaluationViewModel @Inject constructor(
             _teacher = evaluationRepository.getTeacherById(teacherId)
         }
         return _teacher!!
+    }
+
+    fun getQuestionsForTeacher(): LiveData<Resource<List<Question>>> {
+        return evaluationRepository.getQuestionsForTeacher()
     }
 }
