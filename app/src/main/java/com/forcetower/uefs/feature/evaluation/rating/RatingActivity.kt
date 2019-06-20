@@ -17,6 +17,7 @@ import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
+import timber.log.Timber
 import javax.inject.Inject
 
 class RatingActivity : UActivity(), HasSupportFragmentInjector {
@@ -40,6 +41,7 @@ class RatingActivity : UActivity(), HasSupportFragmentInjector {
 
     private fun useResponse(resource: Resource<List<Question>>) {
         val data = resource.data
+        Timber.d("the resource ${resource.status}")
         if (data != null) {
             binding.groupLoading.visibility = GONE
             binding.viewPager.visibility = VISIBLE
@@ -54,6 +56,7 @@ class RatingActivity : UActivity(), HasSupportFragmentInjector {
     private fun createFragmentsList(data: List<Question>) {
         val fragments = data.map { InternalQuestionFragment.newInstance(it) }
         adapter.setItems(fragments)
+        Timber.d("The items: $data")
     }
 
     override fun supportFragmentInjector() = fragmentInjector
