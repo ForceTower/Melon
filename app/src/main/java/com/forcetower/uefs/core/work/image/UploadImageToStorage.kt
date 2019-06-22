@@ -33,6 +33,7 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.ThumbnailUtils
 import android.net.Uri
+import android.util.Base64
 import androidx.annotation.WorkerThread
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -40,28 +41,37 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
+import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.util.ImgurUploader
 import com.forcetower.uefs.core.work.enqueue
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.storage.FirebaseStorage
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.util.UUID
+import javax.inject.Inject
 
 class UploadImageToStorage(
     context: Context,
     params: WorkerParameters
 ) : Worker(context, params) {
+    @Inject
+    lateinit var client: OkHttpClient
+    @Inject
+    lateinit var database: UDatabase
+    @Inject
+    lateinit var service: UService
 
     @SuppressLint("WrongThread")
     @WorkerThread
     override fun doWork(): Result {
+        (applicationContext as UApplication).component.inject(this)
         Timber.d("Started picture upload")
         val tUri = inputData.getString(URI) ?: return Result.failure()
-        val tRef = inputData.getString(REFERENCE) ?: return Result.failure()
 
         val uri = Uri.parse(tUri)
-        val storage = FirebaseStorage.getInstance()
-        val ref = storage.getReference(tRef)
 
         val resolver = applicationContext.contentResolver
         val stream: InputStream
@@ -74,18 +84,23 @@ class UploadImageToStorage(
         val image = BitmapFactory.decodeStream(stream)
         image ?: return Result.failure()
 
-        val bitmap = ThumbnailUtils.extractThumbnail(image, 450, 450)
+        val bitmap = ThumbnailUtils.extractThumbnail(image, 1080, 1080)
 
         val baos = ByteArrayOutputStream()
-        // noinspection WrongThread
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, baos)
-
+        bitmap.compress(Bitmap.CompressFormat.PNG, 100, baos)
         val data = baos.toByteArray()
 
-        val task = ref.putBytes(data)
+        val name = database.accessDao().getAccessDirect()?.username ?: "user-unes-${UUID.randomUUID().toString().substring(0, 4)}"
+        val encoded = Base64.encodeToString(data, Base64.DEFAULT)
+        val upload = ImgurUploader.upload(client, encoded, name) ?: return Result.retry()
+
         return try {
-            Tasks.await(task)
-            Result.success()
+            val response = service.updateProfileImage(upload).execute()
+            if (response.isSuccessful) {
+                Result.success()
+            } else {
+                Result.retry()
+            }
         } catch (t: Throwable) {
             Result.retry()
         }
@@ -93,11 +108,10 @@ class UploadImageToStorage(
 
     companion object {
         private const val URI = "image_uri"
-        private const val REFERENCE = "storage_reference"
         private const val TAG = "upload_profile_image"
 
-        fun createWorker(uri: Uri, reference: String) {
-            val data = workDataOf(URI to uri.toString(), REFERENCE to reference)
+        fun createWorker(uri: Uri) {
+            val data = workDataOf(URI to uri.toString())
             val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
             OneTimeWorkRequestBuilder<UploadImageToStorage>()

@@ -51,10 +51,10 @@ class SetupViewModel @Inject constructor(
     private var frequency: SyncFrequency = SyncFrequency()
     var syncFrequencies = listOf(SyncFrequency())
 
-    fun uploadImageToStorage(reference: String) {
+    fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(uri, reference)
+        UploadImageToStorage.createWorker(uri)
     }
 
     fun setSelectedImage(uri: Uri) {

@@ -32,13 +32,8 @@
     
     <data>
         <variable
-            name="storage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
-        
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-        
+            name="account"
+            type="com.forcetower.uefs.core.model.unes.Account" />
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
@@ -72,8 +67,7 @@
                 android:layout_marginBottom="8dp"
                 android:importantForAccessibility="no"
                 app:clipToCircle="@{true}"
-                app:firebaseStorage="@{storage}"
-                app:firebaseUser="@{firebaseUser}"
+                app:imageUrl="@{account.imageUrl}"
                 app:layout_constraintBottom_toBottomOf="@id/guideline_top_info"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

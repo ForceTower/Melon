@@ -51,9 +51,7 @@ import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.google.firebase.storage.FirebaseStorage
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import javax.inject.Inject
@@ -61,10 +59,6 @@ import javax.inject.Inject
 class HomeBottomFragment : UFragment(), Injectable {
     @Inject
     lateinit var viewModelFactory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject
@@ -81,8 +75,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         }.apply {
             lifecycleOwner = this@HomeBottomFragment
             viewModel = this@HomeBottomFragment.viewModel
-            firebaseStorage = this@HomeBottomFragment.firebaseStorage
-            firebaseUser = this@HomeBottomFragment.firebaseAuth.currentUser
             executePendingBindings()
             imageUserPicture.setOnClickListener { this@HomeBottomFragment.viewModel.onMeProfileClicked() }
         }.root
@@ -115,6 +107,7 @@ class HomeBottomFragment : UFragment(), Injectable {
     private fun handleAccount(resource: Resource<Account>) {
         val data = resource.data ?: return
         toggleNightModeSwitcher(data.darkThemeEnabled)
+        binding.account = data
     }
 
     private fun featureFlags() {
