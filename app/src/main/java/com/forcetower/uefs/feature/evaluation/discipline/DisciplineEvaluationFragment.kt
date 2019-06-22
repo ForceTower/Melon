@@ -7,11 +7,13 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
@@ -29,8 +31,8 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
     private val args: DisciplineEvaluationFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        elements = EvaluationElementsAdapter()
         viewModel = provideViewModel(factory)
+        elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -48,6 +50,10 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                 removeDuration = 100L
             }
         }
+        viewModel.teacherIntSelect.observe(this, EventObserver {
+            val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id)
+            findNavController().navigate(directions)
+        })
     }
 
     private fun handleData(resource: Resource<EvaluationDiscipline>) {
