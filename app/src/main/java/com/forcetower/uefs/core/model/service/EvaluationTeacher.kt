@@ -6,9 +6,9 @@ data class EvaluationTeacher(
     @SerializedName("teacher_id")
     val teacherId: Long,
     val name: String,
-    val mean: Double,
+    val mean: Double?,
     @SerializedName("qtd_students")
-    val qtdStudents: Int,
+    val qtdStudents: Int?,
     @SerializedName("image_url")
     val imageUrl: String?,
     @SerializedName("last_seen")
@@ -18,6 +18,6 @@ data class EvaluationTeacher(
     val approved: Int?,
     val failed: Int?,
     val finals: Int?,
-    val disciplines: List<EvaluationDiscipline>?,
-    val email: String?
+    val email: String?,
+    val disciplines: List<EvaluationDiscipline>? = null
 )

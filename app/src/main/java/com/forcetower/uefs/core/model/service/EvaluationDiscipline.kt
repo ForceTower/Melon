@@ -10,11 +10,11 @@ data class EvaluationDiscipline(
     val departmentName: String?,
     val code: String,
     val name: String,
-    val mean: Double,
+    val mean: Double?,
     @SerializedName("qtd_students")
     val qtdStudents: Int = 0,
     val participant: Boolean = false,
-    val teachers: List<EvaluationDisciplineTeacher>?
+    val teachers: List<EvaluationDisciplineTeacher>? = null
 )
 
 data class EvaluationDisciplineTeacher(

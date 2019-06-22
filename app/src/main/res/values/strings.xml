@@ -609,6 +609,10 @@
     <string name="user_already_unlocked_dark_theme">Este usuário já participa do lado escuro</string>
     <string name="loading_evaluation_info">Carregando informações de avaliação</string>
     <string name="evaluation_internal_question_continue">Continuar</string>
+    <string name="teacher_evaluation_entity">Professor(a)</string>
+    <string name="discipline_evaluation_entity">Disciplina</string>
+    <string name="unknown_evaluation_entity">Desconhecido</string>
+    <string name="student_evaluation_entity">Aluno(a) - %1$s</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

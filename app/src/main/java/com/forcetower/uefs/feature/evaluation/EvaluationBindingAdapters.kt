@@ -4,6 +4,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.feature.evaluation.discipline.SemesterMean
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -80,4 +81,17 @@ private fun List<SemesterMean>.convertToDataSetWithTitles(): Pair<List<String>, 
     val entries = sorted.mapIndexed { index, element -> Entry(index.toFloat(), element.mean.toFloat()) }
     val titles = sorted.map { it.name }
     return titles to LineDataSet(entries, "")
+}
+
+@BindingAdapter("evaluationEntityDescription")
+fun evaluationEntityDescription(tv: TextView, entity: EvaluationEntity?) {
+    entity ?: return
+    val context = tv.context
+    val string = when (entity.type) {
+        0 -> context.getString(R.string.teacher_evaluation_entity)
+        1 -> context.getString(R.string.discipline_evaluation_entity)
+        2 -> context.getString(R.string.student_evaluation_entity, entity.extra)
+        else -> context.getString(R.string.unknown_evaluation_entity)
+    }
+    tv.text = string
 }
