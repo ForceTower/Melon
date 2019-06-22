@@ -70,13 +70,13 @@ class SearchFragment : UFragment(), Injectable {
     private fun onEvalEntitySelected(entity: EvaluationEntity) {
         when (entity.type) {
             0 -> {
-                val directions = SearchFragmentDirections.actionSearchToEvalTeacher(entity.referencedId)
+                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId)
                 findNavController().navigate(directions)
             }
             1 -> {
                 val comp1 = entity.comp1 ?: return
                 val comp2 = entity.comp2 ?: return
-                val directions = SearchFragmentDirections.actionSearchFragmentToEvalDiscipline(comp1, comp2)
+                val directions = SearchFragmentDirections.actionSearchToDiscipline(comp1, comp2)
                 findNavController().navigate(directions)
             }
             2 -> showSnack(getString(R.string.students_discorevery_is_not_for_now))

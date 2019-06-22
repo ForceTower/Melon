@@ -15,6 +15,8 @@ import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
+import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
 import com.forcetower.uefs.feature.evaluation.home.HomeInteractor
 import com.forcetower.uefs.feature.evaluation.search.EntitySelector
 import javax.inject.Inject
@@ -23,7 +25,7 @@ class EvaluationViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val accountRepository: AccountRepository,
     private val evaluationRepository: EvaluationRepository
-) : ViewModel(), HomeInteractor, EntitySelector {
+) : ViewModel(), HomeInteractor, EntitySelector, DisciplineInteractor {
     private var _trending: LiveData<Resource<List<EvaluationHomeTopic>>>? = null
 
     private val _disciplineSelect = MutableLiveData<Event<EvaluationDiscipline>>()
@@ -41,6 +43,10 @@ class EvaluationViewModel @Inject constructor(
     private val _query = MediatorLiveData<PagedList<EvaluationEntity>>()
     val query: LiveData<PagedList<EvaluationEntity>>
         get() = _query
+
+    private val _teacherIntSelect = MutableLiveData<Event<TeacherInt>>()
+    val teacherIntSelect: LiveData<Event<TeacherInt>>
+        get() = _teacherIntSelect
 
     private val _entitySelected = MutableLiveData<Event<EvaluationEntity>>()
     val entitySelect: LiveData<Event<EvaluationEntity>>
@@ -81,6 +87,10 @@ class EvaluationViewModel @Inject constructor(
 
     fun getQuestionsForTeacher(): LiveData<Resource<List<Question>>> {
         return evaluationRepository.getQuestionsForTeacher()
+    }
+
+    override fun onTeacherSelected(value: TeacherInt) {
+        _teacherIntSelect.value = Event(value)
     }
 
     override fun onEntitySelected(entity: EvaluationEntity) {
