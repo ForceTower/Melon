@@ -51,7 +51,7 @@ abstract class EvaluationEntitiesDao {
         }
     }
 
-    @Query("SELECT * FROM EvaluationEntity WHERE LOWER(searchable) LIKE :query")
+    @Query("SELECT * FROM EvaluationEntity WHERE LOWER(searchable) LIKE :query ORDER BY name")
     abstract fun doQuery(query: String): DataSource.Factory<Int, EvaluationEntity>
 
     @Query("SELECT * FROM EvaluationEntity WHERE 0")
