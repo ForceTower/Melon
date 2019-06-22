@@ -13,7 +13,7 @@ data class EvaluationDiscipline(
     val mean: Double?,
     @SerializedName("qtd_students")
     val qtdStudents: Int = 0,
-    val participant: Boolean = false,
+    val participant: Boolean? = false,
     val teachers: List<EvaluationDisciplineTeacher>? = null
 )
 
