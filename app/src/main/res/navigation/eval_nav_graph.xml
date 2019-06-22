@@ -96,17 +96,33 @@
         <argument
             android:name="department"
             app:argType="string" />
+        <action
+            android:id="@+id/action_discipline_to_teacher"
+            app:destination="@id/eval_teacher"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.forcetower.uefs.feature.evaluation.search.SearchFragment"
-        android:label="SearchFragment" >
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_evaluation_search">
         <action
-            android:id="@+id/action_searchFragment_to_eval_discipline"
-            app:destination="@id/eval_discipline" />
+            android:id="@+id/action_search_to_discipline"
+            app:destination="@id/eval_discipline"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
         <action
-            android:id="@+id/action_search_to_eval_teacher"
-            app:destination="@id/eval_teacher" />
+            android:id="@+id/action_search_to_teacher"
+            app:destination="@id/eval_teacher"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <fragment
         android:id="@+id/eval_teacher"
@@ -119,6 +135,13 @@
         <argument
             android:name="teacherId"
             app:argType="long" />
+        <action
+            android:id="@+id/action_teacher_to_discipline"
+            app:destination="@id/eval_discipline"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <activity
         android:id="@+id/rating"
