@@ -15,5 +15,7 @@ data class EvaluationEntity(
     val extra: String?,
     val image: String?,
     val type: Int,
-    val searchable: String
+    val searchable: String,
+    val comp1: String? = null,
+    val comp2: String? = null
 )
