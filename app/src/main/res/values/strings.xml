@@ -613,6 +613,7 @@
     <string name="discipline_evaluation_entity">Disciplina</string>
     <string name="unknown_evaluation_entity">Desconhecido</string>
     <string name="student_evaluation_entity">Aluno(a) - %1$s</string>
+    <string name="evaluation_search_base">Ir para a busca</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
