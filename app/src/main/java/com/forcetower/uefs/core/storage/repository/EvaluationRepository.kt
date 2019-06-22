@@ -1,6 +1,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
+import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
@@ -96,6 +97,7 @@ class EvaluationRepository @Inject constructor(
         return LivePagedListBuilder(database.evaluationEntitiesDao().query(text), 20).build()
     }
 
+    @AnyThread
     fun answer(data: MutableMap<String, Any?>) {
         executors.networkIO().execute {
             try {

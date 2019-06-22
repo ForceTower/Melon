@@ -48,7 +48,7 @@ class EvaluationRatingViewModel @Inject constructor(
     fun answer(id: Long, rating: Float) {
         val data = mutableMapOf<String, Any?>()
         data["question_id"] = id
-        data["value"] = rating
+        data["rating"] = rating
         data["teacher"] = teacher
         if (teacher) {
             data["teacher_id"] = teacherId

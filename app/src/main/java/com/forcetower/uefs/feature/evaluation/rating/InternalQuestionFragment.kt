@@ -18,8 +18,7 @@ class InternalQuestionFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: EvaluationRatingViewModel
-    private lateinit var binding: DialogEvaluationInternalQuestionBinding
-    private lateinit var question: Question
+    private var question: Question? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
@@ -27,10 +26,13 @@ class InternalQuestionFragment : UFragment(), Injectable {
         val last = args.getBoolean("last", false)
         question = Question(args.getLong("id"), args.getString("question")!!, args.getString("description"), teacher = false, discipline = false, last = last)
         return if (!last) {
-            DialogEvaluationInternalQuestionBinding.inflate(inflater, container, false).also {
-                binding = it
-            }.apply {
+            DialogEvaluationInternalQuestionBinding.inflate(inflater, container, false).apply {
                 question = this@InternalQuestionFragment.question
+                continueQuestion.setOnClickListener {
+                    val rating = rating.rating
+                    viewModel.answer(question!!.id, rating)
+                    viewModel.onNextQuestion()
+                }
             }.root
         } else {
             DialogEvaluationCompletedQuestionBinding.inflate(inflater, container, false).apply {
@@ -38,15 +40,6 @@ class InternalQuestionFragment : UFragment(), Injectable {
                     viewModel.onNextQuestion()
                 }
             }.root
-        }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        binding.continueQuestion.setOnClickListener {
-            val rating = binding.rating.rating
-            viewModel.answer(question.id, rating)
-            viewModel.onNextQuestion()
         }
     }
 
