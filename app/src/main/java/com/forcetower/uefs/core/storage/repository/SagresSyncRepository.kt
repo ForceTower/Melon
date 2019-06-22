@@ -260,8 +260,6 @@ class SagresSyncRepository @Inject constructor(
                 val value = Tasks.await(task)
                 onNewToken(value.token)
 
-
-
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
