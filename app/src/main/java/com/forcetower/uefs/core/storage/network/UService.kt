@@ -120,10 +120,13 @@ interface UService {
     fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
 
     @GET("evaluation/question/teacher")
-    fun getQuestionsForTeachers(): Call<List<Question>>
+    fun getQuestionsForTeachers(@Query("teacher_id") teacherId: Long): Call<List<Question>>
 
     @GET("evaluation/question/discipline")
-    fun getQuestionsForDisciplines(): Call<List<Question>>
+    fun getQuestionsForDisciplines(@Query("code") code: String, @Query("department") department: String): Call<List<Question>>
+
+    @POST("evaluation/question/answer")
+    fun answerQuestion(@Body data: MutableMap<String, Any?>): Call<UResponse<Void>>
 
     @GET("evaluation/everythingship")
     fun getEvaluationSnippetData(): Call<EverythingSnippet>
