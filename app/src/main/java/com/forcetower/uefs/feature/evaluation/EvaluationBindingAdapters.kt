@@ -46,7 +46,10 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
     val barData = LineData(set)
     val formatter = object : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
-            return pair.first[value.toInt()]
+            val converted = value.toInt()
+            if (converted < 0 || converted >= pair.first.size)
+                return ""
+            return pair.first[converted]
         }
     }
 
