@@ -42,7 +42,7 @@ abstract class EvaluationEntitiesDao {
     @Query("DELETE FROM EvaluationEntity")
     protected abstract fun clear()
 
-    open fun query(query: String): DataSource.Factory<Long, EvaluationEntity> {
+    open fun query(query: String): DataSource.Factory<Int, EvaluationEntity> {
         val realQuery = "%${query.toLowerCase(Locale.getDefault()).unaccent()}%"
         return if (query.isBlank()) {
             doQueryEmpty()
@@ -52,8 +52,8 @@ abstract class EvaluationEntitiesDao {
     }
 
     @Query("SELECT * FROM EvaluationEntity WHERE LOWER(searchable) LIKE :query")
-    abstract fun doQuery(query: String): DataSource.Factory<Long, EvaluationEntity>
+    abstract fun doQuery(query: String): DataSource.Factory<Int, EvaluationEntity>
 
     @Query("SELECT * FROM EvaluationEntity WHERE 0")
-    abstract fun doQueryEmpty(): DataSource.Factory<Long, EvaluationEntity>
+    abstract fun doQueryEmpty(): DataSource.Factory<Int, EvaluationEntity>
 }

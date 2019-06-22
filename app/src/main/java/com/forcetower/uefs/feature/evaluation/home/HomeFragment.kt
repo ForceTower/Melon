@@ -46,6 +46,7 @@ class HomeFragment : UFragment(), Injectable {
                     removeDuration = 100L
                 }
             }
+            btnSearchEverything.setOnClickListener { navigateToSearch() }
         }.also {
             binding = it
         }.root
@@ -69,6 +70,11 @@ class HomeFragment : UFragment(), Injectable {
         val code = discipline.code
         val department = discipline.department
         val directions = HomeFragmentDirections.actionHomeToEvalDiscipline(code, department)
+        findNavController().navigate(directions)
+    }
+
+    private fun navigateToSearch() {
+        val directions = HomeFragmentDirections.actionHomeToSearch()
         findNavController().navigate(directions)
     }
 

@@ -155,3 +155,16 @@ object M19TO20 : Migration(19, 20) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `name` TEXT, `imageUrl` TEXT, `username` TEXT NOT NULL, `email` TEXT, `darkThemeEnabled` INTEGER NOT NULL, `darkThemeInvites` INTEGER NOT NULL, PRIMARY KEY(`id`))")
     }
 }
+
+object M20TO21 : Migration(20, 21) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val teacherServiceTable = "STeacher"
+        val disciplineServiceTable = "SDiscipline"
+        val studentServiceTable = "SStudent"
+        val evaluationEntityTable = "EvaluationEntity"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$teacherServiceTable` (`teacherId` INTEGER NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT, PRIMARY KEY(`teacherId`))")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$disciplineServiceTable` (`disciplineId` INTEGER NOT NULL, `department` TEXT NOT NULL, `departmentName` TEXT, `code` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`disciplineId`))")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$studentServiceTable` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT, `course` INTEGER, `courseName` TEXT, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$evaluationEntityTable` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `referencedId` INTEGER NOT NULL, `name` TEXT NOT NULL, `extra` TEXT, `image` TEXT, `type` INTEGER NOT NULL, `searchable` TEXT NOT NULL)")
+    }
+}
