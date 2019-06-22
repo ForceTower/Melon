@@ -9,15 +9,18 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import timber.log.Timber
 import javax.inject.Inject
 
 class SearchFragment : UFragment(), Injectable {
@@ -59,9 +62,25 @@ class SearchFragment : UFragment(), Injectable {
         viewModel.query.observe(this, Observer {
             adapter.submitList(it)
         })
-        viewModel.entitySelect.observe(this, Observer {
-            Timber.d("Selected an eval entity: $it")
+        viewModel.entitySelect.observe(this, EventObserver {
+            onEvalEntitySelected(it)
         })
+    }
+
+    private fun onEvalEntitySelected(entity: EvaluationEntity) {
+        when (entity.type) {
+            0 -> {
+                val directions = SearchFragmentDirections.actionSearchToEvalTeacher(entity.referencedId)
+                findNavController().navigate(directions)
+            }
+            1 -> {
+                val comp1 = entity.comp1 ?: return
+                val comp2 = entity.comp2 ?: return
+                val directions = SearchFragmentDirections.actionSearchFragmentToEvalDiscipline(comp1, comp2)
+                findNavController().navigate(directions)
+            }
+            2 -> showSnack(getString(R.string.students_discorevery_is_not_for_now))
+        }
     }
 
     private fun loadKnowledge(resource: Resource<Boolean>) {

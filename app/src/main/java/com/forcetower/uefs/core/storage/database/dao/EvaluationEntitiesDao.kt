@@ -20,7 +20,7 @@ abstract class EvaluationEntitiesDao {
         val disciplines = data.disciplines.map {
             val coded = "${it.department}${it.code}"
             val search = "$coded ${it.name}".toLowerCase(Locale.getDefault()).unaccent()
-            EvaluationEntity(0, it.disciplineId, it.name, coded, null, 1, search)
+            EvaluationEntity(0, it.disciplineId, it.name, coded, null, 1, search, comp1 = it.department, comp2 = it.code)
         }
         val students = data.students.map {
             val search = "${it.name} ${it.courseName}".toLowerCase(Locale.getDefault()).unaccent()

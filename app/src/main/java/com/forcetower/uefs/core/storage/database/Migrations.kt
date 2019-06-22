@@ -175,3 +175,10 @@ object M20TO21 : Migration(20, 21) {
         database.execSQL("CREATE INDEX `index_EvaluationEntity_name` ON `$evaluationEntityTable` (`name`)")
     }
 }
+
+object M21TO22 : Migration(21, 22) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp1 TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp2 TEXT DEFAULT NULL")
+    }
+}
