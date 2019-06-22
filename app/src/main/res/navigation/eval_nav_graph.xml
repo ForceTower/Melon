@@ -89,7 +89,12 @@
         tools:layout="@layout/fragment_evaluation_discipline">
         <action
             android:id="@+id/action_eval_discipline_to_rating"
-            app:destination="@id/rating" />
+            app:destination="@id/rating" >
+            <argument android:defaultValue="false"
+                android:name="isTeacher" />
+            <argument android:defaultValue="0L"
+                android:name="teacherId" />
+        </action>
         <argument
             android:name="code"
             app:argType="string" />
@@ -131,7 +136,14 @@
         tools:layout="@layout/fragment_evaluate_teacher">
         <action
             android:id="@+id/action_eval_teacher_to_rating"
-            app:destination="@id/rating" />
+            app:destination="@id/rating" >
+            <argument android:defaultValue="true"
+                android:name="isTeacher" />
+            <argument android:defaultValue="null"
+                android:name="code" />
+            <argument android:defaultValue="null"
+                android:name="department" />
+        </action>
         <argument
             android:name="teacherId"
             app:argType="long" />
@@ -146,5 +158,20 @@
     <activity
         android:id="@+id/rating"
         android:name="com.forcetower.uefs.feature.evaluation.rating.RatingActivity"
-        android:label="RatingActivity" />
+        android:label="RatingActivity" >
+        <argument
+            android:name="isTeacher"
+            app:argType="boolean" />
+        <argument
+            android:name="teacherId"
+            app:argType="long" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="department"
+            app:argType="string"
+            app:nullable="true" />
+    </activity>
 </navigation>

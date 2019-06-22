@@ -17,6 +17,7 @@ import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import javax.inject.Inject
 
 class TeacherFragment : UFragment(), Injectable {
@@ -31,6 +32,7 @@ class TeacherFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         adapter = TeacherAdapter(viewModel)
         return FragmentEvaluateTeacherBinding.inflate(inflater, container, false).apply {
+            btnEvaluate.hide(false)
             recyclerDisciplines.adapter = this@TeacherFragment.adapter
         }.also {
             binding = it
@@ -41,9 +43,13 @@ class TeacherFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.getTeacher(args.teacherId).observe(this, Observer { handleData(it) })
         viewModel.disciplineSelect.observe(this, EventObserver {
-            val directions = TeacherFragmentDirections.actionEvalTeacherToRating()
+            val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
             findNavController().navigate(directions)
         })
+        binding.btnEvaluate.setOnClickListener {
+            val directions = TeacherFragmentDirections.actionEvalTeacherToRating(args.teacherId)
+            findNavController().navigate(directions)
+        }
     }
 
     private fun handleData(resource: Resource<EvaluationTeacher>) {
@@ -58,9 +64,19 @@ class TeacherFragment : UFragment(), Injectable {
         }
         if (data != null) {
             adapter.discipline = data
-            binding.teacher = data
-            binding.loading = false
-            binding.failed = false
+            binding.run {
+                teacher = data
+                loading = false
+                failed = false
+                btnEvaluate.run {
+                    show(object : ExtendedFloatingActionButton.OnChangedListener() {
+                        override fun onShown(extendedFab: ExtendedFloatingActionButton?) {
+                            super.onShown(extendedFab)
+                            extend(true)
+                        }
+                    })
+                }
+            }
         }
 
         binding.executePendingBindings()

@@ -19,6 +19,7 @@ import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -35,6 +36,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
         elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
+            binding.btnEvaluate.hide(false)
         }.root
     }
 
@@ -54,6 +56,10 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
             val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id)
             findNavController().navigate(directions)
         })
+        binding.btnEvaluate.setOnClickListener {
+            val directions = DisciplineEvaluationFragmentDirections.actionEvalDisciplineToRating(args.code, args.department)
+            findNavController().navigate(directions)
+        }
     }
 
     private fun handleData(resource: Resource<EvaluationDiscipline>) {
@@ -84,6 +90,14 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                 DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())
             }
             elements.discipline = evaluation
+            binding.btnEvaluate.run {
+                show(object : ExtendedFloatingActionButton.OnChangedListener() {
+                    override fun onShown(extendedFab: ExtendedFloatingActionButton?) {
+                        super.onShown(extendedFab)
+                        extend(true)
+                    }
+                })
+            }
         }
         when (resource.status) {
             Status.ERROR -> {
