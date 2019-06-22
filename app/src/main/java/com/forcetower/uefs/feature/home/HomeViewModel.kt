@@ -117,4 +117,8 @@ class HomeViewModel @Inject constructor(
     fun connectToServiceIfNeeded() {
         authRepository.performAccountSyncStateIfNeededAsync()
     }
+
+    fun sendToken(): LiveData<Boolean> {
+        return firebaseMessageRepository.sendNewTokenOrNot()
+    }
 }

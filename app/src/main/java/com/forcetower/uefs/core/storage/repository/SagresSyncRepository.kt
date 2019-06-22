@@ -251,6 +251,7 @@ class SagresSyncRepository @Inject constructor(
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
+
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
