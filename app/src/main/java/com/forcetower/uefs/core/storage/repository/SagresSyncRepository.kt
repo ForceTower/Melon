@@ -66,12 +66,15 @@ import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -87,8 +90,8 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val firebaseMessageRepository: FirebaseMessageRepository,
-    private val service: APIService,
+    private val syncService: APIService,
+    private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
 ) {
@@ -158,7 +161,7 @@ class SagresSyncRepository @Inject constructor(
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase())) {
             try {
-                val call = service.getUpdate()
+                val call = syncService.getUpdate()
                 val response = call.execute()
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -252,7 +255,13 @@ class SagresSyncRepository @Inject constructor(
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
-                firebaseMessageRepository.sendNewToken()
+
+                val task = FirebaseInstanceId.getInstance().instanceId
+                val value = Tasks.await(task)
+                onNewToken(value.token)
+
+
+
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
@@ -266,6 +275,18 @@ class SagresSyncRepository @Inject constructor(
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
+    }
+
+    private fun onNewToken(token: String) {
+        val auth = database.accessTokenDao().getAccessTokenDirect()
+        if (auth != null) {
+            try {
+                service.sendToken(mapOf("token" to token)).execute()
+            } catch (t: Throwable) { }
+        } else {
+            Timber.d("Disconnected")
+        }
+        preferences.edit().putString("current_firebase_token", token).apply()
     }
 
     private fun serviceLogin() {

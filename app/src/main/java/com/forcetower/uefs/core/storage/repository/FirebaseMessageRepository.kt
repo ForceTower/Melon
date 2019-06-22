@@ -332,7 +332,7 @@ class FirebaseMessageRepository @Inject constructor(
         return result
     }
 
-    fun sendNewToken() {
+    private fun sendNewToken() {
         val task = FirebaseInstanceId.getInstance().instanceId
         val value = Tasks.await(task)
         onNewToken(value.token)
