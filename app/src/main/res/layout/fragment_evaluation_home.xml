@@ -78,31 +78,17 @@
             android:text="@string/evaluation_search_hint" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_search_teachers"
+            android:id="@+id/btn_search_everything"
             style="@style/UTheme.MaterialButton.Outline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_search_disciplines"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/label_search_types"
             app:strokeColor="?attr/colorPrimary"
-            android:text="@string/evaluation_teachers" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_search_disciplines"
-            style="@style/UTheme.MaterialButton.Outline"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn_search_teachers"
-            app:layout_constraintTop_toTopOf="@+id/btn_search_teachers"
-            app:strokeColor="?attr/colorPrimary"
-            android:text="@string/evaluation_disciplines" />
+            android:text="@string/evaluation_search_base" />
 
         <LinearLayout
             android:id="@+id/loading_group"
@@ -112,7 +98,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toBottomOf="@+id/btn_search_teachers"
+            app:layout_constraintTop_toBottomOf="@+id/btn_search_everything"
             android:gravity="center"
             android:visibility="gone">
             <ProgressBar
@@ -138,7 +124,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/btn_search_teachers"
+            app:layout_constraintTop_toBottomOf="@id/btn_search_everything"
             tools:listitem="@layout/item_evaluate_discipline_home"
             tools:visibility="visible"/>
 

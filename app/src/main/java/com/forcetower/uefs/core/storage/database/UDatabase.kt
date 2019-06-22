@@ -30,7 +30,6 @@ package com.forcetower.uefs.core.storage.database
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import com.forcetower.sagres.database.model.SDemandOffer
-import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
@@ -49,6 +48,7 @@ import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.SDiscipline
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.model.unes.STeacher
 import com.forcetower.uefs.core.model.unes.SagresDocument
