@@ -10,5 +10,6 @@ data class Question(
     val question: String,
     val description: String?,
     val teacher: Boolean,
-    val discipline: Boolean
+    val discipline: Boolean,
+    val last: Boolean = false
 )

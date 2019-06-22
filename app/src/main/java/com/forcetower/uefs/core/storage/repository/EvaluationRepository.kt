@@ -16,6 +16,7 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkOnlyResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -46,9 +47,16 @@ class EvaluationRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun getQuestionsForTeacher(): LiveData<Resource<List<Question>>> {
+    fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
         return object : NetworkOnlyResource<List<Question>>(executors) {
-            override fun createCall() = service.getQuestionsForTeachers().asLiveData()
+            override fun createCall() = service.getQuestionsForTeachers(teacherId).asLiveData()
+            override fun saveCallResult(value: List<Question>) = Unit
+        }.asLiveData()
+    }
+
+    fun getQuestionsForDiscipline(code: String, department: String): LiveData<Resource<List<Question>>> {
+        return object : NetworkOnlyResource<List<Question>>(executors) {
+            override fun createCall() = service.getQuestionsForDisciplines(code, department).asLiveData()
             override fun saveCallResult(value: List<Question>) = Unit
         }.asLiveData()
     }
@@ -86,5 +94,20 @@ class EvaluationRepository @Inject constructor(
 
     fun queryEntities(text: String): LiveData<PagedList<EvaluationEntity>> {
         return LivePagedListBuilder(database.evaluationEntitiesDao().query(text), 20).build()
+    }
+
+    fun answer(data: MutableMap<String, Any?>) {
+        executors.networkIO().execute {
+            try {
+                val response = service.answerQuestion(data).execute()
+                if (response.isSuccessful) {
+                    Timber.d("Posted answer correctly")
+                } else {
+                    Timber.d("Answer failed with code ${response.code()}")
+                }
+            } catch (t: Throwable) {
+                Timber.e(t, "error on posting answer")
+            }
+        }
     }
 }
