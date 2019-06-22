@@ -1,5 +1,6 @@
 package com.forcetower.uefs.feature.evaluation
 
+import android.util.TypedValue
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
@@ -49,6 +50,11 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
         }
     }
 
+    val typedValue = TypedValue()
+    val theme = context.theme
+    theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
+    val colorOnSurface = typedValue.data
+
     chart.apply {
         data = barData
         xAxis.apply {
@@ -56,12 +62,14 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
             granularity = 1f
             position = XAxis.XAxisPosition.BOTTOM
             description.isEnabled = false
+            textColor = colorOnSurface
             setDrawGridLines(false)
             setDrawAxisLine(false)
         }
         axisLeft.apply {
             axisMaximum = 10f
             axisMinimum = 0f
+            textColor = colorOnSurface
             setDrawGridLines(false)
             setDrawAxisLine(false)
             setDrawZeroLine(false)
