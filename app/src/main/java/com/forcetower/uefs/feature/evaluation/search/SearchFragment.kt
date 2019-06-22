@@ -76,7 +76,7 @@ class SearchFragment : UFragment(), Injectable {
             1 -> {
                 val comp1 = entity.comp1 ?: return
                 val comp2 = entity.comp2 ?: return
-                val directions = SearchFragmentDirections.actionSearchToDiscipline(comp1, comp2)
+                val directions = SearchFragmentDirections.actionSearchToDiscipline(comp2, comp1)
                 findNavController().navigate(directions)
             }
             2 -> showSnack(getString(R.string.students_discorevery_is_not_for_now))
