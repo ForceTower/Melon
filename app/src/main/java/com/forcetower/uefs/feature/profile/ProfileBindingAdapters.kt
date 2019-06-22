@@ -27,7 +27,7 @@
 
 package com.forcetower.uefs.feature.profile
 
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter

@@ -50,7 +50,7 @@ class ProfileActivity : UActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
         supportFragmentManager.inTransaction {
-            val profileId = intent.getStringExtra(EXTRA_PROFILE_ID)
+            val profileId = intent.getStringExtra(EXTRA_PROFILE_ID) ?: "0"
             add(R.id.fragment_container, ProfileFragment.newInstance(profileId))
         }
     }
