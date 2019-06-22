@@ -111,7 +111,7 @@ import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
     SDiscipline::class,
     SStudent::class,
     EvaluationEntity::class
-], version = 21, exportSchema = true)
+], version = 22, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
