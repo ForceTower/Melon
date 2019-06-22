@@ -230,6 +230,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
+        viewModel.sendToken().observe(this, Observer { Unit })
         if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
     }
 
