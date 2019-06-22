@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout
-    xmlns:tools="http://schemas.android.com/tools"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
@@ -25,10 +25,10 @@
             android:id="@+id/search_title"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="Buscar um objeto"
+            android:text="@string/evaluation_search_object"
             android:textColor="?attr/colorOnBackground"
-            android:textSize="24sp"
-            android:layout_marginTop="24dp"
+            android:textSize="28sp"
+            android:layout_marginTop="32dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnSurfaceLight"
-            android:text="Digite algo na omnibox"
+            android:text="@string/evaluation_omnibox_description"
             android:layout_marginTop="4dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
@@ -50,7 +50,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             style="@style/UTheme.TextInputLayout.OutlinedBox"
-            android:hint="Procurar por qualquer coisa"
+            android:hint="@string/evaluation_omnibox_hint"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/search_description">
@@ -80,13 +80,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:gravity="center"
-                android:text="Construindo banco de sabedoria"/>
+                android:text="@string/evaluation_create_knowledge_database"/>
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:layout_marginTop="4dp"
-                android:text="Isso pode demorar pouco ou muito.\nSe voce sair desta tela, o processo irá reiniciar :)"/>
+                android:text="@string/evaluation_create_knowledge_warning"/>
         </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
