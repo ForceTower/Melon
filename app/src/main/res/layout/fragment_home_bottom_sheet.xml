@@ -36,12 +36,8 @@
             type="com.forcetower.uefs.feature.home.HomeViewModel"/>
 
         <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
-            name="firebaseStorage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
+            name="account"
+            type="com.forcetower.uefs.core.model.unes.Account" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -73,8 +69,7 @@
             android:layout_marginStart="@dimen/second_keyline"
             android:contentDescription="@string/acc_user_image"
             app:clipToCircle="@{true}"
-            app:firebaseUser="@{firebaseUser}"
-            app:firebaseStorage="@{firebaseStorage}"
+            app:imageUrl="@{account.imageUrl}"
             app:layout_constraintBottom_toBottomOf="@id/header_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"

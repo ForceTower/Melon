@@ -87,6 +87,7 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val firebaseMessageRepository: FirebaseMessageRepository,
     private val service: APIService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
@@ -251,7 +252,7 @@ class SagresSyncRepository @Inject constructor(
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
-
+                firebaseMessageRepository.sendNewToken()
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()

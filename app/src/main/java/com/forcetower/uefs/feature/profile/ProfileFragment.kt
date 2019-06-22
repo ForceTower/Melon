@@ -36,10 +36,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.lifecycle.Observer
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentProfileBinding
@@ -70,21 +73,25 @@ class ProfileFragment : UFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
         setupViewModel = provideViewModel(factory)
+        viewModel.account.observe(this, Observer { handleAccount(it) })
         return FragmentProfileBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.setLifecycleOwner(this)
+        binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        binding.storage = firebaseStorage
-        binding.firebaseUser = firebaseAuth.currentUser
         binding.executePendingBindings()
 
         binding.imageProfile.setOnClickListener {
             pickImage()
         }
+    }
+
+    private fun handleAccount(resource: Resource<Account>) {
+        val data = resource.data ?: return
+        binding.account = data
     }
 
     override fun onStart() {
@@ -111,7 +118,7 @@ class ProfileFragment : UFragment(), Injectable {
 
         val user = firebaseAuth.currentUser
         if (user != null) {
-            setupViewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
+            setupViewModel.uploadImageToStorage()
         }
     }
 
