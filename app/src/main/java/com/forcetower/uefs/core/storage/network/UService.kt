@@ -88,6 +88,9 @@ interface UService {
     @POST("account/profile")
     fun setupProfile(@Body profile: Profile): Call<UResponse<Void>>
 
+    @POST("account/update_fcm")
+    fun sendToken(@Body data: Map<String, String>): Call<UResponse<Void>>
+
     @GET("courses")
     fun getCourses(): Call<List<Course>>
 
