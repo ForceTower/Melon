@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.work.WorkManager
@@ -312,6 +313,7 @@ class FirebaseMessageRepository @Inject constructor(
         }
     }
 
+    @MainThread
     fun sendNewTokenOrNot(): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
         val day = preferences.getInt("_messaging_sync_daily_", -1)

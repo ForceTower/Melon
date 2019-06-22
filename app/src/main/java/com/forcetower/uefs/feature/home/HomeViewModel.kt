@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -118,6 +119,7 @@ class HomeViewModel @Inject constructor(
         authRepository.performAccountSyncStateIfNeededAsync()
     }
 
+    @MainThread
     fun sendToken(): LiveData<Boolean> {
         return firebaseMessageRepository.sendNewTokenOrNot()
     }

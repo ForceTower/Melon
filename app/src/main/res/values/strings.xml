@@ -619,7 +619,7 @@
     <string name="evaluation_omnibox_hint">Procurar por qualquer coisa</string>
     <string name="evaluation_create_knowledge_database">Construindo banco de sabedoria</string>
     <string name="evaluation_create_knowledge_warning">Isso pode demorar pouco ou muito.\nSe voce sair desta tela, o processo irá reiniciar :)</string>
-    <string name="students_discorevery_is_not_for_now">A descoberta de alunos para conversar ficará para o futuro\nRelaxe ( ͡° ͜ʖ ͡°)</string>
+    <string name="students_discorevery_is_not_for_now">( ͡° ͜ʖ ͡°) A descoberta de alunos para conversar ficará para o futuro</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
