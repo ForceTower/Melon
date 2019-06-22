@@ -5,6 +5,9 @@
 
     <data>
         <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor" />
+        <variable
             name="teacher"
             type="com.forcetower.uefs.feature.evaluation.discipline.TeacherInt" />
     </data>
@@ -14,7 +17,8 @@
         android:paddingStart="16dp"
         android:paddingEnd="16dp"
         android:paddingBottom="8dp"
-        android:layout_marginBottom="8dp">
+        android:layout_marginBottom="8dp"
+        android:onClick="@{() -> interactor.onTeacherSelected(teacher)}">
 
         <TextView
             android:id="@+id/name"
