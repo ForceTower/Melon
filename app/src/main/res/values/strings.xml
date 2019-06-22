@@ -614,6 +614,11 @@
     <string name="unknown_evaluation_entity">Desconhecido</string>
     <string name="student_evaluation_entity">Aluno(a) - %1$s</string>
     <string name="evaluation_search_base">Ir para a busca</string>
+    <string name="evaluation_search_object">Buscar um objeto</string>
+    <string name="evaluation_omnibox_description">Digite algo na omnibox</string>
+    <string name="evaluation_omnibox_hint">Procurar por qualquer coisa</string>
+    <string name="evaluation_create_knowledge_database">Construindo banco de sabedoria</string>
+    <string name="evaluation_create_knowledge_warning">Isso pode demorar pouco ou muito.\nSe voce sair desta tela, o processo irá reiniciar :)</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
