@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.messages
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -160,7 +161,8 @@ class MessagesFragment : UFragment(), Injectable {
         super.onSaveInstanceState(outState)
     }
 
-    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>) : FragmentPagerAdapter(fm) {
+    @SuppressLint("WrongConstant")
+    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount() = fragments.size
         override fun getItem(position: Int) = fragments[position]
         override fun getPageTitle(position: Int) = fragments[position].displayName
