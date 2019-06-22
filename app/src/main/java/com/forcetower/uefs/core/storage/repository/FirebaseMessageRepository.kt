@@ -321,16 +321,20 @@ class FirebaseMessageRepository @Inject constructor(
         if (day != today) {
             executors.diskIO().execute {
                 try {
-                    val task = FirebaseInstanceId.getInstance().instanceId
-                    val value = Tasks.await(task)
-                    onNewToken(value.token)
+                    sendNewToken()
                     result.postValue(true)
                     preferences.edit().putInt("_messaging_sync_daily_", today).apply()
                 } catch (t: Throwable) {
+                    result.postValue(false)
                 }
-                result.postValue(false)
             }
         }
         return result
+    }
+
+    fun sendNewToken() {
+        val task = FirebaseInstanceId.getInstance().instanceId
+        val value = Tasks.await(task)
+        onNewToken(value.token)
     }
 }

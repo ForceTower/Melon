@@ -46,6 +46,7 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import com.forcetower.uefs.core.util.ImgurUpload
 import com.forcetower.uefs.easter.darktheme.DarkInvite
 import com.forcetower.uefs.easter.darktheme.DarkUnlock
 import retrofit2.Call
@@ -79,9 +80,6 @@ interface UService {
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
     ): Call<AccessToken>
 
-    @GET("account")
-    fun account(): Call<Profile>
-
     @POST("account/credentials")
     fun setupAccount(@Body access: Access): Call<UResponse<Void>>
 
@@ -91,6 +89,18 @@ interface UService {
     @POST("account/update_fcm")
     fun sendToken(@Body data: Map<String, String>): Call<UResponse<Void>>
 
+    @GET("account")
+    fun getAccount(): Call<Account>
+
+    @POST("account/image")
+    fun updateProfileImage(@Body data: ImgurUpload): Call<UResponse<Void>>
+
+    @POST("account/darktheme")
+    fun requestDarkThemeUnlock(@Body invites: DarkUnlock): Call<UResponse<Void>>
+
+    @POST("account/darktheme/invite")
+    fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
+
     @GET("courses")
     fun getCourses(): Call<List<Course>>
 
@@ -99,15 +109,6 @@ interface UService {
 
     @POST("grades")
     fun sendGrades(@Body grades: DisciplineDetailsData): Call<UResponse<Void>>
-
-    @GET("account")
-    fun getAccount(): Call<Account>
-
-    @POST("account/darktheme")
-    fun requestDarkThemeUnlock(@Body invites: DarkUnlock): Call<UResponse<Void>>
-
-    @POST("account/darktheme/invite")
-    fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
     // -------- Evaluation ---------
     @GET("evaluation/hot")
