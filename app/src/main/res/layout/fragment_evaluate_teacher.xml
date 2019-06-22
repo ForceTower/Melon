@@ -163,7 +163,7 @@
             android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:paddingTop="8dp"
-            android:paddingBottom="16dp"
+            android:paddingBottom="56dp"
             app:invisibleUnless="@{loading == false}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -210,6 +210,18 @@
                 android:text="@string/eval_loading_evaluation"
                 app:goneUnless="@{failed == false}" />
         </LinearLayout>
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/btn_evaluate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:text="@string/evaluate_teacher"
+            android:textAllCaps="false"
+            app:backgroundTint="?attr/colorPrimary"
+            app:icon="@drawable/rate_review_black_24dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
