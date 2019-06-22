@@ -30,6 +30,7 @@ package com.forcetower.uefs.core.storage.network
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.model.api.EverythingSnippet
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
@@ -120,6 +121,9 @@ interface UService {
 
     @GET("evaluation/question/discipline")
     fun getQuestionsForDisciplines(): Call<List<Question>>
+
+    @GET("evaluation/everythingship")
+    fun getEvaluationSnippetData(): Call<EverythingSnippet>
 
     // ---------------------------------------------------------------------------------------------
 
