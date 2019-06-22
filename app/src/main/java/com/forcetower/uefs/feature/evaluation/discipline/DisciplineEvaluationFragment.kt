@@ -19,7 +19,6 @@ import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -66,6 +65,10 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
         val data = resource.data
         if (data != null) {
             Timber.d("The data is $data")
+            if (data.participant == true) {
+                binding.btnEvaluate.show(true)
+                binding.btnEvaluate.extend(true)
+            }
             val teachers = data.teachers
             val evaluation = if (teachers != null) {
                 DisciplineEvaluation(
@@ -90,14 +93,6 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                 DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())
             }
             elements.discipline = evaluation
-            binding.btnEvaluate.run {
-                show(object : ExtendedFloatingActionButton.OnChangedListener() {
-                    override fun onShown(extendedFab: ExtendedFloatingActionButton?) {
-                        super.onShown(extendedFab)
-                        extend(true)
-                    }
-                })
-            }
         }
         when (resource.status) {
             Status.ERROR -> {

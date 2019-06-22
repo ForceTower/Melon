@@ -20,5 +20,5 @@ data class EvaluationTeacher(
     val finals: Int?,
     val email: String?,
     val disciplines: List<EvaluationDiscipline>? = null,
-    val participant: Boolean = false
+    val participant: Boolean? = false
 )

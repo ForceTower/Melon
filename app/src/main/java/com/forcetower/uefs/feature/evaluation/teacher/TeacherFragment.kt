@@ -17,7 +17,6 @@ import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import javax.inject.Inject
 
 class TeacherFragment : UFragment(), Injectable {
@@ -64,18 +63,14 @@ class TeacherFragment : UFragment(), Injectable {
         }
         if (data != null) {
             adapter.discipline = data
+            if (data.participant == true) {
+                binding.btnEvaluate.show(true)
+                binding.btnEvaluate.extend(true)
+            }
             binding.run {
                 teacher = data
                 loading = false
                 failed = false
-                btnEvaluate.run {
-                    show(object : ExtendedFloatingActionButton.OnChangedListener() {
-                        override fun onShown(extendedFab: ExtendedFloatingActionButton?) {
-                            super.onShown(extendedFab)
-                            extend(true)
-                        }
-                    })
-                }
             }
         }
 
