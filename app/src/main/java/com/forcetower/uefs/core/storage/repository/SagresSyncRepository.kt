@@ -79,6 +79,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -143,11 +144,7 @@ class SagresSyncRepository @Inject constructor(
             return if (info == null) {
                 val phone = ContextCompat.getSystemService(context, TelephonyManager::class.java)
                 val operatorName = phone?.simOperatorName
-                if (operatorName != null) {
-                    SyncRegistry(executor = executor, network = operatorName, networkType = NetworkType.CELLULAR.ordinal)
-                } else {
-                    SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
-                }
+                SyncRegistry(executor = executor, network = operatorName ?: "invalid", networkType = NetworkType.CELLULAR.ordinal)
             } else {
                 SyncRegistry(executor = executor, network = info.ssid, networkType = NetworkType.WIFI.ordinal)
             }
@@ -159,7 +156,7 @@ class SagresSyncRepository @Inject constructor(
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
-        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase())) {
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {
                 val call = syncService.getUpdate()
                 val response = call.execute()
@@ -176,8 +173,7 @@ class SagresSyncRepository @Inject constructor(
                     }
                 }
             } catch (t: Throwable) {
-                Timber.e(t)
-                Timber.d("An error just happened... It will complete anyways")
+                Timber.e(t, "An error just happened... It will complete anyways")
             }
         }
 
@@ -289,7 +285,7 @@ class SagresSyncRepository @Inject constructor(
 
     private fun serviceLogin() {
         val token = authRepository.getAccessTokenDirect()
-        if (token == null) {
+        if (token == null || !preferences.getBoolean("__reconnect_account_for_name_update__", false)) {
             executors.networkIO().execute {
                 authRepository.performAccountSyncState()
             }

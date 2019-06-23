@@ -42,7 +42,6 @@ import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
-import com.forcetower.uefs.core.storage.repository.SettingsRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -54,17 +53,13 @@ class HomeViewModel @Inject constructor(
     private val loginSagresRepository: LoginSagresRepository,
     private val dataRepository: SagresDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository,
-    private val settingsRepository: SettingsRepository,
     private val darkThemeRepository: DarkThemeRepository,
     private val authRepository: AuthRepository,
-    private val accountRepository: AccountRepository
+    accountRepository: AccountRepository
 ) : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
-
-    val isDarkModeEnabled: LiveData<Boolean>
-        get() = settingsRepository.hasDarkModeEnabled()
 
     private val _openProfileCase = MediatorLiveData<Event<String>>()
     val openProfileCase: LiveData<Event<String>>
