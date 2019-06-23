@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.EverythingSnippet
+import com.forcetower.uefs.core.model.api.ImgurUpload
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
@@ -46,7 +47,6 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
-import com.forcetower.uefs.core.util.ImgurUpload
 import com.forcetower.uefs.easter.darktheme.DarkInvite
 import com.forcetower.uefs.easter.darktheme.DarkUnlock
 import retrofit2.Call

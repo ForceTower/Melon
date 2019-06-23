@@ -1,6 +1,8 @@
 package com.forcetower.uefs.core.util
 
 import androidx.annotation.WorkerThread
+import com.forcetower.uefs.core.model.api.ImgurUpload
+import com.forcetower.uefs.core.model.api.UploadResponse
 import com.google.gson.Gson
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
@@ -44,15 +46,4 @@ object ImgurUploader {
 
         return null
     }
-
-    internal data class UploadResponse(
-        val data: ImgurUpload,
-        val success: Boolean,
-        val status: Int
-    )
 }
-
-data class ImgurUpload(
-    val link: String,
-    val deletehash: String
-)
