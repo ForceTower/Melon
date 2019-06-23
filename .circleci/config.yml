@@ -2,7 +2,7 @@ version: 2
 references:
   config_android: &config_android
     docker:
-      - image: forcetower/android-pre-29:v1
+      - image: circleci/android:api-29
     working_directory: ~/unes
     enviroment:
       JVM_OPTS: -Xmx2586m
