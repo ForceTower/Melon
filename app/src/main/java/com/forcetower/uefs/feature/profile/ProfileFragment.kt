@@ -116,10 +116,7 @@ class ProfileFragment : UFragment(), Injectable {
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.imageProfile)
 
-        val user = firebaseAuth.currentUser
-        if (user != null) {
-            setupViewModel.uploadImageToStorage()
-        }
+        setupViewModel.uploadImageToStorage()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
