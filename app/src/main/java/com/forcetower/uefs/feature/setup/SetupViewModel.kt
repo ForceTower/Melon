@@ -29,7 +29,7 @@ package com.forcetower.uefs.feature.setup
 
 import android.content.Context
 import android.net.Uri
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course

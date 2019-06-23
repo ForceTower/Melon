@@ -30,13 +30,15 @@ package com.forcetower.uefs.core.storage.repository
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class ProfileRepository @Inject constructor(
-    val database: UDatabase,
-    val executors: AppExecutors
+    private val database: UDatabase,
+    private val executors: AppExecutors,
+    private val service: UService
 ) {
     fun getMeProfile() = database.profileDao().selectMe()
     fun loadProfile(profileId: String) = database.profileDao().selectProfileByUUID(profileId)
@@ -48,6 +50,10 @@ class ProfileRepository @Inject constructor(
     fun updateUserCourse(course: Course) {
         executors.diskIO().execute {
             database.profileDao().updateCourse(course.id)
+            val profile = database.profileDao().selectMeDirect() ?: return@execute
+            try {
+                service.setupProfile(profile).execute()
+            } catch (t: Throwable) {}
         }
     }
 }
