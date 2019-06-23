@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.feature.siecomp.schedule
 
-import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -123,7 +122,6 @@ class ScheduleFragment : UFragment(), Injectable {
         startActivity(EventSessionDetailsActivity.startIntent(requireContext(), id))
     }
 
-    @SuppressLint("WrongConstant")
     inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount() = COUNT
 
