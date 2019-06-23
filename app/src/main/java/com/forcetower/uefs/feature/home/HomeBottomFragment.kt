@@ -48,6 +48,7 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -56,6 +57,8 @@ import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
+import com.forcetower.uefs.feature.setup.CourseSelectionCallback
+import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
@@ -87,6 +90,8 @@ class HomeBottomFragment : UFragment(), Injectable {
             viewModel = this@HomeBottomFragment.viewModel
             executePendingBindings()
             imageUserPicture.setOnClickListener { pickImage() }
+            textUserName.setOnClickListener { editCourse() }
+            textScore.setOnClickListener { editCourse() }
         }.root
     }
 
@@ -105,6 +110,17 @@ class HomeBottomFragment : UFragment(), Injectable {
             AppCompatDelegate.setDefaultNightMode(flag)
             activity?.recreate()
         }
+    }
+
+    private fun editCourse() {
+        if (!preferences.isStudentFromUEFS()) return
+        val dialog = SelectCourseDialog()
+        dialog.setCallback(object : CourseSelectionCallback {
+            override fun onSelected(course: Course) {
+                viewModel.setSelectedCourse(course)
+            }
+        })
+        dialog.show(childFragmentManager, "dialog_course")
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

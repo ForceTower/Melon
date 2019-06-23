@@ -35,6 +35,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
@@ -42,6 +43,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -57,6 +59,7 @@ class HomeViewModel @Inject constructor(
     private val firebaseMessageRepository: FirebaseMessageRepository,
     private val darkThemeRepository: DarkThemeRepository,
     private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
     accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
@@ -131,5 +134,9 @@ class HomeViewModel @Inject constructor(
     @MainThread
     fun sendToken(): LiveData<Boolean> {
         return firebaseMessageRepository.sendNewTokenOrNot()
+    }
+
+    fun setSelectedCourse(course: Course) {
+        profileRepository.updateUserCourse(course)
     }
 }
