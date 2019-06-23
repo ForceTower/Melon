@@ -35,10 +35,11 @@ object ImgurUploader {
                 Timber.d("Converted $converted")
                 converted.data
             } else {
+                Timber.d("Failed to upload with code ${response.code()}")
                 null
             }
         } catch (e: IOException) {
-            e.printStackTrace()
+            Timber.e(e, "Failed to upload with exception")
         }
 
         return null
