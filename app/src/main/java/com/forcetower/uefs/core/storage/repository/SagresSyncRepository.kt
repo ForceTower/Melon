@@ -289,6 +289,7 @@ class SagresSyncRepository @Inject constructor(
             executors.networkIO().execute {
                 authRepository.performAccountSyncState()
             }
+            preferences.edit().putBoolean("__reconnect_account_for_name_update__", true).apply()
         }
     }
 
