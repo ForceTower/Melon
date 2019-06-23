@@ -97,6 +97,12 @@ class UploadImageToStorage(
         return try {
             val response = service.updateProfileImage(upload).execute()
             if (response.isSuccessful) {
+                try {
+                    val acc = service.getAccount().execute()
+                    acc.body()?.run {
+                        database.accountDao().insert(this)
+                    }
+                } catch (e: Throwable) { }
                 Result.success()
             } else {
                 Result.retry()

@@ -32,6 +32,7 @@ object ImgurUploader {
                 Timber.d("Upload Success")
                 val string = response.body()!!.string()
                 val converted = Gson().fromJson(string, UploadResponse::class.java)
+                Timber.d("Converted $converted")
                 converted.data
             } else {
                 null
