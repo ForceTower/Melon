@@ -139,8 +139,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun onActivityStart() {
-        initShortcuts()
-        verifyIntegrity()
+        try {
+            initShortcuts()
+            verifyIntegrity()
+        } catch (t: Throwable) {}
         moveToTask()
     }
 
