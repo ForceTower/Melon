@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.net.Uri
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -46,6 +47,7 @@ import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import javax.inject.Inject
 
@@ -57,6 +59,8 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     accountRepository: AccountRepository
 ) : ViewModel() {
+    private var selectImageUri: Uri? = null
+
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
@@ -77,6 +81,16 @@ class HomeViewModel @Inject constructor(
     val account: LiveData<Resource<Account>> = accountRepository.getAccount()
 
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
+
+    fun uploadImageToStorage() {
+        val uri = selectImageUri
+        uri ?: return
+        UploadImageToStorage.createWorker(uri)
+    }
+
+    fun setSelectedImage(uri: Uri) {
+        selectImageUri = uri
+    }
 
     fun logout() = dataRepository.logout()
 

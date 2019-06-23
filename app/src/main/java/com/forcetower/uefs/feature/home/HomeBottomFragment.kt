@@ -27,7 +27,10 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.app.Activity
+import android.content.Intent
 import android.content.SharedPreferences
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -36,13 +39,17 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
@@ -51,9 +58,12 @@ import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
+import com.theartofdev.edmodo.cropper.CropImage
+import com.theartofdev.edmodo.cropper.CropImageView
 import javax.inject.Inject
 
 class HomeBottomFragment : UFragment(), Injectable {
@@ -76,7 +86,7 @@ class HomeBottomFragment : UFragment(), Injectable {
             lifecycleOwner = this@HomeBottomFragment
             viewModel = this@HomeBottomFragment.viewModel
             executePendingBindings()
-            imageUserPicture.setOnClickListener { this@HomeBottomFragment.viewModel.onMeProfileClicked() }
+            imageUserPicture.setOnClickListener { pickImage() }
         }.root
     }
 
@@ -183,5 +193,61 @@ class HomeBottomFragment : UFragment(), Injectable {
                 else -> NavigationUI.onNavDestinationSelected(item, findNavController())
             }
         }
+    }
+
+    private fun pickImage() {
+        val intent = Intent(Intent.ACTION_PICK)
+        intent.type = "image/*"
+        startActivityForResult(intent, REQUEST_SELECT_PICTURE)
+    }
+
+    private fun onImagePicked(uri: Uri) {
+        viewModel.setSelectedImage(uri)
+        GlideApp.with(requireContext())
+            .load(uri)
+            .fallback(R.mipmap.ic_unes_large_image_512)
+            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .circleCrop()
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(binding.imageUserPicture)
+
+        viewModel.uploadImageToStorage()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        when (requestCode) {
+            REQUEST_SELECT_PICTURE -> {
+                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
+                    val uri = data.data!!
+
+                    val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
+                    val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+                    CropImage.activity(uri)
+                            .setFixAspectRatio(true)
+                            .setAspectRatio(1, 1)
+                            .setCropShape(CropImageView.CropShape.OVAL)
+                            .setBackgroundColor(bg)
+                            .setBorderLineColor(ac)
+                            .setBorderCornerColor(ac)
+                            .setActivityMenuIconColor(ac)
+                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
+                            .setActivityTitle(getString(R.string.cut_profile_image))
+                            .setGuidelines(CropImageView.Guidelines.OFF)
+                            .start(requireContext(), this)
+                }
+            }
+            CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
+                val result = CropImage.getActivityResult(data)
+                if (resultCode == Activity.RESULT_OK) {
+                    val imageUri = result.uri
+                    onImagePicked(imageUri)
+                }
+            }
+        }
+    }
+
+    companion object {
+        private const val REQUEST_SELECT_PICTURE = 8000
     }
 }
