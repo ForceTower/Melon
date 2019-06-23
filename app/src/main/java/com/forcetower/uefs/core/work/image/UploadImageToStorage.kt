@@ -97,6 +97,7 @@ class UploadImageToStorage(
         return try {
             val response = service.updateProfileImage(upload).execute()
             if (response.isSuccessful) {
+                Timber.d("Success!!")
                 try {
                     val acc = service.getAccount().execute()
                     acc.body()?.run {
@@ -105,9 +106,11 @@ class UploadImageToStorage(
                 } catch (e: Throwable) { }
                 Result.success()
             } else {
+                Timber.d("Unsucessful response ${response.code()}")
                 Result.retry()
             }
         } catch (t: Throwable) {
+            Timber.e(t, "Error")
             Result.retry()
         }
     }

@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.annotation.SuppressLint
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.annotation.AnyThread
@@ -67,10 +68,10 @@ class AdventureRepository @Inject constructor(
     }
 
     @AnyThread
-    fun checkAchievements(email: String? = null): LiveData<Map<Int, Int>> {
+    fun checkAchievements(): LiveData<Map<Int, Int>> {
         val data = MutableLiveData<Map<Int, Int>>()
         executors.diskIO().execute {
-            val list = internalCheckAchievements(email)
+            val list = internalCheckAchievements()
             data.postValue(list)
         }
         return data
@@ -87,31 +88,14 @@ class AdventureRepository @Inject constructor(
         return data
     }
 
+    @SuppressLint("UseSparseArrays")
     @WorkerThread
-    private fun internalCheckAchievements(email: String?): Map<Int, Int> {
+    private fun internalCheckAchievements(): Map<Int, Int> {
         val data = HashMap<Int, Int>()
 
-        val user = auth.currentUser ?: return data
-        val id = user.uid
+        auth.currentUser ?: return data
 
         performCheckAchievements(data)
-//        try {
-//            val snapshot = Tasks.await(collection.document(id).get())
-//            val games = snapshot?.data?.get("adventure") as? String
-//            if (games == null && email != null) {
-//                Timber.d("Setting up account")
-//                Tasks.await(collection.document(id).set(mapOf("adventure" to email), SetOptions.merge()))
-//
-//            } else if (games == email) {
-//                performCheckAchievements(data)
-//            } else {
-//                Timber.d("Invalid combination of $email and ${user.email}")
-//            }
-//        } catch (throwable: Throwable) {
-//            Timber.d("Ignored exception: ${throwable.message}")
-//            Crashlytics.logException(throwable)
-//        }
-
         return data
     }
 

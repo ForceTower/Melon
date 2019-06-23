@@ -27,7 +27,6 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Profile
@@ -70,7 +69,4 @@ class ScheduleRepository @Inject constructor(
             Crashlytics.logException(t)
         }
     }
-
-    @AnyThread
-    fun recoverSchedule(userId: String) = Unit
 }
