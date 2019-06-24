@@ -53,6 +53,7 @@ import com.forcetower.uefs.feature.reminders.RemindersFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
 import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
+import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -113,4 +114,6 @@ abstract class HomeModule {
     abstract fun invalidAccessDialog(): InvalidAccessDialog
     @ContributesAndroidInjector
     abstract fun logoutConfirmationFragment(): LogoutConfirmationFragment
+    @ContributesAndroidInjector
+    abstract fun selectCourseDialog(): SelectCourseDialog
 }

@@ -50,7 +50,7 @@ class SagresMessageAdapter(
         holder.binding.apply {
             message = getItem(position)
             listener = viewModel
-            setLifecycleOwner(lifecycleOwner)
+            lifecycleOwner = this@SagresMessageAdapter.lifecycleOwner
             executePendingBindings()
         }
     }

@@ -122,7 +122,7 @@ class ScheduleFragment : UFragment(), Injectable {
         startActivity(EventSessionDetailsActivity.startIntent(requireContext(), id))
     }
 
-    inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class ScheduleAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount() = COUNT
 
         override fun getItem(position: Int): Fragment {

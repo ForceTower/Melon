@@ -36,19 +36,17 @@
             type="com.forcetower.uefs.feature.home.HomeViewModel"/>
 
         <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
-            name="firebaseStorage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
+            name="account"
+            type="com.forcetower.uefs.core.model.unes.Account" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingTop="16dp"
-        android:clipToPadding="false">
+        android:clipToPadding="false"
+        android:background="?attr/background"
+        android:elevation="1dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/header_bottom"
@@ -71,8 +69,7 @@
             android:layout_marginStart="@dimen/second_keyline"
             android:contentDescription="@string/acc_user_image"
             app:clipToCircle="@{true}"
-            app:firebaseUser="@{firebaseUser}"
-            app:firebaseStorage="@{firebaseStorage}"
+            app:imageUrl="@{account.imageUrl}"
             app:layout_constraintBottom_toBottomOf="@id/header_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -117,6 +114,7 @@
 
         <com.google.android.material.switchmaterial.SwitchMaterial
             android:id="@+id/switch_night"
+            android:visibility="gone"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"

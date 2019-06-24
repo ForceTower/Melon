@@ -42,7 +42,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.google.firebase.functions.FirebaseFunctionsException
 import javax.inject.Inject
 
 class InviteDarkThemeFragment : UFragment(), Injectable {
@@ -75,11 +74,11 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
                 }
                 Status.ERROR -> {
                     binding.loadingPb.visibility = GONE
-                    val exception = it.throwable as? FirebaseFunctionsException
-                    val messageRes = when (exception?.code) {
-                        FirebaseFunctionsException.Code.NOT_FOUND -> R.string.dark_theme_user_not_found
-                        FirebaseFunctionsException.Code.FAILED_PRECONDITION -> R.string.dark_theme_no_more_invites
-                        FirebaseFunctionsException.Code.UNAUTHENTICATED -> R.string.you_are_not_connected_to_the_unesverso
+                    val messageRes = when (it.code) {
+                        404 -> R.string.dark_theme_user_not_found
+                        403 -> R.string.dark_theme_no_more_invites
+                        402 -> R.string.user_already_unlocked_dark_theme
+                        401 -> R.string.you_are_not_connected_to_the_unesverso
                         else -> R.string.what_firebase_says_the_app_commits
                     }
                     showSnack(getString(messageRes), true)
@@ -92,20 +91,17 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             if (it == null) {
                 binding.textInvitesLeft.text = "0"
             } else {
-                val invites = it.darkInvites ?: 0
-                val sent = it.sentDarkInvites ?: invites
-                val left = invites - sent
-                binding.textInvitesLeft.text = "$left"
+                val invites = it.darkThemeInvites
+                binding.textInvitesLeft.text = "$invites"
             }
         })
     }
 
     private fun onSendRandom() {
-        showSnack(getString(R.string.cant_do_this_now))
-//        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-//        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-//        binding.loadingPb.visibility = VISIBLE
-//        viewModel.sendDarkThemeTo(null)
+        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
+        binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
+        binding.loadingPb.visibility = VISIBLE
+        viewModel.sendDarkThemeTo(null)
     }
 
     private fun onSend() {
@@ -114,14 +110,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             binding.textSendTo.error = getString(R.string.dark_theme_username_is_empty)
             return
         }
-
-        val text = binding.textInvitesLeft.text.toString().toIntOrNull() ?: 0
-        if (text > 0) {
-            binding.textInvitesLeft.text = "${if (text == 0) 0 else text - 1}"
-            binding.loadingPb.visibility = VISIBLE
-            viewModel.sendDarkThemeTo(username)
-        } else {
-            showSnack(getString(R.string.dark_theme_no_more_invites), true)
-        }
+        binding.loadingPb.visibility = VISIBLE
+        viewModel.sendDarkThemeTo(username)
     }
 }

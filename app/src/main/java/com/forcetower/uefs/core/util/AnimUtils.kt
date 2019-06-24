@@ -193,6 +193,10 @@ object AnimUtils {
             mAnimator.startDelay = delayMS
         }
 
+        override fun setTarget(target: Any?) {
+            mAnimator.setTarget(target)
+        }
+
         override fun isPaused(): Boolean = mAnimator.isPaused
 
         override fun isRunning(): Boolean = mAnimator.isRunning
@@ -231,10 +235,6 @@ object AnimUtils {
         override fun setDuration(durationMS: Long): Animator {
             mAnimator.duration = durationMS
             return this
-        }
-
-        override fun setTarget(target: Any) {
-            mAnimator.setTarget(target)
         }
 
         override fun setupEndValues() {

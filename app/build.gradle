@@ -95,6 +95,10 @@ play {
     defaultToAppBundles true
 }
 
+kotlinter {
+    allowWildcardImports false
+}
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 

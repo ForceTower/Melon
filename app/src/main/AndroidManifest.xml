@@ -22,7 +22,6 @@
         android:supportsRtl="true"
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
-        <activity android:name=".feature.evaluation.EvaluationActivity"></activity>
         <activity
             android:name=".LauncherActivity"
             android:theme="@style/UTheme.LightNav.Launcher">
@@ -48,6 +47,13 @@
         <activity
             android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
+        <activity
+            android:name=".feature.evaluation.EvaluationActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.evaluation.rating.RatingActivity"
+            android:theme="@style/UTheme.Translucent"
+            android:parentActivityName=".feature.evaluation.EvaluationActivity"/>
         <activity
             android:name=".feature.siecomp.SIECOMPActivity"
             android:parentActivityName=".feature.home.HomeActivity"

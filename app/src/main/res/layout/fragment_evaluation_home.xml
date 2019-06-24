@@ -3,9 +3,16 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <data>
+        <variable
+            name="account"
+            type="com.forcetower.uefs.core.model.unes.Account" />
+    </data>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:background="?attr/background">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
@@ -41,7 +48,8 @@
             app:layout_constraintEnd_toStartOf="@id/user_image"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/home_label"
-            android:text="@string/evaluation_welcome" />
+            app:accountName="@{account.name}"
+            tools:text="@string/evaluation_welcome" />
 
         <ImageView
             android:id="@+id/user_image"
@@ -49,6 +57,8 @@
             android:layout_height="36dp"
             android:importantForAccessibility="no"
             app:clipToCircle="@{true}"
+            app:goneIf="@{account.imageUrl == null}"
+            app:imageUrl="@{account.imageUrl}"
             app:layout_constraintBottom_toBottomOf="@+id/welcome_home"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintTop_toTopOf="@id/home_label"
@@ -68,44 +78,54 @@
             android:text="@string/evaluation_search_hint" />
 
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_search_teachers"
+            android:id="@+id/btn_search_everything"
             style="@style/UTheme.MaterialButton.Outline"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
             android:layout_marginTop="8dp"
-            app:layout_constraintEnd_toStartOf="@+id/btn_search_disciplines"
-            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintEnd_toEndOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/label_search_types"
             app:strokeColor="?attr/colorPrimary"
-            android:text="@string/evaluation_teachers" />
+            android:text="@string/evaluation_search_base" />
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_search_disciplines"
-            style="@style/UTheme.MaterialButton.Outline"
-            android:layout_width="0dp"
+        <LinearLayout
+            android:id="@+id/loading_group"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            app:layout_constraintEnd_toEndOf="parent"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/btn_search_teachers"
-            app:layout_constraintTop_toTopOf="@+id/btn_search_teachers"
-            app:strokeColor="?attr/colorPrimary"
-            android:text="@string/evaluation_disciplines" />
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/btn_search_everything"
+            android:gravity="center"
+            android:visibility="gone">
+            <ProgressBar
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:indeterminate="true"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:text="@string/eval_loading_evaluation"/>
+        </LinearLayout>
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/disciplines_recycler"
             android:layout_width="0dp"
             android:layout_height="0dp"
             android:clipToPadding="false"
-            android:paddingBottom="16dp"
             android:paddingTop="16dp"
+            android:paddingBottom="16dp"
+            android:visibility="gone"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/btn_search_teachers"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            tools:listitem="@layout/item_evaluate_discipline_home"/>
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/btn_search_everything"
+            tools:listitem="@layout/item_evaluate_discipline_home"
+            tools:visibility="visible"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

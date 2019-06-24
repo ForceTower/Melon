@@ -30,21 +30,23 @@ package com.forcetower.uefs.easter.darktheme
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.service.FirebaseProfile
+import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 
 class DarkThemeViewModel @Inject constructor(
-    private val repository: DarkThemeRepository
+    private val repository: DarkThemeRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
 
     val preconditions: LiveData<List<Precondition>>
         get() = repository.getPreconditions()
 
-    val profile: LiveData<FirebaseProfile?>
-        get() = repository.getFirebaseProfile()
+    val profile: LiveData<Account?>
+        get() = accountRepository.getAccountOnDatabase()
 
     private val _currentCall = MediatorLiveData<Event<Resource<Boolean>>>()
     val currentCall: LiveData<Event<Resource<Boolean>>>

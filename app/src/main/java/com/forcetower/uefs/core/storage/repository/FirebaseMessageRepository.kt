@@ -29,34 +29,34 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.MainThread
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.work.WorkManager
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
-    @Named(Profile.COLLECTION) private val profileCollection: CollectionReference,
+    private val service: UService,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val context: Context,
@@ -290,16 +290,11 @@ class FirebaseMessageRepository @Inject constructor(
     }
 
     fun onNewToken(token: String) {
-        val user = firebaseAuth.currentUser
-        if (user != null) {
-            val data = mapOf("firebaseToken" to token)
-            profileCollection.document(user.uid).set(data, SetOptions.merge()).addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    Timber.d("Completed")
-                } else {
-                    Timber.d("Failed with exception message: ${task.exception?.message}")
-                }
-            }
+        val auth = database.accessTokenDao().getAccessTokenDirect()
+        if (auth != null) {
+            try {
+                service.sendToken(mapOf("token" to token)).execute()
+            } catch (t: Throwable) { }
         } else {
             Timber.d("Disconnected")
         }
@@ -316,5 +311,30 @@ class FirebaseMessageRepository @Inject constructor(
                 }
             }
         }
+    }
+
+    @MainThread
+    fun sendNewTokenOrNot(): LiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        val day = preferences.getInt("_messaging_sync_daily_", -1)
+        val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
+        if (day != today) {
+            executors.diskIO().execute {
+                try {
+                    sendNewToken()
+                    result.postValue(true)
+                    preferences.edit().putInt("_messaging_sync_daily_", today).apply()
+                } catch (t: Throwable) {
+                    result.postValue(false)
+                }
+            }
+        }
+        return result
+    }
+
+    private fun sendNewToken() {
+        val task = FirebaseInstanceId.getInstance().instanceId
+        val value = Tasks.await(task)
+        onNewToken(value.token)
     }
 }

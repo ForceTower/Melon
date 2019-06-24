@@ -30,22 +30,32 @@ package com.forcetower.uefs.core.storage.network
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.model.api.EverythingSnippet
+import com.forcetower.uefs.core.model.api.ImgurUpload
 import com.forcetower.uefs.core.model.api.UResponse
+import com.forcetower.uefs.core.model.service.EvaluationDiscipline
+import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
+import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import com.forcetower.uefs.easter.darktheme.DarkInvite
+import com.forcetower.uefs.easter.darktheme.DarkUnlock
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
+import retrofit2.http.Query
 import java.util.Locale
 
 interface UService {
@@ -70,14 +80,26 @@ interface UService {
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
     ): Call<AccessToken>
 
-    @GET("account")
-    fun account(): Call<Profile>
-
     @POST("account/credentials")
     fun setupAccount(@Body access: Access): Call<UResponse<Void>>
 
     @POST("account/profile")
     fun setupProfile(@Body profile: Profile): Call<UResponse<Void>>
+
+    @POST("account/update_fcm")
+    fun sendToken(@Body data: Map<String, String>): Call<UResponse<Void>>
+
+    @GET("account")
+    fun getAccount(): Call<Account>
+
+    @POST("account/image")
+    fun updateProfileImage(@Body data: ImgurUpload): Call<UResponse<Void>>
+
+    @POST("account/darktheme")
+    fun requestDarkThemeUnlock(@Body invites: DarkUnlock): Call<UResponse<Void>>
+
+    @POST("account/darktheme/invite")
+    fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
     @GET("courses")
     fun getCourses(): Call<List<Course>>
@@ -87,6 +109,28 @@ interface UService {
 
     @POST("grades")
     fun sendGrades(@Body grades: DisciplineDetailsData): Call<UResponse<Void>>
+
+    // -------- Evaluation ---------
+    @GET("evaluation/hot")
+    fun getEvaluationTopics(): Call<List<EvaluationHomeTopic>>
+
+    @GET("evaluation/discipline")
+    fun getEvaluationDiscipline(@Query("department") department: String, @Query("code") code: String): Call<EvaluationDiscipline>
+
+    @GET("evaluation/teacher")
+    fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
+
+    @GET("evaluation/question/teacher")
+    fun getQuestionsForTeachers(@Query("teacher_id") teacherId: Long): Call<List<Question>>
+
+    @GET("evaluation/question/discipline")
+    fun getQuestionsForDisciplines(@Query("code") code: String, @Query("department") department: String): Call<List<Question>>
+
+    @POST("evaluation/question/answer")
+    fun answerQuestion(@Body data: MutableMap<String, Any?>): Call<UResponse<Void>>
+
+    @GET("evaluation/everythingship")
+    fun getEvaluationSnippetData(): Call<EverythingSnippet>
 
     // ---------------------------------------------------------------------------------------------
 

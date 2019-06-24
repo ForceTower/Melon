@@ -101,7 +101,7 @@ class OnboardingFragment : UFragment(), Injectable {
         super.onDetach()
     }
 
-    inner class OnboardingAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class OnboardingAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments = if (TimeUtils.eventHasStarted()) {
             arrayOf(
                     WelcomeFragment(),

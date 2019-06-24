@@ -31,8 +31,8 @@ import android.app.Activity
 import android.app.Application
 import android.app.Service
 import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
@@ -78,6 +78,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
+        setupDayNightTheme(this)
         AndroidThreeTen.init(this)
         // Redefine os trabalhos de sincronização
         defineWorker()
@@ -148,15 +149,24 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     override fun serviceInjector() = serviceInjector
 
     companion object {
-        fun setupDayNightTheme(activity: AppCompatActivity) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(activity)
-            val mode = when (preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0) {
-                0 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                1 -> AppCompatDelegate.MODE_NIGHT_NO
-                2 -> AppCompatDelegate.MODE_NIGHT_YES
-                else -> AppCompatDelegate.MODE_NIGHT_NO
+        fun setupDayNightTheme(context: Context) {
+            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+            val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+            if (!enabled) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                preferences.edit()
+                        .remove("ach_night_mode_enabled")
+                        .remove("stg_night_mode")
+                        .apply()
+            } else {
+                val mode = when (preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0) {
+                    0 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+                    1 -> AppCompatDelegate.MODE_NIGHT_NO
+                    2 -> AppCompatDelegate.MODE_NIGHT_YES
+                    else -> AppCompatDelegate.MODE_NIGHT_NO
+                }
+                AppCompatDelegate.setDefaultNightMode(mode)
             }
-            activity.delegate.localNightMode = mode
         }
     }
 }

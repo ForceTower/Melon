@@ -28,7 +28,7 @@
 package com.forcetower.uefs.core.work.sync
 
 import android.content.Context
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
 import androidx.annotation.WorkerThread
 import androidx.work.BackoffPolicy

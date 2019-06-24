@@ -45,6 +45,7 @@ import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.document.DocumentsViewModel
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
+import com.forcetower.uefs.feature.evaluation.rating.EvaluationRatingViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
@@ -217,6 +218,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EvaluationViewModel::class)
     abstract fun bindEvaluationViewModel(vm: EvaluationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EvaluationRatingViewModel::class)
+    abstract fun bindEvaluationRatingViewModel(vm: EvaluationRatingViewModel): ViewModel
 
     @Binds
     @IntoMap
