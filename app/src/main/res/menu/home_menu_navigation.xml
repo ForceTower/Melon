@@ -41,10 +41,16 @@
                     android:icon="@drawable/ic_face_black_24dp"/>
 
                 <item
+                    android:id="@+id/purchases"
+                    android:title="@string/label_purchases"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_gift_card_black_24dp"/>
+
+                <item
                     android:id="@+id/evaluation"
                     android:title="@string/label_evaluation"
                     android:menuCategory="secondary"
-                    android:icon="@drawable/ic_whatshot_black_24dp"/>
+                    android:icon="@drawable/hourglass_black_24dp"/>
 
                 <item
                     android:id="@+id/documents"
@@ -76,12 +82,6 @@
                     android:title="@string/label_services_follow_up"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_receipt_black_24dp"/>
-
-                <item
-                    android:id="@+id/purchases"
-                    android:title="@string/label_purchases"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_gift_card_black_24dp"/>
 
                 <item
                     android:id="@+id/teacher_email"
