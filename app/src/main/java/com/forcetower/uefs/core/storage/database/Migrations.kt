@@ -148,3 +148,37 @@ object M18TOM19 : Migration(18, 19) {
         database.execSQL("DELETE FROM AccessToken")
     }
 }
+
+object M19TO20 : Migration(19, 20) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val table = "Account"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `name` TEXT, `imageUrl` TEXT, `username` TEXT NOT NULL, `email` TEXT, `darkThemeEnabled` INTEGER NOT NULL, `darkThemeInvites` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+    }
+}
+
+object M20TO21 : Migration(20, 21) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val teacherServiceTable = "STeacher"
+        val disciplineServiceTable = "SDiscipline"
+        val studentServiceTable = "SStudent"
+        val evaluationEntityTable = "EvaluationEntity"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$teacherServiceTable` (`teacherId` INTEGER NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT, PRIMARY KEY(`teacherId`))")
+        database.execSQL("CREATE INDEX `index_STeacher_name` ON `$teacherServiceTable` (`name`)")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$disciplineServiceTable` (`disciplineId` INTEGER NOT NULL, `department` TEXT NOT NULL, `departmentName` TEXT, `code` TEXT NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`disciplineId`))")
+        database.execSQL("CREATE UNIQUE INDEX `index_SDiscipline_code_department` ON `$disciplineServiceTable` (`code`, `department`)")
+        database.execSQL("CREATE INDEX `index_SDiscipline_name` ON `$disciplineServiceTable` (`name`)")
+        database.execSQL("CREATE INDEX `index_SDiscipline_code` ON `$disciplineServiceTable` (`code`)")
+        database.execSQL("CREATE INDEX `index_SDiscipline_department` ON `$disciplineServiceTable` (`department`)")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$studentServiceTable` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `imageUrl` TEXT, `course` INTEGER, `courseName` TEXT, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE INDEX `index_SStudent_name` ON `$studentServiceTable` (`name`)")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$evaluationEntityTable` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `referencedId` INTEGER NOT NULL, `name` TEXT NOT NULL, `extra` TEXT, `image` TEXT, `type` INTEGER NOT NULL, `searchable` TEXT NOT NULL)")
+        database.execSQL("CREATE INDEX `index_EvaluationEntity_name` ON `$evaluationEntityTable` (`name`)")
+    }
+}
+
+object M21TO22 : Migration(21, 22) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp1 TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp2 TEXT DEFAULT NULL")
+    }
+}

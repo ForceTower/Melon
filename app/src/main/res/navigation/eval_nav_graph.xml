@@ -34,7 +34,11 @@
             android:id="@+id/action_presentation_to_home"
             app:destination="@id/home"
             app:popUpTo="@+id/presentation"
-            app:popUpToInclusive="true" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <fragment
         android:id="@+id/unesverse_required"
@@ -45,51 +49,131 @@
             android:id="@+id/action_unesverse_required_to_presentation"
             app:destination="@id/presentation"
             app:popUpTo="@+id/unesverse_required"
-            app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/eval_discipline"
-        android:name="com.forcetower.uefs.feature.evaluation.discipline.DisciplineEvaluationFragment"
-        android:label="DisciplineEvaluationFragment" >
-        <action
-            android:id="@+id/action_eval_discipline_to_rating"
-            app:destination="@id/rating" />
+            app:popUpToInclusive="true"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <fragment
         android:id="@+id/home"
         android:name="com.forcetower.uefs.feature.evaluation.home.HomeFragment"
-        android:label="HomeFragment" >
+        android:label="HomeFragment"
+        tools:layout="@layout/fragment_evaluation_home">
         <action
             android:id="@+id/action_home_to_eval_discipline"
-            app:destination="@id/eval_discipline" />
+            app:destination="@id/eval_discipline"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
         <action
             android:id="@+id/action_home_to_search"
-            app:destination="@id/search" />
+            app:destination="@id/search"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
         <action
             android:id="@+id/action_home_to_eval_teacher"
-            app:destination="@id/eval_teacher" />
+            app:destination="@id/eval_teacher"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
+    </fragment>
+    <fragment
+        android:id="@+id/eval_discipline"
+        android:name="com.forcetower.uefs.feature.evaluation.discipline.DisciplineEvaluationFragment"
+        android:label="DisciplineEvaluationFragment"
+        tools:layout="@layout/fragment_evaluation_discipline">
+        <action
+            android:id="@+id/action_eval_discipline_to_rating"
+            app:destination="@id/rating" >
+            <argument android:defaultValue="false"
+                android:name="isTeacher" />
+            <argument android:defaultValue="0L"
+                android:name="teacherId" />
+        </action>
+        <argument
+            android:name="code"
+            app:argType="string" />
+        <argument
+            android:name="department"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_discipline_to_teacher"
+            app:destination="@id/eval_teacher"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate" />
     </fragment>
     <fragment
         android:id="@+id/search"
         android:name="com.forcetower.uefs.feature.evaluation.search.SearchFragment"
-        android:label="SearchFragment" >
+        android:label="SearchFragment"
+        tools:layout="@layout/fragment_evaluation_search">
         <action
-            android:id="@+id/action_searchFragment_to_eval_discipline"
-            app:destination="@id/eval_discipline" />
+            android:id="@+id/action_search_to_discipline"
+            app:destination="@id/eval_discipline"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
         <action
-            android:id="@+id/action_search_to_eval_teacher"
-            app:destination="@id/eval_teacher" />
+            android:id="@+id/action_search_to_teacher"
+            app:destination="@id/eval_teacher"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate"/>
     </fragment>
     <fragment
         android:id="@+id/eval_teacher"
         android:name="com.forcetower.uefs.feature.evaluation.teacher.TeacherFragment"
-        android:label="TeacherFragment" >
+        android:label="TeacherFragment"
+        tools:layout="@layout/fragment_evaluate_teacher">
         <action
             android:id="@+id/action_eval_teacher_to_rating"
-            app:destination="@id/rating" />
+            app:destination="@id/rating" >
+            <argument android:defaultValue="true"
+                android:name="isTeacher" />
+            <argument android:defaultValue="null"
+                android:name="code" />
+            <argument android:defaultValue="null"
+                android:name="department" />
+        </action>
+        <argument
+            android:name="teacherId"
+            app:argType="long" />
+        <action
+            android:id="@+id/action_teacher_to_discipline"
+            app:destination="@id/eval_discipline"
+            app:enterAnim="@anim/open_translate"
+            app:exitAnim="@anim/close_scale"
+            app:launchSingleTop="true"
+            app:popEnterAnim="@anim/open_scale"
+            app:popExitAnim="@anim/close_translate" />
     </fragment>
-    <fragment
+    <activity
         android:id="@+id/rating"
-        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingFragment"
-        android:label="RatingFragment" />
+        android:name="com.forcetower.uefs.feature.evaluation.rating.RatingActivity"
+        android:label="RatingActivity" >
+        <argument
+            android:name="isTeacher"
+            app:argType="boolean" />
+        <argument
+            android:name="teacherId"
+            app:argType="long" />
+        <argument
+            android:name="code"
+            app:argType="string"
+            app:nullable="true" />
+        <argument
+            android:name="department"
+            app:argType="string"
+            app:nullable="true" />
+    </activity>
 </navigation>

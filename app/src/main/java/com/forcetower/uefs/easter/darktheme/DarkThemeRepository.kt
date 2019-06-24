@@ -29,6 +29,7 @@ package com.forcetower.uefs.easter.darktheme
 
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,73 +37,28 @@ import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.FirebaseProfile
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
-import com.google.android.gms.tasks.Tasks
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
-import com.google.firebase.functions.FirebaseFunctions
-import com.google.firebase.functions.FirebaseFunctionsException
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
-import kotlin.math.max
 
 @Singleton
 class DarkThemeRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val context: Context,
-    private val functions: FirebaseFunctions,
-    @Named(Profile.COLLECTION) private val collection: CollectionReference,
-    private val firebaseAuth: FirebaseAuth,
     private val executors: AppExecutors,
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val service: UService
 ) {
     private lateinit var profileObserver: MutableLiveData<FirebaseProfile?>
     private var lastIteration: FirebaseProfile? = null
 
-    fun getFirebaseProfile(): LiveData<FirebaseProfile?> {
-        if (!::profileObserver.isInitialized) {
-            profileObserver = MutableLiveData()
-            val userId = firebaseAuth.currentUser?.uid
-            if (userId == null) {
-                profileObserver.value = null
-            } else {
-                collection.document(userId).addSnapshotListener { snapshot, exception ->
-                    if (snapshot != null) {
-                        val data = FirebaseProfile(
-                                userId,
-                                snapshot["course"] as? String,
-                                snapshot["courseId"] as? Long,
-                                snapshot["darkInvites"] as? Long,
-                                snapshot["sentDarkInvites"] as? Long,
-                                snapshot["darkThemeEnabled"] as? Boolean,
-                                snapshot["email"] as? String,
-                                snapshot["name"] as? String,
-                                snapshot["username"] as? String ?: ""
-                        )
-                        profileObserver.value = data
-                        lastIteration = data
-                    }
-
-                    if (exception != null) {
-                        Crashlytics.logException(exception)
-                    }
-                }
-            }
-            return profileObserver
-        } else {
-            return profileObserver
-        }
-    }
-
-    fun getPreconditions(firebaseProfile: FirebaseProfile? = lastIteration): LiveData<List<Precondition>> {
+    fun getPreconditions(): LiveData<List<Precondition>> {
         val result = MutableLiveData<List<Precondition>>()
         executors.diskIO().execute {
             val precondition1 = create2048Precondition()
@@ -110,7 +66,7 @@ class DarkThemeRepository @Inject constructor(
             val precondition3 = createHoursPrecondition()
             val list = listOf(precondition1, precondition2, precondition3)
             executors.others().execute {
-                if (firebaseProfile != null) sendInfoToFirebase(list, firebaseProfile)
+                sendInfoToServer(list)
             }
             result.postValue(list)
         }
@@ -118,15 +74,13 @@ class DarkThemeRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun sendInfoToFirebase(list: List<Precondition>, firebaseProfile: FirebaseProfile) {
-        val uid = firebaseAuth.currentUser?.uid
+    private fun sendInfoToServer(list: List<Precondition>) {
         val completed = list.filter { it.completed }
         val completedSize = completed.size
+        val account = database.accountDao().getAccountDirect()
 
         val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-
-        val invites = if (completed.size < 2) 0 else (completedSize - 1)
-        val data = mutableMapOf<String, Any>()
+        val invites = if (completedSize < 2) 0 else (completedSize - 1)
         if (enabled) {
             preferences.edit()
                     .putInt("dark_theme_invites", invites)
@@ -139,17 +93,10 @@ class DarkThemeRepository @Inject constructor(
         }
 
         if (!enabled && completed.isEmpty()) return
-        val serverEnabled = firebaseProfile.darkThemeEnabled ?: false
-        val serverInvites = firebaseProfile.darkInvites ?: 0
-        if (enabled == serverEnabled && serverInvites == invites.toLong()) return
 
-        if (uid != null) {
+        if (account != null) {
             try {
-                val actualInvites = max(serverInvites, invites.toLong())
-                val dark = serverEnabled || (completedSize > 0)
-                data += "darkThemeEnabled" to dark
-                data += "darkInvites" to actualInvites
-                Tasks.await(collection.document(uid).set(data, SetOptions.merge()))
+                service.requestDarkThemeUnlock(DarkUnlock(completedSize)).execute()
             } catch (throwable: Throwable) {
                 Crashlytics.logException(throwable)
             }
@@ -201,24 +148,32 @@ class DarkThemeRepository @Inject constructor(
         return Precondition(context.getString(R.string.precondition_3), context.getString(R.string.precondition_3_desc, credits), credits >= 2200)
     }
 
+    @MainThread
     fun sendDarkThemeTo(username: String?): LiveData<Resource<Boolean>> {
         val result = MutableLiveData<Resource<Boolean>>()
         result.value = Resource.loading(false)
-        functions.getHttpsCallable("sendDarkTheme").call(mapOf(
-            "username" to username
-        )).addOnCompleteListener {
-            if (it.isSuccessful) {
-                val sent = preferences.getInt("dark_theme_invites_sent", 0)
-                preferences.edit().putInt("dark_theme_invites_sent", sent + 1).apply()
-                result.postValue(Resource.success(true))
-            } else {
-                val exception = it.exception
-                if (exception is FirebaseFunctionsException) {
-                    val code = exception.code
-                    Timber.d("Failed with code $code")
-                    val message = exception.message
-                    result.postValue(Resource.error(message ?: "Unknown", 400, exception))
+
+        executors.networkIO().execute {
+            try {
+                val response = service.requestDarkSendTo(DarkInvite(username)).execute()
+                val code = response.code()
+                Timber.d("Response code $code")
+                if (code == 200) {
+                    try {
+                        val accResponse = service.getAccount().execute()
+                        if (accResponse.isSuccessful) {
+                            val item = accResponse.body()
+                            if (item != null) {
+                                database.accountDao().insert(item)
+                            }
+                        }
+                    } catch (ignored: Throwable) { }
+                    result.postValue(Resource.success(true))
+                } else {
+                    result.postValue(Resource.error("Invalid request", code, Exception("Nothing special")))
                 }
+            } catch (t: Throwable) {
+                result.postValue(Resource.error("Invalid for all", 500, t))
             }
         }
         return result

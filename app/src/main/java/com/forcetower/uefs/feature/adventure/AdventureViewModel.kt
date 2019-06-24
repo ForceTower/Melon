@@ -76,8 +76,8 @@ class AdventureViewModel @Inject constructor(
         return true
     }
 
-    fun checkAchievements(email: String? = null): LiveData<Map<Int, Int>> {
-        return repository.checkAchievements(email)
+    fun checkAchievements(): LiveData<Map<Int, Int>> {
+        return repository.checkAchievements()
     }
 
     fun checkNotConnectedAchievements(): LiveData<Map<Int, Int>> {

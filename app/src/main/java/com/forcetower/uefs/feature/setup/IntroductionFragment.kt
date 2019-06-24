@@ -114,7 +114,7 @@ class IntroductionFragment : UFragment(), Injectable {
                 binding.textSelectCourseInternal.error = null
                 val user = firebaseAuth.currentUser
                 if (user != null) {
-                    viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
+                    viewModel.uploadImageToStorage()
                     if (uefsStudent) {
                         viewModel.updateCourse(course, user)
                     }
