@@ -123,12 +123,12 @@ object NetworkModule {
     @JvmStatic
     fun provideService(client: OkHttpClient, gson: Gson): UService {
         return Retrofit.Builder()
-                .baseUrl(Constants.UNES_SERVICE_URL)
-                .client(client)
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-                .create(UService::class.java)
+            .baseUrl(Constants.UNES_SERVICE_URL)
+            .client(client)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(UService::class.java)
     }
 
     @Provides
@@ -149,11 +149,11 @@ object NetworkModule {
     @JvmStatic
     fun provideTemporaryService(client: OkHttpClient): APIService {
         return Retrofit.Builder()
-                .baseUrl(Constants.UNES_SERVICE_TESTING)
-                .client(client)
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(APIService::class.java)
+            .baseUrl(Constants.UNES_SERVICE_UPDATE)
+            .client(client)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APIService::class.java)
     }
 }

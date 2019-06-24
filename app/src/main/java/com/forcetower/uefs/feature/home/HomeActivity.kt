@@ -45,7 +45,6 @@ import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -108,20 +107,34 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
-        UApplication.setupDayNightTheme(this)
 
-        val willShowAds = preferences.getBoolean("admob_warning_showed", false)
-        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        setupAds(willShowAds && admobEnabled)
-        if (!willShowAds && admobEnabled) {
-            preferences.edit().putBoolean("admob_warning_showed", true).apply()
-            displayAdvertisementsInfo()
+        // val willShowAds = preferences.getBoolean("admob_warning_showed", false)
+        // val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        // setupAds(willShowAds && admobEnabled)
+//        if (!willShowAds && admobEnabled) {
+//            preferences.edit().putBoolean("admob_warning_showed", true).apply()
+//            displayAdvertisementsInfo()
+//        }
+
+        val uefsStudent = preferences.isStudentFromUEFS()
+        val hourglassRemote = remoteConfig.getBoolean("feature_flag_evaluation")
+        val hourglassNew = preferences.getBoolean("show_new_version_hourglass_release", true)
+        if (uefsStudent && hourglassRemote && hourglassNew) {
+            preferences.edit().putBoolean("show_new_version_hourglass_release", false).apply()
+            displayNewVersionInfo()
         }
 
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
+    }
+
+    private fun displayNewVersionInfo() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_new_version_notes, null)
+        dialog.setContentView(view)
+        dialog.show()
     }
 
     private fun displayAdvertisementsInfo() {
@@ -141,8 +154,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun onActivityStart() {
-        initShortcuts()
-        verifyIntegrity()
+        try {
+            initShortcuts()
+            verifyIntegrity()
+        } catch (t: Throwable) {}
         moveToTask()
     }
 
@@ -232,6 +247,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
+        viewModel.sendToken().observe(this, Observer { Unit })
         if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
     }
 
@@ -296,7 +312,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements(email).observe(this, Observer {
+        adventureViewModel.checkAchievements().observe(this, Observer {
             it.entries.forEach { achievement ->
                 if (achievement.value == -1)
                     unlockAchievement(achievement.key)

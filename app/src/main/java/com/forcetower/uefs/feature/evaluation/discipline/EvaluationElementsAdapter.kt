@@ -12,7 +12,9 @@ import com.forcetower.uefs.databinding.ItemEvaluationTeacherMiniBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeachersHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
 
-class EvaluationElementsAdapter : RecyclerView.Adapter<ElementHolder>() {
+class EvaluationElementsAdapter(
+    private val interactor: DisciplineInteractor
+) : RecyclerView.Adapter<ElementHolder>() {
     var discipline: DisciplineEvaluation? = null
     set(value) {
         field = value
@@ -23,7 +25,7 @@ class EvaluationElementsAdapter : RecyclerView.Adapter<ElementHolder>() {
         return when (viewType) {
             R.layout.item_evaluation_mean -> ElementHolder.MeanHolder(parent.inflate(viewType))
             R.layout.item_evaluation_teachers_header -> ElementHolder.TeacherHeader(parent.inflate(viewType))
-            R.layout.item_evaluation_teacher_mini -> ElementHolder.TeacherHolder(parent.inflate(viewType))
+            R.layout.item_evaluation_teacher_mini -> ElementHolder.TeacherHolder(parent.inflate(viewType), interactor)
             R.layout.item_evaluation_discipline_header -> ElementHolder.DisciplineHeader(parent.inflate(viewType))
             else -> throw IllegalStateException("No view defined for type $viewType")
         }
@@ -50,7 +52,7 @@ class EvaluationElementsAdapter : RecyclerView.Adapter<ElementHolder>() {
         }
     }
 
-    private val diff = AsyncListDiffer<Any>(this, DiffCallback)
+    private val diff = AsyncListDiffer(this, DiffCallback)
 
     private fun buildList(value: DisciplineEvaluation?): List<Any> {
         val list = mutableListOf<Any>()
@@ -74,10 +76,15 @@ sealed class ElementHolder(view: View) : RecyclerView.ViewHolder(view) {
         }
     }
     class TeacherHeader(val view: ItemEvaluationTeachersHeaderBinding) : ElementHolder(view.root)
-    class TeacherHolder(val view: ItemEvaluationTeacherMiniBinding) : ElementHolder(view.root)
+    class TeacherHolder(val view: ItemEvaluationTeacherMiniBinding, interactor: DisciplineInteractor) : ElementHolder(view.root) {
+        init {
+            view.interactor = interactor
+        }
+    }
     class DisciplineHeader(val view: ItemEvaluationDisciplineHeaderBinding) : ElementHolder(view.root)
 }
 
+// TODO create this
 private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
         return false

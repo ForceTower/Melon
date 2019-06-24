@@ -44,8 +44,8 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
     private var foregroundStrokeWidth = 4f
     private var backgroundStrokeWidth = 4f
     private var progress = 0f
-    private var min = 0
-    private var max = 100
+    private var min: Int = 0
+    private var max: Int = 100
 
     private val startAngle = -90
     private var color = Color.DKGRAY
@@ -120,10 +120,28 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
         invalidate()
     }
 
+    @Keep
+    fun setProgressInt(progress: Int) {
+        this.progress = progress.toFloat()
+        invalidate()
+    }
+
+    @Keep
+    fun setMax(max: Int) {
+        this.max = max
+        invalidate()
+    }
+
+    @Keep
     fun setProgressWithAnimation(progress: Float) {
         val objectAnimator = ObjectAnimator.ofFloat(this, "progress", this@CircleProgressBar.progress, progress)
         objectAnimator.duration = 1500
         objectAnimator.interpolator = DecelerateInterpolator()
         objectAnimator.start()
+    }
+
+    @Keep
+    fun setProgressWithAnimationInt(progressInt: Int) {
+        setProgressWithAnimation(progressInt.toFloat())
     }
 }

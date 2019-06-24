@@ -46,8 +46,8 @@ import androidx.core.view.ViewCompat
 import androidx.customview.view.AbsSavedState
 import androidx.customview.widget.ViewDragHelper
 import com.forcetower.uefs.R
-import com.forcetower.uefs.feature.shared.extensions.readBoolean
-import com.forcetower.uefs.feature.shared.extensions.writeBoolean
+import com.forcetower.uefs.feature.shared.extensions.asBoolean
+import com.forcetower.uefs.feature.shared.extensions.asInt
 import java.lang.ref.WeakReference
 import kotlin.math.absoluteValue
 
@@ -848,10 +848,10 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         constructor(source: Parcel, loader: ClassLoader?) : super(source, loader) {
             state = source.readInt()
             peekHeight = source.readInt()
-            isFitToContents = source.readBoolean()
-            isHideable = source.readBoolean()
-            skipCollapsed = source.readBoolean()
-            isDraggable = source.readBoolean()
+            isFitToContents = source.readInt().asBoolean()
+            isHideable = source.readInt().asBoolean()
+            skipCollapsed = source.readInt().asBoolean()
+            isDraggable = source.readInt().asBoolean()
         }
 
         constructor(
@@ -876,10 +876,10 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
             dest.apply {
                 writeInt(state)
                 writeInt(peekHeight)
-                writeBoolean(isFitToContents)
-                writeBoolean(isHideable)
-                writeBoolean(skipCollapsed)
-                writeBoolean(isDraggable)
+                writeInt(isFitToContents.asInt())
+                writeInt(isHideable.asInt())
+                writeInt(skipCollapsed.asInt())
+                writeInt(isDraggable.asInt())
             }
         }
 

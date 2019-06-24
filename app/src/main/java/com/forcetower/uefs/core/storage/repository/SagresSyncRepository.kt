@@ -65,6 +65,7 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.VersionUtils
@@ -72,10 +73,13 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
+import com.google.android.gms.tasks.Tasks
+import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -87,6 +91,7 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val syncService: APIService,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
@@ -139,11 +144,7 @@ class SagresSyncRepository @Inject constructor(
             return if (info == null) {
                 val phone = ContextCompat.getSystemService(context, TelephonyManager::class.java)
                 val operatorName = phone?.simOperatorName
-                if (operatorName != null) {
-                    SyncRegistry(executor = executor, network = operatorName, networkType = NetworkType.CELLULAR.ordinal)
-                } else {
-                    SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
-                }
+                SyncRegistry(executor = executor, network = operatorName ?: "invalid", networkType = NetworkType.CELLULAR.ordinal)
             } else {
                 SyncRegistry(executor = executor, network = info.ssid, networkType = NetworkType.WIFI.ordinal)
             }
@@ -155,9 +156,9 @@ class SagresSyncRepository @Inject constructor(
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
-        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase())) {
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {
-                val call = service.getUpdate()
+                val call = syncService.getUpdate()
                 val response = call.execute()
                 if (response.isSuccessful) {
                     val body = response.body()
@@ -172,8 +173,7 @@ class SagresSyncRepository @Inject constructor(
                     }
                 }
             } catch (t: Throwable) {
-                Timber.e(t)
-                Timber.d("An error just happened... It will complete anyways")
+                Timber.e(t, "An error just happened... It will complete anyways")
             }
         }
 
@@ -251,6 +251,11 @@ class SagresSyncRepository @Inject constructor(
             val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
+
+                val task = FirebaseInstanceId.getInstance().instanceId
+                val value = Tasks.await(task)
+                onNewToken(value.token)
+
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
             createNewVersionNotification()
@@ -266,12 +271,25 @@ class SagresSyncRepository @Inject constructor(
         database.syncRegistryDao().update(registry)
     }
 
+    private fun onNewToken(token: String) {
+        val auth = database.accessTokenDao().getAccessTokenDirect()
+        if (auth != null) {
+            try {
+                service.sendToken(mapOf("token" to token)).execute()
+            } catch (t: Throwable) { }
+        } else {
+            Timber.d("Disconnected")
+        }
+        preferences.edit().putString("current_firebase_token", token).apply()
+    }
+
     private fun serviceLogin() {
         val token = authRepository.getAccessTokenDirect()
-        if (token == null) {
+        if (token == null || !preferences.getBoolean("__reconnect_account_for_name_update__", false)) {
             executors.networkIO().execute {
                 authRepository.performAccountSyncState()
             }
+            preferences.edit().putBoolean("__reconnect_account_for_name_update__", true).apply()
         }
     }
 

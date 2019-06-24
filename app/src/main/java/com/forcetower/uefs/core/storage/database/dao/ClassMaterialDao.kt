@@ -50,7 +50,7 @@ abstract class ClassMaterialDao {
 
     @WorkerThread
     @Transaction
-    @Query("SELECT * FROM ClassMaterial WHERE notified = 0")
+    @Query("SELECT cm.* FROM ClassMaterial cm INNER JOIN ClassGroup CG ON cm.group_id = CG.uid INNER JOIN Class C ON CG.class_id = C.uid INNER JOIN Semester S ON C.semester_id = S.uid WHERE S.uid = (SELECT ss.uid FROM Semester ss ORDER BY ss.sagres_id DESC LIMIT 1) AND cm.notified = 0")
     abstract fun getAllUnnotified(): List<ClassMaterialWithClass>
 
     @WorkerThread
