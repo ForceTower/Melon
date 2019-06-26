@@ -47,8 +47,8 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
-import com.forcetower.uefs.easter.darktheme.DarkInvite
-import com.forcetower.uefs.easter.darktheme.DarkUnlock
+import com.forcetower.uefs.core.model.api.DarkInvite
+import com.forcetower.uefs.core.model.api.DarkUnlock
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
