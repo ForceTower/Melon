@@ -36,6 +36,8 @@ import androidx.lifecycle.MutableLiveData
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.api.DarkInvite
+import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FirebaseProfile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
