@@ -27,18 +27,31 @@
 
 package com.forcetower.uefs.feature.messages
 
+import android.content.ClipData
+import android.content.ClipboardManager
+import android.content.Context
+import android.content.Intent
+import android.view.View
+import androidx.core.content.FileProvider
+import androidx.core.content.getSystemService
+import androidx.core.view.drawToBitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.service.UMessage
+import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.feature.shared.extensions.toFile
 import javax.inject.Inject
 
 class MessagesViewModel @Inject constructor(
     val repository: MessagesRepository
 ) : ViewModel(), MessagesActions {
+
     val messages by lazy { repository.getMessages() }
     val unesMessages by lazy { repository.getUnesMessages() }
     var pushedTimes = 0
@@ -69,7 +82,42 @@ class MessagesViewModel @Inject constructor(
         }
     }
 
-    override fun onMessageClick(message: String) {
+    override fun onMessageClick(message: String?) {
+        message ?: return
         _messageClick.value = Event(message)
+    }
+
+    override fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean {
+        message ?: return false
+        val context = view.context
+        val content = "Mensagem UNES\n\n${message.message}"
+        return shareMessage(context, content)
+    }
+
+    override fun onMessageLongClick(view: View, message: Message?): Boolean {
+        message ?: return false
+        val context = view.context
+        val content = "${message.content}\n\nEnviada por ${message.senderName}"
+        return shareMessage(context, content)
+    }
+
+    override fun onMessageShare(view: View, pos: Int) {
+        val context = view.context
+        val file = view.drawToBitmap().toFile(context)
+
+        val uri = FileProvider.getUriForFile(context, BuildConfig.APPLICATION_ID + ".fileprovider", file)
+        val intent = Intent(Intent.ACTION_SEND)
+        intent.putExtra(Intent.EXTRA_STREAM, uri)
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        intent.type = "image/jpg"
+        context.startActivity(intent)
+    }
+
+    private fun shareMessage(context: Context, content: String): Boolean {
+        val clipboard: ClipboardManager? = context.getSystemService()
+        clipboard ?: return false
+        clipboard.setPrimaryClip(ClipData.newPlainText("unes-message", content))
+        _snackMessage.value = Event(R.string.message_copied_to_clipboard)
+        return true
     }
 }

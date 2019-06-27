@@ -96,6 +96,7 @@ private constructor(context: Context) : SagresNavigator() {
     val proxyClient: OkHttpClient
     private val connectivityManager = ContextCompat.getSystemService(context, ConnectivityManager::class.java)
     private val wifiManager = ContextCompat.getSystemService(context, WifiManager::class.java)
+    private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     val client: OkHttpClient
         get() {
@@ -196,6 +197,14 @@ private constructor(context: Context) : SagresNavigator() {
             }
             return false
         }
+    }
+
+    override fun getSelectedInstitution(): String {
+        return preferences.getString("current_selected_institution", "UEFS") ?: "UEFS"
+    }
+
+    override fun setSelectedInstitution(institution: String) {
+        preferences.edit().putString("current_selected_institution", institution).apply()
     }
 
     override fun stopTags(tag: String?) {
@@ -329,19 +338,19 @@ private constructor(context: Context) : SagresNavigator() {
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadEnrollment(file: File): DocumentCallback {
-        return DocumentOperation(file, Constants.SAGRES_ENROLL_CERT, null).finishedResult
+        return DocumentOperation(file, "SAGRES_ENROLL_CERT", null).finishedResult
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadFlowchart(file: File): DocumentCallback {
-        return DocumentOperation(file, Constants.SAGRES_FLOWCHART, null).finishedResult
+        return DocumentOperation(file, "SAGRES_FLOWCHART", null).finishedResult
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     override fun downloadHistory(file: File): DocumentCallback {
-        return DocumentOperation(file, Constants.SAGRES_HISTORY, null).finishedResult
+        return DocumentOperation(file, "SAGRES_HISTORY", null).finishedResult
     }
 
     @WorkerThread

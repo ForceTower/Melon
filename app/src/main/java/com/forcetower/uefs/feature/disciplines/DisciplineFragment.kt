@@ -116,7 +116,7 @@ class DisciplineFragment : UFragment(), Injectable {
         dialog.show(childFragmentManager, "select_discipline_group")
     }
 
-    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val semesters: MutableList<Semester> = ArrayList()
 
         fun submitList(list: List<Semester>) {

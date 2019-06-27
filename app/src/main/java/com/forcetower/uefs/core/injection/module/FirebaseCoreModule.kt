@@ -28,7 +28,6 @@
 package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
-import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants.REMOTE_CONFIG_REFRESH
 import com.google.firebase.analytics.FirebaseAnalytics
@@ -72,14 +71,15 @@ object FirebaseCoreModule {
     fun provideRemoteConfig(): FirebaseRemoteConfig {
         val config = FirebaseRemoteConfig.getInstance()
         val settings = FirebaseRemoteConfigSettings.Builder()
-                .setDeveloperModeEnabled(BuildConfig.DEBUG)
+                .setMinimumFetchIntervalInSeconds(REMOTE_CONFIG_REFRESH)
+                .setFetchTimeoutInSeconds(REMOTE_CONFIG_REFRESH)
                 .build()
 
-        config.setConfigSettings(settings)
+        config.setConfigSettingsAsync(settings)
         config.setDefaults(R.xml.remote_config_defaults)
-        config.fetch(REMOTE_CONFIG_REFRESH).addOnCompleteListener {
+        config.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
-                config.activateFetched()
+                Unit
             } else {
                 Timber.d("Failed to init remote config")
             }

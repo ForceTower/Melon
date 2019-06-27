@@ -57,7 +57,7 @@ fun strokeColor(cardView: MaterialCardView, offer: SDemandOffer?) {
     offer ?: return
 
     val ctx = cardView.context
-    val old = cardView.strokeColor
+    val old = cardView.strokeColorStateList?.defaultColor
 
     val next = when {
         !offer.selectable -> R.color.demand_case_bugged

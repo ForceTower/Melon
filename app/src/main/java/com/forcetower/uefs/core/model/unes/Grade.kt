@@ -62,7 +62,7 @@ data class Grade(
     val uuid: String = UUID.randomUUID().toString()
 ) {
     fun hasGrade(): Boolean {
-        return (!grade.trim().isEmpty() &&
+        return (grade.trim().isNotEmpty() &&
                 !grade.trim().equals("Não Divulgada", ignoreCase = true) &&
                 !grade.trim().equals("-", ignoreCase = true) &&
                 !grade.trim().equals("--", ignoreCase = true) &&

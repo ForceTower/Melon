@@ -65,6 +65,6 @@ class DarkThemeUnlockFragment : UFragment(), Injectable {
             findNavController().navigate(R.id.action_dark_event_to_dark_invite)
         }
 
-        binding.inviteToDark.isEnabled = false
+        binding.inviteToDark.isEnabled = true
     }
 }

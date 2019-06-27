@@ -45,7 +45,7 @@ public class SagresRequests {
 
     public static Request loginRequest(RequestBody body) {
         return new Request.Builder()
-                .url(Constants.SAGRES_LOGIN_PAGE)
+                .url(Constants.getUrl("SAGRES_LOGIN_PAGE"))
                 .tag("aLogin")
                 .post(body)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -66,7 +66,7 @@ public class SagresRequests {
 
     public static Request me() {
         return new Request.Builder()
-                .url("http://academico2.uefs.br/Api/SagresApi/eu")
+                .url(BASE_URL + "/eu")
                 .build();
     }
 
@@ -87,7 +87,7 @@ public class SagresRequests {
     }
 
     public static Request messages(long userId) {
-        String url = BASE_URL + "/diario/recados?idPessoa=" + Long.toString(userId);
+        String url = BASE_URL + "/diario/recados?idPessoa=" + userId;
         return new Request.Builder()
                 .url(url)
                 .build();
@@ -95,7 +95,7 @@ public class SagresRequests {
 
     public static Request startPage() {
         return new Request.Builder()
-                .url(Constants.SAGRES_DIARY_PAGE)
+                .url(Constants.getUrl("SAGRES_DIARY_PAGE"))
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
                 .build();
@@ -112,7 +112,7 @@ public class SagresRequests {
     @NotNull
     public static Request getCurrentGrades() {
         return new Request.Builder()
-                .url(Constants.SAGRES_GRADE_PAGE)
+                .url(Constants.getUrl("SAGRES_GRADE_PAGE"))
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
                 .build();
@@ -136,7 +136,7 @@ public class SagresRequests {
         }
         formBody.add("ctl00$MasterPlaceHolder$imRecuperar", "Exibir");
         return new Request.Builder()
-                .url(Constants.SAGRES_GRADE_ANY)
+                .url(Constants.getUrl("SAGRES_GRADE_ANY"))
                 .post(formBody.build())
                 .addHeader("x-requested-with", "XMLHttpRequest")
                 .addHeader("content-type", "application/x-www-form-urlencoded")
@@ -158,7 +158,7 @@ public class SagresRequests {
     @NotNull
     public static Request postAtStudentPage(@NotNull FormBody.Builder builder) {
         return new Request.Builder()
-                .url(Constants.SAGRES_DIARY_PAGE)
+                .url(Constants.getUrl("SAGRES_DIARY_PAGE"))
                 .post(builder.build())
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
@@ -168,7 +168,7 @@ public class SagresRequests {
     @NotNull
     public static Request getDisciplinePageWithParams(@NotNull FormBody.Builder params) {
         return new Request.Builder()
-                .url(Constants.SAGRES_CLASS_PAGE)
+                .url(Constants.getUrl("SAGRES_CLASS_PAGE"))
                 .post(params.build())
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
@@ -178,7 +178,7 @@ public class SagresRequests {
     @NotNull
     public static Request getDemandPage() {
         return new Request.Builder()
-                .url(Constants.SAGRES_DEMAND_OFFERS)
+                .url(Constants.getUrl("SAGRES_DEMAND_OFFERS"))
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
                 .build();
@@ -187,7 +187,7 @@ public class SagresRequests {
     @NotNull
     public static Request createDemandWithParams(@NotNull RequestBody body) {
         return new Request.Builder()
-                .url(Constants.SAGRES_DEMAND_OFFERS)
+                .url(Constants.getUrl("SAGRES_DEMAND_OFFERS"))
                 .post(body)
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .build();
@@ -196,7 +196,7 @@ public class SagresRequests {
     @NotNull
     public static Request getRequestedServices() {
         return new Request.Builder()
-                .url(Constants.SAGRES_REQUESTED_SERVICES)
+                .url(Constants.getUrl("SAGRES_REQUESTED_SERVICES"))
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
                 .build();
@@ -205,7 +205,7 @@ public class SagresRequests {
     @NotNull
     public static Request getMessagesPage() {
         return new Request.Builder()
-                .url(Constants.SAGRES_MESSAGES_PAGE)
+                .url(Constants.getUrl("SAGRES_MESSAGES_PAGE"))
                 .addHeader("content-type", "application/x-www-form-urlencoded")
                 .addHeader("cache-control", "no-cache")
                 .build();
@@ -214,7 +214,7 @@ public class SagresRequests {
     @NonNull
     public static Request getAllDisciplinesPage() {
         return new Request.Builder()
-                .url(Constants.SAGRES_ALL_DISCIPLINES_PAGE)
+                .url(Constants.getUrl("SAGRES_ALL_DISCIPLINES_PAGE"))
                 .tag("disciplines")
                 .get()
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")
@@ -225,7 +225,7 @@ public class SagresRequests {
     @NotNull
     public static Request postAllDisciplinesParams(RequestBody body) {
         return new Request.Builder()
-                .url(Constants.SAGRES_ALL_DISCIPLINES_PAGE)
+                .url(Constants.getUrl("SAGRES_ALL_DISCIPLINES_PAGE"))
                 .tag("disciplines")
                 .post(body)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded")

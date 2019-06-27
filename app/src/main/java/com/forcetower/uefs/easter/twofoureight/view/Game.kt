@@ -27,14 +27,13 @@
 
 package com.forcetower.uefs.easter.twofoureight.view
 
-import android.content.Context
 import timber.log.Timber
 import java.util.UUID
 
 /**
  * Created by João Paulo on 02/06/2018.
  */
-class Game(private val mContext: Context) {
+class Game {
     private var endingMaxValue: Int = 0
     var gameGrid: GameGrid? = null
         private set
@@ -55,7 +54,7 @@ class Game(private val mContext: Context) {
     private var mBufferScore: Long = 0
     private var mGameStateListener: GameStateListener? = null
 
-    internal val isGameWon: Boolean
+    private val isGameWon: Boolean
         get() = gameState == State.WON || gameState == State.ENLESS_WON
 
     val isGameOnGoing: Boolean

@@ -29,7 +29,7 @@ package com.forcetower.uefs.feature.siecomp
 
 import android.content.Intent
 import android.os.Bundle
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
 import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity

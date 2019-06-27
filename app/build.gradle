@@ -84,6 +84,7 @@ android {
     }
 
     lintOptions {
+        disable 'MissingTranslation'
         abortOnError true
     }
 }
@@ -92,6 +93,10 @@ play {
     serviceAccountCredentials rootProject.file("unes_uefs_publisher.json")
     track "internal"
     defaultToAppBundles true
+}
+
+kotlinter {
+    allowWildcardImports false
 }
 
 dependencies {
@@ -140,7 +145,6 @@ dependencies {
     implementation deps.firebase.storage_ui
     implementation deps.firebase.remote_config
     implementation deps.firebase.functions
-    implementation deps.firebase.in_app_messaging
 
     implementation(deps.logs.crashlytics) { transitive true }
     implementation deps.logs.timber
@@ -149,6 +153,7 @@ dependencies {
     implementation deps.play.auth
     implementation deps.play.location
     implementation deps.play.billing
+    implementation deps.play.admob
 
     implementation deps.network.okhttp
     implementation deps.network.retrofit

@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.util
 
 import android.util.Patterns
 import java.util.ArrayList
+import java.text.Normalizer
 
 fun String.getLinks(): List<String> {
     val matcher = Patterns.WEB_URL.matcher(this)
@@ -42,4 +43,14 @@ fun String.getLinks(): List<String> {
         links.add(this.substring(matchStart, matchEnd))
     }
     return links
+}
+
+fun String.unaccent(): String {
+    return removeAccents(this)
+}
+
+fun removeAccents(src: String): String {
+    return Normalizer
+            .normalize(src, Normalizer.Form.NFD)
+            .replace(Regex("[^\\p{ASCII}]"), "")
 }

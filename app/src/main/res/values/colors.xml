@@ -45,6 +45,7 @@
     <color name="colorPrimaryLight">#83d7f6</color>
     <color name="colorPrimaryAlpha">#192196F3</color>
     <color name="colorAccent">#FFC107</color>
+    <color name="colorAccentAlpha">#88FFC107</color>
 
     <color name="colorDarkThemed">@color/grey_300</color>
 

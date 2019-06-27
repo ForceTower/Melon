@@ -29,7 +29,7 @@ package com.forcetower.uefs
 
 import android.content.Context
 import android.content.ContextWrapper
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData

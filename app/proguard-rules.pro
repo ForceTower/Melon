@@ -171,3 +171,7 @@
 -dontwarn org.conscrypt.**
 -dontwarn sun.misc.Unsafe
 -dontwarn sun.security.ssl.SSLContext.Impl
+
+# Proguard for CardSnaper
+-keep class com.forcetower.uefs.feature.event.CardsUpdater { *; }
+-keep class com.ramotion.cardslider.CardSliderLayoutManager { *; }

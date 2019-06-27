@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor" />
+        <variable
+            name="teacher"
+            type="com.forcetower.uefs.feature.evaluation.discipline.TeacherInt" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:paddingBottom="8dp"
+        android:layout_marginBottom="8dp"
+        android:onClick="@{() -> interactor.onTeacherSelected(teacher)}">
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            tools:text="Rosária da Paixão Trindade"
+            android:text="@{teacher.name}"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintEnd_toStartOf="@id/next_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/last_seen"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="8dp"
+            android:text="@{@string/evaluation_last_seen(teacher.lastSeen)}"
+            android:textColor="?attr/colorOnSurfaceLight"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/next_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/name"
+            tools:text="última vez em 2018.1" />
+
+        <ImageView
+            android:id="@+id/next_icon"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:contentDescription="@string/evaluation_see_teacher_details"
+            android:src="@drawable/ic_chevron_right_black_24dp"
+            android:tint="?attr/colorAccent"
+            app:layout_constraintBottom_toBottomOf="@+id/last_seen"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/name" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

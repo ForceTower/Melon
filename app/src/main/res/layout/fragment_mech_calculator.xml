@@ -106,7 +106,6 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/colorSurface"
                 app:mechResult="@{result}"
                 android:padding="24dp"
                 android:textSize="17sp"

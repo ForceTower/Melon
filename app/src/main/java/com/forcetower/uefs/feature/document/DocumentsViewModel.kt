@@ -65,8 +65,7 @@ class DocumentsViewModel @Inject constructor(
         _snackMessages.addSource(source) {
             _snackMessages.removeSource(source)
             if (it.status == Status.ERROR) {
-                val code = it.code
-                val resource = when (code) {
+                val resource = when (it.code) {
                     500 -> R.string.failed_to_load_page
                     600 -> R.string.document_not_found
                     700 -> R.string.need_sagres_access

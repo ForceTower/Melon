@@ -31,17 +31,22 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
+import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
-    val repository: ProfileRepository
+    private val repository: ProfileRepository,
+    accountRepository: AccountRepository
 ) : ViewModel() {
     private val profileId = MutableLiveData<String?>()
+    val account: LiveData<Resource<Account>> = accountRepository.getAccount()
 
     private val _profile = MediatorLiveData<Profile?>()
     val profile: LiveData<Profile?>

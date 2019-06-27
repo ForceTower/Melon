@@ -3,42 +3,42 @@ ext.deps = [:]
 
 def versions = [:]
 // Kotlin Extensions
-versions.ktx = "1.0.1"
+versions.ktx = "1.1.0-rc01"
 
 // Android X [Old Support]
-versions.app_compat = "1.0.2"
-versions.google_material = "1.1.0-alpha02"
+versions.app_compat = "1.1.0-beta01"
+versions.google_material = "1.1.0-alpha06"
 versions.constraint_layout = "1.1.3"
 versions.annotation = "1.0.2"
 versions.exif_interface = "1.0.0"
 versions.pallete = "1.0.0"
 versions.flexbox = "1.1.0"
 versions.browser = "1.0.0"
-versions.preference = "1.0.0"
+versions.preference = "1.1.0-beta01"
 
 // Architecture
-versions.room = "2.0.0"
+versions.room = "2.1.0"
 versions.lifecycle = "2.0.0"
 versions.paging = "2.1.0"
-versions.navigation = "1.0.0"
-versions.work_manager = "1.0.0"
+versions.navigation = "2.1.0-alpha05"
+versions.work_manager = "2.0.1"
 
 // Dependency Injection
-versions.dagger = "2.21"
+versions.dagger = "2.22.1"
 
 // Firebase
-versions.firebase_core = "16.0.7"
-versions.firebase_auth = "16.1.0"
-versions.firebase_messaging = "17.3.4"
-versions.firebase_firestore = "18.0.1"
-versions.firebase_storage = "16.0.5"
-versions.firebase_remote_config = "16.3.0"
-versions.firebase_functions = "16.1.3"
-versions.in_app_messaging = "17.0.5"
+versions.firebase_core = "17.0.0"
+versions.firebase_auth = "18.0.0"
+versions.firebase_messaging = "19.0.0"
+versions.firebase_firestore = "20.0.0"
+versions.firebase_storage = "18.0.0"
+versions.firebase_remote_config = "18.0.0"
+versions.firebase_functions = "18.0.0"
+versions.in_app_messaging = "18.0.1"
 versions.firebase_ui_storage = "4.3.1"
 
 // Logs
-versions.crashlytics = "2.9.9@aar"
+versions.crashlytics = "2.10.1"
 versions.timber = "4.7.1"
 
 // Image
@@ -47,20 +47,21 @@ versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 
 // Google Services
-versions.gp_auth = "16.0.1"
-versions.gp_games = "16.0.0"
-versions.gp_location = "16.0.0"
+versions.gp_auth = "17.0.0"
+versions.gp_games = "18.0.0"
+versions.gp_location = "17.0.0"
 versions.gp_billing_client = "1.2"
+versions.gp_admob = "18.0.0"
 
 // Networking
-versions.okhttp = "3.14.0"
+versions.okhttp = "3.14.2"
 versions.retrofit = "2.5.0"
 versions.cookie_jar = "v1.0.1"
 
 // Others
 versions.gson = "2.8.5"
 versions.jsoup = "1.11.3"
-versions.chart_view = "v3.0.3"
+versions.chart_view = "v3.1.0"
 versions.about_libraries = "7.0.0-rc1"
 versions.easy_permissions = "0.3.0"
 versions.card_slider = "0.3.0"
@@ -69,12 +70,12 @@ versions.floating_search = "2.1.1"
 versions.zoned_time_date = "1.1.0"
 
 // Build Versions
-versions.android_gradle_plugin = "3.5.0-alpha07"
-versions.kotlin = "1.3.21"
+versions.android_gradle_plugin = "3.5.0-beta05"
+versions.kotlin = "1.3.40"
 versions.google_play_services = "4.2.0"
 versions.fabric = "1.28.0"
-versions.kotlinter = "1.21.0"
-versions.play_publisher = "2.1.1"
+versions.kotlinter = "1.26.0"
+versions.play_publisher = "2.2.0"
 
 // --------- End of Dependencies Versions -----------
 
@@ -101,11 +102,11 @@ lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
 deps.lifecycle = lifecycle
 
 def navigation = [:]
-navigation.ui = "android.arch.navigation:navigation-ui:$versions.navigation"
-navigation.ui_ktx = "android.arch.navigation:navigation-ui:$versions.navigation"
-navigation.fragment = "android.arch.navigation:navigation-fragment:$versions.navigation"
-navigation.fragment_ktx = "android.arch.navigation:navigation-fragment-ktx:$versions.navigation"
-navigation.safe_args_plugin = "android.arch.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
+navigation.ui = "androidx.navigation:navigation-ui:$versions.navigation"
+navigation.ui_ktx = "androidx.navigation:navigation-ui-ktx:$versions.navigation"
+navigation.fragment = "androidx.navigation:navigation-fragment:$versions.navigation"
+navigation.fragment_ktx = "androidx.navigation:navigation-fragment-ktx:$versions.navigation"
+navigation.safe_args_plugin = "androidx.navigation:navigation-safe-args-gradle-plugin:$versions.navigation"
 deps.navigation = navigation
 
 deps.paging = "androidx.paging:paging-runtime:$versions.paging"
@@ -116,8 +117,8 @@ room.compiler = "androidx.room:room-compiler:$versions.room"
 deps.room = room
 
 def work_manager = [:]
-work_manager.runtime = "android.arch.work:work-runtime:$versions.work_manager"
-work_manager.runtime_ktx = "android.arch.work:work-runtime-ktx:$versions.work_manager"
+work_manager.runtime = "androidx.work:work-runtime:$versions.work_manager"
+work_manager.runtime_ktx = "androidx.work:work-runtime-ktx:$versions.work_manager"
 deps.work_manager = work_manager
 
 
@@ -155,6 +156,7 @@ play.games = "com.google.android.gms:play-services-games:$versions.gp_games"
 play.auth = "com.google.android.gms:play-services-auth:$versions.gp_auth"
 play.location = "com.google.android.gms:play-services-location:$versions.gp_location"
 play.billing = "com.android.billingclient:billing:$versions.gp_billing_client"
+play.admob = "com.google.android.gms:play-services-ads:$versions.gp_admob"
 deps.play = play
 
 // Networking
@@ -210,8 +212,8 @@ ext.deps = deps
 // Build Tools [Min, Target, Tools]
 def build_versions = [:]
 build_versions.min_sdk = 21
-build_versions.target_sdk = 28
-build_versions.build_tools = "28.0.3"
+build_versions.target_sdk = 29
+build_versions.build_tools = "29.0.0"
 ext.build_versions = build_versions
 
 static def addRepos(RepositoryHandler handler) {

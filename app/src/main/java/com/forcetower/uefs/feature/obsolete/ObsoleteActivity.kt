@@ -27,13 +27,30 @@
 
 package com.forcetower.uefs.feature.obsolete
 
+import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
+import com.forcetower.uefs.databinding.ActivityObsoleteBinding
 import com.forcetower.uefs.feature.shared.UActivity
 
 class ObsoleteActivity : UActivity() {
+    private lateinit var binding: ActivityObsoleteBinding
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_obsolete)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_obsolete)
+        binding.updateButton.setOnClickListener {
+            navigateToPlayStore()
+        }
+    }
+
+    private fun navigateToPlayStore() {
+        try {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=$packageName")))
+        } catch (exception: ActivityNotFoundException) {
+            startActivity(Intent(Intent.ACTION_VIEW, Uri.parse("https://play.google.com/store/apps/details?id=$packageName")))
+        }
     }
 }

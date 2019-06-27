@@ -27,6 +27,7 @@
 
 package com.forcetower.sagres.parsers
 
+import com.forcetower.sagres.utils.ConnectedStates
 import com.forcetower.sagres.utils.ValueUtils.toDouble
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
@@ -44,11 +45,16 @@ object SagresBasicParser {
     }
 
     @JvmStatic
-    fun isConnected(document: Document?): Boolean {
-        if (document == null) return false
+    fun isConnected(document: Document?): ConnectedStates {
+        if (document == null) return ConnectedStates.UNKNOWN
+
+        val elements = document.select("span[id=\"ctl00_PageContent_lblSessionTimedOut\"]")
+        if (elements.isNotEmpty()) {
+            return ConnectedStates.SESSION_TIMEOUT
+        }
 
         val element = document.selectFirst("div[class=\"externo-erro\"]")
-        return element == null
+        return if (element == null) ConnectedStates.CONNECTED else ConnectedStates.INVALID
     }
 
     @JvmStatic

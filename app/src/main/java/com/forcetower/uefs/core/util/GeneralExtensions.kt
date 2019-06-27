@@ -28,9 +28,13 @@
 package com.forcetower.uefs.core.util
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
 import java.lang.Math.pow
+import kotlin.math.floor
+import kotlin.math.roundToInt
 
 fun Any.toJson(): String {
     val gson = Gson()
@@ -46,16 +50,20 @@ fun Context.isConnectedToInternet(): Boolean {
     val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
             as? ConnectivityManager ?: return false
 
-    val activeNetworkInfo = manager.activeNetworkInfo
-    return activeNetworkInfo != null && activeNetworkInfo.isConnected
+    return manager.allNetworks.isNotEmpty()
 }
 
 fun Double.truncate(decimals: Int = 1): Double {
     val power = pow(10.0, decimals.toDouble())
-    return Math.floor(this * power) / power
+    return floor(this * power) / power
 }
 
 fun Double.round(decimals: Int = 1): Double {
     val power = pow(10.0, decimals.toDouble())
-    return Math.round(this * power) / power
+    return (this * power).roundToInt() / power
+}
+
+fun SharedPreferences.isStudentFromUEFS(): Boolean {
+    val inst = getString(SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
+    return inst == "UEFS"
 }

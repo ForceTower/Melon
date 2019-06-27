@@ -29,6 +29,7 @@ package com.forcetower.uefs.feature.setup
 
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -45,6 +46,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -66,6 +68,8 @@ class IntroductionFragment : UFragment(), Injectable {
     lateinit var firebaseStorage: FirebaseStorage
     @Inject
     lateinit var repository: SyncFrequencyRepository
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var binding: FragmentSetupIntroductionBinding
     private lateinit var viewModel: SetupViewModel
@@ -85,6 +89,8 @@ class IntroductionFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        val uefsStudent = preferences.isStudentFromUEFS()
+        if (!uefsStudent) binding.textSelectCourse.visibility = View.INVISIBLE
         binding.textSelectCourseInternal.setOnClickListener {
             val dialog = SelectCourseDialog()
             dialog.setCallback(object : CourseSelectionCallback {
@@ -102,14 +108,16 @@ class IntroductionFragment : UFragment(), Injectable {
 
         binding.btnNext.setOnClickListener {
             val course = viewModel.getSelectedCourse()
-            if (course == null) {
+            if (course == null && uefsStudent) {
                 binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
             } else {
                 binding.textSelectCourseInternal.error = null
                 val user = firebaseAuth.currentUser
                 if (user != null) {
-                    viewModel.uploadImageToStorage("users/${user.uid}/avatar.jpg")
-                    viewModel.updateCourse(course, user)
+                    viewModel.uploadImageToStorage()
+                    if (uefsStudent) {
+                        viewModel.updateCourse(course, user)
+                    }
                 } else {
                     Timber.d("Not connected to firebase. Write would denied")
                 }

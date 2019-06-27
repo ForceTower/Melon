@@ -29,11 +29,16 @@ package com.forcetower.uefs.feature.home
 
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
+import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
+import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -42,6 +47,7 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
@@ -53,9 +59,15 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
+import com.google.android.gms.ads.MobileAds
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -82,6 +94,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var analytics: FirebaseAnalytics
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
@@ -94,10 +108,45 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         setupBottomNav()
         setupUserData()
 
+        // val willShowAds = preferences.getBoolean("admob_warning_showed", false)
+        // val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        // setupAds(willShowAds && admobEnabled)
+//        if (!willShowAds && admobEnabled) {
+//            preferences.edit().putBoolean("admob_warning_showed", true).apply()
+//            displayAdvertisementsInfo()
+//        }
+
+        val uefsStudent = preferences.isStudentFromUEFS()
+        val hourglassRemote = remoteConfig.getBoolean("feature_flag_evaluation")
+        val hourglassNew = preferences.getBoolean("show_new_version_hourglass_release", true)
+        if (uefsStudent && hourglassRemote && hourglassNew) {
+            preferences.edit().putBoolean("show_new_version_hourglass_release", false).apply()
+            displayNewVersionInfo()
+        }
+
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
+    }
+
+    private fun displayNewVersionInfo() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_new_version_notes, null)
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
+    private fun displayAdvertisementsInfo() {
+        val dialog = BottomSheetDialog(this)
+        val view = layoutInflater.inflate(R.layout.dialog_admob_integrated, null)
+        dialog.setContentView(view)
+        dialog.show()
+    }
+
+    private fun setupAds(willShowAds: Boolean = true) {
+        MobileAds.initialize(this)
+        onShouldDisplayAd(willShowAds)
     }
 
     private fun subscribeToTopics() {
@@ -105,8 +154,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun onActivityStart() {
-        initShortcuts()
-        verifyIntegrity()
+        try {
+            initShortcuts()
+            verifyIntegrity()
+        } catch (t: Throwable) {}
         moveToTask()
     }
 
@@ -141,8 +192,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun moveToTask() {
-        val directions = intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)
-        val direction = when (directions) {
+        val direction = when (intent.getStringExtra(EXTRA_FRAGMENT_DIRECTIONS)) {
             EXTRA_MESSAGES_SAGRES_DIRECTION -> R.id.messages
             EXTRA_GRADES_DIRECTION -> R.id.grades_disciplines
             EXTRA_BIGTRAY_DIRECTION -> {
@@ -197,6 +247,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
+        viewModel.sendToken().observe(this, Observer { Unit })
+        if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
     }
 
     private fun openProfile(profileId: String) {
@@ -208,9 +260,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             Timber.d("Access Invalidated")
             firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP)
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK)
+            intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
+            intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
             mGamesInstance.changePlayerName(access.username)
@@ -229,6 +281,23 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         }
     }
 
+    private fun onShouldDisplayAd(willShowAd: Boolean = true) {
+        val interstitial = InterstitialAd(this)
+        val request = AdRequest.Builder()
+                .addTestDevice("38D27336B4D54E6E431E86E4ABEE0B20")
+                .build()
+        interstitial.adUnitId = getString(R.string.admob_interstitial_daily)
+        interstitial.loadAd(request)
+        interstitial.adListener = object : AdListener() {
+            override fun onAdLoaded() {
+                Handler(Looper.getMainLooper()).postDelayed({
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && willShowAd)
+                        interstitial.show()
+                }, 2000)
+            }
+        }
+    }
+
     private fun showInvalidAccessDialog() {
         val dialog = InvalidAccessDialog()
         dialog.show(supportFragmentManager, "invalid_access")
@@ -243,7 +312,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements(email).observe(this, Observer {
+        adventureViewModel.checkAchievements().observe(this, Observer {
             it.entries.forEach { achievement ->
                 if (achievement.value == -1)
                     unlockAchievement(achievement.key)
@@ -258,13 +327,4 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
-
-    override fun onResume() {
-        super.onResume()
-        val recreate = preferences.getBoolean("will_recreate_home", false)
-        if (recreate) {
-            preferences.edit().putBoolean("will_recreate_home", false).apply()
-            recreate()
-        }
-    }
 }

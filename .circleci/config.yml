@@ -2,7 +2,7 @@ version: 2
 references:
   config_android: &config_android
     docker:
-      - image: circleci/android:api-28-alpha
+      - image: circleci/android:api-29
     working_directory: ~/unes
     enviroment:
       JVM_OPTS: -Xmx2586m
@@ -22,6 +22,7 @@ jobs:
             echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
             echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
             echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
+            echo $ADMOB_STRINGS | base64 --decode > ~/unes/app/src/main/res/values/admob_strings.xml
       
       - run: 
           name: Downloading Dependencies

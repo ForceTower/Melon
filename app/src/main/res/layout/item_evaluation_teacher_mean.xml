@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="teacher"
+            type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="16dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="16dp"/>
+
+        <TextView
+            android:id="@+id/general_mean"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="16sp"
+            android:textColor="?attr/colorPrimary"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/evaluation_teacher_general_mean" />
+
+        <com.forcetower.uefs.widget.CircleProgressBar
+            android:id="@+id/progress_grade"
+            android:layout_width="160dp"
+            android:layout_height="160dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/general_mean"
+            app:layout_constraintVertical_bias="0.0"
+            app:progress="@{(float)(teacher.mean * 10)}"
+            app:progressbarColor="?attr/colorPrimary"
+            tools:progress="67" />
+
+        <TextView
+            android:id="@+id/student_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.qtdStudents)}"
+            android:textColor="?attr/colorOnBackground"
+            android:layout_marginTop="8dp"
+            app:layout_constraintTop_toBottomOf="@id/general_grade_text"
+            app:layout_constraintEnd_toEndOf="@+id/progress_grade"
+            app:layout_constraintStart_toStartOf="@+id/progress_grade"
+            tools:text="com 120 alunos" />
+
+        <TextView
+            android:id="@+id/general_grade_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="12dp"
+            android:text="@{@string/grade_format(teacher.mean)}"
+            android:textColor="?attr/colorAccent"
+            android:textSize="42sp"
+            app:layout_constraintBottom_toBottomOf="@+id/progress_grade"
+            app:layout_constraintEnd_toEndOf="@+id/progress_grade"
+            app:layout_constraintStart_toStartOf="@+id/progress_grade"
+            app:layout_constraintTop_toTopOf="@id/progress_grade"
+            tools:text="6.7" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

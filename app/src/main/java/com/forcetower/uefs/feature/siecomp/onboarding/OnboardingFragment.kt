@@ -91,7 +91,7 @@ class OnboardingFragment : UFragment(), Injectable {
         return binding.root
     }
 
-    override fun onAttach(context: Context?) {
+    override fun onAttach(context: Context) {
         super.onAttach(context)
         handler.postDelayed(advancePager, AUTO_ADVANCE_DELAY)
     }
@@ -101,7 +101,7 @@ class OnboardingFragment : UFragment(), Injectable {
         super.onDetach()
     }
 
-    inner class OnboardingAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    inner class OnboardingAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments = if (TimeUtils.eventHasStarted()) {
             arrayOf(
                     WelcomeFragment(),
