@@ -27,27 +27,11 @@
 
 package com.forcetower.uefs.core.storage.network
 
-import androidx.lifecycle.LiveData
-import com.forcetower.uefs.core.model.api.UDisciplineWithData
-import com.forcetower.uefs.core.model.api.helpers.UHourOverview
-import com.forcetower.uefs.core.model.api.helpers.UResponse
-import com.forcetower.uefs.core.model.service.DisciplineDetailsData
-import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+import com.forcetower.uefs.core.model.service.UNESUpdate
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
-import retrofit2.http.POST
 
 interface APIService {
-    @POST("save_data")
-    fun sendHourglassInitial(@Body data: DisciplineDetailsData): Call<UResponse<UHourOverview>>
-
-    @GET("overview")
-    fun overview(): LiveData<ApiResponse<UResponse<UHourOverview>>>
-
-    @POST("discipline")
-    @FormUrlEncoded
-    fun getDisciplineDetails(@Field("code") code: String): LiveData<ApiResponse<UResponse<UDisciplineWithData>>>
+    @GET("update")
+    fun getUpdate(): Call<UNESUpdate>
 }

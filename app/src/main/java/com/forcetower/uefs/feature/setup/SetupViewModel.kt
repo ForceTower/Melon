@@ -29,7 +29,7 @@ package com.forcetower.uefs.feature.setup
 
 import android.content.Context
 import android.net.Uri
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course
@@ -51,10 +51,10 @@ class SetupViewModel @Inject constructor(
     private var frequency: SyncFrequency = SyncFrequency()
     var syncFrequencies = listOf(SyncFrequency())
 
-    fun uploadImageToStorage(reference: String) {
+    fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(uri, reference)
+        UploadImageToStorage.createWorker(uri)
     }
 
     fun setSelectedImage(uri: Uri) {
@@ -67,7 +67,8 @@ class SetupViewModel @Inject constructor(
 
     fun getSelectedCourse() = course
 
-    fun updateCourse(course: Course, user: FirebaseUser) {
+    fun updateCourse(course: Course?, user: FirebaseUser) {
+        course ?: return
         firebaseAuthRepository.updateCourse(course, user)
         profileRepository.updateUserCourse(course)
     }

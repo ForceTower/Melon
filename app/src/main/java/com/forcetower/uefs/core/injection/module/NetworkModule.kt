@@ -29,7 +29,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
@@ -85,7 +85,7 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideInterceptor(database: EventDatabase): Interceptor = Interceptor { chain ->
+    fun provideInterceptor(database: UDatabase) = Interceptor { chain ->
         val request = chain.request()
         Timber.d("Going to: ${request.url().url()}")
         val host = request.url().host()
@@ -93,7 +93,7 @@ object NetworkModule {
             val builder = request.headers().newBuilder()
                     .add("Accept", "application/json")
 
-            val token = database.accessTokenDao().getAccessDirect()
+            val token = database.accessTokenDao().getAccessTokenDirect()
             if (token?.token != null) {
                 builder.add("Authorization", token.type + " " + token.token)
             }
@@ -114,6 +114,7 @@ object NetworkModule {
     fun provideGson(): Gson {
         return GsonBuilder()
                 .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
+                .serializeNulls()
                 .create()
     }
 
@@ -122,12 +123,12 @@ object NetworkModule {
     @JvmStatic
     fun provideService(client: OkHttpClient, gson: Gson): UService {
         return Retrofit.Builder()
-                .baseUrl(Constants.UNES_SERVICE_URL)
-                .client(client)
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build()
-                .create(UService::class.java)
+            .baseUrl(Constants.UNES_SERVICE_URL)
+            .client(client)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(UService::class.java)
     }
 
     @Provides
@@ -148,11 +149,11 @@ object NetworkModule {
     @JvmStatic
     fun provideTemporaryService(client: OkHttpClient): APIService {
         return Retrofit.Builder()
-                .baseUrl(Constants.UNES_SERVICE_TESTING)
-                .client(client)
-                .addCallAdapterFactory(LiveDataCallAdapterFactory())
-                .addConverterFactory(GsonConverterFactory.create())
-                .build()
-                .create(APIService::class.java)
+            .baseUrl(Constants.UNES_SERVICE_UPDATE)
+            .client(client)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(APIService::class.java)
     }
 }

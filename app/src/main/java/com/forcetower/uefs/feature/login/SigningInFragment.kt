@@ -129,11 +129,6 @@ class SigningInFragment : UFragment(), Injectable {
             textView.textSize = 13f
             textView.gravity = CENTER
             textView.typeface = font
-//            val typedValue = TypedValue()
-//            val theme = requireContext().theme
-//            theme.resolveAttribute(R.attr.colorAccent, typedValue, true)
-//            val colorOnSurfaceLight = typedValue.data
-//            textView.setTextColor(colorOnSurfaceLight)
             textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
             textView
         }

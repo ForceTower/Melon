@@ -27,42 +27,31 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import com.forcetower.uefs.core.model.unes.Profile
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.SetOptions
+import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
+import com.google.android.gms.tasks.Tasks
 import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class UpgradeRepository @Inject constructor(
-    private val firebaseAuth: FirebaseAuth,
-    @Named(Profile.COLLECTION) private val profileCollection: CollectionReference
+    private val service: UService,
+    private val database: UDatabase,
+    private val executors: AppExecutors
 ) {
     fun onUpgrade() {
-        val user = firebaseAuth.currentUser
-        if (user != null) {
-            FirebaseInstanceId.getInstance().instanceId.addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val token = it.result?.token
-                    if (token != null) {
-                        val data = mapOf("firebaseToken" to token)
-                        profileCollection.document(user.uid).set(data, SetOptions.merge()).addOnCompleteListener { task ->
-                            if (task.isSuccessful) {
-                                Timber.d("Completed")
-                            } else {
-                                Timber.d("Error")
-                            }
-                        }
-                    } else {
-                        Timber.d("Token is invalid")
-                    }
-                } else {
-                    Timber.d("Failed with exception ${it.exception?.message}")
-                }
+        executors.networkIO().execute {
+            database.accessTokenDao().getAccessTokenDirect() ?: return@execute
+            val task = FirebaseInstanceId.getInstance().instanceId
+            try {
+                val result = Tasks.await(task)
+                val value = result?.token ?: return@execute
+                service.sendToken(mapOf("token" to value)).execute()
+            } catch (e: Throwable) {
+                Timber.e(e, "Well... Failed...")
             }
         }
     }

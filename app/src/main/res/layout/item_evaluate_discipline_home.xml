@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+        <variable
+            name="discipline"
+            type="com.forcetower.uefs.core.model.service.EvaluationDiscipline" />
+        
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.evaluation.home.HomeInteractor" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:onClick="@{() -> interactor.onClickDiscipline(discipline)}"
+        app:cardCornerRadius="8dp">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="4dp">
+            <TextView
+                android:id="@+id/text_grade"
+                android:layout_width="36dp"
+                android:layout_height="36dp"
+                android:background="@drawable/rectangle_rounded_accent"
+                android:gravity="center"
+                android:text="@{@string/grade_format(discipline.mean)}"
+                android:textAlignment="gravity"
+                android:textColor="?attr/colorOnSecondary"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="9.6" />
+
+            <TextView
+                android:id="@+id/text_title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:text="@{discipline.name}"
+                android:textColor="?attr/colorOnSurface"
+                android:maxLines="2"
+                android:ellipsize="end"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_grade"
+                app:layout_constraintTop_toTopOf="@+id/text_grade"
+                tools:text="Metodologia da Pesquisa e Desenvolvimento em Engenharia de Computação" />
+
+            <TextView
+                android:id="@+id/text_vote_count"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginStart="16dp"
+                android:text="@{@string/evaluation_discipline_mean_count(discipline.qtdStudents)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@+id/text_grade"
+                app:layout_constraintTop_toBottomOf="@+id/text_title"
+                tools:text="com 45 votos" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_open"
+                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:text="@string/evaluation_open_discipline"
+                android:onClick="@{() -> interactor.onClickDiscipline(discipline)}"
+                app:goneIf="@{discipline.participant}"
+                app:iconGravity="end"
+                app:iconPadding="10dp"
+                app:icon="@drawable/ic_chevron_right_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_vote_count"/>
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_vote"
+                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+                app:goneUnless="@{discipline.participant}"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="44dp"
+                android:text="@string/evaluation_leave_feedback"
+                app:iconGravity="end"
+                app:iconPadding="10dp"
+                app:icon="@drawable/ic_chevron_right_black_24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/text_vote_count"
+                tools:visibility="gone"/>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

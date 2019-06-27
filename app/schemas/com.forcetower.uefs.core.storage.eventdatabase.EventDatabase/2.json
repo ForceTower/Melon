@@ -2,11 +2,11 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "032948e4143507a66b213654ca9f0d01",
+    "identityHash": "70f9caf959f6e2fc301a47175ffacb59",
     "entities": [
       {
         "tableName": "AccessToken",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `token` TEXT NOT NULL, `refreshToken` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT NOT NULL, `token` TEXT NOT NULL, `refreshToken` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -30,7 +30,7 @@
             "fieldPath": "refreshToken",
             "columnName": "refreshToken",
             "affinity": "TEXT",
-            "notNull": false
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -483,7 +483,7 @@
     ],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"032948e4143507a66b213654ca9f0d01\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"70f9caf959f6e2fc301a47175ffacb59\")"
     ]
   }
 }

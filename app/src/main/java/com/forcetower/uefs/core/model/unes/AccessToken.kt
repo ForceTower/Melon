@@ -31,15 +31,19 @@ import androidx.annotation.NonNull
 import androidx.annotation.Nullable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity
 data class AccessToken(
     @PrimaryKey(autoGenerate = true)
     val uid: Int,
     @NonNull
+    @SerializedName("token_type")
     val type: String,
     @NonNull
+    @SerializedName("access_token")
     val token: String,
     @Nullable
+    @SerializedName("refresh_token")
     val refreshToken: String
 )

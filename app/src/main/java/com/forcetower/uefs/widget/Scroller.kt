@@ -32,6 +32,13 @@ import android.hardware.SensorManager
 import android.view.ViewConfiguration
 import android.view.animation.AnimationUtils
 import android.view.animation.Interpolator
+import kotlin.math.abs
+import kotlin.math.exp
+import kotlin.math.ln
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.roundToInt
+import kotlin.math.sign
 import kotlin.math.sqrt
 
 /**
@@ -218,8 +225,8 @@ class Scroller
                     else
                         x = mInterpolator.getInterpolation(x)
 
-                    currX = startX + Math.round(x * mDeltaX)
-                    currY = startY + Math.round(x * mDeltaY)
+                    currX = startX + (x * mDeltaX).roundToInt()
+                    currY = startY + (x * mDeltaY).roundToInt()
                 }
                 FLING_MODE -> {
                     val t = timePassed.toFloat() / duration
@@ -230,15 +237,15 @@ class Scroller
                     val d_sup = SPLINE[index + 1]
                     val distanceCoef = d_inf + (t - t_inf) / (t_sup - t_inf) * (d_sup - d_inf)
 
-                    currX = startX + Math.round(distanceCoef * (mFinalX - startX))
+                    currX = startX + (distanceCoef * (mFinalX - startX)).roundToInt()
                     // Pin to mMinX <= mCurrX <= mMaxX
-                    currX = Math.min(currX, mMaxX)
-                    currX = Math.max(currX, mMinX)
+                    currX = min(currX, mMaxX)
+                    currX = max(currX, mMinX)
 
-                    currY = startY + Math.round(distanceCoef * (mFinalY - startY))
+                    currY = startY + (distanceCoef * (mFinalY - startY)).roundToInt()
                     // Pin to mMinY <= mCurrY <= mMaxY
-                    currY = Math.min(currY, mMaxY)
-                    currY = Math.max(currY, mMinY)
+                    currY = min(currY, mMaxY)
+                    currY = max(currY, mMinY)
 
                     if (currX == mFinalX && currY == mFinalY) {
                         isFinished = true
@@ -303,15 +310,15 @@ class Scroller
     fun fling(
         startX: Int,
         startY: Int,
-        velocityX: Int,
-        velocityY: Int,
+        tVelocityX: Int,
+        tVelocityY: Int,
         minX: Int,
         maxX: Int,
         minY: Int,
         maxY: Int
     ) {
-        var velocityX = velocityX
-        var velocityY = velocityY
+        var velocityX = tVelocityX
+        var velocityY = tVelocityY
         // Continue a scroll or fling in progress
         if (mFlywheel && !isFinished) {
             val oldVel = currVelocity
@@ -325,7 +332,7 @@ class Scroller
 
             val oldVelocityX = ndx * oldVel
             val oldVelocityY = ndy * oldVel
-            if (Math.signum(velocityX.toFloat()) == Math.signum(oldVelocityX) && Math.signum(velocityY.toFloat()) == Math.signum(oldVelocityY)) {
+            if (sign(velocityX.toFloat()) == sign(oldVelocityX) && sign(velocityY.toFloat()) == sign(oldVelocityY)) {
                 velocityX += oldVelocityX.toInt()
                 velocityY += oldVelocityY.toInt()
             }
@@ -337,8 +344,8 @@ class Scroller
         val velocity = sqrt(velocityX * velocityX + velocityY * velocityY.toDouble()).toFloat()
 
         mVelocity = velocity
-        val l = Math.log((START_TENSION * velocity / ALPHA).toDouble())
-        duration = (1000.0 * Math.exp(l / (DECELERATION_RATE - 1.0))).toInt()
+        val l = ln((START_TENSION * velocity / ALPHA).toDouble())
+        duration = (1000.0 * exp(l / (DECELERATION_RATE - 1.0))).toInt()
         mStartTime = AnimationUtils.currentAnimationTimeMillis()
         this.startX = startX
         this.startY = startY
@@ -346,22 +353,22 @@ class Scroller
         val coeffX = if (velocity == 0f) 1.0f else velocityX / velocity
         val coeffY = if (velocity == 0f) 1.0f else velocityY / velocity
 
-        val totalDistance = (ALPHA * Math.exp(DECELERATION_RATE / (DECELERATION_RATE - 1.0) * l)).toInt()
+        val totalDistance = (ALPHA * exp(DECELERATION_RATE / (DECELERATION_RATE - 1.0) * l)).toInt()
 
         mMinX = minX
         mMaxX = maxX
         mMinY = minY
         mMaxY = maxY
 
-        mFinalX = startX + Math.round(totalDistance * coeffX)
+        mFinalX = startX + (totalDistance * coeffX).roundToInt()
         // Pin to mMinX <= mFinalX <= mMaxX
-        mFinalX = Math.min(mFinalX, mMaxX)
-        mFinalX = Math.max(mFinalX, mMinX)
+        mFinalX = min(mFinalX, mMaxX)
+        mFinalX = max(mFinalX, mMinX)
 
-        mFinalY = startY + Math.round(totalDistance * coeffY)
+        mFinalY = startY + (totalDistance * coeffY).roundToInt()
         // Pin to mMinY <= mFinalY <= mMaxY
-        mFinalY = Math.min(mFinalY, mMaxY)
-        mFinalY = Math.max(mFinalY, mMinY)
+        mFinalY = min(mFinalY, mMaxY)
+        mFinalY = max(mFinalY, mMinY)
     }
 
     /**
@@ -405,8 +412,8 @@ class Scroller
      * @hide
      */
     fun isScrollingInDirection(xvel: Float, yvel: Float): Boolean {
-        return !isFinished && Math.signum(xvel) == Math.signum((mFinalX - startX).toFloat()) &&
-                Math.signum(yvel) == Math.signum((mFinalY - startY).toFloat())
+        return !isFinished && sign(xvel) == sign((mFinalX - startX).toFloat()) &&
+                sign(yvel) == sign((mFinalY - startY).toFloat())
     }
 
     companion object {
@@ -435,7 +442,7 @@ class Scroller
                     x = x_min + (x_max - x_min) / 2.0f
                     coef = 3.0f * x * (1.0f - x)
                     tx = coef * ((1.0f - x) * START_TENSION + x * END_TENSION) + x * x * x
-                    if (Math.abs(tx - t) < 1E-5) break
+                    if (abs(tx - t) < 1E-5) break
                     if (tx > t)
                         x_max = x
                     else
@@ -453,14 +460,14 @@ class Scroller
             sViscousFluidNormalize = 1.0f / viscousFluid(1.0f)
         }
 
-        internal fun viscousFluid(x: Float): Float {
-            var x = x
+        internal fun viscousFluid(tX: Float): Float {
+            var x = tX
             x *= sViscousFluidScale
             if (x < 1.0f) {
-                x -= 1.0f - Math.exp((-x).toDouble()).toFloat()
+                x -= 1.0f - exp((-x).toDouble()).toFloat()
             } else {
                 val start = 0.36787944117f // 1/e == exp(-1)
-                x = 1.0f - Math.exp((1.0f - x).toDouble()).toFloat()
+                x = 1.0f - exp((1.0f - x).toDouble()).toFloat()
                 x = start + x * (1.0f - start)
             }
             x *= sViscousFluidNormalize
