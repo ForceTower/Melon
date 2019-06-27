@@ -29,10 +29,15 @@ package com.forcetower.uefs.core.model.unes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 
 @Entity
 data class Course(
     @PrimaryKey(autoGenerate = true)
     val id: Long,
-    val name: String
+    val name: String,
+    val description: String?,
+    @SerializedName("image_url")
+    val image: String?,
+    val since: String?
 )

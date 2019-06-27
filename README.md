@@ -2,9 +2,11 @@
 
 O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. Com o tempo, ele se tornou um pouco mais que isso, mas esta é a função principal e pela qual o aplicativo vive.
 
-O UNES é um aplicativo nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0
+O UNES é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0
 
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
+
+Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou sugestão basta colocar nas issues e tento resolver :v
 
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
 
@@ -14,11 +16,15 @@ O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/
 * ~~Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal~~
 * ~~Demanda Web direto no App~~ [Completo]
 * ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
-* Matrícula no App
+* Matrícula no App [XX-------------] 6% (Sob análise, estrutura de dados estranha para parse)
 * ~~Corrigir o erro que afeta alguns estudantes que mudaram de modalidade durante a graduação [Licenciatura/Bacharelado]~~
 * ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
 * ~~Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal~~
 * ~~Tema escuro/preto porque tema dark é legal em todo lugar~~
+
+### Suporte a outras universidades
+Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
+Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Melon/blob/development/sagres/src/main/java/com/forcetower/sagres/Constants.kt) do aplicativo.
 
 ### Adicionando uma mensagem nova ao login
 Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.

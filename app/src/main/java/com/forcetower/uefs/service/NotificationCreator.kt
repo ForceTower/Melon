@@ -34,12 +34,13 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
-import android.preference.PreferenceManager
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.preference.PreferenceManager
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
@@ -47,7 +48,6 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
-import com.forcetower.uefs.feature.barrildeboa.HourglassActivity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
@@ -71,8 +71,11 @@ object NotificationCreator {
             return
         }
 
+        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val institution = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
+
         val builder = notificationBuilder(context, channel)
-            .setContentTitle(if (message.senderProfile == 3) "UEFS" else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
+            .setContentTitle(if (message.senderProfile == 3) institution else message.discipline?.toTitleCase() ?: message.senderName.toTitleCase())
             .setContentText(message.content)
             .setStyle(createBigText(message.content))
             .setContentIntent(createMessagesIntent(context))
@@ -285,7 +288,7 @@ object NotificationCreator {
                 .setContentTitle(context.getString(R.string.discipline_load_all_completed))
                 .setContentText(context.getString(R.string.discipline_load_all_completed_info))
                 .setColor(ContextCompat.getColor(context, R.color.blue_accent))
-                .setContentIntent(createHourglassIntent(context))
+                // .setContentIntent(createHourglassIntent(context))
 
         addOptions(context, builder)
         showNotification(context, 7569, builder)
@@ -451,14 +454,14 @@ object NotificationCreator {
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun createHourglassIntent(ctx: Context): PendingIntent {
-        val intent = Intent(ctx, HourglassActivity::class.java)
-
-        return TaskStackBuilder.create(ctx)
-                .addParentStack(HourglassActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-    }
+//    private fun createHourglassIntent(ctx: Context): PendingIntent {
+//        val intent = Intent(ctx, HourglassActivity::class.java)
+//
+//        return TaskStackBuilder.create(ctx)
+//                .addParentStack(HourglassActivity::class.java)
+//                .addNextIntent(intent)
+//                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+//    }
 
     private fun createOpenIntent(ctx: Context): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java)

@@ -41,6 +41,7 @@ import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.home.InvalidAccessDialog
+import com.forcetower.uefs.feature.home.LogoutConfirmationFragment
 import com.forcetower.uefs.feature.mechcalculator.MechCreateDialog
 import com.forcetower.uefs.feature.mechcalculator.MechanicalFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
@@ -52,6 +53,7 @@ import com.forcetower.uefs.feature.reminders.RemindersFragment
 import com.forcetower.uefs.feature.schedule.ScheduleFragment
 import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
+import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
@@ -110,4 +112,8 @@ abstract class HomeModule {
     abstract fun sendFeedbackFragment(): SendFeedbackFragment
     @ContributesAndroidInjector
     abstract fun invalidAccessDialog(): InvalidAccessDialog
+    @ContributesAndroidInjector
+    abstract fun logoutConfirmationFragment(): LogoutConfirmationFragment
+    @ContributesAndroidInjector
+    abstract fun selectCourseDialog(): SelectCourseDialog
 }

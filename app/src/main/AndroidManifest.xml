@@ -24,7 +24,7 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".LauncherActivity"
-            android:theme="@style/UTheme.LightNav">
+            android:theme="@style/UTheme.LightNav.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -47,6 +47,13 @@
         <activity
             android:name=".feature.about.AboutActivity"
             android:theme="@style/UTheme.Translucent.About" />
+        <activity
+            android:name=".feature.evaluation.EvaluationActivity"
+            android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.evaluation.rating.RatingActivity"
+            android:theme="@style/UTheme.Translucent"
+            android:parentActivityName=".feature.evaluation.EvaluationActivity"/>
         <activity
             android:name=".feature.siecomp.SIECOMPActivity"
             android:parentActivityName=".feature.home.HomeActivity"
@@ -72,26 +79,22 @@
             android:theme="@style/CropTheme.Default" />
         <activity
             android:name=".feature.disciplines.disciplinedetail.DisciplineDetailsActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.profile.ProfileActivity"
             android:theme="@style/UTheme.LightNav" />
         <activity android:name=".easter.twofoureight.Game2048Activity" />
         <activity
             android:name=".feature.reminders.RemindersActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.settings.SettingsActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.demand.DemandActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
-        <activity
-            android:name=".feature.barrildeboa.HourglassActivity"
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />
         <activity
@@ -117,6 +120,9 @@
         <meta-data
             android:name="com.google.android.gms.games.APP_ID"
             android:value="@string/app_id" />
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="@string/admob_app_id" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
@@ -150,6 +156,10 @@
         <service
             android:name=".architecture.service.discipline.DisciplineDetailsLoaderService"
             android:exported="false" />
+
+        <uses-library
+            android:name="org.apache.http.legacy"
+            android:required="false" />
     </application>
 
 </manifest>

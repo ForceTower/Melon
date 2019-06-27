@@ -205,7 +205,7 @@ class DisciplineViewModel @Inject constructor(
 
     fun loadAllDisciplines(view: View): Boolean {
         val ctx = view.context
-        DisciplineDetailsLoaderService.startService(ctx)
+        DisciplineDetailsLoaderService.startService(ctx, true)
         return true
     }
 

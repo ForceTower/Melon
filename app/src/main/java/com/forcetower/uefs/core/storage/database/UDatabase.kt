@@ -32,27 +32,33 @@ import androidx.room.RoomDatabase
 import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.model.unes.SDiscipline
+import com.forcetower.uefs.core.model.unes.SStudent
+import com.forcetower.uefs.core.model.unes.STeacher
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.model.unes.SagresFlags
-import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.dao.AccessDao
 import com.forcetower.uefs.core.storage.database.dao.AccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.AccountDao
 import com.forcetower.uefs.core.storage.database.dao.CalendarDao
 import com.forcetower.uefs.core.storage.database.dao.ClassAbsenceDao
 import com.forcetower.uefs.core.storage.database.dao.ClassDao
@@ -64,14 +70,18 @@ import com.forcetower.uefs.core.storage.database.dao.ContributorDao
 import com.forcetower.uefs.core.storage.database.dao.CourseDao
 import com.forcetower.uefs.core.storage.database.dao.DemandOfferDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
+import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
+import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
 import com.forcetower.uefs.core.storage.database.dao.GradeDao
 import com.forcetower.uefs.core.storage.database.dao.MessageDao
 import com.forcetower.uefs.core.storage.database.dao.ProfileDao
 import com.forcetower.uefs.core.storage.database.dao.SemesterDao
 import com.forcetower.uefs.core.storage.database.dao.ServiceRequestDao
+import com.forcetower.uefs.core.storage.database.dao.StudentServiceDao
 import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
+import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
 
 @Database(entities = [
     AccessToken::class,
@@ -95,8 +105,13 @@ import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
     SDemandOffer::class,
     SagresFlags::class,
     Contributor::class,
-    ServiceRequest::class
-], version = 17, exportSchema = true)
+    ServiceRequest::class,
+    Account::class,
+    STeacher::class,
+    SDiscipline::class,
+    SStudent::class,
+    EvaluationEntity::class
+], version = 22, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -119,4 +134,9 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun flagsDao(): FlagsDao
     abstract fun contributorDao(): ContributorDao
     abstract fun serviceRequestDao(): ServiceRequestDao
+    abstract fun accountDao(): AccountDao
+    abstract fun disciplineServiceDao(): DisciplineServiceDao
+    abstract fun teacherServiceDao(): TeacherServiceDao
+    abstract fun studentServiceDao(): StudentServiceDao
+    abstract fun evaluationEntitiesDao(): EvaluationEntitiesDao
 }

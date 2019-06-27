@@ -27,22 +27,29 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.net.Uri
+import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
-import com.forcetower.uefs.core.storage.repository.SettingsRepository
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
+import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import javax.inject.Inject
 
@@ -50,15 +57,16 @@ class HomeViewModel @Inject constructor(
     private val loginSagresRepository: LoginSagresRepository,
     private val dataRepository: SagresDataRepository,
     private val firebaseMessageRepository: FirebaseMessageRepository,
-    private val settingsRepository: SettingsRepository,
-    private val darkThemeRepository: DarkThemeRepository
+    private val darkThemeRepository: DarkThemeRepository,
+    private val authRepository: AuthRepository,
+    private val profileRepository: ProfileRepository,
+    accountRepository: AccountRepository
 ) : ViewModel() {
+    private var selectImageUri: Uri? = null
+
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
-
-    val isDarkModeEnabled: LiveData<Boolean>
-        get() = settingsRepository.hasDarkModeEnabled()
 
     private val _openProfileCase = MediatorLiveData<Event<String>>()
     val openProfileCase: LiveData<Event<String>>
@@ -73,8 +81,19 @@ class HomeViewModel @Inject constructor(
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
+    val account: LiveData<Resource<Account>> = accountRepository.getAccount()
 
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
+
+    fun uploadImageToStorage() {
+        val uri = selectImageUri
+        uri ?: return
+        UploadImageToStorage.createWorker(uri)
+    }
+
+    fun setSelectedImage(uri: Uri) {
+        selectImageUri = uri
+    }
 
     fun logout() = dataRepository.logout()
 
@@ -98,7 +117,6 @@ class HomeViewModel @Inject constructor(
     fun verifyDarkTheme() = darkThemeRepository.getPreconditions()
     fun lightWeightCalcScore() = dataRepository.lightweightCalcScore()
     fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
-
     fun attemptNewPasswordLogin(password: String) {
         val source = dataRepository.attemptLoginWithNewPassword(password)
         _passwordChangeProcess.addSource(source) {
@@ -107,5 +125,18 @@ class HomeViewModel @Inject constructor(
             }
             _passwordChangeProcess.value = Event(it)
         }
+    }
+
+    fun connectToServiceIfNeeded() {
+        authRepository.performAccountSyncStateIfNeededAsync()
+    }
+
+    @MainThread
+    fun sendToken(): LiveData<Boolean> {
+        return firebaseMessageRepository.sendNewTokenOrNot()
+    }
+
+    fun setSelectedCourse(course: Course) {
+        profileRepository.updateUserCourse(course)
     }
 }

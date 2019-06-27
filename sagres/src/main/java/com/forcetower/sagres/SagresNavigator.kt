@@ -149,12 +149,21 @@ abstract class SagresNavigator {
     @WorkerThread
     abstract fun logout()
 
+    @AnyThread
+    abstract fun getSelectedInstitution(): String
+
+    @AnyThread
+    abstract fun setSelectedInstitution(institution: String)
     companion object {
         val instance: SagresNavigator
             get() = SagresNavigatorImpl.instance
 
+        @AnyThread
         fun initialize(context: Context) {
             SagresNavigatorImpl.initialize(context)
         }
+
+        @AnyThread
+        fun getSupportedInstitutions() = Constants.SUPPORTED_INSTITUTIONS
     }
 }

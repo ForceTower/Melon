@@ -37,7 +37,8 @@ data class UMessage(
     var image: String? = null,
     @ServerTimestamp
     var createdAt: Date? = null,
-    var link: String? = null
+    var link: String? = null,
+    var institution: String? = null
 ) {
     companion object {
         const val COLLECTION = "unes_messages"

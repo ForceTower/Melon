@@ -34,7 +34,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 class NamedFragmentAdapter(
     fm: FragmentManager,
     private val elements: List<Pair<String, Fragment>>
-) : FragmentPagerAdapter(fm) {
+) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
     override fun getItem(position: Int) = elements[position].second
     override fun getCount() = elements.size
     override fun getPageTitle(position: Int) = elements[position].first

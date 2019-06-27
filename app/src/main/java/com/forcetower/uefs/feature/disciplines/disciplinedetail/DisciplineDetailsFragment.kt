@@ -83,6 +83,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         adapter = DetailsAdapter(childFragmentManager)
+        createFragments()
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
         viewPager.offscreenPageLimit = 4
@@ -106,8 +107,6 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
             viewModel = this@DisciplineDetailsFragment.viewModel
             lifecycleOwner = this@DisciplineDetailsFragment
         }
-
-        createFragments()
     }
 
     private fun createFragments() {
@@ -120,7 +119,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         adapter.submitList(list)
     }
 
-    private inner class DetailsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm) {
+    private inner class DetailsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val tabs = mutableListOf<Pair<String, Fragment>>()
         override fun getItem(position: Int) = tabs[position].second
         override fun getCount() = tabs.size

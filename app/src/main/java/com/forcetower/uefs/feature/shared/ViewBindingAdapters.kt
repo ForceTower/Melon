@@ -34,6 +34,7 @@ import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
 import androidx.databinding.BindingAdapter
@@ -41,6 +42,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.request.RequestOptions
+import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import timber.log.Timber
@@ -116,3 +118,16 @@ fun onSwipeRefresh(view: CustomSwipeRefreshLayout, function: SwipeRefreshLayout.
 fun swipeEnabled(view: CustomSwipeRefreshLayout, enabled: Boolean) {
     view.isEnabled = enabled
 }
+
+@BindingAdapter("accountName")
+fun accountName(tv: TextView, name: String?) {
+    val real = name ?: "Cidadão Anônimo"
+    val titled = WordUtils.toTitleCase(real)
+    val formatted = tv.context.getString(R.string.evaluation_welcome, titled)
+    tv.text = formatted
+}
+
+// @BindingAdapter("circleMax")
+// fun circleMax(pv: CircleProgressBar, max: Int) {
+//
+// }
