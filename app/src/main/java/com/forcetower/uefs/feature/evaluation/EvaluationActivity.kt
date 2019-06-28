@@ -25,7 +25,7 @@ class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation)
     }
 
-    override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.login_nav_host).navigateUp()
+    override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.eval_nav_host).navigateUp()
 
     override fun showSnack(string: String, long: Boolean) {
         val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
