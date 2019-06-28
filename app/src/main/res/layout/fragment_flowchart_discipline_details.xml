@@ -171,7 +171,6 @@
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
-
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/discipline_details_recycler"
                     android:layout_width="0dp"
