@@ -629,6 +629,9 @@
     <string name="whats_new_on_unes">O que há de novo no UNES</string>
     <string name="unes_new_feature_title_01">A avaliação dos professores chegou (voltou?)\nO Paradoxo de Zhonyas</string>
     <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.\n\nAinda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.\n\nUsem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
+    <string name="flowchart_semester">Semestres</string>
+    <string name="flowchart_semester_discipline_amount">%1$d matérias</string>
+    <string name="flowchart_semester_hours_amount">%1$d horas</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

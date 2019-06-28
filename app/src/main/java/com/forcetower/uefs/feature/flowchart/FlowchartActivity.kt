@@ -1,8 +1,10 @@
 package com.forcetower.uefs.feature.flowchart
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
+import androidx.navigation.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityFlowchartBinding
 import com.forcetower.uefs.feature.shared.UActivity
@@ -27,6 +29,8 @@ class FlowchartActivity : UActivity(), HasSupportFragmentInjector {
         snack.config()
         snack.show()
     }
+
+    override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.flowchart_nav_host).navigateUp()
 
     override fun supportFragmentInjector() = fragmentInjector
 }

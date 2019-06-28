@@ -2,6 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="semester"
+            type="com.forcetower.uefs.core.model.unes.FlowchartSemesterUI" />
+    </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -27,6 +32,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorPrimary"
+                android:text="@{semester.name}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -48,6 +54,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textSize="12sp"
+                android:text="@{@string/flowchart_semester_discipline_amount(semester.disciplines)}"
                 android:drawableStart="@drawable/ic_subject_surface_24dp"
                 android:drawablePadding="6dp"
                 android:textColor="?attr/colorOnSurface"
@@ -61,14 +68,13 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 android:textSize="12sp"
+                android:text="@{@string/flowchart_semester_hours_amount(semester.hours)}"
                 android:drawableStart="@drawable/ic_clock_surface_16dp"
                 android:drawablePadding="6dp"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintStart_toStartOf="@+id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@+id/divider_class"
                 tools:text="480 horas" />
-
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </com.google.android.material.card.MaterialCardView>
 </layout>
