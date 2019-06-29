@@ -154,6 +154,8 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun execute(access: Access, registry: SyncRegistry, executor: String) {
         val uid = database.syncRegistryDao().insert(registry)
+        val calendar = Calendar.getInstance()
+        val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
@@ -217,13 +219,53 @@ class SagresSyncRepository @Inject constructor(
         }
 
         var result = 0
+        var skipped = 0
         if (access.username.contains("@") || person.isMocked) {
             if (!messages(null)) result += 1 shl 1
         } else {
             if (!messages(person.id)) result += 1 shl 1
             if (!semesters(person.id)) result += 1 shl 2
         }
-        if (!disciplinesExperimental()) result += 1 shl 6
+
+        val dailyDisciplines = preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
+        val currentDaily = preferences.getInt("daily_discipline_count", 0)
+        val currentDayDiscipline = preferences.getInt("daily_discipline_day", -1)
+        val lastDailyHour = preferences.getInt("daily_discipline_hour", 0)
+        val isNewDaily = currentDayDiscipline != today || dailyDisciplines == -1
+        val currentDailyHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val (actualDailyCount, nextHour) = if (isNewDaily)
+            0 to -1
+        else
+            currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
+
+        val shouldDisciplineSync =
+            ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
+            (currentDailyHour >= nextHour)
+
+        Timber.d("Discipline Sync Dump >> will sync now $shouldDisciplineSync")
+        Timber.d("Dailies $dailyDisciplines")
+        Timber.d("Current daily $currentDaily")
+        Timber.d("Current Day discipline $currentDayDiscipline")
+        Timber.d("Last daily hour $lastDailyHour")
+        Timber.d("Is this a new daily? $isNewDaily")
+        Timber.d("Current hour $currentDailyHour")
+        Timber.d("Actual daily count $actualDailyCount")
+        Timber.d("Next daily hour $nextHour")
+
+        if (shouldDisciplineSync) {
+            if (!disciplinesExperimental()) result += 1 shl 6
+            else {
+                preferences.edit()
+                    .putInt("daily_discipline_count", currentDaily + 1)
+                    .putInt("daily_discipline_day", today)
+                    .putInt("daily_discipline_hour", currentDailyHour)
+                    .apply()
+            }
+        } else {
+            skipped += 1 shl 1
+        }
+
         if (!startPage()) result += 1 shl 3
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
@@ -248,7 +290,6 @@ class SagresSyncRepository @Inject constructor(
 
         try {
             val day = preferences.getInt("sync_daily_update", -1)
-            val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
 
@@ -266,6 +307,7 @@ class SagresSyncRepository @Inject constructor(
         registry.completed = true
         registry.error = result
         registry.success = result == 0
+        registry.skipped = skipped
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
