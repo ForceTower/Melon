@@ -79,7 +79,7 @@ class BigTrayRepository @Inject constructor(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val value = response.body()!!.string()
+                val value = response.body!!.string()
                 if (value.equals("false", ignoreCase = true)) {
                     return BigTrayData.closed()
                 } else {

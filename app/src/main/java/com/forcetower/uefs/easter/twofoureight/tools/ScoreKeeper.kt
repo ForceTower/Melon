@@ -64,7 +64,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
         }
     }
 
-    public fun setScoreListener(scoreListener: Game.ScoreListener?) {
+    fun setScoreListener(scoreListener: Game.ScoreListener?) {
         this.mScoreListener = scoreListener
     }
 
@@ -100,7 +100,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
     }
 
     companion object {
-        public const val HIGH_SCORE = "score.highscore"
-        public const val PREFERENCES = "score"
+        const val HIGH_SCORE = "score.highscore"
+        const val PREFERENCES = "score"
     }
 }

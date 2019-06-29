@@ -46,10 +46,10 @@ class SemesterOperation(executor: Executor?, private val userId: Long) : Operati
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 successMeasures(body)
             } else {
-                publishProgress(SemesterCallback(Status.NETWORK_ERROR).code(response.code()).message(response.message()))
+                publishProgress(SemesterCallback(Status.NETWORK_ERROR).code(response.code).message(response.message))
             }
         } catch (e: IOException) {
             e.printStackTrace()

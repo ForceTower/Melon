@@ -77,6 +77,7 @@ import okhttp3.Call
 import okhttp3.Credentials
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
+import okhttp3.Response
 import org.jsoup.nodes.Document
 import java.io.File
 import java.net.InetSocketAddress
@@ -143,26 +144,28 @@ private constructor(context: Context) : SagresNavigator() {
     }
 
     private fun createInterceptor(): Interceptor {
-        return Interceptor { chain ->
-            val access = database.accessDao().accessDirect
-            var oRequest = chain.request()
-            oRequest = oRequest.newBuilder()
-                    .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
-                    .build()
+        return object : Interceptor {
+            override fun intercept(chain: Interceptor.Chain): Response {
+                val access = database.accessDao().accessDirect
+                var oRequest = chain.request()
+                oRequest = oRequest.newBuilder()
+                        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+                        .build()
 
-            if (access == null) {
-                chain.proceed(oRequest)
-            } else {
-                val credentials = Credentials.basic(access.username, access.password)
-                if (oRequest.header("Authorization") != null) {
+                return if (access == null) {
                     chain.proceed(oRequest)
                 } else {
-                    val nRequest = oRequest.newBuilder()
-                            .addHeader("Authorization", credentials)
-                            .addHeader("Accept", "application/json")
-                            .build()
+                    val credentials = Credentials.basic(access.username, access.password)
+                    if (oRequest.header("Authorization") != null) {
+                        chain.proceed(oRequest)
+                    } else {
+                        val nRequest = oRequest.newBuilder()
+                                .addHeader("Authorization", credentials)
+                                .addHeader("Accept", "application/json")
+                                .build()
 
-                    chain.proceed(nRequest)
+                        chain.proceed(nRequest)
+                    }
                 }
             }
         }
@@ -208,8 +211,8 @@ private constructor(context: Context) : SagresNavigator() {
 
     override fun stopTags(tag: String?) {
         val callList = ArrayList<Call>()
-        callList.addAll(client.dispatcher().runningCalls())
-        callList.addAll(client.dispatcher().queuedCalls())
+        callList.addAll(client.dispatcher.runningCalls())
+        callList.addAll(client.dispatcher.queuedCalls())
         for (call in callList) {
             val local = call.request().tag()
             if ((local != null && local == tag) || tag == null) {

@@ -49,7 +49,7 @@ class MaterialAdapter(
         holder.binding.apply {
             material = getItem(position)
             listener = viewModel
-            setLifecycleOwner(lifecycleOwner)
+            lifecycleOwner = lifecycleOwner
             executePendingBindings()
         }
     }

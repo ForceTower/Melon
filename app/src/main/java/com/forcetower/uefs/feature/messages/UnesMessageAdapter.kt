@@ -49,7 +49,7 @@ class UnesMessageAdapter(
         holder.binding.apply {
             message = getItem(position)
             listener = actions
-            setLifecycleOwner(lifecycleOwner)
+            lifecycleOwner = lifecycleOwner
             executePendingBindings()
         }
     }

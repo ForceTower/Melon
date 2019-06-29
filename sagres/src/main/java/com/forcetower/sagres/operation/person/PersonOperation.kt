@@ -57,11 +57,11 @@ class PersonOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val user = gson.fromJson(body, SPerson::class.java)
                 successMeasures(user)
             } else {
-                publishProgress(PersonCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+                publishProgress(PersonCallback(Status.RESPONSE_FAILED).code(response.code).message(response.message))
             }
         } catch (t: Throwable) {
             t.printStackTrace()
