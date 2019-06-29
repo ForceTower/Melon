@@ -49,7 +49,7 @@ class RemindersAdapter(
             differ.submitList(buildMergedList(reminders = value))
         }
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderHolder {
         return when (viewType) {
@@ -67,7 +67,7 @@ class RemindersAdapter(
                 holder.binding.apply {
                     reminder = differ.currentList[position] as Reminder
                     listener = viewModel
-                    lifecycleOwner = lifecycleOwner
+                    lifecycleOwner = this@RemindersAdapter.lifecycleOwner
                     executePendingBindings()
                 }
             }
