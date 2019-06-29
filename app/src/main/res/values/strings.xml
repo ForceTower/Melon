@@ -628,6 +628,8 @@
     <string name="whats_new_on_unes">O que há de novo no UNES</string>
     <string name="unes_new_feature_title_01">A avaliação dos professores chegou (voltou?)\nO Paradoxo de Zhonyas</string>
     <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.\n\nAinda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.\n\nUsem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
+    <string name="settings_sync_discipline_amount">Dados das disciplinas</string>
+    <string name="settings_sync_discipline_amount_label">Quantidade de vezes que o aplicativo baixa os detalhes das disciplinas (ajuda a economizar dados)</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -685,6 +687,22 @@
         <item>0</item>
         <item>1</item>
         <item>2</item>
+    </string-array>
+
+    <string-array name="settings_sync_discipline_amount_titles">
+        <item>1 vez por dia</item>
+        <item>2 vezes por dia</item>
+        <item>3 vezes por dia</item>
+        <item>4 vezes por dia</item>
+        <item>Todas as vezes (aumenta dados)</item>
+    </string-array>
+
+    <string-array name="settings_sync_discipline_amount_values">
+        <item>1</item>
+        <item>2</item>
+        <item>3</item>
+        <item>4</item>
+        <item>-1</item>
     </string-array>
 
     <plurals name="duration_hours">
