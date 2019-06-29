@@ -32,7 +32,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.os.Build
-import android.preference.PreferenceManager
+import androidx.preference.PreferenceManager
 import androidx.annotation.AnyThread
 import androidx.annotation.RestrictTo
 import androidx.annotation.WorkerThread
@@ -98,6 +98,9 @@ private constructor(context: Context) : SagresNavigator() {
     private val wifiManager = ContextCompat.getSystemService(context, WifiManager::class.java)
     private val preferences = PreferenceManager.getDefaultSharedPreferences(context)
 
+    private val proxyConfigured: Boolean
+        get() = preferences.getBoolean("stg_sync_auto_proxy", true)
+
     val client: OkHttpClient
         get() {
             if (proxyConfigured && shouldUseProxy())
@@ -105,16 +108,12 @@ private constructor(context: Context) : SagresNavigator() {
             return defaultClient
         }
 
-    var proxyConfigured = false
-
     init {
         this.defaultClient = createClient(context)
-        this.proxyClient = createProxyClient(context, defaultClient)
+        this.proxyClient = createProxyClient(defaultClient)
     }
 
-    private fun createProxyClient(context: Context, parentClient: OkHttpClient): OkHttpClient {
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-        proxyConfigured = preferences.getBoolean("stg_sync_auto_proxy", true) // TODO Activated for testing
+    private fun createProxyClient(parentClient: OkHttpClient): OkHttpClient {
         val proxy = preferences.getString("stg_sync_proxy", "10.65.16.2:3128")!!
         val splits = proxy.split(":")
 
