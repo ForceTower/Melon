@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <com.google.android.material.appbar.AppBarLayout
+            android:id="@+id/app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            style="@style/Widget.AppBar">
+
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingStart="@dimen/spacing_normal"
+                android:paddingEnd="@dimen/spacing_common"
+                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+
+                <TextView
+                    android:id="@+id/text_toolbar_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_gravity="start"
+                    android:gravity="center"
+                    android:minHeight="?actionBarSize"
+                    android:text="@string/label_course_disciplines"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title" />
+            </FrameLayout>
+
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                app:tabContentStart="36dp"
+                app:tabGravity="fill"
+                app:tabIndicatorFullWidth="false"
+                app:tabMode="scrollable"
+                app:tabTextColor="?attr/colorPrimary"
+                app:tabIndicatorColor="?attr/colorPrimary"
+                app:tabTextAppearance="@style/TextAppearanceTabLayout"
+                app:tabIndicator="@drawable/tab_indicator"
+                android:background="?attr/background"/>
+        </com.google.android.material.appbar.AppBarLayout>
+
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager_flowchart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
+</layout>

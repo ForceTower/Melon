@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="semester"
+            type="com.forcetower.uefs.core.model.unes.FlowchartSemesterUI" />
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.flowchart.home.SemesterInteractor" />
+    </data>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:onClick="@{() -> interactor.onSemesterSelected(semester)}">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="96dp" />
+
+            <TextView
+                android:id="@+id/text_semester_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorPrimary"
+                android:text="@{semester.name}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Primero Semestre" />
+
+            <View
+                android:id="@+id/divider_class"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/schedule_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_semester_name" />
+
+            <TextView
+                android:id="@+id/text_disciplines"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:text="@{@string/flowchart_semester_discipline_amount(semester.disciplines)}"
+                android:drawableStart="@drawable/ic_subject_surface_24dp"
+                android:drawablePadding="6dp"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_class"
+                tools:text="8 matérias" />
+
+            <TextView
+                android:id="@+id/text_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:text="@{@string/flowchart_semester_hours_amount(semester.hours)}"
+                android:drawableStart="@drawable/ic_clock_surface_16dp"
+                android:drawablePadding="6dp"
+                android:textColor="?attr/colorOnSurface"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintTop_toBottomOf="@+id/divider_class"
+                tools:text="480 horas" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

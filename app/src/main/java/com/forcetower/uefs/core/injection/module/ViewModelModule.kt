@@ -48,6 +48,7 @@ import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.evaluation.rating.EvaluationRatingViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.feedback.FeedbackViewModel
+import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel
@@ -227,7 +228,12 @@ abstract class ViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(UnesverseViewModel::class)
-    abstract fun bindUneverseViewModel(vm: UnesverseViewModel): ViewModel
+    abstract fun bindUnesverseViewModel(vm: UnesverseViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FlowchartViewModel::class)
+    abstract fun bindFlowchartViewModel(vm: FlowchartViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
