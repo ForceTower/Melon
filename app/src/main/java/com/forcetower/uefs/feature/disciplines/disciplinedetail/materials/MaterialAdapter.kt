@@ -45,11 +45,11 @@ class MaterialAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ClassMaterialHolder(parent.inflate(R.layout.item_discipline_class_material))
 
-    override fun onBindViewHolder(holder: MaterialAdapter.ClassMaterialHolder, position: Int) {
+    override fun onBindViewHolder(holder: ClassMaterialHolder, position: Int) {
         holder.binding.apply {
             material = getItem(position)
             listener = viewModel
-            setLifecycleOwner(lifecycleOwner)
+            lifecycleOwner = this@MaterialAdapter.lifecycleOwner
             executePendingBindings()
         }
     }

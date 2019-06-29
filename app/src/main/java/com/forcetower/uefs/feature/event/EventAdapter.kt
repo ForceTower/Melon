@@ -48,7 +48,7 @@ class EventAdapter(
         differ.submitList(buildMergedList(events = value))
     }
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     init {
         differ.submitList(buildMergedList())
@@ -80,7 +80,7 @@ class EventAdapter(
             is EventViewHolder.NoEventHolder -> Unit
             is EventViewHolder.EventHolder -> {
                 holder.binding.event = differ.currentList[position] as Event
-                holder.binding.setLifecycleOwner(lifecycleOwner)
+                holder.binding.lifecycleOwner = lifecycleOwner
                 holder.binding.listener = viewModel
                 holder.binding.executePendingBindings()
             }
