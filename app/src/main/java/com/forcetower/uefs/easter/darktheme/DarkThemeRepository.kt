@@ -38,7 +38,6 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
-import com.forcetower.uefs.core.model.service.FirebaseProfile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -57,8 +56,6 @@ class DarkThemeRepository @Inject constructor(
     private val database: UDatabase,
     private val service: UService
 ) {
-    private lateinit var profileObserver: MutableLiveData<FirebaseProfile?>
-    private var lastIteration: FirebaseProfile? = null
 
     fun getPreconditions(): LiveData<List<Precondition>> {
         val result = MutableLiveData<List<Precondition>>()
@@ -81,7 +78,7 @@ class DarkThemeRepository @Inject constructor(
         val completedSize = completed.size
         val account = database.accountDao().getAccountDirect()
 
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
+        val enabled = account?.darkThemeEnabled ?: false
         val invites = if (completedSize < 2) 0 else (completedSize - 1)
         if (enabled) {
             preferences.edit()
