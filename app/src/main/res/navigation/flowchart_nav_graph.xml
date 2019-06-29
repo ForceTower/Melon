@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/flowchart_nav_graph"
+    app:startDestination="@id/home">
+    <fragment
+        android:id="@+id/home"
+        android:name="com.forcetower.uefs.feature.flowchart.home.FlowchartFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_flowchart">
+        <action
+            android:id="@+id/action_home_to_semester"
+            app:destination="@id/semester"
+            app:launchSingleTop="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/semester"
+        android:name="com.forcetower.uefs.feature.flowchart.semester.SemesterFragment"
+        android:label="Semester"
+        tools:layout="@layout/fragment_flowchart_semester">
+        <action
+            android:id="@+id/action_semester_to_discipline"
+            app:destination="@id/discipline"
+            app:launchSingleTop="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/discipline"
+        android:name="com.forcetower.uefs.feature.flowchart.discipline.DisciplineFragment"
+        android:label="Discipline"
+        tools:layout="@layout/fragment_flowchart_discipline_details">
+        <action
+            android:id="@+id/action_discipline_self"
+            app:destination="@id/discipline"
+            app:launchSingleTop="true" />
+    </fragment>
+</navigation>
