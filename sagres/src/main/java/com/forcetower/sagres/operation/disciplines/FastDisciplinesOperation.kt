@@ -107,12 +107,12 @@ class FastDisciplinesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val value = response.body()!!.string()
+                val value = response.body!!.string()
                 val document = Utils.createDocument(value)
                 Timber.d("Title: ${document.title()}")
                 return document
             } else {
-                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).message("Unsuccessful response").code(response.code()))
+                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).message("Unsuccessful response").code(response.code))
             }
         } catch (e: IOException) {
             publishProgress(FastDisciplinesCallback(Status.NETWORK_ERROR).throwable(e).message("Failed at initial form connect"))
@@ -126,10 +126,10 @@ class FastDisciplinesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return Utils.createDocument(body)
             } else {
-                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at params").code(response.code()))
+                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at params").code(response.code))
             }
         } catch (e: IOException) {
             publishProgress(FastDisciplinesCallback(Status.NETWORK_ERROR).throwable(e).message("Failed at params setup"))
@@ -165,7 +165,7 @@ class FastDisciplinesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return Utils.createDocument(body)
             } else {
                 publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at material download"))
@@ -185,10 +185,10 @@ class FastDisciplinesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val value = response.body()!!.string()
+                val value = response.body!!.string()
                 return value.createDocument()
             } else {
-                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).code(response.code()))
+                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).code(response.code))
             }
         } catch (t: Throwable) {
             publishProgress(FastDisciplinesCallback(Status.NETWORK_ERROR).throwable(t))
@@ -201,10 +201,10 @@ class FastDisciplinesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val value = response.body()!!.string()
+                val value = response.body!!.string()
                 return value.createDocument()
             } else {
-                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).code(response.code()))
+                publishProgress(FastDisciplinesCallback(Status.RESPONSE_FAILED).code(response.code))
             }
         } catch (t: Throwable) {
             publishProgress(FastDisciplinesCallback(Status.NETWORK_ERROR).throwable(t))

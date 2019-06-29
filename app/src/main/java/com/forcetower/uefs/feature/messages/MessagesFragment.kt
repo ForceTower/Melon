@@ -79,7 +79,7 @@ class MessagesFragment : UFragment(), Injectable {
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
             messagesViewModel = this@MessagesFragment.messagesViewModel
-            setLifecycleOwner(this@MessagesFragment)
+            lifecycleOwner = this@MessagesFragment
         }
 
         preparePager()

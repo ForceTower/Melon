@@ -67,7 +67,7 @@ class RemindersAdapter(
                 holder.binding.apply {
                     reminder = differ.currentList[position] as Reminder
                     listener = viewModel
-                    setLifecycleOwner(lifecycleOwner)
+                    lifecycleOwner = lifecycleOwner
                     executePendingBindings()
                 }
             }

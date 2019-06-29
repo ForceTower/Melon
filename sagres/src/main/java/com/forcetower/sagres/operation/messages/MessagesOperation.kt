@@ -65,7 +65,7 @@ class MessagesOperation(
             val response = call.execute()
             if (response.isSuccessful) {
                 val result = mutableListOf<SMessage>()
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val first = Gson().fromJson(body, MessageResponse::class.java)
                 result += first.messages
                 if (fetchAll) {
@@ -74,7 +74,7 @@ class MessagesOperation(
                 }
                 successMeasures(result)
             } else {
-                publishProgress(MessagesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+                publishProgress(MessagesCallback(Status.RESPONSE_FAILED).code(response.code).message(response.message))
             }
         } catch (t: Throwable) {
             t.printStackTrace()
@@ -90,12 +90,12 @@ class MessagesOperation(
                 val call = SagresCalls.getLink(nextLink)
                 val response = call.execute()
                 if (response.isSuccessful) {
-                    val body = response.body()!!.string()
+                    val body = response.body!!.string()
                     val value = Gson().fromJson(body, MessageResponse::class.java)
                     result += value.messages
                     nextLink = value.older
                 } else {
-                    Timber.d("Invalid response, aborting with code ${response.code()}")
+                    Timber.d("Invalid response, aborting with code ${response.code}")
                     nextLink = null
                 }
             }
@@ -177,7 +177,7 @@ class MessagesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val value = gson.fromJson(body, SPerson::class.java)
                 SagresNavigator.instance.database.personDao().insert(value)
                 return value
@@ -204,7 +204,7 @@ class MessagesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 Timber.d("Scope body: $body")
                 val token = object : TypeToken<Dumb<ArrayList<SMessageScope>>>() {}.type
                 val scoping = gson.fromJson<Dumb<ArrayList<SMessageScope>>>(body, token)
@@ -242,7 +242,7 @@ class MessagesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val clazzed = gson.fromJson(body, SClass::class.java)
                 if (clazzed.discipline != null) {
                     clazzed.disciplineLink = clazzed.discipline.link
@@ -273,7 +273,7 @@ class MessagesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val disciplined = gson.fromJson(body, SDisciplineResumed::class.java)
 
                 val department = disciplined.department
