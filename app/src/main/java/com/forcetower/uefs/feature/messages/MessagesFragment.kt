@@ -49,7 +49,6 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
-import java.util.Arrays
 import javax.inject.Inject
 
 class MessagesFragment : UFragment(), Injectable {
@@ -100,7 +99,7 @@ class MessagesFragment : UFragment(), Injectable {
         val sagres = SagresMessagesFragment()
         val unes = UnesMessagesFragment()
 
-        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, Arrays.asList(sagres, unes))
+        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, listOf(sagres, unes))
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

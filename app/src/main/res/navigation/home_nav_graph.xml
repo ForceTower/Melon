@@ -143,5 +143,10 @@
         android:name="com.forcetower.uefs.feature.evaluation.EvaluationActivity"
         android:label="EvaluationActivity"
         tools:layout="@layout/activity_evaluation"/>
+    <activity
+        android:id="@+id/flowchart"
+        android:name="com.forcetower.uefs.feature.flowchart.FlowchartActivity"
+        android:label="FlowchartActivity"
+        tools:layout="@layout/activity_flowchart"/>
 
 </navigation>

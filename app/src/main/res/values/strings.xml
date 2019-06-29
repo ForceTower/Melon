@@ -549,6 +549,7 @@
     <string name="settings_schedule_empty_spaces">Dias vazios</string>
     <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
     <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
+    <string name="label_course_disciplines">Currículo do Curso</string>
     <string name="update_the_app">Atualizar o aplicativo</string>
     <string name="rewarded_with_back_2048">Você pode voltar jogadas!</string>
     <string name="rewarded_failed">A recompensa foi cancelada</string>
@@ -630,6 +631,13 @@
     <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.\n\nAinda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.\n\nUsem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
     <string name="settings_sync_discipline_amount">Dados das disciplinas</string>
     <string name="settings_sync_discipline_amount_label">Quantidade de vezes que o aplicativo baixa os detalhes das disciplinas (ajuda a economizar dados)</string>
+    <string name="flowchart_semester">Semestres</string>
+    <string name="flowchart_semester_discipline_amount">%1$d matérias</string>
+    <string name="flowchart_semester_hours_amount">%1$d horas</string>
+    <string name="flowchart_discipline_hours_amount">%1$d horas</string>
+    <string name="label_flowchart">Fluxograma Interativo</string>
+    <string name="flowchart_discipline_current">Cursando!</string>
+    <string name="flowchart_discipline_complete">Completa!</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

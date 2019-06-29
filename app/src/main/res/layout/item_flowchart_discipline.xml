@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <data>
+        <variable
+            name="discipline"
+            type="com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI" />
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor" />
+    </data>
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="8dp"
+        android:onClick="@{() -> interactor.onDisciplineSelected(discipline)}">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp">
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_start"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="56dp" />
+
+            <androidx.constraintlayout.widget.Guideline
+                android:id="@+id/guideline_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:layout_constraintGuide_begin="120dp" />
+
+            <TextView
+                android:id="@+id/text_class_name"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textColor="?attr/colorPrimary"
+                android:text="@{discipline.name}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Introdução à Engenharia de Computação" />
+
+            <View
+                android:id="@+id/divider_class"
+                android:layout_width="0dp"
+                android:layout_height="2dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/schedule_divider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/text_class_name" />
+
+            <TextView
+                android:id="@+id/text_discipline_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textSize="12sp"
+                android:text="@{discipline.code}"
+                android:textColor="?attr/colorOnSurfaceLight"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/divider_class"
+                tools:text="TEC517" />
+
+            <TextView
+                android:id="@+id/text_discipline_hours"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@{@string/flowchart_discipline_hours_amount(discipline.credits)}"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceLight"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
+                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                tools:text="60 horas" />
+
+            <TextView
+                android:id="@+id/text_discipline_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:departmentStrip="@{discipline.department}"
+                android:textSize="12sp"
+                android:textColor="?attr/colorOnSurfaceLight"
+                app:layout_constraintStart_toStartOf="@+id/guideline_department"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
+                tools:text="Tecnologia" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>
