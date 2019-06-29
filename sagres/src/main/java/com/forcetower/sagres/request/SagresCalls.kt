@@ -73,7 +73,7 @@ object SagresCalls {
     @JvmStatic
     @RestrictTo(RestrictTo.Scope.LIBRARY)
     fun loginApproval(document: Document, response: Response): Call {
-        val responsePath = response.request().url().url()
+        val responsePath = response.request.url.toUrl()
         val url = responsePath.host + responsePath.path
         val body = SagresForms.loginApprovalBody(document)
         val request = SagresRequests.loginApprovalRequest(url, body)

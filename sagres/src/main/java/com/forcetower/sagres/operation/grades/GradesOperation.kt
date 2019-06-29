@@ -53,10 +53,10 @@ class GradesOperation(private val semester: Long?, private val document: Documen
             result.postValue(GradesCallback(Status.LOADING))
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 processResults(body)
             } else {
-                publishProgress(GradesCallback(Status.RESPONSE_FAILED).code(response.code()).message(response.message()))
+                publishProgress(GradesCallback(Status.RESPONSE_FAILED).code(response.code).message(response.message))
             }
         } catch (e: IOException) {
             publishProgress(GradesCallback(Status.NETWORK_ERROR).throwable(e))
@@ -110,7 +110,7 @@ class GradesOperation(private val semester: Long?, private val document: Documen
         val call = SagresCalls.getGrades(semester, document, variant)
         return try {
             val response = call.execute()
-            val body = response.body()!!.string()
+            val body = response.body!!.string()
             processVariant(body, semester)
         } catch (e: Exception) {
             GradeResult(document = document)
