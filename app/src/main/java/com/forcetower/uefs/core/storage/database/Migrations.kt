@@ -185,6 +185,6 @@ object M21TO22 : Migration(21, 22) {
 
 object M22TO23 : Migration(22, 23) {
     override fun migrate(database: SupportSQLiteDatabase) {
-        database.execSQL("ALTER TABLE SyncRegistry ADD COLUMN skipped NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE SyncRegistry ADD COLUMN skipped INTEGER NOT NULL DEFAULT 0")
     }
 }

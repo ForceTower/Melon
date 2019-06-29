@@ -29,16 +29,7 @@
 <androidx.preference.PreferenceScreen
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-        
-    <ListPreference
-        app:key="stg_sync_worker_type"
-        app:defaultValue="0"
-        app:title="@string/settings_sync_type_label"
-        app:summary="@string/settings_sync_type_info_label"
-        app:icon="@drawable/ic_group_work_accent_24dp"
-        app:entries="@array/settings_sync_type_titles"
-        app:entryValues="@array/settings_sync_type_values" />
-    
+
     <ListPreference
         app:key="stg_sync_frequency"
         app:defaultValue="60"
@@ -47,6 +38,15 @@
         app:icon="@drawable/ic_sync_accent_24dp"
         app:entries="@array/settings_sync_frequency_titles"
         app:entryValues="@array/settings_sync_frequency_values" />
+        
+    <ListPreference
+        app:key="stg_daily_discipline_sync"
+        app:defaultValue="2"
+        app:title="@string/settings_sync_discipline_amount"
+        app:summary="@string/settings_sync_discipline_amount_label"
+        app:icon="@drawable/ic_group_work_accent_24dp"
+        app:entries="@array/settings_sync_discipline_amount_titles"
+        app:entryValues="@array/settings_sync_discipline_amount_values" />
     
     <SwitchPreference
         app:key="stg_sync_auto_proxy"
