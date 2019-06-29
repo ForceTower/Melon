@@ -16,3 +16,14 @@ data class FlowchartDiscipline(
     val type: String,
     val mandatory: Boolean
 )
+
+data class FlowchartDisciplineUI(
+    val id: Long,
+    val type: String,
+    val mandatory: Boolean,
+    val name: String,
+    val code: String,
+    val credits: Int,
+    val department: String,
+    val program: String? = null
+)

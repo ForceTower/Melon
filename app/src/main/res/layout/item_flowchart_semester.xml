@@ -6,12 +6,16 @@
         <variable
             name="semester"
             type="com.forcetower.uefs.core.model.unes.FlowchartSemesterUI" />
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.flowchart.home.SemesterInteractor" />
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginHorizontal="16dp"
-        android:layout_marginTop="8dp">
+        android:layout_marginTop="8dp"
+        android:onClick="@{() -> interactor.onSemesterSelected(semester)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"

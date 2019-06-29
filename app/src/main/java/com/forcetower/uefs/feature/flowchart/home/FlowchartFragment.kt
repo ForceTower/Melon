@@ -29,7 +29,7 @@ class FlowchartFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val semesters = SemesterFragment.newInstance()
+        val semesters = SemestersFragment.newInstance()
         val fragments = listOf(semesters)
         binding.apply {
             tabLayout.setupWithViewPager(pagerFlowchart)

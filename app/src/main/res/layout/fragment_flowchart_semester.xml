@@ -2,6 +2,11 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="semester"
+            type="com.forcetower.uefs.core.model.unes.FlowchartSemesterUI" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -35,6 +40,7 @@
             android:id="@+id/text_semester_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{semester.name}"
             android:textColor="?attr/colorOnSurface"
             android:textSize="24sp"
             android:layout_marginHorizontal="16dp"
@@ -48,6 +54,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnSurface"
+            android:text="@{@string/flowchart_semester_discipline_amount(semester.disciplines)}"
             android:layout_marginTop="8dp"
             android:layout_marginStart="14dp"
             android:drawablePadding="8dp"
@@ -60,6 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
+            android:text="@{@string/flowchart_semester_hours_amount(semester.hours)}"
             android:textColor="?attr/colorOnSurface"
             android:drawablePadding="8dp"
             android:drawableStart="@drawable/ic_clock_surface_16dp"

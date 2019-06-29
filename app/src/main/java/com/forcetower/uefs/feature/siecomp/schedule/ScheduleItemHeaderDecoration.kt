@@ -168,7 +168,7 @@ class ScheduleItemHeaderDecoration(
             }
         }
         return if (PlatformVersion.isAtLeastM()) {
-            StaticLayout.Builder.obtain(text,0, text.length, paint, width)
+            StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
                 .setText(text)
                 .setAlignment(Layout.Alignment.ALIGN_CENTER)
                 .setLineSpacing(0f, 1f)

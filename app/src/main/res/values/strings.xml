@@ -634,6 +634,8 @@
     <string name="flowchart_semester">Semestres</string>
     <string name="flowchart_semester_discipline_amount">%1$d matérias</string>
     <string name="flowchart_semester_hours_amount">%1$d horas</string>
+    <string name="flowchart_discipline_hours_amount">%1$d horas</string>
+    <string name="label_flowchart">Fluxograma Interativo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
