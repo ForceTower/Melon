@@ -112,8 +112,8 @@ class AuthRepository @Inject constructor(
     @WorkerThread
     fun syncLogin(username: String, password: String): AccessToken? {
         try {
-            Timber.d("Sign in using $username and $password")
-            val response = service.loginWithSagres(username, password).execute()
+            Timber.d("Sign in using ${username.trim()} and $password")
+            val response = service.loginWithSagres(username.trim(), password).execute()
             if (response.isSuccessful) {
                 val token = response.body()
                 if (token != null) {
