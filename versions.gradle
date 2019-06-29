@@ -24,7 +24,7 @@ versions.navigation = "2.1.0-alpha05"
 versions.work_manager = "2.0.1"
 
 // Dependency Injection
-versions.dagger = "2.22.1"
+versions.dagger = "2.23.2"
 
 // Firebase
 versions.firebase_core = "17.0.0"

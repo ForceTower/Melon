@@ -77,8 +77,6 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
-//import android.annotation.Widget;
-
 /**
  * A widget that enables the user to select a number form a predefined range.
  * There are two flavors of this widget and which one is presented to the user
@@ -107,7 +105,7 @@ import timber.log.Timber;
  * For an example of using this widget, see {@link android.widget.TimePicker}.
  * </p>
  */
-//@Widget
+@SuppressWarnings("Deprecation")
 public class NumberPicker extends LinearLayout {
 
     /**
