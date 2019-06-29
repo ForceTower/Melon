@@ -55,7 +55,7 @@ class MechCreateDialog : RoundedDialog(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         binding.textInputGrade.run {
-            setOnFocusChangeListener { _, hasFocus ->
+            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus && isEnabled) {
                     val string = text.toString()
                     if (string.isNotBlank()) {
@@ -71,7 +71,7 @@ class MechCreateDialog : RoundedDialog(), Injectable {
         }
 
         binding.textInputWeight.run {
-            setOnFocusChangeListener { _, hasFocus ->
+            onFocusChangeListener = View.OnFocusChangeListener { _, hasFocus ->
                 if (!hasFocus) {
                     val string = text.toString()
                     if (string.isNotBlank()) {
