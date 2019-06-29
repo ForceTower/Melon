@@ -132,7 +132,7 @@ class LocationLineHolder(
         binding.run {
             location = locationWithGroup
             interactor = viewModel
-            lifecycleOwner = lifecycleOwner
+            lifecycleOwner = this@LocationLineHolder.lifecycleOwner
             binding.executePendingBindings()
         }
     }

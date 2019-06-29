@@ -48,7 +48,7 @@ class EventAdapter(
         differ.submitList(buildMergedList(events = value))
     }
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     init {
         differ.submitList(buildMergedList())

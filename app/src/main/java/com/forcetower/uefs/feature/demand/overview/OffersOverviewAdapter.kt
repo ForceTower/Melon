@@ -48,7 +48,7 @@ class OffersOverviewAdapter(
 
     override fun onBindViewHolder(holder: DemandHolder, position: Int) {
         holder.binding.apply {
-            lifecycleOwner = lifecycleOwner
+            lifecycleOwner = this@OffersOverviewAdapter.lifecycleOwner
             offer = getItem(position)
             actions = viewModel
             executePendingBindings()

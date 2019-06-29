@@ -49,7 +49,7 @@ class DocumentsAdapter(
             differ.submitList(buildMergedList())
         }
 
-    private val differ = AsyncListDiffer<Any>(this, DocumentDiff)
+    private val differ = AsyncListDiffer(this, DocumentDiff)
     init {
         differ.submitList(buildMergedList())
     }
@@ -60,7 +60,7 @@ class DocumentsAdapter(
             R.layout.item_document -> DocumentViewHolder.DocumentHolder(
                 ItemDocumentBinding.inflate(inflater, parent, false).apply {
                     listener = viewModel
-                    lifecycleOwner = lifecycleOwner
+                    lifecycleOwner = this@DocumentsAdapter.lifecycleOwner
                 }
             )
             R.layout.item_document_header -> DocumentViewHolder.HeaderHolder(
