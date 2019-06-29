@@ -60,7 +60,7 @@ class DocumentsAdapter(
             R.layout.item_document -> DocumentViewHolder.DocumentHolder(
                 ItemDocumentBinding.inflate(inflater, parent, false).apply {
                     listener = viewModel
-                    setLifecycleOwner(lifecycleOwner)
+                    lifecycleOwner = lifecycleOwner
                 }
             )
             R.layout.item_document_header -> DocumentViewHolder.HeaderHolder(

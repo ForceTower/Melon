@@ -54,8 +54,8 @@ versions.gp_billing_client = "1.2"
 versions.gp_admob = "18.0.0"
 
 // Networking
-versions.okhttp = "3.14.2"
-versions.retrofit = "2.5.0"
+versions.okhttp = "4.0.0"
+versions.retrofit = "2.6.0"
 versions.cookie_jar = "v1.0.1"
 
 // Others

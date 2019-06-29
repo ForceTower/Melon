@@ -45,7 +45,7 @@ class OldMessagesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                processResponse(response.body()!!.string())
+                processResponse(response.body!!.string())
             } else {
                 publishProgress(MessagesCallback(Status.RESPONSE_FAILED))
             }
