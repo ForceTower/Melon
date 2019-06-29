@@ -36,6 +36,7 @@ dependencies {
     implementation deps.kotlin.stdlib
 
     implementation deps.androidx.annotations
+    implementation deps.androidx.preference
 
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
