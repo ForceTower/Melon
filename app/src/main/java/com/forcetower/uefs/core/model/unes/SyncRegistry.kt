@@ -48,7 +48,8 @@ data class SyncRegistry(
     val executor: String,
     var message: String = "Nothing",
     val networkType: Int,
-    val network: String
+    val network: String,
+    var skipped: Int = 0
 )
 
 enum class NetworkType {
