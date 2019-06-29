@@ -257,7 +257,7 @@ class SagresSyncRepository @Inject constructor(
             if (!disciplinesExperimental()) result += 1 shl 6
             else {
                 preferences.edit()
-                    .putInt("daily_discipline_count", currentDaily + 1)
+                    .putInt("daily_discipline_count", actualDailyCount + 1)
                     .putInt("daily_discipline_day", today)
                     .putInt("daily_discipline_hour", currentDailyHour)
                     .apply()

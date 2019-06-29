@@ -32,6 +32,8 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import com.forcetower.uefs.core.storage.repository.UpgradeRepository
+import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
+import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.android.AndroidInjection
 import javax.inject.Inject
 
@@ -45,5 +47,17 @@ class OnUpgradeReceiver : BroadcastReceiver() {
         if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
         AndroidInjection.inject(this, context)
         repository.onUpgrade()
+
+        val type = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
+        if (type != 0) {
+            var period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
+            preferences.edit().putString("stg_sync_worker_type", "0").apply()
+            SyncLinkedWorker.stopWorker()
+            if (period < 15) {
+                period = 15
+                preferences.edit().putString("stg_sync_frequency", "15").apply()
+            }
+            SyncMainWorker.createWorker(context, period)
+        }
     }
 }
