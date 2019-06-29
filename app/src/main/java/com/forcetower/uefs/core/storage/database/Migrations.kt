@@ -111,31 +111,31 @@ object M12TO13 : Migration(12, 13) {
     }
 }
 
-object M13TOM14 : Migration(13, 14) {
+object M13TO14 : Migration(13, 14) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE Profile ADD COLUMN mocked INTEGER NOT NULL DEFAULT 0")
     }
 }
 
-object M14TOM15 : Migration(14, 15) {
+object M14TO15 : Migration(14, 15) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("CREATE UNIQUE INDEX `index_Message_hash_message` ON Message (`hash_message`)")
     }
 }
 
-object M15TOM16 : Migration(15, 16) {
+object M15TO16 : Migration(15, 16) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("UPDATE Discipline SET code = TRIM(Discipline.code)")
     }
 }
 
-object M16TOM17 : Migration(16, 17) {
+object M16TO17 : Migration(16, 17) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE ClassMaterial ADD COLUMN notified INTEGER NOT NULL DEFAULT 1")
     }
 }
 
-object M17TOM18 : Migration(17, 18) {
+object M17TO18 : Migration(17, 18) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE Course ADD COLUMN description TEXT DEFAULT NULL")
         database.execSQL("ALTER TABLE Course ADD COLUMN image TEXT DEFAULT NULL")
@@ -143,7 +143,7 @@ object M17TOM18 : Migration(17, 18) {
     }
 }
 
-object M18TOM19 : Migration(18, 19) {
+object M18TO19 : Migration(18, 19) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("DELETE FROM AccessToken")
     }
@@ -180,5 +180,11 @@ object M21TO22 : Migration(21, 22) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp1 TEXT DEFAULT NULL")
         database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN comp2 TEXT DEFAULT NULL")
+    }
+}
+
+object M22TO23 : Migration(22, 23) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE SyncRegistry ADD COLUMN skipped NOT NULL DEFAULT 0")
     }
 }
