@@ -29,5 +29,10 @@
         android:id="@+id/discipline"
         android:name="com.forcetower.uefs.feature.flowchart.discipline.DisciplineFragment"
         android:label="Discipline"
-        tools:layout="@layout/fragment_flowchart_discipline_details"/>
+        tools:layout="@layout/fragment_flowchart_discipline_details">
+        <action
+            android:id="@+id/action_discipline_self"
+            app:destination="@id/discipline"
+            app:launchSingleTop="true" />
+    </fragment>
 </navigation>

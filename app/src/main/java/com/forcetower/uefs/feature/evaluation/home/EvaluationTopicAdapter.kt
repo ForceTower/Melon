@@ -17,7 +17,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class EvaluationTopicAdapter(
     private val interactor: HomeInteractor
 ) : RecyclerView.Adapter<EvaluationHolder>() {
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     var currentList: List<EvaluationHomeTopic> = listOf()
         set(value) {
