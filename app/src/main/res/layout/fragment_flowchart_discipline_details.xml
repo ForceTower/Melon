@@ -30,7 +30,6 @@
         <androidx.core.widget.NestedScrollView
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:paddingTop="8dp"
             android:paddingBottom="8dp"
             android:clipToPadding="false"
             app:layout_constraintEnd_toEndOf="parent"
@@ -46,6 +45,7 @@
                     android:id="@+id/card_discipline_header"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:layout_marginEnd="8dp"
                     android:layout_marginStart="8dp"
                     app:cardCornerRadius="6dp"
