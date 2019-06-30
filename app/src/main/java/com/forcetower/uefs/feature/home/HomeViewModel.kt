@@ -68,8 +68,8 @@ class HomeViewModel @Inject constructor(
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
 
-    private val _openProfileCase = MediatorLiveData<Event<String>>()
-    val openProfileCase: LiveData<Event<String>>
+    private val _openProfileCase = MediatorLiveData<Event<Long>>()
+    val openProfileCase: LiveData<Event<Long>>
         get() = _openProfileCase
 
     private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()
@@ -105,7 +105,7 @@ class HomeViewModel @Inject constructor(
         _openProfileCase.addSource(profile) {
             _openProfileCase.removeSource(profile)
             if (it != null) {
-                _openProfileCase.value = Event(it.uuid)
+                _openProfileCase.value = Event(it.uid)
             }
         }
     }
