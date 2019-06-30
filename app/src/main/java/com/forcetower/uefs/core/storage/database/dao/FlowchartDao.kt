@@ -3,6 +3,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.service.FlowchartDTO
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -26,7 +27,7 @@ abstract class FlowchartDao {
         data.semesters.forEach { semester ->
             semester.disciplines.forEach { discipline ->
                 val localDiscipline = discipline.toLocalDiscipline()
-                val localId = insertLocalDiscipline(localDiscipline)
+                val localId = findLocalDiscipline(localDiscipline.code) ?: insertLocalDiscipline(localDiscipline)
                 val flowDiscipline = discipline.toDiscipline(localId, semester.id)
                 insertDiscipline(flowDiscipline)
                 requirements.addAll(discipline.requirements)
@@ -50,4 +51,7 @@ abstract class FlowchartDao {
 
     @Insert(onConflict = REPLACE)
     protected abstract fun insertLocalDiscipline(discipline: Discipline): Long
+
+    @Query("SELECT uid from Discipline WHERE code = :code LIMIT 1")
+    protected abstract fun findLocalDiscipline(code: String): Long?
 }
