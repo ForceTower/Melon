@@ -34,7 +34,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.app.NavUtils
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
@@ -77,8 +76,9 @@ class ProfileFragment : UFragment(), Injectable {
         activity?.postponeEnterTransition(500L)
         viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_PROFILE_ID, 0))
         viewModel.profile.observe(this, Observer {
-            if (it?.imageUrl == null)
+            if (it?.imageUrl == null) {
                 activity?.startPostponedEnterTransition()
+            }
         })
 
         val headLoadListener = object : ImageLoadListener {
@@ -116,7 +116,7 @@ class ProfileFragment : UFragment(), Injectable {
         }
 
         binding.up.setOnClickListener {
-            NavUtils.navigateUpFromSameTask(requireActivity())
+            requireActivity().finish()
         }
 
 //        binding.imageProfile.setOnClickListener {
