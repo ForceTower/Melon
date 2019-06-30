@@ -53,6 +53,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
+        <item name="colorAccentDark">@color/colorAccentDark</item>
 
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
@@ -139,6 +140,10 @@
         <item name="android:windowEnterTransition">@transition/about_enter</item>
         <item name="android:windowReturnTransition">@transition/about_return</item>
         <item name="android:statusBarColor">?attr/colorPrimary</item>
+    </style>
+
+    <style name="UTheme.StudentProfile" parent="UTheme.LightNav">
+        <item name="android:windowSharedElementEnterTransition">@transition/student_shared_enter</item>
     </style>
 
     <style name="UTheme.SIECOMPOnboarding" parent="UTheme.LightNav">
@@ -415,5 +420,23 @@
         <item name="android:textColor">?attr/colorOnSurface</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textStyle">bold</item>
+    </style>
+
+    <style name="UTheme.ProfileTrustRating" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/profile_trust_full</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:maxHeight">18dp</item>
+    </style>
+
+    <style name="UTheme.ProfileCoolRating" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/profile_cool_full</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:maxHeight">18dp</item>
+    </style>
+
+    <style name="UTheme.ProfileSexyRating" parent="@android:style/Widget.RatingBar">
+        <item name="android:progressDrawable">@drawable/profile_sexy_full</item>
+        <item name="android:minHeight">18dp</item>
+        <item name="android:maxHeight">18dp</item>
     </style>
 </resources>

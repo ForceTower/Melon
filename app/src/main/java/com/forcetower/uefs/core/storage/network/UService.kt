@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.unes.SStudentDTO
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -136,9 +137,17 @@ interface UService {
     // --------- Flowchart ---------
 
     @GET("flowchart")
-    fun getFlowchart(@Query("course") course: Long): Call<FlowchartDTO>
+    fun getFlowchart(@Query("course") course: Long): Call<UResponse<FlowchartDTO>>
 
-    // ---------------------------------------------------------------------------------------------
+    // --------- Social -------------
+
+    @GET("student")
+    fun getStudent(@Query("student_id") studentId: Long): Call<UResponse<SStudentDTO>>
+
+    @GET("student/me")
+    fun getMeStudent(): Call<UResponse<SStudentDTO>>
+
+    // ---------------------------------
 
     @GET("siecomp/list_sessions")
     fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>

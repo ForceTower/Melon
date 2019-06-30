@@ -33,195 +33,47 @@
     <data>
         <variable
             name="account"
-            type="com.forcetower.uefs.core.model.unes.Account" />
+            type="androidx.lifecycle.LiveData&lt;com.forcetower.uefs.core.model.unes.Account&gt;" />
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
     </data>
     
-    <ScrollView
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:paddingTop="16dp"
-        android:paddingBottom="16dp"
-        android:clipToPadding="false">
+        android:layout_height="match_parent">
     
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/profile_recycler"
             android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:scrollbars="vertical"
+            android:paddingBottom="56dp"
+            android:clipToPadding="false"
+            app:hasFixedSize="@{true}"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            tools:itemCount="1"
+            tools:listitem="@layout/item_profile_header"/>
+
+        <ImageButton
+            android:id="@+id/up"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="start|top"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/navigate_up"
+            app:tint="?attr/colorOnSurface"
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+            android:id="@+id/write_statement"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            
-            <androidx.constraintlayout.widget.Guideline
-                android:id="@+id/guideline_top_info"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                app:layout_constraintGuide_begin="96dp"/>
-    
-            <ImageView
-                android:id="@+id/image_profile"
-                android:layout_width="@dimen/profile_head_size"
-                android:layout_height="@dimen/profile_head_size"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="8dp"
-                android:importantForAccessibility="no"
-                app:clipToCircle="@{true}"
-                app:imageUrl="@{account.imageUrl}"
-                app:layout_constraintBottom_toBottomOf="@id/guideline_top_info"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars" />
-    
-            <TextView
-                android:id="@+id/text_user_name"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:textSize="20sp"
-                android:textColor="?attr/colorOnBackground"
-                android:maxLines="2"
-                android:text="@{viewModel.profile.name}"
-                app:layout_constraintBottom_toTopOf="@+id/text_user_course"
-                app:layout_constraintEnd_toStartOf="@+id/image_profile"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@+id/image_profile"
-                app:layout_constraintVertical_chainStyle="packed"
-                tools:text="João Paulo Santos Sena" />
-    
-            <TextView
-                android:id="@+id/text_user_course"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:textSize="12sp"
-                android:text="@{viewModel.course.name}"
-                android:textColor="?attr/colorOnBackgroundLight"
-                app:layout_constraintBottom_toBottomOf="@+id/image_profile"
-                app:layout_constraintEnd_toStartOf="@+id/image_profile"
-                app:layout_constraintHorizontal_bias="0.5"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/text_user_name"
-                app:layout_constraintVertical_bias="0.961"
-                tools:text="Engenharia de Computação" />
-    
-            <TextView
-                android:id="@+id/text_discipline_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="16dp"
-                android:textColor="?attr/colorOnBackground"
-                android:textSize="17sp"
-                android:text="@{@string/integer_format(safeUnbox(viewModel.disciplineCount))}"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/guideline_top_info"
-                tools:text="48" />
-    
-            <TextView
-                android:id="@+id/label_disciplines_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginBottom="8dp"
-                android:text="@string/label_disciplines_count"
-                android:textColor="?attr/colorOnBackgroundLight"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/text_discipline_count" />
-    
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/discipline_count_barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="end"
-                app:constraint_referenced_ids="label_disciplines_count,text_discipline_count"
-                app:layout_constraintStart_toStartOf="parent" />
-    
-            <TextView
-                android:id="@+id/text_hours_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="24dp"
-                android:textColor="?attr/colorOnBackground"
-                android:textSize="17sp"
-                android:text="@{@string/integer_format(safeUnbox(viewModel.hoursCount))}"
-                app:layout_constraintStart_toEndOf="@+id/discipline_count_barrier"
-                app:layout_constraintTop_toTopOf="@+id/guideline_top_info"
-                tools:text="2850" />
-    
-            <TextView
-                android:id="@+id/label_hours_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:text="@string/label_hours_count"
-                android:textColor="?attr/colorOnBackgroundLight"
-                app:layout_constraintStart_toEndOf="@+id/discipline_count_barrier"
-                app:layout_constraintTop_toBottomOf="@+id/text_hours_count" />
-    
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/hours_count_barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="end"
-                app:constraint_referenced_ids="text_hours_count,label_hours_count"
-                app:layout_constraintStart_toStartOf="parent" />
-    
-            <TextView
-                android:id="@+id/text_friends_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:layout_marginStart="36dp"
-                android:textColor="?attr/colorOnBackground"
-                android:textSize="17sp"
-                android:text="@string/zero"
-                app:layout_constraintStart_toEndOf="@+id/hours_count_barrier"
-                app:layout_constraintTop_toTopOf="@+id/guideline_top_info" />
-    
-            <TextView
-                android:id="@+id/label_friends_count"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="36dp"
-                android:text="@string/label_friends_count"
-                android:textColor="?attr/colorOnBackgroundLight"
-                app:layout_constraintStart_toEndOf="@+id/hours_count_barrier"
-                app:layout_constraintTop_toBottomOf="@+id/text_friends_count" />
-    
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/friends_count_barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="end"
-                app:constraint_referenced_ids="text_friends_count,label_friends_count"
-                app:layout_constraintStart_toStartOf="parent" />
-            
-            <androidx.constraintlayout.widget.Barrier
-                android:id="@+id/account_stats_barrier"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:barrierDirection="bottom"
-                app:constraint_referenced_ids="label_disciplines_count,label_friends_count,label_hours_count"/>
-            
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="32dp"
-                android:layout_marginStart="16dp"
-                android:layout_marginEnd="16dp"
-                android:textColor="?attr/colorOnBackgroundLight"
-                android:text="@string/screen_under_development"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/account_stats_barrier" />
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </ScrollView>
+            android:textAllCaps="false"
+            android:text="@string/profile_write_statement"
+            app:icon="@drawable/rate_review_black_24dp"
+            app:backgroundTint="?attr/colorPrimary"
+            android:layout_gravity="end|bottom"
+            android:layout_margin="16dp"/>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
