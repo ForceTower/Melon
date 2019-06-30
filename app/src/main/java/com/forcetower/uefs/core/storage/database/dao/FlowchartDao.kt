@@ -27,8 +27,20 @@ abstract class FlowchartDao {
         data.semesters.forEach { semester ->
             semester.disciplines.forEach { discipline ->
                 val localDiscipline = discipline.toLocalDiscipline()
-                val localId = findLocalDiscipline(localDiscipline.code) ?: insertLocalDiscipline(localDiscipline)
-                val flowDiscipline = discipline.toDiscipline(localId, semester.id)
+                val localRetrieved = findLocalDiscipline(localDiscipline.code)
+                val disciplineId = if (localRetrieved != null) {
+                    val localId = localRetrieved.uid
+                    if (localRetrieved.resume == null && discipline.program != null) {
+                        updateDisciplineResume(localId, discipline.program)
+                    }
+                    if (localRetrieved.department == null) {
+                        updateDisciplineDepartment(localId, discipline.department)
+                    }
+                    localId
+                } else {
+                    insertLocalDiscipline(localDiscipline)
+                }
+                val flowDiscipline = discipline.toDiscipline(disciplineId, semester.id)
                 insertDiscipline(flowDiscipline)
                 requirements.addAll(discipline.requirements)
             }
@@ -52,6 +64,12 @@ abstract class FlowchartDao {
     @Insert(onConflict = REPLACE)
     protected abstract fun insertLocalDiscipline(discipline: Discipline): Long
 
-    @Query("SELECT uid from Discipline WHERE code = :code LIMIT 1")
-    protected abstract fun findLocalDiscipline(code: String): Long?
+    @Query("SELECT * from Discipline WHERE LOWER(code) = LOWER(:code) LIMIT 1")
+    protected abstract fun findLocalDiscipline(code: String): Discipline?
+
+    @Query("UPDATE Discipline SET resume = :program WHERE uid = :id")
+    protected abstract fun updateDisciplineResume(id: Long, program: String)
+
+    @Query("UPDATE Discipline SET department = :department WHERE uid = :id")
+    protected abstract fun updateDisciplineDepartment(id: Long, department: String)
 }
