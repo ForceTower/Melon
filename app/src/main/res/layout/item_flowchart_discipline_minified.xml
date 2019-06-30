@@ -4,11 +4,12 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
-            name="discipline"
-            type="com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI" />
+            name="requirement"
+            type="com.forcetower.uefs.core.model.unes.FlowchartRequirementUI" />
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor" />
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -18,7 +19,7 @@
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="24dp"
         app:cardElevation="2dp"
-        android:onClick="@{() -> interactor.onDisciplineSelected(discipline)}">
+        android:onClick="@{() -> interactor.onRequirementSelected(requirement)}">
 
         <TextView
             android:layout_width="match_parent"
@@ -27,7 +28,7 @@
             android:paddingBottom="16dp"
             android:paddingStart="24dp"
             android:paddingEnd="24dp"
-            android:text="@{discipline.name}"
+            android:text="@{WordUtils.toTitleCase(requirement.shownName)}"
             android:textColor="?attr/colorOnSurface"
             tools:text="Aspectos Teóricos da Computação"/>
 

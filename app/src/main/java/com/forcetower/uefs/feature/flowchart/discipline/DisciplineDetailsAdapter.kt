@@ -6,7 +6,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
+import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineGroupingBinding
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineMinifiedBinding
 import com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor
@@ -16,7 +16,7 @@ class DisciplineDetailsAdapter(
     private val interactor: DisciplineInteractor
 ) : RecyclerView.Adapter<DisciplineDetailsAdapter.DisciplineDetailsHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
-    var currentList: List<FlowchartDisciplineUI> = listOf()
+    var currentList: List<FlowchartRequirementUI> = listOf()
         set(value) {
             field = value
             differ.submitList(buildMergedList(value))
@@ -45,7 +45,7 @@ class DisciplineDetailsAdapter(
             }
             is DisciplineDetailsHolder.DisciplineHolder -> {
                 holder.binding.apply {
-                    discipline = item as FlowchartDisciplineUI
+                    requirement = item as FlowchartRequirementUI
                     executePendingBindings()
                 }
             }
@@ -55,12 +55,12 @@ class DisciplineDetailsAdapter(
     override fun getItemViewType(position: Int): Int {
         return when (val item = differ.currentList[position]) {
             is DisciplineTitle -> R.layout.item_flowchart_discipline_grouping
-            is FlowchartDisciplineUI -> R.layout.item_flowchart_discipline_minified
+            is FlowchartRequirementUI -> R.layout.item_flowchart_discipline_minified
             else -> throw IllegalStateException("No view defined for position $position item $item")
         }
     }
 
-    private fun buildMergedList(list: List<FlowchartDisciplineUI>): List<Any> {
+    private fun buildMergedList(list: List<FlowchartRequirementUI>): List<Any> {
         val result = mutableListOf<Any>()
         val mapped = list.groupBy { it.type }
         mapped.entries.forEach {
@@ -85,7 +85,7 @@ class DisciplineDetailsAdapter(
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
                 oldItem is DisciplineTitle && newItem is DisciplineTitle -> oldItem == newItem
-                oldItem is FlowchartDisciplineUI && newItem is FlowchartDisciplineUI -> oldItem.id == newItem.id
+                oldItem is FlowchartRequirementUI && newItem is FlowchartRequirementUI -> oldItem.id == newItem.id
                 else -> false
             }
         }
@@ -93,7 +93,7 @@ class DisciplineDetailsAdapter(
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
                 oldItem is DisciplineTitle && newItem is DisciplineTitle -> oldItem == newItem
-                oldItem is FlowchartDisciplineUI && newItem is FlowchartDisciplineUI -> oldItem == newItem
+                oldItem is FlowchartRequirementUI && newItem is FlowchartRequirementUI -> oldItem == newItem
                 else -> true
             }
         }

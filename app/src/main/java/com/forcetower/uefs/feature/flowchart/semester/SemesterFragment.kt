@@ -4,7 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
@@ -22,6 +24,7 @@ class SemesterFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentFlowchartSemesterBinding
     private lateinit var viewModel: FlowchartViewModel
     private lateinit var adapter: DisciplinesAdapter
+    private val args by navArgs<SemesterFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
@@ -34,29 +37,28 @@ class SemesterFragment : UFragment(), Injectable {
         }.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDisciplinesUI(args.semesterId).observe(this, Observer { onDisciplinesReceived(it) })
+        viewModel.getSemesterUI(args.semesterId).observe(this, Observer { onSemesterReceived(it) })
+        viewModel.onDisciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
+    }
+
+    private fun onSemesterReceived(value: FlowchartSemesterUI) {
+        binding.semester = value
+        binding.executePendingBindings()
+    }
+
+    private fun onDisciplinesReceived(list: List<FlowchartDisciplineUI>) {
+        adapter.submitList(list)
+    }
+
     private fun backToRoot() {
         findNavController().navigateUp()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        binding.semester = semesterMock
-        adapter.submitList(disciplinesMock)
-
-        viewModel.onDisciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
-    }
-
     private fun onDisciplineSelected(discipline: FlowchartDisciplineUI) {
-        val direction = SemesterFragmentDirections.actionSemesterToDiscipline()
+        val direction = SemesterFragmentDirections.actionSemesterToDiscipline(discipline.id)
         findNavController().navigate(direction)
-    }
-
-    companion object {
-        private val semesterMock = FlowchartSemesterUI(1, 1, 1, "Primeiro Semestre", 480, 8)
-        private val disciplinesMock = listOf(
-            FlowchartDisciplineUI(1, "Obrigatória", true, "Introdução à Engenharia de Computação", "EXA856", 30, "Departamento de Ciencias Exatas", "Apresenta o curso de engenharia de computação e suas áreas"),
-            FlowchartDisciplineUI(2, "Obrigatória", true, "Algoritmos e Programação I", "EXA856", 60, "Departamento de Ciencias Exatas", "Conceitos de Algoritmos e tal"),
-            FlowchartDisciplineUI(3, "Obrigatória", true, "Produção de Textos Tecnicos e Acadêmicos", "EXA856", 30, "Departamento de Tecnologia", "Rosária ensinando como escrever um bom texto e como formatar o texto")
-        )
     }
 }

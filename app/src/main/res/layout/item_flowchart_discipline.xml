@@ -9,6 +9,7 @@
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor" />
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
@@ -42,7 +43,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorPrimary"
-                android:text="@{discipline.name}"
+                android:text="@{WordUtils.toTitleCase(discipline.name)}"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
