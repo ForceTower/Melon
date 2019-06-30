@@ -13,7 +13,7 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginHorizontal="16dp"
+        android:layout_marginHorizontal="8dp"
         android:layout_marginTop="8dp"
         android:onClick="@{() -> interactor.onDisciplineSelected(discipline)}">
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -43,6 +43,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorPrimary"
                 android:text="@{discipline.name}"
+                android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -63,7 +64,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:text="@{discipline.code}"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintStart_toStartOf="parent"
@@ -75,7 +76,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@{@string/flowchart_discipline_hours_amount(discipline.credits)}"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
                 app:layout_constraintStart_toStartOf="@+id/guideline_start"
@@ -86,7 +87,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 app:departmentStrip="@{discipline.department}"
-                android:textSize="12sp"
+                android:textSize="14sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintStart_toStartOf="@+id/guideline_department"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
