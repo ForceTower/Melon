@@ -9,6 +9,7 @@
         <variable
             name="semesterValue"
             type="String" />
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -88,7 +89,7 @@
                             android:layout_marginTop="@dimen/padding_normal"
                             android:textColor="?attr/colorOnSurface"
                             android:textSize="18sp"
-                            android:text="@{discipline.name}"
+                            android:text="@{WordUtils.toTitleCase(discipline.name)}"
                             app:layout_constraintEnd_toEndOf="@id/guideline_end"
                             app:layout_constraintStart_toEndOf="@id/guideline_start"
                             app:layout_constraintTop_toTopOf="parent"
@@ -231,7 +232,7 @@
                                 android:layout_height="48dp"
                                 android:layout_marginStart="4dp"
                                 android:paddingHorizontal="8dp"
-                                app:goneUnless="@{discipline.coursing}">
+                                app:goneUnless="@{discipline.participating}">
 
                                 <TextView
                                     android:id="@+id/text_coursing"

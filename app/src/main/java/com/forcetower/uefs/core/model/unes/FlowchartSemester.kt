@@ -4,6 +4,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
+import androidx.room.PrimaryKey
 
 @Entity(foreignKeys = [
     ForeignKey(entity = Flowchart::class, childColumns = ["flowchartId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
@@ -11,6 +12,7 @@ import androidx.room.Index
     Index(value = ["flowchartId"])
 ])
 data class FlowchartSemester(
+    @PrimaryKey(autoGenerate = false)
     val id: Long,
     val flowchartId: Long,
     val order: Int,

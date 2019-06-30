@@ -8,5 +8,6 @@ data class Flowchart(
     @PrimaryKey(autoGenerate = false)
     val id: Long,
     val courseId: Long,
-    val description: String
+    val description: String,
+    val lastUpdated: Long
 )

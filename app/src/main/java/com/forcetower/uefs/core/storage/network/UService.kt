@@ -137,7 +137,7 @@ interface UService {
     // --------- Flowchart ---------
 
     @GET("flowchart")
-    fun getFlowchart(@Query("course") course: Long): Call<UResponse<FlowchartDTO>>
+    fun getFlowchart(@Query("course_id") course: Long): Call<UResponse<FlowchartDTO>>
 
     // --------- Social -------------
 

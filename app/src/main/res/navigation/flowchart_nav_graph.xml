@@ -12,8 +12,7 @@
         tools:layout="@layout/fragment_flowchart">
         <action
             android:id="@+id/action_home_to_semester"
-            app:destination="@id/semester"
-            app:launchSingleTop="true" />
+            app:destination="@id/semester" />
     </fragment>
     <fragment
         android:id="@+id/semester"
@@ -22,8 +21,10 @@
         tools:layout="@layout/fragment_flowchart_semester">
         <action
             android:id="@+id/action_semester_to_discipline"
-            app:destination="@id/discipline"
-            app:launchSingleTop="true" />
+            app:destination="@id/discipline" />
+        <argument
+            android:name="semesterId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/discipline"
@@ -32,7 +33,9 @@
         tools:layout="@layout/fragment_flowchart_discipline_details">
         <action
             android:id="@+id/action_discipline_self"
-            app:destination="@id/discipline"
-            app:launchSingleTop="true" />
+            app:destination="@id/discipline" />
+        <argument
+            android:name="disciplineId"
+            app:argType="long" />
     </fragment>
 </navigation>
