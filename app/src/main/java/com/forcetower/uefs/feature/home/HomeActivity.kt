@@ -251,7 +251,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
     }
 
-    private fun openProfile(profileId: String) {
+    private fun openProfile(profileId: Long) {
         startActivity(ProfileActivity.startIntent(this, profileId))
     }
 

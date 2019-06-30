@@ -87,7 +87,7 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.profile.ProfileActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.StudentProfile" />
         <activity android:name=".easter.twofoureight.Game2048Activity" />
         <activity
             android:name=".feature.reminders.RemindersActivity"

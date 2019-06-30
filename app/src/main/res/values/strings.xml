@@ -638,6 +638,12 @@
     <string name="label_flowchart">Fluxograma Interativo</string>
     <string name="flowchart_discipline_current">Cursando!</string>
     <string name="flowchart_discipline_complete">Completa!</string>
+    <string name="profile_write_statement">Escrever depoimento</string>
+    <string name="profile_statements">Depoimentos</string>
+    <string name="profile_attr_trustable">Confiável</string>
+    <string name="profile_attr_cool">Legal</string>
+    <string name="profile_attr_sexy">Sexy</string>
+    <string name="student_headshot_transition">student_headshot_transition</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

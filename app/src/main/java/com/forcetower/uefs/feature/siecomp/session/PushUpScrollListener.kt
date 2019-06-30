@@ -31,6 +31,7 @@ import android.view.View
 import android.widget.TextView
 import androidx.annotation.IdRes
 import androidx.recyclerview.widget.RecyclerView
+import kotlin.math.min
 
 /**
  * A [RecyclerView.OnScrollListener] which adjusts the position of the [up] view based on scroll.
@@ -46,7 +47,7 @@ class PushUpScrollListener(
 
     init {
         val title = recyclerView.findViewById<TextView>(titleResId)
-        pushPointY = if (title.visibility == View.VISIBLE) {
+        pushPointY = if (title?.visibility == View.VISIBLE) {
             // If title is in header, push the up button from the first line of text.
             // Due to using auto-sizing text, the view needs to be a fixed height (not wrap)
             // with gravity bottom so we find the text top using the baseline.
@@ -55,7 +56,7 @@ class PushUpScrollListener(
         } else {
             // If no title in header, push the up button based on the bottom of the photo
             val photo = recyclerView.findViewById<View>(imageResId)
-            photo.height - up.height
+            (photo?.height ?: 0) - up.height
         }
     }
 
@@ -64,7 +65,7 @@ class PushUpScrollListener(
         val scrollY =
             recyclerView.findViewHolderForAdapterPosition(0)?.itemView?.top ?: Integer.MIN_VALUE
 
-        val desiredTop = Math.min(pushPointY + scrollY, 0)
+        val desiredTop = min(pushPointY + scrollY, 0)
         if (desiredTop != up.top) {
             val offset = desiredTop - up.top
             up.offsetTopAndBottom(offset)
