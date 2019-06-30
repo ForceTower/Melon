@@ -38,6 +38,7 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -53,8 +54,10 @@ class ProfileRepository @Inject constructor(
             override fun shouldFetch(it: SStudent?) = true
             override fun createCall() = service.getMeStudent().asLiveData()
             override fun saveCallResult(value: UResponse<SStudentDTO>) {
-                if (value.data != null)
+                if (value.data != null) {
+                    Timber.d("Value returned data ${value.data}")
                     database.studentServiceDao().insertSingle(value.data.toCommon())
+                }
             }
         }.asLiveData()
     }
@@ -65,8 +68,9 @@ class ProfileRepository @Inject constructor(
             override fun shouldFetch(it: SStudent?) = true
             override fun createCall() = service.getStudent(profileId).asLiveData()
             override fun saveCallResult(value: UResponse<SStudentDTO>) {
-                if (value.data != null)
+                if (value.data != null) {
                     database.studentServiceDao().insertSingle(value.data.toCommon())
+                }
             }
         }.asLiveData()
     }
