@@ -80,6 +80,7 @@ import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDisciplineDao
+import com.forcetower.uefs.core.storage.database.dao.FlowchartRequirementDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartSemesterDao
 import com.forcetower.uefs.core.storage.database.dao.GradeDao
 import com.forcetower.uefs.core.storage.database.dao.MessageDao
