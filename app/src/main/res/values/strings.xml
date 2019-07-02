@@ -645,7 +645,7 @@
     <string name="profile_attr_sexy">Sexy</string>
     <string name="student_headshot_transition">student_headshot_transition</string>
     <string name="flowchart_required_hours">%1$d horas do curso completas</string>
-    <string name="flowchart_required_percentage">%1$d% do curso completo</string>
+    <string name="flowchart_required_percentage">%1$d\% do curso completo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
