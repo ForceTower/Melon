@@ -19,7 +19,17 @@ class DisciplineDetailsAdapter(
     var currentList: List<FlowchartRequirementUI> = listOf()
         set(value) {
             field = value
-            differ.submitList(buildMergedList(value))
+            differ.submitList(buildMergedList(default = value))
+        }
+    var unlock: List<FlowchartRequirementUI> = listOf()
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(unlocked = value))
+        }
+    var block: List<FlowchartRequirementUI> = listOf()
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(blocked = value))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisciplineDetailsHolder {
@@ -60,9 +70,15 @@ class DisciplineDetailsAdapter(
         }
     }
 
-    private fun buildMergedList(list: List<FlowchartRequirementUI>): List<Any> {
+    private fun buildMergedList(
+        default: List<FlowchartRequirementUI> = currentList,
+        unlocked: List<FlowchartRequirementUI> = unlock,
+        blocked: List<FlowchartRequirementUI> = block
+    ): List<Any> {
+        val merged = default + unlocked + blocked
         val result = mutableListOf<Any>()
-        val mapped = list.groupBy { it.type }
+
+        val mapped = merged.groupBy { it.type }
         mapped.entries.forEach {
             result += DisciplineTitle(it.key)
             result.addAll(it.value)
