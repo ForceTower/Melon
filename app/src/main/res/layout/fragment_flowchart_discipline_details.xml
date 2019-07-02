@@ -133,122 +133,114 @@
                             android:layout_height="8dp"
                             app:layout_constraintTop_toBottomOf="@id/barrier_title" />
 
-                        <LinearLayout
-                            android:id="@+id/information_row"
-                            android:layout_width="0dp"
+                        <TextView
+                            android:id="@+id/text_dep_code"
+                            android:layout_width="wrap_content"
                             android:layout_height="48dp"
                             android:layout_marginBottom="8dp"
-                            android:orientation="horizontal"
-                            app:layout_constraintBottom_toBottomOf="parent"
-                            app:layout_constraintEnd_toEndOf="parent"
-                            app:layout_constraintStart_toStartOf="parent"
+                            android:text="@{discipline.code}"
+                            android:textAlignment="gravity"
+                            android:textColor="?attr/colorOnSurfaceLight"
+                            android:textSize="18sp"
+                            android:gravity="center"
+                            app:layout_constraintStart_toStartOf="@id/guideline_start"
                             app:layout_constraintTop_toBottomOf="@+id/spacer_title"
-                            tools:listitem="@layout/ext_item_missed_classes">
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:layout_marginStart="8dp"
-                                android:paddingHorizontal="8dp">
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            tools:text="TEC520" />
 
-                                <TextView
-                                    android:id="@+id/text_dep_code"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:text="@{discipline.code}"
-                                    android:textColor="?attr/colorOnSurfaceLight"
-                                    android:textSize="18sp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.5"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    tools:text="TEC520" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_code"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_begin="80dp"/>
 
-                            <androidx.constraintlayout.widget.ConstraintLayout
+                        <androidx.constraintlayout.widget.ConstraintLayout
+                            android:id="@+id/layout_credits"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginStart="4dp"
+                            android:layout_marginBottom="8dp"
+                            android:paddingHorizontal="8dp"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintStart_toEndOf="@id/guideline_code"
+                            app:layout_constraintTop_toBottomOf="@+id/spacer_title">
+
+                            <TextView
+                                android:id="@+id/text_credits"
                                 android:layout_width="wrap_content"
-                                android:layout_height="48dp"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp"
+                                android:layout_marginBottom="8dp"
+                                app:disciplineCredits="@{discipline.credits}"
+                                android:textColor="?attr/colorOnSurfaceLight"
+                                android:textSize="18sp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toStartOf="@+id/item_hours_icon"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toStartOf="parent"
+                                app:layout_constraintTop_toTopOf="parent"
+                                tools:text="300h" />
+
+                            <ImageView
+                                android:id="@+id/item_hours_icon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
                                 android:layout_marginStart="4dp"
-                                android:paddingHorizontal="8dp">
+                                android:alpha="0.6"
+                                android:importantForAccessibility="no"
+                                android:src="@drawable/ic_clock_black_24dp"
+                                android:tint="?attr/colorOnSurface"
+                                app:layout_constraintBottom_toBottomOf="@+id/text_credits"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintHorizontal_bias="0.5"
+                                app:layout_constraintStart_toEndOf="@+id/text_credits"
+                                app:layout_constraintTop_toTopOf="@+id/text_credits" />
+                        </androidx.constraintlayout.widget.ConstraintLayout>
 
-                                <TextView
-                                    android:id="@+id/text_credits"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    app:disciplineCredits="@{discipline.credits}"
-                                    android:textColor="?attr/colorOnSurfaceLight"
-                                    android:textSize="18sp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintEnd_toStartOf="@+id/item_hours_icon"
-                                    app:layout_constraintHorizontal_bias="0.5"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    tools:text="300h" />
+                        <androidx.constraintlayout.widget.Guideline
+                            android:id="@+id/guideline_hours"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical"
+                            app:layout_constraintGuide_begin="170dp"/>
 
-                                <ImageView
-                                    android:id="@+id/item_hours_icon"
-                                    android:layout_width="24dp"
-                                    android:layout_height="24dp"
-                                    android:layout_marginStart="4dp"
-                                    android:alpha="0.6"
-                                    android:importantForAccessibility="no"
-                                    android:src="@drawable/ic_clock_black_24dp"
-                                    android:tint="?attr/colorOnSurface"
-                                    app:layout_constraintBottom_toBottomOf="@+id/text_credits"
-                                    app:layout_constraintEnd_toEndOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.5"
-                                    app:layout_constraintStart_toEndOf="@+id/text_credits"
-                                    app:layout_constraintTop_toTopOf="@+id/text_credits" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
+                        <TextView
+                            android:id="@+id/text_completed"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="8dp"
+                            android:textColor="?attr/colorPrimary"
+                            android:textSize="18sp"
+                            android:gravity="center"
+                            android:textAlignment="gravity"
+                            android:layout_marginStart="4dp"
+                            android:visibility="gone"
+                            app:goneUnless="@{discipline.completed}"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@id/guideline_hours"
+                            app:layout_constraintTop_toBottomOf="@+id/spacer_title"
+                            android:text="@string/flowchart_discipline_complete" />
 
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:layout_marginStart="4dp"
-                                android:paddingHorizontal="8dp"
-                                tools:visibility="gone"
-                                app:goneUnless="@{discipline.completed}">
-
-                                <TextView
-                                    android:id="@+id/text_completed"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:textColor="?attr/colorPrimary"
-                                    android:textSize="18sp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.5"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    android:text="@string/flowchart_discipline_complete" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-
-                            <androidx.constraintlayout.widget.ConstraintLayout
-                                android:layout_width="wrap_content"
-                                android:layout_height="48dp"
-                                android:layout_marginStart="4dp"
-                                android:paddingHorizontal="8dp"
-                                app:goneUnless="@{discipline.participating}">
-
-                                <TextView
-                                    android:id="@+id/text_coursing"
-                                    android:layout_width="wrap_content"
-                                    android:layout_height="wrap_content"
-                                    android:layout_marginTop="8dp"
-                                    android:layout_marginBottom="8dp"
-                                    android:textColor="?attr/colorAccent"
-                                    android:textSize="18sp"
-                                    app:layout_constraintBottom_toBottomOf="parent"
-                                    app:layout_constraintHorizontal_bias="0.5"
-                                    app:layout_constraintStart_toStartOf="parent"
-                                    app:layout_constraintTop_toTopOf="parent"
-                                    android:text="@string/flowchart_discipline_current" />
-                            </androidx.constraintlayout.widget.ConstraintLayout>
-                        </LinearLayout>
+                        <TextView
+                            android:id="@+id/text_coursing"
+                            android:layout_width="wrap_content"
+                            android:layout_height="48dp"
+                            android:layout_marginBottom="8dp"
+                            android:layout_marginStart="4dp"
+                            android:textColor="?attr/colorAccent"
+                            android:textSize="18sp"
+                            android:gravity="center"
+                            android:textAlignment="gravity"
+                            app:goneUnless="@{discipline.participating}"
+                            android:visibility="gone"
+                            tools:visibility="visible"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintHorizontal_bias="0.5"
+                            app:layout_constraintStart_toEndOf="@id/guideline_hours"
+                            app:layout_constraintTop_toBottomOf="@+id/spacer_title"
+                            android:text="@string/flowchart_discipline_current" />
                     </androidx.constraintlayout.widget.ConstraintLayout>
                 </com.google.android.material.card.MaterialCardView>
 
