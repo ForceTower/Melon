@@ -1,4 +1,4 @@
-package com.forcetower.uefs.core.storage.database
+package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
