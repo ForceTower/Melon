@@ -36,6 +36,9 @@ abstract class FlowchartDao {
                     if (localRetrieved.department == null) {
                         updateDisciplineDepartment(localId, discipline.department)
                     }
+                    if (localRetrieved.credits != discipline.credits) {
+                        updateDisciplineCredits(localId, discipline.credits)
+                    }
                     localId
                 } else {
                     insertLocalDiscipline(localDiscipline)
@@ -72,4 +75,7 @@ abstract class FlowchartDao {
 
     @Query("UPDATE Discipline SET department = :department WHERE uid = :id")
     protected abstract fun updateDisciplineDepartment(id: Long, department: String)
+
+    @Query("UPDATE Discipline SET credits = :credits WHERE uid = :id")
+    abstract fun updateDisciplineCredits(id: Long, credits: Int)
 }
