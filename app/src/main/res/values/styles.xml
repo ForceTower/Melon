@@ -27,7 +27,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CropTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="CropTheme" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
