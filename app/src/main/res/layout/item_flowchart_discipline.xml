@@ -20,7 +20,10 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="16dp">
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="10dp">
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_start"
@@ -52,7 +55,7 @@
                 android:id="@+id/divider_class"
                 android:layout_width="0dp"
                 android:layout_height="2dp"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:background="@color/schedule_divider"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -62,7 +65,7 @@
                 android:id="@+id/text_discipline_code"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
+                android:layout_marginTop="6dp"
                 android:textSize="14sp"
                 android:text="@{discipline.code}"
                 android:textColor="?attr/colorOnSurfaceLight"
