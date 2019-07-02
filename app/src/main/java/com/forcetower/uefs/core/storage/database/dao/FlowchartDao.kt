@@ -30,7 +30,7 @@ abstract class FlowchartDao {
                 val localRetrieved = findLocalDiscipline(localDiscipline.code)
                 val disciplineId = if (localRetrieved != null) {
                     val localId = localRetrieved.uid
-                    if (localRetrieved.resume == null && discipline.program != null) {
+                    if (discipline.program != null) {
                         updateDisciplineResume(localId, discipline.program)
                     }
                     if (localRetrieved.department == null) {
