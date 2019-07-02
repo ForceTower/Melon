@@ -63,6 +63,8 @@ class FlowchartViewModel @Inject constructor(
     fun getSemesterName(disciplineId: Long) = repository.getSemesterName(disciplineId)
     fun getSemesterUI(semesterId: Long) = repository.getSemesterUI(semesterId)
     fun getRequirementsUI(disciplineId: Long) = repository.getRequirementsUI(disciplineId)
+    fun getRecursiveRequirementsUI(disciplineId: Long) = repository.getRecursiveRequirementsUI(disciplineId)
+    fun getRecursiveUnlockRequirementUI(disciplineId: Long) = repository.getRecursiveUnlockRequirementUI(disciplineId)
 
     fun setCourse(courseId: Long) {
         _courseId.setValueIfNew(courseId)

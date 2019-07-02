@@ -25,14 +25,19 @@ data class FlowchartRequirement(
     @SerializedName("course_percentage")
     val coursePercentage: Double?,
     @SerializedName("course_hours")
-    val courseHours: Long?
+    val courseHours: Long?,
+    @SerializedName("type_id")
+    val typeId: Int
 )
 
 data class FlowchartRequirementUI(
     val id: Long,
     val type: String,
     val shownName: String?,
+    val disciplineId: Long,
     val requiredDisciplineId: Long?,
     val coursePercentage: Long?,
-    val courseHours: Long?
+    val courseHours: Long?,
+    val typeId: Int,
+    val sequence: Int
 )

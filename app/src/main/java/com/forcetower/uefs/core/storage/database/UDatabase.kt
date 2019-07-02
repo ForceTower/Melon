@@ -122,7 +122,7 @@ import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
     FlowchartSemester::class,
     FlowchartDiscipline::class,
     FlowchartRequirement::class
-], version = 27, exportSchema = true)
+], version = 28, exportSchema = true)
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
