@@ -47,7 +47,7 @@ class FlowchartRepository @Inject constructor(
     fun getRequirementsUI(disciplineId: Long) = database.flowchartRequirementDao().getDecoratedList(disciplineId)
     fun getRecursiveRequirementsUI(disciplineId: Long): LiveData<List<FlowchartRequirementUI>> {
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
-        executors.diskIO().execute {
+        executors.others().execute {
             try {
                 val everything = getRecursiveRequirementsWorker(disciplineId)
                         .distinctBy { it.requiredDisciplineId }
@@ -68,7 +68,7 @@ class FlowchartRepository @Inject constructor(
 
     fun getRecursiveUnlockRequirementUI(disciplineId: Long): LiveData<List<FlowchartRequirementUI>> {
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
-        executors.diskIO().execute {
+        executors.others().execute {
             try {
                 val everything = getRecursiveUnlockRequirementWorker(disciplineId)
                         .distinctBy { it.disciplineId }
@@ -109,6 +109,7 @@ class FlowchartRepository @Inject constructor(
         return iteration
     }
 
+    @WorkerThread
     private fun getRecursiveUnlockRequirementWorker(disciplineId: Long?): List<FlowchartRequirementUI> {
         disciplineId ?: return emptyList()
 

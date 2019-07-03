@@ -39,8 +39,8 @@ class DisciplineFragment : UFragment(), Injectable {
         }.root
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onResume() {
+        super.onResume()
         viewModel.getDisciplineUi(args.disciplineId).observe(this, Observer { onReceiveDiscipline(it) })
         viewModel.getSemesterName(args.disciplineId).observe(this, Observer { onReceiveSemesterName(it) })
         viewModel.getRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRequirements(it) })
