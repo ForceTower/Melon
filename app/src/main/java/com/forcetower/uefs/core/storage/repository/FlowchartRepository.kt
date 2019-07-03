@@ -71,7 +71,7 @@ class FlowchartRepository @Inject constructor(
         executors.diskIO().execute {
             try {
                 val everything = getRecursiveUnlockRequirementWorker(disciplineId)
-                        .distinctBy { it.requiredDisciplineId }
+                        .distinctBy { it.disciplineId }
                         .sortedWith(Comparator { a, b ->
                             val diff = compareValues(a.sequence, b.sequence)
                             if (diff != 0) diff else compareValues(a.shownName, b.shownName)
@@ -125,7 +125,7 @@ class FlowchartRepository @Inject constructor(
             val items = getRecursiveUnlockRequirementWorker(it.disciplineId)
             iteration += items
         }
-
+        Timber.d("Iteration: $iteration")
         return iteration
     }
 }
