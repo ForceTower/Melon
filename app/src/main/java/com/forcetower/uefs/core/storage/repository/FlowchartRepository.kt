@@ -45,7 +45,7 @@ class FlowchartRepository @Inject constructor(
     fun getUnifiedRequirementsUI(disciplineId: Long): LiveData<List<FlowchartRequirementUI>> {
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
         executors.diskIO().execute {
-            val default = database.flowchartRequirementDao().getDecoratedListDirect(disciplineId)
+            val default = database.flowchartRequirementDao().getDecoratedListCommonDirect(disciplineId)
             val blocked = database.flowchartRequirementDao().getRecursiveRequirementsUI(disciplineId, recursiveRequirements)
             val release = database.flowchartRequirementDao().getRecursiveUnlockRequirementUI(disciplineId, recursiveUnlocks)
             val unified = default + blocked + release
