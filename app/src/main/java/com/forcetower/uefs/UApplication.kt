@@ -74,7 +74,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
 
     override fun onCreate() {
         // O log timber só existe em build de debug
-        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+        Timber.plant(Timber.DebugTree())
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
