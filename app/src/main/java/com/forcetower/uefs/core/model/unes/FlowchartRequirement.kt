@@ -39,7 +39,7 @@ data class FlowchartRequirementUI(
     val coursePercentage: Long?,
     val courseHours: Long?,
     val typeId: Int,
-    val sequence: Int,
-    val semesterName: String,
+    val sequence: Int?,
+    val semesterName: String?,
     val completed: Boolean
 )
