@@ -39,22 +39,12 @@ class DisciplineFragment : UFragment(), Injectable {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onResume() {
+        super.onResume()
         viewModel.getDisciplineUi(args.disciplineId).observe(this, Observer { onReceiveDiscipline(it) })
         viewModel.getSemesterName(args.disciplineId).observe(this, Observer { onReceiveSemesterName(it) })
         viewModel.getRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRequirements(it) })
-//        viewModel.getRecursiveRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRecursive(it) })
-//        viewModel.getRecursiveUnlockRequirementUI(args.disciplineId).observe(this, Observer { onReceiveUnlockRecursive(it) })
         viewModel.onRequirementSelect.observe(this, EventObserver { onRequirementSelected(it) })
-    }
-
-    private fun onReceiveUnlockRecursive(unlock: List<FlowchartRequirementUI>) {
-        adapter.unlock = unlock
-    }
-
-    private fun onReceiveRecursive(requirements: List<FlowchartRequirementUI>) {
-        adapter.block = requirements
     }
 
     private fun onReceiveRequirements(requirements: List<FlowchartRequirementUI>) {

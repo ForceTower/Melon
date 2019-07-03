@@ -16,20 +16,10 @@ class DisciplineDetailsAdapter(
     private val interactor: DisciplineInteractor
 ) : RecyclerView.Adapter<DisciplineDetailsAdapter.DisciplineDetailsHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
-    var currentList: List<FlowchartRequirementUI>? = listOf()
+    var currentList: List<FlowchartRequirementUI> = listOf()
         set(value) {
             field = value
             differ.submitList(buildMergedList(default = value))
-        }
-    var unlock: List<FlowchartRequirementUI>? = listOf()
-        set(value) {
-            field = value
-            differ.submitList(buildMergedList(unlocked = value))
-        }
-    var block: List<FlowchartRequirementUI>? = listOf()
-        set(value) {
-            field = value
-            differ.submitList(buildMergedList(blocked = value))
         }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisciplineDetailsHolder {
@@ -71,14 +61,11 @@ class DisciplineDetailsAdapter(
     }
 
     private fun buildMergedList(
-        default: List<FlowchartRequirementUI>? = currentList,
-        unlocked: List<FlowchartRequirementUI>? = unlock,
-        blocked: List<FlowchartRequirementUI>? = block
+        default: List<FlowchartRequirementUI> = currentList
     ): List<Any> {
-        val merged = (default ?: emptyList()) + (unlocked ?: emptyList()) + (blocked ?: emptyList())
         val result = mutableListOf<Any>()
 
-        val mapped = merged.groupBy { it.type }
+        val mapped = default.groupBy { it.type }
         mapped.entries.forEach {
             result += DisciplineTitle(it.key)
             result.addAll(it.value)

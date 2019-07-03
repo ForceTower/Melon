@@ -42,7 +42,8 @@
                 android:textSize="12sp"
                 android:layout_marginTop="4dp"
                 android:text="@{requirement.semesterName}"
-                app:goneUnless="@{requirement.typeId &gt; 0}"
+                app:strikeText="@{requirement.completed}"
+                app:goneUnless="@{requirement.typeId &lt; 0}"
                 android:textColor="?attr/colorPrimary"
                 tools:text="Primeiro semestre"/>
         </LinearLayout>
