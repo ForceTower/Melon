@@ -33,7 +33,8 @@
         tools:layout="@layout/fragment_flowchart_discipline_details">
         <action
             android:id="@+id/action_discipline_self"
-            app:destination="@id/discipline" />
+            app:destination="@id/discipline"
+            app:launchSingleTop="true" />
         <argument
             android:name="disciplineId"
             app:argType="long" />
