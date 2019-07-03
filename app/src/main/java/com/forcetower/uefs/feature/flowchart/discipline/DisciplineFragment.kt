@@ -71,7 +71,7 @@ class DisciplineFragment : UFragment(), Injectable {
 
     private fun onRequirementSelected(requirement: FlowchartRequirementUI) {
         if (requirement.requiredDisciplineId != null) {
-            val id = if (requirement.shownName == getString(R.string.flowchart_recursive_unlock))
+            val id = if (requirement.type == getString(R.string.flowchart_recursive_unlock))
                 requirement.disciplineId
             else
                 requirement.requiredDisciplineId
