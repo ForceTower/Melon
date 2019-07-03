@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
@@ -70,7 +71,11 @@ class DisciplineFragment : UFragment(), Injectable {
 
     private fun onRequirementSelected(requirement: FlowchartRequirementUI) {
         if (requirement.requiredDisciplineId != null) {
-            val direction = DisciplineFragmentDirections.actionDisciplineSelf(requirement.requiredDisciplineId)
+            val id = if (requirement.shownName == getString(R.string.flowchart_recursive_unlock))
+                requirement.disciplineId
+            else
+                requirement.requiredDisciplineId
+            val direction = DisciplineFragmentDirections.actionDisciplineSelf(id)
             findNavController().navigate(direction)
         }
     }

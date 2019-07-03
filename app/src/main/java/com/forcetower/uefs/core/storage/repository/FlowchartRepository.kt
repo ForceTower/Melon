@@ -112,8 +112,9 @@ class FlowchartRepository @Inject constructor(
     private fun getRecursiveUnlockRequirementWorker(disciplineId: Long?): List<FlowchartRequirementUI> {
         disciplineId ?: return emptyList()
 
-        val dependants = database.flowchartRequirementDao().getDecoratedDependenciesDirect(disciplineId).filter {
-            it.requiredDisciplineId != null && it.typeId == 1
+        val deps = database.flowchartRequirementDao().getDecoratedDependenciesDirect(disciplineId)
+        val dependants = deps.filter {
+            it.typeId == 1
         }.map { FlowchartRequirementUI(it.id, recursiveUnlocks, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence) }
         if (dependants.isEmpty()) return emptyList()
 
