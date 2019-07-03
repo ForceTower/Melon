@@ -21,16 +21,29 @@
         app:cardElevation="2dp"
         android:onClick="@{() -> interactor.onRequirementSelected(requirement)}">
 
-        <TextView
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
             android:paddingTop="16dp"
             android:paddingBottom="16dp"
             android:paddingStart="24dp"
-            android:paddingEnd="24dp"
-            app:requirementText="@{requirement}"
-            android:textColor="?attr/colorOnSurface"
-            tools:text="Aspectos Teóricos da Computação"/>
-
+            android:paddingEnd="24dp">
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:requirementText="@{requirement}"
+                app:strikeText="@{requirement.completed}"
+                android:textColor="?attr/colorOnSurface"
+                tools:text="Aspectos Teóricos da Computação"/>
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:layout_marginTop="4dp"
+                android:text="@{requirement.semesterName}"
+                android:textColor="?attr/colorPrimary"
+                tools:text="Primeiro semestre"/>
+        </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
