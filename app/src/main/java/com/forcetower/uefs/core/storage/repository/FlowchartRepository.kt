@@ -49,10 +49,13 @@ class FlowchartRepository @Inject constructor(
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
         executors.diskIO().execute {
             try {
-                val everything = getRecursiveRequirementsWorker(disciplineId).sortedWith(Comparator { a, b ->
-                    val diff = compareValues(a.sequence, b.sequence)
-                    if (diff != 0) diff else compareValues(a.shownName, b.shownName)
-                })
+                val everything = getRecursiveRequirementsWorker(disciplineId)
+                        .distinctBy { it.requiredDisciplineId }
+                        .sortedWith(Comparator { a, b ->
+                            val diff = compareValues(a.sequence, b.sequence)
+                            if (diff != 0) diff else compareValues(a.shownName, b.shownName)
+                        })
+                Timber.d("Everything size requirements: ${everything.size}")
                 result.postValue(everything)
             } catch (t: Throwable) {
                 Timber.e(t, "A stack overflow!")
@@ -67,10 +70,13 @@ class FlowchartRepository @Inject constructor(
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
         executors.diskIO().execute {
             try {
-                val everything = getRecursiveUnlockRequirementWorker(disciplineId).sortedWith(Comparator { a, b ->
-                    val diff = compareValues(a.sequence, b.sequence)
-                    if (diff != 0) diff else compareValues(a.shownName, b.shownName)
-                })
+                val everything = getRecursiveUnlockRequirementWorker(disciplineId)
+                        .distinctBy { it.requiredDisciplineId }
+                        .sortedWith(Comparator { a, b ->
+                            val diff = compareValues(a.sequence, b.sequence)
+                            if (diff != 0) diff else compareValues(a.shownName, b.shownName)
+                        })
+                Timber.d("Everything size unlock: ${everything.size}")
                 result.postValue(everything)
             } catch (t: Throwable) {
                 Timber.e(t, "A stack overflow!")
@@ -85,9 +91,11 @@ class FlowchartRepository @Inject constructor(
     private fun getRecursiveRequirementsWorker(disciplineId: Long?): List<FlowchartRequirementUI> {
         disciplineId ?: return emptyList()
 
-        val requirements = database.flowchartRequirementDao().getDecoratedListDirect(disciplineId).filter {
+        val list = database.flowchartRequirementDao().getDecoratedListDirect(disciplineId)
+        val requirements = list.filter {
             it.requiredDisciplineId != null && it.typeId == 1
         }.map { FlowchartRequirementUI(it.id, recursiveRequirements, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence) }
+        Timber.d("Requirements $requirements")
         if (requirements.isEmpty()) return emptyList()
 
         val iteration = mutableListOf<FlowchartRequirementUI>()
