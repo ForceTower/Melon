@@ -94,7 +94,7 @@ class FlowchartRepository @Inject constructor(
         val list = database.flowchartRequirementDao().getDecoratedListDirect(disciplineId)
         val requirements = list.filter {
             it.requiredDisciplineId != null && it.typeId == 1
-        }.map { FlowchartRequirementUI(it.id, recursiveRequirements, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence) }
+        }.map { FlowchartRequirementUI(it.id, recursiveRequirements, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence, it.semesterName, it.completed) }
         Timber.d("Requirements $requirements")
         if (requirements.isEmpty()) return emptyList()
 
@@ -116,7 +116,7 @@ class FlowchartRepository @Inject constructor(
         val deps = database.flowchartRequirementDao().getDecoratedDependenciesDirect(disciplineId)
         val dependants = deps.filter {
             it.typeId == 1
-        }.map { FlowchartRequirementUI(it.id, recursiveUnlocks, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence) }
+        }.map { FlowchartRequirementUI(it.id, recursiveUnlocks, it.shownName, it.disciplineId, it.requiredDisciplineId, it.coursePercentage, it.courseHours, it.typeId, it.sequence, it.semesterName, it.completed) }
         if (dependants.isEmpty()) return emptyList()
 
         val iteration = mutableListOf<FlowchartRequirementUI>()
