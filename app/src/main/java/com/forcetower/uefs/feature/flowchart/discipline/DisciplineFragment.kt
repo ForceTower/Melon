@@ -18,6 +18,7 @@ import com.forcetower.uefs.databinding.FragmentFlowchartDisciplineDetailsBinding
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineFragment : UFragment(), Injectable {
@@ -48,6 +49,7 @@ class DisciplineFragment : UFragment(), Injectable {
     }
 
     private fun onReceiveRequirements(requirements: List<FlowchartRequirementUI>) {
+        Timber.d("New fragments size received")
         adapter.currentList = requirements
     }
 
