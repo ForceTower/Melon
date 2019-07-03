@@ -11,6 +11,7 @@ import com.forcetower.uefs.databinding.ItemFlowchartDisciplineGroupingBinding
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineMinifiedBinding
 import com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor
 import com.forcetower.uefs.feature.shared.inflate
+import timber.log.Timber
 
 class DisciplineDetailsAdapter(
     private val interactor: DisciplineInteractor
@@ -31,6 +32,7 @@ class DisciplineDetailsAdapter(
     }
 
     override fun getItemCount(): Int {
+        Timber.d("Calculated new size ${differ.currentList.size}")
         return differ.currentList.size
     }
 
