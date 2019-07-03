@@ -45,6 +45,19 @@ class FlowchartRepository @Inject constructor(
     fun getDisciplineUI(disciplineId: Long) = database.flowchartDisciplineDao().getDecorated(disciplineId)
     fun getSemesterName(disciplineId: Long) = database.flowchartDisciplineDao().getSemesterFromDiscipline(disciplineId)
     fun getRequirementsUI(disciplineId: Long) = database.flowchartRequirementDao().getDecoratedList(disciplineId)
+
+    fun getUnifiedRequirementsUI(disciplineId: Long): LiveData<List<FlowchartRequirementUI>> {
+        val result = MutableLiveData<List<FlowchartRequirementUI>>()
+        executors.diskIO().execute {
+            val default = database.flowchartRequirementDao().getDecoratedListDirect(disciplineId)
+            val blocked = getRecursiveRequirementsWorker(disciplineId)
+            val release = getRecursiveUnlockRequirementWorker(disciplineId)
+            val unified = default + blocked + release
+            result.postValue(unified)
+        }
+        return result
+    }
+
     fun getRecursiveRequirementsUI(disciplineId: Long): LiveData<List<FlowchartRequirementUI>> {
         val result = MutableLiveData<List<FlowchartRequirementUI>>()
         executors.others().execute {

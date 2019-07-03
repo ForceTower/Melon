@@ -39,13 +39,13 @@ class DisciplineFragment : UFragment(), Injectable {
         }.root
     }
 
-    override fun onResume() {
-        super.onResume()
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
         viewModel.getDisciplineUi(args.disciplineId).observe(this, Observer { onReceiveDiscipline(it) })
         viewModel.getSemesterName(args.disciplineId).observe(this, Observer { onReceiveSemesterName(it) })
         viewModel.getRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRequirements(it) })
-        viewModel.getRecursiveRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRecursive(it) })
-        viewModel.getRecursiveUnlockRequirementUI(args.disciplineId).observe(this, Observer { onReceiveUnlockRecursive(it) })
+//        viewModel.getRecursiveRequirementsUI(args.disciplineId).observe(this, Observer { onReceiveRecursive(it) })
+//        viewModel.getRecursiveUnlockRequirementUI(args.disciplineId).observe(this, Observer { onReceiveUnlockRecursive(it) })
         viewModel.onRequirementSelect.observe(this, EventObserver { onRequirementSelected(it) })
     }
 
