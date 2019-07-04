@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
+import com.forcetower.uefs.databinding.ItemFlowchartDisciplineDetailsHeaderBinding
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineGroupingBinding
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineMinifiedBinding
 import com.forcetower.uefs.databinding.ItemFlowchartDisciplineProgramBinding
@@ -119,7 +120,7 @@ class DisciplineDetailsAdapter(
     )
 
     sealed class DisciplineDetailsHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class HeaderHolder(val binding: ItemFlowchartDisciplineProgramBinding) : DisciplineDetailsHolder(binding.root)
+        class HeaderHolder(val binding: ItemFlowchartDisciplineDetailsHeaderBinding) : DisciplineDetailsHolder(binding.root)
         class ResumeHolder(val binding: ItemFlowchartDisciplineProgramBinding) : DisciplineDetailsHolder(binding.root)
         class CategoryHolder(val binding: ItemFlowchartDisciplineGroupingBinding) : DisciplineDetailsHolder(binding.root)
         class DisciplineHolder(val binding: ItemFlowchartDisciplineMinifiedBinding, interactor: DisciplineInteractor) : DisciplineDetailsHolder(binding.root) {
