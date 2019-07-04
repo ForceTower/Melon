@@ -54,11 +54,11 @@ class DisciplineFragment : UFragment(), Injectable {
     }
 
     private fun onReceiveSemesterName(semester: FlowchartSemester?) {
-        binding.semesterValue = semester?.name
+        adapter.semesterValue = semester?.name
     }
 
     private fun onReceiveDiscipline(discipline: FlowchartDisciplineUI?) {
-        binding.discipline = discipline
+        adapter.discipline = discipline
     }
 
     private fun onRequirementSelected(requirement: FlowchartRequirementUI) {
