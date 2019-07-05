@@ -29,5 +29,6 @@ package com.forcetower.uefs
 
 const val RC_LOCATION_PERMISSION = 1000
 const val REQUEST_CHECK_SETTINGS = 2000
+const val REQUEST_IN_APP_UPDATE = 3000
 const val PLAY_GAMES_SIGN_IN = 5000
 const val PLAY_GAMES_ACHIEVEMENTS = 6000

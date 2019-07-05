@@ -648,6 +648,12 @@
     <string name="flowchart_required_percentage">%1$d%% do curso completo</string>
     <string name="flowchart_recursive_continuation">Requisitos Recursivos</string>
     <string name="flowchart_recursive_unlock">Desbloqueios Recursivos</string>
+    <string name="in_app_update_request_failed_or_canceled">Atualização cancelada ou falhou :(</string>
+    <string name="in_app_update_request_canceled">A atualização foi cancelada :(</string>
+    <string name="in_app_update_request_failed">A atualização falhou, procure por ela no Google Play :/</string>
+    <string name="in_app_updates_update_ready">A atualização está pronta para ser instalada!</string>
+    <string name="in_app_updates_restart_app">Reiniciar</string>
+    <string name="in_app_update_no_update_type">Existe uma nova atualização do aplicativo! Olha lá na loja!</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
