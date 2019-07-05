@@ -41,6 +41,7 @@ import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.service.NotificationHelper
+import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasActivityInjector
@@ -73,6 +74,9 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     private var injected = false
 
     override fun onCreate() {
+        if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
+            return
+        }
         // O log timber só existe em build de debug
         if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
         // Injeta as dependências. Este é o ponto inicial
