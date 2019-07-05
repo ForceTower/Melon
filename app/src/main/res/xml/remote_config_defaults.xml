@@ -32,6 +32,10 @@
         <value>2100637</value>
     </entry>
     <entry>
+        <key>immediate_update_force</key>
+        <value>2101330</value>
+    </entry>
+    <entry>
         <key>version_notes</key>
         <value>Nothing new, just wondering around...</value>
     </entry>

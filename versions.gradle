@@ -47,6 +47,7 @@ versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 
 // Google Services
+versions.gp_core = "1.5.0"
 versions.gp_auth = "17.0.0"
 versions.gp_games = "18.0.0"
 versions.gp_location = "17.0.0"
@@ -152,6 +153,7 @@ deps.logs = logs
 
 // Google Play
 def play = [:]
+play.core = "com.google.android.play:core:$versions.gp_core"
 play.games = "com.google.android.gms:play-services-games:$versions.gp_games"
 play.auth = "com.google.android.gms:play-services-auth:$versions.gp_auth"
 play.location = "com.google.android.gms:play-services-location:$versions.gp_location"

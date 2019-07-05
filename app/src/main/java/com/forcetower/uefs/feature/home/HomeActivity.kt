@@ -45,6 +45,7 @@ import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -65,6 +66,15 @@ import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
+import com.google.android.play.core.appupdate.AppUpdateInfo
+import com.google.android.play.core.appupdate.AppUpdateManager
+import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.install.InstallState
+import com.google.android.play.core.install.InstallStateUpdatedListener
+import com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED
+import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -72,6 +82,7 @@ import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 
 class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
@@ -97,9 +108,11 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
 
+    private val updateListener = InstallStateUpdatedListener { state -> onStateUpdateChanged(state) }
     private lateinit var viewModel: HomeViewModel
     private lateinit var adventureViewModel: AdventureViewModel
     private lateinit var binding: ActivityHomeBinding
+    private lateinit var updateManager: AppUpdateManager
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,13 +121,11 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         setupBottomNav()
         setupUserData()
 
-        // val willShowAds = preferences.getBoolean("admob_warning_showed", false)
-        // val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        // setupAds(willShowAds && admobEnabled)
-//        if (!willShowAds && admobEnabled) {
-//            preferences.edit().putBoolean("admob_warning_showed", true).apply()
-//            displayAdvertisementsInfo()
-//        }
+        updateManager = AppUpdateManagerFactory.create(this)
+
+        val willShowAds = preferences.getBoolean("admob_warning_showed", false)
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        setupAds(willShowAds && admobEnabled)
 
         val uefsStudent = preferences.isStudentFromUEFS()
         val hourglassRemote = remoteConfig.getBoolean("feature_flag_evaluation")
@@ -137,13 +148,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         dialog.show()
     }
 
-    private fun displayAdvertisementsInfo() {
-        val dialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.dialog_admob_integrated, null)
-        dialog.setContentView(view)
-        dialog.show()
-    }
-
     private fun setupAds(willShowAds: Boolean = true) {
         MobileAds.initialize(this)
         onShouldDisplayAd(willShowAds)
@@ -157,8 +161,47 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         try {
             initShortcuts()
             verifyIntegrity()
+            verifyUpdates()
         } catch (t: Throwable) {}
         moveToTask()
+    }
+
+    private fun verifyUpdates() {
+        val check = preferences.getInt("daily_check_updates", -1)
+        if (check == Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
+            Timber.d("Update check postponed")
+            return
+        }
+
+        val updateTask = updateManager.appUpdateInfo
+        val required = remoteConfig.getLong("version_disable")
+        updateTask.addOnSuccessListener {
+            if (it.installStatus() == InstallStatus.DOWNLOADED) {
+                showSnackbarForRestartRequired()
+            } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
+                if (BuildConfig.VERSION_CODE < required && it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
+                    requestUpdate(AppUpdateType.IMMEDIATE, it)
+                } else if (it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
+                    requestUpdate(AppUpdateType.FLEXIBLE, it)
+                } else {
+                    val message = getString(R.string.in_app_update_no_update_type)
+                    showSnack(message)
+                }
+            }
+        }
+    }
+
+    private fun requestUpdate(@AppUpdateType type: Int, info: AppUpdateInfo) {
+        updateManager.startUpdateFlowForResult(info, type, this, REQUEST_IN_APP_UPDATE)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        updateManager.appUpdateInfo.addOnSuccessListener {
+            if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+            }
+        }
     }
 
     override fun onStart() {
@@ -327,4 +370,43 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+
+    private fun onStateUpdateChanged(state: InstallState) {
+        when {
+            state.installStatus() == InstallStatus.DOWNLOADED -> {
+                updateManager.unregisterListener(updateListener)
+                showSnackbarForRestartRequired()
+            }
+            state.installStatus() == InstallStatus.FAILED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
+            state.installStatus() == InstallStatus.CANCELED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
+        }
+    }
+
+    private fun showSnackbarForRestartRequired() {
+        val message = getString(R.string.in_app_updates_update_ready)
+        val restart = getString(R.string.in_app_updates_restart_app)
+        val snack = Snackbar.make(binding.snack, message, Snackbar.LENGTH_INDEFINITE).apply {
+            setAction(restart) { updateManager.completeUpdate() }
+        }
+        snack.config()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == REQUEST_IN_APP_UPDATE) {
+            when (resultCode) {
+                RESULT_CANCELED -> {
+                    val message = getString(R.string.in_app_update_request_canceled)
+                    showSnack(message)
+                }
+                RESULT_IN_APP_UPDATE_FAILED -> {
+                    val message = getString(R.string.in_app_update_request_failed)
+                    showSnack(message, true)
+                }
+                else -> {
+                    updateManager.registerListener(updateListener)
+                }
+            }
+        }
+    }
 }
