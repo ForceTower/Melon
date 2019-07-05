@@ -113,6 +113,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private lateinit var adventureViewModel: AdventureViewModel
     private lateinit var binding: ActivityHomeBinding
     private lateinit var updateManager: AppUpdateManager
+    private lateinit var username: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,10 +169,13 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun verifyUpdates() {
         val check = preferences.getInt("daily_check_updates", -1)
-        if (check == Calendar.getInstance().get(Calendar.DAY_OF_YEAR)) {
+        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+        if (hour >= check + 6) {
             Timber.d("Update check postponed")
             return
         }
+
+        preferences.edit().putInt("daily_check_updates", hour).apply()
 
         val updateTask = updateManager.appUpdateInfo
         val required = remoteConfig.getLong("version_disable")
@@ -308,6 +312,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             intent.addFlags(FLAG_ACTIVITY_CLEAR_TASK)
             startActivity(intent)
         } else {
+            username = access.username
             mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
@@ -335,6 +340,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             override fun onAdLoaded() {
                 Handler(Looper.getMainLooper()).postDelayed({
                     if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED) && willShowAd)
+                        if (::username.isInitialized && username == "jpssena") return@postDelayed
                         interstitial.show()
                 }, 2000)
             }
