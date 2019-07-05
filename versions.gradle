@@ -47,7 +47,7 @@ versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 
 // Google Services
-versions.gp_core = "1.5.0"
+versions.gp_core = "1.6.0"
 versions.gp_auth = "17.0.0"
 versions.gp_games = "18.0.0"
 versions.gp_location = "17.0.0"
@@ -77,6 +77,7 @@ versions.google_play_services = "4.2.0"
 versions.fabric = "1.28.0"
 versions.kotlinter = "1.26.0"
 versions.play_publisher = "2.2.0"
+versions.bundletool = "0.10.0"
 
 // --------- End of Dependencies Versions -----------
 
@@ -204,6 +205,7 @@ plugin.google_play_services = "com.google.gms:google-services:$versions.google_p
 plugin.fabric = "io.fabric.tools:gradle:$versions.fabric"
 plugin.play_publisher = "com.github.triplet.gradle:play-publisher:$versions.play_publisher"
 plugin.kotlinter = "org.jmailen.gradle:kotlinter-gradle:$versions.kotlinter"
+plugin.bundletool = "com.android.tools.build:bundletool:$versions.bundletool"
 deps.plugin = plugin
 
 // Externals

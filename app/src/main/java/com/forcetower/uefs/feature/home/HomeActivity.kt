@@ -162,7 +162,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun onActivityStart() {
         try {
             initShortcuts()
-            verifyIntegrity()
             verifyUpdates()
         } catch (t: Throwable) {}
         moveToTask()
@@ -224,22 +223,6 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun verifyDarkTheme() {
         viewModel.verifyDarkTheme().observe(this, Observer { Unit })
-    }
-
-    private fun verifyIntegrity() {
-        if (BuildConfig.DEBUG) return
-
-        val validInstallers = listOf("com.android.vending", "com.google.android.feedback")
-        val valid = try {
-            val string = packageManager.getInstallerPackageName(packageName)
-            string != null && validInstallers.contains(string)
-        } catch (t: Throwable) {
-            false
-        }
-        if (!valid) {
-            val dialog = InvalidInstallDialog()
-            dialog.show(supportFragmentManager, "dialog_integrity")
-        }
     }
 
     private fun moveToTask() {
