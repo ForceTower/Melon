@@ -125,9 +125,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
         updateManager = AppUpdateManagerFactory.create(this)
 
-        val willShowAds = preferences.getBoolean("admob_warning_showed", false)
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        setupAds(willShowAds && admobEnabled)
+        setupAds(admobEnabled)
 
         val uefsStudent = preferences.isStudentFromUEFS()
         val hourglassRemote = remoteConfig.getBoolean("feature_flag_evaluation")
@@ -317,6 +316,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun onShouldDisplayAd(willShowAd: Boolean = true) {
+        if (!willShowAd) return
         val interstitial = InterstitialAd(this)
         val request = AdRequest.Builder()
                 .addTestDevice("38D27336B4D54E6E431E86E4ABEE0B20")
