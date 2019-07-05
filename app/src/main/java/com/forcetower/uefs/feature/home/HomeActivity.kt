@@ -114,6 +114,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var updateManager: AppUpdateManager
     private lateinit var username: String
+    private var updatingImmediate = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -185,6 +186,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
                 if (BuildConfig.VERSION_CODE < required && it.isUpdateTypeAllowed(AppUpdateType.IMMEDIATE)) {
                     requestUpdate(AppUpdateType.IMMEDIATE, it)
+                    updatingImmediate = true
                 } else if (it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                     requestUpdate(AppUpdateType.FLEXIBLE, it)
                 } else {
@@ -201,9 +203,11 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     override fun onResume() {
         super.onResume()
-        updateManager.appUpdateInfo.addOnSuccessListener {
-            if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+        if (updatingImmediate) {
+            updateManager.appUpdateInfo.addOnSuccessListener {
+                if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                    updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+                }
             }
         }
     }
