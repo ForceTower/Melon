@@ -94,6 +94,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/profile_attr_trustable"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/trust_rating"
             app:layout_constraintStart_toStartOf="@+id/trust_rating"
             app:layout_constraintTop_toTopOf="@+id/barrier" />
@@ -103,7 +104,6 @@
             style="@style/UTheme.ProfileTrustRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:isIndicator="true"
             android:numStars="3"
             android:rating="2"
             android:layout_marginTop="4dp"
@@ -118,6 +118,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/profile_attr_cool"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/cool_rating"
             app:layout_constraintStart_toStartOf="@+id/cool_rating"
             app:layout_constraintTop_toTopOf="@+id/barrier" />
@@ -127,7 +128,6 @@
             style="@style/UTheme.ProfileCoolRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:isIndicator="true"
             android:numStars="3"
             android:rating="2"
             android:layout_marginTop="4dp"
@@ -142,6 +142,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/profile_attr_sexy"
+            android:textSize="16sp"
             app:layout_constraintEnd_toEndOf="@+id/sexy_rating"
             app:layout_constraintStart_toStartOf="@+id/sexy_rating"
             app:layout_constraintTop_toTopOf="@+id/barrier" />
@@ -151,7 +152,6 @@
             style="@style/UTheme.ProfileSexyRating"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:isIndicator="true"
             android:numStars="3"
             android:rating="2"
             android:layout_marginTop="4dp"
