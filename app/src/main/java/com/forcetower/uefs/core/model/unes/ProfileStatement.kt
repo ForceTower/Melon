@@ -6,5 +6,6 @@ data class ProfileStatement(
     val senderName: String,
     val picture: String?,
     val text: String,
-    val likes: Int
+    val likes: Int,
+    val approved: Boolean
 )
