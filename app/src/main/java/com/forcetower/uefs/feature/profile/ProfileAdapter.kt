@@ -57,6 +57,7 @@ class ProfileAdapter(
         return when (val item = differ.currentList[position]) {
             is ProfileHeader -> R.layout.item_profile_header
             is StatementsHeader -> R.layout.item_profile_statement_header
+            is ProfileStatement -> R.layout.item_profile_statement
             else -> throw IllegalStateException("Can't find a view type for item $item")
         }
     }
