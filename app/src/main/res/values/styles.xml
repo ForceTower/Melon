@@ -424,19 +424,19 @@
 
     <style name="UTheme.ProfileTrustRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/profile_trust_full</item>
-        <item name="android:minHeight">36dp</item>
-        <item name="android:maxHeight">36dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">24dp</item>
     </style>
 
     <style name="UTheme.ProfileCoolRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/profile_cool_full</item>
-        <item name="android:minHeight">36dp</item>
-        <item name="android:maxHeight">36dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">24dp</item>
     </style>
 
     <style name="UTheme.ProfileSexyRating" parent="@android:style/Widget.RatingBar">
         <item name="android:progressDrawable">@drawable/profile_sexy_full</item>
-        <item name="android:minHeight">36dp</item>
-        <item name="android:maxHeight">36dp</item>
+        <item name="android:minHeight">24dp</item>
+        <item name="android:maxHeight">24dp</item>
     </style>
 </resources>
