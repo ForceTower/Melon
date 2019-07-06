@@ -149,7 +149,7 @@ private constructor(context: Context) : SagresNavigator() {
                 val access = database.accessDao().accessDirect
                 var oRequest = chain.request()
                 oRequest = oRequest.newBuilder()
-                        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/67.0.3396.99 Safari/537.36")
+                        .header("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36")
                         .build()
 
                 return if (access == null) {
