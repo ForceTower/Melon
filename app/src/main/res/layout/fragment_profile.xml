@@ -71,6 +71,7 @@
             android:layout_height="wrap_content"
             android:textAllCaps="false"
             android:text="@string/profile_write_statement"
+            android:letterSpacing="0"
             app:icon="@drawable/rate_review_black_24dp"
             app:backgroundTint="?attr/colorPrimary"
             android:layout_gravity="end|bottom"

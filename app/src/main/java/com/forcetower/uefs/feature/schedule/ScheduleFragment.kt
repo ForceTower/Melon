@@ -32,6 +32,7 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
@@ -39,6 +40,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -125,15 +127,18 @@ class ScheduleFragment : UFragment(), Injectable {
         }
 
         viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
-        binding.btnSiecompSchedule.visibility = VISIBLE
-//        if (TimeUtils.eventHasEnded()) {
-//            binding.btnSiecompSchedule.visibility = GONE
-//        } else {
-//            profileViewModel.getMeProfile().observe(this, Observer {
-//                val courseId = it?.data?.course ?: 1L
-//                binding.btnSiecompSchedule.visibility = VISIBLE
-//            })
-//        }
+        if (TimeUtils.eventHasEnded()) {
+            binding.btnSiecompSchedule.visibility = GONE
+        } else {
+            profileViewModel.getMeProfile().observe(this, Observer {
+                val courseId = it?.data?.course ?: 1L
+                if (courseId == 1L) {
+                    binding.btnSiecompSchedule.visibility = VISIBLE
+                } else {
+                    binding.btnSiecompSchedule.visibility = GONE
+                }
+            })
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
