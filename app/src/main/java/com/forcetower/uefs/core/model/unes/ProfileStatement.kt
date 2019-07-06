@@ -4,8 +4,9 @@ data class ProfileStatement(
     val id: Long,
     val senderId: Long,
     val senderName: String,
-    val picture: String?,
+    val senderPicture: String?,
     val text: String,
     val likes: Int,
-    val approved: Boolean
+    val approved: Boolean,
+    val createdAt: Long
 )
