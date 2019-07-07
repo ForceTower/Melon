@@ -108,9 +108,8 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_scale"
-            app:popUpTo="@+id/eval_discipline"
-            app:popUpToInclusive="true" />
+            app:popExitAnim="@anim/close_translate"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/search"
@@ -157,9 +156,8 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_scale"
-            app:popUpTo="@+id/eval_teacher"
-            app:popUpToInclusive="true" />
+            app:popExitAnim="@anim/close_translate"
+            app:popUpToInclusive="false" />
         <argument
             android:name="teacherName"
             app:argType="string"
