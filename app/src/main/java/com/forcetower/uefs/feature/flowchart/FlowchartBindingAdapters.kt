@@ -9,7 +9,9 @@ import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 @BindingAdapter("departmentStrip")
 fun departmentStrip(tv: TextView, department: String?) {
     department ?: return
-    tv.text = department.replace("departamento de ", "", ignoreCase = true)
+    val replaceOne = department.replace("departamento de ", "", ignoreCase = true)
+    val replaceTwo = replaceOne.replace("dept. de ", "", ignoreCase = true)
+    tv.text = replaceTwo
 }
 
 @BindingAdapter("requirementText")

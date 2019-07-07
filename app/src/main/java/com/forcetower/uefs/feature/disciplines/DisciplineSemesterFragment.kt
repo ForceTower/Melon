@@ -72,7 +72,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: DisciplineSemesterAdapter
+    private lateinit var adapter: DisciplinePerformanceAdapter
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
     private lateinit var binding: FragmentDisciplineSemesterBinding
 
@@ -91,7 +91,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Crashlytics.logException(t) }
 
-        adapter = DisciplineSemesterAdapter(viewModel)
+        adapter = DisciplinePerformanceAdapter(viewModel)
         recyclerView.apply {
             adapter = this@DisciplineSemesterFragment.adapter
             (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
@@ -122,6 +122,6 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     }
 
     private fun populateInterface(classes: List<ClassWithGroups>) {
-        adapter.submitList(classes)
+        adapter.classes = classes
     }
 }
