@@ -20,13 +20,26 @@ abstract class FlowchartDao {
     abstract fun getFlowcharts(): LiveData<List<Flowchart>>
 
     @Insert(onConflict = REPLACE)
-    protected abstract fun insert(list: List<Flowchart>)
+    protected abstract fun insert(list: Flowchart)
 
     @Transaction
     open fun insertFlowcharts(list: List<Flowchart>) {
         val now = Calendar.getInstance().timeInMillis
-        insert(list.map { Flowchart(it.id, it.courseId, it.description, now) })
+        list.forEach {
+            val found = findFlowchart(it.id) != null
+            if (!found) {
+                Flowchart(it.id, it.courseId, it.description, now)
+            } else {
+                updateFlowchart(it.id, it.description, now)
+            }
+        }
     }
+
+    @Query("SELECT * FROM Flowchart WHERE id = :id LIMIT 1")
+    abstract fun findFlowchart(id: Long): Flowchart?
+
+    @Query("UPDATE Flowchart SET description = :description, lastUpdated = :lastUpdated WHERE id = :id")
+    abstract fun updateFlowchart(id: Long, description: String, lastUpdated: Long)
 
     @Transaction
     open fun insertFromNetwork(data: FlowchartDTO) {

@@ -41,8 +41,8 @@ class SemestersFragment : UFragment(), Injectable {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.flowchart.observe(this, Observer { onSemestersReceived(it) })
         viewModel.onSemesterSelect.observe(this, EventObserver { onSemesterSelected(it) })
     }
