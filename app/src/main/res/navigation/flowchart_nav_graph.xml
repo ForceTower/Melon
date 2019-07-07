@@ -4,15 +4,27 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/flowchart_nav_graph"
-    app:startDestination="@id/home">
+    app:startDestination="@id/selection">
     <fragment
-        android:id="@+id/home"
+        android:id="@+id/selection"
+        android:name="com.forcetower.uefs.feature.flowchart.SelectCourseFragment"
+        android:label="Select"
+        tools:layout="@layout/fragment_flowchart_select_course">
+        <action
+            android:id="@+id/action_select_to_start"
+            app:destination="@id/start" />
+    </fragment>
+    <fragment
+        android:id="@+id/start"
         android:name="com.forcetower.uefs.feature.flowchart.home.FlowchartFragment"
-        android:label="Home"
+        android:label="Start"
         tools:layout="@layout/fragment_flowchart">
         <action
             android:id="@+id/action_home_to_semester"
             app:destination="@id/semester" />
+        <argument
+            android:name="courseId"
+            app:argType="long" />
     </fragment>
     <fragment
         android:id="@+id/semester"

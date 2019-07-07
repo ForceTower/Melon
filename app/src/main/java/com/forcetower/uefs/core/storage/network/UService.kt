@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudentDTO
 import retrofit2.Call
@@ -139,6 +140,9 @@ interface UService {
     fun getEvaluationSnippetData(): Call<EverythingSnippet>
 
     // --------- Flowchart ---------
+
+    @GET("flowchart")
+    fun getFlowcharts(): Call<UResponse<List<Flowchart>>>
 
     @GET("flowchart")
     fun getFlowchart(@Query("course_id") course: Long): Call<UResponse<FlowchartDTO>>

@@ -656,6 +656,8 @@
     <string name="in_app_update_no_update_type">Existe uma nova atualização do aplicativo! Olha lá na loja!</string>
     <string name="discipline_grades_mean">Média final</string>
     <string name="discipline_grades_see_more">Ver detalhes da disciplina</string>
+    <string name="flowchart_select_course">Escolha um Fluxograma</string>
+    <string name="flowchart_select_course_desc">Estes são os fluxogramas cadastrados, escolha um para ver detalhes</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

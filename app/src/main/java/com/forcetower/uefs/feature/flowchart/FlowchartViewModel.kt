@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
@@ -16,7 +17,7 @@ import javax.inject.Inject
 
 class FlowchartViewModel @Inject constructor(
     private val repository: FlowchartRepository
-) : ViewModel(), SemesterInteractor, DisciplineInteractor {
+) : ViewModel(), FlowchartInteractor, SemesterInteractor, DisciplineInteractor {
     private val _courseId = MutableLiveData<Long>()
 
     private val _onSemesterSelect = MutableLiveData<Event<FlowchartSemesterUI>>()
@@ -34,6 +35,10 @@ class FlowchartViewModel @Inject constructor(
     private val _onRequirementSelect = MutableLiveData<Event<FlowchartRequirementUI>>()
     val onRequirementSelect: LiveData<Event<FlowchartRequirementUI>>
         get() = _onRequirementSelect
+
+    private val _onFlowchartSelect = MutableLiveData<Event<Flowchart>>()
+    val onFlowchartSelect: LiveData<Event<Flowchart>>
+        get() = _onFlowchartSelect
 
     init {
         _flowchart.addSource(_courseId) { courseId ->
@@ -58,6 +63,11 @@ class FlowchartViewModel @Inject constructor(
         _onRequirementSelect.value = Event(requirementUI)
     }
 
+    override fun onFlowchartSelected(flow: Flowchart) {
+        _onFlowchartSelect.value = Event(flow)
+    }
+
+    fun getFlowcharts() = repository.getFlowcharts()
     fun getDisciplinesUI(semesterId: Long) = repository.getDisciplinesFromSemester(semesterId)
     fun getDisciplineUi(disciplineId: Long) = repository.getDisciplineUI(disciplineId)
     fun getSemesterName(disciplineId: Long) = repository.getSemesterName(disciplineId)

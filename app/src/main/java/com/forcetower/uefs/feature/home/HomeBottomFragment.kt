@@ -157,7 +157,8 @@ class HomeBottomFragment : UFragment(), Injectable {
 
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.big_tray, uefsStudent)
-        toggleItem(R.id.events, uefsStudent)
+        toggleItem(R.id.events, false)
+        toggleItem(R.id.flowchart, uefsStudent)
     }
 
     private fun toggleNightModeSwitcher(enabled: Boolean?) {
