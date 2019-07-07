@@ -40,7 +40,13 @@ class TeacherFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getTeacher(args.teacherId).observe(this, Observer { handleData(it) })
+        val teacherName = args.teacherName
+        val liveData = if (teacherName != null) {
+            viewModel.getTeacher(teacherName)
+        } else {
+            viewModel.getTeacher(args.teacherId)
+        }
+        liveData.observe(this, Observer { handleData(it) })
         viewModel.disciplineSelect.observe(this, EventObserver {
             val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
             findNavController().navigate(directions)

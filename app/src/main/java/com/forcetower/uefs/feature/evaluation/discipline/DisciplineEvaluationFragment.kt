@@ -52,7 +52,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
             }
         }
         viewModel.teacherIntSelect.observe(this, EventObserver {
-            val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id)
+            val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id, null)
             findNavController().navigate(directions)
         })
         binding.btnEvaluate.setOnClickListener {

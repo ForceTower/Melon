@@ -127,6 +127,9 @@ interface UService {
     @GET("evaluation/teacher")
     fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
 
+    @GET("evaluation/teacher")
+    fun getTeacherByName(@Query("name") teacherName: String): Call<EvaluationTeacher>
+
     @GET("evaluation/question/teacher")
     fun getQuestionsForTeachers(@Query("teacher_id") teacherId: Long): Call<List<Question>>
 

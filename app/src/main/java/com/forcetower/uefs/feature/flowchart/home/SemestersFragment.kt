@@ -7,7 +7,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
 import com.forcetower.uefs.core.util.toJson
@@ -15,7 +14,6 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartSemestersBinding
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
-import com.forcetower.uefs.feature.flowchart.semester.SemesterFragmentArgs
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import timber.log.Timber

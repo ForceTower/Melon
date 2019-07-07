@@ -38,7 +38,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginVertical="@dimen/spacing_normal">
+        android:layout_marginVertical="@dimen/spacing_normal"
+        android:onClick="@{() -> viewModel.onTeacherNameClick(viewModel.group.teacher)}">
         
         <TextView
             android:id="@+id/label_teacher"
