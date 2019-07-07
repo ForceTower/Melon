@@ -84,6 +84,13 @@ class EvaluationViewModel @Inject constructor(
         return _teacher!!
     }
 
+    fun getTeacher(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
+        if (_teacher == null) {
+            _teacher = evaluationRepository.getTeacherByName(teacherName)
+        }
+        return _teacher!!
+    }
+
     override fun onTeacherSelected(value: TeacherInt) {
         _teacherIntSelect.value = Event(value)
     }

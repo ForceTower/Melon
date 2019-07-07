@@ -41,7 +41,14 @@ public class WordUtils {
         String[] arr = givenString.split(" ");
         StringBuilder sb = new StringBuilder();
 
-        for (String anArr : arr) {
+        for (int i = 0; i < arr.length; i++) {
+            String anArr = arr[i];
+
+            if (i == arr.length - 1 && anArr.length() <= 2) {
+                sb.append(anArr.toUpperCase());
+                continue;
+            }
+
             if (isGreekOneToTen(anArr)) {
                 sb.append(anArr.toUpperCase()).append(" ");
                 continue;

@@ -44,7 +44,7 @@ class SpeakerAdapter(
     private val headLoadListener: ImageLoadListener
 ) : RecyclerView.Adapter<SpeakerViewHolder>() {
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     init {
         differ.submitList(buildMergedList())

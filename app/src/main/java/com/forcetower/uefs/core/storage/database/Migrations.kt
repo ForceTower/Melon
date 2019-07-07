@@ -188,3 +188,54 @@ object M22TO23 : Migration(22, 23) {
         database.execSQL("ALTER TABLE SyncRegistry ADD COLUMN skipped INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+object M23TO24 : Migration(23, 24) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE SStudent ADD COLUMN me INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M24TO25 : Migration(24, 25) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val flowchart = "Flowchart"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$flowchart` (`id` INTEGER NOT NULL, `courseId` INTEGER NOT NULL, `description` TEXT NOT NULL, `lastUpdated` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+        val semester = "FlowchartSemester"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$semester` (`id` INTEGER NOT NULL, `flowchartId` INTEGER NOT NULL, `order` INTEGER NOT NULL, `name` TEXT NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`flowchartId`) REFERENCES `Flowchart`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("CREATE  INDEX `index_FlowchartSemester_flowchartId` ON `$semester` (`flowchartId`)")
+        val discipline = "FlowchartDiscipline"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$discipline` (`id` INTEGER NOT NULL, `disciplineId` INTEGER NOT NULL, `type` TEXT NOT NULL, `mandatory` INTEGER NOT NULL, `semesterId` INTEGER NOT NULL, PRIMARY KEY(`id`), FOREIGN KEY(`disciplineId`) REFERENCES `Discipline`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`semesterId`) REFERENCES `FlowchartSemester`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("CREATE  INDEX `index_FlowchartDiscipline_disciplineId` ON `$discipline` (`disciplineId`)")
+        database.execSQL("CREATE  INDEX `index_FlowchartDiscipline_semesterId` ON `$discipline` (`semesterId`)")
+    }
+}
+
+object M25TO26 : Migration(25, 26) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE FlowchartDiscipline ADD COLUMN completed INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE FlowchartDiscipline ADD COLUMN participating INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M26TO27 : Migration(26, 27) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val requirements = "FlowchartRequirement"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$requirements` (`id` INTEGER NOT NULL, `type` TEXT NOT NULL, `disciplineId` INTEGER NOT NULL, `requiredDisciplineId` INTEGER, `coursePercentage` REAL, `courseHours` INTEGER, PRIMARY KEY(`id`), FOREIGN KEY(`disciplineId`) REFERENCES `FlowchartDiscipline`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`requiredDisciplineId`) REFERENCES `FlowchartDiscipline`(`id`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("CREATE  INDEX `index_FlowchartRequirement_disciplineId` ON `$requirements` (`disciplineId`)")
+        database.execSQL("CREATE  INDEX `index_FlowchartRequirement_requiredDisciplineId` ON `$requirements` (`requiredDisciplineId`)")
+    }
+}
+
+object M27TO28 : Migration(27, 28) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE FlowchartRequirement ADD COLUMN typeId INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("UPDATE FlowchartRequirement SET typeId = 1 WHERE type = 'Pré Requisitos'")
+        database.execSQL("UPDATE FlowchartRequirement SET typeId = 2 WHERE type = 'Co Requisitos'")
+    }
+}
+
+object M28TO29 : Migration(28, 29) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val table = "ProfileStatement"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `receiverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `senderName` TEXT, `senderPicture` TEXT, `text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `approved` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))")
+    }
+}

@@ -48,6 +48,13 @@ class EvaluationRepository @Inject constructor(
         }.asLiveData()
     }
 
+    fun getTeacherByName(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
+        return object : NetworkOnlyResource<EvaluationTeacher>(executors) {
+            override fun createCall() = service.getTeacherByName(teacherName).asLiveData()
+            override fun saveCallResult(value: EvaluationTeacher) = Unit
+        }.asLiveData()
+    }
+
     fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
         return object : NetworkOnlyResource<List<Question>>(executors) {
             override fun createCall() = service.getQuestionsForTeachers(teacherId).asLiveData()

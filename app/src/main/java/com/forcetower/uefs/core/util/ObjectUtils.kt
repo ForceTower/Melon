@@ -43,9 +43,20 @@ object ObjectUtils {
 
             // if provided as String - '2011-12-03 10:15:30'
             if (jsonPrimitive.isString) {
-                val pattern = "yyyy-MM-dd HH:mm:ss"
-                val parser = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of(BuildConfig.SIECOMP_TIMEZONE))
-                return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString, parser)
+                val patterns = arrayOf(
+                        "yyyy-MM-dd HH:mm:ss",
+                        "yyyy-MM-dd'T'HH:mmX",
+                        "yyyy-MM-dd'T'HH:mm:ssX",
+                        "yyyy-MM-dd'T'HH:mmZ",
+                        "yyyy-MM-dd'T'HH:mm:ssZ",
+                        "yyyy-MM-dd'T'HH:mm:ssZ"
+                )
+                for (pattern in patterns) {
+                    try {
+                        val parser = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of(BuildConfig.SIECOMP_TIMEZONE))
+                        return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString, parser)
+                    } catch (t: Throwable) { }
+                }
             }
 
             // if provided as Long

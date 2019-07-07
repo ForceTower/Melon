@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="semester"
+            type="com.forcetower.uefs.core.model.unes.FlowchartSemesterUI" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_hours"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="136dp"/>
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            app:layout_constraintGuide_begin="136sp"/>
+
+        <ImageButton
+            android:id="@+id/up"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:background="?selectableItemBackground"
+            android:contentDescription="@string/navigate_up"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            app:tint="?attr/colorOnBackground"/>
+
+        <TextView
+            android:id="@+id/text_semester_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@{semester.name}"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="24sp"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constraintTop_toBottomOf="@id/up"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="Primeiro Semestre"/>
+
+        <TextView
+            android:id="@+id/text_discipline_count"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnSurface"
+            android:text="@{@string/flowchart_semester_discipline_amount(semester.disciplines)}"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="14dp"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_subject_surface_24dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_semester_name"
+            tools:text="8 matérias"/>
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@{@string/flowchart_semester_hours_amount(semester.hours)}"
+            android:textColor="?attr/colorOnSurface"
+            android:drawablePadding="8dp"
+            android:drawableStart="@drawable/ic_clock_surface_16dp"
+            app:layout_constraintTop_toBottomOf="@id/text_semester_name"
+            app:layout_constraintStart_toStartOf="@id/guideline_hours"
+            tools:text="480 horas"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_disciplines"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:paddingTop="8dp"
+            android:paddingBottom="16dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+            app:layout_constraintTop_toBottomOf="@id/guideline_header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            tools:listitem="@layout/item_flowchart_discipline"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

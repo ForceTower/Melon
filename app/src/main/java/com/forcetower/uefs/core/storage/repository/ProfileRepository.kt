@@ -27,10 +27,19 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.ProfileStatement
+import com.forcetower.uefs.core.model.unes.SStudent
+import com.forcetower.uefs.core.model.unes.SStudentDTO
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.network.adapter.asLiveData
+import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
+import com.forcetower.uefs.core.storage.resource.Resource
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,8 +49,32 @@ class ProfileRepository @Inject constructor(
     private val executors: AppExecutors,
     private val service: UService
 ) {
-    fun getMeProfile() = database.profileDao().selectMe()
-    fun loadProfile(profileId: String) = database.profileDao().selectProfileByUUID(profileId)
+    fun getMeProfile(): LiveData<Resource<SStudent>> {
+        return object : NetworkBoundResource<SStudent, UResponse<SStudentDTO>>(executors) {
+            override fun loadFromDb() = database.studentServiceDao().getMeStudent()
+            override fun shouldFetch(it: SStudent?) = true
+            override fun createCall() = service.getMeStudent().asLiveData()
+            override fun saveCallResult(value: UResponse<SStudentDTO>) {
+                if (value.data != null) {
+                    Timber.d("Value returned data ${value.data}")
+                    database.studentServiceDao().insertSingle(value.data.toCommon())
+                }
+            }
+        }.asLiveData()
+    }
+
+    fun loadProfile(profileId: Long): LiveData<Resource<SStudent>> {
+        return object : NetworkBoundResource<SStudent, UResponse<SStudentDTO>>(executors) {
+            override fun loadFromDb() = database.studentServiceDao().getProfileById(profileId)
+            override fun shouldFetch(it: SStudent?) = true
+            override fun createCall() = service.getStudent(profileId).asLiveData()
+            override fun saveCallResult(value: UResponse<SStudentDTO>) {
+                if (value.data != null) {
+                    database.studentServiceDao().insertSingle(value.data.toCommon())
+                }
+            }
+        }.asLiveData()
+    }
 
     fun getCourse(course: Long) = database.courseDao().getCourse(course)
 
@@ -55,5 +88,18 @@ class ProfileRepository @Inject constructor(
                 service.setupProfile(profile).execute()
             } catch (t: Throwable) {}
         }
+    }
+
+    fun getAccountDatabase() = database.accountDao().getAccount()
+
+    fun loadStatements(profileId: Long): LiveData<Resource<List<ProfileStatement>>> {
+        return object : NetworkBoundResource<List<ProfileStatement>, UResponse<List<ProfileStatement>>>(executors) {
+            override fun loadFromDb() = database.statementDao().getStatements(profileId)
+            override fun shouldFetch(it: List<ProfileStatement>?) = true
+            override fun createCall() = service.getStatements(profileId).asLiveData()
+            override fun saveCallResult(value: UResponse<List<ProfileStatement>>) {
+                if (value.data != null) database.statementDao().insert(value.data)
+            }
+        }.asLiveData()
     }
 }

@@ -9,6 +9,7 @@ buildscript {
 		classpath deps.plugin.kotlinter
 		classpath deps.plugin.play_publisher
         classpath deps.navigation.safe_args_plugin
+        classpath deps.plugin.bundletool
     }
     repositories {
         google()

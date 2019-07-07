@@ -103,8 +103,6 @@ class AdventureFragment : UFragment(), Injectable {
         }.apply {
             interactor = viewModel
             profile = profileViewModel
-            storage = firebaseStorage
-            firebaseUser = this@AdventureFragment.firebaseAuth.currentUser
             lifecycleOwner = this@AdventureFragment
             executePendingBindings()
         }.root
@@ -120,7 +118,7 @@ class AdventureFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         profileViewModel.getMeProfile().observe(this, Observer {
             if (it != null) {
-                profileViewModel.setProfileId(it.uuid)
+                profileViewModel.setProfileId(it.data?.id)
             }
         })
 

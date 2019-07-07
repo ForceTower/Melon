@@ -62,16 +62,16 @@ constructor(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()
+                val body = response.body
                 val string = body!!.string()
                 resolveLogin(string, response)
             } else {
                 var doc: Document? = null
-                val body = response.body()
+                val body = response.body
                 if (body != null) {
                     doc = createDocument(body.string())
                 }
-                finished = LoginCallback.Builder(Status.RESPONSE_FAILED).document(doc).code(response.code()).build()
+                finished = LoginCallback.Builder(Status.RESPONSE_FAILED).document(doc).code(response.code).build()
                 result.postValue(finished)
             }
         } catch (e: IOException) {
@@ -122,10 +122,10 @@ constructor(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val document = createDocument(response.body()!!.string())
+                val document = createDocument(response.body!!.string())
                 successMeasures(document)
             } else {
-                finished = LoginCallback.Builder(Status.APPROVAL_ERROR).code(response.code()).build()
+                finished = LoginCallback.Builder(Status.APPROVAL_ERROR).code(response.code).build()
                 result.postValue(finished)
             }
         } catch (e: IOException) {

@@ -131,11 +131,11 @@ class ScheduleFragment : UFragment(), Injectable {
             binding.btnSiecompSchedule.visibility = GONE
         } else {
             profileViewModel.getMeProfile().observe(this, Observer {
-                val courseId = it?.course ?: 1L
-                binding.btnSiecompSchedule.visibility = if (courseId == 1L) {
-                    VISIBLE
+                val courseId = it?.data?.course ?: 1L
+                if (courseId == 1L) {
+                    binding.btnSiecompSchedule.visibility = VISIBLE
                 } else {
-                    GONE
+                    binding.btnSiecompSchedule.visibility = GONE
                 }
             })
         }

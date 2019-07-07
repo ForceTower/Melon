@@ -50,6 +50,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
+import com.google.android.gms.common.util.PlatformVersion
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
@@ -166,7 +167,17 @@ class ScheduleItemHeaderDecoration(
                 append(hoursString)
             }
         }
-        return StaticLayout(text, paint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
+        return if (PlatformVersion.isAtLeastM()) {
+            StaticLayout.Builder.obtain(text, 0, text.length, paint, width)
+                .setText(text)
+                .setAlignment(Layout.Alignment.ALIGN_CENTER)
+                .setLineSpacing(0f, 1f)
+                .setIncludePad(false)
+                .build()
+        } else {
+            @Suppress("DEPRECATION")
+            StaticLayout(text, paint, width, Layout.Alignment.ALIGN_CENTER, 1f, 0f, false)
+        }
     }
 }
 

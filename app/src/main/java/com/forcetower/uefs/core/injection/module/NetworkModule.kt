@@ -52,7 +52,7 @@ import java.net.CookieHandler
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import io.fabric.sdk.android.services.settings.IconRequest.build
+import okhttp3.Response
 
 @Module
 object NetworkModule {
@@ -85,26 +85,28 @@ object NetworkModule {
     @Provides
     @Singleton
     @JvmStatic
-    fun provideInterceptor(database: UDatabase) = Interceptor { chain ->
-        val request = chain.request()
-        Timber.d("Going to: ${request.url().url()}")
-        val host = request.url().host()
-        if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
-            val builder = request.headers().newBuilder()
-                    .add("Accept", "application/json")
+    fun provideInterceptor(database: UDatabase) = object : Interceptor {
+        override fun intercept(chain: Interceptor.Chain): Response {
+            val request = chain.request()
+            Timber.d("Going to: ${request.url.toUrl()}")
+            val host = request.url.host
+            return if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+                val builder = request.headers.newBuilder()
+                        .add("Accept", "application/json")
 
-            val token = database.accessTokenDao().getAccessTokenDirect()
-            if (token?.token != null) {
-                builder.add("Authorization", token.type + " " + token.token)
+                val token = database.accessTokenDao().getAccessTokenDirect()
+                if (token?.token != null) {
+                    builder.add("Authorization", token.type + " " + token.token)
+                }
+
+                val newHeaders = builder.build()
+                val renewed = request.newBuilder().headers(newHeaders).build()
+
+                chain.proceed(renewed)
+            } else {
+                val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
+                chain.proceed(nRequest)
             }
-
-            val newHeaders = builder.build()
-            val renewed = request.newBuilder().headers(newHeaders).build()
-
-            chain.proceed(renewed)
-        } else {
-            val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
-            chain.proceed(nRequest)
         }
     }
 

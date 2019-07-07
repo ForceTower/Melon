@@ -87,8 +87,7 @@ class SIECOMPSessionViewModel @Inject constructor(
         timeUntilStart = SetIntervalLiveData.DefaultIntervalMapper.mapAtInterval(session, TEN_SECONDS) { session ->
             session?.startTime?.let { startTime ->
                 val duration = Duration.between(Instant.now(), startTime)
-                val minutes = duration.toMinutes()
-                when (minutes) {
+                when (duration.toMinutes()) {
                     in 1..30 -> duration
                     else -> null
                 }

@@ -41,9 +41,14 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
+import com.bumptech.glide.request.target.Target
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.R
+import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import timber.log.Timber
 
@@ -53,30 +58,60 @@ fun clipToCircle(view: View, clip: Boolean) {
     view.outlineProvider = if (clip) CircularOutlineProvider else null
 }
 
-@BindingAdapter(value = ["imageUri", "placeholder"], requireAll = false)
-fun imageUri(imageView: ImageView, imageUri: Uri?, placeholder: Drawable?) {
+@BindingAdapter(value = ["imageUri", "placeholder", "clipCircle", "listener"], requireAll = false)
+fun imageUri(imageView: ImageView, imageUri: Uri?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
     val placeholderDrawable = placeholder ?: AppCompatResources.getDrawable(
             imageView.context, R.mipmap.ic_unes_large_image_512
     )
-    when (imageUri) {
+    val circular = clipCircle ?: false
+    var request = when (imageUri) {
         null -> {
             Timber.d("Unsetting image url")
             Glide.with(imageView)
                     .load(placeholderDrawable)
-                    .into(imageView)
         }
         else -> {
             Glide.with(imageView)
                     .load(imageUri)
                     .apply(RequestOptions().placeholder(placeholderDrawable))
-                    .into(imageView)
         }
     }
+    request = if (circular) {
+        request.circleCrop()
+    } else {
+        request
+    }
+
+    if (listener != null) {
+        request = request.listener(object : RequestListener<Drawable> {
+            override fun onResourceReady(
+                resource: Drawable?,
+                model: Any?,
+                target: Target<Drawable>?,
+                dataSource: DataSource?,
+                isFirstResource: Boolean
+            ): Boolean {
+                listener.onImageLoaded()
+                return false
+            }
+
+            override fun onLoadFailed(
+                e: GlideException?,
+                model: Any?,
+                target: Target<Drawable>?,
+                isFirstResource: Boolean
+            ): Boolean {
+                listener.onImageLoadFailed()
+                return false
+            }
+        })
+    }
+    request.into(imageView)
 }
 
-@BindingAdapter(value = ["imageUrl", "placeholder"], requireAll = false)
-fun imageUrl(imageView: ImageView, imageUrl: String?, placeholder: Drawable?) {
-    imageUri(imageView, imageUrl?.toUri(), placeholder)
+@BindingAdapter(value = ["imageUrl", "placeholder", "clipCircle", "listener"], requireAll = false)
+fun imageUrl(imageView: ImageView, imageUrl: String?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
+    imageUri(imageView, imageUrl?.toUri(), placeholder, clipCircle, listener)
 }
 
 @BindingAdapter("swipeRefreshColors")

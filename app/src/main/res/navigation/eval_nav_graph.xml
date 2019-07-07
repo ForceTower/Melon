@@ -108,7 +108,8 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_translate" />
+            app:popExitAnim="@anim/close_translate"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/search"
@@ -155,7 +156,12 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_translate" />
+            app:popExitAnim="@anim/close_translate"
+            app:popUpToInclusive="false" />
+        <argument
+            android:name="teacherName"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <activity
         android:id="@+id/rating"
@@ -176,4 +182,10 @@
             app:argType="string"
             app:nullable="true" />
     </activity>
+    <action
+        android:id="@+id/action_global_eval_teacher"
+        app:destination="@id/eval_teacher"
+        app:exitAnim="@anim/close_scale"
+        app:popEnterAnim="@anim/open_scale"
+        app:popExitAnim="@anim/close_translate"/>
 </navigation>

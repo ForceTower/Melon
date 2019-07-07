@@ -29,6 +29,7 @@ package com.forcetower.uefs.core.storage.database
 
 import androidx.room.Database
 import androidx.room.RoomDatabase
+import androidx.room.TypeConverters
 import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
@@ -47,7 +48,12 @@ import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
+import com.forcetower.uefs.core.model.unes.Flowchart
+import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
+import com.forcetower.uefs.core.model.unes.FlowchartRequirement
+import com.forcetower.uefs.core.model.unes.FlowchartSemester
 import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SDiscipline
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.model.unes.STeacher
@@ -74,14 +80,20 @@ import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
+import com.forcetower.uefs.core.storage.database.dao.FlowchartDao
+import com.forcetower.uefs.core.storage.database.dao.FlowchartDisciplineDao
+import com.forcetower.uefs.core.storage.database.dao.FlowchartRequirementDao
+import com.forcetower.uefs.core.storage.database.dao.FlowchartSemesterDao
 import com.forcetower.uefs.core.storage.database.dao.GradeDao
 import com.forcetower.uefs.core.storage.database.dao.MessageDao
 import com.forcetower.uefs.core.storage.database.dao.ProfileDao
+import com.forcetower.uefs.core.storage.database.dao.ProfileStatementDao
 import com.forcetower.uefs.core.storage.database.dao.SemesterDao
 import com.forcetower.uefs.core.storage.database.dao.ServiceRequestDao
 import com.forcetower.uefs.core.storage.database.dao.StudentServiceDao
 import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
 import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
+import com.forcetower.uefs.core.util.Converters
 
 @Database(entities = [
     AccessToken::class,
@@ -110,8 +122,14 @@ import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
     STeacher::class,
     SDiscipline::class,
     SStudent::class,
-    EvaluationEntity::class
-], version = 23, exportSchema = true)
+    EvaluationEntity::class,
+    Flowchart::class,
+    FlowchartSemester::class,
+    FlowchartDiscipline::class,
+    FlowchartRequirement::class,
+    ProfileStatement::class
+], version = 29, exportSchema = true)
+@TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
     abstract fun accessTokenDao(): AccessTokenDao
@@ -139,4 +157,9 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun teacherServiceDao(): TeacherServiceDao
     abstract fun studentServiceDao(): StudentServiceDao
     abstract fun evaluationEntitiesDao(): EvaluationEntitiesDao
+    abstract fun flowchartDao(): FlowchartDao
+    abstract fun flowchartSemesterDao(): FlowchartSemesterDao
+    abstract fun flowchartDisciplineDao(): FlowchartDisciplineDao
+    abstract fun flowchartRequirementDao(): FlowchartRequirementDao
+    abstract fun statementDao(): ProfileStatementDao
 }

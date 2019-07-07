@@ -90,6 +90,10 @@ class DisciplineViewModel @Inject constructor(
     val navigateToGroupAction: LiveData<Event<ClassGroup>>
         get() = _navigateToGroupAction
 
+    private val _navigateToTeacherAction = MutableLiveData<Event<String>>()
+    val navigateToTeacherAction: LiveData<Event<String>>
+        get() = _navigateToTeacherAction
+
     private val _refreshing = MediatorLiveData<Boolean>()
     val refreshing: LiveData<Boolean>
         get() = _refreshing
@@ -179,6 +183,11 @@ class DisciplineViewModel @Inject constructor(
 
     override fun groupSelected(clazz: ClassGroup) {
         _navigateToGroupAction.value = Event(clazz)
+    }
+
+    fun onTeacherNameClick(name: String) {
+        Timber.d("Name clicked $name")
+        _navigateToTeacherAction.value = Event(name)
     }
 
     fun updateGradesFromSemester(semesterId: Long) {

@@ -1,5 +1,6 @@
 package com.forcetower.uefs.feature.evaluation.search
 
+import android.app.ActivityOptions
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
@@ -19,8 +21,10 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
+import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class SearchFragment : UFragment(), Injectable {
@@ -70,7 +74,7 @@ class SearchFragment : UFragment(), Injectable {
     private fun onEvalEntitySelected(entity: EvaluationEntity) {
         when (entity.type) {
             0 -> {
-                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId)
+                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId, null)
                 findNavController().navigate(directions)
             }
             1 -> {
@@ -79,8 +83,27 @@ class SearchFragment : UFragment(), Injectable {
                 val directions = SearchFragmentDirections.actionSearchToDiscipline(comp2, comp1)
                 findNavController().navigate(directions)
             }
-            2 -> showSnack(getString(R.string.students_discorevery_is_not_for_now))
+            2 -> {
+                showSnack(getString(R.string.students_discorevery_is_not_for_now))
+            }
         }
+    }
+
+    private fun onStudentSelected(entity: EvaluationEntity) {
+        val shared = findStudentHeadshot(binding.wildcardRecycler, entity.referencedId)
+        val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, getString(R.string.student_headshot_transition))
+        val intent = ProfileActivity.startIntent(requireContext(), entity.referencedId)
+        startActivity(intent, option.toBundle())
+    }
+
+    private fun findStudentHeadshot(entities: ViewGroup, studentId: Long): View {
+        entities.forEach {
+            if (it.getTag(R.id.tag_student_id) == studentId) {
+                return it.findViewById(R.id.entity_image)
+            }
+        }
+        Timber.e("Could not find view for speaker id $studentId")
+        return entities
     }
 
     private fun loadKnowledge(resource: Resource<Boolean>) {

@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.common.DisciplineActions"/>
+        <variable
+            name="clazzGroup"
+            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
+        android:paddingStart="16dp"
+        android:paddingEnd="16dp"
+        android:onClick="@{() -> listener.classClicked(clazzGroup)}">
+
+        <TextView
+            android:id="@+id/label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toStartOf="@id/final_score"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:text="@string/discipline_grades_mean" />
+
+        <TextView
+            android:id="@+id/final_score"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="?attr/colorAccent"
+            app:classStudentGrade="@{clazzGroup}"
+            android:textSize="17sp"
+            app:layout_constraintBaseline_toBaselineOf="@+id/label"
+            app:layout_constraintEnd_toEndOf="parent"
+            tools:text="8.9" />
+
+        <com.google.android.material.button.MaterialButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:text="@string/discipline_grades_see_more"
+            android:onClick="@{() -> listener.classClicked(clazzGroup)}"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

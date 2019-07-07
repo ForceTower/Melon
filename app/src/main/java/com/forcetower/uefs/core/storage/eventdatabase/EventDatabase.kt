@@ -38,7 +38,7 @@ import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.siecomp.Tag
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.eventdatabase.dao.AccessTokenDao
-import com.forcetower.uefs.core.storage.eventdatabase.dao.Converters
+import com.forcetower.uefs.core.util.Converters
 import com.forcetower.uefs.core.storage.eventdatabase.dao.EventDao
 
 @Database(entities = [

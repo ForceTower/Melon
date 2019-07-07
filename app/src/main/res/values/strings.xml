@@ -331,13 +331,13 @@
     <string name="achievements_check_in">Verificar localização</string>
     <string name="btn_check_achievements">Ver conquistas</string>
     <string name="btn_achievements_leave">Deixar a aventura</string>
-    <string name="unable_to_open_achievements">O Google não pôde atender a requisição no momento</string>
+    <string name="unable_to_open_achievements">O Google não pôde atender a requisição no agora</string>
     <string name="invalid_google_sign_in_error">Erro de login inválido (Erro no erro)</string>
     <string name="google_sign_in_cancelled">Login cancelado</string>
     <string name="google_sign_in_outdated">Google Play Services não está atualizado e não consegue processar esta requisição</string>
     <string name="google_sign_in_progress">Já existe um login em progresso</string>
     <string name="adventure_start">Aventura</string>
-    <string name="label_adventure_info">A aventura é uma série de conquistas para algumas das ações que você completa na universidade. Passar em matérias, notas, faltas, greves... Tudo conta</string>
+    <string name="label_adventure_info">A aventura é uma série de conquistas para algumas das ações que você completa na universidade. Passar em matérias, notas, faltas, greves... Tudo conta!</string>
     <string name="label_adventure_info_update">A sua conta de email será associada a esta conta do Sagres, então você só irá desbloquear as conquistas nesta conta do Sagres.</string>
     <string name="lets_go">Vamos lá!</string>
     <string name="not_now">Agora não</string>
@@ -549,6 +549,7 @@
     <string name="settings_schedule_empty_spaces">Dias vazios</string>
     <string name="settings_schedule_empty_spaces_info_on">O UNES mostrará dias sem aulas no horário</string>
     <string name="settings_schedule_empty_spaces_info_off">O UNES não mostrará dias sem aulas no horário</string>
+    <string name="label_course_disciplines">Currículo do Curso</string>
     <string name="update_the_app">Atualizar o aplicativo</string>
     <string name="rewarded_with_back_2048">Você pode voltar jogadas!</string>
     <string name="rewarded_failed">A recompensa foi cancelada</string>
@@ -630,6 +631,33 @@
     <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.\n\nAinda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.\n\nUsem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
     <string name="settings_sync_discipline_amount">Dados das disciplinas</string>
     <string name="settings_sync_discipline_amount_label">Quantidade de vezes que o aplicativo baixa os detalhes das disciplinas (ajuda a economizar dados)</string>
+    <string name="flowchart_semester">Semestres</string>
+    <string name="flowchart_semester_discipline_amount">%1$d matérias</string>
+    <string name="flowchart_semester_hours_amount">%1$d horas</string>
+    <string name="flowchart_discipline_hours_amount">%1$d horas</string>
+    <string name="label_flowchart">Fluxograma Interativo</string>
+    <string name="flowchart_discipline_current">Cursando!</string>
+    <string name="flowchart_discipline_complete">Completa!</string>
+    <string name="profile_write_statement">Escrever depoimento</string>
+    <string name="profile_statements">Depoimentos</string>
+    <string name="profile_attr_trustable">Confiável</string>
+    <string name="profile_attr_cool">Legal</string>
+    <string name="profile_attr_sexy">Sexy</string>
+    <string name="student_headshot_transition">student_headshot_transition</string>
+    <string name="flowchart_required_hours">%1$d horas do curso completas</string>
+    <string name="flowchart_required_percentage">%1$d%% do curso completo</string>
+    <string name="flowchart_recursive_continuation">Requisitos Recursivos</string>
+    <string name="flowchart_recursive_unlock">Desbloqueios Recursivos</string>
+    <string name="in_app_update_request_failed_or_canceled">Atualização cancelada ou falhou :(</string>
+    <string name="in_app_update_request_canceled">A atualização foi cancelada :(</string>
+    <string name="in_app_update_request_failed">A atualização falhou, procure por ela no Google Play :/</string>
+    <string name="in_app_updates_update_ready">A atualização está pronta para ser instalada!</string>
+    <string name="in_app_updates_restart_app">Reiniciar</string>
+    <string name="in_app_update_no_update_type">Existe uma nova atualização do aplicativo! Olha lá na loja!</string>
+    <string name="discipline_grades_mean">Média final</string>
+    <string name="discipline_grades_see_more">Ver detalhes da disciplina</string>
+    <string name="flowchart_select_course">Escolha um Fluxograma</string>
+    <string name="flowchart_select_course_desc">Estes são os fluxogramas cadastrados, escolha um para ver detalhes</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
