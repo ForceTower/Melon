@@ -79,4 +79,8 @@
         <key>feature_flag_evaluation</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>disciplines_view_performance</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
