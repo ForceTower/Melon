@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
@@ -46,11 +47,26 @@ class ProfileViewModel @Inject constructor(
     val profile: LiveData<SStudent?>
         get() = _profile
 
-    val accountDatabase = repository.getAccountDatabase()
+    private val _statements = MediatorLiveData<List<ProfileStatement>>()
+    val statements: LiveData<List<ProfileStatement>>
+        get() = _statements
 
     init {
         _profile.addSource(profileId) {
             refreshProfile(it)
+            refreshStatements(it)
+        }
+    }
+
+    private fun refreshStatements(profileId: Long?) {
+        profileId ?: return
+        val source = repository.loadStatements(profileId)
+        _statements.addSource(source) {
+            Timber.d("Resource status ${it.status}")
+            val data = it.data
+            if (data != null) {
+                _statements.value = data
+            }
         }
     }
 
