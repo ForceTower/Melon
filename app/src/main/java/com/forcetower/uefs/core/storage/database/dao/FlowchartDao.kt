@@ -1,5 +1,6 @@
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -11,9 +12,22 @@ import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
 import com.forcetower.uefs.core.model.unes.FlowchartSemester
+import java.util.Calendar
 
 @Dao
 abstract class FlowchartDao {
+    @Query("SELECT * FROM Flowchart")
+    abstract fun getFlowcharts(): LiveData<List<Flowchart>>
+
+    @Insert(onConflict = REPLACE)
+    protected abstract fun insert(list: List<Flowchart>)
+
+    @Transaction
+    open fun insertFlowcharts(list: List<Flowchart>) {
+        val now = Calendar.getInstance().timeInMillis
+        insert(list.map { Flowchart(it.id, it.courseId, it.description, now) })
+    }
+
     @Transaction
     open fun insertFromNetwork(data: FlowchartDTO) {
         val flowchart = data.toFlowchart()
