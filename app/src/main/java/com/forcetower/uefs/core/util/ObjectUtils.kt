@@ -48,6 +48,7 @@ object ObjectUtils {
                         "yyyy-MM-dd'T'HH:mmX",
                         "yyyy-MM-dd'T'HH:mm:ssX",
                         "yyyy-MM-dd'T'HH:mmZ",
+                        "yyyy-MM-dd'T'HH:mm:ssZ",
                         "yyyy-MM-dd'T'HH:mm:ssZ"
                 )
                 for (pattern in patterns) {
