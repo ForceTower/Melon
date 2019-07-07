@@ -160,6 +160,10 @@
             app:popExitAnim="@anim/close_translate"
             app:popUpTo="@+id/eval_teacher"
             app:popUpToInclusive="true" />
+        <argument
+            android:name="teacherName"
+            app:argType="string"
+            app:nullable="true" />
     </fragment>
     <activity
         android:id="@+id/rating"
@@ -180,4 +184,7 @@
             app:argType="string"
             app:nullable="true" />
     </activity>
+    <action
+        android:id="@+id/action_global_eval_teacher"
+        app:destination="@id/eval_teacher" />
 </navigation>
