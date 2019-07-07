@@ -32,6 +32,7 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SDiscipline
+import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
 @Entity(indices = [
@@ -46,6 +47,7 @@ data class Discipline(
     val code: String,
     val credits: Int,
     var department: String? = null,
+    @SerializedName("resume", alternate = ["program"])
     var resume: String? = null,
     @ColumnInfo(name = "short_text")
     var shortText: String? = null,

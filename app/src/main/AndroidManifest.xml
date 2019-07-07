@@ -49,11 +49,15 @@
             android:theme="@style/UTheme.Translucent.About" />
         <activity
             android:name=".feature.evaluation.EvaluationActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.evaluation.rating.RatingActivity"
             android:theme="@style/UTheme.Translucent"
             android:parentActivityName=".feature.evaluation.EvaluationActivity"/>
+        <activity android:name=".feature.flowchart.FlowchartActivity"
+            android:theme="@style/UTheme.LightNav"
+            android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
             android:name=".feature.siecomp.SIECOMPActivity"
             android:parentActivityName=".feature.home.HomeActivity"
@@ -83,7 +87,7 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.profile.ProfileActivity"
-            android:theme="@style/UTheme.LightNav" />
+            android:theme="@style/UTheme.StudentProfile" />
         <activity android:name=".easter.twofoureight.Game2048Activity" />
         <activity
             android:name=".feature.reminders.RemindersActivity"

@@ -58,9 +58,7 @@
             <include
                 android:id="@+id/adventure_header"
                 layout="@layout/content_adventure_header"
-                app:profile="@{profile}"
-                app:firebaseUser="@{firebaseUser}"
-                app:storage="@{storage}"/>
+                app:profile="@{profile}"/>
 
             <include
                 android:id="@+id/adventure_achievements"

@@ -53,6 +53,12 @@
                     android:icon="@drawable/hourglass_black_24dp"/>
 
                 <item
+                    android:id="@+id/flowchart"
+                    android:title="@string/label_flowchart"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_bookmark_border_black_24dp"/>
+
+                <item
                     android:id="@+id/documents"
                     android:title="@string/label_documents"
                     android:menuCategory="secondary"
@@ -82,13 +88,6 @@
                     android:title="@string/label_services_follow_up"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_receipt_black_24dp"/>
-
-                <item
-                    android:id="@+id/teacher_email"
-                    android:title="@string/teachers_label"
-                    android:visible="false"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_teach_black_24dp"/>
             </group>
         </menu>
     </item>

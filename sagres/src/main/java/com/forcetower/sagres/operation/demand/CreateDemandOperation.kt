@@ -66,12 +66,12 @@ class CreateDemandOperation(
             val response = call.execute()
             if (response.isSuccessful) {
                 Timber.d("Request completed")
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val complete = createDocument(body)
                 finalSteps(complete)
             } else {
                 Timber.d("Response failed")
-                publishProgress(DemandCreatorCallback(Status.RESPONSE_FAILED).code(response.code()))
+                publishProgress(DemandCreatorCallback(Status.RESPONSE_FAILED).code(response.code))
             }
         } catch (t: Throwable) {
             Timber.d("Network error")

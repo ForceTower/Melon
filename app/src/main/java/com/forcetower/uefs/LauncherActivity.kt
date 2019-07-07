@@ -38,7 +38,6 @@ import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.obsolete.ObsoleteActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -68,25 +67,18 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
-        val disabledCode = remoteConfig.getLong("version_disable")
-        if (disabledCode > BuildConfig.VERSION_CODE) {
-            Timber.d("This version has been disabled")
-            startActivity(Intent(this, ObsoleteActivity::class.java))
-            finish()
-        } else {
-            viewModel.direction.observe(this, EventObserver {
-                Timber.d("Once!")
-                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-                if (!viewModel.started) {
-                    when (it) {
-                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
-                    }
-                    viewModel.started = true
-                    finish()
+        viewModel.direction.observe(this, EventObserver {
+            Timber.d("Once!")
+            // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
+            if (!viewModel.started) {
+                when (it) {
+                    Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                    Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
                 }
-            })
-        }
+                viewModel.started = true
+                finish()
+            }
+        })
     }
 
     private fun createNewVersionNotification() {

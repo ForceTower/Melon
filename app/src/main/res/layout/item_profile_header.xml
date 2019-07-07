@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="account"
+            type="androidx.lifecycle.LiveData&lt;com.forcetower.uefs.core.model.unes.SStudent&gt;" />
+        <variable
+            name="headshotImageListener"
+            type="com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener"/>
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.profile.ProfileInteractor" />
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="@dimen/spacing_normal">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/margin_normal" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_normal" />
+
+        <ImageView
+            android:id="@+id/profile_image"
+            android:layout_width="200dp"
+            android:layout_height="200dp"
+            android:layout_marginTop="36dp"
+            android:contentDescription="@string/acc_user_image"
+            android:transitionName="@string/student_headshot_transition"
+            app:imageUrl="@{account.imageUrl}"
+            app:listener="@{headshotImageListener}"
+            app:clipCircle="@{true}"
+            android:onClick="@{() -> interactor.onPictureClick()}"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/student_name"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="@{WordUtils.toTitleCase(account.name)}"
+            android:textAlignment="gravity"
+            android:textColor="?attr/colorOnBackground"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@+id/profile_image"
+            tools:text="João Paulo Santos Sena" />
+
+        <TextView
+            android:id="@+id/student_course"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:textAlignment="gravity"
+            android:textColor="?attr/colorOnBackgroundLight"
+            android:textSize="14sp"
+            android:text="@{account.courseName}"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintStart_toStartOf="@+id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/student_name"
+            tools:text="Engenharia de computação" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="student_course" />
+
+        <TextView
+            android:id="@+id/label_trusted"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_attr_trustable"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/trust_rating"
+            app:layout_constraintStart_toStartOf="@+id/trust_rating"
+            app:layout_constraintTop_toTopOf="@+id/barrier" />
+
+        <com.forcetower.uefs.widget.RatingBarVectorFix
+            android:id="@+id/trust_rating"
+            style="@style/UTheme.ProfileTrustRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="3"
+            android:rating="2"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/cool_rating"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/label_trusted" />
+
+        <TextView
+            android:id="@+id/label_cool"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_attr_cool"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/cool_rating"
+            app:layout_constraintStart_toStartOf="@+id/cool_rating"
+            app:layout_constraintTop_toTopOf="@+id/barrier" />
+
+        <com.forcetower.uefs.widget.RatingBarVectorFix
+            android:id="@+id/cool_rating"
+            style="@style/UTheme.ProfileCoolRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="3"
+            android:rating="2"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toStartOf="@+id/sexy_rating"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/trust_rating"
+            app:layout_constraintTop_toBottomOf="@id/label_cool" />
+
+        <TextView
+            android:id="@+id/label_sexy"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/profile_attr_sexy"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="@+id/sexy_rating"
+            app:layout_constraintStart_toStartOf="@+id/sexy_rating"
+            app:layout_constraintTop_toTopOf="@+id/barrier" />
+
+        <com.forcetower.uefs.widget.RatingBarVectorFix
+            android:id="@+id/sexy_rating"
+            style="@style/UTheme.ProfileSexyRating"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:numStars="3"
+            android:rating="2"
+            android:layout_marginTop="4dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toEndOf="@+id/cool_rating"
+            app:layout_constraintTop_toBottomOf="@id/label_sexy" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

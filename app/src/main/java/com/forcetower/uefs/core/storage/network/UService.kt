@@ -49,6 +49,10 @@ import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
+import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.unes.Flowchart
+import com.forcetower.uefs.core.model.unes.ProfileStatement
+import com.forcetower.uefs.core.model.unes.SStudentDTO
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Field
@@ -101,6 +105,9 @@ interface UService {
     @POST("account/darktheme/invite")
     fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
+    @GET("account/statements")
+    fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
+
     @GET("courses")
     fun getCourses(): Call<List<Course>>
 
@@ -120,6 +127,9 @@ interface UService {
     @GET("evaluation/teacher")
     fun getTeacherById(@Query("id") teacherId: Long): Call<EvaluationTeacher>
 
+    @GET("evaluation/teacher")
+    fun getTeacherByName(@Query("name") teacherName: String): Call<EvaluationTeacher>
+
     @GET("evaluation/question/teacher")
     fun getQuestionsForTeachers(@Query("teacher_id") teacherId: Long): Call<List<Question>>
 
@@ -132,7 +142,23 @@ interface UService {
     @GET("evaluation/everythingship")
     fun getEvaluationSnippetData(): Call<EverythingSnippet>
 
-    // ---------------------------------------------------------------------------------------------
+    // --------- Flowchart ---------
+
+    @GET("flowchart")
+    fun getFlowcharts(): Call<UResponse<List<Flowchart>>>
+
+    @GET("flowchart")
+    fun getFlowchart(@Query("course_id") course: Long): Call<UResponse<FlowchartDTO>>
+
+    // --------- Social -------------
+
+    @GET("student")
+    fun getStudent(@Query("student_id") studentId: Long): Call<UResponse<SStudentDTO>>
+
+    @GET("student/me")
+    fun getMeStudent(): Call<UResponse<SStudentDTO>>
+
+    // ---------------------------------
 
     @GET("siecomp/list_sessions")
     fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>

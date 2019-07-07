@@ -33,7 +33,8 @@ import com.forcetower.sagres.operation.Operation
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresLinkFinder
 import com.forcetower.sagres.request.SagresCalls
-import okio.Okio
+import okio.buffer
+import okio.sink
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.io.File
@@ -57,7 +58,7 @@ class DocumentOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val string = response.body()!!.string()
+                val string = response.body!!.string()
                 val document = Utils.createDocument(string)
                 onFirstResponse(document)
             } else {
@@ -88,17 +89,17 @@ class DocumentOperation(
                 if (file.exists()) file.delete()
                 file.createNewFile()
 
-                val sink = Okio.buffer(Okio.sink(file))
-                sink.writeAll(response.body()!!.source())
+                val sink = file.sink().buffer()
+                sink.writeAll(response.body!!.source())
                 sink.close()
                 Timber.d("Document downloaded")
                 publishProgress(DocumentCallback(Status.SUCCESS))
             } else {
-                Timber.d("Response failed with code ${response.code()}.")
-                publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(response.code()).message("Error..."))
+                Timber.d("Response failed with code ${response.code}.")
+                publishProgress(DocumentCallback(Status.RESPONSE_FAILED).code(response.code).message("Error..."))
             }
         } catch (e: IOException) {
-            Timber.d(e.message)
+            Timber.e(e)
             publishProgress(DocumentCallback(Status.NETWORK_ERROR).message(e.message).throwable(e))
         }
     }
