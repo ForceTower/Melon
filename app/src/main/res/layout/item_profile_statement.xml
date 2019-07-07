@@ -32,8 +32,8 @@
 
         <ImageView
             android:id="@+id/profile_image"
-            android:layout_width="48dp"
-            android:layout_height="48dp"
+            android:layout_width="30dp"
+            android:layout_height="30dp"
             android:layout_marginTop="16dp"
             android:importantForAccessibility="no"
             app:clipCircle="@{true}"
@@ -48,7 +48,7 @@
             android:layout_height="wrap_content"
             android:text="@{WordUtils.toTitleCase(statement.senderName)}"
             android:layout_marginStart="16dp"
-            android:textSize="18sp"
+            android:textSize="16sp"
             android:textColor="?attr/colorOnBackground"
             app:layout_constraintBottom_toBottomOf="@+id/profile_image"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
