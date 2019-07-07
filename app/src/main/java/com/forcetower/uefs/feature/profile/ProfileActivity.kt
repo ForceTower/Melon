@@ -49,17 +49,19 @@ class ProfileActivity : UActivity(), HasSupportFragmentInjector {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
-        supportFragmentManager.inTransaction {
-            val profileId = intent.getStringExtra(EXTRA_PROFILE_ID) ?: "0"
-            add(R.id.fragment_container, ProfileFragment.newInstance(profileId))
+        if (savedInstanceState == null) {
+            supportFragmentManager.inTransaction {
+                val profileId = intent.getLongExtra(EXTRA_PROFILE_ID, 0)
+                add(R.id.fragment_container, ProfileFragment.newInstance(profileId))
+            }
         }
     }
 
     override fun supportFragmentInjector() = fragmentInjector
 
     companion object {
-        const val EXTRA_PROFILE_ID = "profile_id_local"
-        fun startIntent(context: Context, profileId: String): Intent {
+        const val EXTRA_PROFILE_ID = "student_id"
+        fun startIntent(context: Context, profileId: Long): Intent {
             return Intent(context, ProfileActivity::class.java).apply {
                 putExtra(EXTRA_PROFILE_ID, profileId)
             }

@@ -32,12 +32,12 @@ object ImgurUploader {
             val response = call.execute()
             return if (response.isSuccessful) {
                 Timber.d("Upload Success")
-                val string = response.body()!!.string()
+                val string = response.body!!.string()
                 val converted = Gson().fromJson(string, UploadResponse::class.java)
                 Timber.d("Converted $converted")
                 converted.data
             } else {
-                Timber.d("Failed to upload with code ${response.code()}")
+                Timber.d("Failed to upload with code ${response.code}")
                 null
             }
         } catch (e: IOException) {

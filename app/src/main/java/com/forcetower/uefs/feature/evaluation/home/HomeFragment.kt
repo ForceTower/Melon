@@ -62,7 +62,7 @@ class HomeFragment : UFragment(), Injectable {
 
     private fun onTeacherSelected(teacher: EvaluationTeacher) {
         val id = teacher.teacherId
-        val directions = HomeFragmentDirections.actionHomeToEvalTeacher(id)
+        val directions = HomeFragmentDirections.actionHomeToEvalTeacher(id, null)
         findNavController().navigate(directions)
     }
 

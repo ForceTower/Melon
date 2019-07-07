@@ -21,6 +21,7 @@ class EvaluationEntityAdapter(
         val item = getItem(position)
         holder.binding.apply {
             entity = item
+            root.setTag(R.id.tag_student_id, item?.referencedId)
             executePendingBindings()
         }
     }

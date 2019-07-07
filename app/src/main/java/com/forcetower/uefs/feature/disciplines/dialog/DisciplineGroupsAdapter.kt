@@ -50,7 +50,7 @@ class DisciplineGroupsAdapter(
         holder.binding.apply {
             group = getItem(position)
             listener = this@DisciplineGroupsAdapter.listener
-            setLifecycleOwner(this@DisciplineGroupsAdapter.lifecycleOwner)
+            lifecycleOwner = this@DisciplineGroupsAdapter.lifecycleOwner
             executePendingBindings()
         }
     }

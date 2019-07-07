@@ -73,11 +73,11 @@ class LoadDemandOffersOperation(executor: Executor?) : Operation<DemandOffersCal
             val response = call.execute()
             if (response.isSuccessful) {
                 Timber.d("Completed request!")
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return createDocument(body)
             } else {
                 Timber.d("Failed loading")
-                publishProgress(DemandOffersCallback(Status.RESPONSE_FAILED).code(response.code()).message("Failed loading"))
+                publishProgress(DemandOffersCallback(Status.RESPONSE_FAILED).code(response.code).message("Failed loading"))
             }
         } catch (t: Throwable) {
             Timber.d("Error loading page. Throwable message ${t.message}")

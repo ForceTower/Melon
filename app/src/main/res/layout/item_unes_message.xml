@@ -44,7 +44,7 @@
         android:layout_height="wrap_content"
         android:layout_marginBottom="8dp"
         app:cardCornerRadius="8dp"
-        app:cardElevation="1dp"
+        app:cardElevation="4dp"
         android:onLongClick="@{(view) -> listener.onUNESMessageLongClick(view, message)}"
         android:onClick="@{() -> listener.onMessageClick(message.link)}"
         android:stateListAnimator="@animator/default_card_raise">

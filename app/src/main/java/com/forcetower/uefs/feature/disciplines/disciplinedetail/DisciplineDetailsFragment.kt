@@ -41,6 +41,7 @@ import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
 import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
@@ -50,6 +51,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.absences.Absence
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.MaterialsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
+import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
@@ -103,6 +105,9 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
+        viewModel.navigateToTeacherAction.observe(this, EventObserver {
+            startActivity(EvaluationActivity.startIntentForTeacher(requireContext(), it))
+        })
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             lifecycleOwner = this@DisciplineDetailsFragment

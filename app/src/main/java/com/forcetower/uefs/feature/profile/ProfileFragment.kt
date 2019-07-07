@@ -36,26 +36,25 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.doOnLayout
 import androidx.lifecycle.Observer
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.model.unes.Account
-import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentProfileBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_PROFILE_ID
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
+import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
-import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileFragment : UFragment(), Injectable {
@@ -69,35 +68,64 @@ class ProfileFragment : UFragment(), Injectable {
     private lateinit var viewModel: ProfileViewModel
     private lateinit var binding: FragmentProfileBinding
     private lateinit var setupViewModel: SetupViewModel
+    private lateinit var adapter: ProfileAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)
         setupViewModel = provideViewModel(factory)
-        viewModel.account.observe(this, Observer { handleAccount(it) })
+        activity?.postponeEnterTransition(500L)
+        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_PROFILE_ID, 0))
+        viewModel.profile.observe(this, Observer {
+            if (it?.imageUrl == null) {
+                activity?.startPostponedEnterTransition()
+            }
+        })
+
+        val headLoadListener = object : ImageLoadListener {
+            override fun onImageLoaded() { activity?.startPostponedEnterTransition() }
+            override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
+        }
+
+        adapter = ProfileAdapter(viewModel, this, headLoadListener)
         return FragmentProfileBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        binding.lifecycleOwner = this
-        binding.viewModel = viewModel
-        binding.executePendingBindings()
-
-        binding.imageProfile.setOnClickListener {
-            pickImage()
+        binding.apply {
+            lifecycleOwner = this@ProfileFragment
+            viewModel = this@ProfileFragment.viewModel
+            executePendingBindings()
+            profileRecycler.apply {
+                adapter = this@ProfileFragment.adapter
+                itemAnimator?.run {
+                    addDuration = 120L
+                    moveDuration = 120L
+                    changeDuration = 120L
+                    removeDuration = 100L
+                }
+                doOnLayout {
+                    addOnScrollListener(
+                        PushUpScrollListener(
+                            binding.up, it, R.id.student_name, R.id.student_course
+                        )
+                    )
+                }
+            }
         }
-    }
 
-    private fun handleAccount(resource: Resource<Account>) {
-        val data = resource.data ?: return
-        binding.account = data
-    }
+        viewModel.statements.observe(this, Observer {
+            adapter.statements = it
+        })
 
-    override fun onStart() {
-        super.onStart()
-        Timber.d("Loading Profile Details for $arguments")
-        viewModel.setProfileId(requireNotNull(arguments).getString(EXTRA_PROFILE_ID))
+        binding.up.setOnClickListener {
+            requireActivity().finish()
+        }
+
+//        binding.imageProfile.setOnClickListener {
+//            pickImage()
+//        }
     }
 
     private fun pickImage() {
@@ -108,13 +136,13 @@ class ProfileFragment : UFragment(), Injectable {
 
     private fun onImagePicked(uri: Uri) {
         setupViewModel.setSelectedImage(uri)
-        GlideApp.with(requireContext())
-            .load(uri)
-            .fallback(R.mipmap.ic_unes_large_image_512)
-            .placeholder(R.mipmap.ic_unes_large_image_512)
-            .circleCrop()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(binding.imageProfile)
+//        GlideApp.with(requireContext())
+//            .load(uri)
+//            .fallback(R.mipmap.ic_unes_large_image_512)
+//            .placeholder(R.mipmap.ic_unes_large_image_512)
+//            .circleCrop()
+//            .transition(DrawableTransitionOptions.withCrossFade())
+//            .into(binding.user)
 
         setupViewModel.uploadImageToStorage()
     }
@@ -154,7 +182,7 @@ class ProfileFragment : UFragment(), Injectable {
 
     companion object {
         private const val REQUEST_SELECT_PICTURE = 8000
-        fun newInstance(profileId: String): ProfileFragment {
+        fun newInstance(profileId: Long): ProfileFragment {
             return ProfileFragment().apply {
                 arguments = bundleOf(EXTRA_PROFILE_ID to profileId)
             }

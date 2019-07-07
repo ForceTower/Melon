@@ -32,16 +32,9 @@
 
     <data>
         <variable
-            name="storage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
-
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
             name="profile"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,8 +48,7 @@
             android:layout_marginTop="36dp"
             android:importantForAccessibility="no"
             app:clipToCircle="@{true}"
-            app:firebaseStorage="@{storage}"
-            app:firebaseUser="@{firebaseUser}"
+            app:imageUrl="@{profile.profile.imageUrl}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -73,7 +65,7 @@
             android:textColor="?attr/colorOnBackground"
             android:textAlignment="gravity"
             android:gravity="center"
-            android:text="@{profile.profile.name}"
+            android:text="@{WordUtils.toTitleCase(profile.profile.name)}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/user_image"
@@ -90,7 +82,7 @@
             android:textSize="12sp"
             android:textAlignment="gravity"
             android:gravity="center"
-            android:text="@{profile.course.name}"
+            android:text="@{profile.profile.courseName}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

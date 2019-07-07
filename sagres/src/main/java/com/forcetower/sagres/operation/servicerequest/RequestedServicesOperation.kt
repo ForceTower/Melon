@@ -71,7 +71,7 @@ class RequestedServicesOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 val document = createDocument(body)
                 successMeasures(document)
             } else {

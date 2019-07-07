@@ -54,7 +54,7 @@ class ServicesFollowUpFragment : UFragment(), Injectable {
             binding = it
         }.apply {
             viewModel = this@ServicesFollowUpFragment.viewModel
-            setLifecycleOwner(this@ServicesFollowUpFragment)
+            lifecycleOwner = this@ServicesFollowUpFragment
             executePendingBindings()
         }.root
     }

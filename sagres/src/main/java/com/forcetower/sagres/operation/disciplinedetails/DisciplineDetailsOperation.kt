@@ -138,10 +138,10 @@ class DisciplineDetailsOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return createDocument(body)
             } else {
-                publishProgress(DisciplineDetailsCallback(Status.RESPONSE_FAILED).message("Unsuccessful response").code(response.code()))
+                publishProgress(DisciplineDetailsCallback(Status.RESPONSE_FAILED).message("Unsuccessful response").code(response.code))
             }
         } catch (e: IOException) {
             publishProgress(DisciplineDetailsCallback(Status.NETWORK_ERROR).throwable(e).message("Failed at initial form connect"))
@@ -155,10 +155,10 @@ class DisciplineDetailsOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return createDocument(body)
             } else {
-                publishProgress(DisciplineDetailsCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at params").code(response.code()))
+                publishProgress(DisciplineDetailsCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at params").code(response.code))
             }
         } catch (e: IOException) {
             publishProgress(DisciplineDetailsCallback(Status.NETWORK_ERROR).throwable(e).message("Failed at params setup"))
@@ -194,7 +194,7 @@ class DisciplineDetailsOperation(
         try {
             val response = call.execute()
             if (response.isSuccessful) {
-                val body = response.body()!!.string()
+                val body = response.body!!.string()
                 return createDocument(body)
             } else {
                 publishProgress(DisciplineDetailsCallback(Status.RESPONSE_FAILED).message("Unsuccessful response at material download"))
