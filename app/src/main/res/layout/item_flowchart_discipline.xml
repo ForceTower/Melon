@@ -95,6 +95,33 @@
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
                 tools:text="Tecnologia" />
 
+            <TextView
+                android:id="@+id/text_discipline_completed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:goneUnless="@{discipline.completed}"
+                android:textSize="14sp"
+                android:textColor="?attr/colorPrimary"
+                android:layout_marginStart="12dp"
+                android:text="@string/flowchart_discipline_complete"
+                app:layout_constraintStart_toEndOf="@+id/text_discipline_department"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
+                tools:text="Completa" />
+
+            <TextView
+                android:id="@+id/text_discipline_coursing"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:goneUnless="@{discipline.participating}"
+                android:textSize="14sp"
+                android:textColor="?attr/colorAccent"
+                android:layout_marginStart="12dp"
+                android:text="@string/flowchart_discipline_current"
+                app:layout_constraintStart_toEndOf="@+id/text_discipline_department"
+                app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
+                tools:text="Cursando"
+                tools:visibility="gone"/>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>
 </layout>
