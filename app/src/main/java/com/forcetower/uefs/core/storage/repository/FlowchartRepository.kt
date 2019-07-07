@@ -7,6 +7,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -25,6 +26,19 @@ class FlowchartRepository @Inject constructor(
 ) {
     private val recursiveRequirements = context.getString(R.string.flowchart_recursive_continuation)
     private val recursiveUnlocks = context.getString(R.string.flowchart_recursive_unlock)
+
+    fun getFlowcharts(): LiveData<Resource<List<Flowchart>>> {
+        return object : NetworkBoundResource<List<Flowchart>, UResponse<List<Flowchart>>>(executors) {
+            override fun loadFromDb() = database.flowchartDao().getFlowcharts()
+            override fun shouldFetch(it: List<Flowchart>?) = true
+            override fun createCall() = service.getFlowcharts().asLiveData()
+            override fun saveCallResult(value: UResponse<List<Flowchart>>) {
+                Timber.d("Data received from network $value")
+                value.data ?: return
+                database.flowchartDao().insertFlowcharts(value.data)
+            }
+        }.asLiveData()
+    }
 
     fun getFlowchart(courseId: Long): LiveData<Resource<List<FlowchartSemesterUI>>> {
         return object : NetworkBoundResource<List<FlowchartSemesterUI>, UResponse<FlowchartDTO>>(executors) {
