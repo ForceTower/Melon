@@ -5,7 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartSelectCourseBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -36,6 +38,11 @@ class SelectCourseFragment : UFragment(), Injectable {
             if (it.data != null) {
                 coursesAdapter.submitList(it.data)
             }
+        })
+
+        viewModel.onFlowchartSelect.observe(this, EventObserver {
+            val direction = SelectCourseFragmentDirections.actionSelectToStart(it.courseId)
+            findNavController().navigate(direction)
         })
     }
 }
