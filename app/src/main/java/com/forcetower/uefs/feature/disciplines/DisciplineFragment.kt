@@ -46,7 +46,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
-import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.makeSemester
@@ -98,10 +97,6 @@ class DisciplineFragment : UFragment(), Injectable {
 
         viewModel.navigateToGroupAction.observe(this, EventObserver {
             startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
-        })
-
-        viewModel.navigateToTeacherAction.observe(this, EventObserver {
-            startActivity(EvaluationActivity.startIntentForTeacher(requireContext(), it))
         })
     }
 
