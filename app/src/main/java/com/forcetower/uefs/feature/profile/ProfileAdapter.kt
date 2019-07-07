@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.databinding.ItemProfileHeaderBinding
+import com.forcetower.uefs.databinding.ItemProfileStatementBinding
 import com.forcetower.uefs.databinding.ItemProfileStatementHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
@@ -34,6 +35,7 @@ class ProfileAdapter(
         return when (viewType) {
             R.layout.item_profile_header -> ProfileHolder.Header(parent.inflate(viewType), interactor)
             R.layout.item_profile_statement_header -> ProfileHolder.StatementHeader(parent.inflate(viewType))
+            R.layout.item_profile_statement -> ProfileHolder.Statement(parent.inflate(viewType), interactor)
             else -> throw IllegalStateException("No view matching view type $viewType")
         }
     }
@@ -41,13 +43,19 @@ class ProfileAdapter(
     override fun getItemCount() = differ.currentList.size
 
     override fun onBindViewHolder(holder: ProfileHolder, position: Int) {
-//        val item = differ.currentList[position]
+        val item = differ.currentList[position]
         when (holder) {
             is ProfileHolder.Header -> {
                 holder.binding.apply {
                     account = viewModel.profile
                     headshotImageListener = headLoadListener
                     lifecycleOwner = this@ProfileAdapter.lifecycleOwner
+                }
+            }
+            is ProfileHolder.Statement -> {
+                holder.binding.apply {
+                    statement = item as ProfileStatement
+                    executePendingBindings()
                 }
             }
         }
@@ -78,8 +86,10 @@ class ProfileAdapter(
         class Header(val binding: ItemProfileHeaderBinding, interactor: ProfileInteractor?) : ProfileHolder(binding.root) {
             init { binding.interactor = interactor }
         }
-        class Statement(view: View, interactor: ProfileInteractor?) : ProfileHolder(view) {
-            init { }
+        class Statement(val binding: ItemProfileStatementBinding, interactor: ProfileInteractor?) : ProfileHolder(binding.root) {
+            init {
+                binding.interactor = interactor
+            }
         }
         class StatementHeader(binding: ItemProfileStatementHeaderBinding) : ProfileHolder(binding.root)
     }

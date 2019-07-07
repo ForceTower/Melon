@@ -7,6 +7,10 @@
         <variable
             name="statement"
             type="com.forcetower.uefs.core.model.unes.ProfileStatement" />
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.profile.ProfileInteractor" />
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -42,7 +46,7 @@
             android:id="@+id/profile_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{statement.senderName}"
+            android:text="@{WordUtils.toTitleCase(statement.senderName)}"
             android:layout_marginStart="16dp"
             android:textSize="18sp"
             android:textColor="?attr/colorOnBackground"
@@ -70,6 +74,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="16dp"
+            app:zonedStatement="@{statement.createdAt}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintTop_toBottomOf="@id/profile_statement"

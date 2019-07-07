@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudentDTO
 import retrofit2.Call
 import retrofit2.http.Body
@@ -102,6 +103,9 @@ interface UService {
 
     @POST("account/darktheme/invite")
     fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
+
+    @GET("account/statements")
+    fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
 
     @GET("courses")
     fun getCourses(): Call<List<Course>>

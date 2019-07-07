@@ -38,7 +38,12 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
+import org.threeten.bp.ZonedDateTime
+import java.text.SimpleDateFormat
 import java.util.Calendar
+import java.util.Date
+import java.util.Locale
+import java.util.concurrent.TimeUnit
 import kotlin.math.min
 
 @BindingAdapter("profileImage")
@@ -126,4 +131,35 @@ fun profileScoreOptional(
     } else {
         tv.text = ""
     }
+}
+
+@BindingAdapter(value = ["zonedStatement"])
+fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime) {
+    val time = zonedDate.toInstant().toEpochMilli()
+    val context = view.context
+    val now = System.currentTimeMillis()
+    val diff = now - time
+
+    val oneDay = TimeUnit.MILLISECONDS.convert(1, TimeUnit.DAYS)
+    val oneHor = TimeUnit.MILLISECONDS.convert(1, TimeUnit.HOURS)
+    val days = TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
+    val value = when {
+        days > 1L -> {
+            val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
+            val str = format.format(Date(time))
+            context.getString(R.string.message_received_date_format, str)
+        }
+        days == 1L -> {
+            val hours = TimeUnit.HOURS.convert(diff - oneDay, TimeUnit.MILLISECONDS)
+            val str = days.toString() + "d " + hours.toString() + "h"
+            context.getString(R.string.message_received_date_ago_format, str)
+        }
+        else -> {
+            val hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
+            val minutes = TimeUnit.MINUTES.convert(diff - (hours * oneHor), TimeUnit.MILLISECONDS)
+            val str = hours.toString() + "h " + minutes + "min"
+            context.getString(R.string.message_received_date_ago_format, str)
+        }
+    }
+    view.text = value
 }
