@@ -74,7 +74,7 @@ class SearchFragment : UFragment(), Injectable {
     private fun onEvalEntitySelected(entity: EvaluationEntity) {
         when (entity.type) {
             0 -> {
-                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId)
+                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId, null)
                 findNavController().navigate(directions)
             }
             1 -> {
