@@ -219,6 +219,7 @@
             android:visibility="invisible"
             android:text="@string/evaluate_teacher"
             android:textAllCaps="false"
+            android:letterSpacing="0"
             app:backgroundTint="?attr/colorPrimary"
             app:icon="@drawable/rate_review_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
