@@ -186,6 +186,7 @@ class DisciplineViewModel @Inject constructor(
     }
 
     fun onTeacherNameClick(name: String) {
+        Timber.d("Name clicked $name")
         _navigateToTeacherAction.value = Event(name)
     }
 
