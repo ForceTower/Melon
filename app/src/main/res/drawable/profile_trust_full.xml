@@ -3,7 +3,7 @@
     <item android:id="@+id/background"
         android:drawable="@drawable/smile_empty_selector" />
     <item android:id="@+id/secondaryProgress"
-        android:drawable="@drawable/smile_empty_selector" />
+        android:drawable="@drawable/smile_full_selector" />
     <item android:id="@+id/progress"
         android:drawable="@drawable/smile_full_selector" />
 </layer-list>

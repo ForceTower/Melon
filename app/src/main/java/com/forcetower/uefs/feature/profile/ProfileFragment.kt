@@ -115,6 +115,10 @@ class ProfileFragment : UFragment(), Injectable {
             }
         }
 
+        viewModel.statements.observe(this, Observer {
+            adapter.statements = it
+        })
+
         binding.up.setOnClickListener {
             requireActivity().finish()
         }

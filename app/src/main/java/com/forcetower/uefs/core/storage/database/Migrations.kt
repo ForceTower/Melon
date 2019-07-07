@@ -232,3 +232,10 @@ object M27TO28 : Migration(27, 28) {
         database.execSQL("UPDATE FlowchartRequirement SET typeId = 2 WHERE type = 'Co Requisitos'")
     }
 }
+
+object M28TO29 : Migration(28, 29) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val table = "ProfileStatement"
+        database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `receiverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `senderName` TEXT, `senderPicture` TEXT, `text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `approved` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))")
+    }
+}

@@ -31,6 +31,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.model.unes.SStudentDTO
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -90,4 +91,15 @@ class ProfileRepository @Inject constructor(
     }
 
     fun getAccountDatabase() = database.accountDao().getAccount()
+
+    fun loadStatements(profileId: Long): LiveData<Resource<List<ProfileStatement>>> {
+        return object : NetworkBoundResource<List<ProfileStatement>, UResponse<List<ProfileStatement>>>(executors) {
+            override fun loadFromDb() = database.statementDao().getStatements(profileId)
+            override fun shouldFetch(it: List<ProfileStatement>?) = true
+            override fun createCall() = service.getStatements(profileId).asLiveData()
+            override fun saveCallResult(value: UResponse<List<ProfileStatement>>) {
+                if (value.data != null) database.statementDao().insert(value.data)
+            }
+        }.asLiveData()
+    }
 }
