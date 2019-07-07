@@ -654,6 +654,8 @@
     <string name="in_app_updates_update_ready">A atualização está pronta para ser instalada!</string>
     <string name="in_app_updates_restart_app">Reiniciar</string>
     <string name="in_app_update_no_update_type">Existe uma nova atualização do aplicativo! Olha lá na loja!</string>
+    <string name="discipline_grades_mean">Média final</string>
+    <string name="discipline_grades_see_more">Ver detalhes da disciplina</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

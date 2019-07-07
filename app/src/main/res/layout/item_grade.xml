@@ -34,11 +34,18 @@
         <variable
             name="grade"
             type="com.forcetower.uefs.core.model.unes.Grade"/>
+        <variable
+            name="clazzGroup"
+            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups" />
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.feature.common.DisciplineActions" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="60dp">
+        android:layout_height="60dp"
+        android:onClick="@{() -> listener.classClicked(clazzGroup)}">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_margin_start"

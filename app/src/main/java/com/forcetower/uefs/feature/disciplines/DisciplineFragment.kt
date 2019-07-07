@@ -82,7 +82,6 @@ class DisciplineFragment : UFragment(), Injectable {
         super.onViewCreated(view, savedInstanceState)
         adapter = SemesterAdapter(childFragmentManager)
         viewPager.adapter = adapter
-        viewPager.offscreenPageLimit = 4
         tabs.setupWithViewPager(viewPager)
     }
 

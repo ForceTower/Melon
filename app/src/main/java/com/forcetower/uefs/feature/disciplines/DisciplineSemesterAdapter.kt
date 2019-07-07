@@ -36,7 +36,7 @@ import com.forcetower.uefs.databinding.ItemDisciplineCollapsedBinding
 import com.forcetower.uefs.feature.shared.inflater
 
 class DisciplineSemesterAdapter(
-    val viewModel: DisciplineViewModel
+    private val viewModel: DisciplineViewModel
 ) : ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassHolder {
         val binding = ItemDisciplineCollapsedBinding.inflate(parent.inflater(), parent, false)
