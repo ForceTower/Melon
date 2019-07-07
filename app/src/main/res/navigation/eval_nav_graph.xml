@@ -108,7 +108,7 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_translate"
+            app:popExitAnim="@anim/close_scale"
             app:popUpTo="@+id/eval_discipline"
             app:popUpToInclusive="true" />
     </fragment>
@@ -157,7 +157,7 @@
             app:exitAnim="@anim/close_scale"
             app:launchSingleTop="true"
             app:popEnterAnim="@anim/open_scale"
-            app:popExitAnim="@anim/close_translate"
+            app:popExitAnim="@anim/close_scale"
             app:popUpTo="@+id/eval_teacher"
             app:popUpToInclusive="true" />
         <argument
