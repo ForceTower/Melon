@@ -46,7 +46,9 @@
         <action
             android:id="@+id/action_discipline_self"
             app:destination="@id/discipline"
-            app:launchSingleTop="true" />
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/discipline"
+            app:popUpToInclusive="true" />
         <argument
             android:name="disciplineId"
             app:argType="long" />
