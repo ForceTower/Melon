@@ -84,7 +84,7 @@ class SearchFragment : UFragment(), Injectable {
                 findNavController().navigate(directions)
             }
             2 -> {
-                onStudentSelected(entity)
+                showSnack(getString(R.string.students_discorevery_is_not_for_now))
             }
         }
     }
