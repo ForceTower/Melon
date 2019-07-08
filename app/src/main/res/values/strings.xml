@@ -445,7 +445,7 @@
     <string name="dark_theme_invite_sent">O seu presente foi enviado</string>
     <string name="mean_needed_in_finals">Nota necessária na final:</string>
     <string name="you_cant_miss_a_class">Você não pode mais faltar</string>
-    <string name="you_missed_to_many_classes">Você já faltou demais, sinto muito</string>
+    <string name="you_missed_to_many_classes">Você ultrapassou o limite de faltas</string>
     <string name="grade_format">%1$.1f</string>
     <string name="ach_distance_title_format">Distância até %1$s</string>
     <string name="ach_distance_amount_format" translatable="false">%1$.1f m</string>
