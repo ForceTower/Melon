@@ -40,7 +40,7 @@ import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
 
-@BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"])
+@BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
     val sort = classes?.sortedWith(Comparator { one, two ->
         when {
