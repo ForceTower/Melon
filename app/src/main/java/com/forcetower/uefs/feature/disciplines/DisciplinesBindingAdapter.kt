@@ -35,12 +35,13 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.util.round
+import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
 
-@BindingAdapter("disciplineGroupsGrades")
-fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
+@BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
+fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
     val sort = classes?.sortedWith(Comparator { one, two ->
         when {
             one.name.trim().equals("prova final", ignoreCase = true) -> 1
@@ -51,7 +52,7 @@ fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?) {
 
     val adapter: ClassGroupGradesAdapter
     if (recycler.adapter == null) {
-        adapter = ClassGroupGradesAdapter()
+        adapter = ClassGroupGradesAdapter(listener)
         recycler.adapter = adapter
     } else {
         adapter = recycler.adapter as ClassGroupGradesAdapter
