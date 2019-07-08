@@ -33,14 +33,17 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.databinding.ItemGradeBinding
+import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.inflater
 
 private const val GRADE = 8
 
-class ClassGroupGradesAdapter : ListAdapter<Grade, GradesHolder>(GradesDiff) {
+class ClassGroupGradesAdapter(
+    private val listener: DisciplineActions?
+) : ListAdapter<Grade, GradesHolder>(GradesDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): GradesHolder {
         val binding = ItemGradeBinding.inflate(parent.inflater(), parent, false)
-        return GradesHolder(binding)
+        return GradesHolder(binding, listener)
     }
 
     override fun onBindViewHolder(holder: GradesHolder, position: Int) {
@@ -54,7 +57,11 @@ class ClassGroupGradesAdapter : ListAdapter<Grade, GradesHolder>(GradesDiff) {
     override fun getItemViewType(position: Int) = GRADE
 }
 
-class GradesHolder(val binding: ItemGradeBinding) : RecyclerView.ViewHolder(binding.root)
+class GradesHolder(val binding: ItemGradeBinding, listener: DisciplineActions?) : RecyclerView.ViewHolder(binding.root) {
+    init {
+        binding.listener = listener
+    }
+}
 
 private object GradesDiff : DiffUtil.ItemCallback<Grade>() {
     override fun areItemsTheSame(oldItem: Grade, newItem: Grade) = oldItem.uid == newItem.uid
