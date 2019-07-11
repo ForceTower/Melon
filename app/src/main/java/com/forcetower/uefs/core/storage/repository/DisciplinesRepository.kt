@@ -71,6 +71,8 @@ class DisciplinesRepository @Inject constructor(
         return database.classAbsenceDao().getMyAbsenceFromClass(classId)
     }
 
+    fun getAbsencesAmount(classId: Long) = database.classAbsenceDao().getMissedClassesAmount(classId)
+
     fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>> {
         return database.classMaterialDao().getMaterialsFromGroup(classGroupId)
     }
