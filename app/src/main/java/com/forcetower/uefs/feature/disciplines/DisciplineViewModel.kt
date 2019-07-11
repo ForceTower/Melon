@@ -70,6 +70,10 @@ class DisciplineViewModel @Inject constructor(
     val absences: LiveData<List<ClassAbsence>>
         get() = _absences
 
+    private val _absencesAmount = MediatorLiveData<Int>()
+    val absencesAmount: LiveData<Int>
+        get() = _absencesAmount
+
     private val _materials = MediatorLiveData<List<ClassMaterial>>()
     val materials: LiveData<List<ClassMaterial>>
         get() = _materials
@@ -108,6 +112,9 @@ class DisciplineViewModel @Inject constructor(
         }
         _absences.addSource(classId) {
             refreshAbsences(it)
+        }
+        _absencesAmount.addSource(classId) {
+            refreshAbsencesAmount(it)
         }
         _materials.addSource(classGroupId) {
             refreshMaterials(it)
@@ -156,6 +163,15 @@ class DisciplineViewModel @Inject constructor(
             val source = repository.getMyAbsencesFromClass(classId)
             _absences.addSource(source) { value ->
                 _absences.value = value
+            }
+        }
+    }
+
+    private fun refreshAbsencesAmount(classId: Long?) {
+        if (classId != null) {
+            val source = repository.getAbsencesAmount(classId)
+            _absencesAmount.addSource(source) { value ->
+                _absencesAmount.value = value
             }
         }
     }
