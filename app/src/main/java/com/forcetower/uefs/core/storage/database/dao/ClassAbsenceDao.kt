@@ -53,6 +53,9 @@ abstract class ClassAbsenceDao {
     @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId")
     abstract fun getMyAbsenceFromClass(classId: Long): LiveData<List<ClassAbsence>>
 
+    @Query("SELECT COUNT(uid) FROM ClassAbsence WHERE class_id = :classId")
+    abstract fun getMissedClassesAmount(classId: Long): LiveData<Int>
+
     @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId")
     abstract fun getAbsenceFromClassDirect(classId: Long): List<ClassAbsence>
 
