@@ -35,7 +35,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.sagres.database.model.SDemandOffer
 import com.forcetower.uefs.R
-import com.forcetower.uefs.databinding.ItemCardDemandOfferBinding
+import com.forcetower.uefs.databinding.ItemCardDemandOfferRevBinding
 import com.forcetower.uefs.databinding.ItemDemandHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
 import timber.log.Timber
@@ -44,7 +44,7 @@ class DemandOffersAdapter(
     val lifecycleOwner: LifecycleOwner,
     val viewModel: DemandViewModel
 ) : RecyclerView.Adapter<DemandHolder>() {
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 
     var currentList: List<SDemandOffer> = listOf()
     set(value) {
@@ -54,7 +54,7 @@ class DemandOffersAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemandHolder {
         return when (viewType) {
-            R.layout.item_card_demand_offer -> DemandHolder.OfferHolder(parent.inflate(viewType))
+            R.layout.item_card_demand_offer_rev -> DemandHolder.OfferHolder(parent.inflate(viewType))
             R.layout.item_demand_header -> DemandHolder.HeaderHolder(parent.inflate(viewType))
             else -> throw IllegalStateException("Unable to inflate $viewType")
         }
@@ -84,7 +84,7 @@ class DemandOffersAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is SDemandOffer -> R.layout.item_card_demand_offer
+            is SDemandOffer -> R.layout.item_card_demand_offer_rev
             else -> R.layout.item_demand_header
         }
     }
@@ -145,7 +145,7 @@ class DemandOffersAdapter(
 
 sealed class DemandHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     class HeaderHolder(val binding: ItemDemandHeaderBinding) : DemandHolder(binding.root)
-    class OfferHolder(val binding: ItemCardDemandOfferBinding) : DemandHolder(binding.root)
+    class OfferHolder(val binding: ItemCardDemandOfferRevBinding) : DemandHolder(binding.root)
 }
 
 private object DiffCallback : DiffUtil.ItemCallback<Any>() {

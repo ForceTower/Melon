@@ -61,7 +61,6 @@ class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         val offersAdapter = DemandOffersAdapter(this, viewModel)
         binding.offersRecycler.apply {
             adapter = offersAdapter

@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
-                tools:listitem="@layout/item_card_demand_offer"
+                tools:listitem="@layout/item_card_demand_offer_rev"
                 android:paddingBottom="96dp"
                 android:clipToPadding="false"/>
             
