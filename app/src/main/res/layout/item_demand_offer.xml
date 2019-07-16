@@ -44,21 +44,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:onClick="@{() -> actions.onOfferClick(offer)}">
-        
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_begin="16dp" />
-    
+
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_end"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:orientation="vertical"
             app:layout_constraintGuide_end="48dp" />
-    
+
         <TextView
             android:id="@+id/text_discipline_code"
             android:layout_width="0dp"
@@ -71,7 +71,7 @@
             app:layout_constraintStart_toEndOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="TEC 706" />
-    
+
         <TextView
             android:id="@+id/text_discipline_name"
             android:layout_width="0dp"
@@ -84,7 +84,7 @@
             app:layout_constraintStart_toEndOf="@id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/text_discipline_code"
             tools:text="Metodologia do Trabalho Científico em Engenharia de Computação" />
-    
+
         <ImageView
             android:layout_width="24dp"
             android:layout_height="24dp"
@@ -101,7 +101,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/text_discipline_name"
             app:layout_constraintTop_toTopOf="parent" />
-    
+
         <TextView
             android:id="@+id/text_category_label"
             android:layout_width="wrap_content"
@@ -114,7 +114,7 @@
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/text_discipline_name"
             android:text="@string/demand_category_label" />
-        
+
         <TextView
             android:id="@+id/text_category_info"
             android:layout_width="wrap_content"
@@ -126,6 +126,6 @@
             android:textSize="12sp"
             app:layout_constraintBaseline_toBaselineOf="@id/text_category_label"
             app:layout_constraintStart_toEndOf="@id/text_category_label"/>
-        
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
