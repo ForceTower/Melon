@@ -37,11 +37,12 @@
             android:id="@+id/code"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:text="@{clazzGroup.discipline().code}"
             android:textColor="?attr/colorPrimary"
             app:layout_constraintBottom_toBottomOf="@+id/department"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/department"
+            app:layout_constraintTop_toBottomOf="@+id/name"
             tools:text="TEC402" />
 
         <TextView
@@ -50,11 +51,11 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            app:goneUnless="@{clazzGroup.discipline().department != null}"
             app:departmentStrip="@{clazzGroup.discipline().department}"
+            app:goneUnless="@{clazzGroup.discipline().department != null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/code"
-            app:layout_constraintTop_toBottomOf="@id/name"
+            app:layout_constraintTop_toBottomOf="@+id/name"
             tools:text="Ciências Humanas e Filosofia" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
