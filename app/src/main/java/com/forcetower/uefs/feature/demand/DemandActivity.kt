@@ -42,6 +42,7 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import timber.log.Timber
@@ -52,6 +53,8 @@ class DemandActivity : UActivity(), HasSupportFragmentInjector {
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
 
     private lateinit var binding: ActivityDemandBinding
     private lateinit var currentFragment: NavigationFragment
@@ -68,6 +71,7 @@ class DemandActivity : UActivity(), HasSupportFragmentInjector {
                 currentFragment = fragment
                 add(R.id.fragment_container, fragment)
             }
+            analytics.logEvent("demand_entered_screen", null)
         }
 
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
