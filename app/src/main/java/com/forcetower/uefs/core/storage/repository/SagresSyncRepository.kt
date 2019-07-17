@@ -455,7 +455,8 @@ class SagresSyncRepository @Inject constructor(
                 defineDemand(start.isDemandOpen)
 
                 Timber.d("Semesters: ${start.semesters}")
-                Timber.d("Disciplines:  ${start.disciplines}")
+                Timber.d("Disciplines: ${start.disciplines}")
+                Timber.d("Groups: ${start.groups}")
                 Timber.d("Calendar: ${start.calendar}")
                 true
             }
@@ -480,7 +481,7 @@ class SagresSyncRepository @Inject constructor(
                 materialsNotifications()
 
                 Timber.d("Semesters: ${experimental.getSemesters()}")
-                Timber.d("Disciplines:  ${experimental.getDisciplines()}")
+                Timber.d("Disciplines: ${experimental.getDisciplines()}")
                 Timber.d("Groups: ${experimental.getGroups()}")
                 true
             }

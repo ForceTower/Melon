@@ -86,16 +86,19 @@ abstract class ClassGroupDao {
     @Transaction
     open fun insert(grp: SDisciplineGroup): ClassGroup? {
         val sgr = if (grp.group == null) "unique" else grp.group
-        val discipline = selectDisciplineDirect(grp.code)
-        var group = selectGroupDirect(grp.semester, grp.code, sgr)
-        val grops = selectGroupsDirect(grp.semester, grp.code)
+        val discipline = selectDisciplineDirect(grp.code.trim())
+        var group = selectGroupDirect(grp.semester.trim(), grp.code.trim(), sgr)
+        val grops = selectGroupsDirect(grp.semester.trim(), grp.code.trim())
 
         if (grops.isNotEmpty() && grops[0].group.equals("unique", ignoreCase = true)) {
             group = grops[0]
         } else if (grp.group == null && grops.isNotEmpty()) {
             group = grops[0]
         } else if (group == null) {
-            val clazz = selectClassDirect(grp.semester, grp.code) ?: return null
+            Timber.d("Class will be found or will return null")
+            val clazz = selectClassDirect(grp.semester.trim(), grp.code.trim())
+            Timber.d("Clazz found: $clazz")
+            clazz ?: return null
 
             group = ClassGroup(classId = clazz.uid, group = sgr)
             group.uid = insert(group)
@@ -105,10 +108,11 @@ abstract class ClassGroupDao {
         update(group)
 
         if (!grp.department.isNullOrBlank()) {
-            discipline.department = grp.department
+            discipline.department = grp.department.trim()
             updateDiscipline(discipline)
             Timber.d("Updated discipline ${discipline.code} department to ${discipline.department}")
         }
+        Timber.d("Group insertion completed with $group")
         return group
     }
 

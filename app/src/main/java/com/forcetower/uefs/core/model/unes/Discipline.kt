@@ -37,8 +37,7 @@ import java.util.UUID
 
 @Entity(indices = [
     Index(value = ["code"], unique = true),
-    Index(value = ["uuid"], unique = true),
-    Index(value = ["name"], unique = true)
+    Index(value = ["uuid"], unique = true)
 ])
 data class Discipline(
     @PrimaryKey(autoGenerate = true)

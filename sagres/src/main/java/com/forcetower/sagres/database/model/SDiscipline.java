@@ -109,6 +109,6 @@ public class SDiscipline {
 
     @Override
     public String toString() {
-        return getName();
+        return "." + getName() + ":" + getCode() + ".";
     }
 }
