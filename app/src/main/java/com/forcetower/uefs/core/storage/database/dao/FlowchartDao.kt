@@ -12,6 +12,7 @@ import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
 import com.forcetower.uefs.core.model.unes.FlowchartSemester
+import timber.log.Timber
 import java.util.Calendar
 
 @Dao
@@ -28,8 +29,10 @@ abstract class FlowchartDao {
         list.forEach {
             val found = findFlowchart(it.id) != null
             if (!found) {
-                Flowchart(it.id, it.courseId, it.description, now)
+                Timber.d("not found")
+                insertFlowchart(Flowchart(it.id, it.courseId, it.description, now))
             } else {
+                Timber.d("Already there")
                 updateFlowchart(it.id, it.description, now)
             }
         }

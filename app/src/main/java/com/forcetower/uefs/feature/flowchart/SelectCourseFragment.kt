@@ -12,6 +12,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartSelectCourseBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class SelectCourseFragment : UFragment(), Injectable {
@@ -35,6 +36,7 @@ class SelectCourseFragment : UFragment(), Injectable {
         }
 
         viewModel.getFlowcharts().observe(this, Observer {
+            Timber.d("Resource data ${it.data}")
             if (it.data != null) {
                 coursesAdapter.submitList(it.data)
             }
