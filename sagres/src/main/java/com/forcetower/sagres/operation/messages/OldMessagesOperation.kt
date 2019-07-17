@@ -41,7 +41,7 @@ class OldMessagesOperation(
 
     override fun execute() {
         publishProgress(MessagesCallback(Status.LOADING))
-        val call = SagresCalls.getMessagesPage()
+        val call = SagresCalls.startPage
         try {
             val response = call.execute()
             if (response.isSuccessful) {

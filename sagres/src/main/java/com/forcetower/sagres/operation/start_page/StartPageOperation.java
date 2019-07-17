@@ -74,6 +74,7 @@ public class StartPageOperation extends Operation<StartPageCallback> {
         List<SDiscipline> disciplines = SagresDisciplineParser.getDisciplines(document);
         List<SDisciplineGroup> groups = SagresDcpGroupsParser.getGroups(document);
         List<SDisciplineClassLocation> locations = SagresScheduleParser.getSchedule(document);
+        List<SMessage> messages = SagresMessageParser.getMessages(document);
         boolean demandOpen = SagresBasicParser.isDemandOpen(document);
 
         StartPageCallback callback = new StartPageCallback(Status.SUCCESS)
@@ -83,7 +84,8 @@ public class StartPageOperation extends Operation<StartPageCallback> {
                 .disciplines(disciplines)
                 .groups(groups)
                 .locations(locations)
-                .demandOpen(demandOpen);
+                .demandOpen(demandOpen)
+                .messages(messages);
 
         finished = callback;
         success = true;
