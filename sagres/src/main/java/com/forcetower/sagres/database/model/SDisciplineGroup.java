@@ -146,7 +146,7 @@ public class SDisciplineGroup {
 
     @Override
     public String toString() {
-        return code + ":" + group;
+        return code + ":" + group + "::" + name;
     }
 
     public int getIgnored() {

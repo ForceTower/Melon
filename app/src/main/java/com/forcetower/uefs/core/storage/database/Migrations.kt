@@ -239,3 +239,9 @@ object M28TO29 : Migration(28, 29) {
         database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `receiverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `senderName` TEXT, `senderPicture` TEXT, `text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `approved` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))")
     }
 }
+
+object M29TO30 : Migration(29, 30) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP INDEX IF EXISTS `index_Discipline_name`")
+    }
+}
