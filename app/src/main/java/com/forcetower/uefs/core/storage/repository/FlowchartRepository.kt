@@ -15,6 +15,7 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import timber.log.Timber
 import javax.inject.Inject
 
 class FlowchartRepository @Inject constructor(
@@ -32,6 +33,7 @@ class FlowchartRepository @Inject constructor(
             override fun shouldFetch(it: List<Flowchart>?) = true
             override fun createCall() = service.getFlowcharts().asLiveData()
             override fun saveCallResult(value: UResponse<List<Flowchart>>) {
+                Timber.d("Result is ${value.data}")
                 value.data ?: return
                 database.flowchartDao().insertFlowcharts(value.data)
             }

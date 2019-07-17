@@ -261,7 +261,7 @@ class LoginSagresRepository @Inject constructor(
 
                 Timber.d("Start Page completed")
                 Timber.d("Semesters: ${s.semesters}")
-                Timber.d("Disciplines:  ${s.disciplines}")
+                Timber.d("Disciplines: ${s.disciplines}")
                 Timber.d("Calendar: ${s.calendar}")
                 grades(data)
             } else {
