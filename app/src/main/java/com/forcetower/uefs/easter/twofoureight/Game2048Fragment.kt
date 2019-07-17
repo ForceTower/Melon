@@ -147,6 +147,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
                 promptBuyBacks()
             } else {
                 mGame.revertUndoState()
+                backs -= 1
                 if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
                     binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
                 } else {
@@ -187,8 +188,10 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     private fun promptBuyBacks() {
-        if (rewardedVideoAd.isLoaded)
+        if (rewardedVideoAd.isLoaded) {
             rewardedVideoAd.show()
+            backs += 10
+        }
     }
 
     private fun unlockDarkTheme() {
