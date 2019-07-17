@@ -57,4 +57,7 @@ abstract class DemandOfferDao {
 
     @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
     abstract fun getAllDirect(): List<SDemandOffer>
+
+    @Query("SELECT * FROM SDemandOffer WHERE selected = 1")
+    abstract fun getSelected(): LiveData<List<SDemandOffer>>
 }

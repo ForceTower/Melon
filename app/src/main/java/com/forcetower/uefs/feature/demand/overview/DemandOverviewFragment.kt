@@ -31,12 +31,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.view.doOnLayout
 import androidx.databinding.ObservableFloat
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.injection.Injectable
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDemandOverviewBinding
 import com.forcetower.uefs.feature.demand.DemandViewModel
@@ -83,15 +81,8 @@ class DemandOverviewFragment : UFragment(), Injectable {
             setHasFixedSize(true)
         }
 
-        viewModel.offers.observe(this, Observer {
-            when (it.status) {
-                Status.SUCCESS -> offersAdapter.submitList(it.data!!.filter { d -> d.selected })
-                Status.ERROR -> Toast.makeText(requireContext(), "Failed", Toast.LENGTH_SHORT).show()
-                Status.LOADING -> {
-                    val data = it.data
-                    if (data != null) offersAdapter.submitList(data)
-                }
-            }
+        viewModel.selected.observe(this, Observer {
+            if (it != null) offersAdapter.submitList(it)
         })
 
         behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback {
@@ -102,6 +93,10 @@ class DemandOverviewFragment : UFragment(), Injectable {
 
         binding.collapseArrow.setOnClickListener {
             behavior.state = STATE_COLLAPSED
+        }
+
+        binding.expandArrow.setOnClickListener {
+            behavior.state = STATE_EXPANDED
         }
 
         binding.demandOverviewSheet.doOnLayout {
