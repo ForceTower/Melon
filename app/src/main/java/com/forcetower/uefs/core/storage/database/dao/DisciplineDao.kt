@@ -33,6 +33,7 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Discipline
+import timber.log.Timber
 
 @Dao
 abstract class DisciplineDao {
@@ -42,7 +43,9 @@ abstract class DisciplineDao {
     @Transaction
     open fun insert(disciplines: List<Discipline>) {
         disciplines.forEach { discipline ->
+            Timber.d("Inserting discipline $discipline")
             val old = getDisciplineByCodeDirect(discipline.code)
+            Timber.d("Old discipline is $old")
             if (old == null) {
                 insert(discipline)
             } else {

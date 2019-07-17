@@ -93,10 +93,13 @@ abstract class ClassDao {
 
     @Transaction
     open fun insert(dis: SDiscipline, validated: Boolean) {
-        var clazz = getClassDirect(dis.semester, dis.code)
+        Timber.d("Unformated discipline $dis")
+        var clazz = getClassDirect(dis.semester.trim(), dis.code.trim())
+        Timber.d("Inserting clazz... $clazz")
         if (clazz == null) {
-            val discipline = selectDisciplineDirect(dis.code)
+            val discipline = selectDisciplineDirect(dis.code.trim())
             val semester = selectSemesterDirect(dis.semester.trim())
+            Timber.d("looking for discipline $discipline at $semester")
             if (semester != null && discipline != null) {
                 clazz = Class(
                     disciplineId = discipline.uid,
