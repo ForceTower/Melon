@@ -138,7 +138,7 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     @Override
     public String toString() {
         String name = getSenderName();
-        return name == null ? "null" : name;
+        return (name == null ? "null" : name) +  "\n-> " + getMessage() + "\n\n";
     }
 
     public SLinker getScopes() {
