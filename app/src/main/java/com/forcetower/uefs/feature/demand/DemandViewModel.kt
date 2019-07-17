@@ -28,6 +28,7 @@
 package com.forcetower.uefs.feature.demand
 
 import android.content.Context
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -38,12 +39,14 @@ import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import javax.inject.Inject
 
 class DemandViewModel @Inject constructor(
     private val repository: DemandRepository,
-    private val context: Context
+    private val context: Context,
+    private val analytics: FirebaseAnalytics
 ) : ViewModel(), OfferActions {
     private var loaded = false
 
@@ -66,6 +69,8 @@ class DemandViewModel @Inject constructor(
     val selectedCount: LiveData<Int>
         get() = _selectedCount
 
+    val selected = repository.getSelected()
+
     private val _selectedHours = MutableLiveData<Int>()
     val selectedHours: LiveData<Int>
         get() = _selectedHours
@@ -84,6 +89,14 @@ class DemandViewModel @Inject constructor(
             }
 
             if (it.status == Status.SUCCESS || it.status == Status.ERROR) {
+                if (it.status == Status.SUCCESS) {
+                    analytics.logEvent("demand_loaded_disciplines_success", null)
+                } else {
+                    analytics.logEvent("demand_loaded_disciplines_failed", bundleOf(
+                        "code" to it.code,
+                        "message" to (it.message ?: "nothing at all")
+                    ))
+                }
                 _loading.value = false
             }
         }
@@ -112,6 +125,7 @@ class DemandViewModel @Inject constructor(
     override fun onConfirmOffers() {
         Timber.d("Confirm offers!")
         repository.confirmOptions()
+        analytics.logEvent("demand_confirmed_offers", bundleOf("amount" to _selectedCount.value))
         showSnack(context.getString(R.string.demand_will_be_created_notification))
     }
 

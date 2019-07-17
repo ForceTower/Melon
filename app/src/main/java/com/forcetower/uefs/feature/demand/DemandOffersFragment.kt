@@ -78,7 +78,9 @@ class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
         }
         viewModel.offers.observe(this, Observer {
             val data = it.data
-            if (data != null) offersAdapter.currentList = data
+            if (data != null) {
+                offersAdapter.currentList = data
+            }
         })
     }
 }
