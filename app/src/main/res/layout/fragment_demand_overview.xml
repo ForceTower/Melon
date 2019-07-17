@@ -135,7 +135,7 @@
             android:layout_height="@dimen/a11y_min_touch_target"
             android:layout_marginEnd="@dimen/margin_small"
             android:clickable="@{headerAlpha == 1f}"
-            android:alpha="@{1 - headerAlpha}"
+            android:alpha="@{1f - headerAlpha}"
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/collapse_demand_overview_sheet"
             android:scaleType="center"
