@@ -41,6 +41,7 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
     private List<SSemester> semesters;
     private List<SDiscipline> disciplines;
     private List<SDisciplineGroup> groups;
+    private List<SMessage> messages;
     @Nullable
     private List<SDisciplineClassLocation> locations;
     private boolean demandOpen = false;
@@ -79,6 +80,11 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
         return this;
     }
 
+    public StartPageCallback messages(List<SMessage> messages) {
+        this.messages = messages;
+        return this;
+    }
+
     @Nullable
     public List<SCalendar> getCalendar() {
         return calendar;
@@ -94,6 +100,10 @@ public class StartPageCallback extends BaseCallback<StartPageCallback> {
 
     public List<SDisciplineGroup> getGroups() {
         return groups;
+    }
+
+    public List<SMessage> getMessages() {
+        return messages;
     }
 
     @Nullable

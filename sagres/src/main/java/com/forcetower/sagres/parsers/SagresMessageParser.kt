@@ -29,6 +29,7 @@ package com.forcetower.sagres.parsers
 
 import com.forcetower.sagres.database.model.SMessage
 import org.jsoup.nodes.Document
+import timber.log.Timber
 import java.util.ArrayList
 
 /**
@@ -69,8 +70,45 @@ object SagresMessageParser {
 
     @JvmStatic
     fun getMessages(document: Document): List<SMessage> {
-        val html = document.html()
-        return SagresMessageParser.getMessages(html)
+        return getNewMessages(document)
+    }
+
+    private fun getNewMessages(document: Document): List<SMessage> {
+        val list = mutableListOf<SMessage>()
+
+        val articles = document.select("article")
+        articles.forEachIndexed { index, article ->
+            val scope = article.selectFirst("span[class=\"recado-escopo\"]")?.text()?.trim()
+            val dated = article.selectFirst("span[class=\"recado-data\"]")?.text()?.trim()
+            val message = article.selectFirst("p[class=\"recado-texto\"]")
+                    ?.wholeText()
+                    ?.trim()
+                    ?.removePrefix("Descrição do Recado:")
+                    ?.trim()
+
+            Timber.d("The actual $index message: $message")
+            val info = article.selectFirst("i[class=\"recado-remetente\"]")?.text()
+                    ?.trim()
+                    ?.removePrefix("De")
+                    ?.trim()
+            val information = SMessage(
+                message?.toLowerCase()?.hashCode()?.toLong() ?: 0,
+                null,
+                null,
+                message,
+                -2,
+                info,
+                null
+            ).apply {
+                isFromHtml = true
+                discipline = scope
+                dateString = dated
+                processingTime = System.currentTimeMillis()
+            }
+            list.add(information)
+        }
+
+        return list
     }
 
     private fun extractInfoArticle(article: String): SMessage? {

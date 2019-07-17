@@ -42,6 +42,7 @@ import com.forcetower.sagres.database.model.SDisciplineClassLocation
 import com.forcetower.sagres.database.model.SDiscipline
 import com.forcetower.sagres.database.model.SDisciplineGroup
 import com.forcetower.sagres.database.model.SCalendar
+import com.forcetower.sagres.database.model.SMessage
 import com.forcetower.sagres.database.model.SRequestedService
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
@@ -253,6 +254,7 @@ class LoginSagresRepository @Inject constructor(
                 data.removeSource(start)
 
                 executor.diskIO().execute {
+                    defineMessages(s.messages)
                     defineCalendar(s.calendar)
                     defineDisciplines(s.disciplines)
                     defineDisciplineGroups(s.groups)
@@ -406,6 +408,14 @@ class LoginSagresRepository @Inject constructor(
     private fun defineCalendar(calendar: List<SCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
+    }
+
+    private fun defineMessages(messages: List<SMessage>) {
+        messages.reversed().forEachIndexed { index, message ->
+            message.processingTime = System.currentTimeMillis() + index
+        }
+        val values = messages.map { Message.fromMessage(it, true) }
+        database.messageDao().insertIgnoring(values)
     }
 
     companion object {
