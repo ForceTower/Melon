@@ -72,7 +72,7 @@ class MessagesRepository @Inject constructor(
             val messages = if (!profile.mocked)
                 SagresNavigator.instance.messages(profile.sagresId, all)
             else
-                SagresNavigator.instance.messagesHtml()
+                SagresNavigator.instance.messagesHtml(needsAuth = true)
 
             Timber.d("Profile status: ${profile.mocked}")
 

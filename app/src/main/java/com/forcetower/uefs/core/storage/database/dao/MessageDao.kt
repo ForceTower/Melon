@@ -36,7 +36,6 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
-import timber.log.Timber
 
 @Dao
 abstract class MessageDao {
@@ -44,7 +43,6 @@ abstract class MessageDao {
     fun insertIgnoring(messages: List<Message>) {
         updateOldMessages()
         for (message in messages) {
-            Timber.d("Inserting ... $message")
             val direct = getMessageByHashDirect(message.hashMessage)
             if (direct != null) {
                 if (message.senderName != null) {
