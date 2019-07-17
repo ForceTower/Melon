@@ -273,14 +273,14 @@ private constructor(context: Context) : SagresNavigator() {
 
     @AnyThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun aMessagesHtml(): LiveData<MessagesCallback> {
-        return OldMessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor()).result
+    override fun aMessagesHtml(needsAuth: Boolean): LiveData<MessagesCallback> {
+        return OldMessagesOperation(SagresTaskExecutor.getNetworkThreadExecutor(), needsAuth).result
     }
 
     @WorkerThread
     @RestrictTo(RestrictTo.Scope.LIBRARY)
-    override fun messagesHtml(): MessagesCallback {
-        return OldMessagesOperation(null).finishedResult
+    override fun messagesHtml(needsAuth: Boolean): MessagesCallback {
+        return OldMessagesOperation(null, needsAuth).finishedResult
     }
 
     @AnyThread
