@@ -283,6 +283,7 @@
     <string name="select_a_link">Selecione um link</string>
     <string name="demand_selected_disciplines_label">Disciplinas selecionadas:</string>
     <string name="collapse_demand_overview_sheet">Abaixar disciplinas selecionadas</string>
+    <string name="expand_demand_overview_sheet">Levantas disciplinas selecionadas</string>
     <string name="demand_confirm_button">Confirmar</string>
     <string name="demand_discipline_locked">Disciplina bloqueada</string>
     <string name="demand_discipline_status">Estado atual da disciplina</string>
