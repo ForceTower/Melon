@@ -190,8 +190,14 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     private fun promptBuyBacks() {
         if (rewardedVideoAd.isLoaded) {
             rewardedVideoAd.show()
-            backs += 10
         }
+        onRewarded()
+    }
+
+    private fun onRewarded() {
+        backs += 10
+        mGame.revertUndoState()
+        backs -= 1
     }
 
     private fun unlockDarkTheme() {
