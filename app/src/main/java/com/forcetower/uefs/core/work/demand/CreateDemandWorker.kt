@@ -62,7 +62,7 @@ class CreateDemandWorker(
         private const val TAG = "create_demand_worker"
         private const val NAME = "demand_worker"
 
-        fun createWorker() {
+        fun createWorker(context: Context) {
             val constraints = Constraints.Builder()
                 .setRequiredNetworkType(NetworkType.CONNECTED)
                 .build()
@@ -73,7 +73,7 @@ class CreateDemandWorker(
                 .addTag(TAG)
                 .build()
 
-            request.enqueueUnique(NAME, true)
+            request.enqueueUnique(context, NAME, true)
         }
     }
 }

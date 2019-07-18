@@ -129,11 +129,11 @@ class FirebaseMessageRepository @Inject constructor(
     private fun cancelWorker(data: Map<String, String>) {
         val tag = data["tag"]
         tag ?: return
-        WorkManager.getInstance().cancelAllWorkByTag(tag)
+        WorkManager.getInstance(context).cancelAllWorkByTag(tag)
     }
 
     private fun hourglassRunner() {
-        HourglassContributeWorker.createWorker()
+        HourglassContributeWorker.createWorker(context)
     }
 
     private fun rescheduleSync(data: Map<String, String>) {
@@ -156,8 +156,8 @@ class FirebaseMessageRepository @Inject constructor(
             when (worker) {
                 0 -> SyncMainWorker.createWorker(context, period, true)
                 1 -> {
-                    SyncLinkedWorker.stopWorker()
-                    SyncLinkedWorker.createWorker(period, true)
+                    SyncLinkedWorker.stopWorker(context)
+                    SyncLinkedWorker.createWorker(context, period, true)
                 }
             }
             preferences.edit().putString("stg_sync_frequency", period.toString()).apply()

@@ -119,7 +119,7 @@ class UploadImageToStorage(
         private const val URI = "image_uri"
         private const val TAG = "upload_profile_image"
 
-        fun createWorker(uri: Uri) {
+        fun createWorker(context: Context, uri: Uri) {
             val data = workDataOf(URI to uri.toString())
             val constraints = Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build()
 
@@ -128,7 +128,7 @@ class UploadImageToStorage(
                 .addTag(TAG)
                 .setConstraints(constraints)
                 .build()
-                .enqueue()
+                .enqueue(context)
         }
     }
 }

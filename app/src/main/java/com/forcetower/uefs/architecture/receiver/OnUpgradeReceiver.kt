@@ -52,7 +52,7 @@ class OnUpgradeReceiver : BroadcastReceiver() {
         if (type != 0) {
             var period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
             preferences.edit().putString("stg_sync_worker_type", "0").apply()
-            SyncLinkedWorker.stopWorker()
+            SyncLinkedWorker.stopWorker(context)
             if (period < 15) {
                 period = 15
                 preferences.edit().putString("stg_sync_frequency", "15").apply()

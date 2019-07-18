@@ -83,6 +83,10 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     lintOptions {
         disable 'MissingTranslation'
         abortOnError true
@@ -130,6 +134,7 @@ dependencies {
 
     implementation deps.work_manager.runtime
     implementation deps.work_manager.runtime_ktx
+    implementation deps.work_manager.gcm
 
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler
