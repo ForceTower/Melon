@@ -63,6 +63,8 @@ abstract class ClassAbsenceDao {
     open fun putAbsences(classes: List<SDisciplineMissedClass>) {
         val profile = getMeProfile()
 
+        classes.mapNotNull { getClass(it.disciplineCode, it.semester) }.forEach { resetClassAbsences(it.uid) }
+
         classes.forEach {
             val sequence = it.description.split("-")[0].trim().split(" ")[1].trim().toIntOrNull() ?: 0
             val clazz = getClass(it.disciplineCode, it.semester)
@@ -80,4 +82,7 @@ abstract class ClassAbsenceDao {
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
+
+    @Query("DELETE FROM ClassAbsence WHERE class_id = :uid")
+    protected abstract fun resetClassAbsences(uid: Long)
 }
