@@ -54,7 +54,7 @@ class SetupViewModel @Inject constructor(
     fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(uri)
+        UploadImageToStorage.createWorker(context, uri)
     }
 
     fun setSelectedImage(uri: Uri) {
@@ -83,7 +83,7 @@ class SetupViewModel @Inject constructor(
 
     fun setFrequencyAndComplete(frequency: SyncFrequency) {
         firebaseAuthRepository.updateFrequency(frequency.value)
-        SyncLinkedWorker.stopWorker()
+        SyncLinkedWorker.stopWorker(context)
         SyncMainWorker.createWorker(context, frequency.value)
         PreferenceManager.getDefaultSharedPreferences(context).edit()
             .putString("stg_sync_frequency", frequency.value.toString())

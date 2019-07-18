@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.MainThread
 import androidx.annotation.StringRes
@@ -69,7 +70,8 @@ class LoginSagresRepository @Inject constructor(
     private val executor: AppExecutors,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
-    private val firebaseAuthRepository: FirebaseAuthRepository
+    private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val context: Context
 ) {
     val currentStep: MutableLiveData<Step> = MutableLiveData()
 
@@ -242,7 +244,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun defineExperimentalWorkers() {
         if (preferences.isStudentFromUEFS())
-            HourglassContributeWorker.createWorker()
+            HourglassContributeWorker.createWorker(context)
         preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
     }
 
@@ -363,7 +365,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun defineGradesWorkers(semesters: List<Long>) {
         semesters.forEach {
-            GradesSagresWorker.createWorker(it)
+            GradesSagresWorker.createWorker(context, it)
         }
     }
 

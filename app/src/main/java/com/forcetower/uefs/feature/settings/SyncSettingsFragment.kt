@@ -112,7 +112,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
         var period = getSharedPreferences().getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
         when (intValue) {
             0 -> {
-                SyncLinkedWorker.stopWorker()
+                SyncLinkedWorker.stopWorker(requireContext())
                 if (period < 15) {
                     period = 15
                     getSharedPreferences().edit().putString("stg_sync_frequency", "15").apply()
@@ -120,8 +120,8 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
                 SyncMainWorker.createWorker(requireContext(), period)
             }
             1 -> {
-                SyncMainWorker.stopWorker()
-                SyncLinkedWorker.createWorker(period)
+                SyncMainWorker.stopWorker(requireContext())
+                SyncLinkedWorker.createWorker(requireContext(), period)
             }
         }
         firebaseRepository.updateFrequency(period)
@@ -134,15 +134,15 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
         if (period >= 15) {
             when (worker) {
                 0 -> {
-                    SyncMainWorker.stopWorker()
+                    SyncMainWorker.stopWorker(requireContext())
                     SyncMainWorker.createWorker(requireContext(), period)
                 }
-                1 -> SyncLinkedWorker.createWorker(period)
+                1 -> SyncLinkedWorker.createWorker(requireContext(), period)
             }
         } else {
-            SyncMainWorker.stopWorker()
-            SyncLinkedWorker.stopWorker()
-            SyncLinkedWorker.createWorker(period)
+            SyncMainWorker.stopWorker(requireContext())
+            SyncLinkedWorker.stopWorker(requireContext())
+            SyncLinkedWorker.createWorker(requireContext(), period)
             getSharedPreferences().edit().putString("stg_sync_worker_type", "1").apply()
         }
 

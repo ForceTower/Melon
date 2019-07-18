@@ -27,6 +27,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.content.Context
 import android.net.Uri
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
@@ -60,6 +61,7 @@ class HomeViewModel @Inject constructor(
     private val darkThemeRepository: DarkThemeRepository,
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
+    private val context: Context,
     accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
@@ -88,7 +90,7 @@ class HomeViewModel @Inject constructor(
     fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(uri)
+        UploadImageToStorage.createWorker(context, uri)
     }
 
     fun setSelectedImage(uri: Uri) {

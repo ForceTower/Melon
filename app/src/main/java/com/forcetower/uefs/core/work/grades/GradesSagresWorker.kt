@@ -68,7 +68,7 @@ class GradesSagresWorker(
         private const val NAME = "worker_grades_downloader_"
         private const val SEMESTER_ID = "worker_semester_id"
 
-        fun createWorker(semesterId: Long) {
+        fun createWorker(context: Context, semesterId: Long) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
@@ -82,7 +82,7 @@ class GradesSagresWorker(
                     .addTag(TAG)
                     .build()
 
-            request.enqueueUnique(NAME + semesterId, true)
+            request.enqueueUnique(context, NAME + semesterId, true)
         }
     }
 }

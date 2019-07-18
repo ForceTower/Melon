@@ -27,14 +27,15 @@
 
 package com.forcetower.uefs.core.work
 
+import android.content.Context
 import androidx.work.ExistingPeriodicWorkPolicy
 import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.PeriodicWorkRequest
 import androidx.work.WorkManager
 
-fun OneTimeWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
-    WorkManager.getInstance().beginUniqueWork(
+fun OneTimeWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
+    WorkManager.getInstance(context).beginUniqueWork(
             name,
             if (replace)
                 ExistingWorkPolicy.REPLACE
@@ -44,12 +45,12 @@ fun OneTimeWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
     ).enqueue()
 }
 
-fun OneTimeWorkRequest.enqueue() {
-    WorkManager.getInstance().enqueue(this)
+fun OneTimeWorkRequest.enqueue(context: Context) {
+    WorkManager.getInstance(context).enqueue(this)
 }
 
-fun PeriodicWorkRequest.enqueueUnique(name: String, replace: Boolean = true) {
-    WorkManager.getInstance().enqueueUniquePeriodicWork(
+fun PeriodicWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
+    WorkManager.getInstance(context).enqueueUniquePeriodicWork(
             name,
             if (replace)
                 ExistingPeriodicWorkPolicy.REPLACE

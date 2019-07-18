@@ -280,14 +280,14 @@ class SagresSyncRepository @Inject constructor(
         }
 
         if (preferences.getBoolean("primary_fetch", true)) {
-            DisciplinesDetailsWorker.createWorker()
+            DisciplinesDetailsWorker.createWorker(context)
             preferences.edit().putBoolean("primary_fetch", false).apply()
         }
 
         if (uefsStudent) {
             if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.1", false) &&
                     authRepository.getAccessTokenDirect() != null) {
-                HourglassContributeWorker.createWorker()
+                HourglassContributeWorker.createWorker(context)
                 preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.1", true).apply()
             }
         }

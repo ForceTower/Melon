@@ -37,7 +37,7 @@ class DisciplinesDetailsWorker(
         private const val TAG = "discipline_details_worker"
         private const val NAME = "discipline_details"
 
-        fun createWorker() {
+        fun createWorker(context: Context) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
@@ -48,7 +48,7 @@ class DisciplinesDetailsWorker(
                     .addTag(TAG)
                     .build()
 
-            request.enqueueUnique(NAME, true)
+            request.enqueueUnique(context, NAME, true)
         }
     }
 }
