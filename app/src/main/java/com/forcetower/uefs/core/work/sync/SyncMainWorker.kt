@@ -89,13 +89,13 @@ class SyncMainWorker(
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
                 .build()
 
-            request.enqueueUnique(NAME, replace)
+            request.enqueueUnique(ctx, NAME, replace)
             if (replace) preferences.edit().putInt(PreferenceConstants.SYNC_FREQUENCY, period).apply()
             Timber.d("Main Sync Work Scheduled")
         }
 
-        fun stopWorker() {
-            WorkManager.getInstance().cancelAllWorkByTag(TAG)
+        fun stopWorker(ctx: Context) {
+            WorkManager.getInstance(ctx).cancelAllWorkByTag(TAG)
         }
     }
 }

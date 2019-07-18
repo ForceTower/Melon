@@ -98,7 +98,7 @@ class DemandRepository @Inject constructor(
     }
 
     fun confirmOptions() {
-        CreateDemandWorker.createWorker()
+        CreateDemandWorker.createWorker(context)
     }
 
     @WorkerThread

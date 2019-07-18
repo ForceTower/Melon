@@ -61,7 +61,7 @@ class SyncLinkedWorker(
         val period = inputData.getInt(PERIOD, 60)
         val count = inputData.getInt(COUNT, 0)
         val other = if (count == 2) 1 else 2
-        createWorker(period, true, other)
+        createWorker(applicationContext, period, true, other)
         return Result.success()
     }
 
@@ -72,7 +72,7 @@ class SyncLinkedWorker(
         private const val TAG = "linked_sagres_sync_worker"
         private const val NAME = "worker_sagres_linked"
 
-        fun createWorker(@IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true, count: Int = 0) {
+        fun createWorker(context: Context, @IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true, count: Int = 0) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
@@ -87,14 +87,14 @@ class SyncLinkedWorker(
                     .setConstraints(constraints)
                     .build()
 
-            request.enqueueUnique("${NAME}_$count", replace)
+            request.enqueueUnique(context, "${NAME}_$count", replace)
             if (replace) {
                 Timber.d("Scheduled linked worker on a $period period")
             }
         }
 
-        fun stopWorker() {
-            WorkManager.getInstance().cancelAllWorkByTag(TAG).result.get()
+        fun stopWorker(context: Context) {
+            WorkManager.getInstance(context).cancelAllWorkByTag(TAG).result.get()
         }
     }
 }

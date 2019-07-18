@@ -60,7 +60,7 @@ class HourglassContributeWorker(
         private const val TAG = "hourglass_contribute_downloader"
         private const val NAME = "worker_hourglass_contribute_downloader"
 
-        fun createWorker() {
+        fun createWorker(context: Context) {
             val constraints = Constraints.Builder()
                     .setRequiredNetworkType(NetworkType.CONNECTED)
                     .build()
@@ -71,7 +71,7 @@ class HourglassContributeWorker(
                     .addTag(TAG)
                     .build()
 
-            request.enqueueUnique(NAME, true)
+            request.enqueueUnique(context, NAME, true)
         }
     }
 }
