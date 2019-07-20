@@ -51,7 +51,6 @@ import javax.inject.Inject
 class MessagesViewModel @Inject constructor(
     val repository: MessagesRepository
 ) : ViewModel(), MessagesActions {
-
     val messages by lazy { repository.getMessages() }
     val unesMessages by lazy { repository.getUnesMessages() }
     var pushedTimes = 0
@@ -63,6 +62,10 @@ class MessagesViewModel @Inject constructor(
     private val _messageClick = MutableLiveData<Event<String>>()
     val messageClick: LiveData<Event<String>>
         get() = _messageClick
+
+    private val _portalMessageClick = MutableLiveData<Event<Message>>()
+    val portalMessageClick: LiveData<Event<Message>>
+        get() = _portalMessageClick
 
     private val _snackMessage = MutableLiveData<Event<Int>>()
     val snackMessage: LiveData<Event<Int>>
@@ -85,6 +88,11 @@ class MessagesViewModel @Inject constructor(
     override fun onMessageClick(message: String?) {
         message ?: return
         _messageClick.value = Event(message)
+    }
+
+    override fun onPortalMessageClick(message: Message?) {
+        message ?: return
+        onMessageClick(message.content)
     }
 
     override fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean {

@@ -36,6 +36,7 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
+import java.util.Locale
 import java.util.UUID
 
 @Entity(indices = [
@@ -65,7 +66,9 @@ data class Message(
     @ColumnInfo(name = "processing_time")
     val processingTime: Long? = null,
     @ColumnInfo(name = "hash_message")
-    val hashMessage: Long? = null
+    val hashMessage: Long? = null,
+    val attachmentName: String? = null,
+    val attachmentLink: String? = null
 ) {
     @Ignore
     var disciplineResume: String? = null
@@ -73,7 +76,7 @@ data class Message(
     companion object {
         fun fromMessage(me: SMessage, notified: Boolean) =
             Message(
-                content = me.message,
+                content = me.message ?: "",
                 sagresId = me.sagresId,
                 senderName = me.senderName,
                 senderProfile = me.senderProfile,
@@ -84,7 +87,9 @@ data class Message(
                 html = me.isFromHtml,
                 dateString = me.dateString,
                 processingTime = me.processingTime,
-                hashMessage = me.message.toLowerCase().trim().hashCode().toLong()
+                hashMessage = me.message.toLowerCase(Locale.getDefault()).trim().hashCode().toLong(),
+                attachmentName = me.attachmentName,
+                attachmentLink = me.attachmentLink
             ).apply { disciplineResume = me.objective }
     }
 }
