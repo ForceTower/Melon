@@ -31,6 +31,7 @@ import com.forcetower.sagres.database.model.SMessage
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.ArrayList
+import java.util.Locale
 
 /**
  * Created by João Paulo on 06/03/2018.
@@ -73,11 +74,12 @@ object SagresMessageParser {
         return getNewMessages(document)
     }
 
+    @JvmStatic
     private fun getNewMessages(document: Document): List<SMessage> {
         val list = mutableListOf<SMessage>()
 
         val articles = document.select("article")
-        articles.forEachIndexed { index, article ->
+        articles.forEachIndexed { _, article ->
             val scope = article.selectFirst("span[class=\"recado-escopo\"]")?.text()?.trim()
             val dated = article.selectFirst("span[class=\"recado-data\"]")?.text()?.trim()
             val message = article.selectFirst("p[class=\"recado-texto\"]")
@@ -86,19 +88,34 @@ object SagresMessageParser {
                     ?.removePrefix("Descrição do Recado:")
                     ?.trim()
 
-            Timber.d("The actual $index message: $message")
+            val (attachmentName, attachmentLink) = article.selectFirst("span[class=\"material_apoio_arquivo\"]")
+                    ?.run {
+                        val link = selectFirst("a[href]")?.attr("href")
+                        val name = parent().children().run {
+                            if (size >= 3) {
+                                get(1).text().trim()
+                            }
+                            null
+                        }
+                        name to link
+                    } ?: null to null
+
+            if (attachmentLink != null) Timber.d("Weow! An attachment $attachmentName $attachmentLink")
             val info = article.selectFirst("i[class=\"recado-remetente\"]")?.text()
                     ?.trim()
                     ?.removePrefix("De")
                     ?.trim()
+
             val information = SMessage(
-                message?.toLowerCase()?.hashCode()?.toLong() ?: 0,
+                message?.toLowerCase(Locale.getDefault()).hashCode().toLong(),
                 null,
                 null,
                 message,
                 -2,
                 info,
-                null
+                null,
+                attachmentName,
+                attachmentLink
             ).apply {
                 isFromHtml = true
                 discipline = scope
@@ -117,12 +134,14 @@ object SagresMessageParser {
         val message = extractArticleForm2(MESSAGE_MESSAGE_RECEIVED, article)
         val from = extractArticleForm2(MESSAGE_FROM_RECEIVED, article)
         return SMessage(
-            message!!.toLowerCase().hashCode().toLong(),
+            message?.toLowerCase(Locale.getDefault()).hashCode().toLong(),
             null,
             null,
             message,
             -2,
             from,
+            null,
+            null,
             null
         ).apply {
             isFromHtml = true

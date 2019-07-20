@@ -57,6 +57,14 @@ abstract class MessageDao {
                     }
                 }
 
+                if (message.attachmentLink != null) {
+                    updateAttachmentLink(message.sagresId, message.attachmentLink)
+                }
+
+                if (message.attachmentName != null) {
+                    updateAttachmentName(message.sagresId, message.attachmentName)
+                }
+
                 if (message.html && direct.html) {
                     updateDateString(message.sagresId, message.dateString)
                 }
@@ -107,6 +115,12 @@ abstract class MessageDao {
 
     @Query("UPDATE Message SET sender_name = :senderName WHERE sagres_id = :sagresId")
     protected abstract fun updateSenderName(sagresId: Long, senderName: String)
+
+    @Query("UPDATE Message SET attachmentLink = :attachmentLink WHERE sagres_id = :sagresId")
+    protected abstract fun updateAttachmentLink(sagresId: Long, attachmentLink: String)
+
+    @Query("UPDATE Message SET attachmentName = :attachmentName WHERE sagres_id = :sagresId")
+    protected abstract fun updateAttachmentName(sagresId: Long, attachmentName: String)
 
     @Insert(onConflict = IGNORE)
     protected abstract fun insertIgnore(messages: List<Message>)
