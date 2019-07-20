@@ -36,4 +36,5 @@ interface MessagesActions {
     fun onMessageLongClick(view: View, message: Message?): Boolean
     fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean
     fun onMessageShare(view: View, pos: Int)
+    fun onPortalMessageClick(message: Message?)
 }

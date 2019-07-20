@@ -245,3 +245,10 @@ object M29TO30 : Migration(29, 30) {
         database.execSQL("DROP INDEX IF EXISTS `index_Discipline_name`")
     }
 }
+
+object M30TO31 : Migration(30, 31) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Message ADD COLUMN attachmentName TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE Message ADD COLUMN attachmentLink TEXT DEFAULT NULL")
+    }
+}

@@ -49,6 +49,10 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     private SLinker sender;
     @SerializedName(value = "escopos")
     private SLinker scopes;
+    @Nullable
+    private String attachmentName;
+    @Nullable
+    private String attachmentLink;
 
     @Nullable
     private String disciplineCode;
@@ -60,7 +64,7 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
     private String dateString;
     private long processingTime;
 
-    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName, SLinker scopes) {
+    public SMessage(long sagresId, String timestamp, SLinker sender, String message, int senderProfile, @Nullable String senderName, SLinker scopes, @Nullable String attachmentName, @Nullable String attachmentLink) {
         this.sagresId = sagresId;
         this.timestamp = timestamp;
         this.sender = sender;
@@ -68,6 +72,8 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
         this.senderProfile = senderProfile;
         this.senderName = senderName;
         this.scopes = scopes;
+        this.attachmentLink = attachmentLink;
+        this.attachmentName = attachmentName;
         this.fromHtml = false;
         this.processingTime = System.currentTimeMillis();
     }
@@ -199,5 +205,23 @@ public class SMessage implements Comparable<SMessage>, Timestamped {
 
     public void setProcessingTime(long processingTime) {
         this.processingTime = processingTime;
+    }
+
+    @Nullable
+    public String getAttachmentLink() {
+        return attachmentLink;
+    }
+
+    public void setAttachmentLink(@Nullable String attachmentLink) {
+        this.attachmentLink = attachmentLink;
+    }
+
+    @Nullable
+    public String getAttachmentName() {
+        return attachmentName;
+    }
+
+    public void setAttachmentName(@Nullable String attachmentName) {
+        this.attachmentName = attachmentName;
     }
 }
