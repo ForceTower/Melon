@@ -123,7 +123,6 @@ class ProfileFragment : UFragment(), Injectable {
         }
 
         binding.writeStatement.setOnClickListener {
-
         }
 
 //        binding.imageProfile.setOnClickListener {
