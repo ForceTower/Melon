@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<layout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.feature.profile.ProfileViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="24dp"
+        android:background="@drawable/rounded_bottom_sheet_background">
+
+        <TextView
+            android:id="@+id/text_title_label"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/write_statement_label"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="18sp"
+            android:textAlignment="center"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inp_statement"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/text_title_label">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/text_statement"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"
+                android:gravity="top"
+                android:hint="@string/write_statement_hint"
+                android:inputType="text|textAutoComplete|textAutoCorrect|textCapSentences|textMultiLine" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_send"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="8dp"
+            android:text="@string/send"
+            android:textSize="16sp"
+            android:onClick="@{() -> interactor.onSendFeedback(textFeedback.getText().toString())}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/inp_statement" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>
