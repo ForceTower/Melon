@@ -26,9 +26,9 @@ import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -80,8 +80,9 @@ class DisciplinesRepository @Inject constructor(
         result.postValue(true)
         executors.networkIO().execute {
             Timber.d("Group id for load is $groupId")
+            val access = database.accessDao().getAccessDirect()
             val value = database.classGroupDao().getWithRelationsDirect(groupId)
-            if (value == null) {
+            if (value == null || access == null) {
                 Timber.d("Class Group with ID: $groupId was not found")
                 result.postValue(false)
             } else {
@@ -92,6 +93,7 @@ class DisciplinesRepository @Inject constructor(
 
                 Timber.d("Code: $code. Semester: $semester. Group: $group")
 
+                SagresNavigator.instance.login(access.username, access.password)
                 val callback = SagresNavigator.instance.disciplinesExperimental(semester, code, group)
                 if (callback.status == Status.COMPLETED) {
                     val groups = callback.getGroups()

@@ -23,13 +23,13 @@ package com.forcetower.uefs.feature.demand
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.google.android.material.card.MaterialCardView
 
 @BindingAdapter(value = ["disciplineIcon"])
-fun disciplineIcon(iv: ImageView, offer: SDemandOffer?) {
+fun disciplineIcon(iv: ImageView, offer: SagresDemandOffer?) {
     offer ?: return
 
     val drawable = when {
@@ -46,7 +46,7 @@ fun disciplineIcon(iv: ImageView, offer: SDemandOffer?) {
 }
 
 @BindingAdapter(value = ["animatedStrokeColor"])
-fun strokeColor(cardView: MaterialCardView, offer: SDemandOffer?) {
+fun strokeColor(cardView: MaterialCardView, offer: SagresDemandOffer?) {
     offer ?: return
 
     val ctx = cardView.context

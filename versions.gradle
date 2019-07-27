@@ -2,6 +2,9 @@
 ext.deps = [:]
 
 def versions = [:]
+// Sagres Scrapper
+versions.sagres = "1.0.0.u"
+
 // Kotlin Extensions
 versions.ktx = "1.1.0-rc01"
 
@@ -69,6 +72,7 @@ versions.card_slider = "0.3.0"
 versions.date_time_picker = "4.1.1"
 versions.floating_search = "2.1.1"
 versions.zoned_time_date = "1.1.0"
+versions.rx_kotlin = "2.4.0-RC3"
 
 // Build Versions
 versions.android_gradle_plugin = "3.5.0-rc01"
@@ -82,6 +86,10 @@ versions.bundletool = "0.10.0"
 // --------- End of Dependencies Versions -----------
 
 def deps = [:]
+
+def sagres = [:]
+sagres.juice = "com.github.forcetower:juice:$versions.sagres"
+deps.sagres = sagres
 
 // Android X
 def androidx = [:]
@@ -101,6 +109,7 @@ def lifecycle = [:]
 lifecycle.extensions = "androidx.lifecycle:lifecycle-extensions:$versions.lifecycle"
 lifecycle.java8 = "androidx.lifecycle:lifecycle-common-java8:$versions.lifecycle"
 lifecycle.compiler = "androidx.lifecycle:lifecycle-compiler:$versions.lifecycle"
+lifecycle.rx_streams = "androidx.lifecycle:lifecycle-reactivestreams:$versions.lifecycle"
 deps.lifecycle = lifecycle
 
 def navigation = [:]
@@ -191,6 +200,7 @@ others.card_slider = "com.ramotion.cardslider:card-slider:$versions.card_slider"
 others.date_time_picker = "com.wdullaer:materialdatetimepicker:$versions.date_time_picker"
 others.floating_search = "com.github.arimorty:floatingsearchview:$versions.floating_search"
 others.zoned_time_date = "com.jakewharton.threetenabp:threetenabp:$versions.zoned_time_date"
+others.rx_kotlin = "io.reactivex.rxjava2:rxkotlin:$versions.rx_kotlin"
 deps.others = others
 
 // Kotlin
@@ -227,6 +237,7 @@ static def addRepos(RepositoryHandler handler) {
 	handler.maven { url "https://jitpack.io" }
 	handler.maven { url "https://maven.fabric.io/public" }
     handler.maven { url "https://plugins.gradle.org/m2/" }
+    handler.maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
 }
 
 ext.addRepos = this.&addRepos

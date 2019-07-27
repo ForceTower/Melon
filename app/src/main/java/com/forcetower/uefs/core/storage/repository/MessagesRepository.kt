@@ -61,11 +61,14 @@ class MessagesRepository @Inject constructor(
     @WorkerThread
     fun fetchMessagesCase(all: Boolean = false): Boolean {
         val profile = database.profileDao().selectMeDirect()
-        return if (profile != null) {
+        val access = database.accessDao().getAccessDirect()
+        return if (profile != null && access != null) {
             val messages = if (!profile.mocked)
                 SagresNavigator.instance.messages(profile.sagresId, all)
-            else
-                SagresNavigator.instance.messagesHtml(needsAuth = true)
+            else {
+                SagresNavigator.instance.login(access.username, access.password)
+                SagresNavigator.instance.messagesHtml()
+            }
 
             Timber.d("Profile status: ${profile.mocked}")
 
@@ -87,7 +90,7 @@ class MessagesRepository @Inject constructor(
             if (exception != null) {
                 Timber.e(exception)
             } else if (snapshot != null) {
-                val list = snapshot.documents.map { it.toObject(UMessage::class.java)!!.apply {
+                val list = snapshot.documents.mapNotNull { it.toObject(UMessage::class.java)?.apply {
                     id = it.id
                     val replaced = message.replace("\\n", "\n")
                     message = replaced

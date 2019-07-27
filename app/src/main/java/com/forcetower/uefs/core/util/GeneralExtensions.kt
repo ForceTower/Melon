@@ -23,8 +23,12 @@ package com.forcetower.uefs.core.util
 import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
+import io.reactivex.BackpressureStrategy
+import io.reactivex.subjects.Subject
 import java.lang.Math.pow
 import kotlin.math.floor
 import kotlin.math.roundToInt
@@ -59,4 +63,8 @@ fun Double.round(decimals: Int = 1): Double {
 fun SharedPreferences.isStudentFromUEFS(): Boolean {
     val inst = getString(SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
     return inst == "UEFS"
+}
+
+fun <T> Subject<T>.toLiveData(): LiveData<T> {
+    return LiveDataReactiveStreams.fromPublisher(this.toFlowable(BackpressureStrategy.LATEST))
 }

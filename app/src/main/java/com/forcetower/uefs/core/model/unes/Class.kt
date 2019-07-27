@@ -26,7 +26,7 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SDiscipline
+import com.forcetower.sagres.database.model.SagresDiscipline
 import java.util.UUID
 
 @Entity(
@@ -59,9 +59,9 @@ data class Class(
     var scheduleOnly: Boolean = false
 ) {
 
-    fun selectiveCopy(dis: SDiscipline, validated: Boolean) {
-        if (!dis.nextClass.isNullOrBlank()) nextClass = dis.nextClass
-        if (!dis.lastClass.isNullOrBlank()) lastClass = dis.lastClass
+    fun selectiveCopy(dis: SagresDiscipline, validated: Boolean) {
+        if (!dis.nextClass.isBlank()) nextClass = dis.nextClass
+        if (!dis.lastClass.isBlank()) lastClass = dis.lastClass
         if (dis.missedClasses >= 0) missedClasses = dis.missedClasses
         if (!dis.situation.isNullOrBlank()) status = dis.situation
         scheduleOnly = !validated

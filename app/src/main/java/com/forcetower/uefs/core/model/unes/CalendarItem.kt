@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SCalendar
+import com.forcetower.sagres.database.model.SagresCalendar
 import java.util.UUID
 
 @Entity(indices = [
@@ -37,6 +37,6 @@ data class CalendarItem(
     val uuid: String = UUID.randomUUID().toString()
 ) {
     companion object {
-        fun fromSagres(item: SCalendar) = CalendarItem(message = item.message, date = item.day)
+        fun fromSagres(item: SagresCalendar) = CalendarItem(message = item.message, date = item.day)
     }
 }

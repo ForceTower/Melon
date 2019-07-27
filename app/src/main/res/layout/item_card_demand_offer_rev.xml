@@ -26,7 +26,7 @@
     <data>
         <variable
             name="offer"
-            type="com.forcetower.sagres.database.model.SDemandOffer"/>
+            type="com.forcetower.sagres.database.model.SagresDemandOffer"/>
         <variable
             name="actions"
             type="com.forcetower.uefs.feature.demand.OfferActions"/>

@@ -27,7 +27,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.SET_NULL
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -53,8 +53,8 @@ data class ClassGroup(
     var teacherId: Long? = null
 ) {
 
-    fun selectiveCopy(grp: SDisciplineGroup) {
-        if (!grp.group.isNullOrBlank()) group = grp.group
+    fun selectiveCopy(grp: SagresDisciplineGroup) {
+        if (!grp.group.isNullOrBlank()) group = grp.group!!
         if (!grp.teacher.isNullOrBlank()) teacher = grp.teacher
         if (grp.credits > 0) credits = grp.credits
         if (draft) draft = grp.isDraft

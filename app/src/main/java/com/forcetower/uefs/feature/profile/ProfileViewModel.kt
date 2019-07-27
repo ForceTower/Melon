@@ -85,4 +85,8 @@ class ProfileViewModel @Inject constructor(
         Timber.d("Setting new profile id: $newProfileId")
         profileId.setValueIfNew(newProfileId)
     }
+
+    fun onSendStatement(text: String) {
+        TODO("It is not implemented yet...")
+    }
 }

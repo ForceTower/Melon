@@ -127,6 +127,10 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation (deps.sagres.juice) {
+        exclude module: 'timber'
+    }
+
     implementation deps.kotlin.stdlib
 
     implementation deps.androidx.ktx
@@ -142,6 +146,7 @@ dependencies {
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
     kapt deps.lifecycle.compiler
+    implementation deps.lifecycle.rx_streams
 
     implementation deps.navigation.ui
     implementation deps.navigation.ui_ktx
@@ -200,9 +205,9 @@ dependencies {
     implementation deps.others.card_slider
     implementation deps.others.date_time_picker
     implementation deps.others.floating_search
-    api deps.others.zoned_time_date
+    implementation deps.others.zoned_time_date
+    implementation deps.others.rx_kotlin
 
-    implementation project(path: ':sagres')
     implementation project(path: ':bypass')
 }
 

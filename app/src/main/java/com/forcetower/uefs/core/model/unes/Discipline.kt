@@ -24,7 +24,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SDiscipline
+import com.forcetower.sagres.database.model.SagresDiscipline
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
@@ -49,7 +49,7 @@ data class Discipline(
     companion object {
         const val COLLECTION = "disciplines"
 
-        fun fromSagres(discipline: SDiscipline) =
+        fun fromSagres(discipline: SagresDiscipline) =
                 Discipline(name = discipline.name.trim(), code = discipline.code.trim(), credits = discipline.credits)
     }
 }

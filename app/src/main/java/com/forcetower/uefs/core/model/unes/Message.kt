@@ -26,7 +26,7 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SMessage
+import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
 import java.util.Locale
@@ -67,7 +67,7 @@ data class Message(
     var disciplineResume: String? = null
 
     companion object {
-        fun fromMessage(me: SMessage, notified: Boolean) =
+        fun fromMessage(me: SagresMessage, notified: Boolean) =
             Message(
                 content = me.message ?: "",
                 sagresId = me.sagresId,
@@ -80,7 +80,7 @@ data class Message(
                 html = me.isFromHtml,
                 dateString = me.dateString,
                 processingTime = me.processingTime,
-                hashMessage = me.message.toLowerCase(Locale.getDefault()).trim().hashCode().toLong(),
+                hashMessage = me.message?.toLowerCase(Locale.getDefault())?.trim().hashCode().toLong(),
                 attachmentName = me.attachmentName,
                 attachmentLink = me.attachmentLink
             ).apply { disciplineResume = me.objective }
@@ -91,7 +91,7 @@ fun Message.notify(context: Context) {
     NotificationCreator.showSagresMessageNotification(this, context)
 }
 
-fun List<SMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
+fun List<SagresMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
     val values = this?.map { Message.fromMessage(it, notified) } ?: emptyList()
     database.messageDao().insertIgnoring(values)
 }

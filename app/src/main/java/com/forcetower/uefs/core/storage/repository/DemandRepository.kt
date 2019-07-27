@@ -24,10 +24,11 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MediatorLiveData
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
@@ -36,6 +37,7 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.analytics.FirebaseAnalytics
+import io.reactivex.BackpressureStrategy
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,12 +50,14 @@ class DemandRepository @Inject constructor(
     private val analytics: FirebaseAnalytics
 ) {
 
-    fun loadDemand(): LiveData<Resource<List<SDemandOffer>>> {
-        val result = MediatorLiveData<Resource<List<SDemandOffer>>>()
+    fun loadDemand(): LiveData<Resource<List<SagresDemandOffer>>> {
+        val result = MediatorLiveData<Resource<List<SagresDemandOffer>>>()
 
         result.value = Resource.loading(null)
         val local = database.demandOfferDao().getAll()
-        val network = SagresNavigator.instance.aLoadDemandOffers()
+        val network = LiveDataReactiveStreams.fromPublisher(
+            SagresNavigator.instance.aLoadDemandOffers().toFlowable(BackpressureStrategy.LATEST)
+        )
 
         result.addSource(local) { result.value = Resource.loading(it) }
 
@@ -84,7 +88,7 @@ class DemandRepository @Inject constructor(
 
     fun getSelected() = database.demandOfferDao().getSelected()
 
-    fun updateOfferSelection(offer: SDemandOffer, select: Boolean) {
+    fun updateOfferSelection(offer: SagresDemandOffer, select: Boolean) {
         executors.diskIO().execute {
             database.demandOfferDao().updateOfferSelection(offer.uid, select)
         }

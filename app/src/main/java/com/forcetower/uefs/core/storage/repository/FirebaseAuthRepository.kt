@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
-import com.forcetower.sagres.database.model.SPerson
+import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
@@ -38,6 +38,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -52,7 +53,7 @@ class FirebaseAuthRepository @Inject constructor(
 ) {
     private val secret = context.getString(R.string.firebase_account_secret)
 
-    fun loginToFirebase(person: SPerson, access: Access, reconnect: Boolean = false) {
+    fun loginToFirebase(person: SagresPerson, access: Access, reconnect: Boolean = false) {
         if (reconnect) { firebaseAuth.signOut() }
         if (firebaseAuth.currentUser == null) {
             val user = access.username.toLowerCase()
@@ -76,7 +77,7 @@ class FirebaseAuthRepository @Inject constructor(
         }
     }
 
-    private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
+    private fun attemptSignIn(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
@@ -96,7 +97,7 @@ class FirebaseAuthRepository @Inject constructor(
                 })
     }
 
-    private fun attemptCreateAccount(email: String, password: String, access: Access, person: SPerson) {
+    private fun attemptCreateAccount(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
@@ -115,14 +116,14 @@ class FirebaseAuthRepository @Inject constructor(
                 })
     }
 
-    private fun connected(access: Access, person: SPerson, uid: String) {
-        Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
+    private fun connected(access: Access, person: SagresPerson, uid: String) {
+        Timber.d("Creating student profile for ${person.name?.trim()} UID: $uid")
 
         val data = mutableMapOf(
-                "name" to WordUtils.toTitleCase(person.name.trim()),
+                "name" to WordUtils.toTitleCase(person.name?.trim()),
                 "username" to access.username,
-                "email" to person.email.trim().toLowerCase(),
-                "cpf" to person.cpf.trim(),
+                "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
+                "cpf" to person.getCpf()?.trim(),
                 "sagresId" to person.id,
                 "imageUrl" to "/users/$uid/avatar.jpg",
                 "manufacturer" to android.os.Build.MANUFACTURER,

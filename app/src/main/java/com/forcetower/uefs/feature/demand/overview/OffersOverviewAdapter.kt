@@ -25,7 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ItemDemandOfferBinding
 import com.forcetower.uefs.feature.demand.DemandViewModel
@@ -34,7 +34,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class OffersOverviewAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: DemandViewModel
-) : ListAdapter<SDemandOffer, DemandHolder>(DiffCallback) {
+) : ListAdapter<SagresDemandOffer, DemandHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemandHolder {
         return DemandHolder(parent.inflate(R.layout.item_demand_offer))
     }
@@ -51,7 +51,7 @@ class OffersOverviewAdapter(
 
 class DemandHolder(val binding: ItemDemandOfferBinding) : RecyclerView.ViewHolder(binding.root)
 
-object DiffCallback : DiffUtil.ItemCallback<SDemandOffer>() {
-    override fun areItemsTheSame(oldItem: SDemandOffer, newItem: SDemandOffer) = oldItem.uid == newItem.uid
-    override fun areContentsTheSame(oldItem: SDemandOffer, newItem: SDemandOffer) = oldItem == newItem
+object DiffCallback : DiffUtil.ItemCallback<SagresDemandOffer>() {
+    override fun areItemsTheSame(oldItem: SagresDemandOffer, newItem: SagresDemandOffer) = oldItem.uid == newItem.uid
+    override fun areContentsTheSame(oldItem: SagresDemandOffer, newItem: SagresDemandOffer) = oldItem == newItem
 }
