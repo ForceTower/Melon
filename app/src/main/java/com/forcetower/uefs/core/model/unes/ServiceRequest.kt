@@ -23,7 +23,8 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresRequestedService
+import java.util.Locale
 
 /**
  * Notify status:
@@ -46,7 +47,7 @@ data class ServiceRequest(
     var notify: Int
 ) {
     fun isAtFinalState(): Boolean {
-        return when (situation.toLowerCase().trim()) {
+        return when (situation.toLowerCase(Locale.getDefault()).trim()) {
             "atendido" -> true
             "indeferido" -> true
             else -> false
@@ -54,14 +55,14 @@ data class ServiceRequest(
     }
 
     fun isAtStartState(): Boolean {
-        return when (situation.toLowerCase().trim()) {
+        return when (situation.toLowerCase(Locale.getDefault()).trim()) {
             "registrado na web" -> true
             else -> false
         }
     }
 
     companion object {
-        fun fromSagres(request: SRequestedService): ServiceRequest {
+        fun fromSagres(request: SagresRequestedService): ServiceRequest {
             return ServiceRequest(
                 0,
                 request.service,

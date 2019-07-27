@@ -29,15 +29,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SPerson
-import com.forcetower.sagres.database.model.SDisciplineMissedClass
-import com.forcetower.sagres.database.model.SGrade
-import com.forcetower.sagres.database.model.SDisciplineClassLocation
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineGroup
-import com.forcetower.sagres.database.model.SCalendar
-import com.forcetower.sagres.database.model.SMessage
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresDiscipline
+import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
+import com.forcetower.sagres.database.model.SagresGrade
+import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.sagres.database.model.SagresPerson
+import com.forcetower.sagres.database.model.SagresRequestedService
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
+import com.forcetower.uefs.core.util.toLiveData
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import org.jsoup.nodes.Document
@@ -102,7 +103,7 @@ class LoginSagresRepository @Inject constructor(
 
     @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
-        val source = SagresNavigator.instance.aLogin(username, password)
+        val source = SagresNavigator.instance.aLogin(username, password).toLiveData()
         currentStep.value = createStep(R.string.step_logging_in)
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
@@ -123,7 +124,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access, document: Document) {
-        val me = SagresNavigator.instance.aMe()
+        val me = SagresNavigator.instance.aMe().toLiveData()
         currentStep.value = createStep(R.string.step_finding_profile)
         val username = access.username
 
@@ -134,7 +135,7 @@ class LoginSagresRepository @Inject constructor(
                 Timber.d("Me status ${m.status} ${m.code}")
                 if (m.status == Status.SUCCESS) {
                     data.removeSource(me)
-                    Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.cpf}")
+                    Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.getCpf()}")
                     val person = m.person
                     if (person != null) {
                         executor.diskIO().execute { database.profileDao().insert(person, score) }
@@ -159,7 +160,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun continueUsingHtml(document: Document, username: String, score: Double, access: Access, data: MediatorLiveData<Callback>) {
         val name = SagresBasicParser.getName(document) ?: username
-        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username)
+        val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username)
         executor.diskIO().execute { database.profileDao().insert(person, score) }
         executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
         messages(data, null)
@@ -167,9 +168,9 @@ class LoginSagresRepository @Inject constructor(
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long?) {
         val messages = if (userId != null)
-            SagresNavigator.instance.aMessages(userId)
+            SagresNavigator.instance.aMessages(userId).toLiveData()
         else
-            SagresNavigator.instance.aMessagesHtml()
+            SagresNavigator.instance.aMessagesHtml().toLiveData()
 
         currentStep.value = createStep(R.string.step_fetching_messages)
         data.addSource(messages) { m ->
@@ -195,7 +196,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun semesters(data: MediatorLiveData<Callback>, userId: Long) {
-        val semesters = SagresNavigator.instance.aSemesters(userId)
+        val semesters = SagresNavigator.instance.aSemesters(userId).toLiveData()
         currentStep.value = createStep(R.string.step_fetching_semesters)
         data.addSource(semesters) { s ->
             if (s.status == Status.SUCCESS) {
@@ -218,7 +219,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun disciplinesExperimental(data: MediatorLiveData<Callback>) {
         Timber.d("Disciplines Experimental")
-        val experimental = SagresNavigator.instance.aDisciplinesExperimental()
+        val experimental = SagresNavigator.instance.aDisciplinesExperimental().toLiveData()
         currentStep.value = createStep(R.string.step_discipline_experimental)
         data.addSource(experimental) { e ->
             Timber.d("Experimental Status: ${e.status}")
@@ -242,7 +243,7 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun startPage(data: MediatorLiveData<Callback>) {
-        val start = SagresNavigator.instance.aStartPage()
+        val start = SagresNavigator.instance.aStartPage().toLiveData()
         currentStep.value = createStep(R.string.step_moving_to_start_page)
         data.addSource(start) { s ->
             if (s.status == Status.SUCCESS) {
@@ -274,7 +275,7 @@ class LoginSagresRepository @Inject constructor(
 
     private fun grades(data: MediatorLiveData<Callback>) {
         Timber.d("Grades Fetch!")
-        val grades = SagresNavigator.instance.aGetCurrentGrades()
+        val grades = SagresNavigator.instance.aGetCurrentGrades().toLiveData()
         currentStep.value = createStep(R.string.step_fetching_grades)
         data.addSource(grades) { g ->
             when {
@@ -291,7 +292,8 @@ class LoginSagresRepository @Inject constructor(
                         defineFrequency(g.frequency)
                         database.gradesDao().markAllNotified()
                         Timber.d("Execute default")
-                        defineGradesWorkers(g.semesters.map { pair -> pair.first })
+                        val semesters = g.semesters?.map { pair -> pair.first } ?: emptyList()
+                        defineGradesWorkers(semesters)
                     }
 
                     services(data)
@@ -320,7 +322,7 @@ class LoginSagresRepository @Inject constructor(
     @MainThread
     private fun services(data: MediatorLiveData<Callback>) {
         Timber.d("Services fetch")
-        val services = SagresNavigator.instance.aGetRequestedServices()
+        val services = SagresNavigator.instance.aGetRequestedServices().toLiveData()
         data.addSource(services) { s ->
             when (s.status) {
                 Status.SUCCESS -> {
@@ -351,7 +353,7 @@ class LoginSagresRepository @Inject constructor(
         }
     }
 
-    private fun defineServices(services: List<SRequestedService>) {
+    private fun defineServices(services: List<SagresRequestedService>) {
         val list = services.map { ServiceRequest.fromSagres(it) }
         database.serviceRequestDao().insertList(list)
     }
@@ -363,49 +365,54 @@ class LoginSagresRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
+    private fun defineFrequency(frequency: List<SagresDisciplineMissedClass>?) {
         if (frequency == null) return
         database.classAbsenceDao().putAbsences(frequency)
     }
 
     @WorkerThread
-    private fun defineGrades(grades: List<SGrade>) {
-        database.gradesDao().putGrades(grades)
+    private fun defineGrades(grades: List<SagresGrade>?) {
+        grades?.run {
+            database.gradesDao().putGrades(grades)
+        }
     }
 
     @WorkerThread
-    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
-        semesters.forEach {
+    private fun defineSemesters(semesters: List<Pair<Long, String>>?) {
+        semesters?.forEach {
             val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
             database.semesterDao().insertIgnoring(semester)
         }
     }
 
     @WorkerThread
-    private fun defineSchedule(locations: List<SDisciplineClassLocation>?) {
+    private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
         if (locations == null) return
         database.classLocationDao().putSchedule(locations)
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
+    private fun defineDisciplineGroups(groups: List<SagresDisciplineGroup>?) {
+        groups ?: return
         database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+    private fun defineDisciplines(disciplines: List<SagresDiscipline>?) {
+        disciplines ?: return
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
         disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread
-    private fun defineCalendar(calendar: List<SCalendar>?) {
+    private fun defineCalendar(calendar: List<SagresCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
     }
 
-    private fun defineMessages(messages: List<SMessage>) {
+    private fun defineMessages(messages: List<SagresMessage>?) {
+        messages ?: return
         messages.reversed().forEachIndexed { index, message ->
             message.processingTime = System.currentTimeMillis() + index
         }

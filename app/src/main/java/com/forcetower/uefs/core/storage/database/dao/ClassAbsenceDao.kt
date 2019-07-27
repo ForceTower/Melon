@@ -26,7 +26,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
-import com.forcetower.sagres.database.model.SDisciplineMissedClass
+import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.Profile
@@ -53,7 +53,7 @@ abstract class ClassAbsenceDao {
     abstract fun getAbsenceFromClassDirect(classId: Long): List<ClassAbsence>
 
     @Transaction
-    open fun putAbsences(classes: List<SDisciplineMissedClass>) {
+    open fun putAbsences(classes: List<SagresDisciplineMissedClass>) {
         val profile = getMeProfile()
 
         classes.mapNotNull { getClass(it.disciplineCode, it.semester) }

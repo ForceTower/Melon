@@ -26,7 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ItemCardDemandOfferRevBinding
 import com.forcetower.uefs.databinding.ItemDemandHeaderBinding
@@ -39,7 +39,7 @@ class DemandOffersAdapter(
 ) : RecyclerView.Adapter<DemandHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
 
-    var currentList: List<SDemandOffer> = listOf()
+    var currentList: List<SagresDemandOffer> = listOf()
     set(value) {
         field = value
         differ.submitList(buildMergedList(offers = currentList))
@@ -56,7 +56,7 @@ class DemandOffersAdapter(
     override fun onBindViewHolder(holder: DemandHolder, position: Int) {
         when (holder) {
             is DemandHolder.OfferHolder -> holder.binding.apply {
-                offer = differ.currentList[position] as SDemandOffer
+                offer = differ.currentList[position] as SagresDemandOffer
                 lifecycleOwner = this@DemandOffersAdapter.lifecycleOwner
                 actions = viewModel
                 executePendingBindings()
@@ -77,12 +77,12 @@ class DemandOffersAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is SDemandOffer -> R.layout.item_card_demand_offer_rev
+            is SagresDemandOffer -> R.layout.item_card_demand_offer_rev
             else -> R.layout.item_demand_header
         }
     }
 
-    private fun buildMergedList(offers: List<SDemandOffer> = currentList): List<Any> {
+    private fun buildMergedList(offers: List<SagresDemandOffer> = currentList): List<Any> {
         val list = mutableListOf<Any>()
         val copy = offers.toMutableList()
 
@@ -150,14 +150,14 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             oldItem === CompletedHeader && newItem === CompletedHeader -> true
             oldItem === BuggedHeader && newItem === BuggedHeader -> true
             oldItem === BuggedHeader && newItem === BuggedHeader -> true
-            oldItem is SDemandOffer && newItem is SDemandOffer -> oldItem.uid == newItem.uid
+            oldItem is SagresDemandOffer && newItem is SagresDemandOffer -> oldItem.uid == newItem.uid
             else -> false
         }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
-            oldItem is SDemandOffer && newItem is SDemandOffer -> oldItem == newItem
+            oldItem is SagresDemandOffer && newItem is SagresDemandOffer -> oldItem == newItem
             else -> true
         }
     }
