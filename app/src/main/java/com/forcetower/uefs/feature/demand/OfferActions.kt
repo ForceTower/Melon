@@ -20,11 +20,11 @@
 
 package com.forcetower.uefs.feature.demand
 
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 
 interface OfferActions {
-    fun onOfferClick(offer: SDemandOffer)
-    fun onOfferLongClick(offer: SDemandOffer): Boolean
+    fun onOfferClick(offer: SagresDemandOffer)
+    fun onOfferLongClick(offer: SagresDemandOffer): Boolean
     fun onConfirmOffers()
     fun onClearOffers()
 }

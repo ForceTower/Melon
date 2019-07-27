@@ -28,7 +28,7 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.ForeignKey.SET_NULL
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SMaterialLink
+import com.forcetower.sagres.database.model.SagresMaterialLink
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -59,7 +59,7 @@ data class ClassMaterial(
     val notified: Boolean = false
 ) {
     companion object {
-        fun createFromSagres(groupId: Long, classId: Long?, material: SMaterialLink, notified: Boolean = false): ClassMaterial {
+        fun createFromSagres(groupId: Long, classId: Long?, material: SagresMaterialLink, notified: Boolean = false): ClassMaterial {
             return ClassMaterial(
                 groupId = groupId,
                 classItemId = classId,

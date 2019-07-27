@@ -25,8 +25,8 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDiscipline
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
@@ -70,7 +70,7 @@ class DisciplineDetailsRepository @Inject constructor(
      */
     @MainThread
     fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = true, discover: Boolean = false): LiveData<FastDisciplinesCallback> {
-        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad, discover) {
+        return object : LoadDisciplineDetailsResource(executors, database, semester, code, group, partialLoad, discover) {
             @WorkerThread
             override fun saveResults(callback: FastDisciplinesCallback) {
                 defineSemesters(callback.getSemesters())
@@ -129,13 +129,20 @@ class DisciplineDetailsRepository @Inject constructor(
 
     @WorkerThread
     fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
-        val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false, partialLoad = partialLoad)
-        if (experimental.status == Status.COMPLETED) {
-            defineSemesters(experimental.getSemesters())
-            defineDisciplines(experimental.getDisciplines())
-            defineDisciplineGroups(experimental.getGroups(), notify)
+        val access = database.accessDao().getAccessDirect()
+        if (access != null) {
+            SagresNavigator.instance.login(access.username, access.password)
+            val experimental = SagresNavigator.instance.disciplinesExperimental(
+                discover = false,
+                partialLoad = partialLoad
+            )
+            if (experimental.status == Status.COMPLETED) {
+                defineSemesters(experimental.getSemesters())
+                defineDisciplines(experimental.getDisciplines())
+                defineDisciplineGroups(experimental.getGroups(), notify)
+            }
+            database.classMaterialDao().markAllNotified()
         }
-        database.classMaterialDao().markAllNotified()
     }
 
     @WorkerThread
@@ -147,14 +154,14 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+    private fun defineDisciplines(disciplines: List<SagresDiscipline>) {
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
         disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>, notify: Boolean = true) {
+    private fun defineDisciplineGroups(groups: List<SagresDisciplineGroup>, notify: Boolean = true) {
         database.classGroupDao().defineGroups(groups, notify)
     }
 }
