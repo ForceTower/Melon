@@ -26,7 +26,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -51,8 +51,8 @@ class DemandViewModel @Inject constructor(
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _offers = MediatorLiveData<Resource<List<SDemandOffer>>>()
-    val offers: LiveData<Resource<List<SDemandOffer>>>
+    private val _offers = MediatorLiveData<Resource<List<SagresDemandOffer>>>()
+    val offers: LiveData<Resource<List<SagresDemandOffer>>>
         get() {
             if (!loaded) { initLoad() }
             return _offers
@@ -98,7 +98,7 @@ class DemandViewModel @Inject constructor(
     init {
     }
 
-    override fun onOfferClick(offer: SDemandOffer) {
+    override fun onOfferClick(offer: SagresDemandOffer) {
         Timber.d("Offer clicked: ${offer.code}")
         if (!offer.selectable || offer.completed || offer.unavailable) {
             Timber.d("Select something valid")
@@ -110,7 +110,7 @@ class DemandViewModel @Inject constructor(
         repository.updateOfferSelection(offer, select)
     }
 
-    override fun onOfferLongClick(offer: SDemandOffer): Boolean {
+    override fun onOfferLongClick(offer: SagresDemandOffer): Boolean {
         Timber.d("Offer long clicked: ${offer.code}")
         return true
     }
