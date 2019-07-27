@@ -25,7 +25,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SDisciplineClassItem
+import com.forcetower.sagres.database.model.SagresDisciplineClassItem
 import java.util.UUID
 
 @Entity(foreignKeys = [
@@ -64,7 +64,7 @@ data class ClassItem(
     }
 
     companion object {
-        fun createFromSagres(group: Long, value: SDisciplineClassItem): ClassItem {
+        fun createFromSagres(group: Long, value: SagresDisciplineClassItem): ClassItem {
             return ClassItem(
                 groupId = group,
                 number = value.number,

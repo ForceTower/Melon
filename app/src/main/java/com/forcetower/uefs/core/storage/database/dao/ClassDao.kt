@@ -29,7 +29,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.crashlytics.android.Crashlytics
-import com.forcetower.sagres.database.model.SDiscipline
+import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
@@ -85,7 +85,7 @@ abstract class ClassDao {
     protected abstract fun selectSemesterDirect(name: String): Semester?
 
     @Transaction
-    open fun insert(dis: SDiscipline, validated: Boolean) {
+    open fun insert(dis: SagresDiscipline, validated: Boolean) {
         Timber.d("Unformated discipline $dis")
         var clazz = getClassDirect(dis.semester.trim(), dis.code.trim())
         Timber.d("Inserting clazz... $clazz")

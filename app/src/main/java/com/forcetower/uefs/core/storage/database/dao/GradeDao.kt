@@ -26,8 +26,8 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.forcetower.sagres.database.model.SGrade
-import com.forcetower.sagres.database.model.SGradeInfo
+import com.forcetower.sagres.database.model.SagresGrade
+import com.forcetower.sagres.database.model.SagresGradeInfo
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
@@ -67,7 +67,7 @@ abstract class GradeDao {
     abstract fun markAllNotified()
 
     @Transaction
-    open fun putGrades(grades: List<SGrade>, notify: Boolean = true) {
+    open fun putGrades(grades: List<SagresGrade>, notify: Boolean = true) {
         grades.forEach {
             val split = it.discipline.split("-")
             val code = split[0].trim()
@@ -143,8 +143,8 @@ abstract class GradeDao {
     @Query("SELECT c.* FROM Class c, Discipline d, Semester s WHERE c.semester_id = s.uid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:code) AND s.sagres_id = :semester")
     protected abstract fun getClass(code: String, semester: Long): Class?
 
-    private fun prepareInsertion(clazz: Class, it: SGrade, notify: Boolean) {
-        val values = HashMap<String, SGradeInfo>()
+    private fun prepareInsertion(clazz: Class, it: SagresGrade, notify: Boolean) {
+        val values = HashMap<String, SagresGradeInfo>()
         it.values.forEach { g ->
             var grade = values[g.name]
             if (grade == null) { grade = g } else {

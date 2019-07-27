@@ -31,15 +31,15 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SCalendar
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineClassLocation
-import com.forcetower.sagres.database.model.SDisciplineGroup
-import com.forcetower.sagres.database.model.SDisciplineMissedClass
-import com.forcetower.sagres.database.model.SGrade
-import com.forcetower.sagres.database.model.SMessage
-import com.forcetower.sagres.database.model.SPerson
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresDiscipline
+import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
+import com.forcetower.sagres.database.model.SagresGrade
+import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.sagres.database.model.SagresPerson
+import com.forcetower.sagres.database.model.SagresRequestedService
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
@@ -310,7 +310,7 @@ class SagresSyncRepository @Inject constructor(
         database.syncRegistryDao().update(registry)
     }
 
-    private fun defineMessages(values: List<SMessage>) {
+    private fun defineMessages(values: List<SagresMessage>) {
         values.reversed().forEachIndexed { index, message ->
             message.processingTime = System.currentTimeMillis() + index
         }
@@ -375,7 +375,7 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    private fun me(score: Double, document: Document, access: Access): SPerson? {
+    private fun me(score: Double, document: Document, access: Access): SagresPerson? {
         val username = access.username
         if (username.contains("@")) {
             return continueWithHtml(document, username, score)
@@ -401,9 +401,9 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document, username: String, score: Double): SPerson {
+    private fun continueWithHtml(document: Document, username: String, score: Double): SagresPerson {
         val name = SagresBasicParser.getName(document) ?: username
-        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+        val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
         database.profileDao().insert(person, score)
         return person
     }
@@ -562,7 +562,8 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    private fun defineServices(services: List<SRequestedService>) {
+    private fun defineServices(services: List<SagresRequestedService>?) {
+        services ?: return
         val list = services.map { ServiceRequest.fromSagres(it) }
         database.serviceRequestDao().insertList(list)
     }
@@ -595,44 +596,47 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
-        if (frequency == null) return
+    private fun defineFrequency(frequency: List<SagresDisciplineMissedClass>?) {
+        frequency ?: return
         database.classAbsenceDao().putAbsences(frequency)
     }
 
     @WorkerThread
-    private fun defineGrades(grades: List<SGrade>) {
+    private fun defineGrades(grades: List<SagresGrade>?) {
+        grades ?: return
         database.gradesDao().putGrades(grades)
     }
 
     @WorkerThread
-    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
-        semesters.forEach {
+    private fun defineSemesters(semesters: List<Pair<Long, String>>?) {
+        semesters?.forEach {
             val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
             database.semesterDao().insertIgnoring(semester)
         }
     }
 
     @WorkerThread
-    private fun defineSchedule(locations: List<SDisciplineClassLocation>?) {
-        if (locations == null) return
+    private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
+        locations ?: return
         database.classLocationDao().putSchedule(locations)
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
+    private fun defineDisciplineGroups(groups: List<SagresDisciplineGroup>?) {
+        groups ?: return
         database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+    private fun defineDisciplines(disciplines: List<SagresDiscipline>?) {
+        disciplines ?: return
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
         disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread
-    private fun defineCalendar(calendar: List<SCalendar>?) {
+    private fun defineCalendar(calendar: List<SagresCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
     }
