@@ -29,7 +29,7 @@ import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
 import com.crashlytics.android.Crashlytics
-import com.forcetower.sagres.database.model.SDisciplineClassLocation
+import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
@@ -55,7 +55,7 @@ abstract class ClassLocationDao {
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
 
     @Transaction
-    open fun putSchedule(locations: List<SDisciplineClassLocation>) {
+    open fun putSchedule(locations: List<SagresDisciplineClassLocation>) {
         if (locations.isEmpty()) return
 
         val semester = selectCurrentSemesterDirect()
@@ -140,7 +140,7 @@ abstract class ClassLocationDao {
     @Query("SELECT * FROM ClassGroup WHERE class_id = :classId AND `group` = :group")
     abstract fun selectGroup(classId: Long, group: String): ClassGroup?
 
-    private fun prepareInsertion(group: ClassGroup, profile: Profile, location: SDisciplineClassLocation) {
+    private fun prepareInsertion(group: ClassGroup, profile: Profile, location: SagresDisciplineClassLocation) {
         val entity = ClassLocation(
                 groupId = group.uid,
                 profileId = profile.uid,

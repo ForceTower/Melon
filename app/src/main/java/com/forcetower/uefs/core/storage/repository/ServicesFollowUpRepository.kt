@@ -24,7 +24,7 @@ import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresRequestedService
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.ServiceRequest
@@ -40,8 +40,8 @@ class ServicesFollowUpRepository @Inject constructor(
 ) {
     // TODO change the type
     @AnyThread
-    fun getPendingServices(): LiveData<Resource<List<SRequestedService>>> {
-        val result = MutableLiveData<Resource<List<SRequestedService>>>()
+    fun getPendingServices(): LiveData<Resource<List<SagresRequestedService>>> {
+        val result = MutableLiveData<Resource<List<SagresRequestedService>>>()
         executors.networkIO().execute {
             val callback = SagresNavigator.instance.getRequestedServices()
             val resource = when (callback.status) {

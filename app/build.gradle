@@ -201,8 +201,10 @@ dependencies {
     implementation deps.others.date_time_picker
     implementation deps.others.floating_search
     api deps.others.zoned_time_date
+    implementation 'com.github.forcetower:juice:0.7.0.u'
+    implementation "io.reactivex.rxjava2:rxkotlin:2.4.0-RC3"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:2.0.0"
 
-    implementation project(path: ':sagres')
     implementation project(path: ':bypass')
 }
 

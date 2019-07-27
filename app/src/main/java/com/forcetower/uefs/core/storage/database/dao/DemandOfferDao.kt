@@ -26,7 +26,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
+import com.forcetower.uefs.core.model.unes.SDemandOffer
 
 @Dao
 abstract class DemandOfferDao {
@@ -37,20 +38,20 @@ abstract class DemandOfferDao {
     abstract fun deleteAll()
 
     @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
-    abstract fun getAll(): LiveData<List<SDemandOffer>>
+    abstract fun getAll(): LiveData<List<SagresDemandOffer>>
 
     @Transaction
-    open fun defineDemandOffers(offers: List<SDemandOffer>) {
+    open fun defineDemandOffers(offers: List<SagresDemandOffer>) {
         deleteAll()
-        insert(offers)
+        insert(offers.map { SDemandOffer.fromSagres(it) })
     }
 
     @Query("UPDATE SDemandOffer SET selected = :select WHERE uid = :uid")
     abstract fun updateOfferSelection(uid: Long, select: Boolean)
 
     @Query("SELECT * FROM SDemandOffer ORDER BY category, code ASC")
-    abstract fun getAllDirect(): List<SDemandOffer>
+    abstract fun getAllDirect(): List<SagresDemandOffer>
 
     @Query("SELECT * FROM SDemandOffer WHERE selected = 1")
-    abstract fun getSelected(): LiveData<List<SDemandOffer>>
+    abstract fun getSelected(): LiveData<List<SagresDemandOffer>>
 }

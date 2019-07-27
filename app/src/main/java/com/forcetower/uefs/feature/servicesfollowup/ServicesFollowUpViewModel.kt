@@ -24,7 +24,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresRequestedService
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.repository.ServicesFollowUpRepository
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -40,8 +40,8 @@ class ServicesFollowUpViewModel @Inject constructor(
     val refreshing: LiveData<Boolean>
         get() = _refreshing
 
-    private val _pendingServices = MediatorLiveData<Event<Resource<List<SRequestedService>>>>()
-    val pendingServices: LiveData<Event<Resource<List<SRequestedService>>>>
+    private val _pendingServices = MediatorLiveData<Event<Resource<List<SagresRequestedService>>>>()
+    val pendingServices: LiveData<Event<Resource<List<SagresRequestedService>>>>
         get() = _pendingServices
 
     fun onRefresh() {

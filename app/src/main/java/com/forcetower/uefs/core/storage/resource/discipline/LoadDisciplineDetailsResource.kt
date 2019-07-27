@@ -27,10 +27,13 @@ import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.toLiveData
 import timber.log.Timber
 
 abstract class LoadDisciplineDetailsResource @MainThread constructor(
     private val executors: AppExecutors,
+    private val database: UDatabase,
     private val semester: String? = null,
     private val code: String? = null,
     private val group: String? = null,
@@ -40,12 +43,29 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
     private val result = MediatorLiveData<FastDisciplinesCallback>()
 
     init {
-        loadFromSagres()
+        loginToSagres()
+    }
+
+    @MainThread
+    private fun loginToSagres() {
+        val access = database.accessDao().getAccess()
+        result.addSource(access) { data ->
+            result.removeSource(access)
+            if (data == null) {
+                result.value = FastDisciplinesCallback(Status.INVALID_LOGIN).flags(FastDisciplinesCallback.LOGIN)
+            } else {
+                val login = SagresNavigator.instance.aLogin(data.username, data.password).toLiveData()
+                result.addSource(login) {
+                    result.removeSource(login)
+                    loadFromSagres()
+                }
+            }
+        }
     }
 
     @MainThread
     private fun loadFromSagres() {
-        val loader = SagresNavigator.instance.aDisciplinesExperimental(semester, code, group, partialLoad, discover)
+        val loader = SagresNavigator.instance.aDisciplinesExperimental(semester, code, group, partialLoad, discover).toLiveData()
         result.addSource(loader) { callback ->
             Timber.d("Current Status: ${callback.status}")
             when (callback.status) {

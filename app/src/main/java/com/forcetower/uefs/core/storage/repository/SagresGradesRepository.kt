@@ -25,8 +25,8 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SDisciplineMissedClass
-import com.forcetower.sagres.database.model.SGrade
+import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
+import com.forcetower.sagres.database.model.SagresGrade
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
@@ -89,19 +89,20 @@ class SagresGradesRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
+    private fun defineFrequency(frequency: List<SagresDisciplineMissedClass>?) {
         if (frequency == null) return
         database.classAbsenceDao().putAbsences(frequency)
     }
 
     @WorkerThread
-    private fun defineGrades(grades: List<SGrade>) {
+    private fun defineGrades(grades: List<SagresGrade>?) {
+        grades ?: return
         database.gradesDao().putGrades(grades, notify = false)
     }
 
     @WorkerThread
-    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
-        semesters.forEach {
+    private fun defineSemesters(semesters: List<Pair<Long, String>>?) {
+        semesters?.forEach {
             val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
             database.semesterDao().insertIgnoring(semester)
         }

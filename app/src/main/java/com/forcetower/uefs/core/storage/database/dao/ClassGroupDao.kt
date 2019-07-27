@@ -28,7 +28,7 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -44,10 +44,10 @@ abstract class ClassGroupDao {
     abstract fun insert(group: ClassGroup): Long
 
     @Transaction
-    open fun defineGroups(groups: List<SDisciplineGroup>, notifyMaterials: Boolean = true) {
+    open fun defineGroups(groups: List<SagresDisciplineGroup>, notifyMaterials: Boolean = true) {
         for (group in groups) {
             val inserted = insert(group)
-            if (inserted != null && group.classItems != null) {
+            if (inserted != null) {
                 Timber.d("Group id: ${inserted.uid}")
                 Timber.d("Group Code: ${group.code} has ${group.classItems.sumBy { it.materials.size }} materials")
                 for (classItem in group.classItems) {
@@ -77,10 +77,10 @@ abstract class ClassGroupDao {
     abstract fun getClassItemDirect(groupId: Long, number: Int): ClassItem?
 
     @Transaction
-    open fun insert(grp: SDisciplineGroup): ClassGroup? {
+    open fun insert(grp: SagresDisciplineGroup): ClassGroup? {
         val sgr = if (grp.group == null) "unique" else grp.group
         val discipline = selectDisciplineDirect(grp.code.trim())
-        var group = selectGroupDirect(grp.semester.trim(), grp.code.trim(), sgr)
+        var group = selectGroupDirect(grp.semester.trim(), grp.code.trim(), sgr!!)
         val grops = selectGroupsDirect(grp.semester.trim(), grp.code.trim())
 
         if (grops.isNotEmpty() && grops[0].group.equals("unique", ignoreCase = true)) {
@@ -101,7 +101,7 @@ abstract class ClassGroupDao {
         update(group)
 
         if (!grp.department.isNullOrBlank()) {
-            discipline.department = grp.department.trim()
+            discipline.department = grp.department!!.trim()
             updateDiscipline(discipline)
             Timber.d("Updated discipline ${discipline.code} department to ${discipline.department}")
         }
