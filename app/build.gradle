@@ -127,9 +127,7 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation (deps.sagres.juice) {
-        exclude module: 'timber-jdk'
-    }
+    implementation (deps.sagres.juice)
 
     implementation deps.kotlin.stdlib
 
