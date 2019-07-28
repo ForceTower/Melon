@@ -32,7 +32,7 @@ import okhttp3.Cookie
 
 class PrefsCookiePersistor(context: Context) : CookiePersistor {
     private val sharedPreferences: SharedPreferences =
-        context.getSharedPreferences("CookiePersistence", Context.MODE_PRIVATE)
+        context.getSharedPreferences("PrefsCookiePersistence", Context.MODE_PRIVATE)
 
     override fun loadAll(): List<Cookie> {
         val cookies = ArrayList<Cookie>(sharedPreferences.all.size)
