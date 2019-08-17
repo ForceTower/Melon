@@ -29,9 +29,11 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.databinding.ItemDisciplineClassItemBinding
 import com.forcetower.uefs.feature.shared.inflate
 
-class ClassesAdapter : ListAdapter<ClassItem, ClassesAdapter.ClassHolder>(DiffCallback) {
+class ClassesAdapter(
+    private val actions: ClassesActions
+) : ListAdapter<ClassItem, ClassesAdapter.ClassHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ClassHolder(parent.inflate(R.layout.item_discipline_class_item))
+        ClassHolder(parent.inflate(R.layout.item_discipline_class_item), actions)
 
     override fun onBindViewHolder(holder: ClassHolder, position: Int) {
         holder.binding.apply {
@@ -40,7 +42,14 @@ class ClassesAdapter : ListAdapter<ClassItem, ClassesAdapter.ClassHolder>(DiffCa
         }
     }
 
-    inner class ClassHolder(val binding: ItemDisciplineClassItemBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class ClassHolder(
+        val binding: ItemDisciplineClassItemBinding,
+        actions: ClassesActions
+    ) : RecyclerView.ViewHolder(binding.root) {
+        init {
+            binding.actions = actions
+        }
+    }
 
     object DiffCallback : DiffUtil.ItemCallback<ClassItem>() {
         override fun areItemsTheSame(oldItem: ClassItem, newItem: ClassItem) = oldItem.uid == newItem.uid
