@@ -107,7 +107,7 @@
     </style>
 
     <style name="UTheme.LightNav">
-        <item name="elevationOverlaysEnabled">false</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="UTheme.LightNav.Launcher">

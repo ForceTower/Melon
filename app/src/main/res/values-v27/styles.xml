@@ -25,7 +25,7 @@
         <item name="android:navigationBarColor">?attr/colorNavBar</item>
         <item name="android:statusBarColor">?attr/colorStatusBar</item>
         <item name="android:windowLightStatusBar">?attr/lightStatusBar</item>
-        <item name="elevationOverlaysEnabled">false</item>
+        <item name="elevationOverlayEnabled">false</item>
     </style>
 
     <style name="CropTheme.Default">
