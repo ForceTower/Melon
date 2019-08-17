@@ -30,9 +30,11 @@ import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClas
 
 @Dao
 abstract class ClassMaterialDao {
-
     @Query("SELECT * FROM ClassMaterial WHERE group_id = :classGroupId")
     abstract fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>>
+
+    @Query("SELECT * FROM ClassMaterial WHERE class_item_id = :classItemId")
+    abstract fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>>
 
     @Query("DELETE FROM ClassMaterial")
     abstract fun deleteAll()

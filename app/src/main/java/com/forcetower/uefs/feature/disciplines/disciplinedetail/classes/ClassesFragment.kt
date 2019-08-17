@@ -28,9 +28,12 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineClassesBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.disciplines.dialog.SelectMaterialDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
@@ -50,7 +53,7 @@ class ClassesFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val classesAdapter = ClassesAdapter()
+        val classesAdapter = ClassesAdapter(viewModel)
 
         binding.classesRecycler.apply {
             adapter = classesAdapter
@@ -73,6 +76,18 @@ class ClassesFragment : UFragment(), Injectable {
                 binding.classesRecycler.visibility = View.VISIBLE
             }
         })
+
+        viewModel.classItemClick.observe(this, EventObserver {
+            onOpenClassItemSelector(it)
+        })
+    }
+
+    private fun onOpenClassItemSelector(item: ClassItem) {
+        if (item.numberOfMaterials <= 0) return
+        val dialog = SelectMaterialDialog().apply {
+            arguments = bundleOf("class_id" to item.uid)
+        }
+        dialog.show(childFragmentManager, "select_class_material_dialog")
     }
 
     companion object {
