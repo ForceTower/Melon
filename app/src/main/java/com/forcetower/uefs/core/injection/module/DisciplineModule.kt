@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.injection.module
 
+import com.forcetower.uefs.feature.disciplines.dialog.SelectMaterialDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsFragment
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.GradesFragment
@@ -43,4 +44,6 @@ abstract class DisciplineModule {
     abstract fun gradesFragment(): GradesFragment
     @ContributesAndroidInjector
     abstract fun absencesFragment(): AbsencesFragment
+    @ContributesAndroidInjector
+    abstract fun selectMaterialDialog(): SelectMaterialDialog
 }

@@ -76,8 +76,6 @@ class MaterialsFragment : UFragment(), Injectable {
                 binding.attachmentsRecycler.visibility = VISIBLE
             }
         })
-
-        viewModel.materialClick.observe(this, EventObserver { requireContext().openURL(it.link) })
     }
 
     companion object {

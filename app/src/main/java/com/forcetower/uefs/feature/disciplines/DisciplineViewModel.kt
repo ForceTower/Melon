@@ -37,6 +37,7 @@ import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
+import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesActions
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,7 +45,8 @@ import javax.inject.Inject
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
     private val grades: SagresGradesRepository
-) : ViewModel(), DisciplineActions, MaterialActions {
+) : ViewModel(), DisciplineActions, MaterialActions, ClassesActions {
+
     val semesters by lazy { repository.getParticipatingSemesters() }
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
@@ -98,6 +100,10 @@ class DisciplineViewModel @Inject constructor(
     private val _materialClick = MutableLiveData<Event<ClassMaterial>>()
     val materialClick: LiveData<Event<ClassMaterial>>
         get() = _materialClick
+
+    private val _classItemClick = MutableLiveData<Event<ClassItem>>()
+    val classItemClick: LiveData<Event<ClassItem>>
+        get() = _classItemClick
 
     init {
         _classFull.addSource(classId) {
@@ -227,8 +233,17 @@ class DisciplineViewModel @Inject constructor(
         return true
     }
 
+    fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>> {
+        return repository.getMaterialsFromClassItem(classItemId)
+    }
+
     override fun onMaterialClick(material: ClassMaterial?) {
         material ?: return
         _materialClick.value = Event(material)
+    }
+
+    override fun onClassItemClicked(classItem: ClassItem?) {
+        classItem ?: return
+        _classItemClick.value = Event(classItem)
     }
 }

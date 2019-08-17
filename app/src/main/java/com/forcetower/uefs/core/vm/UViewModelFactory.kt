@@ -32,7 +32,8 @@ import javax.inject.Singleton
 @Suppress("UNCHECKED_CAST")
 @Singleton
 class UViewModelFactory @Inject constructor(
-    private val creators: Map<Class<out ViewModel>, @JvmSuppressWildcards Provider<ViewModel>>
+    private val creators: Map<Class<out ViewModel>,
+    @JvmSuppressWildcards Provider<ViewModel>>
 ) : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {

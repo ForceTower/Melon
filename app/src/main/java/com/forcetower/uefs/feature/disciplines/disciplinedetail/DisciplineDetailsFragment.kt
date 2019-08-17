@@ -46,6 +46,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.materials.Materi
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.overview.OverviewFragment
 import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.widget.DividerItemDecorator
@@ -92,6 +93,8 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         binding.up.setOnClickListener {
             activity?.finishAfterTransition()
         }
+
+        viewModel.materialClick.observe(this, EventObserver { requireContext().openURL(it.link) })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

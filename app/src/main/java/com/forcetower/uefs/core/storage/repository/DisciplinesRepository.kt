@@ -119,4 +119,8 @@ class DisciplinesRepository @Inject constructor(
             }
         }
     }
+
+    fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>> {
+        return database.classMaterialDao().getMaterialsFromClassItem(classItemId)
+    }
 }

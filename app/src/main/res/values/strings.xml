@@ -654,6 +654,8 @@
     <string name="flowchart_select_course_desc">Estes são os fluxogramas cadastrados, escolha um para ver detalhes</string>
     <string name="write_statement_label">Escreva um depoimento sobre esta pessoa</string>
     <string name="write_statement_hint">O que deseja dizer?</string>
+    <string name="class_item_attached_materials_dialog_title">Materiais anexados</string>
+    <string name="class_item_attached_materials_dialog_subtitle">Selecione o material associado a esta aula para visualiza-lo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
