@@ -6,6 +6,14 @@
 # hide the original source file name.
 -renamesourcefileattribute SourceFile
 
+# ------------------------ Timber ------------------------------
+# This removes all the logging using timber.d and timber.v
+# note that timber.i and timber.e are kept in code
+-assumenosideeffects class timber.log.Timber {
+    public static *** v(...);
+    public static *** d(...);
+}
+
 # --------------------------- RETROFIT ------------------------
 # Retrofit does reflection on generic parameters. InnerClasses is required to use Signature and
 # EnclosingMethod is required to use InnerClasses.
