@@ -28,8 +28,8 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 
 android {
-    compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'

@@ -31,6 +31,7 @@ import com.forcetower.uefs.databinding.DialogSelectClassMaterialBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class SelectMaterialDialog : RoundedDialog(), Injectable {
@@ -49,13 +50,16 @@ class SelectMaterialDialog : RoundedDialog(), Injectable {
         adapter = SelectMaterialAdapter(viewModel)
         return DialogSelectClassMaterialBinding.inflate(inflater, container, false).also {
             binding = it
+            binding.recyclerMaterials.adapter = adapter
         }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val classId = requireNotNull(arguments).getLong("class_id")
+        Timber.d("Class id selected: $classId")
         viewModel.getMaterialsFromClassItem(classId).observe(this, Observer {
+            Timber.d("The list size: ${it.size}")
             adapter.submitList(it)
         })
     }

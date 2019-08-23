@@ -3,7 +3,7 @@ ext.deps = [:]
 
 def versions = [:]
 // Sagres Scrapper
-versions.sagres = "1.0.2.u"
+versions.sagres = "1.0.3.u"
 
 // Kotlin Extensions
 versions.ktx = "1.1.0-rc01"

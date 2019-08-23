@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -132,7 +133,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
     @Inject
     fun configureSagresNavigator() {
         val selected = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
-        SagresNavigator.initialize(PrefsCookiePersistor(this), selected)
+        SagresNavigator.initialize(PrefsCookiePersistor(this), selected, AndroidBase64Encoder())
     }
 
     /**
