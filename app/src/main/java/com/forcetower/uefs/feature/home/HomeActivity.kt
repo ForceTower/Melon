@@ -57,7 +57,6 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -120,25 +119,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
         setupAds(admobEnabled)
 
-        val uefsStudent = preferences.isStudentFromUEFS()
-        val hourglassRemote = remoteConfig.getBoolean("feature_flag_evaluation")
-        val hourglassNew = preferences.getBoolean("show_new_version_hourglass_release", true)
-        if (uefsStudent && hourglassRemote && hourglassNew) {
-            preferences.edit().putBoolean("show_new_version_hourglass_release", false).apply()
-            displayNewVersionInfo()
-        }
-
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
-    }
-
-    private fun displayNewVersionInfo() {
-        val dialog = BottomSheetDialog(this)
-        val view = layoutInflater.inflate(R.layout.dialog_new_version_notes, null)
-        dialog.setContentView(view)
-        dialog.show()
     }
 
     private fun setupAds(willShowAds: Boolean = true) {
