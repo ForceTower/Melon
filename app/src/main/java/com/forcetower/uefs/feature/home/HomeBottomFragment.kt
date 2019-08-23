@@ -31,7 +31,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
@@ -101,9 +100,7 @@ class HomeBottomFragment : UFragment(), Injectable {
             val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
             val state = if (isChecked) 2 else 1
             preferences.edit().putString("stg_night_mode", state.toString()).apply()
-            (activity as? AppCompatActivity)?.delegate?.localNightMode = flag
-//            AppCompatDelegate.setDefaultNightMode(flag)
-//            activity?.recreate()
+            AppCompatDelegate.setDefaultNightMode(flag)
         }
     }
 
