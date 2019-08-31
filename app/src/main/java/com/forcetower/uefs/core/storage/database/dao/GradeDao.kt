@@ -135,6 +135,9 @@ abstract class GradeDao {
                 }
             }
         }
+        grades.associateBy { it.semesterId }.keys.mapNotNull { getSemesterId(it) }.forEach {
+            deleteStaleGrades(it.uid)
+        }
     }
 
     @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
@@ -182,12 +185,16 @@ abstract class GradeDao {
                 } else if (!grade.hasGrade() && !i.hasGrade() && grade.date != i.date) {
                     grade.notified = 2
                     grade.date = i.date
-                } else if (grade.groupingName != i.groupingName) {
-                    grade.groupingName = i.groupingName
                 } else {
                     shouldUpdate = false
                     Timber.d("No changes detected between $grade and $i")
                 }
+
+                if (grade.groupingName != i.groupingName) {
+                    shouldUpdate = true
+                    grade.groupingName = i.groupingName
+                }
+
                 grade.notified = if (notify) grade.notified else 0
                 if (shouldUpdate) update(grade)
             }
@@ -214,6 +221,12 @@ abstract class GradeDao {
 
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
     protected abstract fun selectSemesterDirect(sagresId: Long): Semester?
+
+    @Query("DELETE FROM Grade WHERE groupingName = 'UNES_Group_0' AND class_id IN (SELECT c.uid FROM Class AS c WHERE c.semester_id = :semesterId)")
+    protected abstract fun deleteStaleGrades(semesterId: Long)
+
+    @Query("SELECT * FROM Semester WHERE sagres_id = :sagresSemesterId")
+    protected abstract fun getSemesterId(sagresSemesterId: Long): Semester?
 
     @Insert(onConflict = IGNORE)
     protected abstract fun insertDiscipline(discipline: Discipline): Long
