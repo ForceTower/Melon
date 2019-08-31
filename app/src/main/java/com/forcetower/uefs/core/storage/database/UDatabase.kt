@@ -121,7 +121,7 @@ import com.forcetower.uefs.core.util.Converters
     FlowchartDiscipline::class,
     FlowchartRequirement::class,
     ProfileStatement::class
-], version = 31, exportSchema = true)
+], version = 32, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
