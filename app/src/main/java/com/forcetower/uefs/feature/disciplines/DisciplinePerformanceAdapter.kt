@@ -95,17 +95,17 @@ class DisciplinePerformanceAdapter(
     override fun onBindViewHolder(holder: DisciplineHolder, position: Int) {
         val item = differ.currentList[position]
         when (holder) {
-            is DisciplineHolder.HeaderHolder -> {
-                holder.binding.apply {
-                    clazzGroup = (item as Header).clazz
-                    executePendingBindings()
-                }
-            }
             is DisciplineHolder.GradeHolder -> {
                 holder.binding.apply {
                     val element = item as Score
                     clazzGroup = element.clazz
                     grade = element.grade
+                    executePendingBindings()
+                }
+            }
+            is DisciplineHolder.HeaderHolder -> {
+                holder.binding.apply {
+                    clazzGroup = (item as Header).clazz
                     executePendingBindings()
                 }
             }
@@ -147,22 +147,8 @@ class DisciplinePerformanceAdapter(
     }
 
     sealed class DisciplineHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class HeaderHolder(
-            val binding: ItemDisciplineStatusNameResumedBinding,
-            listener: DisciplineActions
-        ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
-        }
-
-        class GradeHolder(
-            val binding: ItemGradeBinding,
-            listener: DisciplineActions
-        ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
-        }
-
-        class FinalsHolder(
-            val binding: ItemDisciplineStatusFinalsBinding,
+        class GroupingHolder(
+            val binding: ItemDisciplineStatusGroupingNameBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
@@ -175,8 +161,22 @@ class DisciplinePerformanceAdapter(
             init { binding.listener = listener }
         }
 
-        class GroupingHolder(
-            val binding: ItemDisciplineStatusGroupingNameBinding,
+        class FinalsHolder(
+            val binding: ItemDisciplineStatusFinalsBinding,
+            listener: DisciplineActions
+        ) : DisciplineHolder(binding.root) {
+            init { binding.listener = listener }
+        }
+
+        class GradeHolder(
+            val binding: ItemGradeBinding,
+            listener: DisciplineActions
+        ) : DisciplineHolder(binding.root) {
+            init { binding.listener = listener }
+        }
+
+        class HeaderHolder(
+            val binding: ItemDisciplineStatusNameResumedBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
