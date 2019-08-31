@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.model.unes
@@ -33,9 +26,10 @@ import androidx.room.Entity
 import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import com.forcetower.sagres.database.model.SMessage
+import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
+import java.util.Locale
 import java.util.UUID
 
 @Entity(indices = [
@@ -65,15 +59,17 @@ data class Message(
     @ColumnInfo(name = "processing_time")
     val processingTime: Long? = null,
     @ColumnInfo(name = "hash_message")
-    val hashMessage: Long? = null
+    val hashMessage: Long? = null,
+    val attachmentName: String? = null,
+    val attachmentLink: String? = null
 ) {
     @Ignore
     var disciplineResume: String? = null
 
     companion object {
-        fun fromMessage(me: SMessage, notified: Boolean) =
+        fun fromMessage(me: SagresMessage, notified: Boolean) =
             Message(
-                content = me.message,
+                content = me.message ?: "",
                 sagresId = me.sagresId,
                 senderName = me.senderName,
                 senderProfile = me.senderProfile,
@@ -84,7 +80,9 @@ data class Message(
                 html = me.isFromHtml,
                 dateString = me.dateString,
                 processingTime = me.processingTime,
-                hashMessage = me.message.toLowerCase().trim().hashCode().toLong()
+                hashMessage = me.message?.toLowerCase(Locale.getDefault())?.trim().hashCode().toLong(),
+                attachmentName = me.attachmentName,
+                attachmentLink = me.attachmentLink
             ).apply { disciplineResume = me.objective }
     }
 }
@@ -93,7 +91,7 @@ fun Message.notify(context: Context) {
     NotificationCreator.showSagresMessageNotification(this, context)
 }
 
-fun List<SMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
+fun List<SagresMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
     val values = this?.map { Message.fromMessage(it, notified) } ?: emptyList()
     database.messageDao().insertIgnoring(values)
 }

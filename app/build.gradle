@@ -1,3 +1,23 @@
+/*
+ * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
+ *
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
@@ -8,8 +28,8 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 
 android {
-    compileSdkVersion build_versions.target_sdk
-    buildToolsVersion build_versions.build_tools
+    compileSdkVersion 29
+    buildToolsVersion '29.0.2'
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
@@ -83,8 +103,13 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
     }
 
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
     lintOptions {
         disable 'MissingTranslation'
+        disable 'InvalidPackage'
         abortOnError true
     }
 }
@@ -102,6 +127,8 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
+    implementation (deps.sagres.juice)
+
     implementation deps.kotlin.stdlib
 
     implementation deps.androidx.ktx
@@ -117,6 +144,7 @@ dependencies {
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
     kapt deps.lifecycle.compiler
+    implementation deps.lifecycle.rx_streams
 
     implementation deps.navigation.ui
     implementation deps.navigation.ui_ktx
@@ -130,6 +158,7 @@ dependencies {
 
     implementation deps.work_manager.runtime
     implementation deps.work_manager.runtime_ktx
+    implementation deps.work_manager.gcm
 
     implementation deps.dagger.runtime
     kapt deps.dagger.compiler
@@ -174,9 +203,9 @@ dependencies {
     implementation deps.others.card_slider
     implementation deps.others.date_time_picker
     implementation deps.others.floating_search
-    api deps.others.zoned_time_date
+    implementation deps.others.zoned_time_date
+    implementation deps.others.rx_kotlin
 
-    implementation project(path: ':sagres')
     implementation project(path: ':bypass')
 }
 

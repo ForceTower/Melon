@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.storage.database.dao
@@ -35,7 +28,7 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import com.forcetower.uefs.core.model.service.ClassStatsData
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -51,10 +44,10 @@ abstract class ClassGroupDao {
     abstract fun insert(group: ClassGroup): Long
 
     @Transaction
-    open fun defineGroups(groups: List<SDisciplineGroup>, notifyMaterials: Boolean = true) {
+    open fun defineGroups(groups: List<SagresDisciplineGroup>, notifyMaterials: Boolean = true) {
         for (group in groups) {
             val inserted = insert(group)
-            if (inserted != null && group.classItems != null) {
+            if (inserted != null) {
                 Timber.d("Group id: ${inserted.uid}")
                 Timber.d("Group Code: ${group.code} has ${group.classItems.sumBy { it.materials.size }} materials")
                 for (classItem in group.classItems) {
@@ -84,18 +77,21 @@ abstract class ClassGroupDao {
     abstract fun getClassItemDirect(groupId: Long, number: Int): ClassItem?
 
     @Transaction
-    open fun insert(grp: SDisciplineGroup): ClassGroup? {
+    open fun insert(grp: SagresDisciplineGroup): ClassGroup? {
         val sgr = if (grp.group == null) "unique" else grp.group
-        val discipline = selectDisciplineDirect(grp.code)
-        var group = selectGroupDirect(grp.semester, grp.code, sgr)
-        val grops = selectGroupsDirect(grp.semester, grp.code)
+        val discipline = selectDisciplineDirect(grp.code.trim())
+        var group = selectGroupDirect(grp.semester.trim(), grp.code.trim(), sgr!!)
+        val grops = selectGroupsDirect(grp.semester.trim(), grp.code.trim())
 
         if (grops.isNotEmpty() && grops[0].group.equals("unique", ignoreCase = true)) {
             group = grops[0]
         } else if (grp.group == null && grops.isNotEmpty()) {
             group = grops[0]
         } else if (group == null) {
-            val clazz = selectClassDirect(grp.semester, grp.code) ?: return null
+            Timber.d("Class will be found or will return null")
+            val clazz = selectClassDirect(grp.semester.trim(), grp.code.trim())
+            Timber.d("Clazz found: $clazz")
+            clazz ?: return null
 
             group = ClassGroup(classId = clazz.uid, group = sgr)
             group.uid = insert(group)
@@ -105,10 +101,11 @@ abstract class ClassGroupDao {
         update(group)
 
         if (!grp.department.isNullOrBlank()) {
-            discipline.department = grp.department
+            discipline.department = grp.department!!.trim()
             updateDiscipline(discipline)
             Timber.d("Updated discipline ${discipline.code} department to ${discipline.department}")
         }
+        Timber.d("Group insertion completed with $group")
         return group
     }
 
