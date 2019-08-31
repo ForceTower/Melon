@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.feature.demand
@@ -33,7 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ItemCardDemandOfferRevBinding
 import com.forcetower.uefs.databinding.ItemDemandHeaderBinding
@@ -46,7 +39,7 @@ class DemandOffersAdapter(
 ) : RecyclerView.Adapter<DemandHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
 
-    var currentList: List<SDemandOffer> = listOf()
+    var currentList: List<SagresDemandOffer> = listOf()
     set(value) {
         field = value
         differ.submitList(buildMergedList(offers = currentList))
@@ -63,7 +56,7 @@ class DemandOffersAdapter(
     override fun onBindViewHolder(holder: DemandHolder, position: Int) {
         when (holder) {
             is DemandHolder.OfferHolder -> holder.binding.apply {
-                offer = differ.currentList[position] as SDemandOffer
+                offer = differ.currentList[position] as SagresDemandOffer
                 lifecycleOwner = this@DemandOffersAdapter.lifecycleOwner
                 actions = viewModel
                 executePendingBindings()
@@ -84,12 +77,12 @@ class DemandOffersAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is SDemandOffer -> R.layout.item_card_demand_offer_rev
+            is SagresDemandOffer -> R.layout.item_card_demand_offer_rev
             else -> R.layout.item_demand_header
         }
     }
 
-    private fun buildMergedList(offers: List<SDemandOffer> = currentList): List<Any> {
+    private fun buildMergedList(offers: List<SagresDemandOffer> = currentList): List<Any> {
         val list = mutableListOf<Any>()
         val copy = offers.toMutableList()
 
@@ -157,14 +150,14 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             oldItem === CompletedHeader && newItem === CompletedHeader -> true
             oldItem === BuggedHeader && newItem === BuggedHeader -> true
             oldItem === BuggedHeader && newItem === BuggedHeader -> true
-            oldItem is SDemandOffer && newItem is SDemandOffer -> oldItem.uid == newItem.uid
+            oldItem is SagresDemandOffer && newItem is SagresDemandOffer -> oldItem.uid == newItem.uid
             else -> false
         }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
-            oldItem is SDemandOffer && newItem is SDemandOffer -> oldItem == newItem
+            oldItem is SagresDemandOffer && newItem is SagresDemandOffer -> oldItem == newItem
             else -> true
         }
     }

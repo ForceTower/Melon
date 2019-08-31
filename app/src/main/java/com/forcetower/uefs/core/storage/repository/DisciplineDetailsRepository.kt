@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.storage.repository
@@ -32,8 +25,8 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDiscipline
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplines.FastDisciplinesCallback
 import com.forcetower.uefs.AppExecutors
@@ -77,7 +70,7 @@ class DisciplineDetailsRepository @Inject constructor(
      */
     @MainThread
     fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = true, discover: Boolean = false): LiveData<FastDisciplinesCallback> {
-        return object : LoadDisciplineDetailsResource(executors, semester, code, group, partialLoad, discover) {
+        return object : LoadDisciplineDetailsResource(executors, database, semester, code, group, partialLoad, discover) {
             @WorkerThread
             override fun saveResults(callback: FastDisciplinesCallback) {
                 defineSemesters(callback.getSemesters())
@@ -136,13 +129,20 @@ class DisciplineDetailsRepository @Inject constructor(
 
     @WorkerThread
     fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
-        val experimental = SagresNavigator.instance.disciplinesExperimental(discover = false, partialLoad = partialLoad)
-        if (experimental.status == Status.COMPLETED) {
-            defineSemesters(experimental.getSemesters())
-            defineDisciplines(experimental.getDisciplines())
-            defineDisciplineGroups(experimental.getGroups(), notify)
+        val access = database.accessDao().getAccessDirect()
+        if (access != null) {
+            SagresNavigator.instance.login(access.username, access.password)
+            val experimental = SagresNavigator.instance.disciplinesExperimental(
+                discover = false,
+                partialLoad = partialLoad
+            )
+            if (experimental.status == Status.COMPLETED) {
+                defineSemesters(experimental.getSemesters())
+                defineDisciplines(experimental.getDisciplines())
+                defineDisciplineGroups(experimental.getGroups(), notify)
+            }
+            database.classMaterialDao().markAllNotified()
         }
-        database.classMaterialDao().markAllNotified()
     }
 
     @WorkerThread
@@ -154,14 +154,14 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+    private fun defineDisciplines(disciplines: List<SagresDiscipline>) {
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
         disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>, notify: Boolean = true) {
+    private fun defineDisciplineGroups(groups: List<SagresDisciplineGroup>, notify: Boolean = true) {
         database.classGroupDao().defineGroups(groups, notify)
     }
 }

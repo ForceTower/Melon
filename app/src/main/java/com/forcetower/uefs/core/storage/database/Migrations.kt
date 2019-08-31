@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.storage.database
@@ -237,5 +230,27 @@ object M28TO29 : Migration(28, 29) {
     override fun migrate(database: SupportSQLiteDatabase) {
         val table = "ProfileStatement"
         database.execSQL("CREATE TABLE IF NOT EXISTS `$table` (`id` INTEGER NOT NULL, `receiverId` INTEGER NOT NULL, `senderId` INTEGER NOT NULL, `senderName` TEXT, `senderPicture` TEXT, `text` TEXT NOT NULL, `likes` INTEGER NOT NULL, `approved` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `updatedAt` TEXT NOT NULL, PRIMARY KEY(`id`))")
+    }
+}
+
+object M29TO30 : Migration(29, 30) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP INDEX IF EXISTS `index_Discipline_name`")
+    }
+}
+
+object M30TO31 : Migration(30, 31) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Message ADD COLUMN attachmentName TEXT DEFAULT NULL")
+        database.execSQL("ALTER TABLE Message ADD COLUMN attachmentLink TEXT DEFAULT NULL")
+    }
+}
+
+object M31TO32 : Migration(31, 32) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Grade ADD COLUMN grouping INTEGER NOT NULL DEFAULT 1")
+        database.execSQL("ALTER TABLE Grade ADD COLUMN groupingName TEXT NOT NULL DEFAULT 'UNES_Group_0'")
+        database.execSQL("DROP INDEX IF EXISTS `index_Grade_name_class_id`")
+        database.execSQL("CREATE UNIQUE INDEX `index_Grade_name_class_id_grouping` ON Grade (`name`, `class_id`, `grouping`)")
     }
 }

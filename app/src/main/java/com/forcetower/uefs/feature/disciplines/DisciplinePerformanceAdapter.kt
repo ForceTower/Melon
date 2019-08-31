@@ -1,3 +1,23 @@
+/*
+ * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
+ *
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.forcetower.uefs.feature.disciplines
 
 import android.view.View
@@ -10,6 +30,7 @@ import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusMeanBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusNameResumedBinding
 import com.forcetower.uefs.databinding.ItemGradeBinding
@@ -33,9 +54,24 @@ class DisciplinePerformanceAdapter(
                 list += Divider
 
             list += Header(clazz)
-            clazz.grades.sortedBy { it.name }.forEach { grade ->
-                list += Score(clazz, grade)
+
+            val groupings = clazz.grades.groupBy { it.grouping }
+            if (groupings.keys.size <= 1) {
+                clazz.grades.sortedBy { it.name }.forEach { grade ->
+                    list += Score(clazz, grade)
+                }
+            } else {
+                groupings.entries.sortedBy { it.key }.forEach { (_, value) ->
+                    if (value.isNotEmpty()) {
+                        val sample = value[0]
+                        list += GroupingName(clazz, sample.groupingName)
+                        value.sortedBy { it.name }.forEach { grade ->
+                            list += Score(clazz, grade)
+                        }
+                    }
+                }
             }
+
             if (clazz.clazz.isInFinal()) {
                 list += Final(clazz)
             }
@@ -51,6 +87,7 @@ class DisciplinePerformanceAdapter(
             R.layout.item_discipline_status_finals -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
+            R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
@@ -58,17 +95,17 @@ class DisciplinePerformanceAdapter(
     override fun onBindViewHolder(holder: DisciplineHolder, position: Int) {
         val item = differ.currentList[position]
         when (holder) {
-            is DisciplineHolder.HeaderHolder -> {
-                holder.binding.apply {
-                    clazzGroup = (item as Header).clazz
-                    executePendingBindings()
-                }
-            }
             is DisciplineHolder.GradeHolder -> {
                 holder.binding.apply {
                     val element = item as Score
                     clazzGroup = element.clazz
                     grade = element.grade
+                    executePendingBindings()
+                }
+            }
+            is DisciplineHolder.HeaderHolder -> {
+                holder.binding.apply {
+                    clazzGroup = (item as Header).clazz
                     executePendingBindings()
                 }
             }
@@ -84,6 +121,14 @@ class DisciplinePerformanceAdapter(
                     executePendingBindings()
                 }
             }
+            is DisciplineHolder.GroupingHolder -> {
+                holder.binding.apply {
+                    val element = item as GroupingName
+                    clazzGroup = element.clazz
+                    groupingName = element.name
+                    executePendingBindings()
+                }
+            }
         }
     }
 
@@ -96,20 +141,21 @@ class DisciplinePerformanceAdapter(
             is Final -> R.layout.item_discipline_status_finals
             is Mean -> R.layout.item_discipline_status_mean
             is Divider -> R.layout.item_discipline_status_divider
+            is GroupingName -> R.layout.item_discipline_status_grouping_name
             else -> throw IllegalStateException("No view type defined for $item")
         }
     }
 
     sealed class DisciplineHolder(view: View) : RecyclerView.ViewHolder(view) {
-        class HeaderHolder(
-            val binding: ItemDisciplineStatusNameResumedBinding,
+        class GroupingHolder(
+            val binding: ItemDisciplineStatusGroupingNameBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
-        class GradeHolder(
-            val binding: ItemGradeBinding,
+        class MeanHolder(
+            val binding: ItemDisciplineStatusMeanBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
@@ -122,8 +168,15 @@ class DisciplinePerformanceAdapter(
             init { binding.listener = listener }
         }
 
-        class MeanHolder(
-            val binding: ItemDisciplineStatusMeanBinding,
+        class GradeHolder(
+            val binding: ItemGradeBinding,
+            listener: DisciplineActions
+        ) : DisciplineHolder(binding.root) {
+            init { binding.listener = listener }
+        }
+
+        class HeaderHolder(
+            val binding: ItemDisciplineStatusNameResumedBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
@@ -142,6 +195,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is Mean && newItem is Mean -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
                 oldItem is Score && newItem is Score -> newItem.grade.uid == oldItem.grade.uid
                 oldItem is Divider && newItem is Divider -> true
+                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
                 else -> false
             }
         }
@@ -152,6 +206,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is Final && newItem is Final -> newItem.clazz.clazz == oldItem.clazz.clazz
                 oldItem is Mean && newItem is Mean -> newItem.clazz.clazz == oldItem.clazz.clazz
                 oldItem is Score && newItem is Score -> newItem.grade == oldItem.grade
+                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
                 else -> true
             }
         }
@@ -161,5 +216,6 @@ class DisciplinePerformanceAdapter(
     private data class Score(val clazz: ClassWithGroups, val grade: Grade)
     private data class Final(val clazz: ClassWithGroups)
     private data class Mean(val clazz: ClassWithGroups)
+    private data class GroupingName(val clazz: ClassWithGroups, val name: String)
     private object Divider
 }
