@@ -1,49 +1,45 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.feature.demand
 
 import android.content.Context
+import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.forcetower.sagres.database.model.SDemandOffer
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
+import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import javax.inject.Inject
 
 class DemandViewModel @Inject constructor(
     private val repository: DemandRepository,
-    private val context: Context
+    private val context: Context,
+    private val analytics: FirebaseAnalytics
 ) : ViewModel(), OfferActions {
     private var loaded = false
 
@@ -55,8 +51,8 @@ class DemandViewModel @Inject constructor(
     val loading: LiveData<Boolean>
         get() = _loading
 
-    private val _offers = MediatorLiveData<Resource<List<SDemandOffer>>>()
-    val offers: LiveData<Resource<List<SDemandOffer>>>
+    private val _offers = MediatorLiveData<Resource<List<SagresDemandOffer>>>()
+    val offers: LiveData<Resource<List<SagresDemandOffer>>>
         get() {
             if (!loaded) { initLoad() }
             return _offers
@@ -65,6 +61,8 @@ class DemandViewModel @Inject constructor(
     private val _selectedCount = MutableLiveData<Int>()
     val selectedCount: LiveData<Int>
         get() = _selectedCount
+
+    val selected = repository.getSelected()
 
     private val _selectedHours = MutableLiveData<Int>()
     val selectedHours: LiveData<Int>
@@ -84,6 +82,14 @@ class DemandViewModel @Inject constructor(
             }
 
             if (it.status == Status.SUCCESS || it.status == Status.ERROR) {
+                if (it.status == Status.SUCCESS) {
+                    analytics.logEvent("demand_loaded_disciplines_success", null)
+                } else {
+                    analytics.logEvent("demand_loaded_disciplines_failed", bundleOf(
+                        "code" to it.code,
+                        "message" to (it.message ?: "nothing at all")
+                    ))
+                }
                 _loading.value = false
             }
         }
@@ -92,7 +98,7 @@ class DemandViewModel @Inject constructor(
     init {
     }
 
-    override fun onOfferClick(offer: SDemandOffer) {
+    override fun onOfferClick(offer: SagresDemandOffer) {
         Timber.d("Offer clicked: ${offer.code}")
         if (!offer.selectable || offer.completed || offer.unavailable) {
             Timber.d("Select something valid")
@@ -104,7 +110,7 @@ class DemandViewModel @Inject constructor(
         repository.updateOfferSelection(offer, select)
     }
 
-    override fun onOfferLongClick(offer: SDemandOffer): Boolean {
+    override fun onOfferLongClick(offer: SagresDemandOffer): Boolean {
         Timber.d("Offer long clicked: ${offer.code}")
         return true
     }
@@ -112,6 +118,7 @@ class DemandViewModel @Inject constructor(
     override fun onConfirmOffers() {
         Timber.d("Confirm offers!")
         repository.confirmOptions()
+        analytics.logEvent("demand_confirmed_offers", bundleOf("amount" to _selectedCount.value))
         showSnack(context.getString(R.string.demand_will_be_created_notification))
     }
 

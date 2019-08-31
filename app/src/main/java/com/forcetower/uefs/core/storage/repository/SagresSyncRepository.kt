@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.storage.repository
@@ -38,17 +31,19 @@ import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.sagres.database.model.SCalendar
-import com.forcetower.sagres.database.model.SDiscipline
-import com.forcetower.sagres.database.model.SDisciplineClassLocation
-import com.forcetower.sagres.database.model.SDisciplineGroup
-import com.forcetower.sagres.database.model.SDisciplineMissedClass
-import com.forcetower.sagres.database.model.SGrade
-import com.forcetower.sagres.database.model.SPerson
-import com.forcetower.sagres.database.model.SRequestedService
+import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresDiscipline
+import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
+import com.forcetower.sagres.database.model.SagresDisciplineGroup
+import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
+import com.forcetower.sagres.database.model.SagresGrade
+import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.sagres.database.model.SagresPerson
+import com.forcetower.sagres.database.model.SagresRequestedService
 import com.forcetower.sagres.operation.BaseCallback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
+import com.forcetower.sagres.parsers.SagresMessageParser
 import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
@@ -196,6 +191,7 @@ class SagresSyncRepository @Inject constructor(
         }
 
         defineSchedule(SagresScheduleParser.getSchedule(homeDoc))
+        defineMessages(SagresMessageParser.getMessages(homeDoc))
 
         val person = me(score, homeDoc, access)
         if (person == null) {
@@ -220,9 +216,10 @@ class SagresSyncRepository @Inject constructor(
 
         var result = 0
         var skipped = 0
-        if (access.username.contains("@") || person.isMocked) {
-            if (!messages(null)) result += 1 shl 1
-        } else {
+
+        if (!messages(null))
+
+        if (!person.isMocked) {
             if (!messages(person.id)) result += 1 shl 1
             if (!semesters(person.id)) result += 1 shl 2
         }
@@ -276,14 +273,14 @@ class SagresSyncRepository @Inject constructor(
         }
 
         if (preferences.getBoolean("primary_fetch", true)) {
-            DisciplinesDetailsWorker.createWorker()
+            DisciplinesDetailsWorker.createWorker(context)
             preferences.edit().putBoolean("primary_fetch", false).apply()
         }
 
         if (uefsStudent) {
             if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.1", false) &&
                     authRepository.getAccessTokenDirect() != null) {
-                HourglassContributeWorker.createWorker()
+                HourglassContributeWorker.createWorker(context)
                 preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.1", true).apply()
             }
         }
@@ -311,6 +308,13 @@ class SagresSyncRepository @Inject constructor(
         registry.message = "Deve-se consultar as flags de erro"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
+    }
+
+    private fun defineMessages(values: List<SagresMessage>) {
+        values.reversed().forEachIndexed { index, message ->
+            message.processingTime = System.currentTimeMillis() + index
+        }
+        database.messageDao().insertIgnoring(values.map { Message.fromMessage(it, false) })
     }
 
     private fun onNewToken(token: String) {
@@ -371,7 +375,7 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    private fun me(score: Double, document: Document, access: Access): SPerson? {
+    private fun me(score: Double, document: Document, access: Access): SagresPerson? {
         val username = access.username
         if (username.contains("@")) {
             return continueWithHtml(document, username, score)
@@ -397,9 +401,9 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document, username: String, score: Double): SPerson {
+    private fun continueWithHtml(document: Document, username: String, score: Double): SagresPerson {
         val name = SagresBasicParser.getName(document) ?: username
-        val person = SPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
+        val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
         database.profileDao().insert(person, score)
         return person
     }
@@ -455,7 +459,8 @@ class SagresSyncRepository @Inject constructor(
                 defineDemand(start.isDemandOpen)
 
                 Timber.d("Semesters: ${start.semesters}")
-                Timber.d("Disciplines:  ${start.disciplines}")
+                Timber.d("Disciplines: ${start.disciplines}")
+                Timber.d("Groups: ${start.groups}")
                 Timber.d("Calendar: ${start.calendar}")
                 true
             }
@@ -480,7 +485,7 @@ class SagresSyncRepository @Inject constructor(
                 materialsNotifications()
 
                 Timber.d("Semesters: ${experimental.getSemesters()}")
-                Timber.d("Disciplines:  ${experimental.getDisciplines()}")
+                Timber.d("Disciplines: ${experimental.getDisciplines()}")
                 Timber.d("Groups: ${experimental.getGroups()}")
                 true
             }
@@ -557,7 +562,8 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    private fun defineServices(services: List<SRequestedService>) {
+    private fun defineServices(services: List<SagresRequestedService>?) {
+        services ?: return
         val list = services.map { ServiceRequest.fromSagres(it) }
         database.serviceRequestDao().insertList(list)
     }
@@ -590,44 +596,47 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun defineFrequency(frequency: List<SDisciplineMissedClass>?) {
-        if (frequency == null) return
+    private fun defineFrequency(frequency: List<SagresDisciplineMissedClass>?) {
+        frequency ?: return
         database.classAbsenceDao().putAbsences(frequency)
     }
 
     @WorkerThread
-    private fun defineGrades(grades: List<SGrade>) {
+    private fun defineGrades(grades: List<SagresGrade>?) {
+        grades ?: return
         database.gradesDao().putGrades(grades)
     }
 
     @WorkerThread
-    private fun defineSemesters(semesters: List<Pair<Long, String>>) {
-        semesters.forEach {
+    private fun defineSemesters(semesters: List<Pair<Long, String>>?) {
+        semesters?.forEach {
             val semester = Semester(sagresId = it.first, name = it.second, codename = it.second)
             database.semesterDao().insertIgnoring(semester)
         }
     }
 
     @WorkerThread
-    private fun defineSchedule(locations: List<SDisciplineClassLocation>?) {
-        if (locations == null) return
+    private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
+        locations ?: return
         database.classLocationDao().putSchedule(locations)
     }
 
     @WorkerThread
-    private fun defineDisciplineGroups(groups: List<SDisciplineGroup>) {
+    private fun defineDisciplineGroups(groups: List<SagresDisciplineGroup>?) {
+        groups ?: return
         database.classGroupDao().defineGroups(groups)
     }
 
     @WorkerThread
-    private fun defineDisciplines(disciplines: List<SDiscipline>) {
+    private fun defineDisciplines(disciplines: List<SagresDiscipline>?) {
+        disciplines ?: return
         val values = disciplines.map { Discipline.fromSagres(it) }
         database.disciplineDao().insert(values)
         disciplines.forEach { database.classDao().insert(it, true) }
     }
 
     @WorkerThread
-    private fun defineCalendar(calendar: List<SCalendar>?) {
+    private fun defineCalendar(calendar: List<SagresCalendar>?) {
         val values = calendar?.map { CalendarItem.fromSagres(it) }
         database.calendarDao().deleteAndInsert(values)
     }

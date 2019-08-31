@@ -1,28 +1,21 @@
 /*
- * Copyright (c) 2019.
- * João Paulo Sena <joaopaulo761@gmail.com>
- *
  * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
  *
- * UNES is licensed under the MIT License
+ * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
  *
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
  *
- * The above copyright notice and this permission notice shall be included in all
- * copies or substantial portions of the Software.
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
  *
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 package com.forcetower.uefs.core.storage.repository
@@ -30,7 +23,7 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.Context
 import android.content.SharedPreferences
 import com.crashlytics.android.Crashlytics
-import com.forcetower.sagres.database.model.SPerson
+import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
@@ -45,6 +38,7 @@ import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
 import com.google.firebase.iid.FirebaseInstanceId
 import timber.log.Timber
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -59,7 +53,7 @@ class FirebaseAuthRepository @Inject constructor(
 ) {
     private val secret = context.getString(R.string.firebase_account_secret)
 
-    fun loginToFirebase(person: SPerson, access: Access, reconnect: Boolean = false) {
+    fun loginToFirebase(person: SagresPerson, access: Access, reconnect: Boolean = false) {
         if (reconnect) { firebaseAuth.signOut() }
         if (firebaseAuth.currentUser == null) {
             val user = access.username.toLowerCase()
@@ -83,7 +77,7 @@ class FirebaseAuthRepository @Inject constructor(
         }
     }
 
-    private fun attemptSignIn(email: String, password: String, access: Access, person: SPerson) {
+    private fun attemptSignIn(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
@@ -103,7 +97,7 @@ class FirebaseAuthRepository @Inject constructor(
                 })
     }
 
-    private fun attemptCreateAccount(email: String, password: String, access: Access, person: SPerson) {
+    private fun attemptCreateAccount(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
                 .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
@@ -122,14 +116,14 @@ class FirebaseAuthRepository @Inject constructor(
                 })
     }
 
-    private fun connected(access: Access, person: SPerson, uid: String) {
-        Timber.d("Creating student profile for ${person.name.trim()} UID: $uid")
+    private fun connected(access: Access, person: SagresPerson, uid: String) {
+        Timber.d("Creating student profile for ${person.name?.trim()} UID: $uid")
 
         val data = mutableMapOf(
-                "name" to WordUtils.toTitleCase(person.name.trim()),
+                "name" to WordUtils.toTitleCase(person.name?.trim()),
                 "username" to access.username,
-                "email" to person.email.trim().toLowerCase(),
-                "cpf" to person.cpf.trim(),
+                "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
+                "cpf" to person.getCpf()?.trim(),
                 "sagresId" to person.id,
                 "imageUrl" to "/users/$uid/avatar.jpg",
                 "manufacturer" to android.os.Build.MANUFACTURER,
