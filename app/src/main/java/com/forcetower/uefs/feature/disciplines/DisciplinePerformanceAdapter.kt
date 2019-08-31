@@ -30,6 +30,7 @@ import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusMeanBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusNameResumedBinding
 import com.forcetower.uefs.databinding.ItemGradeBinding
@@ -53,9 +54,24 @@ class DisciplinePerformanceAdapter(
                 list += Divider
 
             list += Header(clazz)
-            clazz.grades.sortedBy { it.name }.forEach { grade ->
-                list += Score(clazz, grade)
+
+            val groupings = clazz.grades.groupBy { it.grouping }
+            if (groupings.keys.size <= 1) {
+                clazz.grades.sortedBy { it.name }.forEach { grade ->
+                    list += Score(clazz, grade)
+                }
+            } else {
+                groupings.entries.sortedBy { it.key }.forEach { (_, value) ->
+                    if (value.isNotEmpty()) {
+                        val sample = value[0]
+                        list += GroupingName(clazz, sample.groupingName)
+                        value.sortedBy { it.name }.forEach { grade ->
+                            list += Score(clazz, grade)
+                        }
+                    }
+                }
             }
+
             if (clazz.clazz.isInFinal()) {
                 list += Final(clazz)
             }
@@ -71,6 +87,7 @@ class DisciplinePerformanceAdapter(
             R.layout.item_discipline_status_finals -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
+            R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
@@ -104,6 +121,14 @@ class DisciplinePerformanceAdapter(
                     executePendingBindings()
                 }
             }
+            is DisciplineHolder.GroupingHolder -> {
+                holder.binding.apply {
+                    val element = item as GroupingName
+                    clazzGroup = element.clazz
+                    groupingName = element.name
+                    executePendingBindings()
+                }
+            }
         }
     }
 
@@ -116,6 +141,7 @@ class DisciplinePerformanceAdapter(
             is Final -> R.layout.item_discipline_status_finals
             is Mean -> R.layout.item_discipline_status_mean
             is Divider -> R.layout.item_discipline_status_divider
+            is GroupingName -> R.layout.item_discipline_status_grouping_name
             else -> throw IllegalStateException("No view type defined for $item")
         }
     }
@@ -149,6 +175,13 @@ class DisciplinePerformanceAdapter(
             init { binding.listener = listener }
         }
 
+        class GroupingHolder(
+            val binding: ItemDisciplineStatusGroupingNameBinding,
+            listener: DisciplineActions
+        ) : DisciplineHolder(binding.root) {
+            init { binding.listener = listener }
+        }
+
         class DividerHolder(
             val binding: ItemDisciplineStatusDividerBinding
         ) : DisciplineHolder(binding.root)
@@ -162,6 +195,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is Mean && newItem is Mean -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
                 oldItem is Score && newItem is Score -> newItem.grade.uid == oldItem.grade.uid
                 oldItem is Divider && newItem is Divider -> true
+                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
                 else -> false
             }
         }
@@ -172,6 +206,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is Final && newItem is Final -> newItem.clazz.clazz == oldItem.clazz.clazz
                 oldItem is Mean && newItem is Mean -> newItem.clazz.clazz == oldItem.clazz.clazz
                 oldItem is Score && newItem is Score -> newItem.grade == oldItem.grade
+                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
                 else -> true
             }
         }
@@ -181,5 +216,6 @@ class DisciplinePerformanceAdapter(
     private data class Score(val clazz: ClassWithGroups, val grade: Grade)
     private data class Final(val clazz: ClassWithGroups)
     private data class Mean(val clazz: ClassWithGroups)
+    private data class GroupingName(val clazz: ClassWithGroups, val name: String)
     private object Divider
 }
