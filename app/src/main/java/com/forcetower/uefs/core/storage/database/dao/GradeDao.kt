@@ -136,7 +136,9 @@ abstract class GradeDao {
             }
         }
         grades.associateBy { it.semesterId }.keys.mapNotNull { getSemesterId(it) }.forEach {
-            deleteStaleGrades(it.uid)
+            Timber.d("delete stales from ${it.name}")
+            val affected = deleteStaleGrades(it.uid)
+            Timber.d("Rows affected $affected")
         }
     }
 
@@ -147,17 +149,20 @@ abstract class GradeDao {
     protected abstract fun getClass(code: String, semester: Long): Class?
 
     private fun prepareInsertion(clazz: Class, it: SagresGrade, notify: Boolean) {
+        // This is used to select the best grade when multiple ones with same identifier is found
         val values = HashMap<String, SagresGradeInfo>()
         it.values.forEach { g ->
-            var grade = values[g.name]
-            if (grade == null) { grade = g } else {
+            var grade = values["${g.grouping}<><>${g.name}"]
+            if (grade == null) {
+                grade = g
+            } else {
                 if (g.hasGrade()) grade = g
                 else if (g.hasDate() && grade.hasDate() && g.date != grade.date) grade = g
                 else Timber.d("This grade was ignored ${g.name}_${g.grade}")
             }
-
-            values[g.name] = grade
+            values["${g.grouping}<><>${g.name}"] = grade
         }
+
 
         values.values.forEach { i ->
             val grade = getNamedGradeDirect(clazz.uid, i.name, i.grouping)
@@ -187,7 +192,7 @@ abstract class GradeDao {
                     grade.date = i.date
                 } else {
                     shouldUpdate = false
-                    Timber.d("No changes detected between $grade and $i")
+                    Timber.d("No changes detected between ${grade.name} ${grade.grouping} and ${i.name} ${i.grouping}")
                 }
 
                 if (grade.groupingName != i.groupingName) {
@@ -211,7 +216,7 @@ abstract class GradeDao {
     protected abstract fun updateClassScore(classId: Long, score: Double)
 
     @Query("SELECT * FROM Grade WHERE class_id = :classId AND name = :name AND grouping = :grouping")
-    protected abstract fun getNamedGradeDirect(classId: Long, name: String, grouping: Int = 1): Grade?
+    protected abstract fun getNamedGradeDirect(classId: Long, name: String, grouping: Int): Grade?
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
@@ -223,7 +228,7 @@ abstract class GradeDao {
     protected abstract fun selectSemesterDirect(sagresId: Long): Semester?
 
     @Query("DELETE FROM Grade WHERE groupingName = 'UNES_Group_0' AND class_id IN (SELECT c.uid FROM Class AS c WHERE c.semester_id = :semesterId)")
-    protected abstract fun deleteStaleGrades(semesterId: Long)
+    protected abstract fun deleteStaleGrades(semesterId: Long): Int
 
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresSemesterId")
     protected abstract fun getSemesterId(sagresSemesterId: Long): Semester?
