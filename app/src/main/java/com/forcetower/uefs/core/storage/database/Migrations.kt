@@ -245,3 +245,12 @@ object M30TO31 : Migration(30, 31) {
         database.execSQL("ALTER TABLE Message ADD COLUMN attachmentLink TEXT DEFAULT NULL")
     }
 }
+
+object M31TO32 : Migration(31, 32) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Grade ADD COLUMN grouping INTEGER NOT NULL DEFAULT 1")
+        database.execSQL("ALTER TABLE Grade ADD COLUMN groupingName TEXT NOT NULL DEFAULT 'Notas'")
+        database.execSQL("DROP INDEX IF EXISTS `index_Grade_name_class_id`")
+        database.execSQL("CREATE UNIQUE INDEX `index_Grade_name_class_id_grouping` ON Grade (`name`, `class_id`, `grouping`)")
+    }
+}
