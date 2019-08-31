@@ -157,11 +157,20 @@ abstract class GradeDao {
         }
 
         values.values.forEach { i ->
-            val grade = getNamedGradeDirect(clazz.uid, i.name)
+            val grade = getNamedGradeDirect(clazz.uid, i.name, i.grouping)
             if (grade == null) {
                 val notified = if (i.hasGrade()) 3 else 1
-                insert(Grade(classId = clazz.uid, name = i.name, date = i.date, notified = if (notify) notified else 0, grade = i.grade))
+                insert(Grade(
+                    classId = clazz.uid,
+                    name = i.name,
+                    date = i.date,
+                    notified = if (notify) notified else 0,
+                    grade = i.grade,
+                    grouping = i.grouping,
+                    groupingName = i.groupingName
+                ))
             } else {
+                var shouldUpdate = true
                 if (grade.hasGrade() && i.hasGrade() && grade.grade != i.grade) {
                     grade.notified = 4
                     grade.grade = i.grade
@@ -173,11 +182,14 @@ abstract class GradeDao {
                 } else if (!grade.hasGrade() && !i.hasGrade() && grade.date != i.date) {
                     grade.notified = 2
                     grade.date = i.date
+                } else if (grade.groupingName != i.groupingName) {
+                    grade.groupingName = i.groupingName
                 } else {
+                    shouldUpdate = false
                     Timber.d("No changes detected between $grade and $i")
                 }
                 grade.notified = if (notify) grade.notified else 0
-                update(grade)
+                if (shouldUpdate) update(grade)
             }
         }
     }
@@ -191,8 +203,8 @@ abstract class GradeDao {
     @Query("UPDATE Class SET final_score = :score WHERE uid = :classId")
     protected abstract fun updateClassScore(classId: Long, score: Double)
 
-    @Query("SELECT * FROM Grade WHERE class_id = :classId AND name = :name")
-    protected abstract fun getNamedGradeDirect(classId: Long, name: String): Grade?
+    @Query("SELECT * FROM Grade WHERE class_id = :classId AND name = :name AND grouping = :grouping")
+    protected abstract fun getNamedGradeDirect(classId: Long, name: String, grouping: Int = 1): Grade?
 
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
