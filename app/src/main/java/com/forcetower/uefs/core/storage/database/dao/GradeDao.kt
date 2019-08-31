@@ -163,7 +163,6 @@ abstract class GradeDao {
             values["${g.grouping}<><>${g.name}"] = grade
         }
 
-
         values.values.forEach { i ->
             val grade = getNamedGradeDirect(clazz.uid, i.name, i.grouping)
             if (grade == null) {
