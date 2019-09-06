@@ -61,15 +61,12 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
         val args = arguments ?: throw IllegalStateException("Arguments are null")
         args.getLong(SEMESTER_SAGRES_ID)
     }
-
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
+    
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPerformance: DisciplinePerformanceAdapter
-    private lateinit var adapterCommon: DisciplineSemesterAdapter
     private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
     private lateinit var binding: FragmentDisciplineSemesterBinding
 
@@ -88,14 +85,8 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Crashlytics.logException(t) }
 
-        val performance = remoteConfig.getBoolean("disciplines_view_performance")
-        if (performance) {
-            adapterPerformance = DisciplinePerformanceAdapter(viewModel)
-            recyclerView.adapter = adapterPerformance
-        } else {
-            adapterCommon = DisciplineSemesterAdapter(viewModel)
-            recyclerView.adapter = adapterCommon
-        }
+        adapterPerformance = DisciplinePerformanceAdapter(viewModel)
+        recyclerView.adapter = adapterPerformance
 
         recyclerView.apply {
             (layoutManager as LinearLayoutManager).recycleChildrenOnDetach = true
@@ -126,11 +117,6 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     }
 
     private fun populateInterface(classes: List<ClassWithGroups>) {
-        val performance = remoteConfig.getBoolean("disciplines_view_performance")
-        if (performance) {
-            adapterPerformance.classes = classes
-        } else {
-            adapterCommon.submitList(classes)
-        }
+        adapterPerformance.classes = classes
     }
 }
