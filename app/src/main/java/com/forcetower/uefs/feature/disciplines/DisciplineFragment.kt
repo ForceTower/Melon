@@ -20,13 +20,17 @@
 
 package com.forcetower.uefs.feature.disciplines
 
+import android.content.SharedPreferences
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
@@ -49,6 +53,8 @@ import javax.inject.Inject
 class DisciplineFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var homeViewModel: HomeViewModel
@@ -57,6 +63,8 @@ class DisciplineFragment : UFragment(), Injectable {
     private lateinit var viewPager: ViewPager
     private lateinit var tabs: TabLayout
     private lateinit var adapter: SemesterAdapter
+
+    private var sortedSizeOnce: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
@@ -81,7 +89,8 @@ class DisciplineFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.semesters.observe(this, Observer {
-            adapter.submitList(it)
+            val actualList = applySortOptions(it)
+            adapter.submitList(actualList)
         })
 
         viewModel.navigateToDisciplineAction.observe(this, EventObserver {
@@ -91,6 +100,49 @@ class DisciplineFragment : UFragment(), Injectable {
         viewModel.navigateToGroupAction.observe(this, EventObserver {
             startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
         })
+    }
+
+    private fun applySortOptions(semesters: List<Semester>): List<Semester> {
+        val ordering = preferences.getString("stg_semester_ordering_type", "0")?.toIntOrNull() ?: 0
+        val diffSort = semesters.sorted()
+        val size = semesters.size
+
+        if (ordering == 0 && sortedSizeOnce != size) {
+            val suggestedOrdering = preferences.getBoolean("suggested_reordering_of_semesters", false)
+            if (!suggestedOrdering && diffSort != semesters) {
+                sortedSizeOnce = size
+                // preferences.edit().putBoolean("suggested_reordering_of_semesters", true).apply()
+                val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), true)
+                snack?.let { bar ->
+                    bar.setAction(getString(R.string.incorrect_semester_ordering_quick_fix)) {
+                        preferences.edit().putString("stg_semester_ordering_type", "1").apply()
+                        bar.dismiss()
+                        showAppliedChangesSnack()
+                    }
+
+                    bar.show()
+                }
+            }
+        }
+
+        return if (ordering == 1) {
+            diffSort
+        } else {
+            semesters
+        }
+    }
+
+    private fun showAppliedChangesSnack() {
+        Handler(Looper.getMainLooper()).postDelayed({
+            if (!lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return@postDelayed
+            val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
+            snack?.let { bar ->
+                bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
+                    preferences.edit().putString("stg_semester_ordering_type", "0").apply()
+                    bar.dismiss()
+                }
+            }
+        }, 1000)
     }
 
     private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
