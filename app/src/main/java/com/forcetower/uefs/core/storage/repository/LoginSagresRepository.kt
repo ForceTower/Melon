@@ -124,13 +124,13 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun me(data: MediatorLiveData<Callback>, score: Double, access: Access, document: Document) {
-        val me = SagresNavigator.instance.aMe().toLiveData()
         currentStep.value = createStep(R.string.step_finding_profile)
         val username = access.username
 
-        if (username.contains("@")) {
+        if (username.contains("@") || !preferences.isStudentFromUEFS()) {
             continueUsingHtml(document, username, score, access, data)
         } else {
+            val me = SagresNavigator.instance.aMe().toLiveData()
             data.addSource(me) { m ->
                 Timber.d("Me status ${m.status} ${m.code}")
                 if (m.status == Status.SUCCESS) {
@@ -144,9 +144,10 @@ class LoginSagresRepository @Inject constructor(
                     } else {
                         Timber.d("SPerson is null")
                     }
-                } else if (m.status == Status.RESPONSE_FAILED) {
+                } else if (m.status == Status.RESPONSE_FAILED || m.status == Status.NETWORK_ERROR) {
                     continueUsingHtml(document, username, score, access, data)
                 } else {
+                    Timber.d("The status ${m.status}")
                     data.value = Callback.Builder(m.status)
                             .code(m.code)
                             .message(m.message)
