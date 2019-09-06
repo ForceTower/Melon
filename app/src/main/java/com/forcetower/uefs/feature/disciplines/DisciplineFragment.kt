@@ -47,7 +47,9 @@ import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.makeSemester
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineFragment : UFragment(), Injectable {
@@ -103,19 +105,20 @@ class DisciplineFragment : UFragment(), Injectable {
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
-        val ordering = preferences.getString("stg_semester_ordering_type", "0")?.toIntOrNull() ?: 0
+        val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
         val diffSort = semesters.sorted()
         val size = semesters.size
 
-        if (ordering == 0 && sortedSizeOnce != size) {
+        if (ordering && sortedSizeOnce != size) {
             val suggestedOrdering = preferences.getBoolean("suggested_reordering_of_semesters", false)
             if (!suggestedOrdering && diffSort != semesters) {
                 sortedSizeOnce = size
-                // preferences.edit().putBoolean("suggested_reordering_of_semesters", true).apply()
+                preferences.edit().putBoolean("suggested_reordering_of_semesters", true).apply()
                 val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), true)
                 snack?.let { bar ->
+                    bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_quick_fix)) {
-                        preferences.edit().putString("stg_semester_ordering_type", "1").apply()
+                        preferences.edit().putBoolean("stg_semester_deterministic_ordering", false).apply()
                         bar.dismiss()
                         showAppliedChangesSnack()
                     }
@@ -125,22 +128,27 @@ class DisciplineFragment : UFragment(), Injectable {
             }
         }
 
-        return if (ordering == 1) {
-            diffSort
-        } else {
+        return if (ordering) {
             semesters
+        } else {
+            diffSort
         }
     }
 
     private fun showAppliedChangesSnack() {
         Handler(Looper.getMainLooper()).postDelayed({
-            if (!lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) return@postDelayed
-            val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
-            snack?.let { bar ->
-                bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
-                    preferences.edit().putString("stg_semester_ordering_type", "0").apply()
-                    bar.dismiss()
+            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
+                snack?.let { bar ->
+                    bar.duration = Snackbar.LENGTH_LONG
+                    bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
+                        preferences.edit().putBoolean("stg_semester_deterministic_ordering", true).apply()
+                        bar.dismiss()
+                    }
+                    bar.show()
                 }
+            } else {
+                Timber.d("Failed check of state")
             }
         }, 1000)
     }
