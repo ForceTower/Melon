@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.shared
 
 import androidx.fragment.app.Fragment
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 
 abstract class UFragment : Fragment() {
@@ -32,6 +33,16 @@ abstract class UFragment : Fragment() {
             activity.showSnack(string, long)
         } else {
             Timber.d("Not part of UActivity")
+        }
+    }
+
+    fun getSnack(string: String, long: Boolean = false): Snackbar? {
+        val activity = activity
+        return if (activity is UActivity) {
+            activity.getSnackInstance(string, long)
+        } else {
+            Timber.d("Not part of UActivity")
+            null
         }
     }
 }
