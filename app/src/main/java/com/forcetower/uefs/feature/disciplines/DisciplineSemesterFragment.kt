@@ -38,7 +38,6 @@ import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import javax.inject.Inject
 
 class DisciplineSemesterFragment : UFragment(), Injectable {
@@ -61,7 +60,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
         val args = arguments ?: throw IllegalStateException("Arguments are null")
         args.getLong(SEMESTER_SAGRES_ID)
     }
-    
+
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
