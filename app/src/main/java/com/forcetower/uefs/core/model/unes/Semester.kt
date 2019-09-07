@@ -40,7 +40,28 @@ data class Semester(
     val startClass: Long? = null,
     @ColumnInfo(name = "end_class")
     val endClass: Long? = null
-) {
+) : Comparable<Semester> {
+
+    override fun compareTo(other: Semester): Int {
+        return try {
+            val o1 = name
+            val o2 = other.name
+            val str1 = Integer.parseInt(o1.substring(0, 5))
+            val str2 = Integer.parseInt(o2.substring(0, 5))
+
+            if (str1 == str2) {
+                if (o1.length > 5)
+                    -1
+                else
+                    1
+            } else {
+                str1.compareTo(str2) * -1
+            }
+        } catch (e: Exception) {
+            0
+        }
+    }
+
     companion object {
         fun fromSagres(s: SagresSemester) =
                 Semester(0, s.uefsId, s.name.trim(), s.codename.trim(), s.startInMillis, s.endInMillis, s.startClassesInMillis, s.endClassesInMillis)
