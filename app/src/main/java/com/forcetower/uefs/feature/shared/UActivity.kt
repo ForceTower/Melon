@@ -21,8 +21,11 @@
 package com.forcetower.uefs.feature.shared
 
 import androidx.appcompat.app.AppCompatActivity
+import com.google.android.material.snackbar.Snackbar
 
 abstract class UActivity : AppCompatActivity() {
 
     open fun showSnack(string: String, long: Boolean = false) {}
+
+    open fun getSnackInstance(string: String, long: Boolean = false): Snackbar? = null
 }

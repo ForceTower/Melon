@@ -24,7 +24,7 @@ Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou 
 
 ### Suporte a outras universidades
 Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
-Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Melon/blob/development/sagres/src/main/java/com/forcetower/sagres/Constants.kt) do aplicativo.
+Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Juice/blob/unsuspended/src/main/kotlin/com/forcetower/sagres/Constants.kt) do aplicativo.
 
 ### Adicionando uma mensagem nova ao login
 Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.
