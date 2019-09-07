@@ -656,6 +656,13 @@
     <string name="write_statement_hint">O que deseja dizer?</string>
     <string name="class_item_attached_materials_dialog_title">Materiais anexados</string>
     <string name="class_item_attached_materials_dialog_subtitle">Selecione o material associado a esta aula para visualiza-lo</string>
+    <string name="incorrect_semester_ordering_detected">Parece que os semestres não estão organizados</string>
+    <string name="incorrect_semester_ordering_quick_fix">Corrigir</string>
+    <string name="incorrect_semester_ordering_changes_applied">Abra de novo para ver as mudanças</string>
+    <string name="incorrect_semester_ordering_undo_changes">Desfazer</string>
+    <string name="settings_semester_deterministic_ordering">Ordem dos Semestres</string>
+    <string name="settings_semester_deterministic_ordering_info_on">Organizar de forma determinística, pelo valor</string>
+    <string name="settings_semester_deterministic_ordering_info_off">Organizar de forma não determinística, pelo nome</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

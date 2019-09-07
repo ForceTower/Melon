@@ -315,9 +315,14 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
 
     override fun showSnack(string: String, long: Boolean) {
+        val snack = getSnackInstance(string, long)
+        snack.show()
+    }
+
+    override fun getSnackInstance(string: String, long: Boolean): Snackbar {
         val snack = Snackbar.make(binding.snack, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
         snack.config()
-        snack.show()
+        return snack
     }
 
     override fun checkAchievements(email: String?) {
