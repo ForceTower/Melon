@@ -140,7 +140,7 @@ class DisciplineFragment : UFragment(), Injectable {
             if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                 val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
                 snack?.let { bar ->
-                    bar.duration = Snackbar.LENGTH_LONG
+                    bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
                         preferences.edit().putBoolean("stg_semester_deterministic_ordering", true).apply()
                         bar.dismiss()
