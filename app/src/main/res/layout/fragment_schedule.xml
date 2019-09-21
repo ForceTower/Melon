@@ -129,10 +129,11 @@
                 android:id="@+id/layout_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:goneIf="@{!safeUnbox(empty)}">
 
                 <ImageView
+                    android:id="@+id/imageView4"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="16dp"
@@ -145,18 +146,38 @@
 
 
                 <TextView
+                    android:id="@+id/lbl_sched_not_found"
                     style="@style/UTheme.TextAppearance.Headline2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
                     android:text="@string/label_schedule_not_found"
                     android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toTopOf="@+id/lbl_sched_not_found_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/lbl_sched_not_found_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:text="@string/label_schedule_not_found_details"
+                    android:textAlignment="gravity"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_sched_not_found" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 
