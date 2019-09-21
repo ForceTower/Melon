@@ -55,8 +55,14 @@ class UserSessionRepository @Inject constructor(
 
     @WorkerThread
     fun syncSessions() {
+        Timber.d("Started sync session...")
         val sessions = database.userSessionDao().getUnsyncedSessions()
-        if (sessions.isEmpty()) return
+        if (sessions.isEmpty()) {
+            Timber.d("All sessions in sync...")
+            return
+        }
+
+        Timber.d("Session sync will be performed")
 
         val start = sessions.map { it.started }.min() ?: 0
         val end = sessions.map { it.started }.max() ?: 0
@@ -67,9 +73,11 @@ class UserSessionRepository @Inject constructor(
                 sessions.forEach { database.userSessionDao().markSyncedSession(it.uid) }
                 Timber.d("Sessions sync completed")
             } else {
+                Timber.d("Response failed with ${response.code()}")
                 // User is not authorized...
                 // Reconnect...
                 if (response.code() == 401) {
+                    Timber.d("User needs to reconnect...")
                     database.accessTokenDao().deleteAll()
                     authRepository.performAccountSyncState()
                 }
