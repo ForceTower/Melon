@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudentDTO
@@ -161,4 +162,7 @@ interface UService {
 
     @POST("siecomp/edit_speaker")
     fun updateSpeaker(@Body speaker: Speaker): Call<Void>
+
+    @POST("sessions/save")
+    fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 }

@@ -254,3 +254,10 @@ object M31TO32 : Migration(31, 32) {
         database.execSQL("CREATE UNIQUE INDEX `index_Grade_name_class_id_grouping` ON Grade (`name`, `class_id`, `grouping`)")
     }
 }
+
+object M32TO33 : Migration(32, 33) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `UserSession` (`uid` TEXT NOT NULL, `started` INTEGER NOT NULL, `lastInteraction` INTEGER, `synced` INTEGER NOT NULL, PRIMARY KEY(`uid`))")
+        database.execSQL("ALTER TABLE Account ADD COLUMN grouping INTEGER DEFAULT NULL")
+    }
+}

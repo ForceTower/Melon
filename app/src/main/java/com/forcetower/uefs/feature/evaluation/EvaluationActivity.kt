@@ -28,9 +28,12 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.forcetower.uefs.EvalNavGraphDirections
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.databinding.ActivityEvaluationBinding
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -39,11 +42,15 @@ import javax.inject.Inject
 class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var factory: UViewModelFactory
+    private lateinit var sessionViewModel: UserSessionViewModel
 
     private lateinit var binding: ActivityEvaluationBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        sessionViewModel = provideViewModel(factory)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation)
         if (savedInstanceState == null) {
             val teacherName = intent.getStringExtra("teacherName")
@@ -63,6 +70,26 @@ class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector() = fragmentInjector
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sessionViewModel.onUserInteraction()
+    }
 
     companion object {
         fun startIntentForTeacher(context: Context, teacherName: String): Intent {

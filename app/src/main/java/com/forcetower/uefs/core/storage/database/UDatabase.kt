@@ -27,24 +27,22 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.CalendarItem
-import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Profile
-import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
+import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
 import com.forcetower.uefs.core.model.unes.FlowchartSemester
 import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SDemandOffer
 import com.forcetower.uefs.core.model.unes.SDiscipline
@@ -52,9 +50,11 @@ import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.model.unes.STeacher
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.model.unes.SagresFlags
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.Teacher
+import com.forcetower.uefs.core.model.unes.UserSession
 import com.forcetower.uefs.core.storage.database.dao.AccessDao
 import com.forcetower.uefs.core.storage.database.dao.AccessTokenDao
 import com.forcetower.uefs.core.storage.database.dao.AccountDao
@@ -86,6 +86,7 @@ import com.forcetower.uefs.core.storage.database.dao.ServiceRequestDao
 import com.forcetower.uefs.core.storage.database.dao.StudentServiceDao
 import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
 import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
+import com.forcetower.uefs.core.storage.database.dao.UserSessionDao
 import com.forcetower.uefs.core.util.Converters
 
 @Database(entities = [
@@ -120,8 +121,9 @@ import com.forcetower.uefs.core.util.Converters
     FlowchartSemester::class,
     FlowchartDiscipline::class,
     FlowchartRequirement::class,
-    ProfileStatement::class
-], version = 32, exportSchema = true)
+    ProfileStatement::class,
+    UserSession::class
+], version = 33, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -155,4 +157,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun flowchartDisciplineDao(): FlowchartDisciplineDao
     abstract fun flowchartRequirementDao(): FlowchartRequirementDao
     abstract fun statementDao(): ProfileStatementDao
+    abstract fun userSessionDao(): UserSessionDao
 }

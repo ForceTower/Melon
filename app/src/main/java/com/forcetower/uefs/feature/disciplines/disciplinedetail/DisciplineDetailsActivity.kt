@@ -29,6 +29,7 @@ import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.databinding.ActivityDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.UGameActivity
@@ -45,6 +46,8 @@ class DisciplineDetailsActivity : UGameActivity(), HasSupportFragmentInjector {
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
     @Inject
     lateinit var factory: UViewModelFactory
+
+    private lateinit var sessionViewModel: UserSessionViewModel
     private lateinit var binding: ActivityDisciplineDetailsBinding
     private lateinit var viewModel: DisciplineViewModel
 
@@ -52,6 +55,7 @@ class DisciplineDetailsActivity : UGameActivity(), HasSupportFragmentInjector {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_discipline_details)
         viewModel = provideViewModel(factory)
+        sessionViewModel = provideViewModel(factory)
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
@@ -86,6 +90,26 @@ class DisciplineDetailsActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     override fun supportFragmentInjector() = fragmentInjector
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sessionViewModel.onUserInteraction()
+    }
 
     companion object {
         const val CLASS_GROUP_ID = "class_group_id"
