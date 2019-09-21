@@ -102,6 +102,9 @@ interface UService {
     @GET("account/statements")
     fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
 
+    @POST("account/save_sessions")
+    fun saveSessions(@Body session: UserSessionDTO): Call<Void>
+
     @GET("courses")
     fun getCourses(): Call<List<Course>>
 
@@ -162,7 +165,4 @@ interface UService {
 
     @POST("siecomp/edit_speaker")
     fun updateSpeaker(@Body speaker: Speaker): Call<Void>
-
-    @POST("sessions/save")
-    fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 }

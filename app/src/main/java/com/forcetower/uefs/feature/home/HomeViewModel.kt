@@ -156,4 +156,8 @@ class HomeViewModel @Inject constructor(
     fun getAccountSync(): Account? {
         return accountRepository.getAccountSync()
     }
+
+    fun onSyncSessions() {
+        sessionRepository.onSyncSessionsAsync()
+    }
 }
