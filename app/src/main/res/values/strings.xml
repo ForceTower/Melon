@@ -663,6 +663,7 @@
     <string name="settings_semester_deterministic_ordering">Ordem dos Semestres</string>
     <string name="settings_semester_deterministic_ordering_info_on">Organizar de forma determinística, pelo valor</string>
     <string name="settings_semester_deterministic_ordering_info_off">Organizar de forma não determinística, pelo nome</string>
+    <string name="label_schedule_not_found_details">As informações não foram encontradas no Portal do Aluno.\n\nNão se preocupe, assim que ele aparecer novamente, o UNES irá salva-lo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
