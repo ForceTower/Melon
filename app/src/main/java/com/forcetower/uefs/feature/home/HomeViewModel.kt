@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
+import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -55,6 +56,7 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
     private val context: Context,
+    private val sessionRepository: UserSessionRepository,
     accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
@@ -133,5 +135,13 @@ class HomeViewModel @Inject constructor(
 
     fun setSelectedCourse(course: Course) {
         profileRepository.updateUserCourse(course)
+    }
+
+    fun onSessionStarted() {
+        sessionRepository.onSessionStartedAsync()
+    }
+
+    fun onUserInteraction() {
+        sessionRepository.onUserInteractionAsync()
     }
 }

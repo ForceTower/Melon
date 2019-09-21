@@ -20,8 +20,7 @@ ext {
             def name = "${major}.${minor}.${patch} build ${commit_count} ${postfix}"
             def code = (21 * 100000) + commit_count
             return [code, name]
-        } catch (Exception e) {
-            e.printStackTrace()
+        } catch (Exception ignored) {
             System.err.println("No git installed on the machine or not on a git repo. UNES will not automate version name and code")
             return [1, '1.0.0-rev0.no.git']
         }

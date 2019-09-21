@@ -29,6 +29,7 @@ import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.core.vm.SnackbarViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.vm.UnesverseViewModel
+import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.easter.darktheme.DarkThemeViewModel
 import com.forcetower.uefs.feature.about.ContributorViewModel
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
@@ -227,6 +228,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FlowchartViewModel::class)
     abstract fun bindFlowchartViewModel(vm: FlowchartViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(UserSessionViewModel::class)
+    abstract fun bindUserSessionViewModel(vm: UserSessionViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory
