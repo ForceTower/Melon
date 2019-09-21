@@ -8,6 +8,7 @@ import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.unes.UserSession
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import timber.log.Timber
 import java.util.Calendar
@@ -20,7 +21,8 @@ class UserSessionRepository @Inject constructor(
     private val database: UDatabase,
     private val service: UService,
     private val executors: AppExecutors,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val authRepository: AuthRepository
 ) {
 
     @WorkerThread
@@ -63,8 +65,15 @@ class UserSessionRepository @Inject constructor(
             val response = service.saveSessions(dto).execute()
             if (response.isSuccessful) {
                 sessions.forEach { database.userSessionDao().markSyncedSession(it.uid) }
+                Timber.d("Sessions sync completed")
+            } else {
+                // User is not authorized...
+                // Reconnect...
+                if (response.code() == 401) {
+                    database.accessTokenDao().deleteAll()
+                    authRepository.performAccountSyncState()
+                }
             }
-            Timber.d("Sessions sync completed")
         } catch (error: Throwable) {
             Timber.e(error, "It seems that the sync failed")
         }
