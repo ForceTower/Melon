@@ -40,6 +40,18 @@ class UserSessionRepository @Inject constructor(
     }
 
     @WorkerThread
+    fun onUserClickedAd() {
+        val session = database.userSessionDao().getLatestSession() ?: onSessionStarted()
+        database.userSessionDao().updateClickedAd(session.uid, 1)
+    }
+
+    @WorkerThread
+    fun onUserAdImpression() {
+        val session = database.userSessionDao().getLatestSession() ?: onSessionStarted()
+        database.userSessionDao().updateAdImpression(session.uid, 1)
+    }
+
+    @WorkerThread
     fun syncSessions() {
         val sessions = database.userSessionDao().getUnsyncedSessions()
         if (sessions.isEmpty()) return
@@ -69,7 +81,19 @@ class UserSessionRepository @Inject constructor(
         if (!preferences.isStudentFromUEFS()) return
         executors.diskIO().execute { onSessionStarted() }
     }
-    
+
+    @AnyThread
+    fun onUserClickedAdAsync() {
+        if (!preferences.isStudentFromUEFS()) return
+        executors.diskIO().execute { onUserClickedAd() }
+    }
+
+    @AnyThread
+    fun onUserAdImpressionAsync() {
+        if (!preferences.isStudentFromUEFS()) return
+        executors.diskIO().execute { onUserAdImpression() }
+    }
+
     @AnyThread
     fun onSyncSessionsAsync() {
         executors.networkIO().execute { syncSessions() }

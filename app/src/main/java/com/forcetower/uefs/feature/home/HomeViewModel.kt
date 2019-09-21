@@ -57,7 +57,7 @@ class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val context: Context,
     private val sessionRepository: UserSessionRepository,
-    accountRepository: AccountRepository
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
@@ -143,5 +143,17 @@ class HomeViewModel @Inject constructor(
 
     fun onUserInteraction() {
         sessionRepository.onUserInteractionAsync()
+    }
+
+    fun onUserClickedAd() {
+        sessionRepository.onUserClickedAdAsync()
+    }
+
+    fun onUserAdImpression() {
+        sessionRepository.onUserAdImpressionAsync()
+    }
+
+    fun getAccountSync(): Account? {
+        return accountRepository.getAccountSync()
     }
 }

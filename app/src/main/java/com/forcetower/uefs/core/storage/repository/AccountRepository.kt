@@ -57,4 +57,8 @@ class AccountRepository @Inject constructor(
     fun getAccountOnDatabase(): LiveData<Account?> {
         return database.accountDao().getAccountNullable()
     }
+
+    fun getAccountSync(): Account? {
+        return database.accountDao().getAccountDirect()
+    }
 }

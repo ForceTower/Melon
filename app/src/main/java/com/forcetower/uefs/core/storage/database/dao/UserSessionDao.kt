@@ -29,4 +29,10 @@ abstract class UserSessionDao {
 
     @Query("UPDATE UserSession SET synced = 1 WHERE uid = :session")
     abstract fun markSyncedSession(session: String)
+
+    @Query("UPDATE UserSession SET clickedAd = :clicked WHERE uid = :session")
+    abstract fun updateClickedAd(session: String, clicked: Int)
+
+    @Query("UPDATE UserSession SET impressionAd = :impression WHERE uid = :session")
+    abstract fun updateAdImpression(session: String, impression: Int)
 }

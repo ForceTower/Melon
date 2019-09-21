@@ -10,5 +10,7 @@ data class UserSession(
     val uid: String,
     val started: Long,
     val lastInteraction: Long? = null,
-    val synced: Boolean = false
+    val synced: Boolean = false,
+    val clickedAd: Boolean = false,
+    val impressionAd: Boolean = false
 )

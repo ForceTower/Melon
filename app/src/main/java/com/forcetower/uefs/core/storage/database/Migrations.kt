@@ -261,3 +261,10 @@ object M32TO33 : Migration(32, 33) {
         database.execSQL("ALTER TABLE Account ADD COLUMN grouping INTEGER DEFAULT NULL")
     }
 }
+
+object M33TO34 : Migration(33, 34) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE UserSession ADD COLUMN clickedAd INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE UserSession ADD COLUMN impressionAd INTEGER NOT NULL DEFAULT 0")
+    }
+}

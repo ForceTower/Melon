@@ -27,6 +27,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.CalendarItem
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
@@ -123,7 +124,7 @@ import com.forcetower.uefs.core.util.Converters
     FlowchartRequirement::class,
     ProfileStatement::class,
     UserSession::class
-], version = 33, exportSchema = true)
+], version = 34, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
