@@ -146,6 +146,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
             initShortcuts()
             verifyUpdates()
             viewModel.onSessionStarted()
+            viewModel.account.observe(this, Observer { Unit })
         } catch (t: Throwable) {}
         moveToTask()
     }
@@ -268,7 +269,10 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
         viewModel.sendToken().observe(this, Observer { Unit })
-        if (preferences.isStudentFromUEFS()) viewModel.connectToServiceIfNeeded()
+        if (preferences.isStudentFromUEFS()) {
+            viewModel.connectToServiceIfNeeded()
+            viewModel.onSyncSessions()
+        }
     }
 
     private fun openProfile(profileId: Long) {
@@ -387,7 +391,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun prepareAdsForPublic(willShowAd: Boolean = true) {
-        // if (!willShowAd) return
+        if (!willShowAd) return
 
         executors.others().execute {
             val account = viewModel.getAccountSync()
