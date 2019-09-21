@@ -76,7 +76,7 @@ class ProfileFragment : UFragment(), Injectable {
             if (it.me) {
                 binding.writeStatement.hide()
             } else {
-                binding.writeStatement.show(true)
+                binding.writeStatement.show()
             }
         })
 
