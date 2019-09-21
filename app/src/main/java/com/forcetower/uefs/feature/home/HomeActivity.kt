@@ -138,6 +138,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         try {
             initShortcuts()
             verifyUpdates()
+            viewModel.onSessionStarted()
         } catch (t: Throwable) {}
         moveToTask()
     }
@@ -174,8 +175,14 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         updateManager.startUpdateFlowForResult(info, type, this, REQUEST_IN_APP_UPDATE)
     }
 
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        viewModel.onUserInteraction()
+    }
+
     override fun onResume() {
         super.onResume()
+        viewModel.onUserInteraction()
         updateManager.appUpdateInfo.addOnSuccessListener {
             if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
@@ -237,7 +244,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         val messagesShort = messages.toShortcut(this, "messages_sagres", R.drawable.ic_shortcut_message, getString(R.string.label_messages))
         val gradesShort = grades.toShortcut(this, "grades", R.drawable.ic_shortcut_school, getString(R.string.label_grades_disciplines))
 
-        manager.addDynamicShortcuts(listOf(gradesShort, messagesShort))
+        manager?.addDynamicShortcuts(listOf(gradesShort, messagesShort))
     }
 
     private fun setupBottomNav() {
@@ -379,5 +386,15 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
                 }
             }
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        viewModel.onUserInteraction()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.onUserInteraction()
     }
 }

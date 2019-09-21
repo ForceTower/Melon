@@ -57,6 +57,7 @@ import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.math.abs
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -275,7 +276,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         val undoField = mGame.gameGrid!!.undoGrid
         val uuid = mGame.uuid
         for (xx in field.indices) {
-            for (yy in 0 until field[0].size) {
+            for (yy in field[0].indices) {
                 if (field[xx][yy] != null) {
                     editor.putInt("$xx $yy", field[xx][yy].value)
                 } else {
@@ -302,8 +303,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         // Stopping all animations
         binding.gameview.cancelAnimations()
         val settings = PreferenceManager.getDefaultSharedPreferences(activity)
-        for (xx in 0 until mGame.gameGrid!!.grid.size) {
-            for (yy in 0 until mGame.gameGrid!!.grid[0].size) {
+        for (xx in mGame.gameGrid!!.grid.indices) {
+            for (yy in mGame.gameGrid!!.grid[0].indices) {
                 val value = settings.getInt("$xx $yy", -1)
                 if (value > 0) {
                     mGame.gameGrid!!.grid[xx][yy] = Tile(xx, yy, value)
@@ -375,8 +376,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
                 val deltaY = downY - upY
 
                 // swipe horizontal?
-                if (Math.abs(deltaX) > Math.abs(deltaY)) {
-                    if (Math.abs(deltaX) > MIN_DISTANCE) {
+                if (abs(deltaX) > abs(deltaY)) {
+                    if (abs(deltaX) > MIN_DISTANCE) {
                         // left or right
                         if (deltaX > 0) {
                             this.onLeftSwipe()
@@ -390,7 +391,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
                         return false // We don't consume the event
                     }
                 } else {
-                    if (Math.abs(deltaY) > MIN_DISTANCE) {
+                    if (abs(deltaY) > MIN_DISTANCE) {
                         // top or down
                         if (deltaY < 0) {
                             this.onDownSwipe()
