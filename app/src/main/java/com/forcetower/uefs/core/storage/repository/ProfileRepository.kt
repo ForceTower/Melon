@@ -109,7 +109,12 @@ class ProfileRepository @Inject constructor(
         val result = MutableLiveData<Resource<Boolean>>()
         executors.networkIO().execute {
             try {
-                val response = service.sendStatement(statement, profileId, hidden).execute()
+                val map = mapOf(
+                    "statement" to statement,
+                    "hidden" to hidden,
+                    "profile_id" to profileId
+                )
+                val response = service.sendStatement(map).execute()
                 if (response.isSuccessful) {
                     result.postValue(Resource.success(true))
                 } else {
