@@ -46,6 +46,7 @@ import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 object NetworkModule {
@@ -72,6 +73,7 @@ object NetworkModule {
             .readTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
+            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
             .build()
     }
 
