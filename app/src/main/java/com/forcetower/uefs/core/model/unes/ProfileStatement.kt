@@ -39,6 +39,7 @@ data class ProfileStatement(
     val senderName: String?,
     @SerializedName("sender_picture")
     val senderPicture: String?,
+    val hidden: Boolean,
     val text: String,
     val likes: Int,
     val approved: Boolean,
