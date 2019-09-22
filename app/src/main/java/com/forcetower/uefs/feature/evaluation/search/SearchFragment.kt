@@ -112,7 +112,7 @@ class SearchFragment : UFragment(), Injectable {
     private fun onStudentSelected(entity: EvaluationEntity) {
         val shared = findStudentHeadshot(binding.wildcardRecycler, entity.referencedId)
         val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, getString(R.string.student_headshot_transition))
-        val intent = ProfileActivity.startIntent(requireContext(), entity.referencedId)
+        val intent = ProfileActivity.startIntent(requireContext(), entity.referencedId, entity.referenceLong1 ?: 0)
         startActivity(intent, option.toBundle())
     }
 
