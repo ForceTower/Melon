@@ -98,10 +98,8 @@ class ProfileRepository @Inject constructor(
             override fun createCall() = service.getStatements(studentId).asLiveData()
             override fun saveCallResult(value: UResponse<List<ProfileStatement>>) {
                 if (value.data != null) {
-                    database.runInTransaction {
-                        database.statementDao().deleteAllFromReceiverId(userId)
-                        database.statementDao().insert(value.data)
-                    }
+                    database.statementDao().deleteAllFromReceiverId(userId)
+                    database.statementDao().insert(value.data)
                 }
             }
         }.asLiveData()

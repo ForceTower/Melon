@@ -69,7 +69,9 @@ class ProfileFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         setupViewModel = provideViewModel(factory)
         activity?.postponeEnterTransition(500L)
-        viewModel.setUserId(requireNotNull(arguments).getLong(EXTRA_USER_ID, 0))
+        val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
+        check(userId != 0L) { "Well.. That happened" }
+        viewModel.setUserId(userId)
         viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
         viewModel.profile.observe(this, Observer {
             it ?: return@Observer
