@@ -48,3 +48,10 @@ data class ProfileStatement(
     @SerializedName("updated_at")
     val updatedAt: ZonedDateTime
 )
+
+data class CreateStatementParams(
+    val statement: String,
+    val hidden: Boolean,
+    @SerializedName("profile_id")
+    val profileId: Long
+)

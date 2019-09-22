@@ -27,6 +27,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.CreateStatementParams
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.model.unes.SStudentDTO
@@ -109,11 +110,7 @@ class ProfileRepository @Inject constructor(
         val result = MutableLiveData<Resource<Boolean>>()
         executors.networkIO().execute {
             try {
-                val map = mapOf(
-                    "statement" to statement,
-                    "hidden" to hidden,
-                    "profile_id" to profileId
-                )
+                val map = CreateStatementParams(statement, hidden, profileId)
                 val response = service.sendStatement(map).execute()
                 if (response.isSuccessful) {
                     result.postValue(Resource.success(true))
@@ -121,6 +118,7 @@ class ProfileRepository @Inject constructor(
                     result.postValue(Resource.error(context.getString(R.string.write_statement_post_failed_code, response.code()), null))
                 }
             } catch (error: Throwable) {
+                Timber.e(error, "Error ${error.message}")
                 result.postValue(Resource.error(context.getString(R.string.write_statement_network_error), null))
             }
         }
