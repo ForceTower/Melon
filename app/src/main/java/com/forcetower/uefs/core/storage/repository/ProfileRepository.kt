@@ -20,8 +20,11 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.api.UResponse
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.ProfileStatement
@@ -40,7 +43,8 @@ import javax.inject.Singleton
 class ProfileRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
-    private val service: UService
+    private val service: UService,
+    private val context: Context
 ) {
     fun getMeProfile(): LiveData<Resource<SStudent>> {
         return object : NetworkBoundResource<SStudent, UResponse<SStudentDTO>>(executors) {
@@ -94,5 +98,22 @@ class ProfileRepository @Inject constructor(
                 if (value.data != null) database.statementDao().insert(value.data)
             }
         }.asLiveData()
+    }
+
+    fun sendStatement(statement: String, profileId: Long): LiveData<Resource<Boolean>> {
+        val result = MutableLiveData<Resource<Boolean>>()
+        executors.networkIO().execute {
+            try {
+                val response = service.sendStatement(statement, profileId).execute()
+                if (response.isSuccessful) {
+                    result.postValue(Resource.success(true))
+                } else {
+                    result.postValue(Resource.error(context.getString(R.string.write_statement_post_failed_code, response.code()), null))
+                }
+            } catch (error: Throwable) {
+                result.postValue(Resource.error(context.getString(R.string.write_statement_network_error), null))
+            }
+        }
+        return result
     }
 }

@@ -186,6 +186,7 @@ dependencies {
     implementation deps.play.core
 
     implementation deps.network.okhttp
+    implementation deps.network.okhttp_logging
     implementation deps.network.retrofit
     implementation deps.network.retrofit_gson
     implementation deps.network.cookie_jar

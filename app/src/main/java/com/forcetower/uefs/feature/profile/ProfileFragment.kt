@@ -39,6 +39,7 @@ import com.forcetower.uefs.databinding.FragmentProfileBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_PROFILE_ID
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
@@ -114,8 +115,8 @@ class ProfileFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.statements.observe(this, Observer {
-            adapter.statements = it
+        viewModel.statements.observe(this, Observer { statements ->
+            adapter.statements = statements.sortedByDescending { it.createdAt }
         })
 
         binding.up.setOnClickListener {
@@ -123,11 +124,17 @@ class ProfileFragment : UFragment(), Injectable {
         }
 
         binding.writeStatement.setOnClickListener {
+            val profileId = requireNotNull(arguments).getLong(EXTRA_PROFILE_ID, 0)
+            fragmentManager?.inTransaction {
+                val fragment = WriteStatementFragment().apply {
+                    arguments = bundleOf(
+                        "profile_id" to profileId
+                    )
+                }
+                replace(R.id.fragment_container, fragment, "write_statement")
+                addToBackStack("home")
+            }
         }
-
-//        binding.imageProfile.setOnClickListener {
-//            pickImage()
-//        }
     }
 
     private fun pickImage() {
@@ -138,14 +145,6 @@ class ProfileFragment : UFragment(), Injectable {
 
     private fun onImagePicked(uri: Uri) {
         setupViewModel.setSelectedImage(uri)
-//        GlideApp.with(requireContext())
-//            .load(uri)
-//            .fallback(R.mipmap.ic_unes_large_image_512)
-//            .placeholder(R.mipmap.ic_unes_large_image_512)
-//            .circleCrop()
-//            .transition(DrawableTransitionOptions.withCrossFade())
-//            .into(binding.user)
-
         setupViewModel.uploadImageToStorage()
     }
 
