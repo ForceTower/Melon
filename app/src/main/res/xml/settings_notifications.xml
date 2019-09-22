@@ -85,5 +85,11 @@
             android:key="stg_ntf_event_created"
             android:title="@string/settings_ntf_event_created"
             android:summary="@string/settings_ntf_event_created_info" />
+
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_statement_received"
+            android:title="@string/settings_ntf_statement_posted"
+            android:summary="@string/settings_ntf_statement_posted_info" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

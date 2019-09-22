@@ -675,6 +675,13 @@
     <string name="write_statement_network_error">Erro de conexão :(</string>
     <string name="write_statement_post_failed_code">Seu depoimento não foi postado. Erro %1$d</string>
     <string name="write_statement_must_be_at_least_15_characters">Seu depoimento é muito pequeno :(</string>
+    <string name="notification_statement_received_anonymous_title">Você recebeu um depoimento anônimo 🕵️</string>
+    <string name="notification_statement_received_common_title">Você tem um novo depoimento!</string>
+    <string name="notification_statement_received_common_body">%1$s escreveu para você. Vá até seu perfil na Ampulheta para ver!</string>
+    <string name="channel_group_social_network">Unesverso</string>
+    <string name="channel_social_statement_received">Depoimentos recebidos</string>
+    <string name="settings_ntf_statement_posted">Depoimentos recebidos</string>
+    <string name="settings_ntf_statement_posted_info">Um depoimento foi adicionado ao seu perfil</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
