@@ -22,7 +22,6 @@ jobs:
             echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
             echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
             echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
-            echo $ADMOB_STRINGS | base64 --decode > ~/unes/app/src/main/res/values/admob_strings.xml
       
       - run: 
           name: Downloading Dependencies
