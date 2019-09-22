@@ -28,7 +28,9 @@ import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityProfileBinding
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
+import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
 import javax.inject.Inject
@@ -48,6 +50,17 @@ class ProfileActivity : UActivity(), HasSupportFragmentInjector {
                 add(R.id.fragment_container, ProfileFragment.newInstance(profileId))
             }
         }
+    }
+
+    override fun showSnack(string: String, long: Boolean) {
+        val snack = getSnackInstance(string, long)
+        snack.show()
+    }
+
+    override fun getSnackInstance(string: String, long: Boolean): Snackbar {
+        val snack = Snackbar.make(binding.rootContainer, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+        snack.config()
+        return snack
     }
 
     override fun supportFragmentInjector() = fragmentInjector
