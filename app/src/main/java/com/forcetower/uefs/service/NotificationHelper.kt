@@ -42,9 +42,10 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         val cEvents = NotificationChannelGroup(CHANNEL_GROUP_EVENTS_ID, getString(R.string.channel_group_events))
         val cServices = NotificationChannelGroup(CHANNEL_GROUP_SERVICE_REQUEST_ID, getString(R.string.channel_group_service_request))
         val cDisciplines = NotificationChannelGroup(CHANNEL_GROUP_DISCIPLINE_ID, context.getString(R.string.channel_group_disciplines))
+        val cSocial = NotificationChannelGroup(CHANNEL_GROUP_SOCIAL_ID, context.getString(R.string.channel_group_social_network))
 
         val manager = getManager()
-        manager.createNotificationChannelGroups(listOf(cGrades, cMessages, cGeneral, cEvents, cServices, cDisciplines))
+        manager.createNotificationChannelGroups(listOf(cGrades, cMessages, cGeneral, cEvents, cServices, cDisciplines, cSocial))
 
         val messages = createChannel(CHANNEL_MESSAGES_TEACHER_ID, getString(R.string.channel_messages_teachers), NotificationManager.IMPORTANCE_DEFAULT)
         val uefsMsg = createChannel(CHANNEL_MESSAGES_UEFS_ID, getString(R.string.channel_messages_uefs), NotificationManager.IMPORTANCE_DEFAULT)
@@ -61,6 +62,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         val svcCreate = createChannel(CHANNEL_SVC_REQ_CREATE_ID, getString(R.string.channel_svc_req_create), NotificationManager.IMPORTANCE_LOW)
         val svcUpdate = createChannel(CHANNEL_SVC_REQ_UPDATE_ID, getString(R.string.channel_svc_req_update), NotificationManager.IMPORTANCE_DEFAULT)
         val materialPost = createChannel(CHANNEL_DISCIPLINE_MATERIAL_POSTED, context.getString(R.string.channel_discipline_material_posted), NotificationManager.IMPORTANCE_DEFAULT)
+        val socialStatements = createChannel(CHANNEL_SOCIAL_STATEMENT_RECEIVED_ID, context.getString(R.string.channel_social_statement_received), NotificationManager.IMPORTANCE_DEFAULT)
 
         messages.group = CHANNEL_GROUP_MESSAGES_ID
         uefsMsg.group = CHANNEL_GROUP_MESSAGES_ID
@@ -77,6 +79,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         svcCreate.group = CHANNEL_GROUP_SERVICE_REQUEST_ID
         svcUpdate.group = CHANNEL_GROUP_SERVICE_REQUEST_ID
         materialPost.group = CHANNEL_GROUP_DISCIPLINE_ID
+        socialStatements.group = CHANNEL_GROUP_SOCIAL_ID
 
         manager.createNotificationChannel(messages)
         manager.createNotificationChannel(uefsMsg)
@@ -93,6 +96,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         manager.createNotificationChannel(svcCreate)
         manager.createNotificationChannel(svcUpdate)
         manager.createNotificationChannel(materialPost)
+        manager.createNotificationChannel(socialStatements)
 
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_DCE_ID)
         manager.deleteNotificationChannel(CHANNEL_MESSAGES_SAGRES_ID)
@@ -125,6 +129,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         const val CHANNEL_GROUP_EVENTS_ID = "com.forcetower.uefs.EVENTS"
         const val CHANNEL_GROUP_SERVICE_REQUEST_ID = "com.forcetower.uefs.SERVICE_REQUEST"
         const val CHANNEL_GROUP_DISCIPLINE_ID = "com.forcetower.uefs.DISCIPLINE"
+        const val CHANNEL_GROUP_SOCIAL_ID = "com.forcetower.uefs.SOCIAL"
         // Notification Channels
         const val CHANNEL_MESSAGES_TEACHER_ID = "com.forcetower.uefs.MESSAGES.SAGRES.TEACHER.POST"
         const val CHANNEL_MESSAGES_UEFS_ID = "com.forcetower.uefs.MESSAGES.SAGRES.UEFS.POST"
@@ -141,6 +146,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         const val CHANNEL_SVC_REQ_CREATE_ID = "com.forcetower.uefs.SERVICE_REQUEST.CREATE"
         const val CHANNEL_SVC_REQ_UPDATE_ID = "com.forcetower.uefs.SERVICE_REQUEST.UPDATE"
         const val CHANNEL_DISCIPLINE_MATERIAL_POSTED = "com.forcetower.uefs.DISCIPLINE.MATERIAL.POSTED"
+        const val CHANNEL_SOCIAL_STATEMENT_RECEIVED_ID = "com.forcetower.uefs.SOCIAL.STATEMENT.RECEIVED"
 
         // Deleted Channels
         const val CHANNEL_MESSAGES_DCE_ID = "com.forcetower.uefs.MESSAGES.DCE"
