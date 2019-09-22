@@ -50,7 +50,6 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
@@ -267,16 +266,11 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     private fun setupUserData() {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.openProfileCase.observe(this, EventObserver { openProfile(it) })
         viewModel.sendToken().observe(this, Observer { Unit })
         if (preferences.isStudentFromUEFS()) {
             viewModel.connectToServiceIfNeeded()
             viewModel.onSyncSessions()
         }
-    }
-
-    private fun openProfile(profileId: Long) {
-        startActivity(ProfileActivity.startIntent(this, profileId))
     }
 
     private fun onAccessUpdate(access: Access?) {

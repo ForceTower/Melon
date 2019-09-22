@@ -65,10 +65,6 @@ class HomeViewModel @Inject constructor(
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
 
-    private val _openProfileCase = MediatorLiveData<Event<Long>>()
-    val openProfileCase: LiveData<Event<Long>>
-        get() = _openProfileCase
-
     private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()
     val passwordChangeProcess: LiveData<Event<Resource<Boolean>>>
         get() = _passwordChangeProcess
@@ -96,15 +92,6 @@ class HomeViewModel @Inject constructor(
 
     fun showSnack(message: String) {
         _snackbar.value = Event(message)
-    }
-
-    fun onMeProfileClicked() {
-        _openProfileCase.addSource(profile) {
-            _openProfileCase.removeSource(profile)
-            if (it != null) {
-                _openProfileCase.value = Event(it.uid)
-            }
-        }
     }
 
     fun subscribeToTopics(vararg topics: String) {

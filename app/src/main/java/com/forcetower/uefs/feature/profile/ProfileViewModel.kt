@@ -36,6 +36,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
 ) : ViewModel() {
+    private var userId: Long? = null
     private val profileId = MutableLiveData<Long?>()
 
     private val _profile = MediatorLiveData<SStudent?>()
@@ -61,13 +62,14 @@ class ProfileViewModel @Inject constructor(
     init {
         _profile.addSource(profileId) {
             refreshProfile(it)
-            refreshStatements(it)
+            refreshStatements(it, userId)
         }
     }
 
-    private fun refreshStatements(profileId: Long?) {
+    private fun refreshStatements(profileId: Long?, userId: Long?) {
         profileId ?: return
-        val source = repository.loadStatements(profileId)
+        userId ?: return
+        val source = repository.loadStatements(profileId, userId)
         _statements.addSource(source) {
             Timber.d("Resource status ${it.status}")
             val data = it.data
@@ -98,6 +100,14 @@ class ProfileViewModel @Inject constructor(
     fun setProfileId(newProfileId: Long?) {
         Timber.d("Setting new profile id: $newProfileId")
         profileId.setValueIfNew(newProfileId)
+    }
+
+    /**
+     * This method should be replaced by a reactive thing together with setProfileId
+     */
+    fun setUserId(userId: Long) {
+        Timber.d("Setting new userId: $userId")
+        this.userId = userId
     }
 
     fun onSendStatement(statement: String, profileId: Long, hidden: Boolean) {

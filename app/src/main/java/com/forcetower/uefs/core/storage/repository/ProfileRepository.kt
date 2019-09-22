@@ -89,13 +89,20 @@ class ProfileRepository @Inject constructor(
 
     fun getAccountDatabase() = database.accountDao().getAccount()
 
-    fun loadStatements(profileId: Long): LiveData<Resource<List<ProfileStatement>>> {
+    fun loadStatements(studentId: Long, userId: Long): LiveData<Resource<List<ProfileStatement>>> {
         return object : NetworkBoundResource<List<ProfileStatement>, UResponse<List<ProfileStatement>>>(executors) {
-            override fun loadFromDb() = database.statementDao().getStatements(profileId)
+            override fun loadFromDb() = database.statementDao().getStatements(userId)
             override fun shouldFetch(it: List<ProfileStatement>?) = true
-            override fun createCall() = service.getStatements(profileId).asLiveData()
+            // As of this version, the API uses the student id for loading the statements
+            // This was a poor design on my part :/
+            override fun createCall() = service.getStatements(studentId).asLiveData()
             override fun saveCallResult(value: UResponse<List<ProfileStatement>>) {
-                if (value.data != null) database.statementDao().insert(value.data)
+                if (value.data != null) {
+                    database.runInTransaction {
+                        database.statementDao().deleteAllFromReceiverId(userId)
+                        database.statementDao().insert(value.data)
+                    }
+                }
             }
         }.asLiveData()
     }
