@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentWriteStatementBinding
+import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import javax.inject.Inject
@@ -46,7 +47,7 @@ class WriteStatementFragment : UFragment(), Injectable {
     private val viewModel: ProfileViewModel by viewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel.setProfileId(requireNotNull(arguments).getLong("profile_id", 0))
+        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
         return FragmentWriteStatementBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -96,7 +97,7 @@ class WriteStatementFragment : UFragment(), Injectable {
             return
         }
 
-        val profileId = requireNotNull(arguments).getLong("profile_id", 0)
+        val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
         viewModel.onSendStatement(statement, profileId, hidden)
     }
 
