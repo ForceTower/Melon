@@ -58,7 +58,7 @@ versions.gp_billing_client = "1.2"
 versions.gp_admob = "18.0.0"
 
 // Networking
-versions.okhttp = "4.1.0"
+versions.okhttp = "4.2.0"
 versions.retrofit = "2.6.1"
 versions.cookie_jar = "v1.0.1"
 
@@ -175,6 +175,7 @@ deps.play = play
 // Networking
 def network = [:]
 network.okhttp = "com.squareup.okhttp3:okhttp:$versions.okhttp"
+network.okhttp_logging = "com.squareup.okhttp3:logging-interceptor:$versions.okhttp"
 network.retrofit = "com.squareup.retrofit2:retrofit:$versions.retrofit"
 network.retrofit_gson = "com.squareup.retrofit2:converter-gson:$versions.retrofit"
 network.cookie_jar = "com.github.franmontiel:PersistentCookieJar:$versions.cookie_jar"

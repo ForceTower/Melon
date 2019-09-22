@@ -27,6 +27,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
+import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
@@ -43,6 +45,18 @@ class ProfileViewModel @Inject constructor(
     private val _statements = MediatorLiveData<List<ProfileStatement>>()
     val statements: LiveData<List<ProfileStatement>>
         get() = _statements
+
+    private val _sendingStatement = MediatorLiveData<Boolean>()
+    val sendingStatement: LiveData<Boolean>
+        get() = _sendingStatement
+
+    private val _messages = MutableLiveData<Event<String>>()
+    val messages: LiveData<Event<String>>
+        get() = _messages
+
+    private val _statementSentSignal = MutableLiveData<Event<Boolean>>()
+    val statementSentSignal: LiveData<Event<Boolean>>
+        get() = _statementSentSignal
 
     init {
         _profile.addSource(profileId) {
@@ -86,7 +100,25 @@ class ProfileViewModel @Inject constructor(
         profileId.setValueIfNew(newProfileId)
     }
 
-    fun onSendStatement(text: String) {
-        TODO("It is not implemented yet...")
+    fun onSendStatement(statement: String, profileId: Long) {
+        if (_sendingStatement.value == true) {
+            Timber.d("Already sending data")
+            return
+        }
+
+        _sendingStatement.value = true
+        val source = repository.sendStatement(statement, profileId)
+        _sendingStatement.addSource(source) {
+            _sendingStatement.removeSource(source)
+            if (it.message != null) {
+                _messages.value = Event(it.message)
+            }
+
+            if (it.status == Status.SUCCESS) {
+                _statementSentSignal.value = Event(true)
+            }
+
+            _sendingStatement.value = false
+        }
     }
 }
