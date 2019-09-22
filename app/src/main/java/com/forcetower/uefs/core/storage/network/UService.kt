@@ -100,7 +100,7 @@ interface UService {
     fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
     @GET("account/statements")
-    fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
+    fun getStatements(@Query("profile_id") studentId: Long): Call<UResponse<List<ProfileStatement>>>
 
     @FormUrlEncoded
     @POST("account/statements/create")
