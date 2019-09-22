@@ -102,6 +102,10 @@ interface UService {
     @GET("account/statements")
     fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
 
+    @FormUrlEncoded
+    @POST("account/statements/create")
+    fun sendStatement(@Field("statement") statement: String, @Field("profile_id") profileId: Long): Call<Void>
+
     @POST("account/save_sessions")
     fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 
