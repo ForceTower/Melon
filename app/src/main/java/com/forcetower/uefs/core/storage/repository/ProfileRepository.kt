@@ -100,11 +100,11 @@ class ProfileRepository @Inject constructor(
         }.asLiveData()
     }
 
-    fun sendStatement(statement: String, profileId: Long): LiveData<Resource<Boolean>> {
+    fun sendStatement(statement: String, profileId: Long, hidden: Boolean): LiveData<Resource<Boolean>> {
         val result = MutableLiveData<Resource<Boolean>>()
         executors.networkIO().execute {
             try {
-                val response = service.sendStatement(statement, profileId).execute()
+                val response = service.sendStatement(statement, profileId, hidden).execute()
                 if (response.isSuccessful) {
                     result.postValue(Resource.success(true))
                 } else {

@@ -100,14 +100,14 @@ class ProfileViewModel @Inject constructor(
         profileId.setValueIfNew(newProfileId)
     }
 
-    fun onSendStatement(statement: String, profileId: Long) {
+    fun onSendStatement(statement: String, profileId: Long, hidden: Boolean) {
         if (_sendingStatement.value == true) {
             Timber.d("Already sending data")
             return
         }
 
         _sendingStatement.value = true
-        val source = repository.sendStatement(statement, profileId)
+        val source = repository.sendStatement(statement, profileId, hidden)
         _sendingStatement.addSource(source) {
             _sendingStatement.removeSource(source)
             if (it.message != null) {

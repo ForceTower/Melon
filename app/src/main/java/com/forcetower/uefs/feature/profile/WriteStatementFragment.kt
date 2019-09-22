@@ -90,13 +90,14 @@ class WriteStatementFragment : UFragment(), Injectable {
 
     private fun onContinuePublishStatement() {
         val statement = binding.postContent.text?.toString() ?: return
+        val hidden = binding.typeSwitch.isChecked
         if (statement.length < 10) {
             binding.postContent.error = getString(R.string.write_statement_must_be_at_least_15_characters)
             return
         }
 
         val profileId = requireNotNull(arguments).getLong("profile_id", 0)
-        viewModel.onSendStatement(statement, profileId)
+        viewModel.onSendStatement(statement, profileId, hidden)
     }
 
     private fun onShowWarningUserAgreement() {

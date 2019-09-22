@@ -104,7 +104,11 @@ interface UService {
 
     @FormUrlEncoded
     @POST("account/statements/create")
-    fun sendStatement(@Field("statement") statement: String, @Field("profile_id") profileId: Long): Call<Void>
+    fun sendStatement(
+        @Field("statement") statement: String,
+        @Field("profile_id") profileId: Long,
+        @Field("hidden") hidden: Boolean
+    ): Call<Void>
 
     @POST("account/save_sessions")
     fun saveSessions(@Body session: UserSessionDTO): Call<Void>
