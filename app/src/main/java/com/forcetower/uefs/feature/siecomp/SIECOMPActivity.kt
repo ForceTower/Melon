@@ -22,22 +22,20 @@ package com.forcetower.uefs.feature.siecomp
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.siecomp.onboarding.OnboardingActivity
-import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
 
 class SIECOMPActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            if (preferences.getBoolean("siecomp_event_xxi_onboarding_completed", false)) {
-                startActivity(Intent(this, EventScheduleActivity::class.java))
-            } else {
+//            val preferences = PreferenceManager.getDefaultSharedPreferences(this)
+//            if (preferences.getBoolean("siecomp_event_xxii_onboarding_completed", false)) {
+//                startActivity(Intent(this, EventScheduleActivity::class.java))
+//            } else {
                 startActivity(Intent(this, OnboardingActivity::class.java))
-            }
+//            }
         }
         finish()
     }
