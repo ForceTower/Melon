@@ -126,6 +126,8 @@ class ScheduleFragment : UFragment(), Injectable {
             profileViewModel.getMeProfile().observe(this, Observer {
                 val courseId = it?.data?.course ?: 1L
                 if (courseId == 1L) {
+                    binding.btnSiecompSchedule.show()
+                    binding.btnSiecompSchedule.extend()
                     binding.btnSiecompSchedule.visibility = VISIBLE
                 } else {
                     binding.btnSiecompSchedule.visibility = GONE
