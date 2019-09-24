@@ -123,11 +123,11 @@ class ScheduleFragment : UFragment(), Injectable {
         if (TimeUtils.eventHasEnded()) {
             binding.btnSiecompSchedule.visibility = GONE
         } else {
-            //profileViewModel.getMeProfile().observe(this, Observer {
+            // profileViewModel.getMeProfile().observe(this, Observer {
                 binding.btnSiecompSchedule.show()
                 binding.btnSiecompSchedule.extend()
                 binding.btnSiecompSchedule.visibility = VISIBLE
-            //})
+            // })
         }
     }
 
