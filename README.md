@@ -6,7 +6,7 @@
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
 ### Por que?
-Como a UEFS não tinha um aplicativo para os estudantes, e acessar o portal para ver se algum professor mudou algo era muito chato, eu criei este aplicativo para automatizar esta tarefa.
+Acessar o portal para ver se algum professor mudou algo era muito chato, eu criei este aplicativo para automatizar esta tarefa.
 
 O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. 
 Com o tempo, ele se tornou um pouco mais que isso, mas notificações e acesso offline às informações do portal são as funções principais do aplicativo.
@@ -33,7 +33,7 @@ Você pode editar o arquivo [login_messages.json](https://github.com/ForceTower/
 As suas mensagens serão avaliadas e se aprovadas elas poderão aparecer no aplicativo!
 
 ### Compilando o Melon
-Para um guia sobre como compilar o aplicativo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon) para um tutorial detalhado.
+Para um guia detalhado sobre como compilar e executar o aplicativo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon)
 
 ### Aviso
 Este aplicativo não é licenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantem o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.
