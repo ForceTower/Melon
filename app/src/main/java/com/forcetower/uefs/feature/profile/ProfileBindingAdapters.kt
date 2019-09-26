@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.profile
 
+import android.view.View
 import androidx.preference.PreferenceManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -128,7 +129,11 @@ fun profileScoreOptional(
 }
 
 @BindingAdapter(value = ["zonedStatement"])
-fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime) {
+fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime?) {
+    if (zonedDate == null) {
+        view.visibility = View.INVISIBLE
+        return
+    }
     val time = zonedDate.toLocalDateTime().toInstant(ZoneOffset.ofHours(0)).toEpochMilli()
     val context = view.context
     val now = System.currentTimeMillis()
