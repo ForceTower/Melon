@@ -72,6 +72,7 @@ class UserSessionRepository @Inject constructor(
             if (response.isSuccessful) {
                 sessions.forEach { database.userSessionDao().markSyncedSession(it.uid) }
                 Timber.d("Sessions sync completed")
+                database.userSessionDao().removeSyncedSessions()
             } else {
                 Timber.d("Response failed with ${response.code()}")
                 // User is not authorized...

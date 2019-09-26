@@ -583,8 +583,6 @@ public class NumberPicker extends LinearLayout {
         final int layoutResId = attributesArray.getResourceId(
                 R.styleable.NumberPicker_internalLayout, DEFAULT_LAYOUT_RESOURCE_ID);
 
-        Timber.d("INTERNAL LAYOUT RES: " + layoutResId);
-
         mHasSelectorWheel = (layoutResId != DEFAULT_LAYOUT_RESOURCE_ID);
 
         mSolidColor = attributesArray.getColor(R.styleable.NumberPicker_solidColor, 0);
