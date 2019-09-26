@@ -33,6 +33,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.util.VersionUtils
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentScheduleBinding
@@ -123,11 +124,12 @@ class ScheduleFragment : UFragment(), Injectable {
         if (TimeUtils.eventHasEnded()) {
             binding.btnSiecompSchedule.visibility = GONE
         } else {
-            // profileViewModel.getMeProfile().observe(this, Observer {
-                binding.btnSiecompSchedule.show()
-                binding.btnSiecompSchedule.extend()
-                binding.btnSiecompSchedule.visibility = VISIBLE
-            // })
+            profileViewModel.commonProfile.observe(this, Observer {
+                val course = it?.course ?: 1L
+                if (course == 1L && preferences.isStudentFromUEFS()) {
+                    binding.btnSiecompSchedule.visibility = VISIBLE
+                }
+            })
         }
     }
 
