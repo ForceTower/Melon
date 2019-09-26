@@ -102,16 +102,21 @@ abstract class UGameActivity : UActivity() {
         }
 
         client.achievementsIntent.addOnCompleteListener {
-            if (it.isSuccessful) {
-                val intent = it.result
-                if (intent != null) {
-                    startActivityForResult(intent, PLAY_GAMES_ACHIEVEMENTS)
-                    return@addOnCompleteListener
+            try {
+                if (it.isSuccessful) {
+                    val intent = it.result
+                    if (intent != null) {
+                        startActivityForResult(intent, PLAY_GAMES_ACHIEVEMENTS)
+                        return@addOnCompleteListener
+                    } else {
+                        showSnack(getString(R.string.cant_open_achievements_invalid_intent), true)
+                    }
                 } else {
-                    showSnack(getString(R.string.cant_open_achievements_invalid_intent), true)
+                    showSnack("${getString(R.string.unable_to_open_achievements)} ${it.exception?.message}")
                 }
-            } else {
-                showSnack("${getString(R.string.unable_to_open_achievements)} ${it.exception?.message}")
+            } catch (error: Throwable) {
+                Timber.e(error, "Device can't open achievements intent")
+                showSnack(getString(R.string.achievements_throwable_unhandled_error))
             }
         }
     }
