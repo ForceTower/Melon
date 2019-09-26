@@ -91,7 +91,7 @@ class EvaluationRepository @Inject constructor(
 
     fun downloadKnowledgeDatabase(): LiveData<Resource<Boolean>> {
         val result = MutableLiveData<Resource<Boolean>>()
-        val update = preferences.getLong("_next_evaluation_knowledge_update_01_", 0)
+        val update = preferences.getLong("_next_evaluation_knowledge_update_02_", 0)
         val calendar = Calendar.getInstance()
         if (update > calendar.timeInMillis) {
             result.value = Resource.success(false)
@@ -107,7 +107,7 @@ class EvaluationRepository @Inject constructor(
                         database.studentServiceDao().insert(body.students)
                         database.evaluationEntitiesDao().recreate(body)
                         calendar.add(Calendar.DAY_OF_YEAR, 2)
-                        preferences.edit().putLong("_next_evaluation_knowledge_update_01_", calendar.timeInMillis).apply()
+                        preferences.edit().putLong("_next_evaluation_knowledge_update_02_", calendar.timeInMillis).apply()
                         result.postValue(Resource.success(true))
                     } else {
                         result.postValue(Resource.error("Call failed", response.code(), Exception("Call failed")))

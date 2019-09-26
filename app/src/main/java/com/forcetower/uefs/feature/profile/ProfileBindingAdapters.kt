@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.profile
 
+import android.view.View
 import androidx.preference.PreferenceManager
 import android.widget.ImageView
 import android.widget.TextView
@@ -31,6 +32,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
+import org.threeten.bp.ZoneOffset
 import org.threeten.bp.ZonedDateTime
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -127,8 +129,12 @@ fun profileScoreOptional(
 }
 
 @BindingAdapter(value = ["zonedStatement"])
-fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime) {
-    val time = zonedDate.toInstant().toEpochMilli()
+fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime?) {
+    if (zonedDate == null) {
+        view.visibility = View.INVISIBLE
+        return
+    }
+    val time = zonedDate.toLocalDateTime().toInstant(ZoneOffset.ofHours(0)).toEpochMilli()
     val context = view.context
     val now = System.currentTimeMillis()
     val diff = now - time
@@ -140,17 +146,21 @@ fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime) {
         days > 1L -> {
             val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
             val str = format.format(Date(time))
-            context.getString(R.string.message_received_date_format, str)
+            context.getString(R.string.profile_statement_received_date_format, str)
         }
         days == 1L -> {
             val hours = TimeUnit.HOURS.convert(diff - oneDay, TimeUnit.MILLISECONDS)
             val str = days.toString() + "d " + hours.toString() + "h"
-            context.getString(R.string.message_received_date_ago_format, str)
+            context.getString(R.string.profile_statement_received_date_ago_format, str)
         }
         else -> {
             val hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
             val minutes = TimeUnit.MINUTES.convert(diff - (hours * oneHor), TimeUnit.MILLISECONDS)
-            val str = hours.toString() + "h " + minutes + "min"
+            val str = if (hours > 0) {
+                hours.toString() + "h " + minutes + "min"
+            } else {
+                minutes.toString() + "min"
+            }
             context.getString(R.string.message_received_date_ago_format, str)
         }
     }

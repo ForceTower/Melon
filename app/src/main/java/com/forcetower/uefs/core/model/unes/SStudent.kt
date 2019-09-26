@@ -32,6 +32,8 @@ data class SStudent(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("student_id")
     val id: Long,
+    @SerializedName("user_id")
+    val userId: Long,
     val name: String,
     @SerializedName("image_url")
     val imageUrl: String?,
@@ -46,6 +48,8 @@ data class SStudentDTO(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("student_id")
     val id: Long,
+    @SerializedName("user_id")
+    val userId: Long,
     val name: String?,
     @SerializedName("image_url")
     val imageUrl: String?,
@@ -56,5 +60,5 @@ data class SStudentDTO(
     val me: Boolean?,
     val statements: List<ProfileStatement>? = null
 ) {
-    fun toCommon() = SStudent(id, name ?: "Desconhecido", imageUrl, course, courseName, me ?: false)
+    fun toCommon() = SStudent(id, userId, name ?: "Desconhecido", imageUrl, course, courseName, me ?: false)
 }

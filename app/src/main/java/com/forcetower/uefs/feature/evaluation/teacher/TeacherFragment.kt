@@ -51,7 +51,7 @@ class TeacherFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         adapter = TeacherAdapter(viewModel)
         return FragmentEvaluateTeacherBinding.inflate(inflater, container, false).apply {
-            btnEvaluate.hide(false)
+            btnEvaluate.hide()
             recyclerDisciplines.adapter = this@TeacherFragment.adapter
         }.also {
             binding = it
@@ -90,8 +90,8 @@ class TeacherFragment : UFragment(), Injectable {
         if (data != null) {
             adapter.discipline = data
             if (data.participant == true) {
-                binding.btnEvaluate.show(true)
-                binding.btnEvaluate.extend(true)
+                binding.btnEvaluate.show()
+                binding.btnEvaluate.extend()
             }
             binding.run {
                 teacher = data

@@ -653,7 +653,7 @@
     <string name="flowchart_select_course">Escolha um Fluxograma</string>
     <string name="flowchart_select_course_desc">Estes são os fluxogramas cadastrados, escolha um para ver detalhes</string>
     <string name="write_statement_label">Escreva um depoimento sobre esta pessoa</string>
-    <string name="write_statement_hint">O que deseja dizer?</string>
+    <string name="write_statement_hint">O que você deseja dizer?</string>
     <string name="class_item_attached_materials_dialog_title">Materiais anexados</string>
     <string name="class_item_attached_materials_dialog_subtitle">Selecione o material associado a esta aula para visualiza-lo</string>
     <string name="incorrect_semester_ordering_detected">Parece que os semestres não estão organizados</string>
@@ -663,6 +663,33 @@
     <string name="settings_semester_deterministic_ordering">Ordem dos Semestres</string>
     <string name="settings_semester_deterministic_ordering_info_on">Organizar de forma determinística, pelo valor</string>
     <string name="settings_semester_deterministic_ordering_info_off">Organizar de forma não determinística, pelo nome</string>
+    <string name="label_schedule_not_found_details">As informações não foram encontradas no Portal do Aluno.\n\nNão se preocupe, assim que ele aparecer novamente, o UNES irá salva-lo</string>
+    <string name="write_statement_publish">Publicar</string>
+    <string name="write_statement_title">Criar depoimento</string>
+    <string name="write_anonymous_post">Postar depoimento anônimo</string>
+    <string name="write_statement_type_public">Postando publicamente</string>
+    <string name="write_statement_type_anonymous">Postando anônimamente</string>
+    <string name="write_statement_agreement_title">Termos de Uso</string>
+    <string name="write_statement_agreement_message">Ao continuar, você concorda em não postar comentários que possam ofender as pessoas envolvidas ou outros.\n\nCaso você seja reportado por má conduta, seu comentário poderá ser apagado e você poderá ser banido do UNES sem qualquer aviso prévio ;)</string>
+    <string name="write_statement_accept">Eu aceito!</string>
+    <string name="write_statement_network_error">Erro de conexão :(</string>
+    <string name="write_statement_post_failed_code">Seu depoimento não foi postado. Erro %1$d</string>
+    <string name="write_statement_must_be_at_least_15_characters">Seu depoimento é muito pequeno :(</string>
+    <string name="notification_statement_received_anonymous_title">Você recebeu um depoimento anônimo 🕵️</string>
+    <string name="notification_statement_received_common_title">Você tem um novo depoimento!</string>
+    <string name="notification_statement_received_common_body">%1$s escreveu para você. Vá até seu perfil na Ampulheta para ver!</string>
+    <string name="channel_group_social_network">Unesverso</string>
+    <string name="channel_social_statement_received">Depoimentos recebidos</string>
+    <string name="settings_ntf_statement_posted">Depoimentos recebidos</string>
+    <string name="settings_ntf_statement_posted_info">Um depoimento foi adicionado ao seu perfil</string>
+    <string name="profile_statements_unapproved">Depoimentos Pendentes</string>
+    <string name="profile_statements_unapproved_description">Aprove ou recuse os depoimentos recebidos</string>
+    <string name="profile_statement_received_date_format">Recebida %1$s</string>
+    <string name="profile_statement_received_date_ago_format">Recebida %1$s atrás</string>
+    <string name="profile_statement_accept">Aceitar</string>
+    <string name="profile_statement_refuse">Recusar</string>
+    <string name="profile_statement_delete">Apagar</string>
+    <string name="achievements_throwable_unhandled_error">Seu dispositivo não foi capaz de abrir o Google Play Games de maneira correta</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>

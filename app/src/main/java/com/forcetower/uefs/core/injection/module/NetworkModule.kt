@@ -46,6 +46,7 @@ import java.net.CookieManager
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 object NetworkModule {
@@ -66,13 +67,14 @@ object NetworkModule {
     @JvmStatic
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
-                .followRedirects(true)
-                .cookieJar(cookieJar)
-                .connectTimeout(1, TimeUnit.MINUTES)
-                .readTimeout(1, TimeUnit.MINUTES)
-                .writeTimeout(1, TimeUnit.MINUTES)
-                .addInterceptor(interceptor)
-                .build()
+            .followRedirects(true)
+            .cookieJar(cookieJar)
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .addInterceptor(interceptor)
+            .addInterceptor(HttpLoggingInterceptor().apply { level = HttpLoggingInterceptor.Level.BODY })
+            .build()
     }
 
     @Provides

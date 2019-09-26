@@ -37,5 +37,7 @@ data class EvaluationEntity(
     val type: Int,
     val searchable: String,
     val comp1: String? = null,
-    val comp2: String? = null
+    val comp2: String? = null,
+    val referenceLong1: Long? = null,
+    val referenceLong2: Long? = null
 )

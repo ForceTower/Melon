@@ -72,7 +72,7 @@ data class Class(
         return if (operation == null) {
             false
         } else {
-            operation >= 3.0 && operation < 7
+            operation in 3.0..6.97
         }
     }
 }
