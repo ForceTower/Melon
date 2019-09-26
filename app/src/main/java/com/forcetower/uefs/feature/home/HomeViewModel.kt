@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
+import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -55,17 +56,14 @@ class HomeViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
     private val context: Context,
-    accountRepository: AccountRepository
+    private val sessionRepository: UserSessionRepository,
+    private val accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar
-
-    private val _openProfileCase = MediatorLiveData<Event<Long>>()
-    val openProfileCase: LiveData<Event<Long>>
-        get() = _openProfileCase
 
     private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()
     val passwordChangeProcess: LiveData<Event<Resource<Boolean>>>
@@ -96,15 +94,6 @@ class HomeViewModel @Inject constructor(
         _snackbar.value = Event(message)
     }
 
-    fun onMeProfileClicked() {
-        _openProfileCase.addSource(profile) {
-            _openProfileCase.removeSource(profile)
-            if (it != null) {
-                _openProfileCase.value = Event(it.uid)
-            }
-        }
-    }
-
     fun subscribeToTopics(vararg topics: String) {
         firebaseMessageRepository.subscribe(topics)
     }
@@ -133,5 +122,29 @@ class HomeViewModel @Inject constructor(
 
     fun setSelectedCourse(course: Course) {
         profileRepository.updateUserCourse(course)
+    }
+
+    fun onSessionStarted() {
+        sessionRepository.onSessionStartedAsync()
+    }
+
+    fun onUserInteraction() {
+        sessionRepository.onUserInteractionAsync()
+    }
+
+    fun onUserClickedAd() {
+        sessionRepository.onUserClickedAdAsync()
+    }
+
+    fun onUserAdImpression() {
+        sessionRepository.onUserAdImpressionAsync()
+    }
+
+    fun getAccountSync(): Account? {
+        return accountRepository.getAccountSync()
+    }
+
+    fun onSyncSessions() {
+        sessionRepository.onSyncSessionsAsync()
     }
 }

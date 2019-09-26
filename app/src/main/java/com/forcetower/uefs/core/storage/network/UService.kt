@@ -43,6 +43,8 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.service.UserSessionDTO
+import com.forcetower.uefs.core.model.unes.CreateStatementParams
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudentDTO
@@ -99,7 +101,22 @@ interface UService {
     fun requestDarkSendTo(@Body invite: DarkInvite): Call<UResponse<Void>>
 
     @GET("account/statements")
-    fun getStatements(@Query("profile_id") profileId: Long): Call<UResponse<List<ProfileStatement>>>
+    fun getStatements(@Query("profile_id") studentId: Long): Call<UResponse<List<ProfileStatement>>>
+
+    @POST("account/statements/create")
+    fun sendStatement(@Body params: CreateStatementParams): Call<Void>
+
+    @POST("account/statements/approve")
+    fun acceptStatement(@Body body: Map<String, Long>): Call<Void>
+
+    @POST("account/statements/refuse")
+    fun refuseStatement(@Body body: Map<String, Long>): Call<Void>
+
+    @POST("account/statements/delete")
+    fun deleteStatement(@Body body: Map<String, Long>): Call<Void>
+
+    @POST("account/save_sessions")
+    fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 
     @GET("courses")
     fun getCourses(): Call<List<Course>>

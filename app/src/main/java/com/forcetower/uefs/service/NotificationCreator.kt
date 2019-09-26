@@ -206,7 +206,7 @@ object NotificationCreator {
         showNotification(context, message.hashCode().toLong(), builder)
     }
 
-    private fun showDefaultImageNotification(context: Context, channel: String, title: String, content: String, image: String?): NotificationCompat.Builder {
+    fun showDefaultImageNotification(context: Context, channel: String, title: String, content: String, image: String?): NotificationCompat.Builder {
         var style = createBigText(content)
         if (image != null && image != "null") {
             val other = createBigImage(context, image)
@@ -338,18 +338,18 @@ object NotificationCreator {
         showNotification(context, it.material.uid, builder)
     }
 
-    private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
+    fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
         builder.setSmallIcon(R.drawable.ic_unes_colored)
         return builder
     }
 
-    private fun createBigText(message: String): NotificationCompat.Style {
+    fun createBigText(message: String): NotificationCompat.Style {
         return NotificationCompat.BigTextStyle().bigText(message)
     }
 
-    private fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
+    fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
         return try {
             val bitmap = GlideApp.with(context).asBitmap().load(image).submit().get()
             NotificationCompat.BigPictureStyle().bigPicture(bitmap)
@@ -359,7 +359,7 @@ object NotificationCreator {
         }
     }
 
-    private fun showNotification(context: Context, id: Long, builder: NotificationCompat.Builder): Boolean {
+    fun showNotification(context: Context, id: Long, builder: NotificationCompat.Builder): Boolean {
         val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
         notificationManager?.notify(id.toInt(), builder.build())
         return true
@@ -476,7 +476,7 @@ object NotificationCreator {
                 .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun shouldShowNotification(value: String, context: Context, default: Boolean = true): Boolean {
+    fun shouldShowNotification(value: String, context: Context, default: Boolean = true): Boolean {
         val preference = getPreferences(context)
         val notify = preference.getBoolean(value, default)
         return notify || VersionUtils.isOreo()

@@ -29,14 +29,17 @@ import org.threeten.bp.ZonedDateTime
 data class ProfileStatement(
     @PrimaryKey(autoGenerate = false)
     val id: Long,
+    // This matches to user_id not the student_id
     @SerializedName("receiver_id")
     val receiverId: Long,
+    // The user id that sent this
     @SerializedName("sender_id")
     val senderId: Long,
     @SerializedName("sender_name")
     val senderName: String?,
     @SerializedName("sender_picture")
     val senderPicture: String?,
+    val hidden: Boolean,
     val text: String,
     val likes: Int,
     val approved: Boolean,
@@ -44,4 +47,11 @@ data class ProfileStatement(
     val createdAt: ZonedDateTime,
     @SerializedName("updated_at")
     val updatedAt: ZonedDateTime
+)
+
+data class CreateStatementParams(
+    val statement: String,
+    val hidden: Boolean,
+    @SerializedName("profile_id")
+    val profileId: Long
 )

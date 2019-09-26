@@ -34,10 +34,10 @@ import android.graphics.drawable.shapes.RoundRectShape
 import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
+import android.view.View
 
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.appcompat.widget.AppCompatRatingBar
-import androidx.core.view.ViewCompat
 
 class RatingBarVectorFix @JvmOverloads constructor(
     context: Context,
@@ -101,7 +101,7 @@ class RatingBarVectorFix @JvmOverloads constructor(
             shapeDrawable.paint.shader = bitmapShader
             shapeDrawable.paint.colorFilter = drawable.paint.colorFilter
             return if (clip)
-                ClipDrawable(shapeDrawable, Gravity.LEFT,
+                ClipDrawable(shapeDrawable, Gravity.START,
                         ClipDrawable.HORIZONTAL)
             else
                 shapeDrawable
@@ -125,7 +125,8 @@ class RatingBarVectorFix @JvmOverloads constructor(
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         if (mSampleTile != null) {
             val width = mSampleTile!!.width * numStars
-            setMeasuredDimension(ViewCompat.resolveSizeAndState(width, widthMeasureSpec, 0),
+            setMeasuredDimension(
+                View.resolveSizeAndState(width, widthMeasureSpec, 0),
                     measuredHeight)
         }
     }

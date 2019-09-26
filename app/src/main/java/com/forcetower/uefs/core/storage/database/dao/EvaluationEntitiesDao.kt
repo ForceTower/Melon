@@ -44,7 +44,7 @@ abstract class EvaluationEntitiesDao {
         }
         val students = data.students.map {
             val search = "${it.name} ${it.courseName}".toLowerCase(Locale.getDefault()).unaccent()
-            EvaluationEntity(0, it.id, it.name, it.courseName, it.imageUrl, 2, search)
+            EvaluationEntity(0, it.id, it.name, it.courseName, it.imageUrl, 2, search, referenceLong1 = it.userId)
         }
 
         val batch = mutableListOf<EvaluationEntity>()

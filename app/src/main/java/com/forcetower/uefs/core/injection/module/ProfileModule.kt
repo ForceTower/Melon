@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.feature.profile.ProfileFragment
+import com.forcetower.uefs.feature.profile.WriteStatementFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -28,4 +29,6 @@ import dagger.android.ContributesAndroidInjector
 abstract class ProfileModule {
     @ContributesAndroidInjector
     abstract fun profileFragment(): ProfileFragment
+    @ContributesAndroidInjector
+    abstract fun writeStatementFragment(): WriteStatementFragment
 }

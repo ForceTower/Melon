@@ -36,5 +36,6 @@ data class Account(
     @SerializedName("dark_theme_enabled")
     val darkThemeEnabled: Boolean,
     @SerializedName("dark_theme_invites")
-    val darkThemeInvites: Int
+    val darkThemeInvites: Int,
+    val grouping: Int? = null
 )

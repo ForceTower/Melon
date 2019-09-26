@@ -186,10 +186,6 @@ class HomeBottomFragment : UFragment(), Injectable {
                         .start(requireContext())
                     true
                 }
-                R.id.profile -> {
-                    viewModel.onMeProfileClicked()
-                    true
-                }
                 R.id.settings -> {
                     startActivity(SettingsActivity.startIntent(requireContext()))
                     true

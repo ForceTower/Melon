@@ -254,3 +254,31 @@ object M31TO32 : Migration(31, 32) {
         database.execSQL("CREATE UNIQUE INDEX `index_Grade_name_class_id_grouping` ON Grade (`name`, `class_id`, `grouping`)")
     }
 }
+
+object M32TO33 : Migration(32, 33) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `UserSession` (`uid` TEXT NOT NULL, `started` INTEGER NOT NULL, `lastInteraction` INTEGER, `synced` INTEGER NOT NULL, PRIMARY KEY(`uid`))")
+        database.execSQL("ALTER TABLE Account ADD COLUMN grouping INTEGER DEFAULT NULL")
+    }
+}
+
+object M33TO34 : Migration(33, 34) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE UserSession ADD COLUMN clickedAd INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE UserSession ADD COLUMN impressionAd INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M34TO35 : Migration(34, 35) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE SStudent ADD COLUMN userId INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN referenceLong1 INTEGER DEFAULT NULL")
+        database.execSQL("ALTER TABLE EvaluationEntity ADD COLUMN referenceLong2 INTEGER DEFAULT NULL")
+    }
+}
+
+object M35TO36 : Migration(35, 36) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ProfileStatement ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0")
+    }
+}

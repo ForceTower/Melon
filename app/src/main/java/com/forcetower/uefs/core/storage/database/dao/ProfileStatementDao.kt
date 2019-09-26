@@ -32,6 +32,18 @@ abstract class ProfileStatementDao {
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(statements: List<ProfileStatement>)
 
-    @Query("SELECT * FROM ProfileStatement WHERE receiverId = :profileId")
-    abstract fun getStatements(profileId: Long): LiveData<List<ProfileStatement>>
+    @Query("SELECT * FROM ProfileStatement WHERE receiverId = :userId")
+    abstract fun getStatements(userId: Long): LiveData<List<ProfileStatement>>
+
+    @Query("DELETE FROM ProfileStatement WHERE receiverId = :userId")
+    abstract fun deleteAllFromReceiverId(userId: Long)
+
+    @Query("UPDATE ProfileStatement SET approved = 1 WHERE id = :statementId")
+    abstract fun markStatementAccepted(statementId: Long)
+
+    @Query("DELETE FROM ProfileStatement WHERE id = :statementId")
+    abstract fun markStatementRefused(statementId: Long)
+
+    @Query("DELETE FROM ProfileStatement WHERE id = :statementId")
+    abstract fun markStatementDeleted(statementId: Long)
 }
