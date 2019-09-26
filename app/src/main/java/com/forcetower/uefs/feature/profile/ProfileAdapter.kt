@@ -126,7 +126,6 @@ class ProfileAdapter(
             init {
                 binding.interactor = interactor
                 binding.lifecycleOwner = lifecycleOwner
-                binding.executePendingBindings()
             }
         }
         class StatementHeader(binding: ItemProfileStatementHeaderBinding) : ProfileHolder(binding.root)
