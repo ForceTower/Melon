@@ -36,6 +36,7 @@ import javax.inject.Inject
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
 ) : ViewModel(), ProfileInteractor {
+    val commonProfile = repository.getCommonProfile()
     private var userId: Long? = null
     private val profileId = MutableLiveData<Long?>()
 
