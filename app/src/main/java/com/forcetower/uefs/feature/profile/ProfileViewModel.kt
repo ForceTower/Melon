@@ -35,13 +35,15 @@ import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
-) : ViewModel() {
+) : ViewModel(), ProfileInteractor {
     private var userId: Long? = null
     private val profileId = MutableLiveData<Long?>()
 
     private val _profile = MediatorLiveData<SStudent?>()
     val profile: LiveData<SStudent?>
         get() = _profile
+
+    val account = repository.getAccountDatabase()
 
     private val _statements = MediatorLiveData<List<ProfileStatement>>()
     val statements: LiveData<List<ProfileStatement>>
@@ -126,9 +128,27 @@ class ProfileViewModel @Inject constructor(
 
             if (it.status == Status.SUCCESS) {
                 _statementSentSignal.value = Event(true)
+                val uid = userId
+                if (uid != null) {
+                    repository.loadStatements(profileId, uid)
+                }
             }
 
             _sendingStatement.value = false
         }
+    }
+
+    override fun onPictureClick() = Unit
+
+    override fun onAcceptStatement(statement: ProfileStatement) {
+        repository.acceptStatementAsync(statement)
+    }
+
+    override fun onRefuseStatement(statement: ProfileStatement) {
+        repository.refuseStatementAsync(statement)
+    }
+
+    override fun onDeleteStatement(statement: ProfileStatement) {
+        repository.deleteStatementAsync(statement)
     }
 }

@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.databinding.ItemProfileHeaderBinding
 import com.forcetower.uefs.databinding.ItemProfileStatementBinding
 import com.forcetower.uefs.databinding.ItemProfileStatementHeaderBinding
+import com.forcetower.uefs.databinding.ItemProfileStatementUnapprovedHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
 
@@ -55,7 +56,8 @@ class ProfileAdapter(
         return when (viewType) {
             R.layout.item_profile_header -> ProfileHolder.Header(parent.inflate(viewType), interactor)
             R.layout.item_profile_statement_header -> ProfileHolder.StatementHeader(parent.inflate(viewType))
-            R.layout.item_profile_statement -> ProfileHolder.Statement(parent.inflate(viewType), interactor)
+            R.layout.item_profile_statement -> ProfileHolder.Statement(parent.inflate(viewType), interactor, lifecycleOwner)
+            R.layout.item_profile_statement_unapproved_header -> ProfileHolder.StatementUnapprovedHeader(parent.inflate(viewType))
             else -> throw IllegalStateException("No view matching view type $viewType")
         }
     }
@@ -74,6 +76,7 @@ class ProfileAdapter(
             }
             is ProfileHolder.Statement -> {
                 holder.binding.apply {
+                    account = viewModel.account
                     statement = item as ProfileStatement
                     executePendingBindings()
                 }
@@ -86,6 +89,7 @@ class ProfileAdapter(
             is ProfileHeader -> R.layout.item_profile_header
             is StatementsHeader -> R.layout.item_profile_statement_header
             is ProfileStatement -> R.layout.item_profile_statement
+            is UnapprovedStatementsHeader -> R.layout.item_profile_statement_unapproved_header
             else -> throw IllegalStateException("Can't find a view type for item $item")
         }
     }
@@ -96,8 +100,16 @@ class ProfileAdapter(
         val merged = mutableListOf<Any>()
         merged += ProfileHeader
         if (stats.isNotEmpty()) {
-            merged += StatementsHeader
-            merged.addAll(stats)
+            val approved = stats.filter { it.approved }
+            val unapproved = stats.filter { !it.approved }
+            if (unapproved.isNotEmpty()) {
+                merged += UnapprovedStatementsHeader
+                merged.addAll(stats)
+            }
+            if (approved.isNotEmpty()) {
+                merged += StatementsHeader
+                merged.addAll(approved)
+            }
         }
         return merged
     }
@@ -106,12 +118,19 @@ class ProfileAdapter(
         class Header(val binding: ItemProfileHeaderBinding, interactor: ProfileInteractor?) : ProfileHolder(binding.root) {
             init { binding.interactor = interactor }
         }
-        class Statement(val binding: ItemProfileStatementBinding, interactor: ProfileInteractor?) : ProfileHolder(binding.root) {
+        class Statement(
+            val binding: ItemProfileStatementBinding,
+            interactor: ProfileInteractor?,
+            lifecycleOwner: LifecycleOwner
+        ) : ProfileHolder(binding.root) {
             init {
                 binding.interactor = interactor
+                binding.lifecycleOwner = lifecycleOwner
+                binding.executePendingBindings()
             }
         }
         class StatementHeader(binding: ItemProfileStatementHeaderBinding) : ProfileHolder(binding.root)
+        class StatementUnapprovedHeader(binding: ItemProfileStatementUnapprovedHeaderBinding) : ProfileHolder(binding.root)
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Any>() {
@@ -120,6 +139,7 @@ class ProfileAdapter(
                 oldItem is ProfileStatement && newItem is ProfileStatement -> oldItem.id == newItem.id
                 oldItem is ProfileHeader && newItem is ProfileHeader -> true
                 oldItem is StatementsHeader && newItem is StatementsHeader -> true
+                oldItem is UnapprovedStatementsHeader && newItem is UnapprovedStatementsHeader -> true
                 else -> false
             }
         }
@@ -134,4 +154,5 @@ class ProfileAdapter(
 
     private object ProfileHeader
     private object StatementsHeader
+    private object UnapprovedStatementsHeader
 }

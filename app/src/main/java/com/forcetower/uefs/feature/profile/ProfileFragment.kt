@@ -90,7 +90,7 @@ class ProfileFragment : UFragment(), Injectable {
             override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
         }
 
-        adapter = ProfileAdapter(viewModel, this, headLoadListener)
+        adapter = ProfileAdapter(viewModel, this, headLoadListener, viewModel)
         return FragmentProfileBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

@@ -20,6 +20,11 @@
 
 package com.forcetower.uefs.feature.profile
 
+import com.forcetower.uefs.core.model.unes.ProfileStatement
+
 interface ProfileInteractor {
     fun onPictureClick()
+    fun onAcceptStatement(statement: ProfileStatement)
+    fun onRefuseStatement(statement: ProfileStatement)
+    fun onDeleteStatement(statement: ProfileStatement)
 }

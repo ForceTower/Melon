@@ -37,4 +37,13 @@ abstract class ProfileStatementDao {
 
     @Query("DELETE FROM ProfileStatement WHERE receiverId = :userId")
     abstract fun deleteAllFromReceiverId(userId: Long)
+
+    @Query("UPDATE ProfileStatement SET approved = 1 WHERE id = :statementId")
+    abstract fun markStatementAccepted(statementId: Long)
+
+    @Query("DELETE FROM ProfileStatement WHERE id = :statementId")
+    abstract fun markStatementRefused(statementId: Long)
+
+    @Query("DELETE FROM ProfileStatement WHERE id = :statementId")
+    abstract fun markStatementDeleted(statementId: Long)
 }

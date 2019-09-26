@@ -30,11 +30,15 @@
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.profile.ProfileInteractor" />
+        <variable
+            name="account"
+            type="androidx.lifecycle.LiveData&lt;com.forcetower.uefs.core.model.unes.Account&gt;" />
         <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:paddingBottom="16dp">
 
         <androidx.constraintlayout.widget.Guideline
             android:id="@+id/guideline_start"
@@ -92,12 +96,51 @@
             android:id="@+id/received_time"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:layout_marginBottom="16dp"
-            app:zonedStatement="@{statement.createdAt}"
-            app:layout_constraintBottom_toBottomOf="parent"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintTop_toBottomOf="@id/profile_statement"
+            app:zonedStatement="@{statement.createdAt}"
             tools:text="Recebida em 23/10/2019" />
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/accept_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:onClick="@{() -> interactor.onAcceptStatement(statement)}"
+            android:layout_marginTop="8dp"
+            android:visibility="gone"
+            android:text="@string/profile_statement_accept"
+            app:layout_constraintTop_toBottomOf="@id/received_time"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:goneIf="@{statement.approved || statement.receiverId != account.id}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/refuse_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            android:onClick="@{() -> interactor.onRefuseStatement(statement)}"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:layout_marginTop="8dp"
+            android:text="@string/profile_statement_refuse"
+            app:layout_constraintTop_toBottomOf="@id/received_time"
+            app:layout_constraintStart_toEndOf="@id/accept_button"
+            app:goneIf="@{statement.approved || statement.receiverId != account.id}"/>
+
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/delete_button"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="@{() -> interactor.onDeleteStatement(statement)}"
+            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+            android:visibility="gone"
+            android:layout_marginTop="8dp"
+            android:text="@string/profile_statement_delete"
+            app:layout_constraintHorizontal_bias="1"
+            app:layout_constraintTop_toBottomOf="@id/received_time"
+            app:layout_constraintStart_toEndOf="@id/refuse_button"
+            app:layout_constraintEnd_toEndOf="@id/guideline_end"
+            app:goneUnless="@{(statement.approved &amp;&amp; statement.receiverId == account.id) || statement.senderId == account.id}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
