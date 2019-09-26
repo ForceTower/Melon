@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
+import com.forcetower.uefs.core.work.statement.ProfileStatementWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.BindsInstance
@@ -76,4 +77,5 @@ interface AppComponent {
     fun inject(worker: HourglassContributeWorker)
     fun inject(worker: DisciplinesDetailsWorker)
     fun inject(worker: UploadImageToStorage)
+    fun inject(worker: ProfileStatementWorker)
 }
