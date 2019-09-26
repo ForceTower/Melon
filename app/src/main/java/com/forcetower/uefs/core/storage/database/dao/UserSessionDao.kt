@@ -35,4 +35,7 @@ abstract class UserSessionDao {
 
     @Query("UPDATE UserSession SET impressionAd = :impression WHERE uid = :session")
     abstract fun updateAdImpression(session: String, impression: Int)
+
+    @Query("DELETE FROM UserSession WHERE synced = 1")
+    abstract fun removeSyncedSessions()
 }
