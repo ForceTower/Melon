@@ -24,4 +24,21 @@
     <string name="admob_interstitial_daily" translatable="false">ca-app-pub-4999342983670806/3712876237</string>
     <string name="admob_interstitial_2048_lost_game" translatable="false">ca-app-pub-4999342983670806/6933047897</string>
     <string name="admob_rewarded_2048_back_10_times" translatable="false">ca-app-pub-3940256099942544~3347511713</string>
+
+    <!-- Grouping 0 (Common) -->
+    <string name="admob_common" translatable="false">ca-app-pub-4999342983670806/3712876237</string>
+
+    <!-- Grouping 1 (Frequency) -->
+    <string name="admob_frequency_low" translatable="false">ca-app-pub-4999342983670806/6899657524</string>
+    <string name="admob_frequency_medium" translatable="false">ca-app-pub-4999342983670806/7127367166</string>
+    <string name="admob_frequency_high" translatable="false">ca-app-pub-4999342983670806/8600230930</string>
+
+    <!-- Grouping 2 (Size) -->
+    <string name="admob_size_small" translatable="false">ca-app-pub-4999342983670806/2551835513</string>
+    <string name="admob_size_medium" translatable="false">ca-app-pub-4999342983670806/7808865779</string>
+    <string name="admob_size_big" translatable="false">ca-app-pub-4999342983670806/7617294085</string>
+
+    <!-- Grouping 3 (Content) -->
+    <string name="admob_content_rich_text" translatable="false">ca-app-pub-4999342983670806/6552652093</string>
+    <string name="admob_content_everything" translatable="false">ca-app-pub-4999342983670806/3698779118</string>
 </resources>

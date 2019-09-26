@@ -40,6 +40,7 @@ import javax.inject.Inject
 class AboutActivity : UActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+
     private lateinit var binding: ActivityAboutBinding
     private val adapter: FragmentAdapter by lazy { FragmentAdapter(supportFragmentManager) }
 

@@ -55,7 +55,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
         elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
-            binding.btnEvaluate.hide(false)
+            binding.btnEvaluate.hide()
         }.root
     }
 
@@ -86,8 +86,8 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
         if (data != null) {
             Timber.d("The data is $data")
             if (data.participant == true) {
-                binding.btnEvaluate.show(true)
-                binding.btnEvaluate.extend(true)
+                binding.btnEvaluate.show()
+                binding.btnEvaluate.extend()
             }
             val teachers = data.teachers
             val evaluation = if (teachers != null) {

@@ -55,6 +55,7 @@
             android:id="@+id/picker_course"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:internalMinWidth="300dp"
             android:layout_marginTop="@dimen/spacing_common"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"

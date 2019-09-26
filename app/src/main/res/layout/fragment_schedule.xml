@@ -129,10 +129,11 @@
                 android:id="@+id/layout_no_data"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:visibility="invisible"
+                android:visibility="gone"
                 app:goneIf="@{!safeUnbox(empty)}">
 
                 <ImageView
+                    android:id="@+id/imageView4"
                     android:layout_width="0dp"
                     android:layout_height="200dp"
                     android:layout_marginTop="16dp"
@@ -145,46 +146,56 @@
 
 
                 <TextView
+                    android:id="@+id/lbl_sched_not_found"
                     style="@style/UTheme.TextAppearance.Headline2"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginBottom="8dp"
                     android:text="@string/label_schedule_not_found"
                     android:textColor="?attr/colorPrimary"
+                    app:layout_constraintBottom_toTopOf="@+id/lbl_sched_not_found_desc"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed" />
+
+                <TextView
+                    android:id="@+id/lbl_sched_not_found_desc"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="16dp"
+                    android:gravity="center"
+                    android:text="@string/label_schedule_not_found_details"
+                    android:textAlignment="gravity"
+                    android:textColor="?attr/colorOnBackground"
+                    android:textSize="12sp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
+                    app:layout_constraintTop_toBottomOf="@+id/lbl_sched_not_found" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </FrameLayout>
 
-        <com.google.android.material.button.MaterialButton
+        <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/btn_siecomp_schedule"
-            style="@style/Widget.MaterialComponents.Button"
             android:layout_width="wrap_content"
-            android:layout_height="64dp"
-            android:layout_alignParentBottom="true"
-            android:layout_centerHorizontal="true"
-            android:layout_marginBottom="8dp"
-            android:elevation="6dp"
-            android:letterSpacing=".001"
-            android:paddingStart="20dp"
-            android:paddingEnd="20dp"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:visibility="gone"
             android:text="@string/btn_siecomp_schedule"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="14sp"
-            android:visibility="gone"
+            android:letterSpacing=".001"
             app:backgroundTint="?attr/colorPrimary"
-            app:cornerRadius="32dp"
             app:icon="@drawable/ic_local_activity_black_24dp"
-            app:iconPadding="12dp"
-            app:iconSize="24dp"
-            app:iconTint="@android:color/white"
             app:layout_anchor="@+id/frameLayout"
             app:layout_anchorGravity="bottom|center"
-            tools:visibility="visible" />
+            tools:visibility="visible"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

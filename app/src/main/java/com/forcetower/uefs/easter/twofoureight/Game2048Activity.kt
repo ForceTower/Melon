@@ -27,9 +27,12 @@ import android.view.KeyEvent
 import android.view.WindowManager
 import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.support.HasSupportFragmentInjector
@@ -39,6 +42,10 @@ import javax.inject.Inject
 class Game2048Activity : UGameActivity(), HasSupportFragmentInjector {
     @Inject
     lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    @Inject
+    lateinit var factory: UViewModelFactory
+
+    private lateinit var sessionViewModel: UserSessionViewModel
 
     override fun supportFragmentInjector() = fragmentInjector
 
@@ -46,6 +53,8 @@ class Game2048Activity : UGameActivity(), HasSupportFragmentInjector {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game2048)
+
+        sessionViewModel = provideViewModel(factory)
 
         val window = window
         window.setFlags(
@@ -85,6 +94,26 @@ class Game2048Activity : UGameActivity(), HasSupportFragmentInjector {
             }
         }
         return super.onKeyDown(keyCode, event)
+    }
+
+    override fun onUserInteraction() {
+        super.onUserInteraction()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        sessionViewModel.onUserInteraction()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        sessionViewModel.onUserInteraction()
     }
 
     companion object {

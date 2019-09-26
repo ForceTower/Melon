@@ -31,6 +31,7 @@ import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.notification.StatementNotificationProcessor
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
@@ -73,7 +74,7 @@ class FirebaseMessageRepository @Inject constructor(
             "event" -> eventNotification(data)
             "teacher" -> teacherNotification(data)
             "remote_database" -> promoteDatabase(data)
-            "service" -> serviceNotification(data)
+            "service" -> serviceNotificationExtractor(data)
             "synchronize" -> universalSync(data)
             "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
@@ -82,6 +83,22 @@ class FirebaseMessageRepository @Inject constructor(
             "remote_preferences" -> promotePreferences(data)
             null -> Crashlytics.log("Invalid notification received. No Identifier.")
         }
+    }
+
+    private fun serviceNotificationExtractor(data: Map<String, String>) {
+        val typed = data["service_typed"]
+        // Legacy notifications...
+        if (typed == null) {
+            serviceNotification(data)
+        } else {
+            when (typed) {
+                "statement_received", "statement_received_hidden" -> statementReceivedBackbone(data)
+            }
+        }
+    }
+
+    private fun statementReceivedBackbone(data: Map<String, String>) {
+        StatementNotificationProcessor.onStatementReceived(context, data)
     }
 
     private fun promotePreferences(data: Map<String, String>) {

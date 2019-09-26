@@ -24,4 +24,5 @@
     <item name="np__decrement" type="id" />
     <item name="tag_speaker_id" type="id" />
     <item name="tag_student_id" type="id" />
+    <item name="adViewConnect" type="id" />
 </resources>

@@ -36,9 +36,11 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentProfileBinding
-import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_PROFILE_ID
+import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
+import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_USER_ID
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
@@ -67,7 +69,10 @@ class ProfileFragment : UFragment(), Injectable {
         viewModel = provideViewModel(factory)
         setupViewModel = provideViewModel(factory)
         activity?.postponeEnterTransition(500L)
-        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_PROFILE_ID, 0))
+        val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
+        check(userId != 0L) { "Well.. That happened" }
+        viewModel.setUserId(userId)
+        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
         viewModel.profile.observe(this, Observer {
             it ?: return@Observer
             if (it.imageUrl == null) {
@@ -76,7 +81,7 @@ class ProfileFragment : UFragment(), Injectable {
             if (it.me) {
                 binding.writeStatement.hide()
             } else {
-                binding.writeStatement.show(true)
+                binding.writeStatement.show()
             }
         })
 
@@ -85,7 +90,7 @@ class ProfileFragment : UFragment(), Injectable {
             override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
         }
 
-        adapter = ProfileAdapter(viewModel, this, headLoadListener)
+        adapter = ProfileAdapter(viewModel, this, headLoadListener, viewModel)
         return FragmentProfileBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -114,8 +119,8 @@ class ProfileFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.statements.observe(this, Observer {
-            adapter.statements = it
+        viewModel.statements.observe(this, Observer { statements ->
+            adapter.statements = statements.sortedByDescending { it.createdAt }
         })
 
         binding.up.setOnClickListener {
@@ -123,11 +128,19 @@ class ProfileFragment : UFragment(), Injectable {
         }
 
         binding.writeStatement.setOnClickListener {
+            val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
+            val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
+            fragmentManager?.inTransaction {
+                val fragment = WriteStatementFragment().apply {
+                    arguments = bundleOf(
+                        EXTRA_STUDENT_ID to profileId,
+                        EXTRA_USER_ID to userId
+                    )
+                }
+                replace(R.id.fragment_container, fragment, "write_statement")
+                addToBackStack("home")
+            }
         }
-
-//        binding.imageProfile.setOnClickListener {
-//            pickImage()
-//        }
     }
 
     private fun pickImage() {
@@ -138,14 +151,6 @@ class ProfileFragment : UFragment(), Injectable {
 
     private fun onImagePicked(uri: Uri) {
         setupViewModel.setSelectedImage(uri)
-//        GlideApp.with(requireContext())
-//            .load(uri)
-//            .fallback(R.mipmap.ic_unes_large_image_512)
-//            .placeholder(R.mipmap.ic_unes_large_image_512)
-//            .circleCrop()
-//            .transition(DrawableTransitionOptions.withCrossFade())
-//            .into(binding.user)
-
         setupViewModel.uploadImageToStorage()
     }
 
@@ -184,9 +189,12 @@ class ProfileFragment : UFragment(), Injectable {
 
     companion object {
         private const val REQUEST_SELECT_PICTURE = 8000
-        fun newInstance(profileId: Long): ProfileFragment {
+        fun newInstance(profileId: Long, userId: Long): ProfileFragment {
             return ProfileFragment().apply {
-                arguments = bundleOf(EXTRA_PROFILE_ID to profileId)
+                arguments = bundleOf(
+                    EXTRA_STUDENT_ID to profileId,
+                    EXTRA_USER_ID to userId
+                )
             }
         }
     }

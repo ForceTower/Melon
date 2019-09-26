@@ -27,33 +27,51 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
+import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
 import javax.inject.Inject
 
 class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
-) : ViewModel() {
+) : ViewModel(), ProfileInteractor {
+    private var userId: Long? = null
     private val profileId = MutableLiveData<Long?>()
 
     private val _profile = MediatorLiveData<SStudent?>()
     val profile: LiveData<SStudent?>
         get() = _profile
 
+    val account = repository.getAccountDatabase()
+
     private val _statements = MediatorLiveData<List<ProfileStatement>>()
     val statements: LiveData<List<ProfileStatement>>
         get() = _statements
 
+    private val _sendingStatement = MediatorLiveData<Boolean>()
+    val sendingStatement: LiveData<Boolean>
+        get() = _sendingStatement
+
+    private val _messages = MutableLiveData<Event<String>>()
+    val messages: LiveData<Event<String>>
+        get() = _messages
+
+    private val _statementSentSignal = MutableLiveData<Event<Boolean>>()
+    val statementSentSignal: LiveData<Event<Boolean>>
+        get() = _statementSentSignal
+
     init {
         _profile.addSource(profileId) {
             refreshProfile(it)
-            refreshStatements(it)
+            refreshStatements(it, userId)
         }
     }
 
-    private fun refreshStatements(profileId: Long?) {
+    private fun refreshStatements(profileId: Long?, userId: Long?) {
         profileId ?: return
-        val source = repository.loadStatements(profileId)
+        userId ?: return
+        val source = repository.loadStatements(profileId, userId)
         _statements.addSource(source) {
             Timber.d("Resource status ${it.status}")
             val data = it.data
@@ -86,7 +104,51 @@ class ProfileViewModel @Inject constructor(
         profileId.setValueIfNew(newProfileId)
     }
 
-    fun onSendStatement(text: String) {
-        TODO("It is not implemented yet...")
+    /**
+     * This method should be replaced by a reactive thing together with setProfileId
+     */
+    fun setUserId(userId: Long) {
+        Timber.d("Setting new userId: $userId")
+        this.userId = userId
+    }
+
+    fun onSendStatement(statement: String, profileId: Long, hidden: Boolean) {
+        if (_sendingStatement.value == true) {
+            Timber.d("Already sending data")
+            return
+        }
+
+        _sendingStatement.value = true
+        val source = repository.sendStatement(statement, profileId, hidden)
+        _sendingStatement.addSource(source) {
+            _sendingStatement.removeSource(source)
+            if (it.message != null) {
+                _messages.value = Event(it.message)
+            }
+
+            if (it.status == Status.SUCCESS) {
+                _statementSentSignal.value = Event(true)
+                val uid = userId
+                if (uid != null) {
+                    repository.loadStatements(profileId, uid)
+                }
+            }
+
+            _sendingStatement.value = false
+        }
+    }
+
+    override fun onPictureClick() = Unit
+
+    override fun onAcceptStatement(statement: ProfileStatement) {
+        repository.acceptStatementAsync(statement)
+    }
+
+    override fun onRefuseStatement(statement: ProfileStatement) {
+        repository.refuseStatementAsync(statement)
+    }
+
+    override fun onDeleteStatement(statement: ProfileStatement) {
+        repository.deleteStatementAsync(statement)
     }
 }
