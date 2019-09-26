@@ -17,7 +17,7 @@ O aplicativo é nativo Android, utiliza as bibliotecas do AndroidX e a maior par
 Como o projeto cresceu, toda a parte de comunicação com o Portal Sagres foi separada para o [Juice](https://github.com/ForceTower/Juice), que está publicado no Maven.
 O Juice é uma biblioteca sem dependência com a framework Android, logo, você pode executa-lo em seu computador e integra-lo facilmente em qualquer projeto Java/Kotlin
 
-Contribuições para o projeto são muito bem vindas e qualquer dúvida, erro ou sugestão de feature ou melhoria de código basta colocar nas issues e tento resolver :v
+Contribuições para o projeto são muito bem vindas e qualquer dúvida, erro, sugestão de feature ou melhoria de código basta colocar nas issues e tento resolver :v
 
 Quer entrar em contato?
 Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://www.linkedin.com/in/forcetower/), [Facebook](https://www.facebook.com/ForceTower) ou [Instagram](https://www.instagram.com/joaopauloforce/).
