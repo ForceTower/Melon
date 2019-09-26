@@ -11,6 +11,7 @@ Como a UEFS não tinha um aplicativo para os estudantes, e acessar o portal para
 O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. 
 Com o tempo, ele se tornou um pouco mais que isso, mas notificações e acesso offline às informações do portal são as funções principais do aplicativo.
 
+### Sobre o aplicativo
 O aplicativo é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0.
 
 Como o projeto cresceu, toda a parte de comunicação com o Portal Sagres foi separada para o [Juice](https://github.com/ForceTower/Juice), que está publicado no Maven.
@@ -18,7 +19,7 @@ O Juice é uma biblioteca sem dependência com a framework Android, logo, você 
 
 Contribuições para o projeto são muito bem vindas e qualquer dúvida, erro ou sugestão de feature ou melhoria de código basta colocar nas issues e tento resolver :v
 
-Quer conversar mais diretamente?
+Quer entrar em contato?
 Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://www.linkedin.com/in/forcetower/), [Facebook](https://www.facebook.com/ForceTower) ou [Instagram](https://www.instagram.com/joaopauloforce/).
 
 ### Suporte a outras universidades
