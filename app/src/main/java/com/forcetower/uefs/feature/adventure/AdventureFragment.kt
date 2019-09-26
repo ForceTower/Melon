@@ -30,6 +30,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
@@ -129,7 +130,11 @@ class AdventureFragment : UFragment(), Injectable {
         activity?.mGamesInstance?.connectionStatus?.observe(this, EventObserver {
             when (it) {
                 GameConnectionStatus.DISCONNECTED -> openStartupDialog()
-                GameConnectionStatus.CONNECTED -> showSnack(getString(R.string.connected_to_play_games))
+                GameConnectionStatus.CONNECTED -> {
+                    val fragment = childFragmentManager.findFragmentByTag("adventure_sign_in")
+                    (fragment as? DialogFragment)?.dismiss()
+                    showSnack(getString(R.string.connected_to_play_games))
+                }
                 GameConnectionStatus.LOADING -> Unit
             }
         })
