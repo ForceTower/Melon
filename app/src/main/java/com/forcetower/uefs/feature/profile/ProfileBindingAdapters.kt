@@ -141,12 +141,12 @@ fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime) {
         days > 1L -> {
             val format = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault())
             val str = format.format(Date(time))
-            context.getString(R.string.message_received_date_format, str)
+            context.getString(R.string.profile_statement_received_date_format, str)
         }
         days == 1L -> {
             val hours = TimeUnit.HOURS.convert(diff - oneDay, TimeUnit.MILLISECONDS)
             val str = days.toString() + "d " + hours.toString() + "h"
-            context.getString(R.string.message_received_date_ago_format, str)
+            context.getString(R.string.profile_statement_received_date_ago_format, str)
         }
         else -> {
             val hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)

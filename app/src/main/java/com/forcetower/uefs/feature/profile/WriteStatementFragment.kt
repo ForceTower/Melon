@@ -63,7 +63,9 @@ class WriteStatementFragment : UFragment(), Injectable {
         binding.publish.setOnClickListener { onPublishStatement() }
         viewModel.sendingStatement.observe(this, Observer { binding.sending = it })
         viewModel.messages.observe(this, EventObserver { showSnack(it) })
-        viewModel.statementSentSignal.observe(this, EventObserver { fragmentManager?.popBackStack() })
+        viewModel.statementSentSignal.observe(this, EventObserver {
+            fragmentManager?.popBackStack()
+        })
         binding.up.setOnClickListener { fragmentManager?.popBackStack() }
         viewModel.getMeProfile().observe(this, Observer {
             binding.student = it.data

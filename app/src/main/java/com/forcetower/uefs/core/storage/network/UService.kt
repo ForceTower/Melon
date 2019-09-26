@@ -106,6 +106,15 @@ interface UService {
     @POST("account/statements/create")
     fun sendStatement(@Body params: CreateStatementParams): Call<Void>
 
+    @POST("account/statements/approve")
+    fun acceptStatement(@Body body: Map<String, Long>): Call<Void>
+
+    @POST("account/statements/refuse")
+    fun refuseStatement(@Body body: Map<String, Long>): Call<Void>
+
+    @POST("account/statements/delete")
+    fun deleteStatement(@Body body: Map<String, Long>): Call<Void>
+
     @POST("account/save_sessions")
     fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 

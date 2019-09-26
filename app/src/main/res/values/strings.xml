@@ -682,6 +682,13 @@
     <string name="channel_social_statement_received">Depoimentos recebidos</string>
     <string name="settings_ntf_statement_posted">Depoimentos recebidos</string>
     <string name="settings_ntf_statement_posted_info">Um depoimento foi adicionado ao seu perfil</string>
+    <string name="profile_statements_unapproved">Depoimentos Pendentes</string>
+    <string name="profile_statements_unapproved_description">Aprove ou recuse os depoimentos recebidos</string>
+    <string name="profile_statement_received_date_format">Recebida %1$s</string>
+    <string name="profile_statement_received_date_ago_format">Recebida %1$s atrás</string>
+    <string name="profile_statement_accept">Aceitar</string>
+    <string name="profile_statement_refuse">Recusar</string>
+    <string name="profile_statement_delete">Apagar</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
