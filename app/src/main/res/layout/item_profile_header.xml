@@ -101,85 +101,85 @@
             app:layout_constraintTop_toBottomOf="@id/student_name"
             tools:text="Engenharia de computação" />
 
-        <androidx.constraintlayout.widget.Barrier
-            android:id="@+id/barrier"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:barrierDirection="bottom"
-            app:constraint_referenced_ids="student_course" />
+<!--        <androidx.constraintlayout.widget.Barrier-->
+<!--            android:id="@+id/barrier"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            app:barrierDirection="bottom"-->
+<!--            app:constraint_referenced_ids="student_course" />-->
 
-        <TextView
-            android:id="@+id/label_trusted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_attr_trustable"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/trust_rating"
-            app:layout_constraintStart_toStartOf="@+id/trust_rating"
-            app:layout_constraintTop_toTopOf="@+id/barrier" />
+<!--        <TextView-->
+<!--            android:id="@+id/label_trusted"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:text="@string/profile_attr_trustable"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/trust_rating"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/trust_rating"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/barrier" />-->
 
-        <com.forcetower.uefs.widget.RatingBarVectorFix
-            android:id="@+id/trust_rating"
-            style="@style/UTheme.ProfileTrustRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="3"
-            android:rating="2"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/cool_rating"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/label_trusted" />
+<!--        <com.forcetower.uefs.widget.RatingBarVectorFix-->
+<!--            android:id="@+id/trust_rating"-->
+<!--            style="@style/UTheme.ProfileTrustRating"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:numStars="3"-->
+<!--            android:rating="2"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/cool_rating"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/label_trusted" />-->
 
-        <TextView
-            android:id="@+id/label_cool"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_attr_cool"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/cool_rating"
-            app:layout_constraintStart_toStartOf="@+id/cool_rating"
-            app:layout_constraintTop_toTopOf="@+id/barrier" />
+<!--        <TextView-->
+<!--            android:id="@+id/label_cool"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:text="@string/profile_attr_cool"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/cool_rating"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/cool_rating"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/barrier" />-->
 
-        <com.forcetower.uefs.widget.RatingBarVectorFix
-            android:id="@+id/cool_rating"
-            style="@style/UTheme.ProfileCoolRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="3"
-            android:rating="2"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toStartOf="@+id/sexy_rating"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/trust_rating"
-            app:layout_constraintTop_toBottomOf="@id/label_cool" />
+<!--        <com.forcetower.uefs.widget.RatingBarVectorFix-->
+<!--            android:id="@+id/cool_rating"-->
+<!--            style="@style/UTheme.ProfileCoolRating"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:numStars="3"-->
+<!--            android:rating="2"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/sexy_rating"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/trust_rating"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/label_cool" />-->
 
-        <TextView
-            android:id="@+id/label_sexy"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:text="@string/profile_attr_sexy"
-            android:textSize="16sp"
-            app:layout_constraintEnd_toEndOf="@+id/sexy_rating"
-            app:layout_constraintStart_toStartOf="@+id/sexy_rating"
-            app:layout_constraintTop_toTopOf="@+id/barrier" />
+<!--        <TextView-->
+<!--            android:id="@+id/label_sexy"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_marginTop="16dp"-->
+<!--            android:text="@string/profile_attr_sexy"-->
+<!--            android:textSize="16sp"-->
+<!--            app:layout_constraintEnd_toEndOf="@+id/sexy_rating"-->
+<!--            app:layout_constraintStart_toStartOf="@+id/sexy_rating"-->
+<!--            app:layout_constraintTop_toTopOf="@+id/barrier" />-->
 
-        <com.forcetower.uefs.widget.RatingBarVectorFix
-            android:id="@+id/sexy_rating"
-            style="@style/UTheme.ProfileSexyRating"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:numStars="3"
-            android:rating="2"
-            android:layout_marginTop="4dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toEndOf="@+id/cool_rating"
-            app:layout_constraintTop_toBottomOf="@id/label_sexy" />
+<!--        <com.forcetower.uefs.widget.RatingBarVectorFix-->
+<!--            android:id="@+id/sexy_rating"-->
+<!--            style="@style/UTheme.ProfileSexyRating"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:numStars="3"-->
+<!--            android:rating="2"-->
+<!--            android:layout_marginTop="4dp"-->
+<!--            app:layout_constraintEnd_toEndOf="parent"-->
+<!--            app:layout_constraintEnd_toStartOf="@+id/guideline_end"-->
+<!--            app:layout_constraintHorizontal_bias="0.5"-->
+<!--            app:layout_constraintStart_toEndOf="@+id/cool_rating"-->
+<!--            app:layout_constraintTop_toBottomOf="@id/label_sexy" />-->
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
