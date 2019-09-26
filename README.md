@@ -1,26 +1,25 @@
-## UNES
-
-O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. Com o tempo, ele se tornou um pouco mais que isso, mas esta é a função principal e pela qual o aplicativo vive.
-
-O UNES é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0
-
-O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
-
-Contribuições para o projeto são muito bem vindas, qualquer dúvida, erro ou sugestão basta colocar nas issues e tento resolver :v
+# UNES - (UNES Não É Sagres)
+![Preview-Screens](https://github.com/ForceTower/Melon/blob/development/screens.png)
 
 [![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
 
-### Objetivos
-* ~~Diminuir o tempo de carregamento do aplicativo quando está abrindo~~
-* ~~Utilizar os novos componentes do Android~~
-* ~~Usar Kotlin, já que parece que o Google vai adotar isso como a linguagem principal~~
-* ~~Demanda Web direto no App~~ [Completo]
-* ~~Corrigir o deadlock raro durante a sincronização~~ [Completo]
-* Matrícula no App [XX-------------] 6% (Sob análise, estrutura de dados estranha para parse)
-* ~~Corrigir o erro que afeta alguns estudantes que mudaram de modalidade durante a graduação [Licenciatura/Bacharelado]~~
-* ~~Utilizar o Material Design 2.0 para deixar as coisas bonitas OuO~~
-* ~~Integrar o UNES com algum backend para fazer backup de algumas informações para não sermos traídos pelo Portal~~
-* ~~Tema escuro/preto porque tema dark é legal em todo lugar~~
+O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
+
+### Por que?
+Como a UEFS não tinha um aplicativo para os estudantes, e acessar o portal para ver se algum professor mudou algo era muito chato, eu criei este aplicativo para automatizar esta tarefa.
+
+O UNES é um aplicativo feito para notificar o estudante quando um professor posta uma nota ou um recado no Portal Sagres. 
+Com o tempo, ele se tornou um pouco mais que isso, mas notificações e acesso offline às informações do portal são as funções principais do aplicativo.
+
+O aplicativo é nativo Android, utiliza as bibliotecas do AndroidX e a maior parte do código está em Kotlin. Toda a interface é pensada para utilizar as guias do Material Design 2.0.
+
+Como o projeto cresceu, toda a parte de comunicação com o Portal Sagres foi separada para o [Juice](https://github.com/ForceTower/Juice), que está publicado no Maven.
+O Juice é uma biblioteca sem dependência com a framework Android, logo, você pode executa-lo em seu computador e integra-lo facilmente em qualquer projeto Java/Kotlin
+
+Contribuições para o projeto são muito bem vindas e qualquer dúvida, erro ou sugestão de feature ou melhoria de código basta colocar nas issues e tento resolver :v
+
+Quer conversar mais diretamente?
+Me mande um email joaopaulo761@gmail.com, ou me encontre no [LinkedIn](https://www.linkedin.com/in/forcetower/), [Facebook](https://www.facebook.com/ForceTower) ou [Instagram](https://www.instagram.com/joaopauloforce/).
 
 ### Suporte a outras universidades
 Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UEFS), se você quiser fazer um port para a sua universidade ou faculdade, sinta-se em casa.
@@ -32,16 +31,8 @@ Você pode editar o arquivo [login_messages.json](https://github.com/ForceTower/
 
 As suas mensagens serão avaliadas e se aprovadas elas poderão aparecer no aplicativo!
 
-### Versão do Android
-Esta nova versão não oferecerá suporte para dispositivos com Android inferior ao 5.0
-Os dispositivos com versão antiga receberão updates para falhas críticas e talvez algumas funções interessantes que envolvam apenas os parsers.
-
 ### Compilando o Melon
-Para um guia sobre como compilar o aplicativo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon)
-
-### Sobre o Aplicativo
-Este aplicativo mostra notificações quando algo novo é detectado no Sagres.
-Ele tambem tenta aproximar os conteúdos do Sagres em um aplicativo cujas ações podem ser feitas offline e então quando houver internet elas serão sincronizadas com o portal online. Também espera-se que possua algumas funcionalidades aleatórias que forem julgadas interessantes :)
+Para um guia sobre como compilar o aplicativo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon) para um tutorial detalhado.
 
 ### Aviso
 Este aplicativo não é licenciado nem tem qualquer ligação com a Tecnotrends, a empresa que mantem o Website e o serviço Sagres da UEFS. O aplicativo filtra as informações disponibilizadas pelo portal do estudante e então exibe no aplicativo.
