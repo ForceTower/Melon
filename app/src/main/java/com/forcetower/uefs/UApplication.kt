@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.impl.AndroidBase64Encoder
+import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
@@ -73,8 +74,14 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
             return
         }
-        // O log timber só existe em build de debug
-        if (BuildConfig.DEBUG) Timber.plant(Timber.DebugTree())
+
+        if (BuildConfig.DEBUG) {
+            // Se em debug, print no logcat todas as informações
+            Timber.plant(Timber.DebugTree())
+        } else {
+            // Em release, enviar apenas exceptions tratadas ;)
+            Timber.plant(CrashlyticsTree())
+        }
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
