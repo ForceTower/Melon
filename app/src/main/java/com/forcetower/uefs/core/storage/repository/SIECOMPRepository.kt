@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.net.Uri
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.siecomp.ServerSession
@@ -28,9 +29,11 @@ import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
+import com.forcetower.uefs.core.storage.imgur.ImageUploader
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.service.NotificationCreator
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -40,7 +43,8 @@ class SIECOMPRepository @Inject constructor(
     private val database: EventDatabase,
     private val executors: AppExecutors,
     private val service: UService,
-    private val context: Context
+    private val context: Context,
+    private val client: OkHttpClient
 ) {
     fun getSessionsFromDayLocal(day: Int) = database.eventDao().getSessionsFromDay(day)
 
@@ -92,6 +96,19 @@ class SIECOMPRepository @Inject constructor(
         executors.networkIO().execute {
             try {
                 Timber.d("Speaker $speaker")
+                val image = speaker.image
+                if (image != null && !image.contains("imgur.com")) {
+                    Timber.d("Uploading image")
+                    val uri = Uri.parse(image)
+                    val link = ImageUploader.uploadToImGur(uri, context, client)?.link
+                    if (link == null) {
+                        Timber.d("Image not uploaded... unsetting...")
+                    } else {
+                        Timber.d("Image uploaded... setting")
+                    }
+                    speaker.image = link
+                }
+
                 val response = if (create) {
                     service.createSpeaker(speaker).execute()
                 } else {

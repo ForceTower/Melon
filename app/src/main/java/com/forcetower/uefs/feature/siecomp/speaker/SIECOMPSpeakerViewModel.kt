@@ -34,6 +34,7 @@ import javax.inject.Inject
 class SIECOMPSpeakerViewModel @Inject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel() {
+    var uriString: String? = null
     private val speakerId = MutableLiveData<Long?>()
     val access = repository.getAccess()
 

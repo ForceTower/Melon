@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.siecomp.editor
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -29,13 +30,11 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventEdtCrtSpeakerBinding
-import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity.Companion.SPEAKER_ID
 import com.forcetower.uefs.feature.siecomp.speaker.SIECOMPSpeakerViewModel
 import javax.inject.Inject
 
-class CreateSpeakerFragment : UFragment(), Injectable {
+class CreateSpeakerFragment : ImagePickerFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var binding: FragmentEventEdtCrtSpeakerBinding
@@ -57,19 +56,27 @@ class CreateSpeakerFragment : UFragment(), Injectable {
             binding.executePendingBindings()
         })
 
+        binding.imageUserPicture.setOnClickListener {
+            pickImage()
+        }
+
         binding.save.setOnClickListener {
             val name = binding.name.text.toString()
-            val image = binding.image.text.toString()
             val lab = binding.lab.text.toString()
             val resume = binding.resume.text.toString()
             val url = binding.url.text.toString()
             val github = binding.github.text.toString()
-            val speaker = Speaker(id ?: 0, name, image, lab, resume, url, github, uuid)
+            val speaker = Speaker(id ?: 0, name, viewModel.uriString, lab, resume, url, github, uuid)
             viewModel.sendSpeaker(speaker, id == null)
         }
     }
 
+    override fun onImagePicked(uri: Uri) {
+        viewModel.uriString = uri.toString()
+    }
+
     companion object {
         const val SPEAKER_UUID = "speaker_uuid"
+        const val SPEAKER_ID = "speaker_id"
     }
 }
