@@ -31,18 +31,18 @@ import com.google.gson.annotations.SerializedName
 data class Speaker(
     @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)
-    var uid: Long = 0,
-    var name: String = "",
-    var image: String = "",
-    var lab: String = "",
+    val uid: Long = 0,
+    val name: String = "",
+    var image: String? = null,
+    val lab: String? = "",
     @SerializedName(value = "abstract")
-    var resume: String = "",
-    var url: String?,
-    var github: String?,
-    var uuid: String = ""
+    val resume: String? = "",
+    val url: String?,
+    val github: String?,
+    val uuid: String = ""
 ) {
-    fun hasLab() = lab.isNotEmpty() && lab != "null"
-    fun hasAbstract() = resume.isNotEmpty()
+    fun hasLab() = !lab.isNullOrBlank() && lab != "null"
+    fun hasAbstract() = !resume.isNullOrBlank()
 
     override fun toString(): String {
         return name

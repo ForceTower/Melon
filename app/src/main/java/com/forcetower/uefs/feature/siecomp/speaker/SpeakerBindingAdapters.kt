@@ -59,7 +59,7 @@ fun speakerImage(
         else -> R.drawable.ic_default_avatar_3
     }
 
-    if (speaker.image.isBlank()) {
+    if (speaker.image.isNullOrBlank()) {
         imageView.setImageResource(placeholderId)
     } else {
         val imageLoad = Glide.with(imageView)
