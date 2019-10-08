@@ -58,6 +58,14 @@ abstract class EventDao {
         deleteTags()
         deleteSpeakers()
 
+        val serverUUIDMap = value.map { it.uuid }
+        val currentSessions = getAllSessionsDirect()
+        val deletedSessions = currentSessions.filter { !serverUUIDMap.contains(it.uuid) }
+
+        deletedSessions.forEach {
+            deleteIfPresent(it.uuid)
+        }
+
         value.forEach {
             insertTags(it.tags)
             insertSpeakers(it.speakers)
@@ -108,6 +116,9 @@ abstract class EventDao {
     @Transaction
     @Query("SELECT * FROM Session")
     abstract fun getAllSessions(): LiveData<List<SessionWithData>>
+
+    @Query("SELECT * FROM Session")
+    protected abstract fun getAllSessionsDirect(): List<Session>
 
     @Query("SELECT * FROM Speaker WHERE uid = :speakerId")
     abstract fun getSpeakerWithId(speakerId: Long): LiveData<Speaker>
