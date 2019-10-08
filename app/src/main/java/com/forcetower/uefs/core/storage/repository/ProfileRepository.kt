@@ -49,6 +49,8 @@ class ProfileRepository @Inject constructor(
     private val service: UService,
     private val context: Context
 ) {
+    fun getCommonProfile() = database.profileDao().selectMe()
+
     fun getMeProfile(): LiveData<Resource<SStudent>> {
         return object : NetworkBoundResource<SStudent, UResponse<SStudentDTO>>(executors) {
             override fun loadFromDb() = database.studentServiceDao().getMeStudent()
