@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 3,
-    "identityHash": "70f9caf959f6e2fc301a47175ffacb59",
+    "identityHash": "d06e32e662249dfa8f8136a4240f7c97",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -186,7 +186,7 @@
       },
       {
         "tableName": "Speaker",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `image` TEXT NOT NULL, `lab` TEXT NOT NULL, `resume` TEXT NOT NULL, `url` TEXT, `github` TEXT, `uuid` TEXT NOT NULL)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `name` TEXT NOT NULL, `image` TEXT, `lab` TEXT, `resume` TEXT, `url` TEXT, `github` TEXT, `uuid` TEXT NOT NULL)",
         "fields": [
           {
             "fieldPath": "uid",
@@ -204,19 +204,19 @@
             "fieldPath": "image",
             "columnName": "image",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "lab",
             "columnName": "lab",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "resume",
             "columnName": "resume",
             "affinity": "TEXT",
-            "notNull": true
+            "notNull": false
           },
           {
             "fieldPath": "url",
@@ -481,9 +481,10 @@
         "foreignKeys": []
       }
     ],
+    "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, \"70f9caf959f6e2fc301a47175ffacb59\")"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'd06e32e662249dfa8f8136a4240f7c97')"
     ]
   }
 }

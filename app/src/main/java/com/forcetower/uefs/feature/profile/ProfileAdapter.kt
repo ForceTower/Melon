@@ -104,7 +104,7 @@ class ProfileAdapter(
             val unapproved = stats.filter { !it.approved }
             if (unapproved.isNotEmpty()) {
                 merged += UnapprovedStatementsHeader
-                merged.addAll(stats)
+                merged.addAll(unapproved)
             }
             if (approved.isNotEmpty()) {
                 merged += StatementsHeader
