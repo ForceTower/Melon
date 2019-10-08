@@ -97,14 +97,14 @@ class OnboardingFragment : UFragment(), Injectable {
     inner class OnboardingAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val fragments = if (TimeUtils.eventHasStarted()) {
             arrayOf(
-                    WelcomeFragment(),
-                    CustomizeScheduleFragment()
+                WelcomeFragment(),
+                CustomizeScheduleFragment()
             )
         } else {
             arrayOf(
-                    WelcomeFragment(),
-                    CustomizeScheduleFragment(),
-                    CountdownFragment()
+                WelcomeFragment(),
+                CountdownFragment(),
+                CustomizeScheduleFragment()
             )
         }
 
