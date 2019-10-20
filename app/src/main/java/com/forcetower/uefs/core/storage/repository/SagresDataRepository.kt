@@ -29,7 +29,6 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.round
-import com.forcetower.uefs.core.util.truncate
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
 import javax.inject.Inject
