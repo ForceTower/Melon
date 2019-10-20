@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.core.util.truncate
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.firebase.auth.FirebaseAuth
@@ -276,7 +277,7 @@ class AdventureRepository @Inject constructor(
         }
 
         if (accumulatedHours != 0) {
-            val calcScore = (accumulatedMean / accumulatedHours).truncate()
+            val calcScore = (accumulatedMean / accumulatedHours).round(1)
             Timber.d("Score calculated is: $calcScore")
             database.profileDao().updateCalculatedScore(calcScore)
         }
