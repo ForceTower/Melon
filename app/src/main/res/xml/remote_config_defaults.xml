@@ -76,4 +76,8 @@
         <key>disciplines_view_performance</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>satisfaction_survey_pre_flag</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>

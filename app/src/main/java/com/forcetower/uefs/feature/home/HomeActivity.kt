@@ -153,8 +153,9 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     private fun satisfactionSurvey() {
+        val config = remoteConfig.getBoolean("satisfaction_survey_pre_flag")
         val answered = preferences.getBoolean("answered_forms_satisfaction_pre", false)
-        if (answered || !preferences.isStudentFromUEFS()) return
+        if (!config || answered || !preferences.isStudentFromUEFS()) return
 
         val installTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
         val checkDate = Calendar.getInstance().apply {
@@ -456,14 +457,11 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         interstitial.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 interstitial.show()
+                viewModel.onUserAdImpression()
             }
 
             override fun onAdClicked() {
                 viewModel.onUserClickedAd()
-            }
-
-            override fun onAdImpression() {
-                viewModel.onUserAdImpression()
             }
         }
     }
@@ -486,8 +484,8 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
 
     private fun placeAdViewOnLayout(adView: AdView) {
         adView.adListener = object : AdListener() {
+            override fun onAdLoaded() { viewModel.onUserAdImpression() }
             override fun onAdClicked() { viewModel.onUserClickedAd() }
-            override fun onAdImpression() { viewModel.onUserAdImpression() }
         }
 
         val set = ConstraintSet()
