@@ -31,5 +31,6 @@ data class Question(
     val description: String?,
     val teacher: Boolean,
     val discipline: Boolean,
-    val last: Boolean = false
+    val last: Boolean = false,
+    val formId: String? = null
 )

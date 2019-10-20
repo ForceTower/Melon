@@ -33,6 +33,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetail
 import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.evaluation.rating.RatingActivity
 import com.forcetower.uefs.feature.flowchart.FlowchartActivity
+import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.profile.ProfileActivity
@@ -75,6 +76,8 @@ abstract class ActivityModule {
     abstract fun bindRatingActivity(): RatingActivity
     @ContributesAndroidInjector(modules = [FlowchartModule::class])
     abstract fun bindFlowchartActivity(): FlowchartActivity
+    @ContributesAndroidInjector(modules = [FormsModule::class])
+    abstract fun bindFormActivity(): FormActivity
     @ContributesAndroidInjector(modules = [Game2048Module::class])
     abstract fun bindGame2048Activity(): Game2048Activity
     @ContributesAndroidInjector(modules = [SIECOMPOnboardingModule::class])
