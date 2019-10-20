@@ -31,6 +31,7 @@ import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.Subject
 import java.lang.Math.pow
 import kotlin.math.floor
+import kotlin.math.pow
 import kotlin.math.roundToInt
 
 fun Any.toJson(): String {
@@ -51,12 +52,12 @@ fun Context.isConnectedToInternet(): Boolean {
 }
 
 fun Double.truncate(decimals: Int = 1): Double {
-    val power = pow(10.0, decimals.toDouble())
+    val power = 10.0.pow(decimals.toDouble())
     return floor(this * power) / power
 }
 
 fun Double.round(decimals: Int = 1): Double {
-    val power = pow(10.0, decimals.toDouble())
+    val power = 10.0.pow(decimals.toDouble())
     return (this * power).roundToInt() / power
 }
 

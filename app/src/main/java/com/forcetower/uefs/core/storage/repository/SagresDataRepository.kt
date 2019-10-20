@@ -28,6 +28,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.core.util.truncate
 import com.google.firebase.auth.FirebaseAuth
 import timber.log.Timber
@@ -74,7 +75,7 @@ class SagresDataRepository @Inject constructor(
             val mean = classes.filter { it.clazz.finalScore != null }
                     .sumByDouble { it.discipline().credits * it.clazz.finalScore!! }
             if (hours > 0) {
-                val score = (mean / hours).truncate()
+                val score = (mean / hours).round(1)
                 Timber.d("Score is $score")
                 database.profileDao().updateCalculatedScore(score)
             }
