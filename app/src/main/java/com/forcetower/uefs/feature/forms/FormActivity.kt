@@ -40,11 +40,12 @@ class FormActivity : UActivity(), HasSupportFragmentInjector {
         viewModel.nextQuestion.observe(this, EventObserver {
             val position = binding.viewPager.currentItem
             val size = currentData.size
-            if (position + 1 >= size) {
+            val nextPos = position + 1
+            if (nextPos >= size) {
                 viewModel.submitAnswers()
                 finish()
             } else {
-                binding.viewPager.setCurrentItem(position + 1, true)
+                binding.viewPager.setCurrentItem(nextPos, true)
             }
         })
     }
