@@ -32,7 +32,6 @@ import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -75,14 +74,13 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
-class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
+class HomeActivity : UGameActivity(), HasAndroidInjector {
     companion object {
         const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
         const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
@@ -93,7 +91,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
     }
 
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var vmFactory: UViewModelFactory
     @Inject
@@ -356,7 +354,7 @@ class HomeActivity : UGameActivity(), HasSupportFragmentInjector {
         adventureViewModel.checkNotConnectedAchievements().observe(this, Observer { Unit })
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     private fun onStateUpdateChanged(state: InstallState) {
         when {

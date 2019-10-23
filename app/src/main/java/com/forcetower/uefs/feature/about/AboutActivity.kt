@@ -26,20 +26,18 @@ import android.content.Intent
 import android.os.Bundle
 import android.transition.TransitionInflater
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityAboutBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
-import dagger.android.AndroidInjector
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class AboutActivity : UActivity(), HasSupportFragmentInjector {
+class AboutActivity : UActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     private lateinit var binding: ActivityAboutBinding
     private val adapter: FragmentAdapter by lazy { FragmentAdapter(supportFragmentManager) }
@@ -72,7 +70,7 @@ class AboutActivity : UActivity(), HasSupportFragmentInjector {
         binding.indicator.setViewPager(binding.viewPager)
     }
 
-    override fun supportFragmentInjector(): AndroidInjector<Fragment> = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     companion object {
         fun startActivity(activity: Activity) {

@@ -20,14 +20,10 @@
 
 package com.forcetower.uefs
 
-import android.app.Activity
 import android.app.Application
-import android.app.Service
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatDelegate
-import androidx.fragment.app.Fragment
 import androidx.preference.PreferenceManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
@@ -41,10 +37,7 @@ import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasActivityInjector
-import dagger.android.HasBroadcastReceiverInjector
-import dagger.android.HasServiceInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -53,15 +46,9 @@ import javax.inject.Inject
  *
  * Iniciar o aplicativo por qualquer meio irá iniciar os processos de injeção de dependençias
  */
-class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjector, HasBroadcastReceiverInjector, HasServiceInjector {
+class UApplication : Application(), HasAndroidInjector {
     @Inject
-    lateinit var activityInjector: DispatchingAndroidInjector<Activity>
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
-    @Inject
-    lateinit var receiverInjector: DispatchingAndroidInjector<BroadcastReceiver>
-    @Inject
-    lateinit var serviceInjector: DispatchingAndroidInjector<Service>
+    lateinit var androidInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var preferences: SharedPreferences
 
@@ -151,10 +138,7 @@ class UApplication : Application(), HasActivityInjector, HasSupportFragmentInjec
         NotificationHelper(this).createChannels()
     }
 
-    override fun activityInjector() = activityInjector
-    override fun supportFragmentInjector() = fragmentInjector
-    override fun broadcastReceiverInjector() = receiverInjector
-    override fun serviceInjector() = serviceInjector
+    override fun androidInjector() = androidInjector
 
     companion object {
         fun setupDayNightTheme(context: Context) {
