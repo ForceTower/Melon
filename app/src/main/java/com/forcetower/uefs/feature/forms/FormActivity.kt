@@ -2,7 +2,6 @@ package com.forcetower.uefs.feature.forms
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.vm.EventObserver
@@ -12,14 +11,14 @@ import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class FormActivity : UActivity(), HasSupportFragmentInjector {
+class FormActivity : UActivity(), HasAndroidInjector {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     private lateinit var binding: ActivityFormsBinding
     private lateinit var viewModel: FormsViewModel
@@ -84,5 +83,5 @@ class FormActivity : UActivity(), HasSupportFragmentInjector {
         adapter.setItems(fragments)
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 }

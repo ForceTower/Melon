@@ -24,7 +24,6 @@ import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
 import com.forcetower.uefs.R
@@ -37,14 +36,14 @@ import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class RatingActivity : UActivity(), HasSupportFragmentInjector {
+class RatingActivity : UActivity(), HasAndroidInjector {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
     private lateinit var viewModel: EvaluationRatingViewModel
     private lateinit var binding: ActivityEvaluationRatingBinding
     private lateinit var adapter: FragmentAdapter
@@ -98,5 +97,5 @@ class RatingActivity : UActivity(), HasSupportFragmentInjector {
         adapter.setItems(fragments)
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 }

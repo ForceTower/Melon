@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityProfileBinding
 import com.forcetower.uefs.feature.shared.UActivity
@@ -32,12 +31,12 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class ProfileActivity : UActivity(), HasSupportFragmentInjector {
+class ProfileActivity : UActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     private lateinit var binding: ActivityProfileBinding
 
@@ -64,7 +63,7 @@ class ProfileActivity : UActivity(), HasSupportFragmentInjector {
         return snack
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     companion object {
         const val EXTRA_STUDENT_ID = "student_id"
