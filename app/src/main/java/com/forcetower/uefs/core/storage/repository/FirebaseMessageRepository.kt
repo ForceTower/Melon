@@ -62,7 +62,7 @@ class FirebaseMessageRepository @Inject constructor(
     fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
         when {
-            data != null -> onDataMessageReceived(data)
+            data.keys.isNotEmpty() -> onDataMessageReceived(data)
             message.notification != null -> onSimpleMessageReceived(message)
             else -> Timber.d("An invalid message was received")
         }

@@ -70,10 +70,10 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         AndroidInjection.inject(this)
     }
 
-    override fun onStartCommand(intent: Intent, flags: Int, startId: Int): Int {
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        val value = intent.getBooleanExtra(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, false)
+        val value = intent?.getBooleanExtra(EXTRA_SHOW_CONTRIBUTING_NOTIFICATION, false) ?: false
         contributing = value || contributing
 
         startComponent()

@@ -36,8 +36,8 @@ class OnUpgradeReceiver : BroadcastReceiver() {
     @Inject
     lateinit var repository: UpgradeRepository
 
-    override fun onReceive(context: Context, intent: Intent) {
-        if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
+    override fun onReceive(context: Context, intent: Intent?) {
+        if (intent == null || Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
         AndroidInjection.inject(this, context)
         repository.onUpgrade()
 
