@@ -59,7 +59,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.currentCall.observe(this, EventObserver {
+        viewModel.currentCall.observe(viewLifecycleOwner, EventObserver {
             when (it.status) {
                 Status.SUCCESS -> {
                     binding.loadingPb.visibility = GONE
@@ -80,7 +80,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
             }
         })
 
-        viewModel.profile.observe(this, Observer {
+        viewModel.profile.observe(viewLifecycleOwner, Observer {
             if (it == null) {
                 binding.textInvitesLeft.text = "0"
             } else {

@@ -74,10 +74,10 @@ class HomeFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getAccount().observe(this, Observer { handleAccount(it) })
-        viewModel.getTrendingList().observe(this, Observer { handleTopics(it) })
-        viewModel.disciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
-        viewModel.teacherSelect.observe(this, EventObserver { onTeacherSelected(it) })
+        viewModel.getAccount().observe(viewLifecycleOwner, Observer { handleAccount(it) })
+        viewModel.getTrendingList().observe(viewLifecycleOwner, Observer { handleTopics(it) })
+        viewModel.disciplineSelect.observe(viewLifecycleOwner, EventObserver { onDisciplineSelected(it) })
+        viewModel.teacherSelect.observe(viewLifecycleOwner, EventObserver { onTeacherSelected(it) })
     }
 
     private fun onTeacherSelected(teacher: EvaluationTeacher) {

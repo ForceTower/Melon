@@ -74,7 +74,7 @@ class OnboardingFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.navigateToEventActivity.observe(this, EventObserver {
+        viewModel.navigateToEventActivity.observe(viewLifecycleOwner, EventObserver {
             requireActivity().run {
                 preferences.edit().putBoolean("siecomp_xxii_onboarding_completed_2", true).apply()
                 startActivity(Intent(this, EventScheduleActivity::class.java))

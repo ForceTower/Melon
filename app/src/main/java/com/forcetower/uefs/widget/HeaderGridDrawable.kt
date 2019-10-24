@@ -30,6 +30,7 @@ import androidx.core.content.res.getColorOrThrow
 import androidx.core.content.res.getDimensionOrThrow
 import androidx.core.content.res.getDimensionPixelSizeOrThrow
 import com.forcetower.uefs.R
+import kotlin.math.floor
 
 /**
  * Custom [Drawable] for drawing a grid pattern. We use this rather than tiling a pattern in order
@@ -65,8 +66,8 @@ class HeaderGridDrawable(context: Context) : Drawable() {
         val top = bounds.top.toFloat()
         val right = bounds.right.toFloat()
         val bottom = bounds.bottom.toFloat()
-        val verticalSteps = Math.floor((bounds.height() / gridSize).toDouble()).toInt()
-        val horizontalSteps = Math.floor((bounds.width() / gridSize).toDouble()).toInt()
+        val verticalSteps = floor((bounds.height() / gridSize).toDouble()).toInt()
+        val horizontalSteps = floor((bounds.width() / gridSize).toDouble()).toInt()
 
         // Always draw a hz line at the very top.
         val lines = mutableListOf(left, top + halfStrokeWidth, right, top + halfStrokeWidth)

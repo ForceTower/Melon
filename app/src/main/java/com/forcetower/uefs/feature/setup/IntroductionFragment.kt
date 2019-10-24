@@ -76,7 +76,7 @@ class IntroductionFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        repository.getFrequencies().observe(this, Observer {
+        repository.getFrequencies().observe(viewLifecycleOwner, Observer {
             viewModel.syncFrequencies = it
         })
     }

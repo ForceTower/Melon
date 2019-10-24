@@ -29,6 +29,7 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
+import java.util.Locale
 
 @Dao
 abstract class MessageDao {
@@ -78,7 +79,7 @@ abstract class MessageDao {
     private fun updateOldMessages() {
         val messages = getAllUndefinedMessages()
         messages.forEach { message ->
-            val hash = message.content.toLowerCase().trim().hashCode().toLong()
+            val hash = message.content.toLowerCase(Locale.getDefault()).trim().hashCode().toLong()
             val existing = getMessageByHashDirect(hash)
             if (existing == null) setMessageHash(message.uid, hash)
             else {

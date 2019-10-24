@@ -119,7 +119,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.account.observe(this, Observer { handleAccount(it) })
+        viewModel.account.observe(viewLifecycleOwner, Observer { handleAccount(it) })
     }
 
     private fun handleAccount(resource: Resource<Account>) {
@@ -130,7 +130,7 @@ class HomeBottomFragment : UFragment(), Injectable {
 
     private fun featureFlags() {
         val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
-        viewModel.flags.observe(this, Observer {
+        viewModel.flags.observe(viewLifecycleOwner, Observer {
             if (it?.demandOpen == true || demandFlag) {
                 toggleItem(R.id.demand, true)
             }

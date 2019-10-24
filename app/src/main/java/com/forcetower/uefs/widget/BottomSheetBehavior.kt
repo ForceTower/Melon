@@ -42,7 +42,9 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.extensions.asBoolean
 import com.forcetower.uefs.feature.shared.extensions.asInt
 import java.lang.ref.WeakReference
+import kotlin.math.abs
 import kotlin.math.absoluteValue
+import kotlin.math.max
 
 /**
  * Copy of material lib's BottomSheetBehavior that includes some bug fixes.
@@ -152,7 +154,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         }
 
     /** Whether to fit to contents. If false, the behavior will include [STATE_HALF_EXPANDED]. */
-    var isFitToContents = true
+    private var isFitToContents = true
         set(value) {
             if (field != value) {
                 field = value
@@ -171,7 +173,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
     /** Real peek height in pixels */
     private var _peekHeight = 0
     /** Peek height in pixels, or [PEEK_HEIGHT_AUTO] */
-    var peekHeight
+    private var peekHeight
         get() = if (peekHeightAuto) PEEK_HEIGHT_AUTO else _peekHeight
         set(value) {
             var needLayout = false
@@ -182,7 +184,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
                 }
             } else if (peekHeightAuto || _peekHeight != value) {
                 peekHeightAuto = false
-                _peekHeight = Math.max(0, value)
+                _peekHeight = max(0, value)
                 collapsedOffset = parentHeight - value
                 needLayout = true
             }
@@ -204,10 +206,10 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         }
 
     /** Whether the bottom sheet can be dragged or not. */
-    var isDraggable = true
+    private var isDraggable = true
 
     /** Whether the bottom sheet should skip collapsed state after being expanded once. */
-    var skipCollapsed = false
+    private var skipCollapsed = false
 
     /** Whether animations should be disabled, to be used from UI tests. */
     @VisibleForTesting
@@ -347,11 +349,11 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
                     R.dimen.design_bottom_sheet_peek_height_min
                 )
             }
-            lastPeekHeight = Math.max(peekHeightMin, parentHeight - parent.width * 9 / 16)
+            lastPeekHeight = max(peekHeightMin, parentHeight - parent.width * 9 / 16)
         } else {
             lastPeekHeight = _peekHeight
         }
-        fitToContentsOffset = Math.max(0, parentHeight - child.height)
+        fitToContentsOffset = max(0, parentHeight - child.height)
         halfExpandedOffset = parentHeight / 2
         collapsedOffset = calculateCollapsedOffset()
 
@@ -376,7 +378,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
 
     private fun calculateCollapsedOffset(): Int {
         return if (isFitToContents) {
-            Math.max(parentHeight - lastPeekHeight, fitToContentsOffset)
+            max(parentHeight - lastPeekHeight, fitToContentsOffset)
         } else {
             parentHeight - lastPeekHeight
         }
@@ -485,7 +487,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         velocityTracker = null
     }
 
-    private fun exceedsTouchSlop(p1: Int, p2: Int) = Math.abs(p1 - p2) >= dragHelper.touchSlop
+    private fun exceedsTouchSlop(p1: Int, p2: Int) = abs(p1 - p2) >= dragHelper.touchSlop
 
     // Nested scrolling
 
@@ -628,8 +630,8 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         } else {
             val currentTop = sheet.top
             if (isFitToContents) {
-                if (Math.abs(currentTop - fitToContentsOffset)
-                    < Math.abs(currentTop - collapsedOffset)
+                if (abs(currentTop - fitToContentsOffset)
+                    < abs(currentTop - collapsedOffset)
                 ) {
                     top = fitToContentsOffset
                     targetState = STATE_EXPANDED
@@ -639,7 +641,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
                 }
             } else {
                 if (currentTop < halfExpandedOffset) {
-                    if (currentTop < Math.abs(currentTop - collapsedOffset)) {
+                    if (currentTop < abs(currentTop - collapsedOffset)) {
                         top = 0
                         targetState = STATE_EXPANDED
                     } else {
@@ -647,8 +649,8 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
                         targetState = STATE_HALF_EXPANDED
                     }
                 } else {
-                    if (Math.abs(currentTop - halfExpandedOffset)
-                        < Math.abs(currentTop - collapsedOffset)
+                    if (abs(currentTop - halfExpandedOffset)
+                        < abs(currentTop - collapsedOffset)
                     ) {
                         top = halfExpandedOffset
                         targetState = STATE_HALF_EXPANDED
@@ -682,7 +684,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
             return false // it should not hide, but collapse.
         }
         val newTop = child.top + yVelocity * HIDE_FRICTION
-        return Math.abs(newTop - collapsedOffset) / _peekHeight.toFloat() > HIDE_THRESHOLD
+        return abs(newTop - collapsedOffset) / _peekHeight.toFloat() > HIDE_THRESHOLD
     }
 
     private fun startSettlingAnimation(child: View, state: Int) {
@@ -701,7 +703,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
                 }
             }
             state == STATE_HIDDEN && isHideable -> top = parentHeight
-            else -> throw IllegalArgumentException("Invalid state: " + state)
+            else -> throw IllegalArgumentException("Invalid state: $state")
         }
 
         if (isAnimationDisabled) {

@@ -35,7 +35,7 @@ class EventAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: EventViewModel
 ) : RecyclerView.Adapter<EventViewHolder>() {
-    var currentEvents: List<Event> = emptyList()
+    private var currentEvents: List<Event> = emptyList()
     set(value) {
         field = value
         differ.submitList(buildMergedList(events = value))
