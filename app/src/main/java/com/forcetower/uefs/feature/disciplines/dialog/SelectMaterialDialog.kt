@@ -58,7 +58,7 @@ class SelectMaterialDialog : RoundedDialog(), Injectable {
         super.onViewCreated(view, savedInstanceState)
         val classId = requireNotNull(arguments).getLong("class_id")
         Timber.d("Class id selected: $classId")
-        viewModel.getMaterialsFromClassItem(classId).observe(this, Observer {
+        viewModel.getMaterialsFromClassItem(classId).observe(viewLifecycleOwner, Observer {
             Timber.d("The list size: ${it.size}")
             adapter.submitList(it)
         })

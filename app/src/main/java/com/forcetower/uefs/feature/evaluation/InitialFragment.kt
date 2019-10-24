@@ -43,7 +43,7 @@ class InitialFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         val onboarding = preferences.getBoolean("evaluation_presentation_shown", false)
         viewModel = provideActivityViewModel(factory)
-        viewModel.getToken().observe(this, Observer {
+        viewModel.getToken().observe(viewLifecycleOwner, Observer {
             Timber.d("Token received: $it")
             if (it == null) {
                 findNavController().navigate(R.id.action_initial_to_unesverse_required)

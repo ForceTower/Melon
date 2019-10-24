@@ -29,7 +29,6 @@ import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
 import io.reactivex.BackpressureStrategy
 import io.reactivex.subjects.Subject
-import java.lang.Math.pow
 import kotlin.math.floor
 import kotlin.math.pow
 import kotlin.math.roundToInt

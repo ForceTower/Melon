@@ -24,6 +24,7 @@ import android.annotation.SuppressLint
 import android.view.MotionEvent
 import android.view.View
 import com.forcetower.uefs.easter.twofoureight.view.Game
+import kotlin.math.abs
 
 class InputListener : View.OnTouchListener {
 
@@ -72,8 +73,8 @@ class InputListener : View.OnTouchListener {
                 y = event.y
                 if (mGame!!.isGameOnGoing) {
                     val dx = x - previousX
-                    if (Math.abs(lastdx + dx) < Math.abs(lastdx) + Math.abs(dx) && Math.abs(dx) > RESET_STARTING &&
-                        Math.abs(x - startingX) > SWIPE_MIN_DISTANCE
+                    if (abs(lastdx + dx) < abs(lastdx) + abs(dx) && abs(dx) > RESET_STARTING &&
+                        abs(x - startingX) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x
                         startingY = y
@@ -84,8 +85,8 @@ class InputListener : View.OnTouchListener {
                         lastdx = dx
                     }
                     val dy = y - previousY
-                    if (Math.abs(lastdy + dy) < Math.abs(lastdy) + Math.abs(dy) && Math.abs(dy) > RESET_STARTING &&
-                        Math.abs(y - startingY) > SWIPE_MIN_DISTANCE
+                    if (abs(lastdy + dy) < abs(lastdy) + abs(dy) && abs(dy) > RESET_STARTING &&
+                        abs(y - startingY) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x
                         startingY = y
@@ -98,24 +99,24 @@ class InputListener : View.OnTouchListener {
                     if (pathMoved() > SWIPE_MIN_DISTANCE * SWIPE_MIN_DISTANCE && !hasMoved) {
                         var moved = false
                         // Vertical
-                        if ((dy >= SWIPE_THRESHOLD_VELOCITY && Math.abs(dy) >= Math.abs(dx) || y - startingY >= MOVE_THRESHOLD) && previousDirection % 2 != 0) {
+                        if ((dy >= SWIPE_THRESHOLD_VELOCITY && abs(dy) >= abs(dx) || y - startingY >= MOVE_THRESHOLD) && previousDirection % 2 != 0) {
                             moved = true
                             previousDirection *= 2
                             veryLastDirection = 2
                             mGame!!.move(2)
-                        } else if ((dy <= -SWIPE_THRESHOLD_VELOCITY && Math.abs(dy) >= Math.abs(dx) || y - startingY <= -MOVE_THRESHOLD) && previousDirection % 3 != 0) {
+                        } else if ((dy <= -SWIPE_THRESHOLD_VELOCITY && abs(dy) >= abs(dx) || y - startingY <= -MOVE_THRESHOLD) && previousDirection % 3 != 0) {
                             moved = true
                             previousDirection *= 3
                             veryLastDirection = 3
                             mGame!!.move(0)
                         }
                         // Horizontal
-                        if ((dx >= SWIPE_THRESHOLD_VELOCITY && Math.abs(dx) >= Math.abs(dy) || x - startingX >= MOVE_THRESHOLD) && previousDirection % 5 != 0) {
+                        if ((dx >= SWIPE_THRESHOLD_VELOCITY && abs(dx) >= abs(dy) || x - startingX >= MOVE_THRESHOLD) && previousDirection % 5 != 0) {
                             moved = true
                             previousDirection *= 5
                             veryLastDirection = 5
                             mGame!!.move(1)
-                        } else if ((dx <= -SWIPE_THRESHOLD_VELOCITY && Math.abs(dx) >= Math.abs(dy) || x - startingX <= -MOVE_THRESHOLD) && previousDirection % 7 != 0) {
+                        } else if ((dx <= -SWIPE_THRESHOLD_VELOCITY && abs(dx) >= abs(dy) || x - startingX <= -MOVE_THRESHOLD) && previousDirection % 7 != 0) {
                             moved = true
                             previousDirection *= 7
                             veryLastDirection = 7

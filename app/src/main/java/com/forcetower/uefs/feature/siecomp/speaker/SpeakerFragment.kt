@@ -58,7 +58,7 @@ class SpeakerFragment : UFragment(), Injectable {
             lifecycleOwner = this@SpeakerFragment
         }
 
-        speakerViewModel.hasProfileImage.observe(this, Observer {
+        speakerViewModel.hasProfileImage.observe(viewLifecycleOwner, Observer {
             if (!it) {
                 activity?.startPostponedEnterTransition()
             }
@@ -88,7 +88,7 @@ class SpeakerFragment : UFragment(), Injectable {
             NavUtils.navigateUpFromSameTask(requireActivity())
         }
 
-        speakerViewModel.access.observe(this, Observer {
+        speakerViewModel.access.observe(viewLifecycleOwner, Observer {
             binding.editFloat.visibility = if (it != null) {
                 VISIBLE
             } else {
@@ -97,7 +97,7 @@ class SpeakerFragment : UFragment(), Injectable {
         })
 
         binding.editFloat.setOnClickListener {
-            fragmentManager?.inTransaction {
+            parentFragmentManager.inTransaction {
                 replace(R.id.speaker_container, CreateSpeakerFragment().apply {
                     arguments = this@SpeakerFragment.arguments
                 })

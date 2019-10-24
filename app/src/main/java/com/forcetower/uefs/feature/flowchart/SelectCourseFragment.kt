@@ -55,14 +55,14 @@ class SelectCourseFragment : UFragment(), Injectable {
             adapter = coursesAdapter
         }
 
-        viewModel.getFlowcharts().observe(this, Observer {
+        viewModel.getFlowcharts().observe(viewLifecycleOwner, Observer {
             Timber.d("Resource data ${it.data}")
             if (it.data != null) {
                 coursesAdapter.submitList(it.data)
             }
         })
 
-        viewModel.onFlowchartSelect.observe(this, EventObserver {
+        viewModel.onFlowchartSelect.observe(viewLifecycleOwner, EventObserver {
             val direction = SelectCourseFragmentDirections.actionSelectToStart(it.courseId)
             findNavController().navigate(direction)
         })

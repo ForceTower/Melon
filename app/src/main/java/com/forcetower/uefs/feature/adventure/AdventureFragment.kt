@@ -110,24 +110,24 @@ class AdventureFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel.getMeProfile().observe(this, Observer {
+        profileViewModel.getMeProfile().observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 profileViewModel.setProfileId(it.data?.id)
             }
         })
 
         viewModel.run {
-            achievements.observe(this@AdventureFragment, EventObserver { activity?.openAchievements() })
-            start.observe(this@AdventureFragment, EventObserver { activity?.signIn() })
-            locations.observe(this@AdventureFragment, Observer { requestLocations(it) })
-            leave.observe(this@AdventureFragment, EventObserver { activity?.signOut() })
+            achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
+            start.observe(viewLifecycleOwner, EventObserver { activity?.signIn() })
+            locations.observe(viewLifecycleOwner, Observer { requestLocations(it) })
+            leave.observe(viewLifecycleOwner, EventObserver { activity?.signOut() })
         }
 
         if (activity?.isConnectedToPlayGames() == false && savedInstanceState == null) {
             openStartupDialog()
         }
 
-        activity?.mGamesInstance?.connectionStatus?.observe(this, EventObserver {
+        activity?.mGamesInstance?.connectionStatus?.observe(viewLifecycleOwner, EventObserver {
             when (it) {
                 GameConnectionStatus.DISCONNECTED -> openStartupDialog()
                 GameConnectionStatus.CONNECTED -> {
@@ -249,8 +249,8 @@ class AdventureFragment : UFragment(), Injectable {
     private fun onReceiveLocation(location: Location) {
         val value = viewModel.onReceiveLocation(location)
         distanceAdapter.submitList(value)
-        value.map { it.id }.filter { it != null }.forEach {
-            if (it != null) activity?.unlockAchievement(it)
+        value.mapNotNull { it.id }.forEach {
+            activity?.unlockAchievement(it)
         }
     }
 

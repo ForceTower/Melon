@@ -95,9 +95,6 @@ class DemandViewModel @Inject constructor(
         }
     }
 
-    init {
-    }
-
     override fun onOfferClick(offer: SagresDemandOffer) {
         Timber.d("Offer clicked: ${offer.code}")
         if (!offer.selectable || offer.completed || offer.unavailable) {

@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.firebase.analytics.FirebaseAnalytics
+import java.util.Locale
 import javax.inject.Inject
 
 class SyncSpecialFragment : UFragment(), Injectable {
@@ -56,7 +57,7 @@ class SyncSpecialFragment : UFragment(), Injectable {
             requireActivity().finishAfterTransition()
         }
 
-        val manufacturer = Build.MANUFACTURER.toLowerCase()
+        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.getDefault())
 
         if (savedInstanceState == null) {
             analytics.logEvent("special_settings", bundleOf("manufacturer" to manufacturer))

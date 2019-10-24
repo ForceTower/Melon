@@ -74,7 +74,7 @@ class DemandOverviewFragment : UFragment(), Injectable {
             setHasFixedSize(true)
         }
 
-        viewModel.selected.observe(this, Observer {
+        viewModel.selected.observe(viewLifecycleOwner, Observer {
             if (it != null) offersAdapter.submitList(it)
         })
 

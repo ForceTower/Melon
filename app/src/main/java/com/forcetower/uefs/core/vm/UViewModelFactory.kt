@@ -46,9 +46,7 @@ class UViewModelFactory @Inject constructor(
                 }
             }
         }
-        if (creator == null) {
-            throw IllegalArgumentException("unknown model class $modelClass")
-        }
+        requireNotNull(creator) { "unknown model class $modelClass" }
         try {
             return creator.get() as T
         } catch (e: Exception) {
