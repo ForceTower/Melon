@@ -24,10 +24,12 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.util.AttributeSet
 import android.util.TypedValue
-import android.view.View
 import androidx.annotation.FontRes
 import androidx.appcompat.widget.AppCompatTextView
 import com.forcetower.uefs.R
+import kotlin.math.abs
+import kotlin.math.ceil
+import kotlin.math.floor
 
 class BaselineGridTextView @JvmOverloads constructor(
     context: Context,
@@ -112,7 +114,7 @@ class BaselineGridTextView @JvmOverloads constructor(
         height += ensureBaselineOnGrid()
         height += ensureHeightGridAligned(height)
         setMeasuredDimension(measuredWidth, height)
-        checkMaxLines(height, View.MeasureSpec.getMode(heightMeasureSpec))
+        checkMaxLines(height, MeasureSpec.getMode(heightMeasureSpec))
     }
 
     private fun parseTextAttrs(a: TypedArray) {
@@ -130,13 +132,13 @@ class BaselineGridTextView @JvmOverloads constructor(
 
     private fun computeLineHeight() {
         val fm = paint.fontMetrics
-        val fontHeight = Math.abs(fm.ascent - fm.descent) + fm.leading
+        val fontHeight = abs(fm.ascent - fm.descent) + fm.leading
         val desiredLineHeight = if (lineHeightHint > 0)
             lineHeightHint
         else
             lineHeightMultiplierHint * fontHeight
 
-        val baselineAlignedLineHeight = (fourDp * Math.ceil((desiredLineHeight / fourDp).toDouble()).toFloat() + 0.5f).toInt()
+        val baselineAlignedLineHeight = (fourDp * ceil((desiredLineHeight / fourDp).toDouble()).toFloat() + 0.5f).toInt()
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f)
     }
 
@@ -144,7 +146,7 @@ class BaselineGridTextView @JvmOverloads constructor(
         val baseline = baseline.toFloat()
         val gridAlign = baseline % fourDp
         if (gridAlign != 0f) {
-            extraTopPadding = (fourDp - Math.ceil(gridAlign.toDouble())).toInt()
+            extraTopPadding = (fourDp - ceil(gridAlign.toDouble())).toInt()
         }
         return extraTopPadding
     }
@@ -152,16 +154,16 @@ class BaselineGridTextView @JvmOverloads constructor(
     private fun ensureHeightGridAligned(height: Int): Int {
         val gridOverhang = height % fourDp
         if (gridOverhang != 0f) {
-            extraBottomPadding = (fourDp - Math.ceil(gridOverhang.toDouble())).toInt()
+            extraBottomPadding = (fourDp - ceil(gridOverhang.toDouble())).toInt()
         }
         return extraBottomPadding
     }
 
     private fun checkMaxLines(height: Int, heightMode: Int) {
-        if (!maxLinesByHeight || heightMode != View.MeasureSpec.EXACTLY) return
+        if (!maxLinesByHeight || heightMode != MeasureSpec.EXACTLY) return
 
         val textHeight = height - compoundPaddingTop - compoundPaddingBottom
-        val completeLines = Math.floor((textHeight / lineHeight).toDouble()).toInt()
+        val completeLines = floor((textHeight / lineHeight).toDouble()).toInt()
         maxLines = completeLines
     }
 }

@@ -63,8 +63,8 @@ class SemestersFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.flowchart.observe(this, Observer { onSemestersReceived(it) })
-        viewModel.onSemesterSelect.observe(this, EventObserver { onSemesterSelected(it) })
+        viewModel.flowchart.observe(viewLifecycleOwner, Observer { onSemestersReceived(it) })
+        viewModel.onSemesterSelect.observe(viewLifecycleOwner, EventObserver { onSemesterSelected(it) })
     }
 
     private fun onSemestersReceived(values: List<FlowchartSemesterUI>) {

@@ -59,7 +59,7 @@ class InvalidAccessDialog : RoundedDialog(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.passwordChangeProcess.observe(this, EventObserver {
+        viewModel.passwordChangeProcess.observe(viewLifecycleOwner, EventObserver {
             if (it.status == Status.SUCCESS) {
                 binding.run {
                     btnChange.isEnabled = true

@@ -61,8 +61,7 @@ class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentComp
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
-        val key = pref?.key ?: return false
-        when (key) {
+        when (pref?.key ?: return false) {
             "settings_synchronization" -> navigateTo(SyncSettingsFragment())
             "settings_notifications" -> {
                 if (VersionUtils.isOreo()) {

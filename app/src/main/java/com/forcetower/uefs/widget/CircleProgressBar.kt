@@ -32,6 +32,7 @@ import android.view.animation.DecelerateInterpolator
 import androidx.annotation.Keep
 import com.forcetower.uefs.R
 import kotlin.math.min
+import kotlin.math.roundToInt
 
 class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ctx, attrs) {
     private var foregroundStrokeWidth = 4f
@@ -82,7 +83,7 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
     }
 
     private fun adjustAlpha(color: Int, factor: Float): Int {
-        val alpha = Math.round(Color.alpha(color) * factor)
+        val alpha = (Color.alpha(color) * factor).roundToInt()
         val red = Color.red(color)
         val green = Color.green(color)
         val blue = Color.blue(color)

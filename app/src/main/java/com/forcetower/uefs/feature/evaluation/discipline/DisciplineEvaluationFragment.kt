@@ -61,7 +61,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getDiscipline(args.department, args.code).observe(this, Observer { handleData(it) })
+        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, Observer { handleData(it) })
         binding.itemsRecycler.apply {
             adapter = elements
             itemAnimator?.run {
@@ -71,7 +71,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                 removeDuration = 100L
             }
         }
-        viewModel.teacherIntSelect.observe(this, EventObserver {
+        viewModel.teacherIntSelect.observe(viewLifecycleOwner, EventObserver {
             val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id, null)
             findNavController().navigate(directions)
         })

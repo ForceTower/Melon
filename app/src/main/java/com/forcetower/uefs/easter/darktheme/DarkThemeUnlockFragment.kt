@@ -52,7 +52,7 @@ class DarkThemeUnlockFragment : UFragment(), Injectable {
         binding.preconditionsRecycler.run {
             adapter = preconditionsAdapter
         }
-        viewModel.preconditions.observe(this, Observer { preconditionsAdapter.submitList(it) })
+        viewModel.preconditions.observe(viewLifecycleOwner, Observer { preconditionsAdapter.submitList(it) })
 
         binding.inviteToDark.setOnClickListener {
             findNavController().navigate(R.id.action_dark_event_to_dark_invite)

@@ -61,7 +61,7 @@ class AdventureSignInDialog : RoundedDialog(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.start.observe(this, EventObserver {
+        viewModel.start.observe(viewLifecycleOwner, EventObserver {
             dismiss()
             activity?.signIn()
         })

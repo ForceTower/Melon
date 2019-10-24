@@ -106,8 +106,7 @@ class UApplication : Application(), HasAndroidInjector {
                 if (!injected) {
                     component = createApplicationInjector()
                     component.inject(this)
-                    if (!injected)
-                        throw IllegalStateException("Attempt to inject the app has failed")
+                    check(injected) { "Attempt to inject the app has failed" }
                 }
             }
         }

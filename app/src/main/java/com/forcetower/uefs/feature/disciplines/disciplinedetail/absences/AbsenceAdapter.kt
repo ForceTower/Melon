@@ -30,11 +30,11 @@ import com.forcetower.uefs.databinding.ItemDisciplineAbsenceBinding
 import com.forcetower.uefs.feature.shared.inflate
 
 class AbsenceAdapter : ListAdapter<ClassAbsence, AbsenceAdapter.AbsenceHolder>(DiffCallback) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenceAdapter.AbsenceHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AbsenceHolder {
         return AbsenceHolder(parent.inflate(R.layout.item_discipline_absence))
     }
 
-    override fun onBindViewHolder(holder: AbsenceAdapter.AbsenceHolder, position: Int) {
+    override fun onBindViewHolder(holder: AbsenceHolder, position: Int) {
         holder.binding.apply {
             absence = getItem(position)
             executePendingBindings()

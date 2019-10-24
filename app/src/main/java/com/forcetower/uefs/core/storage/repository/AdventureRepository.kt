@@ -32,24 +32,21 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.model.unes.ClassLocation
-import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-import javax.inject.Named
 import kotlin.collections.set
 
 class AdventureRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
-    @Named(Profile.COLLECTION) private val collection: CollectionReference,
     private val auth: FirebaseAuth,
     private val preferences: SharedPreferences,
     private val locations: AchLocationsRepository
@@ -163,7 +160,7 @@ class AdventureRepository @Inject constructor(
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
 
-                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline().code.toUpperCase()]
+                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline().code.toUpperCase(Locale.getDefault())]
                     if (teacher != null && points >= 5) {
                         if (teacher == "__ANY__") {
                             data[R.string.achievement_vale_das_sombras] = -1

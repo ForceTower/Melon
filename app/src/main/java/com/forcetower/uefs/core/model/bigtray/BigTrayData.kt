@@ -92,9 +92,8 @@ fun BigTrayData.getPrice(): String {
 fun BigTrayData.getNextMealTime(): String {
     val calendar = this.time.toCalendar()
     val day = calendar.get(Calendar.DAY_OF_WEEK)
-    val type = getNextMealType()
 
-    when (type) {
+    when (getNextMealType()) {
         BigTrayData.COFFEE -> return if (day == SUNDAY) "07h30min às 09h00min" else "06h30min às 09h00min"
         BigTrayData.LUNCH -> {
             if (day == SUNDAY) return "11h30min às 13h30min"

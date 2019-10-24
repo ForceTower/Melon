@@ -21,6 +21,6 @@
 package com.forcetower.uefs.feature.shared.extensions
 
 fun <T> List<T>.positionOf(other: Any): Int {
-    for (i in 0..(size - 1)) if (get(i) == other) return i
+    for (i in 0 until size) if (get(i) == other) return i
     return -1
 }

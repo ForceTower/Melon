@@ -71,7 +71,7 @@ class ScoreKeeper(context: Context) : ContextWrapper(context), Game.ScoreListene
         editor.apply()
     }
 
-    internal fun setScore(score: Long) {
+    private fun setScore(score: Long) {
         mScore = score
         if (mScoreDisplay != null) {
             val scoreT = "" + mScore

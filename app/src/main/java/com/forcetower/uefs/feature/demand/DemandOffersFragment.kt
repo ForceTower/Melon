@@ -69,7 +69,7 @@ class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
                 }
             })
         }
-        viewModel.offers.observe(this, Observer {
+        viewModel.offers.observe(viewLifecycleOwner, Observer {
             val data = it.data
             if (data != null) {
                 offersAdapter.currentList = data

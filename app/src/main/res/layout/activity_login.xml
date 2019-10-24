@@ -27,7 +27,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:context=".feature.login.LoginActivity">
-        <fragment
+        <androidx.fragment.app.FragmentContainerView
             android:id="@+id/login_nav_host"
             android:layout_width="match_parent"
             android:layout_height="match_parent"

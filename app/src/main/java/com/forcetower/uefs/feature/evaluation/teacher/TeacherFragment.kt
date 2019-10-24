@@ -66,8 +66,8 @@ class TeacherFragment : UFragment(), Injectable {
         } else {
             viewModel.getTeacher(args.teacherId)
         }
-        liveData.observe(this, Observer { handleData(it) })
-        viewModel.disciplineSelect.observe(this, EventObserver {
+        liveData.observe(viewLifecycleOwner, Observer { handleData(it) })
+        viewModel.disciplineSelect.observe(viewLifecycleOwner, EventObserver {
             val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
             findNavController().navigate(directions)
         })
