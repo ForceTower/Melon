@@ -28,7 +28,7 @@
         android:layout_height="match_parent"
         tools:context=".feature.evaluation.EvaluationActivity">
 
-        <androidx.fragment.app.FragmentContainerView
+        <fragment
             android:id="@+id/eval_nav_host"
             android:name="androidx.navigation.fragment.NavHostFragment"
             android:layout_width="match_parent"
