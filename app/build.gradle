@@ -54,7 +54,10 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = ["room.schemaLocation": "$projectDir/schemas".toString()]
+                arguments = [
+                    "room.schemaLocation": "$projectDir/schemas".toString(),
+                    "room.incremental": "true"
+                ]
             }
         }
 
@@ -140,6 +143,8 @@ dependencies {
     implementation deps.androidx.browser
     implementation deps.androidx.preference
     implementation deps.androidx.flexbox
+    implementation deps.androidx.fragment
+    implementation deps.androidx.fragment_ktx
 
     implementation deps.lifecycle.extensions
     implementation deps.lifecycle.java8
@@ -170,6 +175,7 @@ dependencies {
     implementation deps.firebase.auth
     implementation deps.firebase.messaging
     implementation deps.firebase.firestore
+    implementation deps.firebase.firestore_ktx
     implementation deps.firebase.storage
     implementation deps.firebase.storage_ui
     implementation deps.firebase.remote_config

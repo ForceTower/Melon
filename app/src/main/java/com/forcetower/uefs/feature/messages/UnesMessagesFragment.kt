@@ -59,6 +59,6 @@ class UnesMessagesFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.unesMessages.observe(this, Observer { messagesAdapter.submitList(it) })
+        viewModel.unesMessages.observe(viewLifecycleOwner, Observer { messagesAdapter.submitList(it) })
     }
 }

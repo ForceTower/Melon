@@ -69,7 +69,7 @@ class MechanicalFragment : UFragment(), Injectable {
             executePendingBindings()
         }
 
-        viewModel.mechanics.observe(this, Observer {
+        viewModel.mechanics.observe(viewLifecycleOwner, Observer {
             if (it.isEmpty()) {
                 binding.textNoData.visibility = VISIBLE
                 binding.recyclerMech.visibility = GONE
@@ -80,9 +80,9 @@ class MechanicalFragment : UFragment(), Injectable {
             mechAdapter.submitList(it)
         })
 
-        viewModel.result.observe(this, Observer {
+        viewModel.result.observe(viewLifecycleOwner, Observer {
             it ?: return@Observer
-            if (it.mean == Double.NaN) {
+            if (it.mean.isNaN()) {
                 (activity as? UGameActivity)?.unlockAchievement(R.string.achievement_claramente_na_disney)
             }
         })

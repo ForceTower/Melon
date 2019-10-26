@@ -62,7 +62,7 @@ class FirebaseMessageRepository @Inject constructor(
     fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
         when {
-            data != null -> onDataMessageReceived(data)
+            data.keys.isNotEmpty() -> onDataMessageReceived(data)
             message.notification != null -> onSimpleMessageReceived(message)
             else -> Timber.d("An invalid message was received")
         }
@@ -162,8 +162,7 @@ class FirebaseMessageRepository @Inject constructor(
         if (current > period && !forced) {
             Timber.d("No action needed")
         } else {
-            val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
-            when (worker) {
+            when (preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0) {
                 0 -> SyncMainWorker.createWorker(context, period, true)
                 1 -> {
                     SyncLinkedWorker.stopWorker(context)

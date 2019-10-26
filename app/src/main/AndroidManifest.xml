@@ -79,6 +79,10 @@
             android:theme="@style/UTheme.LightNav"
             android:parentActivityName=".feature.home.HomeActivity"/>
         <activity
+            android:name=".feature.forms.FormActivity"
+            android:theme="@style/UTheme.Translucent"
+            android:parentActivityName=".feature.home.HomeActivity"/>
+        <activity
             android:name=".feature.siecomp.SIECOMPActivity"
             android:parentActivityName=".feature.home.HomeActivity"
             android:theme="@style/UTheme.LightNav" />

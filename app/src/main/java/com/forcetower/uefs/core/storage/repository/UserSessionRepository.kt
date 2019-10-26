@@ -38,7 +38,13 @@ class UserSessionRepository @Inject constructor(
     fun onUserInteraction() {
         val now = Calendar.getInstance().timeInMillis
         val session = database.userSessionDao().getLatestSession() ?: onSessionStarted()
-        database.userSessionDao().updateLastInteraction(session.uid, now)
+        val lastInteraction = session.lastInteraction ?: 0
+        val difference = now - lastInteraction
+        if (difference >= 45000 && session.lastInteraction != null) {
+            onSessionStarted()
+        } else {
+            database.userSessionDao().updateLastInteraction(session.uid, now)
+        }
     }
 
     @WorkerThread

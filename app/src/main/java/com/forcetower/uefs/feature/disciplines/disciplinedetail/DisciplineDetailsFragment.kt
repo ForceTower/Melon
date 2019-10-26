@@ -94,14 +94,14 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
             activity?.finishAfterTransition()
         }
 
-        viewModel.materialClick.observe(this, EventObserver { requireContext().openURL(it.link) })
+        viewModel.materialClick.observe(viewLifecycleOwner, EventObserver { requireContext().openURL(it.link) })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
-        viewModel.navigateToTeacherAction.observe(this, EventObserver {
+        viewModel.navigateToTeacherAction.observe(viewLifecycleOwner, EventObserver {
             startActivity(EvaluationActivity.startIntentForTeacher(requireContext(), it))
         })
         binding.apply {

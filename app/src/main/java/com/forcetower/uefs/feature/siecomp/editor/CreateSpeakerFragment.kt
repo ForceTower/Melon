@@ -51,7 +51,7 @@ class CreateSpeakerFragment : ImagePickerFragment(), Injectable {
         val uuid = arguments?.getString(SPEAKER_UUID) ?: ""
         val id = arguments?.getLong(SPEAKER_ID)
         viewModel.setSpeakerId(id)
-        viewModel.speaker.observe(this, Observer {
+        viewModel.speaker.observe(viewLifecycleOwner, Observer {
             binding.speaker = it
             binding.executePendingBindings()
         })

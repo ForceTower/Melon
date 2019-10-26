@@ -119,7 +119,7 @@ object SyncScheduler : Scheduler {
         }
     }
 
-    fun clearScheduledPostdelayedTasks() {
+    private fun clearScheduledPostdelayedTasks() {
         postDelayedTasks.clear()
     }
 }

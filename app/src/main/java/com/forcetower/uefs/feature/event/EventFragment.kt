@@ -87,7 +87,7 @@ class EventFragment : UFragment(), Injectable {
 
         CardSnapHelper().attachToRecyclerView(binding.eventsRecycler)
 
-        viewModel.events.observe(this, Observer {
+        viewModel.events.observe(viewLifecycleOwner, Observer {
             pagerAdapter.submitList(it)
             items.clear()
             items += it

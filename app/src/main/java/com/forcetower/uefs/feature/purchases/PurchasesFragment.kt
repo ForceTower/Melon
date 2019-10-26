@@ -99,7 +99,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
         binding.recyclerSku.apply {
             adapter = skuAdapter
         }
-        viewModel.getSkus().observe(this, Observer {
+        viewModel.getSkus().observe(viewLifecycleOwner, Observer {
             if (list != it) {
                 list.clear()
                 list.addAll(it)
@@ -108,7 +108,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
                 }
             }
         })
-        viewModel.selectSku.observe(this, EventObserver {
+        viewModel.selectSku.observe(viewLifecycleOwner, EventObserver {
             purchaseFlow(it)
         })
     }

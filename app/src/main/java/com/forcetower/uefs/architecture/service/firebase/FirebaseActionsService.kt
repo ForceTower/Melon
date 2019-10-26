@@ -36,15 +36,13 @@ class FirebaseActionsService : FirebaseMessagingService() {
         AndroidInjection.inject(this)
     }
 
-    override fun onMessageReceived(message: RemoteMessage?) {
+    override fun onMessageReceived(message: RemoteMessage) {
         Timber.d("Message received: $message")
-        message ?: return
         repository.onMessageReceived(message)
     }
 
-    override fun onNewToken(token: String?) {
+    override fun onNewToken(token: String) {
         Timber.d("On Token received: $token")
-        token ?: return
         repository.onNewToken(token)
     }
 }

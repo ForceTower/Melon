@@ -120,11 +120,11 @@ class ScheduleFragment : UFragment(), Injectable {
             startActivity(intent)
         }
 
-        viewModel.scheduleSrc.observe(this, Observer { populateInterface(it) })
+        viewModel.scheduleSrc.observe(viewLifecycleOwner, Observer { populateInterface(it) })
         if (TimeUtils.eventHasEnded()) {
             binding.btnSiecompSchedule.visibility = GONE
         } else {
-            profileViewModel.commonProfile.observe(this, Observer {
+            profileViewModel.commonProfile.observe(viewLifecycleOwner, Observer {
                 val course = it?.course ?: 1L
                 if (course == 1L && preferences.isStudentFromUEFS()) {
                     binding.btnSiecompSchedule.visibility = VISIBLE

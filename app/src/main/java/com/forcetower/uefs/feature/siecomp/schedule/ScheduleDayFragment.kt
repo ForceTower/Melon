@@ -32,7 +32,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
-import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.util.siecomp.TimeUtils.SIECOMP_TIMEZONE
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventScheduleDayBinding
@@ -79,7 +78,7 @@ class ScheduleDayFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        adapter = ScheduleDayAdapter(viewModel, tagViewPool, TimeUtils.SIECOMP_TIMEZONE)
+        adapter = ScheduleDayAdapter(viewModel, tagViewPool, SIECOMP_TIMEZONE)
         binding.recyclerDaySchedule.apply {
             setRecycledViewPool(sessionViewPool)
             adapter = this@ScheduleDayFragment.adapter
@@ -98,7 +97,7 @@ class ScheduleDayFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getSessionsFromDayLocal(eventDay).observe(this, Observer {
+        viewModel.getSessionsFromDayLocal(eventDay).observe(viewLifecycleOwner, Observer {
             it ?: return@Observer
             populateInterface(it)
         })
