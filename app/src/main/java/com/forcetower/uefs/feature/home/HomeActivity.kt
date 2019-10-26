@@ -60,7 +60,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -131,8 +130,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun setupAds(willShowAds: Boolean = true) {
-        MobileAds.initialize(this)
-        prepareAdsForPublic(willShowAds)
+//        MobileAds.initialize(this)
+//        prepareAdsForPublic(willShowAds)
     }
 
     private fun subscribeToTopics() {
