@@ -56,7 +56,7 @@ class FirebaseAuthRepository @Inject constructor(
     fun loginToFirebase(person: SagresPerson, access: Access, reconnect: Boolean = false) {
         if (reconnect) { firebaseAuth.signOut() }
         if (firebaseAuth.currentUser == null) {
-            val user = access.username.toLowerCase()
+            val user = access.username.toLowerCase(Locale.getDefault())
             val username = if (user.contains("@")) {
                 "${user.substring(0, user.indexOf("@"))}_email"
             } else {

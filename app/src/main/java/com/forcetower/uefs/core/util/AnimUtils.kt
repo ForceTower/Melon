@@ -199,7 +199,7 @@ object AnimUtils {
         override fun addListener(listener: AnimatorListener) {
             val wrapper = AnimatorListenerWrapper(this, listener)
             if (!mListeners.containsKey(listener)) {
-                mListeners.put(listener, wrapper)
+                mListeners[listener] = wrapper
                 mAnimator.addListener(wrapper)
             }
         }
@@ -218,7 +218,7 @@ object AnimUtils {
         }
 
         override fun removeListener(listener: AnimatorListener) {
-            val wrapper = mListeners.get(listener)
+            val wrapper = mListeners[listener]
             if (wrapper != null) {
                 mListeners.remove(listener)
                 mAnimator.removeListener(wrapper)

@@ -27,7 +27,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,8 +37,7 @@ class SettingsRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase,
     private val gradesRepository: SagresGradesRepository,
-    private val adventureRepository: AdventureRepository,
-    private val darkThemeRepository: DarkThemeRepository
+    private val adventureRepository: AdventureRepository
 ) {
 
     @MainThread

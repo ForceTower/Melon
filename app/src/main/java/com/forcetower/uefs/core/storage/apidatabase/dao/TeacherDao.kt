@@ -26,6 +26,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forcetower.uefs.core.model.api.UTeacher
+import java.util.Locale
 
 @Dao
 abstract class TeacherDao {
@@ -36,7 +37,7 @@ abstract class TeacherDao {
         return if (query.isNullOrBlank()) {
             getAll()
         } else {
-            val string = "%${query.toUpperCase()}%"
+            val string = "%${query.toUpperCase(Locale.getDefault())}%"
             doQuery(string)
         }
     }

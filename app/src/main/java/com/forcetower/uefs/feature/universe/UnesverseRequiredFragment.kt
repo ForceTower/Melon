@@ -64,12 +64,12 @@ class UnesverseRequiredFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         binding.connecting = viewModel.isLoggingIn
         binding.lifecycleOwner = this
-        viewModel.loggingIn.observe(this, Observer { Unit })
-        viewModel.loginMessenger.observe(this, EventObserver {
+        viewModel.loggingIn.observe(viewLifecycleOwner, Observer { Unit })
+        viewModel.loginMessenger.observe(viewLifecycleOwner, EventObserver {
             val message = getString(it)
             showSnack(message)
         })
-        viewModel.access.observe(this, Observer {
+        viewModel.access.observe(viewLifecycleOwner, Observer {
             if (it != null) {
                 findNavController().navigate(R.id.action_unesverse_required_to_presentation)
             }

@@ -82,11 +82,11 @@ class SearchFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.downloadDatabase().observe(this, Observer { loadKnowledge(it) })
-        viewModel.query.observe(this, Observer {
+        viewModel.downloadDatabase().observe(viewLifecycleOwner, Observer { loadKnowledge(it) })
+        viewModel.query.observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
-        viewModel.entitySelect.observe(this, EventObserver {
+        viewModel.entitySelect.observe(viewLifecycleOwner, EventObserver {
             onEvalEntitySelected(it)
         })
     }

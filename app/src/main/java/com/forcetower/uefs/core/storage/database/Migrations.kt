@@ -282,3 +282,9 @@ object M35TO36 : Migration(35, 36) {
         database.execSQL("ALTER TABLE ProfileStatement ADD COLUMN hidden INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+object M36TO37 : Migration(36, 37) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DELETE FROM Account")
+    }
+}

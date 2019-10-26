@@ -38,6 +38,9 @@ import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.AnimUtils
 import java.util.Arrays
+import kotlin.math.abs
+import kotlin.math.max
+import kotlin.math.min
 
 class InkPageIndicator @JvmOverloads constructor(
     context: Context,
@@ -195,7 +198,7 @@ class InkPageIndicator @JvmOverloads constructor(
                 // if user scrolls completely to next page then the position param updates to that
                 // new page but we're not ready to switch our 'current' page yet so adjust for that
                 if (fraction == 1f) {
-                    leftDotPosition = Math.min(currentPosition, position)
+                    leftDotPosition = min(currentPosition, position)
                 }
             }
             setJoiningFraction(leftDotPosition, fraction)
@@ -244,10 +247,10 @@ class InkPageIndicator @JvmOverloads constructor(
     }
 
     private fun setCurrentPageImmediate() {
-        if (viewPager != null) {
-            currentPage = viewPager!!.currentItem
+        currentPage = if (viewPager != null) {
+            viewPager!!.currentItem
         } else {
-            currentPage = 0
+            0
         }
         if (dotCenterX != null) {
             if (currentPage < dotCenterX!!.size)
@@ -269,19 +272,19 @@ class InkPageIndicator @JvmOverloads constructor(
 
         val desiredHeight = desiredHeight
         val height: Int
-        height = when (View.MeasureSpec.getMode(heightMeasureSpec)) {
-            View.MeasureSpec.EXACTLY -> View.MeasureSpec.getSize(heightMeasureSpec)
-            View.MeasureSpec.AT_MOST -> Math.min(desiredHeight, View.MeasureSpec.getSize(heightMeasureSpec))
-            View.MeasureSpec.UNSPECIFIED -> desiredHeight
+        height = when (MeasureSpec.getMode(heightMeasureSpec)) {
+            MeasureSpec.EXACTLY -> MeasureSpec.getSize(heightMeasureSpec)
+            MeasureSpec.AT_MOST -> min(desiredHeight, MeasureSpec.getSize(heightMeasureSpec))
+            MeasureSpec.UNSPECIFIED -> desiredHeight
             else -> desiredHeight
         }
 
         val desiredWidth = desiredWidth
         val width: Int
-        width = when (View.MeasureSpec.getMode(widthMeasureSpec)) {
-            View.MeasureSpec.EXACTLY -> View.MeasureSpec.getSize(widthMeasureSpec)
-            View.MeasureSpec.AT_MOST -> Math.min(desiredWidth, View.MeasureSpec.getSize(widthMeasureSpec))
-            View.MeasureSpec.UNSPECIFIED -> desiredWidth
+        width = when (MeasureSpec.getMode(widthMeasureSpec)) {
+            MeasureSpec.EXACTLY -> MeasureSpec.getSize(widthMeasureSpec)
+            MeasureSpec.AT_MOST -> min(desiredWidth, MeasureSpec.getSize(widthMeasureSpec))
+            MeasureSpec.UNSPECIFIED -> desiredWidth
             else -> desiredWidth
         }
         setMeasuredDimension(width, height)
@@ -355,7 +358,7 @@ class InkPageIndicator @JvmOverloads constructor(
 
         if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION) &&
                 dotRevealFraction == 0f &&
-                !(page == currentPage && selectedDotInPosition == true)) {
+                !(page == currentPage && selectedDotInPosition)) {
 
             // case #1 – At rest
             unselectedDotPath.addCircle(dotCenterX!![page], dotCenterY, dotRadius, Path.Direction.CW)
@@ -530,7 +533,7 @@ class InkPageIndicator @JvmOverloads constructor(
         pageChanging = true
         previousPage = currentPage
         currentPage = now
-        val steps = Math.abs(now - previousPage)
+        val steps = abs(now - previousPage)
 
         if (steps > 1) {
             if (now > previousPage) {
@@ -632,7 +635,7 @@ class InkPageIndicator @JvmOverloads constructor(
     /**
      * A [ValueAnimator] that starts once a given predicate returns true.
      */
-    abstract inner class PendingStartAnimator(protected var predicate: StartPredicate) : ValueAnimator() {
+    abstract inner class PendingStartAnimator(private var predicate: StartPredicate) : ValueAnimator() {
 
         private var hasStarted: Boolean = false
 
@@ -663,7 +666,7 @@ class InkPageIndicator @JvmOverloads constructor(
             // travelling in.  Also look at the current selected dot position, i.e. we're moving on
             // before a prior anim has finished.
             val initialX1 = if (now > was)
-                Math.min(dotCenterX!![was], selectedDotX) - dotRadius
+                min(dotCenterX!![was], selectedDotX) - dotRadius
             else
                 dotCenterX!![now] - dotRadius
             val finalX1 = if (now > was)
@@ -673,7 +676,7 @@ class InkPageIndicator @JvmOverloads constructor(
             val initialX2 = if (now > was)
                 dotCenterX!![now] + dotRadius
             else
-                Math.max(dotCenterX!![was], selectedDotX) + dotRadius
+                max(dotCenterX!![was], selectedDotX) + dotRadius
             val finalX2 = if (now > was)
                 dotCenterX!![now] + dotRadius
             else

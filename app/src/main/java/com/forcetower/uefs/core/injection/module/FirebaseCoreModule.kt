@@ -69,7 +69,7 @@ object FirebaseCoreModule {
                 .build()
 
         config.setConfigSettingsAsync(settings)
-        config.setDefaults(R.xml.remote_config_defaults)
+        config.setDefaultsAsync(R.xml.remote_config_defaults)
         config.fetchAndActivate().addOnCompleteListener {
             if (it.isSuccessful) {
                 Unit

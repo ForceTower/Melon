@@ -105,12 +105,12 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
             viewModel.updateGradesFromSemester(semesterSagresId)
         }
 
-        viewModel.refreshing.observe(this, Observer { swipeRefreshLayout.isRefreshing = it })
+        viewModel.refreshing.observe(viewLifecycleOwner, Observer { swipeRefreshLayout.isRefreshing = it })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.classes(semesterId).observe(this, Observer {
+        viewModel.classes(semesterId).observe(viewLifecycleOwner, Observer {
             populateInterface(it)
         })
     }

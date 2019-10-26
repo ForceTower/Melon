@@ -30,6 +30,7 @@ class BigTrayViewModel @Inject constructor(
     var requesting: Boolean = false
     set(value) {
         repository.requesting = value
+        field = value
     }
 
     fun data() = repository.data

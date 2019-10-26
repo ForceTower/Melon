@@ -62,7 +62,7 @@ class AbsencesFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.absences.observe(this, Observer {
+        viewModel.absences.observe(viewLifecycleOwner, Observer {
             absenceAdapter.submitList(it)
             if (it.isEmpty()) {
                 binding.layoutNoData.visibility = View.VISIBLE

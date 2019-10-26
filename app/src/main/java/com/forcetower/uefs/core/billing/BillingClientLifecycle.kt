@@ -45,7 +45,7 @@ class BillingClientLifecycle(
     val purchases = MutableLiveData<List<Purchase>>()
     val state = MutableLiveData<Boolean>()
 
-    lateinit var billingClient: BillingClient
+    private lateinit var billingClient: BillingClient
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
     fun create() {

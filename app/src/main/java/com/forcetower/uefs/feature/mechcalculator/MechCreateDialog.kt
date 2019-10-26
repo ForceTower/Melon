@@ -53,10 +53,10 @@ class MechCreateDialog : RoundedDialog(), Injectable {
                     val string = text.toString()
                     if (string.isNotBlank()) {
                         val parsed = string.replace(",", ".").toDoubleOrNull()
-                        if (parsed == null) {
-                            error = context.getString(R.string.field_must_be_a_number)
+                        error = if (parsed == null) {
+                            context.getString(R.string.field_must_be_a_number)
                         } else {
-                            error = null
+                            null
                         }
                     }
                 }
@@ -69,10 +69,10 @@ class MechCreateDialog : RoundedDialog(), Injectable {
                     val string = text.toString()
                     if (string.isNotBlank()) {
                         val parsed = string.replace(",", ".").toDoubleOrNull()
-                        if (parsed == null) {
-                            error = context.getString(R.string.field_must_be_a_number)
+                        error = if (parsed == null) {
+                            context.getString(R.string.field_must_be_a_number)
                         } else {
-                            error = null
+                            null
                         }
                     }
                 }

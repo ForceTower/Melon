@@ -31,6 +31,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.forcetower.uefs.R
 import timber.log.Timber
+import kotlin.math.max
+import kotlin.math.min
+import kotlin.math.pow
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -161,32 +164,32 @@ class GameView : View {
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        val widthMode = View.MeasureSpec.getMode(widthMeasureSpec)
-        val widthSize = View.MeasureSpec.getSize(widthMeasureSpec)
-        val heightMode = View.MeasureSpec.getMode(heightMeasureSpec)
-        val heightSize = View.MeasureSpec.getSize(heightMeasureSpec)
+        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
+        val widthSize = MeasureSpec.getSize(widthMeasureSpec)
+        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
+        val heightSize = MeasureSpec.getSize(heightMeasureSpec)
 
         val size: Int
-        if (widthMode == View.MeasureSpec.EXACTLY && widthSize > 0) {
-            size = widthSize
-        } else if (heightMode == View.MeasureSpec.EXACTLY && heightSize > 0) {
-            size = heightSize
+        size = if (widthMode == MeasureSpec.EXACTLY && widthSize > 0) {
+            widthSize
+        } else if (heightMode == MeasureSpec.EXACTLY && heightSize > 0) {
+            heightSize
         } else {
-            size = if (widthSize < heightSize) widthSize else heightSize
+            if (widthSize < heightSize) widthSize else heightSize
         }
-        val finalMeasureSpec = View.MeasureSpec.makeMeasureSpec(size, View.MeasureSpec.EXACTLY)
+        val finalMeasureSpec = MeasureSpec.makeMeasureSpec(size, MeasureSpec.EXACTLY)
         super.onMeasure(finalMeasureSpec, finalMeasureSpec)
     }
 
     private fun getLayout(width: Int, height: Int) {
-        mCellSize = Math.min(width / (mNumberOfSquaresX + 1), height / (mNumberOfSquaresY + 1))
+        mCellSize = min(width / (mNumberOfSquaresX + 1), height / (mNumberOfSquaresY + 1))
         mGridWidth = mCellSize / 5
         val boardMiddleX = width / 2
         val boardMiddleY = height / 2
 
         mPaint.textAlign = Paint.Align.CENTER
         mPaint.textSize = mCellSize.toFloat()
-        mTextSize = mCellSize * mCellSize / Math.max(mCellSize.toFloat(), mPaint.measureText("0000"))
+        mTextSize = mCellSize * mCellSize / max(mCellSize.toFloat(), mPaint.measureText("0000"))
         mCellTextSize = mTextSize
 
         mGameOverTextSize = mTextSize * 2
@@ -332,9 +335,9 @@ class GameView : View {
     private fun createBitmapCells() {
         mPaint.textAlign = Paint.Align.CENTER
         for (xx in mBitmapCell.indices) {
-            val value = Math.pow(2.0, xx.toDouble()).toInt()
+            val value = 2.0.pow(xx.toDouble()).toInt()
             mPaint.textSize = mCellTextSize
-            val tempTextSize = mCellTextSize * mCellSize.toFloat() * 0.9f / Math.max(
+            val tempTextSize = mCellTextSize * mCellSize.toFloat() * 0.9f / max(
                 mCellSize * 0.9f,
                 mPaint.measureText(value.toString())
             )
@@ -429,7 +432,7 @@ class GameView : View {
         private const val NOTIFICATION_DELAY_TIME = MOVE_ANIMATION_TIME + SPAWN_ANIMATION_TIME
 
         private fun log2(n: Int): Int {
-            if (n <= 0) throw IllegalArgumentException()
+            require(n > 0)
             return 31 - Integer.numberOfLeadingZeros(n)
         }
     }

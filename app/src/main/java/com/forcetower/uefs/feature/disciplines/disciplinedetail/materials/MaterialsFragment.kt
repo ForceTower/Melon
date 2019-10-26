@@ -64,7 +64,7 @@ class MaterialsFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.materials.observe(this, Observer {
+        viewModel.materials.observe(viewLifecycleOwner, Observer {
             materialsAdapter.submitList(it)
             if (it.isEmpty()) {
                 binding.layoutNoData.visibility = VISIBLE

@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
-import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.forcetower.uefs.EvalNavGraphDirections
 import com.forcetower.uefs.R
@@ -36,12 +35,12 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
+class EvaluationActivity : UGameActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var sessionViewModel: UserSessionViewModel
@@ -69,7 +68,7 @@ class EvaluationActivity : UGameActivity(), HasSupportFragmentInjector {
         snack.show()
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     override fun onUserInteraction() {
         super.onUserInteraction()

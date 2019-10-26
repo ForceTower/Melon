@@ -66,7 +66,7 @@ class ServicesFollowUpFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.pendingServices.observe(this, EventObserver {
+        viewModel.pendingServices.observe(viewLifecycleOwner, EventObserver {
             if (it.status == Status.ERROR) {
                 showSnack(getString(R.string.service_requests_load_failed))
             }

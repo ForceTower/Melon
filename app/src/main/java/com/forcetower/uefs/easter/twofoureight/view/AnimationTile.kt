@@ -20,6 +20,8 @@
 
 package com.forcetower.uefs.easter.twofoureight.view
 
+import kotlin.math.max
+
 internal class AnimationTile(
     x: Int,
     y: Int,
@@ -31,7 +33,7 @@ internal class AnimationTile(
     private var mTimeElapsed: Long = 0
 
     val percentageDone: Double
-        get() = Math.max(0.0, 1.0 * (mTimeElapsed - mDelayTime) / mAnimationTime)
+        get() = max(0.0, 1.0 * (mTimeElapsed - mDelayTime) / mAnimationTime)
 
     val isActive: Boolean
         get() = mTimeElapsed >= mDelayTime

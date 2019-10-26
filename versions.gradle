@@ -10,7 +10,7 @@ versions.ktx = "1.1.0"
 
 // Android X [Old Support]
 versions.app_compat = '1.1.0'
-versions.google_material = '1.1.0-alpha10'
+versions.google_material = '1.1.0-beta01'
 versions.constraint_layout = "1.1.3"
 versions.annotation = "1.1.0"
 versions.exif_interface = "1.0.0"
@@ -18,26 +18,27 @@ versions.pallete = "1.0.0"
 versions.flexbox = "1.1.0"
 versions.browser = "1.0.0"
 versions.preference = "1.1.0"
+versions.fragment = "1.2.0-rc01"
 
 // Architecture
-versions.room = "2.1.0"
-versions.lifecycle = '2.1.0'
+versions.room = "2.2.1"
+versions.lifecycle = '2.2.0-rc01'
 versions.paging = "2.1.0"
-versions.navigation = '2.1.0'
+versions.navigation = '2.2.0-rc01'
 versions.work_manager = "2.2.0"
 
 // Dependency Injection
-versions.dagger = "2.23.2"
+versions.dagger = "2.25.2"
 
 // Firebase
-versions.firebase_core = "17.0.0"
-versions.firebase_auth = "18.0.0"
-versions.firebase_messaging = "19.0.0"
-versions.firebase_firestore = "20.0.0"
-versions.firebase_storage = "18.0.0"
-versions.firebase_remote_config = "18.0.0"
-versions.firebase_functions = "18.0.0"
-versions.in_app_messaging = "18.0.1"
+versions.firebase_core = "17.2.0"
+versions.firebase_auth = "19.1.0"
+versions.firebase_messaging = "20.0.0"
+versions.firebase_firestore = "21.2.0"
+versions.firebase_storage = "19.1.0"
+versions.firebase_remote_config = "19.0.3"
+versions.firebase_functions = "19.0.1"
+versions.in_app_messaging = "19.0.1"
 versions.firebase_ui_storage = "4.3.1"
 
 // Logs
@@ -45,7 +46,7 @@ versions.crashlytics = "2.10.1"
 versions.timber = "4.7.1"
 
 // Image
-versions.glide = "4.9.0"
+versions.glide = "4.10.0"
 versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 
@@ -75,7 +76,7 @@ versions.zoned_time_date = "1.1.0"
 versions.rx_kotlin = "2.4.0-RC3"
 
 // Build Versions
-versions.android_gradle_plugin = "3.5.0"
+versions.android_gradle_plugin = "3.5.1"
 versions.kotlin = "1.3.50"
 versions.google_play_services = "4.3.0"
 versions.fabric = "1.28.0"
@@ -102,6 +103,8 @@ androidx.pallete = "androidx.palette:palette:$versions.pallete"
 androidx.browser = "androidx.browser:browser:$versions.browser"
 androidx.preference = "androidx.preference:preference:$versions.preference"
 androidx.flexbox = "com.google.android:flexbox:$versions.flexbox"
+androidx.fragment = "androidx.fragment:fragment:$versions.fragment"
+androidx.fragment_ktx = "androidx.fragment:fragment-ktx:$versions.fragment"
 deps.androidx = androidx
 
 // Architecture
@@ -149,6 +152,7 @@ firebase.core = "com.google.firebase:firebase-core:$versions.firebase_core"
 firebase.auth = "com.google.firebase:firebase-auth:$versions.firebase_auth"
 firebase.messaging = "com.google.firebase:firebase-messaging:$versions.firebase_messaging"
 firebase.firestore = "com.google.firebase:firebase-firestore:$versions.firebase_firestore"
+firebase.firestore_ktx = "com.google.firebase:firebase-firestore-ktx:$versions.firebase_firestore"
 firebase.storage = "com.google.firebase:firebase-storage:$versions.firebase_storage"
 firebase.remote_config = "com.google.firebase:firebase-config:$versions.firebase_remote_config"
 firebase.functions = "com.google.firebase:firebase-functions:$versions.firebase_functions"

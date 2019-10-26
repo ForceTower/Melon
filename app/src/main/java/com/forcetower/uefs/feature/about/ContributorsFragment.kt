@@ -65,8 +65,8 @@ class ContributorsFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.contributorClickAction.observe(this, EventObserver { openLink(it) })
-        viewModel.contributors.observe(this, Observer { processContributors(it) })
+        viewModel.contributorClickAction.observe(viewLifecycleOwner, EventObserver { openLink(it) })
+        viewModel.contributors.observe(viewLifecycleOwner, Observer { processContributors(it) })
     }
 
     private fun processContributors(resource: Resource<List<Contributor>>?) {

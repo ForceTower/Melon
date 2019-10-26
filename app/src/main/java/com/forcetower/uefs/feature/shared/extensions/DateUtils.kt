@@ -86,7 +86,7 @@ fun Int.toWeekDay(): String {
 }
 
 fun String.fromWeekDay(): Int {
-    return when (this.toUpperCase()) {
+    return when (this.toUpperCase(Locale.getDefault())) {
         "DOM" -> 1
         "SEG" -> 2
         "TER" -> 3

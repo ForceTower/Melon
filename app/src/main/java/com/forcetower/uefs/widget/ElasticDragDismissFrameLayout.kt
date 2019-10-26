@@ -33,6 +33,9 @@ import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.feature.shared.extensions.isNavBarOnBottom
 
 import java.util.ArrayList
+import kotlin.math.abs
+import kotlin.math.log10
+import kotlin.math.min
 
 class ElasticDragDismissFrameLayout @JvmOverloads constructor(
     context: Context,
@@ -129,7 +132,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
     }
 
     override fun onStopNestedScroll(child: View) {
-        if (Math.abs(totalDrag) >= dragDismissDistance) {
+        if (abs(totalDrag) >= dragDismissDistance) {
             dispatchDismissCallback()
         } else { // settle back to natural position
             animate()
@@ -184,7 +187,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
         }
         // how far have we dragged relative to the distance to perform a dismiss
         // (0–1 where 1 = dismiss distance). Decreasing logarithmically as we approach the limit
-        var dragFraction = Math.log10((1 + Math.abs(totalDrag) / dragDismissDistance).toDouble()).toFloat()
+        var dragFraction = log10((1 + abs(totalDrag) / dragDismissDistance).toDouble()).toFloat()
 
         // calculate the desired translation given the drag fraction
         var dragTo = dragFraction * dragDismissDistance * dragElacticity
@@ -215,7 +218,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
             scaleY = 1f
         }
         dispatchDragCallback(dragFraction, dragTo,
-                Math.min(1f, Math.abs(totalDrag) / dragDismissDistance), totalDrag)
+                min(1f, abs(totalDrag) / dragDismissDistance), totalDrag)
     }
 
     private fun dispatchDragCallback(
@@ -224,7 +227,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
         rawOffset: Float,
         rawOffsetPixels: Float
     ) {
-        if (callbacks != null && !callbacks!!.isEmpty()) {
+        if (callbacks != null && callbacks!!.isNotEmpty()) {
             for (callback in callbacks!!) {
                 callback.onDrag(elasticOffset, elasticOffsetPixels,
                         rawOffset, rawOffsetPixels)
@@ -233,7 +236,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
     }
 
     private fun dispatchDismissCallback() {
-        if (callbacks != null && !callbacks!!.isEmpty()) {
+        if (callbacks != null && callbacks!!.isNotEmpty()) {
             for (callback in callbacks!!) {
                 callback.onDragDismissed()
             }
@@ -256,20 +259,20 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
             rawOffset: Float,
             rawOffsetPixels: Float
         ) {
-            if (elasticOffsetPixels > 0) {
-                // dragging downward, fade the status bar in proportion
-                activity.window.statusBarColor = ColorUtils.modifyAlpha(activity.window
-                        .statusBarColor, ((1f - rawOffset) * statusBarAlpha).toInt())
-            } else if (elasticOffsetPixels == 0f) {
-                // reset
-                activity.window.statusBarColor = ColorUtils.modifyAlpha(
-                        activity.window.statusBarColor, statusBarAlpha)
-                activity.window.navigationBarColor = ColorUtils.modifyAlpha(
-                        activity.window.navigationBarColor, navBarAlpha)
-            } else if (fadeNavBar) {
-                // dragging upward, fade the navigation bar in proportion
-                activity.window.navigationBarColor = ColorUtils.modifyAlpha(activity.window.navigationBarColor,
-                        ((1f - rawOffset) * navBarAlpha).toInt())
+            when {
+                elasticOffsetPixels > 0 -> // dragging downward, fade the status bar in proportion
+                    activity.window.statusBarColor = ColorUtils.modifyAlpha(activity.window
+                            .statusBarColor, ((1f - rawOffset) * statusBarAlpha).toInt())
+                elasticOffsetPixels == 0f -> {
+                    // reset
+                    activity.window.statusBarColor = ColorUtils.modifyAlpha(
+                            activity.window.statusBarColor, statusBarAlpha)
+                    activity.window.navigationBarColor = ColorUtils.modifyAlpha(
+                            activity.window.navigationBarColor, navBarAlpha)
+                }
+                fadeNavBar -> // dragging upward, fade the navigation bar in proportion
+                    activity.window.navigationBarColor = ColorUtils.modifyAlpha(activity.window.navigationBarColor,
+                            ((1f - rawOffset) * navBarAlpha).toInt())
             }
         }
 

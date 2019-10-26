@@ -73,11 +73,11 @@ class SessionDetailsFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.speakers.observe(this, Observer {
+        viewModel.speakers.observe(viewLifecycleOwner, Observer {
             detailsAdapter.speakers = it ?: emptyList()
         })
 
-        viewModel.navigateToSpeakerAction.observe(this, EventObserver { speakerId ->
+        viewModel.navigateToSpeakerAction.observe(viewLifecycleOwner, EventObserver { speakerId ->
             requireActivity().run {
                 val sharedElement = findSpeakerHeadshot(binding.sessionDetailRecyclerView, speakerId)
                 val option = ActivityOptions.makeSceneTransitionAnimation(this, sharedElement, getString(R.string.speaker_headshot_transition))

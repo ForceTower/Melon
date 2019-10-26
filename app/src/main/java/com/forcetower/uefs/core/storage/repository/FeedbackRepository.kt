@@ -62,8 +62,8 @@ class FeedbackRepository @Inject constructor(
                     email = profile?.email,
                     hash = access.toString().toBase64(),
                     firebaseId = userId,
-                    manufacturer = android.os.Build.MANUFACTURER,
-                    deviceModel = android.os.Build.MODEL,
+                    manufacturer = Build.MANUFACTURER,
+                    deviceModel = Build.MODEL,
                     android = Build.VERSION.SDK_INT
             )
             var token: String? = null

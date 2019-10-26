@@ -57,7 +57,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        repository.getFrequencies().observe(this, Observer { frequencies ->
+        repository.getFrequencies().observe(viewLifecycleOwner, Observer { frequencies ->
             val entries = frequencies.map { it.name }
             val values = frequencies.map { it.value.toString() }
             configureFrequencies(entries, values)

@@ -130,9 +130,9 @@ class SigningInFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideViewModel(factory)
-        viewModel.getLogin().observe(this, Observer<Callback>(this::onLoginProgress))
-        viewModel.getProfile().observe(this, Observer(this::onProfileUpdate))
-        viewModel.getStep().observe(this, Observer<LoginSagresRepository.Step>(this::onStep))
+        viewModel.getLogin().observe(viewLifecycleOwner, Observer<Callback>(this::onLoginProgress))
+        viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
+        viewModel.getStep().observe(viewLifecycleOwner, Observer<LoginSagresRepository.Step>(this::onStep))
         doLogin()
     }
 

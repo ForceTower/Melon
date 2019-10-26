@@ -74,17 +74,17 @@ class RatingBarVectorFix @JvmOverloads constructor(
                 drawable.wrappedDrawable = inner
             }
         } else if (drawable is LayerDrawable) {
-            val N = drawable.numberOfLayers
-            val outDrawables = arrayOfNulls<Drawable>(N)
+            val layers = drawable.numberOfLayers
+            val outDrawables = arrayOfNulls<Drawable>(layers)
 
-            for (i in 0 until N) {
+            for (i in 0 until layers) {
                 val id = drawable.getId(i)
                 outDrawables[i] = tileify(drawable.getDrawable(i),
                         id == android.R.id.progress || id == android.R.id.secondaryProgress)
             }
             val newBg = LayerDrawable(outDrawables)
 
-            for (i in 0 until N) {
+            for (i in 0 until layers) {
                 newBg.setId(i, drawable.getId(i))
             }
 

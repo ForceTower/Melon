@@ -25,7 +25,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.WindowManager
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.vm.UserSessionViewModel
@@ -35,19 +34,19 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 
-class Game2048Activity : UGameActivity(), HasSupportFragmentInjector {
+class Game2048Activity : UGameActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var factory: UViewModelFactory
 
     private lateinit var sessionViewModel: UserSessionViewModel
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     public override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)

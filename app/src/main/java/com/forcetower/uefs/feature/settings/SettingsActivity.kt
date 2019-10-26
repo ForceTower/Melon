@@ -34,13 +34,12 @@ import com.forcetower.uefs.databinding.ActivitySettingsBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class SettingsActivity : UActivity(), HasSupportFragmentInjector,
-        PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
+class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     private lateinit var binding: ActivitySettingsBinding
 
@@ -62,8 +61,7 @@ class SettingsActivity : UActivity(), HasSupportFragmentInjector,
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
-        val key = pref?.key ?: return false
-        when (key) {
+        when (pref?.key ?: return false) {
             "settings_synchronization" -> navigateTo(SyncSettingsFragment())
             "settings_notifications" -> {
                 if (VersionUtils.isOreo()) {
@@ -86,7 +84,7 @@ class SettingsActivity : UActivity(), HasSupportFragmentInjector,
         }
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     companion object {
         fun startIntent(context: Context): Intent {

@@ -62,6 +62,6 @@ class SagresMessagesFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.messages.observe(this, Observer { adapter.submitList(it) })
+        viewModel.messages.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
     }
 }

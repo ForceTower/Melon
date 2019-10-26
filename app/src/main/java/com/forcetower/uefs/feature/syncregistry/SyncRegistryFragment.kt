@@ -64,6 +64,6 @@ class SyncRegistryFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.registry.observe(this, Observer { syncAdapter.submitList(it) })
+        viewModel.registry.observe(viewLifecycleOwner, Observer { syncAdapter.submitList(it) })
     }
 }

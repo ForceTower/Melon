@@ -338,18 +338,18 @@ object NotificationCreator {
         showNotification(context, it.material.uid, builder)
     }
 
-    fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
+    private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)
         builder.setSmallIcon(R.drawable.ic_unes_colored)
         return builder
     }
 
-    fun createBigText(message: String): NotificationCompat.Style {
+    private fun createBigText(message: String): NotificationCompat.Style {
         return NotificationCompat.BigTextStyle().bigText(message)
     }
 
-    fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
+    private fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
         return try {
             val bitmap = GlideApp.with(context).asBitmap().load(image).submit().get()
             NotificationCompat.BigPictureStyle().bigPicture(bitmap)

@@ -54,7 +54,7 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
             interactor = viewModel
             lifecycleOwner = this@SendFeedbackFragment
         }
-        viewModel.textError.observe(this, EventObserver {
+        viewModel.textError.observe(viewLifecycleOwner, EventObserver {
             if (it == null) {
                 binding.textFeedback.error = ""
             } else {
@@ -62,7 +62,7 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
             }
         })
 
-        viewModel.sendFeedback.observe(this, EventObserver {
+        viewModel.sendFeedback.observe(viewLifecycleOwner, EventObserver {
             if (it) {
                 dismiss()
             }

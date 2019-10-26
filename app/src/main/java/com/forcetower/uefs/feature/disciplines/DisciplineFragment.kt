@@ -90,16 +90,16 @@ class DisciplineFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.semesters.observe(this, Observer {
+        viewModel.semesters.observe(viewLifecycleOwner, Observer {
             val actualList = applySortOptions(it)
             adapter.submitList(actualList)
         })
 
-        viewModel.navigateToDisciplineAction.observe(this, EventObserver {
+        viewModel.navigateToDisciplineAction.observe(viewLifecycleOwner, EventObserver {
             handleNavigateToDisciplineDetails(it)
         })
 
-        viewModel.navigateToGroupAction.observe(this, EventObserver {
+        viewModel.navigateToGroupAction.observe(viewLifecycleOwner, EventObserver {
             startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
         })
     }
