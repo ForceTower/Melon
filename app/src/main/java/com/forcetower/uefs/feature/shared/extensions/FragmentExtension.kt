@@ -23,10 +23,9 @@ package com.forcetower.uefs.feature.shared.extensions
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 
 inline fun <reified VM : ViewModel> Fragment.provideViewModel(viewModelFactory: ViewModelProvider.Factory) =
-        ViewModelProviders.of(this, viewModelFactory)[VM::class.java]
+        ViewModelProvider(this, viewModelFactory)[VM::class.java]
 
 inline fun <reified VM : ViewModel> Fragment.provideActivityViewModel(viewModelFactory: ViewModelProvider.Factory) =
-        ViewModelProviders.of(requireActivity(), viewModelFactory)[VM::class.java]
+        ViewModelProvider(requireActivity(), viewModelFactory)[VM::class.java]

@@ -64,9 +64,9 @@ class DocumentsFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.documents.observe(this, Observer { adapter.documents = it ?: emptyList() })
-        viewModel.openDocumentAction.observe(this, EventObserver { openDocument(it) })
-        viewModel.snackMessages.observe(this, EventObserver { showSnack(it) })
+        viewModel.documents.observe(viewLifecycleOwner, Observer { adapter.documents = it ?: emptyList() })
+        viewModel.openDocumentAction.observe(viewLifecycleOwner, EventObserver { openDocument(it) })
+        viewModel.snackMessages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
     }
 
     private fun openDocument(document: File) {

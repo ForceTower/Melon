@@ -37,10 +37,10 @@ import com.google.android.gms.games.GamesClient
 import com.google.android.gms.games.LeaderboardsClient
 
 class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
-    var playerName: String? = null
+    private var playerName: String? = null
     var signInClient: GoogleSignInClient? = null
     var achievementsClient: AchievementsClient? = null
-    var leaderboardClient: LeaderboardsClient? = null
+    private var leaderboardClient: LeaderboardsClient? = null
     var gamesClient: GamesClient? = null
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(this)

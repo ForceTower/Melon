@@ -73,7 +73,7 @@ class ProfileFragment : UFragment(), Injectable {
         check(userId != 0L) { "Well.. That happened" }
         viewModel.setUserId(userId)
         viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
-        viewModel.profile.observe(this, Observer {
+        viewModel.profile.observe(viewLifecycleOwner, Observer {
             it ?: return@Observer
             if (it.imageUrl == null) {
                 activity?.startPostponedEnterTransition()
@@ -119,7 +119,7 @@ class ProfileFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.statements.observe(this, Observer { statements ->
+        viewModel.statements.observe(viewLifecycleOwner, Observer { statements ->
             adapter.statements = statements.sortedByDescending { it.createdAt }
         })
 
@@ -130,7 +130,7 @@ class ProfileFragment : UFragment(), Injectable {
         binding.writeStatement.setOnClickListener {
             val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
             val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
-            fragmentManager?.inTransaction {
+            parentFragmentManager.inTransaction {
                 val fragment = WriteStatementFragment().apply {
                     arguments = bundleOf(
                         EXTRA_STUDENT_ID to profileId,

@@ -68,8 +68,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
 
-import timber.log.Timber;
-
 /**
  * A widget that enables the user to select a number form a predefined range.
  * There are two flavors of this widget and which one is presented to the user
@@ -206,7 +204,7 @@ public class NumberPicker extends LinearLayout {
     /**
      * @hide
      */
-    public static final Formatter getTwoDigitFormatter() {
+    public static Formatter getTwoDigitFormatter() {
         return sTwoDigitFormatter;
     }
 

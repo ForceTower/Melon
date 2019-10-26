@@ -66,7 +66,7 @@ class ClassesFragment : UFragment(), Injectable {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        viewModel.classItems.observe(this, Observer {
+        viewModel.classItems.observe(viewLifecycleOwner, Observer {
             classesAdapter.submitList(it)
             if (it.isEmpty()) {
                 binding.layoutNoData.visibility = View.VISIBLE
@@ -77,7 +77,7 @@ class ClassesFragment : UFragment(), Injectable {
             }
         })
 
-        viewModel.classItemClick.observe(this, EventObserver {
+        viewModel.classItemClick.observe(viewLifecycleOwner, EventObserver {
             onOpenClassItemSelector(it)
         })
     }

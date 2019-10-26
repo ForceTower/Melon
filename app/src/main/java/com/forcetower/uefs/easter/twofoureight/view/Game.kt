@@ -22,6 +22,7 @@ package com.forcetower.uefs.easter.twofoureight.view
 
 import timber.log.Timber
 import java.util.UUID
+import kotlin.math.pow
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -98,7 +99,7 @@ class Game {
             saveUndoState()
             gameGrid!!.clearGrid()
         }
-        endingMaxValue = Math.pow(2.0, (mTileTypes - 1).toDouble()).toInt()
+        endingMaxValue = 2.0.pow((mTileTypes - 1).toDouble()).toInt()
         mView!!.updateGrid(gameGrid!!)
 
         updateScore(0)

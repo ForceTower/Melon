@@ -55,8 +55,7 @@ class Scroller
      *
      * @return The start X offset as an absolute distance from the origin.
      */
-    var startX: Int = 0
-        private set
+    private var startX: Int = 0
     /**
      * Returns the start Y offset in the scroll.
      *
@@ -77,8 +76,7 @@ class Scroller
      *
      * @return The new X offset as an absolute distance from the origin.
      */
-    var currX: Int = 0
-        private set
+    private var currX: Int = 0
     /**
      * Returns the current Y offset in the scroll.
      *
@@ -117,7 +115,7 @@ class Scroller
      * @return The original velocity less the deceleration. Result may be
      * negative.
      */
-    val currVelocity: Float
+    private val currVelocity: Float
         get() = mVelocity - mDeceleration * timePassed() / 2000.0f
 
     /**
@@ -213,10 +211,10 @@ class Scroller
                 SCROLL_MODE -> {
                     var x = timePassed * mDurationReciprocal
 
-                    if (mInterpolator == null)
-                        x = viscousFluid(x)
+                    x = if (mInterpolator == null)
+                        viscousFluid(x)
                     else
-                        x = mInterpolator.getInterpolation(x)
+                        mInterpolator.getInterpolation(x)
 
                     currX = startX + (x * mDeltaX).roundToInt()
                     currY = startY + (x * mDeltaY).roundToInt()
@@ -397,7 +395,7 @@ class Scroller
      *
      * @return The elapsed time in milliseconds.
      */
-    fun timePassed(): Int {
+    private fun timePassed(): Int {
         return (AnimationUtils.currentAnimationTimeMillis() - mStartTime).toInt()
     }
 
@@ -412,15 +410,15 @@ class Scroller
     companion object {
         private var sViscousFluidScale: Float = 0.toFloat()
         private var sViscousFluidNormalize: Float = 0.toFloat()
-        private val DEFAULT_DURATION = 250
-        private val SCROLL_MODE = 0
-        private val FLING_MODE = 1
+        private const val DEFAULT_DURATION = 250
+        private const val SCROLL_MODE = 0
+        private const val FLING_MODE = 1
 
-        private val DECELERATION_RATE = (Math.log(0.75) / Math.log(0.9)).toFloat()
-        private val ALPHA = 800f // pixels / seconds
-        private val START_TENSION = 0.4f // Tension at start: (0.4 * total T, 1.0 * Distance)
-        private val END_TENSION = 1.0f - START_TENSION
-        private val NB_SAMPLES = 100
+        private val DECELERATION_RATE = (ln(0.75) / ln(0.9)).toFloat()
+        private const val ALPHA = 800f // pixels / seconds
+        private const val START_TENSION = 0.4f // Tension at start: (0.4 * total T, 1.0 * Distance)
+        private const val END_TENSION = 1.0f - START_TENSION
+        private const val NB_SAMPLES = 100
         private val SPLINE = FloatArray(NB_SAMPLES + 1)
 
         init {

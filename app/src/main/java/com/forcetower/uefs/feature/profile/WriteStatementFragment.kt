@@ -61,13 +61,13 @@ class WriteStatementFragment : UFragment(), Injectable {
         }
 
         binding.publish.setOnClickListener { onPublishStatement() }
-        viewModel.sendingStatement.observe(this, Observer { binding.sending = it })
-        viewModel.messages.observe(this, EventObserver { showSnack(it) })
-        viewModel.statementSentSignal.observe(this, EventObserver {
-            fragmentManager?.popBackStack()
+        viewModel.sendingStatement.observe(viewLifecycleOwner, Observer { binding.sending = it })
+        viewModel.messages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
+        viewModel.statementSentSignal.observe(viewLifecycleOwner, EventObserver {
+            parentFragmentManager.popBackStack()
         })
-        binding.up.setOnClickListener { fragmentManager?.popBackStack() }
-        viewModel.getMeProfile().observe(this, Observer {
+        binding.up.setOnClickListener { parentFragmentManager.popBackStack() }
+        viewModel.getMeProfile().observe(viewLifecycleOwner, Observer {
             binding.student = it.data
         })
     }

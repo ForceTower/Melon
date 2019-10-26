@@ -43,6 +43,7 @@ import com.forcetower.uefs.feature.evaluation.rating.EvaluationRatingViewModel
 import com.forcetower.uefs.feature.event.EventViewModel
 import com.forcetower.uefs.feature.feedback.FeedbackViewModel
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
+import com.forcetower.uefs.feature.forms.FormsViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel
@@ -233,6 +234,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(UserSessionViewModel::class)
     abstract fun bindUserSessionViewModel(vm: UserSessionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FormsViewModel::class)
+    abstract fun bindFormsViewModel(vm: FormsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

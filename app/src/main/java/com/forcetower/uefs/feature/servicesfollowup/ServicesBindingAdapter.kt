@@ -23,12 +23,13 @@ package com.forcetower.uefs.feature.servicesfollowup
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
+import java.util.Locale
 
 @BindingAdapter("requestedServiceImage")
 fun requestedServiceImage(iv: ImageView, situation: String?) {
     situation ?: return
     val ctx = iv.context
-    val icon = when (situation.toLowerCase()) {
+    val icon = when (situation.toLowerCase(Locale.getDefault())) {
         "atendido" -> R.drawable.ic_check_black_24dp
         "indeferido" -> R.drawable.ic_block_black_24dp
         else -> R.drawable.ic_change_history_black_24dp

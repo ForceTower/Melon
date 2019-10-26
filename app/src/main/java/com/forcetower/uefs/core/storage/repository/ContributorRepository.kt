@@ -57,34 +57,30 @@ class ContributorRepository @Inject constructor(
 
     @WorkerThread
     private fun findDetailsAndSave(value: List<GithubContributor>) {
-        value.filter { it.author != null }
-            .map {
-                val name = it.author?.login
-                if (name != null) {
-                    try {
-                        val response = service.getUserDirect(name).execute()
-                        if (response.isSuccessful) {
-                            val user = response.body()
-                            val contributor = it.toContributor()!!
-                            contributor.name = user?.name ?: contributor.login
-                            contributor.bio = user?.bio
-                            contributor
-                        } else {
-                            Timber.d("User fetch failed with code: ${response.code()}")
-                            it.author
-                        }
-                    } catch (t: Throwable) {
-                        Timber.d("Failed to fetch user details... Message: ${t.message}")
+        value.filter { it.author != null }.mapNotNull {
+            val name = it.author?.login
+            if (name != null) {
+                try {
+                    val response = service.getUserDirect(name).execute()
+                    if (response.isSuccessful) {
+                        val user = response.body()
+                        val contributor = it.toContributor()!!
+                        contributor.name = user?.name ?: contributor.login
+                        contributor.bio = user?.bio
+                        contributor
+                    } else {
+                        Timber.d("User fetch failed with code: ${response.code()}")
                         it.author
                     }
-                } else {
-                    it.toContributor()
+                } catch (t: Throwable) {
+                    Timber.d("Failed to fetch user details... Message: ${t.message}")
+                    it.author
                 }
-            }.filter { it != null }
-            .forEach {
-                if (it != null) {
-                    database.contributorDao().insert(it)
-                }
+            } else {
+                it.toContributor()
             }
+        }.forEach {
+            database.contributorDao().insert(it)
+        }
     }
 }

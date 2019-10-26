@@ -59,6 +59,6 @@ class CalendarFragment : UFragment(), Injectable {
             removeDuration = 120L
         }
 
-        viewModel.calendar.observe(this, Observer { adapter.submitList(it) })
+        viewModel.calendar.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
     }
 }

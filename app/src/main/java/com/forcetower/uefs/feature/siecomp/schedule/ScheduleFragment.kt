@@ -66,11 +66,11 @@ class ScheduleFragment : UFragment(), Injectable {
             executePendingBindings()
         }
 
-        viewModel.navigateToSessionAction.observe(this, EventObserver {
+        viewModel.navigateToSessionAction.observe(viewLifecycleOwner, EventObserver {
             openSessionDetails(it)
         })
 
-        viewModel.snackbarMessenger.observe(this, EventObserver {
+        viewModel.snackbarMessenger.observe(viewLifecycleOwner, EventObserver {
             showSnack(getString(it))
         })
 
@@ -87,7 +87,7 @@ class ScheduleFragment : UFragment(), Injectable {
                 startActivity(Intent(requireContext(), SIECOMPEditorActivity::class.java))
             }
         }
-        viewModel.access.observe(this, Observer {
+        viewModel.access.observe(viewLifecycleOwner, Observer {
             binding.createSessionFloat.visibility = if (it != null) {
                 View.VISIBLE
             } else {
@@ -98,7 +98,7 @@ class ScheduleFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.refreshSource.observe(this, Observer {
+        viewModel.refreshSource.observe(viewLifecycleOwner, Observer {
             when (it.status) {
                 Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
                 Status.LOADING, Status.SUCCESS -> {}

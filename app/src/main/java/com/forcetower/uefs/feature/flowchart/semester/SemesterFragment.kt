@@ -59,9 +59,9 @@ class SemesterFragment : UFragment(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getDisciplinesUI(args.semesterId).observe(this, Observer { onDisciplinesReceived(it) })
-        viewModel.getSemesterUI(args.semesterId).observe(this, Observer { onSemesterReceived(it) })
-        viewModel.onDisciplineSelect.observe(this, EventObserver { onDisciplineSelected(it) })
+        viewModel.getDisciplinesUI(args.semesterId).observe(viewLifecycleOwner, Observer { onDisciplinesReceived(it) })
+        viewModel.getSemesterUI(args.semesterId).observe(viewLifecycleOwner, Observer { onSemesterReceived(it) })
+        viewModel.onDisciplineSelect.observe(viewLifecycleOwner, EventObserver { onDisciplineSelected(it) })
     }
 
     private fun onSemesterReceived(value: FlowchartSemesterUI) {

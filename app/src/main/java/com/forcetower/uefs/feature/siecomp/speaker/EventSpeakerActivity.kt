@@ -23,17 +23,16 @@ package com.forcetower.uefs.feature.siecomp.speaker
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import javax.inject.Inject
 
-class EventSpeakerActivity : UActivity(), HasSupportFragmentInjector {
+class EventSpeakerActivity : UActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -47,7 +46,7 @@ class EventSpeakerActivity : UActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 
     companion object {
         const val SPEAKER_ID = "speaker_id"

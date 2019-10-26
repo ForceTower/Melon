@@ -24,7 +24,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import com.forcetower.uefs.core.vm.Destination
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.LaunchViewModel
@@ -35,7 +34,7 @@ import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.DispatchingAndroidInjector
-import dagger.android.support.HasSupportFragmentInjector
+import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -44,9 +43,9 @@ import javax.inject.Inject
  * - Login -> caso o usuário não esteja conectado [Não existe usuário + senha no aplicativo]
  * - Home  -> caso o usuário esteja conectado
  */
-class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
+class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
     @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Fragment>
+    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
@@ -86,5 +85,5 @@ class LauncherActivity : AppCompatActivity(), HasSupportFragmentInjector {
         }
     }
 
-    override fun supportFragmentInjector() = fragmentInjector
+    override fun androidInjector() = fragmentInjector
 }
