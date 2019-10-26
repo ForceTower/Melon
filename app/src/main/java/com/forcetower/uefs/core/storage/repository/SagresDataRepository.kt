@@ -53,6 +53,7 @@ class SagresDataRepository @Inject constructor(
                     .apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
+            database.accountDao().deleteAll()
             database.profileDao().deleteMe()
             database.classDao().deleteAll()
             database.semesterDao().deleteAll()
