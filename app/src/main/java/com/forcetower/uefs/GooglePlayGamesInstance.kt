@@ -134,7 +134,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         unlockAchievement(getString(resource))
     }
 
-    private fun unlockAchievement(achievement: String) {
+    fun unlockAchievement(achievement: String) {
         achievementsClient?.unlock(achievement)
     }
 
@@ -150,6 +150,10 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
 
     fun updateProgress(@StringRes resource: Int, value: Int) {
         val id = getString(resource)
+        achievementsClient?.setSteps(id, value)
+    }
+
+    fun updateProgress(id: String, value: Int) {
         achievementsClient?.setSteps(id, value)
     }
 }

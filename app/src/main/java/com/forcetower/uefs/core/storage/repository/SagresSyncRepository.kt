@@ -120,10 +120,10 @@ class SagresSyncRepository @Inject constructor(
                 val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 val network = if (wifi) {
                     val manager = context.getSystemService(WifiManager::class.java)
-                    manager.connectionInfo.ssid
+                    manager?.connectionInfo?.ssid ?: "Unknown"
                 } else {
                     val manager = context.getSystemService(TelephonyManager::class.java)
-                    manager.simOperatorName
+                    manager?.simOperatorName ?: "Operator"
                 }
                 Timber.d("Is on Wifi? $wifi. Network name: $network")
                 SyncRegistry(
@@ -278,10 +278,10 @@ class SagresSyncRepository @Inject constructor(
         }
 
         if (uefsStudent) {
-            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.1", false) &&
+            if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.2", false) &&
                     authRepository.getAccessTokenDirect() != null) {
                 HourglassContributeWorker.createWorker(context)
-                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.1", true).apply()
+                preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.2", true).apply()
             }
         }
 

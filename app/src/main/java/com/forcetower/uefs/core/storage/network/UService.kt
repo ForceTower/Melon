@@ -26,10 +26,6 @@ import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.EverythingSnippet
 import com.forcetower.uefs.core.model.api.ImgurUpload
 import com.forcetower.uefs.core.model.api.UResponse
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
 import com.forcetower.uefs.core.model.siecomp.ServerSession
 import com.forcetower.uefs.core.model.siecomp.Speaker
@@ -42,7 +38,12 @@ import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
+import com.forcetower.uefs.core.model.service.Achievement
+import com.forcetower.uefs.core.model.service.EvaluationDiscipline
+import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
+import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.unes.CreateStatementParams
 import com.forcetower.uefs.core.model.unes.Flowchart
@@ -167,6 +168,10 @@ interface UService {
 
     @GET("student/me")
     fun getMeStudent(): Call<UResponse<SStudentDTO>>
+
+    // --------- Achievements ---------
+    @GET("adventure/achievement")
+    fun getServerAchievements(): Call<UResponse<List<Achievement>>>
 
     // ---------------------------------
 
