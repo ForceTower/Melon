@@ -31,9 +31,11 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.service.AchDistance
+import com.forcetower.uefs.core.model.service.Achievement
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.firebase.auth.FirebaseAuth
@@ -49,8 +51,27 @@ class AdventureRepository @Inject constructor(
     private val executors: AppExecutors,
     private val auth: FirebaseAuth,
     private val preferences: SharedPreferences,
-    private val locations: AchLocationsRepository
+    private val locations: AchLocationsRepository,
+    private val service: UService
 ) {
+
+    @AnyThread
+    fun checkServerAchievements(): LiveData<List<Achievement>> {
+        val data = MutableLiveData<List<Achievement>>()
+        executors.networkIO().execute {
+            try {
+                val response = service.getServerAchievements().execute()
+                if (response.isSuccessful) {
+                    data.postValue(response.body()!!.data)
+                } else {
+                    data.postValue(emptyList())
+                }
+            } catch (error: Throwable) {
+                data.postValue(emptyList())
+            }
+        }
+        return data
+    }
 
     @AnyThread
     fun matchesAnyAchievement(location: Location): List<AchDistance> {
