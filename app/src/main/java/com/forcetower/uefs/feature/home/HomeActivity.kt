@@ -27,7 +27,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
-import androidx.annotation.IntRange
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -418,8 +417,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (!willShowAd || account == null) return
 
         val code = when (account.grouping) {
+            // Everyone with no experiment
             null, 0 -> R.string.admob_common
 
+            // Simple groups
             1 -> R.string.admob_frequency_low
             2 -> R.string.admob_frequency_medium
             3 -> R.string.admob_frequency_high
@@ -431,6 +432,25 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             7 -> R.string.admob_content_rich_text
             8 -> R.string.admob_content_everything
 
+            // Split group variance
+            11 -> R.string.admob_frequency_low_var_1
+            12 -> R.string.admob_frequency_medium_var_1
+            13 -> R.string.admob_frequency_high_var_1
+
+            14 -> R.string.admob_size_small_var_1
+            15 -> R.string.admob_size_medium_var_1
+            16 -> R.string.admob_size_big_var_1
+
+            17 -> R.string.admob_content_rich_text_var_1
+            18 -> R.string.admob_content_everything_var_1
+
+            // Default group values
+            21 -> R.string.admob_frequency_default
+            24 -> R.string.admob_size_default
+
+            // User on experiment, but with no value
+            30 -> R.string.admob_std_experiment_join
+
             else -> null
         }
 
@@ -438,7 +458,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         executors.mainThread().execute { onAdTypeSelected(code, account.grouping ?: 0) }
     }
 
-    private fun onAdTypeSelected(@StringRes code: Int, @IntRange(from = 0, to = 8) grouping: Int) {
+    private fun onAdTypeSelected(@StringRes code: Int, grouping: Int) {
         val unitId = getString(code)
         when (grouping) {
             4 -> setupSmallAd(unitId)
