@@ -25,6 +25,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.AchDistance
+import com.forcetower.uefs.core.model.service.Achievement
 import com.forcetower.uefs.core.storage.repository.AdventureRepository
 import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
@@ -71,6 +72,10 @@ class AdventureViewModel @Inject constructor(
 
     fun checkAchievements(): LiveData<Map<Int, Int>> {
         return repository.checkAchievements()
+    }
+
+    fun checkServerAchievements(): LiveData<List<Achievement>> {
+        return repository.checkServerAchievements()
     }
 
     fun checkNotConnectedAchievements(): LiveData<Map<Int, Int>> {

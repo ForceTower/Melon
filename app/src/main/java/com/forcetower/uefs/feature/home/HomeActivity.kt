@@ -47,7 +47,6 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
-import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
@@ -144,30 +143,9 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             verifyUpdates()
             viewModel.onSessionStarted()
             viewModel.account.observe(this, Observer { Unit })
+            checkServerAchievements()
         } catch (t: Throwable) {}
         moveToTask()
-        satisfactionSurvey()
-    }
-
-    private fun satisfactionSurvey() {
-        val config = remoteConfig.getBoolean("satisfaction_survey_pre_flag")
-        val answered = preferences.getBoolean("answered_forms_satisfaction_pre", false)
-        if (!config || answered || !preferences.isStudentFromUEFS()) return
-
-        val installTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
-        val checkDate = Calendar.getInstance().apply {
-            set(2019, 9, 21, 0, 0, 0)
-        }
-
-        val checkTime = checkDate.timeInMillis
-
-        if (installTime <= checkTime) {
-            startActivity(Intent(this, FormActivity::class.java))
-        } else {
-            Timber.d("Verification of date failed... User will not share opinion")
-            Timber.d("Current check date: ${checkDate.time}")
-            Timber.d("Install Time $installTime")
-        }
     }
 
     private fun verifyUpdates() {
@@ -347,6 +325,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                     updateAchievementProgress(achievement.key, achievement.value)
             }
         })
+        checkServerAchievements()
     }
 
     override fun checkNotConnectedAchievements() {
@@ -354,6 +333,20 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     override fun androidInjector() = fragmentInjector
+
+    private fun checkServerAchievements() {
+        adventureViewModel.checkServerAchievements().observe(this, Observer { achievements ->
+            achievements.forEach { achievement ->
+                try {
+                    if (achievement.progress != null) {
+                        updateAchievementProgress(achievement.identifier, achievement.progress)
+                    } else {
+                        unlockAchievement(achievement.identifier)
+                    }
+                } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+            }
+        })
+    }
 
     private fun onStateUpdateChanged(state: InstallState) {
         when {

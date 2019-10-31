@@ -85,9 +85,11 @@ abstract class UGameActivity : UActivity() {
 
     fun isConnectedToPlayGames() = mGamesInstance.isConnected()
     fun unlockAchievement(@StringRes id: Int) = mGamesInstance.unlockAchievement(id)
+    fun unlockAchievement(id: String) = mGamesInstance.unlockAchievement(id)
     fun revealAchievement(@StringRes id: Int) = mGamesInstance.revealAchievement(id)
     fun incrementAchievementProgress(@StringRes id: Int, step: Int) = mGamesInstance.incrementAchievement(id, step)
     fun updateAchievementProgress(@StringRes id: Int, value: Int) = mGamesInstance.updateProgress(id, value)
+    fun updateAchievementProgress(id: String, value: Int) = mGamesInstance.updateProgress(id, value)
     fun signOut() = mGamesInstance.disconnect()
 
     fun openAchievements() {
@@ -146,7 +148,7 @@ abstract class UGameActivity : UActivity() {
                             exception.message.isNullOrBlank() -> R.string.invalid_google_sign_in_error
                             else -> R.string.invalid_google_sign_in_error
                         }
-                        Timber.e("Exception: ${exception?.message}")
+                        Timber.e("Exception: ${exception?.message}; ${exception?.statusCode}")
                         mGamesInstance.onDisconnected()
                         val error = getString(message)
                         showSnack(error)
