@@ -28,7 +28,6 @@ import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
@@ -119,13 +118,13 @@ abstract class ClassLocationDao {
                         if (group!!.uid > 0) {
                             prepareInsertion(group!!, profile, it)
                         } else {
-                            Crashlytics.logException(Exception("Avoided exception:: Class Group -${it.classGroup}- Discipline Code: -${it.classCode}- Name: -${it.className}-"))
+                            Timber.e(Exception("Avoided exception:: Class Group -${it.classGroup}- Discipline Code: -${it.classCode}- Name: -${it.className}-"))
                         }
                     } else {
-                        Crashlytics.logException(Exception("Avoided exception:: disc_id -${discipline.uid}- smt_id: -${semester.uid}- Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
+                        Timber.e(Exception("Avoided exception:: disc_id -${discipline.uid}- smt_id: -${semester.uid}- Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
                     }
                 } else {
-                    Crashlytics.logException(Exception("Avoided exception:: Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
+                    Timber.e(Exception("Avoided exception:: Discipline Code: -${it.classCode}- Name: -${it.className}- Class Group -${it.classGroup}-"))
                 }
             }
         }
