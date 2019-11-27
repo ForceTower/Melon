@@ -32,6 +32,7 @@ import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
+import kotlin.math.max
 
 @BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
@@ -97,19 +98,31 @@ fun classAbsence(tv: TextView, desc: String?, date: String?) {
     tv.text = tv.context.getString(R.string.discipline_absence_item_format, desc ?: tv.context.getString(R.string.not_registed), date ?: tv.context.getString(R.string.not_registed))
 }
 
-@BindingAdapter(value = ["absences", "credits"], requireAll = true)
-fun totalAbsence(tv: TextView, absences: Int?, credits: Int?) {
+@BindingAdapter(value = ["absences", "absencesListSize", "credits"], requireAll = true)
+fun totalAbsence(tv: TextView, absences: Int?, absencesListSize: Int?, credits: Int?) {
     val context = tv.context
-    if (absences == null || credits == null || credits == 0) {
+    val absenceCount = max(absences ?: 0, absencesListSize ?: 0)
+    if ((absences == null && absencesListSize == null) || credits == null || credits == 0) {
         tv.text = context.getString(R.string.discipline_credits_undefined)
     } else {
         Timber.d("Credits: $credits __ Absence: $absences")
-        val left = (credits / 4) - absences
+        val left = (credits / 4) - absenceCount
         when {
             left > 0 -> tv.text = context.getString(R.string.discipline_absence_left, left)
             left == 0 -> tv.text = context.getString(R.string.you_cant_miss_a_class)
             else -> tv.text = context.getString(R.string.you_missed_to_many_classes)
         }
+    }
+}
+
+@BindingAdapter(value = ["absenceCount", "absenceAmount"], requireAll = true)
+fun absenceCount(tv: TextView, absenceCount: Int?, absenceAmount: Int?) {
+    val context = tv.context
+    val count = max(absenceCount ?: 0, absenceAmount ?: 0)
+    if (absenceCount == null && absenceAmount == null) {
+        tv.text = context.getString(R.string.discipline_credits_undefined)
+    } else {
+        tv.text = context.getString(R.string.integer_format, count)
     }
 }
 

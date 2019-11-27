@@ -31,9 +31,6 @@ buildscript {
         classpath deps.navigation.safe_args_plugin
         classpath deps.plugin.bundletool
     }
-    repositories {
-        google()
-    }
 }
 
 allprojects {
