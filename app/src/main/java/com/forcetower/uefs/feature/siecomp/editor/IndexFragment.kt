@@ -56,7 +56,7 @@ class IndexFragment : UFragment(), Injectable {
             }
 
             editorSpeaker.setOnClickListener {
-                fragmentManager?.inTransaction {
+                parentFragmentManager.inTransaction {
                     replace(R.id.fragment_container, CreateSpeakerFragment())
                     addToBackStack(null)
                 }
