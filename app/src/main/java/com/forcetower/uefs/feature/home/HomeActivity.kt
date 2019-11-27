@@ -35,6 +35,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -285,6 +286,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             mGamesInstance.changePlayerName(access.username)
             Crashlytics.setUserIdentifier(access.username)
             Crashlytics.setUserName(firebaseAuth.currentUser?.email)
+
+            analytics.setUserId(access.username)
+            analytics.setUserProperty("institution", SagresNavigator.instance.getSelectedInstitution())
+            analytics.setUserProperty("access_valid", "${access.valid}")
 
             if (!access.valid) {
                 val snack = Snackbar.make(binding.snack, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)
