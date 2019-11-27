@@ -63,6 +63,7 @@ import com.forcetower.uefs.core.storage.database.M33TO34
 import com.forcetower.uefs.core.storage.database.M34TO35
 import com.forcetower.uefs.core.storage.database.M35TO36
 import com.forcetower.uefs.core.storage.database.M36TO37
+import com.forcetower.uefs.core.storage.database.M37TO38
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import dagger.Module
 import dagger.Provides
@@ -92,7 +93,7 @@ object AppModule {
                     M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
                     M12TO13, M13TO14, M14TO15, M15TO16, M16TO17, M17TO18, M18TO19, M19TO20, M20TO21,
                     M21TO22, M22TO23, M23TO24, M24TO25, M25TO26, M26TO27, M27TO28, M28TO29, M29TO30,
-                    M30TO31, M31TO32, M32TO33, M33TO34, M34TO35, M35TO36, M36TO37
+                    M30TO31, M31TO32, M32TO33, M33TO34, M34TO35, M35TO36, M36TO37, M37TO38
                 )
                 .enableMultiInstanceInvalidation()
                 .fallbackToDestructiveMigrationOnDowngrade()

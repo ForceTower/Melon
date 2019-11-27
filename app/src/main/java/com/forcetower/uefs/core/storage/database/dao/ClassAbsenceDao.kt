@@ -61,13 +61,25 @@ abstract class ClassAbsenceDao {
                 .forEach { resetClassAbsences(it.uid) }
 
         classes.forEach {
-            val sequence = it.description.split("-")[0].trim().split(" ")[1].trim().toIntOrNull() ?: 0
-            val clazz = getClass(it.disciplineCode, it.semester)
+            try {
+                val sequence = it.description.split("-")[0].trim().split(" ")[1].trim().toIntOrNull() ?: 0
+                val clazz = getClass(it.disciplineCode, it.semester)
 
-            if (clazz != null) {
-                insert(ClassAbsence(classId = clazz.uid, profileId = profile.uid, date = it.date, description = it.description, sequence = sequence, notified = false))
-            } else {
-                Timber.e("<abs_no_class> :: Class not found for ${it.disciplineCode}_${it.semester}")
+                if (clazz != null) {
+                    insert(ClassAbsence(
+                        classId = clazz.uid,
+                        profileId = profile.uid,
+                        date = it.date,
+                        description = it.description,
+                        sequence = sequence,
+                        notified = false,
+                        grouping = it.group
+                    ))
+                } else {
+                    Timber.e("<abs_no_class> :: Class not found for ${it.disciplineCode}_${it.semester}")
+                }
+            } catch (exception: Throwable) {
+                Timber.e("Something went wrong at sequence extraction", exception)
             }
         }
     }
