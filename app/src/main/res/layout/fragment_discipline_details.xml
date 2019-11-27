@@ -95,7 +95,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:textColor="?attr/colorOnSurfaceLight"
-                    app:absences="@{viewModel.absences.size}"
+                    app:absences="@{viewModel.clazz.clazz.clazz.missedClasses}"
                     app:credits="@{viewModel.clazz.clazz.discipline().credits}"
                     app:layout_constraintEnd_toEndOf="@id/guideline_end"
                     app:layout_constraintStart_toStartOf="@id/guideline_start"
