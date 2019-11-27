@@ -288,3 +288,11 @@ object M36TO37 : Migration(36, 37) {
         database.execSQL("DELETE FROM Account")
     }
 }
+
+object M37TO38 : Migration(37, 38) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("DROP INDEX IF EXISTS `index_ClassAbsence_class_id_profile_id_sequence`")
+        database.execSQL("ALTER TABLE ClassAbsence ADD COLUMN grouping TEXT NOT NULL DEFAULT 'inv'")
+        database.execSQL("CREATE UNIQUE INDEX `index_ClassAbsence_class_id_profile_id_sequence_grouping` ON ClassAbsence (`class_id`, `profile_id`, `sequence`, `grouping`)")
+    }
+}

@@ -34,7 +34,7 @@ import java.util.UUID
 ], indices = [
     Index(value = ["profile_id"]),
     Index(value = ["class_id"], unique = false),
-    Index(value = ["class_id", "profile_id", "sequence"], unique = true),
+    Index(value = ["class_id", "profile_id", "sequence", "grouping"], unique = true),
     Index(value = ["uuid"], unique = true)
 ])
 data class ClassAbsence(
@@ -47,6 +47,7 @@ data class ClassAbsence(
     val sequence: Int,
     val description: String,
     val date: String,
+    val grouping: String,
     val uuid: String = UUID.randomUUID().toString(),
     val notified: Boolean
 ) {
