@@ -21,7 +21,7 @@ versions.preference = "1.1.0"
 versions.fragment = "1.2.0-rc01"
 
 // Architecture
-versions.room = "2.2.1"
+versions.room = "2.2.2"
 versions.lifecycle = '2.2.0-rc01'
 versions.paging = "2.1.0"
 versions.navigation = '2.2.0-rc01'
