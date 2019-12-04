@@ -296,3 +296,9 @@ object M37TO38 : Migration(37, 38) {
         database.execSQL("CREATE UNIQUE INDEX `index_ClassAbsence_class_id_profile_id_sequence_grouping` ON ClassAbsence (`class_id`, `profile_id`, `sequence`, `grouping`)")
     }
 }
+
+object M38TO39 : Migration(38, 39) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ClassLocation ADD COLUMN hidden_on_schedule INTEGER NOT NULL DEFAULT 0")
+    }
+}

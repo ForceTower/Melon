@@ -62,6 +62,7 @@ class OverviewFragment : UFragment(), Injectable {
 
         viewModel.clazz.observe(viewLifecycleOwner, Observer { overviewAdapter.currentClazz = it })
         viewModel.group.observe(viewLifecycleOwner, Observer { overviewAdapter.currentGroup = it })
+        viewModel.schedule.observe(viewLifecycleOwner, Observer { overviewAdapter.currentSchedule = it })
     }
 
     companion object {
