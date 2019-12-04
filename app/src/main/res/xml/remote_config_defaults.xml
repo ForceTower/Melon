@@ -80,4 +80,8 @@
         <key>satisfaction_survey_pre_flag</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>feature_flag_demand_commander</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
