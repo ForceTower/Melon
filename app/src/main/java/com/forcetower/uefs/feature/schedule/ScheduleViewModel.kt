@@ -35,7 +35,7 @@ class ScheduleViewModel @Inject constructor(
     private val sagresSyncRepository: SagresSyncRepository
 ) : ViewModel(), ScheduleActions {
 
-    val scheduleSrc by lazy { database.classLocationDao().getCurrentSchedule() }
+    val scheduleSrc by lazy { database.classLocationDao().getCurrentVisibleSchedule() }
 
     override fun onLongClick(view: View): Boolean {
         Game2048Activity.startActivity(view.context)

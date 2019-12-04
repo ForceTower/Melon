@@ -164,3 +164,9 @@ fun absenceDescription(tv: TextView, description: String?) {
     val text = desc.substring(desc.indexOf("-") + 1).trim()
     tv.text = text
 }
+
+@BindingAdapter(value = ["disciplineStartsAtText", "disciplineEndsAtText"])
+fun disciplineStartEndGenerator(tv: TextView, startsAt: String?, endsAt: String?) {
+    val context = tv.context
+    tv.text = context.getString(R.string.discipline_start_end_format, startsAt, endsAt)
+}

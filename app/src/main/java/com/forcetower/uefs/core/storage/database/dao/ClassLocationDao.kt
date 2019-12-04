@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -47,12 +48,24 @@ abstract class ClassLocationDao {
     abstract fun getAllLocationsDirect(): List<ClassLocation>
 
     @Transaction
-    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1")
-    abstract fun getCurrentSchedule(): LiveData<List<LocationWithGroup>>
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
+    abstract fun getCurrentVisibleSchedule(): LiveData<List<LocationWithGroup>>
 
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
 
+    @Query("SELECT cl.* FROM ClassLocation cl INNER JOIN ClassGroup cg ON cl.group_id = cg.uid WHERE cg.class_id = :classId GROUP BY cl.uid")
+    abstract fun getLocationsOfClass(classId: Long): LiveData<List<ClassLocation>>
+
+    @WorkerThread
+    @Query("UPDATE ClassLocation SET hidden_on_schedule = :hide WHERE group_id = :groupId AND day = :day AND starts_at = :startsAt AND ends_at = :endsAt AND profile_id = :profileId")
+    abstract fun setClassHiddenHidden(hide: Boolean, groupId: Long, day: String, startsAt: String, endsAt: String, profileId: Long): Int
+
+    @WorkerThread
+    @Query("UPDATE ClassLocation SET hidden_on_schedule = :hide WHERE uid = :locationId")
+    abstract fun setClassHiddenHidden(hide: Boolean, locationId: Long): Int
+
+    @WorkerThread
     @Transaction
     open fun putSchedule(locations: List<SagresDisciplineClassLocation>) {
         if (locations.isEmpty()) return
@@ -60,6 +73,7 @@ abstract class ClassLocationDao {
         val semester = selectCurrentSemesterDirect()
         val profile = getMeProfile()
         if (semester == null || profile == null) return
+        val hidden = getHiddenLocations()
         wipeScheduleProfile(profile.uid)
 
         locations.forEach {
@@ -128,16 +142,21 @@ abstract class ClassLocationDao {
                 }
             }
         }
+
+        hidden.forEach { setClassHiddenHidden(true, it.groupId, it.day, it.startsAt, it.endsAt, it.profileId) }
     }
 
+    @Query("SELECT * FROM ClassLocation WHERE hidden_on_schedule = 1")
+    protected abstract fun getHiddenLocations(): List<ClassLocation>
+
     @Query("SELECT * FROM Discipline WHERE name = :className")
-    abstract fun selectDisciplineByName(className: String): Discipline?
+    protected abstract fun selectDisciplineByName(className: String): Discipline?
 
     @Query("SELECT * FROM Class WHERE discipline_id = :disciplineId AND semester_id = :semesterId")
-    abstract fun selectClass(disciplineId: Long, semesterId: Long): Class?
+    protected abstract fun selectClass(disciplineId: Long, semesterId: Long): Class?
 
     @Query("SELECT * FROM ClassGroup WHERE class_id = :classId AND `group` = :group")
-    abstract fun selectGroup(classId: Long, group: String): ClassGroup?
+    protected abstract fun selectGroup(classId: Long, group: String): ClassGroup?
 
     private fun prepareInsertion(group: ClassGroup, profile: Profile, location: SagresDisciplineClassLocation) {
         val entity = ClassLocation(
