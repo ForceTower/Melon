@@ -130,8 +130,9 @@ class HomeBottomFragment : UFragment(), Injectable {
 
     private fun featureFlags() {
         val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
+        val demandCommandFlag = remoteConfig.getBoolean("feature_flag_demand_commander")
         viewModel.flags.observe(viewLifecycleOwner, Observer {
-            if (it?.demandOpen == true || demandFlag) {
+            if (demandCommandFlag && (it?.demandOpen == true || demandFlag)) {
                 toggleItem(R.id.demand, true)
             }
         })
