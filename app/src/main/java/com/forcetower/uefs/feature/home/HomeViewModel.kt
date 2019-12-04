@@ -75,8 +75,8 @@ class HomeViewModel @Inject constructor(
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Resource<Account>> = accountRepository.getAccount()
-
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
+    val scheduleHideCount: LiveData<Int> = dataRepository.getScheduleHideCount()
 
     fun uploadImageToStorage() {
         val uri = selectImageUri

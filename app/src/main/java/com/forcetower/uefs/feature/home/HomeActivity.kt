@@ -270,6 +270,11 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.connectToServiceIfNeeded()
             viewModel.onSyncSessions()
         }
+        viewModel.scheduleHideCount.observe(this, Observer {
+            Timber.d("Schedule hidden stuff: $it")
+            analytics.setUserProperty("using_schedule_hide", "${it > 0}")
+            analytics.setUserProperty("using_schedule_hide_count", "$it")
+        })
     }
 
     private fun onAccessUpdate(access: Access?) {

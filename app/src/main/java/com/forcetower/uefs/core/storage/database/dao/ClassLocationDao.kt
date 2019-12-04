@@ -65,6 +65,9 @@ abstract class ClassLocationDao {
     @Query("UPDATE ClassLocation SET hidden_on_schedule = :hide WHERE uid = :locationId")
     abstract fun setClassHiddenHidden(hide: Boolean, locationId: Long): Int
 
+    @Query("SELECT COUNT(uid) FROM ClassLocation WHERE hidden_on_schedule = 1")
+    abstract fun getHiddenClassesCount(): LiveData<Int>
+
     @WorkerThread
     @Transaction
     open fun putSchedule(locations: List<SagresDisciplineClassLocation>) {
