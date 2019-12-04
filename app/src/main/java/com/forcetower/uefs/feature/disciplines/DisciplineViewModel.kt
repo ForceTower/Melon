@@ -30,6 +30,7 @@ import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
+import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
@@ -77,6 +78,10 @@ class DisciplineViewModel @Inject constructor(
     val classItems: LiveData<List<ClassItem>>
         get() = _classItems
 
+    private val _schedule = MediatorLiveData<List<ClassLocation>>()
+    val schedule: LiveData<List<ClassLocation>>
+        get() = _schedule
+
     private val _loadClassDetails = MediatorLiveData<Boolean>()
     val loadClassDetails: LiveData<Boolean>
         get() = _loadClassDetails
@@ -121,6 +126,10 @@ class DisciplineViewModel @Inject constructor(
         _classItems.addSource(classGroupId) {
             refreshClassItems(it)
         }
+        _schedule.addSource(classId) {
+            refreshSchedule(it)
+        }
+
         _loadClassDetails.addSource(classGroupId) {
             if (it != null) {
                 val src = repository.loadClassDetails(it)
@@ -136,6 +145,14 @@ class DisciplineViewModel @Inject constructor(
                     _group.value = value?.group
                 }
             }
+        }
+    }
+
+    private fun refreshSchedule(classId: Long?) {
+        classId ?: return
+        val source = repository.getLocationsFromClass(classId)
+        _schedule.addSource(source) { value ->
+            _schedule.value = value
         }
     }
 
@@ -245,5 +262,10 @@ class DisciplineViewModel @Inject constructor(
     override fun onClassItemClicked(classItem: ClassItem?) {
         classItem ?: return
         _classItemClick.value = Event(classItem)
+    }
+
+    fun updateLocationVisibility(location: ClassLocation) {
+        val hideStatus = !location.hiddenOnSchedule
+        repository.updateLocationVisibilityAsync(location.uid, hideStatus)
     }
 }

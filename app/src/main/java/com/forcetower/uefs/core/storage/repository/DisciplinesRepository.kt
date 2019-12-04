@@ -29,6 +29,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.Class
+import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -64,7 +65,9 @@ class DisciplinesRepository @Inject constructor(
         return database.classAbsenceDao().getMyAbsenceFromClass(classId)
     }
 
-    fun getAbsencesAmount(classId: Long) = database.classAbsenceDao().getMissedClassesAmount(classId)
+    fun getAbsencesAmount(classId: Long): LiveData<Int> {
+        return database.classAbsenceDao().getMissedClassesAmount(classId)
+    }
 
     fun getMaterialsFromGroup(classGroupId: Long): LiveData<List<ClassMaterial>> {
         return database.classMaterialDao().getMaterialsFromGroup(classGroupId)
@@ -72,6 +75,10 @@ class DisciplinesRepository @Inject constructor(
 
     fun getClassItemsFromGroup(classGroupId: Long): LiveData<List<ClassItem>> {
         return database.classItemDao().getClassItemsFromGroup(classGroupId)
+    }
+
+    fun getLocationsFromClass(classId: Long): LiveData<List<ClassLocation>> {
+        return database.classLocationDao().getLocationsOfClass(classId)
     }
 
     @AnyThread
@@ -122,5 +129,11 @@ class DisciplinesRepository @Inject constructor(
 
     fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>> {
         return database.classMaterialDao().getMaterialsFromClassItem(classItemId)
+    }
+
+    fun updateLocationVisibilityAsync(location: Long, status: Boolean) {
+        executors.diskIO().execute {
+            database.classLocationDao().setClassHiddenHidden(status, location)
+        }
     }
 }

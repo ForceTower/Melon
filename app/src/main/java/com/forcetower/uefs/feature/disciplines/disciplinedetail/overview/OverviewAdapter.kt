@@ -28,8 +28,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
+import com.forcetower.uefs.databinding.ItemDisciplineScheduleHideBinding
 import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
 import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
@@ -52,21 +54,20 @@ class OverviewAdapter(
         differ.submitList(buildMergedList(group = value))
     }
 
+    var currentSchedule = listOf<ClassLocation>()
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(schedule = value))
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()
         return when (viewType) {
-            R.layout.item_discipline_short -> OverviewHolder.ShortHolder(
-                parent.inflate(viewType)
-            )
-            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(
-                parent.inflate(viewType)
-            )
-            R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(
-                parent.inflate(viewType)
-            )
-            else -> OverviewHolder.SimpleHolder(
-                inflater.inflate(viewType, parent, false)
-            ) /* Draft or Statistics */
+            R.layout.item_discipline_short -> OverviewHolder.ShortHolder(parent.inflate(viewType))
+            R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(parent.inflate(viewType))
+            R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(parent.inflate(viewType))
+            R.layout.item_discipline_schedule_hide -> OverviewHolder.ScheduleHolder(parent.inflate(viewType))
+            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false)) /* Draft or Statistics */
         }
     }
 
@@ -88,6 +89,12 @@ class OverviewAdapter(
                 viewModel = this@OverviewAdapter.viewModel
                 executePendingBindings()
             }
+            is OverviewHolder.ScheduleHolder -> holder.binding.apply {
+                lifecycleOwner = this@OverviewAdapter.lifecycleOwner
+                viewModel = this@OverviewAdapter.viewModel
+                location = differ.currentList[position] as? ClassLocation
+                executePendingBindings()
+            }
         }
     }
 
@@ -100,17 +107,19 @@ class OverviewAdapter(
             is DisciplineTeacher -> R.layout.item_discipline_teacher
             is DisciplineResume -> R.layout.item_discipline_goals
             is Statistics -> R.layout.item_discipline_statistics_short
+            is ScheduleHeader -> R.layout.item_discipline_schedule_header
+            is ClassLocation -> R.layout.item_discipline_schedule_hide
             else -> throw IllegalStateException("No view type defined for position $position")
         }
     }
 
     private fun buildMergedList(
         clazz: ClassFullWithGroup? = currentClazz,
-        group: ClassGroup? = currentGroup
+        group: ClassGroup? = currentGroup,
+        schedule: List<ClassLocation> = currentSchedule
     ): List<Any> {
         val list = mutableListOf<Any>()
         if (clazz != null) {
-
             if (group?.draft == true) {
                 list += DisciplineDraft
             }
@@ -127,14 +136,17 @@ class OverviewAdapter(
                 list += DisciplineResume
             }
 
-            list += Statistics
+            if (schedule.isNotEmpty()) {
+                list += ScheduleHeader
+                list.addAll(schedule)
+            }
+
+            // list += Statistics
         }
         return list
     }
 
-    private val differ = AsyncListDiffer<Any>(this,
-        DiffCallback
-    )
+    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
 }
 
 sealed class OverviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -142,6 +154,7 @@ sealed class OverviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
     class ShortHolder(val binding: ItemDisciplineShortBinding) : OverviewHolder(binding.root)
     class TeacherHolder(val binding: ItemDisciplineTeacherBinding) : OverviewHolder(binding.root)
     class ResumeHolder(val binding: ItemDisciplineGoalsBinding) : OverviewHolder(binding.root)
+    class ScheduleHolder(val binding: ItemDisciplineScheduleHideBinding) : OverviewHolder(binding.root)
 }
 
 private object DiffCallback : DiffUtil.ItemCallback<Any>() {
@@ -152,12 +165,17 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             oldItem === DisciplineTeacher && newItem === DisciplineTeacher -> true
             oldItem === DisciplineResume && newItem === DisciplineResume -> true
             oldItem === Statistics && newItem === Statistics -> true
+            oldItem === ScheduleHeader && newItem === ScheduleHeader -> true
+            oldItem is ClassLocation && newItem is ClassLocation -> oldItem.uid == newItem.uid
             else -> false
         }
     }
 
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
-        return true
+        return when {
+            oldItem is ClassLocation && newItem is ClassLocation -> oldItem == newItem
+            else -> true
+        }
     }
 }
 
@@ -166,3 +184,4 @@ private object DisciplineShort
 private object DisciplineTeacher
 private object DisciplineResume
 private object Statistics
+private object ScheduleHeader
