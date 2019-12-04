@@ -111,4 +111,8 @@ class SagresDataRepository @Inject constructor(
         }
         return result
     }
+
+    fun getScheduleHideCount(): LiveData<Int> {
+        return database.classLocationDao().getHiddenClassesCount()
+    }
 }
