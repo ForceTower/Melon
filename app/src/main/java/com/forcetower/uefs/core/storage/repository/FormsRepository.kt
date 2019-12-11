@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.storage.database.UDatabase
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
@@ -31,8 +32,10 @@ import javax.inject.Inject
 class FormsRepository @Inject constructor(
     private val client: OkHttpClient,
     private val executors: AppExecutors,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    database: UDatabase
 ) {
+    val account = database.accountDao().getAccount()
 
     fun submitAnswers(data: Map<String, String>) {
         executors.networkIO().execute {
@@ -48,7 +51,7 @@ class FormsRepository @Inject constructor(
         }.build()
 
         val request = Request.Builder()
-                .url("https://docs.google.com/forms/d/e/1FAIpQLSdDRh8qIM5J23Gi2BTYDZxFl5d3700l2X8R7pcMXJ27LYhCXg/formResponse")
+                .url("https://docs.google.com/forms/u/0/d/e/1FAIpQLSdSAI5rfAeN7dBf1OGeTl_otPyWmguZg1-_HnazSgqsBxc_Yg/formResponse")
                 .post(form)
                 .build()
 
@@ -58,7 +61,7 @@ class FormsRepository @Inject constructor(
             val response = call.execute()
             if (response.isSuccessful) {
                 Timber.d("Answers submitted!")
-                preferences.edit().putBoolean("answered_forms_satisfaction_pre", true).apply()
+                preferences.edit().putBoolean("answered_forms_satisfaction_pos", true).apply()
             } else {
                 Timber.e("Failed to answer survey due to error ${response.code}")
             }

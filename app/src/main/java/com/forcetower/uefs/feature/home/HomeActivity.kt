@@ -48,6 +48,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
@@ -147,6 +148,28 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             checkServerAchievements()
         } catch (t: Throwable) {}
         moveToTask()
+        satisfactionSurvey()
+    }
+
+    private fun satisfactionSurvey() {
+        val config = remoteConfig.getBoolean("satisfaction_survey_pos_flag")
+        val answered = preferences.getBoolean("answered_forms_satisfaction_pos", false)
+        if (!config || answered || !preferences.isStudentFromUEFS()) return
+
+        val installTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
+        val checkDate = Calendar.getInstance().apply {
+            set(2019, 12, 1, 0, 0, 0)
+        }
+
+        val checkTime = checkDate.timeInMillis
+
+        if (installTime <= checkTime) {
+            startActivity(Intent(this, FormActivity::class.java))
+        } else {
+            Timber.d("Verification of date failed... User will not share opinion")
+            Timber.d("Current check date: ${checkDate.time}")
+            Timber.d("Install Time $installTime")
+        }
     }
 
     private fun verifyUpdates() {

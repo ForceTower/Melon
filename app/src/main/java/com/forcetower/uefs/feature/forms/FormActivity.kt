@@ -2,6 +2,7 @@ package com.forcetower.uefs.feature.forms
 
 import android.os.Bundle
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.vm.EventObserver
@@ -32,6 +33,8 @@ class FormActivity : UActivity(), HasAndroidInjector {
         adapter = FragmentAdapter(supportFragmentManager)
         binding.viewPager.adapter = adapter
 
+        viewModel.account.observe(this, Observer { viewModel.answer("entry.182173763", it.grouping?.toString() ?: "0") })
+
         val questions = createQuestions()
         currentData = questions
         createFragmentsList(questions)
@@ -57,7 +60,7 @@ class FormActivity : UActivity(), HasAndroidInjector {
                 "Onde 1 significa pouco satisfeito e 5 significa muito satisfeito",
                 teacher = false,
                 discipline = false,
-                formId = "entry.729050027"
+                formId = "entry.745006824"
             ),
             Question(
                 1,
@@ -65,7 +68,7 @@ class FormActivity : UActivity(), HasAndroidInjector {
                 "Onde 1 significa não incomoda e 5 significa incomoda muito",
                 teacher = false,
                 discipline = false,
-                formId = "entry.611283944"
+                formId = "entry.917493162"
             ),
             Question(
                 2,
@@ -73,7 +76,7 @@ class FormActivity : UActivity(), HasAndroidInjector {
                 "Onde 1 significa de jeito nenhum e 5 com certeza recomendo",
                 teacher = false,
                 discipline = false,
-                formId = "entry.637152166"
+                formId = "entry.1382232665"
             )
         )
     }
