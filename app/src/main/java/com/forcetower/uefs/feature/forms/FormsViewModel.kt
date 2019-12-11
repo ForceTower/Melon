@@ -17,12 +17,18 @@ class FormsViewModel @Inject constructor(
     val nextQuestion: LiveData<Event<Unit>>
         get() = _nextQuestion
 
+    val account = repository.account
+
     fun onNextQuestion() {
         _nextQuestion.value = Event(Unit)
     }
 
     fun answer(id: String, rating: Float) {
         answers[id] = rating.toInt().toString()
+    }
+
+    fun answer(id: String, value: String) {
+        answers[id] = value
     }
 
     fun submitAnswers() {
