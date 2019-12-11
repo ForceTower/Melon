@@ -158,7 +158,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
         val installTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
         val checkDate = Calendar.getInstance().apply {
-            set(2019, 12, 1, 0, 0, 0)
+            set(2019, 11, 1, 0, 0, 0)
         }
 
         val checkTime = checkDate.timeInMillis
