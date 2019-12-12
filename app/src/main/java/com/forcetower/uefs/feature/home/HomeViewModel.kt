@@ -46,6 +46,7 @@ import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
+import com.google.android.play.core.install.model.AppUpdateType
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -60,6 +61,9 @@ class HomeViewModel @Inject constructor(
     private val accountRepository: AccountRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
+
+    @AppUpdateType
+    var updateType: Int? = null
 
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>

@@ -201,6 +201,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun requestUpdate(@AppUpdateType type: Int, info: AppUpdateInfo) {
+        viewModel.updateType = type
         updateManager.startUpdateFlowForResult(info, type, this, REQUEST_IN_APP_UPDATE)
     }
 
@@ -213,8 +214,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         super.onResume()
         viewModel.onUserInteraction()
         updateManager.appUpdateInfo.addOnSuccessListener {
-            if (it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+            if (viewModel.updateType == AppUpdateType.IMMEDIATE && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+            } else if (viewModel.updateType == AppUpdateType.FLEXIBLE && it.installStatus() == InstallStatus.DOWNLOADED) {
+                showSnackbarForRestartRequired()
             }
         }
     }
