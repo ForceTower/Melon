@@ -51,7 +51,7 @@ versions.lottie = "2.8.0"
 versions.image_cropper = "2.8.0"
 
 // Google Services
-versions.gp_core = "1.6.0"
+versions.gp_core = "1.6.4"
 versions.gp_auth = "17.0.0"
 versions.gp_games = "18.0.0"
 versions.gp_location = "17.0.0"
