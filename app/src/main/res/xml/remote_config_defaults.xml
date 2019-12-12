@@ -84,4 +84,8 @@
         <key>feature_flag_demand_commander</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>satisfaction_survey_pos_flag</key>
+        <value>false</value>
+    </entry>
 </defaultsMap>
