@@ -74,31 +74,37 @@ class DocumentsRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun download(data: MutableLiveData<Resource<SagresDocument>>?, document: Document) {
+    private fun download(data: MutableLiveData<Resource<SagresDocument>>, document: Document) {
         val access = database.accessDao().getAccessDirect()
         if (access == null) {
-            data?.postValue(Resource.error("Access is null", 700, Exception("No Access")))
+            data.postValue(Resource.error("Access is null", 700, Exception("No Access")))
         } else {
             database.documentDao().updateDownloading(true, document.value)
             val login = SagresNavigator.instance.login(access.username, access.password)
             if (login.status == Status.INVALID_LOGIN) {
                 Timber.d("Login failed. Login status is: ${login.status}")
-                data?.postValue(Resource.error("Login Failed", 800, Exception("Login Failed")))
+                data.postValue(Resource.error("Login Failed", 800, Exception("Login Failed")))
             } else {
                 val response = when (document) {
                     Document.ENROLLMENT -> SagresNavigator.instance.downloadEnrollment(File(folder, document.value))
                     Document.FLOWCHART -> SagresNavigator.instance.downloadFlowchart(File(folder, document.value))
                     Document.HISTORY -> SagresNavigator.instance.downloadHistory(File(folder, document.value))
                 }
-                database.documentDao().updateDownloading(false, document.value)
-                database.documentDao().updateDownloaded(File(folder, document.value).exists(), document.value)
+
+                database.documentDao().run {
+                    updateDownloading(false, document.value)
+                    updateDownloaded(File(folder, document.value).exists(), document.value)
+                    if (response.status == Status.SUCCESS) {
+                        updateDate(System.currentTimeMillis(), document.value)
+                    }
+                }
 
                 Timber.d("Response Document Result: ${response.status}")
                 val value = database.documentDao().getDocumentDirect(document.value)
                 if (response.status == Status.SUCCESS) {
-                    data?.postValue(Resource.success(value))
+                    data.postValue(Resource.success(value))
                 } else {
-                    data?.postValue(Resource.error(response.message ?: "Generic error", response.code, null))
+                    data.postValue(Resource.error(response.message ?: "Generic error", response.code, null))
                 }
             }
         }
