@@ -25,6 +25,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentUnesMessagesBinding
@@ -38,6 +40,9 @@ class UnesMessagesFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentUnesMessagesBinding
     private lateinit var viewModel: MessagesViewModel
 
+    private lateinit var messagesAdapter: UnesMessageAdapter
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+
     init { displayName = "UNES" }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -48,7 +53,7 @@ class UnesMessagesFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val messagesAdapter = UnesMessageAdapter(this, viewModel)
+        messagesAdapter = UnesMessageAdapter(this, viewModel)
         binding.recyclerSagresMessages.apply {
             adapter = messagesAdapter
             itemAnimator?.run {
@@ -59,6 +64,33 @@ class UnesMessagesFragment : UFragment(), Injectable {
             }
         }
 
+        val manager = binding.recyclerSagresMessages.layoutManager as LinearLayoutManager
+        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
+            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
+                super.onItemRangeInserted(positionStart, itemCount)
+//                if (positionStart == 0) {
+//                    manager.smoothScrollToPosition(binding.recyclerSagresMessages, null, 0)
+//                }
+                val count = messagesAdapter.itemCount
+                val lastVisiblePosition = manager.findLastCompletelyVisibleItemPosition()
+
+                if (lastVisiblePosition == -1 || positionStart >= count - 1 && lastVisiblePosition == positionStart - 1) {
+                    binding.recyclerSagresMessages.scrollToPosition(positionStart)
+                } else {
+                    binding.recyclerSagresMessages.scrollToPosition(count - 1)
+                }
+            }
+        }
+
+        messagesAdapter.registerAdapterDataObserver(adapterDataObserver)
         viewModel.unesMessages.observe(viewLifecycleOwner, Observer { messagesAdapter.submitList(it) })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        // safe clean-up (prob unnecessary)
+        if (::adapterDataObserver.isInitialized) {
+            messagesAdapter.unregisterAdapterDataObserver(adapterDataObserver)
+        }
     }
 }
