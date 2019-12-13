@@ -148,8 +148,10 @@ class HomeBottomFragment : UFragment(), Injectable {
         val hourglass = remoteConfig.getBoolean("feature_flag_evaluation") && uefsStudent
         toggleItem(R.id.evaluation, hourglass)
 
+        val bigTray = remoteConfig.getBoolean("feature_flag_big_tray") && uefsStudent
+        toggleItem(R.id.big_tray, bigTray)
+
         toggleItem(R.id.adventure, uefsStudent)
-        toggleItem(R.id.big_tray, uefsStudent)
         toggleItem(R.id.events, false)
         toggleItem(R.id.flowchart, uefsStudent)
     }
