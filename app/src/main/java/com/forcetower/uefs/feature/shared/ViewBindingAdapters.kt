@@ -44,6 +44,9 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
 import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 @BindingAdapter("clipToCircle")
 fun clipToCircle(view: View, clip: Boolean) {
@@ -153,6 +156,14 @@ fun accountName(tv: TextView, name: String?) {
     val titled = WordUtils.toTitleCase(real)
     val formatted = tv.context.getString(R.string.evaluation_welcome, titled)
     tv.text = formatted
+}
+
+@BindingAdapter("dateFromLong")
+fun dateFromLong(view: TextView, value: Long?) {
+    value ?: return
+    val format = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+    val str = format.format(Date(value))
+    view.text = str
 }
 
 // @BindingAdapter("circleMax")

@@ -43,6 +43,9 @@ interface DocumentDao {
     @Query("UPDATE SagresDocument SET downloading = :downloading WHERE type = :type")
     fun updateDownloading(downloading: Boolean, type: String)
 
+    @Query("UPDATE SagresDocument SET date = :date WHERE type = :type")
+    fun updateDate(date: Long, type: String)
+
     @Query("SELECT * FROM SagresDocument WHERE type = :type LIMIT 1")
     fun getDocumentDirect(type: String): SagresDocument?
 
