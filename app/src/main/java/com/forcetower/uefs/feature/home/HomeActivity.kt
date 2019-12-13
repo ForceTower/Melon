@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.home
 
-import android.app.Activity
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -28,7 +27,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
-import android.util.Log
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -392,7 +390,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             InstallStatus.DOWNLOADED -> {
                 updateManager.unregisterListener(updateListener)
                 showSnackbarForRestartRequired()
-
             }
             InstallStatus.FAILED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
             InstallStatus.CANCELED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
