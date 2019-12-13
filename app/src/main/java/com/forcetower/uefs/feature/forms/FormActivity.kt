@@ -13,6 +13,7 @@ import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import timber.log.Timber
 import javax.inject.Inject
 
 class FormActivity : UActivity(), HasAndroidInjector {
@@ -33,7 +34,13 @@ class FormActivity : UActivity(), HasAndroidInjector {
         adapter = FragmentAdapter(supportFragmentManager)
         binding.viewPager.adapter = adapter
 
-        viewModel.account.observe(this, Observer { viewModel.answer("entry.182173763", it.grouping?.toString() ?: "0") })
+        viewModel.account.observe(this, Observer {
+            try {
+                viewModel.answer("entry.182173763", it?.grouping?.toString() ?: "0")
+            } catch (error: Throwable) {
+                Timber.e(error)
+            }
+        })
 
         val questions = createQuestions()
         currentData = questions
