@@ -173,14 +173,14 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun verifyUpdates() {
-        val check = preferences.getInt("daily_check_updates", -1)
-        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-        if (hour >= check + 6) {
-            Timber.d("Update check postponed")
-            return
-        }
+//        val check = preferences.getInt("daily_check_updates", -1)
+//        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
+//        if (hour >= check + 6) {
+//            Timber.d("Update check postponed")
+//            return
+//        }
 
-        preferences.edit().putInt("daily_check_updates", hour).apply()
+//        preferences.edit().putInt("daily_check_updates", hour).apply()
 
         val updateTask = updateManager.appUpdateInfo
         val required = remoteConfig.getLong("version_disable")
@@ -202,24 +202,13 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
     private fun requestUpdate(@AppUpdateType type: Int, info: AppUpdateInfo) {
         viewModel.updateType = type
+        updateManager.registerListener(updateListener)
         updateManager.startUpdateFlowForResult(info, type, this, REQUEST_IN_APP_UPDATE)
     }
 
     override fun onUserInteraction() {
         super.onUserInteraction()
         viewModel.onUserInteraction()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        viewModel.onUserInteraction()
-        updateManager.appUpdateInfo.addOnSuccessListener {
-            if (viewModel.updateType == AppUpdateType.IMMEDIATE && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
-            } else if (viewModel.updateType == AppUpdateType.FLEXIBLE && it.installStatus() == InstallStatus.DOWNLOADED) {
-                showSnackbarForRestartRequired()
-            }
-        }
     }
 
     override fun onStart() {
@@ -384,14 +373,27 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         })
     }
 
+    override fun onResume() {
+        super.onResume()
+        viewModel.onUserInteraction()
+        updateManager.appUpdateInfo.addOnSuccessListener {
+            if (viewModel.updateType == AppUpdateType.IMMEDIATE && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
+                updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+            } else if (viewModel.updateType == AppUpdateType.FLEXIBLE && it.installStatus() == InstallStatus.DOWNLOADED) {
+                showSnackbarForRestartRequired()
+            }
+        }
+    }
+
     private fun onStateUpdateChanged(state: InstallState) {
-        when {
-            state.installStatus() == InstallStatus.DOWNLOADED -> {
+        when (state.installStatus()) {
+            InstallStatus.DOWNLOADED -> {
                 updateManager.unregisterListener(updateListener)
                 showSnackbarForRestartRequired()
             }
-            state.installStatus() == InstallStatus.FAILED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
-            state.installStatus() == InstallStatus.CANCELED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
+            InstallStatus.FAILED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
+            InstallStatus.CANCELED -> showSnack(getString(R.string.in_app_update_request_failed_or_canceled))
+            else -> Unit
         }
     }
 
@@ -415,9 +417,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                 RESULT_IN_APP_UPDATE_FAILED -> {
                     val message = getString(R.string.in_app_update_request_failed)
                     showSnack(message, true)
-                }
-                else -> {
-                    updateManager.registerListener(updateListener)
                 }
             }
         }
