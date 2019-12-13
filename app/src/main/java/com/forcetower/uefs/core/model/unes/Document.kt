@@ -43,6 +43,7 @@ data class SagresDocument(
     }
 }
 
+// TODO This is just bad... Android doesn't do well with enums. Change this!
 enum class Document(val value: String) {
     ENROLLMENT("enrollment.pdf"),
     FLOWCHART("flowchart.pdf"),
