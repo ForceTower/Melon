@@ -618,7 +618,8 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
         locations ?: return
-        database.classLocationDao().putSchedule(locations)
+        val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
+        database.classLocationDao().putSchedule(locations, ordering)
     }
 
     @WorkerThread
