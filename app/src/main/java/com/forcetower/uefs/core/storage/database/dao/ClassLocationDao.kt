@@ -70,10 +70,14 @@ abstract class ClassLocationDao {
 
     @WorkerThread
     @Transaction
-    open fun putSchedule(locations: List<SagresDisciplineClassLocation>) {
+    open fun putSchedule(locations: List<SagresDisciplineClassLocation>, deterministic: Boolean) {
         if (locations.isEmpty()) return
 
-        val semester = selectCurrentSemesterDirect()
+        val semester = if (deterministic) {
+            selectCurrentSemesterDirect()
+        } else {
+            selectAllSemestersDirect().min()
+        }
         val profile = getMeProfile()
         if (semester == null || profile == null) return
         val hidden = getHiddenLocations()
@@ -191,6 +195,9 @@ abstract class ClassLocationDao {
     // There's a really rare bug (1 occurrence) where the user got no semesters defined
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC LIMIT 1")
     protected abstract fun selectCurrentSemesterDirect(): Semester?
+
+    @Query("SELECT * FROM Semester")
+    protected abstract fun selectAllSemestersDirect(): List<Semester>
 
     // TODO Find a better way to wipe current locations
     @Query("DELETE FROM ClassLocation WHERE profile_id = :profileId")
