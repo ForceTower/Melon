@@ -187,7 +187,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         val updateTask = updateManager.appUpdateInfo
         val required = remoteConfig.getLong("version_disable")
         updateTask.addOnSuccessListener {
-            Log.d("com.forcetower.uefs", "Update task ${it.availableVersionCode()} ${it.installStatus()}")
             if (it.installStatus() == InstallStatus.DOWNLOADED) {
                 showSnackbarForRestartRequired()
             } else if (it.updateAvailability() == UpdateAvailability.UPDATE_AVAILABLE) {
@@ -195,7 +194,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                     requestUpdate(AppUpdateType.IMMEDIATE, it)
                 } else if (it.isUpdateTypeAllowed(AppUpdateType.FLEXIBLE)) {
                     requestUpdate(AppUpdateType.FLEXIBLE, it)
-                    Log.d("com.forcetower.uefs", "Requesting flexible update")
                 } else {
                     val message = getString(R.string.in_app_update_no_update_type)
                     showSnack(message)
@@ -383,19 +381,16 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         updateManager.appUpdateInfo.addOnSuccessListener {
             if (viewModel.updateType == AppUpdateType.IMMEDIATE && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
                 updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
-            } else if (viewModel.updateType == AppUpdateType.FLEXIBLE && it.installStatus() == InstallStatus.DOWNLOADED) {
+            } else if (viewModel.updateType != AppUpdateType.IMMEDIATE && it.installStatus() == InstallStatus.DOWNLOADED) {
                 showSnackbarForRestartRequired()
             }
         }
     }
 
     private fun onStateUpdateChanged(state: InstallState) {
-        Log.d("com.forcetower.uefs", "onStateUpdateChanged::${state.installStatus()}")
         when (state.installStatus()) {
             InstallStatus.DOWNLOADED -> {
-                Log.d("com.forcetower.uefs", "Status is downloaded")
                 updateManager.unregisterListener(updateListener)
-                Log.d("com.forcetower.uefs", "Unregistered. Preparing snack")
                 showSnackbarForRestartRequired()
 
             }
@@ -412,14 +407,12 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             setAction(restart) { updateManager.completeUpdate() }
         }
         snack.config()
-        Log.d("com.forcetower.uefs", "Show snack")
         snack.show()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IN_APP_UPDATE) {
-            Log.d("com.forcetower.uefs", "Activity Result for InAppUpdate ${resultCode == Activity.RESULT_OK}")
             when (resultCode) {
                 RESULT_CANCELED -> {
                     val message = getString(R.string.in_app_update_request_canceled)
