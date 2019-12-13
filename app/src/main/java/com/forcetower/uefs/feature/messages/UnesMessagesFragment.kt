@@ -68,17 +68,17 @@ class UnesMessagesFragment : UFragment(), Injectable {
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-//                if (positionStart == 0) {
-//                    manager.smoothScrollToPosition(binding.recyclerSagresMessages, null, 0)
-//                }
-                val count = messagesAdapter.itemCount
-                val lastVisiblePosition = manager.findLastCompletelyVisibleItemPosition()
-
-                if (lastVisiblePosition == -1 || positionStart >= count - 1 && lastVisiblePosition == positionStart - 1) {
-                    binding.recyclerSagresMessages.scrollToPosition(positionStart)
-                } else {
-                    binding.recyclerSagresMessages.scrollToPosition(count - 1)
+                if (positionStart == 0) {
+                    manager.smoothScrollToPosition(binding.recyclerSagresMessages, null, 0)
                 }
+//                val count = messagesAdapter.itemCount
+//                val lastVisiblePosition = manager.findLastCompletelyVisibleItemPosition()
+//
+//                if (lastVisiblePosition == -1 || positionStart >= count - 1 && lastVisiblePosition == positionStart - 1) {
+//                    binding.recyclerSagresMessages.scrollToPosition(positionStart)
+//                } else {
+//                    binding.recyclerSagresMessages.scrollToPosition(count - 1)
+//                }
             }
         }
 
