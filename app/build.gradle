@@ -28,13 +28,13 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion '29.0.2'
+    compileSdkVersion compileSdk
+    buildToolsVersion toolsVersion
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
-        minSdkVersion build_versions.min_sdk
-        targetSdkVersion build_versions.target_sdk
+        minSdkVersion minSdk
+        targetSdkVersion targetSdk
         def (code, name) = buildVersion()
         versionCode code
         versionName name
@@ -131,91 +131,103 @@ kotlinter {
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation(deps.sagres.juice)
-
-    implementation deps.kotlin.stdlib
-
-    implementation deps.androidx.ktx
-    implementation deps.androidx.annotations
-    implementation deps.androidx.app_compat
-    implementation deps.androidx.constraint_layout
-    implementation deps.androidx.google_material
-    implementation deps.androidx.pallete
-    implementation deps.androidx.browser
-    implementation deps.androidx.preference
-    implementation deps.androidx.flexbox
-    implementation deps.androidx.fragment
-    implementation deps.androidx.fragment_ktx
-
-    implementation deps.lifecycle.extensions
-    implementation deps.lifecycle.java8
-    kapt deps.lifecycle.compiler
-    implementation deps.lifecycle.rx_streams
-
-    implementation deps.navigation.ui
-    implementation deps.navigation.ui_ktx
-    implementation deps.navigation.fragment
-    implementation deps.navigation.fragment_ktx
-
-    implementation deps.paging
-
-    implementation deps.room.runtime
-    kapt deps.room.compiler
-
-    implementation deps.work_manager.runtime
-    implementation deps.work_manager.runtime_ktx
-    implementation deps.work_manager.gcm
-
-    implementation deps.dagger.runtime
-    kapt deps.dagger.compiler
-    implementation deps.dagger.android
-    implementation deps.dagger.android_support
-    kapt deps.dagger.android_support_compiler
-
-    implementation deps.firebase.core
-    implementation deps.firebase.auth
-    implementation deps.firebase.messaging
-    implementation deps.firebase.firestore
-    implementation deps.firebase.firestore_ktx
-    implementation deps.firebase.storage
-    implementation deps.firebase.storage_ui
-    implementation deps.firebase.remote_config
-    implementation deps.firebase.functions
-
-    implementation(deps.logs.crashlytics) { transitive true }
-    implementation deps.logs.timber
-
-    implementation deps.play.games
-    implementation deps.play.auth
-    implementation deps.play.location
-    implementation deps.play.billing
-    implementation deps.play.admob
-    implementation deps.play.core
-
-    implementation deps.network.okhttp
-    implementation deps.network.okhttp_logging
-    implementation deps.network.retrofit
-    implementation deps.network.retrofit_gson
-    implementation deps.network.cookie_jar
-
-    implementation deps.image.glide_runtime
-    kapt deps.image.glide_compiler
-    implementation deps.image.lottie
-    implementation deps.image.image_cropper
-
-    implementation deps.others.gson
-    implementation deps.others.jsoup
-    implementation deps.others.chart_view
-    implementation deps.others.about_libraries
-    implementation deps.others.easy_permissions
-    implementation deps.others.card_slider
-    implementation deps.others.date_time_picker
-    implementation deps.others.floating_search
-    implementation deps.others.zoned_time_date
-    implementation deps.others.rx_kotlin
-
     implementation project(path: ':bypass')
+
+    // Juice scrapper
+    implementation "com.github.forcetower:juice:$sagres"
+
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+
+    // Android X
+    implementation "androidx.core:core-ktx:$ktx"
+    implementation "androidx.annotation:annotation:$annotation"
+    implementation "androidx.appcompat:appcompat:$app_compat"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+    implementation "com.google.android.material:material:$google_material"
+    implementation "androidx.palette:palette:$pallete"
+    implementation "androidx.browser:browser:$browser"
+    implementation "androidx.preference:preference:$preference"
+    implementation "com.google.android:flexbox:$flexbox"
+    implementation "androidx.fragment:fragment:$fragment"
+    implementation "androidx.fragment:fragment-ktx:$fragment"
+
+    // Architecture
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
+
+    implementation "androidx.navigation:navigation-ui:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+    implementation "androidx.navigation:navigation-fragment:$navigation"
+    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+
+    // Paging
+    implementation "androidx.paging:paging-runtime:$paging"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room"
+    kapt "androidx.room:room-compiler:$room"
+
+    // Work manager
+    implementation "androidx.work:work-runtime:$work_manager"
+    implementation "androidx.work:work-runtime-ktx:$work_manager"
+    implementation "androidx.work:work-gcm:$work_manager"
+
+    // Dependency injection
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
+
+    // Firebase
+    implementation "com.google.firebase:firebase-core:$firebase_core"
+    implementation "com.google.firebase:firebase-auth:$firebase_auth"
+    implementation "com.google.firebase:firebase-messaging:$firebase_messaging"
+    implementation "com.google.firebase:firebase-firestore:$firebase_firestore"
+    implementation "com.google.firebase:firebase-firestore-ktx:$firebase_firestore"
+    implementation "com.google.firebase:firebase-storage:$firebase_storage"
+    implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
+    implementation "com.google.firebase:firebase-config:$firebase_remote_config"
+    implementation "com.google.firebase:firebase-functions:$firebase_functions"
+
+    // Logs
+    implementation ("com.crashlytics.sdk.android:crashlytics:$crashlytics_ver") { transitive true }
+    implementation "com.jakewharton.timber:timber:$timber"
+
+    // Google Play
+    implementation "com.google.android.gms:play-services-games:$gp_games"
+    implementation "com.google.android.gms:play-services-auth:$gp_auth"
+    implementation "com.google.android.gms:play-services-location:$gp_location"
+    implementation "com.android.billingclient:billing:$gp_billing_client"
+    implementation "com.google.android.gms:play-services-ads:$gp_admob"
+    implementation "com.google.android.play:core:$gp_core"
+
+    // Networking
+    implementation "com.squareup.okhttp3:okhttp:$okhttp"
+    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
+    implementation "com.squareup.retrofit2:retrofit:$retrofit"
+    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
+    implementation "com.github.franmontiel:PersistentCookieJar:$cookie_jar"
+
+    // Image
+    implementation "com.github.bumptech.glide:glide:$glide"
+    kapt "com.github.bumptech.glide:compiler:$glide"
+    implementation "com.airbnb.android:lottie:$lottie"
+    implementation "com.theartofdev.edmodo:android-image-cropper:$image_cropper"
+
+    // Others
+    implementation "com.google.code.gson:gson:$gson"
+    implementation "org.jsoup:jsoup:$jsoup"
+    implementation "com.github.PhilJay:MPAndroidChart:$chart_view"
+    implementation "com.mikepenz:aboutlibraries:$about_libraries"
+    implementation "pub.devrel:easypermissions:$easy_permissions"
+    implementation "com.ramotion.cardslider:card-slider:$card_slider"
+    implementation "com.wdullaer:materialdatetimepicker:$date_time_picker"
+    implementation "com.github.arimorty:floatingsearchview:$floating_search"
+    implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
+    implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
 }
 
 apply plugin: 'com.google.gms.google-services'
