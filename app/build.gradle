@@ -55,8 +55,8 @@ android {
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments = [
-                    "room.schemaLocation": "$projectDir/schemas".toString(),
-                    "room.incremental": "true"
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"
                 ]
             }
         }
@@ -85,7 +85,6 @@ android {
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            shrinkResources true
             minifyEnabled true
         }
     }
@@ -115,6 +114,9 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
+    dynamicFeatures = [":aeri"]
+
+
 }
 
 play {
@@ -130,7 +132,7 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
 
-    implementation (deps.sagres.juice)
+    implementation(deps.sagres.juice)
 
     implementation deps.kotlin.stdlib
 
