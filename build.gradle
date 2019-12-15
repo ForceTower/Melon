@@ -19,22 +19,124 @@
  */
 
 buildscript {
-    apply from: 'versions.gradle'
-    addRepos(repositories)
+    ext.kotlin_version = "1.3.61"
+    ext {
+        minSdk = 21
+        targetSdk = 29
+        compileSdk = 29
+        toolsVersion = '29.0.2'
+
+        sagres = "1.3.2"
+
+        // Kotlin Extensions
+        ktx = "1.1.0"
+
+        // Android X [Old Support]
+        app_compat = '1.1.0'
+        google_material = '1.1.0-beta02'
+        constraint_layout = "1.1.3"
+        annotation = "1.1.0"
+        exif_interface = "1.1.0"
+        pallete = "1.0.0"
+        flexbox = "1.1.0"
+        browser = "1.0.0"
+        preference = "1.1.0"
+        fragment = "1.2.0-rc03"
+
+        // Architecture
+        room = "2.2.2"
+        lifecycle = '2.2.0-rc03'
+        paging = "2.1.0"
+        navigation = '2.2.0-rc03'
+        work_manager = "2.2.0"
+
+        // Dependency Injection
+        dagger = "2.25.2"
+
+        // Firebase
+        firebase_core = '17.2.1'
+        firebase_auth = '19.2.0'
+        firebase_messaging = '20.1.0'
+        firebase_firestore = '21.3.1'
+        firebase_storage = "19.1.0"
+        firebase_remote_config = '19.0.4'
+        firebase_functions = "19.0.1"
+        in_app_messaging = "19.0.1"
+        firebase_ui_storage = "4.3.1"
+
+        // Logs
+        crashlytics_ver = "2.10.1"
+        timber = "4.7.1"
+
+        // Image
+        glide = "4.10.0"
+        lottie = '3.3.1'
+        image_cropper = "2.8.0"
+
+        // Google Services
+        gp_core = "1.6.4"
+        gp_auth = "17.0.0"
+        gp_games = '19.0.0'
+        gp_location = "17.0.0"
+        gp_billing_client = '2.1.0'
+        gp_admob = '18.3.0'
+
+        // Networking
+        okhttp = '4.2.2'
+        retrofit = '2.7.0'
+        cookie_jar = "v1.0.1"
+
+        // Others
+        gson = '2.8.6'
+        jsoup = "1.12.1"
+        chart_view = "v3.1.0"
+        about_libraries = "7.0.0-rc1"
+        easy_permissions = "0.3.0"
+        card_slider = '0.3.1'
+        date_time_picker = '4.2.3'
+        floating_search = "2.1.1"
+        zoned_time_date = '1.2.1'
+        rx_kotlin = "2.4.0-RC3"
+
+        // Build Versions
+        android_gradle_plugin = "3.5.3"
+        google_play_services = "4.3.0"
+        fabric = "1.28.0"
+        kotlinter = "1.26.0"
+        play_publisher = "2.2.0"
+        bundletool = "0.10.0"
+    }
+
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.fabric.io/public" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+    }
+
     dependencies {
-        classpath deps.plugin.android
-        classpath deps.plugin.kotlin
-		classpath deps.plugin.google_play_services
-		classpath deps.plugin.fabric
-		classpath deps.plugin.kotlinter
-		classpath deps.plugin.play_publisher
-        classpath deps.navigation.safe_args_plugin
-        classpath deps.plugin.bundletool
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin"
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+		classpath "com.google.gms:google-services:$google_play_services"
+		classpath "io.fabric.tools:gradle:$fabric"
+		classpath "com.github.triplet.gradle:play-publisher:$play_publisher"
+		classpath "org.jmailen.gradle:kotlinter-gradle:$kotlinter"
+        classpath "com.android.tools.build:bundletool:$bundletool"
+        classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
     }
 }
 
 allprojects {
-    addRepos(repositories)
+    repositories {
+        google()
+        jcenter()
+        maven { url "https://jitpack.io" }
+        maven { url "https://maven.fabric.io/public" }
+        maven { url "https://plugins.gradle.org/m2/" }
+        maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+    }
 	
 	gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
