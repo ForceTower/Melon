@@ -70,7 +70,7 @@ class AERIMessageFragment : UFragment(), Injectable {
     }
 
     private fun moveToAeriNews() {
-        val fragment = childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, "com.forcetower.uefs.aeri.feature.AERINewsFragment") as UFragment
+        val fragment = dynamicFeatureViewModel.aeriReflectInstance()
         replaceFragment(fragment, "aeri_news")
     }
 

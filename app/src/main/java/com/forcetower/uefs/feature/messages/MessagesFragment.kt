@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.messages
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -87,8 +86,6 @@ class MessagesFragment : UFragment(), Injectable {
         val tabLayout = binding.tabLayout
         tabLayout.visibility = VISIBLE
 
-        Log.d("MessagesFragment", "onPreparePager() invoked")
-
         tabLayout.clearOnTabSelectedListeners()
         tabLayout.removeAllTabs()
 
@@ -101,11 +98,9 @@ class MessagesFragment : UFragment(), Injectable {
         fragments += UnesMessagesFragment()
         if (preferences.isStudentFromUEFS()) {
             fragments += AERIMessageFragment()
-            Log.d("MessagesFragment", "AeriMessageFragment added to list")
         }
 
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
-        Log.d("MessagesFragment", "Adapter is set")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
