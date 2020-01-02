@@ -31,6 +31,8 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
+import com.android.billingclient.api.BillingResult
+import com.android.billingclient.api.ConsumeParams
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetailsParams
@@ -64,9 +66,9 @@ class BillingClientLifecycle(
         }
     }
 
-    override fun onBillingSetupFinished(billingResponseCode: Int) {
-        Timber.d("onBillingSetupFinished: $billingResponseCode")
-        if (billingResponseCode == BillingClient.BillingResponse.OK) {
+    override fun onBillingSetupFinished(result: BillingResult) {
+        Timber.d("onBillingSetupFinished: $result")
+        if (result.responseCode == BillingClient.BillingResponseCode.OK) {
             state.postValue(true)
             // The billing client is ready. You can query purchases here.
             updatePurchases()
@@ -91,8 +93,8 @@ class BillingClientLifecycle(
                 .setType(BillingClient.SkuType.INAPP)
                 .build()
 
-        billingClient.querySkuDetailsAsync(params) { responseCode, details ->
-            val value = SkuDetailsResult(responseCode, details)
+        billingClient.querySkuDetailsAsync(params) { response, details ->
+            val value = SkuDetailsResult(response.responseCode, details)
             result.postValue(value)
         }
         return result
@@ -100,10 +102,11 @@ class BillingClientLifecycle(
 
     fun consumeToken(token: String): LiveData<SkuConsumeResult> {
         val result = MutableLiveData<SkuConsumeResult>()
+        val params = ConsumeParams.newBuilder().setPurchaseToken(token).build()
 
-        billingClient.consumeAsync(token) { responseCode, purchaseToken ->
-            Timber.d("Code: $responseCode :: Token: $purchaseToken")
-            result.postValue(SkuConsumeResult(responseCode, purchaseToken))
+        billingClient.consumeAsync(params) { response, purchaseToken ->
+            Timber.d("Code: ${response.responseCode} :: Token: $purchaseToken")
+            result.postValue(SkuConsumeResult(response.responseCode, purchaseToken))
         }
         return result
     }
@@ -113,16 +116,11 @@ class BillingClientLifecycle(
             Timber.e("BillingClient is not ready to query for existing purchases")
         }
         val result = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
-        if (result == null) {
-            Timber.i("Update purchase: Null purchase result")
+        if (result.purchasesList == null) {
+            Timber.i("Update purchase: Null purchase list")
             handlePurchases(null)
         } else {
-            if (result.purchasesList == null) {
-                Timber.i("Update purchase: Null purchase list")
-                handlePurchases(null)
-            } else {
-                handlePurchases(result.purchasesList)
-            }
+            handlePurchases(result.purchasesList)
         }
     }
 
@@ -130,10 +128,10 @@ class BillingClientLifecycle(
      * Called by the Billing Library when new purchases are detected.
      */
     @SuppressLint("BinaryOperationInTimber")
-    override fun onPurchasesUpdated(responseCode: Int, purchasesList: List<Purchase>?) {
-        Timber.d("onPurchasesUpdated, response code: $responseCode")
-        when (responseCode) {
-            BillingClient.BillingResponse.OK -> {
+    override fun onPurchasesUpdated(response: BillingResult, purchasesList: List<Purchase>?) {
+        Timber.d("onPurchasesUpdated, response code: ${response.responseCode}")
+        when (response.responseCode) {
+            BillingClient.BillingResponseCode.OK -> {
                 if (purchasesList == null) {
                     Timber.d("Purchase update: No purchases")
                     handlePurchases(null)
@@ -141,13 +139,13 @@ class BillingClientLifecycle(
                     handlePurchases(purchasesList)
                 }
             }
-            BillingClient.BillingResponse.USER_CANCELED -> {
+            BillingClient.BillingResponseCode.USER_CANCELED -> {
                 Timber.i("User canceled the purchase")
             }
-            BillingClient.BillingResponse.ITEM_ALREADY_OWNED -> {
+            BillingClient.BillingResponseCode.ITEM_ALREADY_OWNED -> {
                 Timber.i("The user already owns this item")
             }
-            BillingClient.BillingResponse.DEVELOPER_ERROR -> {
+            BillingClient.BillingResponseCode.DEVELOPER_ERROR -> {
                 Timber.e("Developer error means that Google Play does not recognize the " +
                         "configuration. If you are just getting started, make sure you have " +
                         "configured the application correctly in the Google Play Console. " +
@@ -155,7 +153,7 @@ class BillingClientLifecycle(
                         "signed with release keys.")
             }
             else -> {
-                Timber.e("See error code in BillingClient.BillingResponse: $responseCode")
+                Timber.e("See error code in BillingClient.BillingResponse: ${response.responseCode}")
             }
         }
     }
@@ -191,8 +189,8 @@ class BillingClientLifecycle(
             Timber.e("BillingClient is not ready to start billing flow")
         }
 
-        val responseCode = billingClient.launchBillingFlow(activity, params)
-        Timber.d("Launch Billing Flow Response Code: $responseCode")
-        return responseCode
+        val response = billingClient.launchBillingFlow(activity, params)
+        Timber.d("Launch Billing Flow Response Code: $response")
+        return response.responseCode
     }
 }
