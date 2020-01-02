@@ -68,4 +68,7 @@ abstract class NewsDao {
 
     @Query("UPDATE Announcement SET notified = 1")
     abstract fun markAllNotified()
+
+    @Query("DELETE FROM Announcement")
+    abstract fun deleteAll()
 }

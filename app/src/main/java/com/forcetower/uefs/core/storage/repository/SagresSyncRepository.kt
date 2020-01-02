@@ -26,10 +26,12 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
+import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
+import com.forcetower.core.getDynamicDataSourceFactory
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCalendar
 import com.forcetower.sagres.database.model.SagresDiscipline
@@ -93,6 +95,19 @@ class SagresSyncRepository @Inject constructor(
 ) {
 
     @WorkerThread
+    private fun findAndMatch() {
+        val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider")
+        Log.d("SyncWorker", "Found a non-null instance of factory ${aeri != null}")
+        aeri?.create()?.run {
+            Log.d("SyncWorker", "Created a DataSource!")
+            update()
+            getNotifyMessages().forEach {
+                NotificationCreator.showSimpleNotification(context, it.title, it.content)
+            }
+        }
+    }
+
+    @WorkerThread
     fun performSync(executor: String) {
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
@@ -152,6 +167,8 @@ class SagresSyncRepository @Inject constructor(
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
+
+        findAndMatch()
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {

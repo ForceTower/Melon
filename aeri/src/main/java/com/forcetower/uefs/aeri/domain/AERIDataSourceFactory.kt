@@ -18,33 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.aeri.core.injection.module
+package com.forcetower.uefs.aeri.domain
 
-import android.content.Context
-import androidx.room.Room
-import com.forcetower.core.injection.annotation.FeatureScope
+import com.forcetower.core.interfaces.DynamicDataSource
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
-import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
-import com.forcetower.uefs.aeri.domain.AERIDataSourceFactory
-import dagger.Module
-import dagger.Provides
 
-@Module
-object AERIDaggerModule {
+class AERIDataSourceFactory(
+    private val repository: AERIRepository
+) : DynamicDataSourceFactory {
 
-    @Provides
-    @FeatureScope
-    fun provideDatabase(context: Context): AERIDatabase {
-        return Room.databaseBuilder(context, AERIDatabase::class.java, "aeri_data.db")
-            .enableMultiInstanceInvalidation()
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
-    }
-
-    @Provides
-    @FeatureScope
-    fun provideDataSource(repository: AERIRepository): DynamicDataSourceFactory {
-        return AERIDataSourceFactory(repository)
+    override fun create(): DynamicDataSource {
+        return AERIDataSource(repository)
     }
 }

@@ -30,8 +30,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
-import com.forcetower.uefs.core.dynamic.DynamicRepository
-import com.forcetower.uefs.core.dynamic.NotifyMessage
+import com.forcetower.core.interfaces.notification.NotifyMessage
 import dev.forcetower.oversee.Oversee
 import javax.inject.Inject
 
@@ -39,7 +38,7 @@ class AERIRepository @Inject constructor(
     context: Context,
     private val database: AERIDatabase,
     private val executors: AppExecutors
-) : DynamicRepository {
+) {
     private val notificationTitle = context.getString(R.string.aeri_notification_title)
 
     fun refreshNewsAsync(): LiveData<Boolean> {
@@ -55,6 +54,7 @@ class AERIRepository @Inject constructor(
     fun refreshNews() {
         Oversee.initialize()
         val news = Oversee.instance.getAERINews()
+        database.news().deleteAll()
         database.news().insert(news)
     }
 
@@ -63,13 +63,13 @@ class AERIRepository @Inject constructor(
     }
 
     @WorkerThread
-    override fun update(): Int {
+    fun update(): Int {
         refreshNews()
         return 0
     }
 
     @WorkerThread
-    override fun getNotifyMessages(): List<NotifyMessage> {
+    fun getNotifyMessages(): List<NotifyMessage> {
         val notify = database.news().getNewAnnouncements()
         database.news().markAllNotified()
         return notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }

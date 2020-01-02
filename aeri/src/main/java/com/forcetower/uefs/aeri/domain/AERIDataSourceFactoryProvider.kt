@@ -18,33 +18,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.aeri.core.injection.module
+package com.forcetower.uefs.aeri.domain
 
 import android.content.Context
-import androidx.room.Room
-import com.forcetower.core.injection.annotation.FeatureScope
+import androidx.annotation.Keep
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
-import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
-import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
-import com.forcetower.uefs.aeri.domain.AERIDataSourceFactory
-import dagger.Module
-import dagger.Provides
+import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
+import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 
-@Module
-object AERIDaggerModule {
-
-    @Provides
-    @FeatureScope
-    fun provideDatabase(context: Context): AERIDatabase {
-        return Room.databaseBuilder(context, AERIDatabase::class.java, "aeri_data.db")
-            .enableMultiInstanceInvalidation()
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
-    }
-
-    @Provides
-    @FeatureScope
-    fun provideDataSource(repository: AERIRepository): DynamicDataSourceFactory {
-        return AERIDataSourceFactory(repository)
+@Keep
+class AERIDataSourceFactoryProvider : DynamicDataSourceFactoryProvider {
+    override fun getFactory(context: Context): DynamicDataSourceFactory {
+        val component = (context.applicationContext as UApplication).component
+        return DaggerAERIComponent.builder().appComponent(component).build().factory()
     }
 }
