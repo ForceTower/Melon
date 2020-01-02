@@ -44,7 +44,6 @@ class AERIMessageFragment : UFragment(), Injectable {
 
     init {
         displayName = "Daniel"
-        Timber.i("Aeri message instance created")
     }
 
     private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels { factory }
@@ -57,18 +56,22 @@ class AERIMessageFragment : UFragment(), Injectable {
         super.onViewCreated(view, savedInstanceState)
         if (dynamicFeatureViewModel.isAeriInstalled()) {
             Timber.i("onViewCreated():: Aeri Installed")
-            // childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, "com.forcetower.uefs.aeri.feature.AERINewsFragment") as UFragment
-            // replaceFragment(dynamicFeatureViewModel.aeriReflectInstance(requireContext()), "aeri_news")
+            moveToAeriNews()
         } else {
             Timber.i("onViewCreated():: Aeri not installed")
             replaceFragment(AERINotInstalledFragment(), "aeri_not_installed")
             dynamicFeatureViewModel.sessionStatus.observe(viewLifecycleOwner, EventObserver {
                 Timber.d("Status updated to $it")
                 if (it == SplitInstallSessionStatus.INSTALLED) {
-                    replaceFragment(dynamicFeatureViewModel.aeriReflectInstance(requireContext()), "aeri_news")
+                    moveToAeriNews()
                 }
             })
         }
+    }
+
+    private fun moveToAeriNews() {
+        val fragment = childFragmentManager.fragmentFactory.instantiate(requireContext().classLoader, "com.forcetower.uefs.aeri.feature.AERINewsFragment") as UFragment
+        replaceFragment(fragment, "aeri_news")
     }
 
     private fun replaceFragment(fragment: Fragment, tag: String? = null) {

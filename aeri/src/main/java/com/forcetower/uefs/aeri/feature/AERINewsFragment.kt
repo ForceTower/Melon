@@ -29,15 +29,17 @@ import com.forcetower.uefs.feature.shared.UFragment
 import timber.log.Timber
 
 class AERINewsFragment : UFragment() {
+    private lateinit var binding: FragmentAeriNewsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         Timber.i("Aeri fragment onCreateView()")
-//         return inflater.inflate(R.layout.fragment_aeri_news, container, false)
-        return FragmentAeriNewsBinding.inflate(inflater, container, false).root
+        return FragmentAeriNewsBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        Timber.i("Well then... its created")
+        Timber.i("Well then... keep your secrets")
     }
 }
