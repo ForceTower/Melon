@@ -24,21 +24,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.Keep
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import timber.log.Timber
 
-@Keep
 class AERINewsFragment : UFragment() {
-    private lateinit var binding: FragmentAeriNewsBinding
-
-    init {
-        displayName = "Daniel"
-    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentAeriNewsBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.root
+        Timber.i("Aeri fragment onCreateView()")
+//         return inflater.inflate(R.layout.fragment_aeri_news, container, false)
+        return FragmentAeriNewsBinding.inflate(inflater, container, false).root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        Timber.i("Well then... its created")
     }
 }

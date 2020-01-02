@@ -32,9 +32,9 @@ import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.impl.AndroidBase64Encoder
-import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -57,18 +57,24 @@ class UApplication : Application(), HasAndroidInjector {
     @Volatile
     private var injected = false
 
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.install(this)
+    }
+
     override fun onCreate() {
         if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
             return
         }
 
-        if (BuildConfig.DEBUG) {
-            // Se em debug, print no logcat todas as informações
-            Timber.plant(Timber.DebugTree())
-        } else {
-            // Em release, enviar apenas exceptions tratadas ;)
-            Timber.plant(CrashlyticsTree())
-        }
+        Timber.plant(Timber.DebugTree())
+//        if (BuildConfig.DEBUG) {
+//            // Se em debug, print no logcat todas as informações
+//            Timber.plant(Timber.DebugTree())
+//        } else {
+//            // Em release, enviar exceptions para o crashlytics
+//            Timber.plant(CrashlyticsTree())
+//        }
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
