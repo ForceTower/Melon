@@ -132,6 +132,7 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':bypass')
+    implementation project(path: ':core')
 
     // Juice scrapper
     implementation "com.github.forcetower:juice:$sagres"

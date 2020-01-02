@@ -68,7 +68,7 @@
                 android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+        <com.forcetower.core.widget.CustomSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -82,7 +82,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 app:pageMargin="@{@dimen/spacing_normal}"/>
-        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+        </com.forcetower.core.widget.CustomSwipeRefreshLayout>
 
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton

@@ -26,7 +26,7 @@
             name="messagesViewModel"
             type="com.forcetower.uefs.aeri.feature.AERIViewModel"/>
     </data>
-    <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+    <com.forcetower.core.widget.CustomSwipeRefreshLayout
         android:id="@+id/swipe_refresh"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -40,5 +40,5 @@
             android:paddingBottom="8dp"
             android:clipToPadding="false"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
-    </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+    </com.forcetower.core.widget.CustomSwipeRefreshLayout>
 </layout>

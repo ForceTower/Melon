@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.shared
+package com.forcetower.core.adapters
 
 import android.graphics.drawable.Drawable
 import android.net.Uri
@@ -39,10 +39,10 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.forcetower.core.R
+import com.forcetower.core.widget.CircularOutlineProvider
+import com.forcetower.core.widget.CustomSwipeRefreshLayout
 import com.forcetower.sagres.utils.WordUtils
-import com.forcetower.uefs.R
-import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
-import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -166,7 +166,10 @@ fun dateFromLong(view: TextView, value: Long?) {
     view.text = str
 }
 
-// @BindingAdapter("circleMax")
-// fun circleMax(pv: CircleProgressBar, max: Int) {
-//
-// }
+/**
+ * An interface for responding to image loading completion.
+ */
+interface ImageLoadListener {
+    fun onImageLoaded()
+    fun onImageLoadFailed()
+}

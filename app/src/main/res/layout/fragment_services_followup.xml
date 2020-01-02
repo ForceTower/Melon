@@ -73,7 +73,7 @@
                 android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+        <com.forcetower.core.widget.CustomSwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -84,7 +84,7 @@
                 android:id="@+id/pager_services"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"/>
-        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+        </com.forcetower.core.widget.CustomSwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>

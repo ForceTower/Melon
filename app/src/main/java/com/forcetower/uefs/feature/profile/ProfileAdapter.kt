@@ -26,6 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.databinding.ItemProfileHeaderBinding
@@ -33,7 +34,6 @@ import com.forcetower.uefs.databinding.ItemProfileStatementBinding
 import com.forcetower.uefs.databinding.ItemProfileStatementHeaderBinding
 import com.forcetower.uefs.databinding.ItemProfileStatementUnapprovedHeaderBinding
 import com.forcetower.uefs.feature.shared.inflate
-import com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener
 
 class ProfileAdapter(
     private val viewModel: ProfileViewModel,

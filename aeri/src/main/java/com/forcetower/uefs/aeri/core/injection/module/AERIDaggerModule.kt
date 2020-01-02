@@ -22,16 +22,16 @@ package com.forcetower.uefs.aeri.core.injection.module
 
 import android.content.Context
 import androidx.room.Room
+import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import dagger.Module
 import dagger.Provides
-import javax.inject.Singleton
 
 @Module
 object AERIDaggerModule {
+
     @Provides
-    @Singleton
-    @JvmStatic
+    @FeatureScope
     fun provideDatabase(context: Context): AERIDatabase {
         return Room.databaseBuilder(context, AERIDatabase::class.java, "aeri_data.db")
             .enableMultiInstanceInvalidation()

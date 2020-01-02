@@ -38,7 +38,7 @@
             android:id="@+id/inc_toolbar"
             layout="@layout/toolbar_default" />
         
-        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+        <com.forcetower.core.widget.CustomSwipeRefreshLayout
             android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -56,7 +56,7 @@
                 android:paddingBottom="96dp"
                 android:clipToPadding="false"/>
             
-        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+        </com.forcetower.core.widget.CustomSwipeRefreshLayout>
         
         <fragment
             android:id="@+id/demand_overview_sheet"
