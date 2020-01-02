@@ -46,7 +46,6 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.tabs.TabLayout
-import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import javax.inject.Inject
 
 class MessagesFragment : UFragment(), Injectable {
@@ -104,14 +103,14 @@ class MessagesFragment : UFragment(), Injectable {
         val unes = UnesMessagesFragment()
         fragments += unes
         if (preferences.isStudentFromUEFS()) {
-            fragments += if (dynamicFeatureViewModel.aeriInstalled) {
+            fragments += if (dynamicFeatureViewModel.isAeriInstalled()) {
                 dynamicFeatureViewModel.aeriReflectInstance()
             } else {
-                dynamicFeatureViewModel.sessionStatus.observe(viewLifecycleOwner, EventObserver {
-                    if (it == SplitInstallSessionStatus.INSTALLED) {
-                        activity?.recreate()
-                    }
-                })
+//                dynamicFeatureViewModel.sessionStatus.observe(viewLifecycleOwner, EventObserver {
+//                    if (it == SplitInstallSessionStatus.INSTALLED) {
+//                        activity?.recreate()
+//                    }
+//                })
                 AERINotInstalledFragment()
             }
         }
@@ -177,7 +176,7 @@ class MessagesFragment : UFragment(), Injectable {
         super.onSaveInstanceState(outState)
     }
 
-    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: MutableList<UFragment>) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private class SectionFragmentAdapter(fm: FragmentManager, val fragments: List<UFragment>) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         override fun getCount() = fragments.size
         override fun getItem(position: Int) = fragments[position]
         override fun getPageTitle(position: Int) = fragments[position].displayName
