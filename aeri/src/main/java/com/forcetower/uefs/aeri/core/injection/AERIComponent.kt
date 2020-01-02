@@ -25,6 +25,7 @@ import com.forcetower.uefs.aeri.core.injection.module.ViewModelModule
 import com.forcetower.uefs.aeri.feature.AERINewsFragment
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.core.injection.annotation.FeatureScope
+import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import dagger.Component
 
 @FeatureScope
@@ -43,4 +44,5 @@ interface AERIComponent {
     }
 
     fun inject(fragment: AERINewsFragment)
+    fun factory(): DynamicDataSourceFactory
 }
