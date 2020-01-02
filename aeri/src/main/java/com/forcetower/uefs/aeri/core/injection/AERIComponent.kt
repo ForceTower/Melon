@@ -21,14 +21,18 @@
 package com.forcetower.uefs.aeri.core.injection
 
 import com.forcetower.uefs.aeri.core.injection.module.AERIDaggerModule
+import com.forcetower.uefs.aeri.core.injection.module.ViewModelModule
 import com.forcetower.uefs.aeri.feature.AERINewsFragment
 import com.forcetower.uefs.core.injection.AppComponent
-import com.forcetower.uefs.core.injection.annotation.FeatureScope
+import com.forcetower.core.injection.annotation.FeatureScope
 import dagger.Component
 
 @FeatureScope
 @Component(
-    modules = [AERIDaggerModule::class],
+    modules = [
+        AERIDaggerModule::class,
+        ViewModelModule::class
+    ],
     dependencies = [AppComponent::class]
 )
 interface AERIComponent {

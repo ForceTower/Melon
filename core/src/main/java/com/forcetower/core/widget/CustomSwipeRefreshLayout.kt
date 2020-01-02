@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.widget
+package com.forcetower.core.widget
 
 import android.content.Context
 import android.util.AttributeSet

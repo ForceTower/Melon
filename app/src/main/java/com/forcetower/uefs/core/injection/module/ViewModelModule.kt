@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.injection.module
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.forcetower.uefs.core.injection.annotation.ViewModelKey
+import com.forcetower.core.injection.annotation.ViewModelKey
 import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.LaunchViewModel

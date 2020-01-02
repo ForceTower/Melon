@@ -49,7 +49,20 @@
     <color name="blue_accent">#2196F3</color>
 
     <color name="indigo_dark">#3c54fe</color>
+    <color name="teal">#31e7b6</color>
+    <color name="light_blue">#27e5fd</color>
+    <color name="yellow">#fcd230</color>
+    <color name="orange">#ff6c00</color>
     <color name="indigo">#4768fd</color>
+
+    <integer-array name="swipe_refresh_colors">
+        <item>@color/indigo</item>
+        <item>@color/teal</item>
+        <item>@color/light_blue</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+    </integer-array>
+
     <color name="default_tag_color">#2196F3</color>
 
     <color name="tab_drawable_color">#2196F3</color>
@@ -64,19 +77,6 @@
     <color name="links_highlighted">#2196F3</color>
     
     <color name="red">#F44336</color>
-
-    <color name="teal">#31e7b6</color>
-    <color name="light_blue">#27e5fd</color>
-    <color name="yellow">#fcd230</color>
-    <color name="orange">#ff6c00</color>
-
-    <integer-array name="swipe_refresh_colors">
-        <item>@color/indigo</item>
-        <item>@color/teal</item>
-        <item>@color/light_blue</item>
-        <item>@color/yellow</item>
-        <item>@color/orange</item>
-    </integer-array>
 
     <color name="grey">#FF757575</color>
     <color name="navigation_grey">#757575</color>
