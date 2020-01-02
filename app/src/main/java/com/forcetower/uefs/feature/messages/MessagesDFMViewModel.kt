@@ -86,8 +86,7 @@ class MessagesDFMViewModel @Inject constructor(
         splitInstallManager.registerListener(listener)
     }
 
-    val aeriInstalled: Boolean
-        get() = splitInstallManager.installedModules.contains(AERI_MODULE)
+    fun isAeriInstalled() = splitInstallManager.installedModules.contains(AERI_MODULE)
 
     fun requestAERIInstall() {
         val request = SplitInstallRequest
