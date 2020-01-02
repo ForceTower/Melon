@@ -321,7 +321,6 @@
     <string name="evaluation_start">Start</string>
     <string name="evaluation_teacher_single">teacher</string>
     <string name="evaluation_teachers">Teachers</string>
-    <string name="evaluation_welcome">Welcome back, %1$s</string>
     <string name="evaluation_welcome_back">You here again?</string>
     <string name="evaluation_what_is">Disciplines evaluation</string>
     <string name="evaluation_what_is_description">Well, we are always the ones getting evaluated, now it is our turn to evaluate teachers and the way they teach us stuff. Here you may check and rate the teachers and discipline based on your own oppinion</string>
