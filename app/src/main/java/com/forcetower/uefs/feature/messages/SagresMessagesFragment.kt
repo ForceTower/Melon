@@ -24,13 +24,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject
 
 class SagresMessagesFragment : UFragment(), Injectable {
@@ -39,21 +38,22 @@ class SagresMessagesFragment : UFragment(), Injectable {
 
     init { displayName = "Sagres" }
 
-    private val manager by lazy { LinearLayoutManager(context) }
     private lateinit var binding: FragmentSagresMessagesBinding
-    private lateinit var viewModel: MessagesViewModel
+    private val viewModel: MessagesViewModel by activityViewModels { vmFactory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(vmFactory)
-        binding = FragmentSagresMessagesBinding.inflate(inflater, container, false)
-        return binding.root
+        return FragmentSagresMessagesBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.apply {
+            messagesViewModel = viewModel
+            lifecycleOwner = this@SagresMessagesFragment
+        }.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         val adapter = SagresMessageAdapter(this, viewModel)
         binding.apply {
             recyclerSagresMessages.adapter = adapter
-            recyclerSagresMessages.layoutManager = manager
             recyclerSagresMessages.itemAnimator?.run {
                 addDuration = 120L
                 moveDuration = 120L

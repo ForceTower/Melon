@@ -18,5 +18,5 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-include ':app', ':bypass'
+include ':app', ':bypass', ':aeri'
 project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')
