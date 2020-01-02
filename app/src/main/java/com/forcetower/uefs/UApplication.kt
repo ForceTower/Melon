@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.impl.AndroidBase64Encoder
+import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.google.android.play.core.splitcompat.SplitCompat
@@ -67,14 +68,13 @@ class UApplication : Application(), HasAndroidInjector {
             return
         }
 
-        Timber.plant(Timber.DebugTree())
-//        if (BuildConfig.DEBUG) {
-//            // Se em debug, print no logcat todas as informações
-//            Timber.plant(Timber.DebugTree())
-//        } else {
-//            // Em release, enviar exceptions para o crashlytics
-//            Timber.plant(CrashlyticsTree())
-//        }
+        if (BuildConfig.DEBUG) {
+            // Se em debug, print no logcat todas as informações
+            Timber.plant(Timber.DebugTree())
+        } else {
+            // Em release, enviar exceptions para o crashlytics
+            Timber.plant(CrashlyticsTree())
+        }
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
