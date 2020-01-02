@@ -68,10 +68,22 @@ android {
 
     signingConfigs {
         release {
+            def password = System.getenv("UNES_KEYSTORE_PASSWORD")
+            if (password == null)
+                password = "android"
+
+            def alias = System.getenv("UNES_KEYSTORE_ALIAS")
+            if (alias == null)
+                alias = "androiddebugkey"
+
+            def keyPass = System.getenv("UNES_KEYSTORE_PRIVATE_KEY_PASSWORD")
+            if (keyPass == null)
+                keyPass = "android"
+
             storeFile rootProject.file("sign.jks")
-            storePassword System.getenv("UNES_KEYSTORE_PASSWORD")
-            keyAlias System.getenv("UNES_KEYSTORE_ALIAS")
-            keyPassword System.getenv("UNES_KEYSTORE_PRIVATE_KEY_PASSWORD")
+            storePassword password
+            keyAlias alias
+            keyPassword keyPass
         }
         debug {
             storeFile rootProject.file("debug.keystore")
