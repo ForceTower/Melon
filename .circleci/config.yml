@@ -4,10 +4,9 @@ references:
     docker:
       - image: circleci/android:api-29
     working_directory: ~/unes
-    enviroment:
-      JVM_OPTS: -Xmx2586m
-      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=4"
-      TERM: dumb
+    environment:
+      JVM_OPTS: -Xmx2048m
+      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
 
 jobs:
   build:
@@ -36,11 +35,6 @@ jobs:
       - run:
           name: Save Lint Results
           command: scripts/save_lint_results.sh
-
-      - run:
-          name: Clean up daemon
-          command: |
-             rm -fr ~/.gradle/daemon/
 
       - run:
           name: Build App or Publish
