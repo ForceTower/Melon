@@ -21,23 +21,37 @@
 package com.forcetower.uefs.aeri.feature
 
 import android.content.Context
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.web.CustomTabActivityHelper
+import timber.log.Timber
+import javax.inject.Inject
 
 class AERINewsFragment : UFragment() {
+    @Inject
+    lateinit var factory: BaseViewModelFactory
     private lateinit var binding: FragmentAeriNewsBinding
-    private val viewModel: AERIViewModel by activityViewModels()
+    private val viewModel: AERIViewModel by activityViewModels { factory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         val component = (context.applicationContext as UApplication).component
+        DaggerAERIComponent.builder().appComponent(component).build().inject(this)
+        Timber.d("Factory initialized? ${::factory.isInitialized}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -62,6 +76,15 @@ class AERINewsFragment : UFragment() {
             }
         }
 
-        viewModel.announcements.observe(this, Observer { adapter.submitList(it) })
+        viewModel.announcements.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        viewModel.announcementClick.observe(viewLifecycleOwner, EventObserver {
+            CustomTabActivityHelper.openCustomTab(
+                requireActivity(),
+                CustomTabsIntent.Builder()
+                    .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                    .addDefaultShareMenuItem()
+                    .build(),
+                Uri.parse(it.link))
+        })
     }
 }

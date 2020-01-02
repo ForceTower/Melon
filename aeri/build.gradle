@@ -73,6 +73,7 @@ kotlinter {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':app')
+    implementation project(':core')
     implementation "dev.forcetower.unes:oversee:1.0"
 
     // Android X

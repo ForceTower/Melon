@@ -38,7 +38,7 @@ import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.databinding.GameFragment2048Binding
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.forcetower.uefs.easter.twofoureight.tools.InputListener

@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.injection.annotation
+package com.forcetower.core.injection.annotation
 
 import javax.inject.Scope
 

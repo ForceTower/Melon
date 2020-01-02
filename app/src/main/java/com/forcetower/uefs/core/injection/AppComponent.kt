@@ -20,6 +20,8 @@
 
 package com.forcetower.uefs.core.injection
 
+import android.content.Context
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.injection.module.ActivityModule
 import com.forcetower.uefs.core.injection.module.AppModule
@@ -68,6 +70,9 @@ interface AppComponent {
         @BindsInstance fun application(app: UApplication): Builder
         fun build(): AppComponent
     }
+
+    fun executors(): AppExecutors
+    fun context(): Context
 
     fun inject(app: UApplication)
     fun inject(worker: SyncMainWorker)

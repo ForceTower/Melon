@@ -34,7 +34,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
