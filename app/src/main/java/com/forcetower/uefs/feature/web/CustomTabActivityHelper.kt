@@ -34,7 +34,7 @@ import androidx.browser.customtabs.CustomTabsSession
 class CustomTabActivityHelper {
     private var mCustomTabsSession: CustomTabsSession? = null
     private var mClient: CustomTabsClient? = null
-    private var mConnection: CustomTabsServiceConnection? = null
+    private lateinit var mConnection: CustomTabsServiceConnection
     private var mConnectionCallback: ConnectionCallback? = null
 
     /**
@@ -82,8 +82,8 @@ class CustomTabActivityHelper {
      * @param activity the activity that is bound to the service
      */
     fun unbindCustomTabsService(activity: Activity) {
-        if (mConnection == null) return
-        activity.unbindService(mConnection!!)
+        if (!::mConnection.isInitialized) return
+        activity.unbindService(mConnection)
         mClient = null
         mCustomTabsSession = null
     }

@@ -27,6 +27,7 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
@@ -50,6 +51,7 @@ import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
+import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
@@ -111,6 +113,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var updateManager: AppUpdateManager
     private lateinit var username: String
+    private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -280,6 +283,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private fun setupUserData() {
         viewModel.access.observe(this, Observer { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
+        dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.sendToken().observe(this, Observer { Unit })
         if (preferences.isStudentFromUEFS()) {
             viewModel.connectToServiceIfNeeded()

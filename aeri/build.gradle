@@ -19,6 +19,10 @@
  */
 
 apply plugin: 'com.android.dynamic-feature'
+apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-kapt'
+apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jmailen.kotlinter'
 
 android {
     compileSdkVersion 29
@@ -29,8 +33,40 @@ android {
         versionCode 1
         versionName "1.0"
 
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                    "room.schemaLocation": "$projectDir/schemas".toString(),
+                    "room.incremental"   : "true"
+                ]
+            }
+        }
     }
 
+    kapt {
+        correctErrorTypes true
+        javacOptions {
+            option("-Xmaxerrs", 1000)
+        }
+    }
+
+    compileOptions {
+        targetCompatibility JavaVersion.VERSION_1_8
+        sourceCompatibility JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = "1.8"
+    }
+
+    dataBinding {
+        enabled true
+    }
+
+}
+
+kotlinter {
+    allowWildcardImports false
 }
 
 dependencies {
@@ -38,4 +74,27 @@ dependencies {
     implementation project(':app')
     implementation "dev.forcetower.unes:oversee:1.0"
 
+    // Android X
+    implementation "androidx.core:core-ktx:$ktx"
+    implementation "androidx.annotation:annotation:$annotation"
+    implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
+    implementation "com.google.android.material:material:$google_material"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room"
+    kapt "androidx.room:room-compiler:$room"
+
+    // Architecture
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+
+    // Paging
+    implementation "androidx.paging:paging-runtime:$paging"
+
+    // Dependency injection
+    implementation "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
+    implementation "com.google.dagger:dagger-android:$dagger"
+    implementation "com.google.dagger:dagger-android-support:$dagger"
+    kapt "com.google.dagger:dagger-android-processor:$dagger"
 }
