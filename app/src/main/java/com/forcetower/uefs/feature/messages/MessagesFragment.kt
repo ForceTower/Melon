@@ -70,8 +70,6 @@ class MessagesFragment : UFragment(), Injectable {
     private lateinit var homeViewModel: HomeViewModel
     private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels { factory }
 
-    private lateinit var adapter: SectionFragmentAdapter
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         profileViewModel = provideActivityViewModel(factory)
         homeViewModel = provideActivityViewModel(factory)
@@ -97,26 +95,17 @@ class MessagesFragment : UFragment(), Injectable {
         binding.pagerMessage.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
         val fragments = mutableListOf<UFragment>()
-
-        val sagres = SagresMessagesFragment()
-        fragments += sagres
-        val unes = UnesMessagesFragment()
-        fragments += unes
+        fragments += SagresMessagesFragment()
+        fragments += UnesMessagesFragment()
         if (preferences.isStudentFromUEFS()) {
             fragments += if (dynamicFeatureViewModel.isAeriInstalled()) {
                 dynamicFeatureViewModel.aeriReflectInstance()
             } else {
-//                dynamicFeatureViewModel.sessionStatus.observe(viewLifecycleOwner, EventObserver {
-//                    if (it == SplitInstallSessionStatus.INSTALLED) {
-//                        activity?.recreate()
-//                    }
-//                })
                 AERINotInstalledFragment()
             }
         }
 
-        adapter = SectionFragmentAdapter(childFragmentManager, fragments)
-        binding.pagerMessage.adapter = adapter
+        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
