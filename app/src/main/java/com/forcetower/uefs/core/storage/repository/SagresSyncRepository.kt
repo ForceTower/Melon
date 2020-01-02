@@ -26,7 +26,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
-import android.util.Log
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
@@ -97,9 +96,7 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun findAndMatch() {
         val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider")
-        Log.d("SyncWorker", "Found a non-null instance of factory ${aeri != null}")
         aeri?.create()?.run {
-            Log.d("SyncWorker", "Created a DataSource!")
             update()
             getNotifyMessages().forEach {
                 NotificationCreator.showSimpleNotification(context, it.title, it.content)

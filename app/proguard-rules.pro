@@ -178,7 +178,6 @@
 -keep class * extends androidx.databinding.DataBinderMapper { *; }
 
 -keepnames class * implements com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
--dontwarn kotlin.reflect.jvm.internal.**
--keep class kotlin.reflect.jvm.internal.** { *; }
+-keep class kotlin.reflect.jvm.internal.impl.builtins.BuiltInsLoaderImpl
 
 -repackageclasses

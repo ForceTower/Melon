@@ -31,7 +31,6 @@ import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.View
 import android.view.animation.Interpolator
 import androidx.viewpager.widget.ViewPager
@@ -606,11 +605,6 @@ class InkPageIndicator @JvmOverloads constructor(
 
     private fun setJoiningFraction(leftDot: Int, fraction: Float) {
         if (leftDot < joiningFractions!!.size) {
-
-            if (leftDot == 1) {
-                Log.d("PageIndicator", "dot 1 fraction:\t$fraction")
-            }
-
             joiningFractions!![leftDot] = fraction
             postInvalidateOnAnimation()
         }
