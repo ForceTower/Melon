@@ -177,4 +177,6 @@
 -keepnames class com.forcetower.uefs.aeri.feature.AERINewsFragment
 -keep class * extends androidx.databinding.DataBinderMapper { *; }
 
+-keepnames class * implements com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
+
 -repackageclasses

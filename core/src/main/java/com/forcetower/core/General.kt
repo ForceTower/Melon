@@ -18,21 +18,20 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.dynamic
+package com.forcetower.core
 
-import androidx.annotation.WorkerThread
+import android.content.Context
+import android.util.Log
+import com.forcetower.core.interfaces.DynamicDataSourceFactory
+import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
+import kotlin.reflect.full.createInstance
 
-interface DynamicRepository {
-    @WorkerThread
-    fun update(): Int
-
-    @WorkerThread
-    fun getNotifyMessages(): List<NotifyMessage>
+fun getDynamicDataSourceFactory(context: Context, className: String): DynamicDataSourceFactory? {
+    return try {
+        val provider = Class.forName(className).kotlin.createInstance() as DynamicDataSourceFactoryProvider
+        provider.getFactory(context)
+    } catch (e: Throwable) {
+        Log.e("SyncWorker","Failed to get factory", e)
+        null
+    }
 }
-
-data class NotifyMessage(
-    val title: String,
-    val content: String,
-    val imageUrl: String?,
-    val idToHash: String?
-)
