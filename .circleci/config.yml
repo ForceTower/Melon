@@ -6,7 +6,7 @@ references:
     working_directory: ~/unes
     enviroment:
       JVM_OPTS: -Xmx2586m
-      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=4"
+      GRADLE_OPTS: "-Dorg.gradle.daemon=false -Dorg.gradle.workers.max=4"
       TERM: dumb
 
 jobs:
