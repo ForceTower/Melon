@@ -47,6 +47,7 @@ import com.forcetower.uefs.feature.forms.FormsViewModel
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.login.LoginViewModel
 import com.forcetower.uefs.feature.mechcalculator.MechanicalViewModel
+import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.messages.MessagesViewModel
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.reminders.RemindersViewModel
@@ -239,6 +240,11 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(FormsViewModel::class)
     abstract fun bindFormsViewModel(vm: FormsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(MessagesDFMViewModel::class)
+    abstract fun bindMessagesDFMViewModel(vm: MessagesDFMViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: UViewModelFactory): ViewModelProvider.Factory

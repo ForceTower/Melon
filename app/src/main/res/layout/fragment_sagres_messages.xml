@@ -19,17 +19,31 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<layout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recycler_sagres_messages"
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="messagesViewModel"
+            type="com.forcetower.uefs.feature.messages.MessagesViewModel"/>
+    </data>
+    <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:listitem="@layout/item_sagres_message"
-        android:paddingStart="8dp"
-        android:paddingEnd="8dp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:clipToPadding="false"/>
+        app:onSwipeRefresh="@{() -> messagesViewModel.onRefresh()}"
+        app:refreshing="@{safeUnbox(messagesViewModel.refreshing)}"
+        app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_sagres_messages"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:listitem="@layout/item_sagres_message"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:clipToPadding="false"
+            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+    </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
 </layout>
