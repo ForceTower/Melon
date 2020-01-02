@@ -20,12 +20,38 @@
 
 package com.forcetower.uefs.aeri.feature
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
+import com.forcetower.uefs.core.vm.Event
 import javax.inject.Inject
 
 class AERIViewModel @Inject constructor(
-    repository: AERIRepository
-) : ViewModel() {
+    private val repository: AERIRepository
+) : ViewModel(), AnnouncementInteractor {
     val announcements = repository.getAnnouncements()
+
+    private val _refreshing = MediatorLiveData<Boolean>()
+    val refreshing: LiveData<Boolean>
+        get() = _refreshing
+
+    private val _announcementClick = MutableLiveData<Event<Announcement>>()
+    val announcementClick: LiveData<Event<Announcement>>
+        get() = _announcementClick
+
+    override fun onAnnouncementClick(announcement: Announcement) {
+        _announcementClick.value = Event(announcement)
+    }
+
+    fun onRefresh() {
+        val fetchMessages = repository.refreshNewsAsync()
+        _refreshing.value = true
+        _refreshing.addSource(fetchMessages) {
+            _refreshing.removeSource(fetchMessages)
+            _refreshing.value = false
+        }
+    }
 }

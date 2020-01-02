@@ -23,8 +23,10 @@ package com.forcetower.uefs.aeri.core.storage.repository
 import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
@@ -35,9 +37,19 @@ import javax.inject.Inject
 
 class AERIRepository @Inject constructor(
     context: Context,
-    private val database: AERIDatabase
+    private val database: AERIDatabase,
+    private val executors: AppExecutors
 ) : DynamicRepository {
     private val notificationTitle = context.getString(R.string.aeri_notification_title)
+
+    fun refreshNewsAsync(): LiveData<Boolean> {
+        val result = MutableLiveData<Boolean>()
+        executors.networkIO().execute {
+            refreshNews()
+            result.postValue(true)
+        }
+        return result
+    }
 
     @WorkerThread
     fun refreshNews() {

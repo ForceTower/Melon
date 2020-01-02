@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.messages.dynamic
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
