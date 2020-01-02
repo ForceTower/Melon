@@ -54,8 +54,7 @@ class AERIRepository @Inject constructor(
     @WorkerThread
     fun refreshNews() {
         Oversee.initialize()
-        val news = Oversee.instance.getAERINews()
-        database.news().deleteAll()
+        val news = Oversee.instance.getAERINews().reversed()
         database.news().insert(news)
     }
 
