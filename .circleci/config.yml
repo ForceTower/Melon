@@ -18,9 +18,24 @@ jobs:
       - run:
           name: Decode Config Files
           command: |
-            echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
-            echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
-            echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
+            if [[ "${GOOGLE_SERVICES}" == "" ]]
+            then
+              mv ~/unes/app/google-services-mock.json ~/unes/app/google-services.json
+            else
+              echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
+            fi
+
+            if [[ "${PLAY_PUBLISHER}" != "" ]]
+            then
+              echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
+            fi
+
+            if [[ "${APP_SIGNATURE}" != "" ]]
+            then
+              echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
+            else
+              mv ~/unes/sign_mock ~/unes/sign.jks
+            fi
       
       - run: 
           name: Downloading Dependencies
