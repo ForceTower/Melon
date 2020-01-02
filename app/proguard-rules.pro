@@ -175,5 +175,6 @@
 
 # Dynamic Features Reflection Calls
 -keepnames class com.forcetower.uefs.aeri.feature.AERINewsFragment
+-keep class * extends androidx.databinding.DataBinderMapper { *; }
 
 -repackageclasses
