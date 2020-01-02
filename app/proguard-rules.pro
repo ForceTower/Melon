@@ -174,4 +174,6 @@
 -keep class com.ramotion.cardslider.CardSliderLayoutManager { *; }
 
 # Dynamic Features Reflection Calls
--keep class com.forcetower.uefs.aeri.feature.AERINewsFragment { *; }
+-keepnames class com.forcetower.uefs.aeri.feature.AERINewsFragment
+
+-repackageclasses

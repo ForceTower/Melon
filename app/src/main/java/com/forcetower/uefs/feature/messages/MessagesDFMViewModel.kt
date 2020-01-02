@@ -42,8 +42,6 @@ class MessagesDFMViewModel @Inject constructor(
         const val AERI_MODULE = "aeri"
     }
 
-    private var enabled = false
-
     private val splitInstallManager = SplitInstallManagerFactory.create(context)
     private var sessionId = 0
 
@@ -121,8 +119,9 @@ class MessagesDFMViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun aeriReflectInstance(): UFragment {
-        val instance = Class.forName("com.forcetower.uefs.aeri.feature.AERINewsFragment")
-        return instance.newInstance() as UFragment
+    fun aeriReflectInstance(context: Context): UFragment {
+        val name = "com.forcetower.uefs.aeri.feature.AERINewsFragment"
+        val clazz = Class.forName(name)
+        return clazz.newInstance() as UFragment
     }
 }

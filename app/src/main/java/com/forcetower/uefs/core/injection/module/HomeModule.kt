@@ -40,6 +40,7 @@ import com.forcetower.uefs.feature.mechcalculator.MechanicalFragment
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.messages.SagresMessagesFragment
 import com.forcetower.uefs.feature.messages.UnesMessagesFragment
+import com.forcetower.uefs.feature.messages.dynamic.AERIMessageFragment
 import com.forcetower.uefs.feature.messages.dynamic.AERINotInstalledFragment
 import com.forcetower.uefs.feature.purchases.PurchasesFragment
 import com.forcetower.uefs.feature.reminders.CreateReminderDialog
@@ -60,6 +61,8 @@ abstract class HomeModule {
     abstract fun messagesFragment(): MessagesFragment
     @ContributesAndroidInjector
     abstract fun unesMessageFragment(): UnesMessagesFragment
+    @ContributesAndroidInjector
+    abstract fun aeriMessageFragment(): AERIMessageFragment
     @ContributesAndroidInjector
     abstract fun aeriNotInstalledFragment(): AERINotInstalledFragment
     @ContributesAndroidInjector

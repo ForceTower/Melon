@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.messages
 
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.VISIBLE
@@ -40,7 +41,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
-import com.forcetower.uefs.feature.messages.dynamic.AERINotInstalledFragment
+import com.forcetower.uefs.feature.messages.dynamic.AERIMessageFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
@@ -68,7 +69,6 @@ class MessagesFragment : UFragment(), Injectable {
     private lateinit var profileViewModel: ProfileViewModel
     private val messagesViewModel: MessagesViewModel by activityViewModels { factory }
     private lateinit var homeViewModel: HomeViewModel
-    private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels { factory }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         profileViewModel = provideActivityViewModel(factory)
@@ -87,6 +87,8 @@ class MessagesFragment : UFragment(), Injectable {
         val tabLayout = binding.tabLayout
         tabLayout.visibility = VISIBLE
 
+        Log.d("MessagesFragment", "onPreparePager() invoked")
+
         tabLayout.clearOnTabSelectedListeners()
         tabLayout.removeAllTabs()
 
@@ -98,14 +100,12 @@ class MessagesFragment : UFragment(), Injectable {
         fragments += SagresMessagesFragment()
         fragments += UnesMessagesFragment()
         if (preferences.isStudentFromUEFS()) {
-            fragments += if (dynamicFeatureViewModel.isAeriInstalled()) {
-                dynamicFeatureViewModel.aeriReflectInstance()
-            } else {
-                AERINotInstalledFragment()
-            }
+            fragments += AERIMessageFragment()
+            Log.d("MessagesFragment", "AeriMessageFragment added to list")
         }
 
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
+        Log.d("MessagesFragment", "Adapter is set")
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
