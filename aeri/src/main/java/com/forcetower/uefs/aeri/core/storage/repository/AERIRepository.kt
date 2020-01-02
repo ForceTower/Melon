@@ -45,6 +45,7 @@ class AERIRepository @Inject constructor(
         val result = MutableLiveData<Boolean>()
         executors.networkIO().execute {
             refreshNews()
+            database.news().markAllNotified()
             result.postValue(true)
         }
         return result

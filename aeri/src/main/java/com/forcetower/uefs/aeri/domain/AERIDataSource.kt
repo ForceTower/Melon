@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.aeri.domain
 
-import android.util.Log
 import com.forcetower.core.interfaces.DynamicDataSource
 import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
@@ -30,7 +29,6 @@ class AERIDataSource(
 ) : DynamicDataSource {
 
     override fun update(): Int {
-        Log.d("SyncSource", "Is repository non-null?")
         return repository.update()
     }
 
