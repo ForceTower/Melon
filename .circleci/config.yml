@@ -5,8 +5,8 @@ references:
       - image: circleci/android:api-29
     working_directory: ~/unes
     environment:
-      JVM_OPTS: -Xmx2048m
-      GRADLE_OPTS: -Xmx1536m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
+      JVM_OPTS: -Xmx2560m
+      GRADLE_OPTS: -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
 
 jobs:
   build:
@@ -25,12 +25,12 @@ jobs:
       - run: 
           name: Downloading Dependencies
           command: |
-            ./gradlew dependencies --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew dependencies --no-daemon
             
       - run:
           name: Run JVM Checks & Lint
           command: |
-            ./gradlew clean check --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew clean check --no-daemon
 
       - run:
           name: Save Lint Results
@@ -42,10 +42,10 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" == "development" ]]
             then
               echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew publishReleaseBundle --no-daemon
             else
               echo "Starting a release build"
-              ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew :app:assembleRelease --no-daemon
             fi
 
       - store_artifacts:
