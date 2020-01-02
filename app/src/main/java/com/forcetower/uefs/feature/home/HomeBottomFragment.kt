@@ -55,11 +55,13 @@ import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import timber.log.Timber
 import javax.inject.Inject
 
 class HomeBottomFragment : UFragment(), Injectable {
@@ -194,6 +196,9 @@ class HomeBottomFragment : UFragment(), Injectable {
                     true
                 }
                 R.id.bug_report -> {
+                    SplitInstallManagerFactory.create(requireContext()).deferredUninstall(listOf("aeri")).addOnCompleteListener {
+                        Timber.i("Uninstalled!")
+                    }
                     val fragment = SendFeedbackFragment()
                     fragment.show(childFragmentManager, "feedback_modal")
                     true
