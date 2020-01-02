@@ -20,18 +20,24 @@
 
 package com.forcetower.uefs.aeri.core.storage.repository
 
+import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
+import com.forcetower.uefs.core.dynamic.DynamicRepository
+import com.forcetower.uefs.core.dynamic.NotifyMessage
 import dev.forcetower.oversee.Oversee
 import javax.inject.Inject
 
 class AERIRepository @Inject constructor(
+    context: Context,
     private val database: AERIDatabase
-) {
+) : DynamicRepository {
+    private val notificationTitle = context.getString(R.string.aeri_notification_title)
 
     @WorkerThread
     fun refreshNews() {
@@ -42,5 +48,18 @@ class AERIRepository @Inject constructor(
 
     fun getAnnouncements(): LiveData<PagedList<Announcement>> {
         return LivePagedListBuilder(database.news().getAnnouncementsPaged(), 20).build()
+    }
+
+    @WorkerThread
+    override fun update(): Int {
+        refreshNews()
+        return 0
+    }
+
+    @WorkerThread
+    override fun getNotifyMessages(): List<NotifyMessage> {
+        val notify = database.news().getNewAnnouncements()
+        database.news().markAllNotified()
+        return notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }
     }
 }

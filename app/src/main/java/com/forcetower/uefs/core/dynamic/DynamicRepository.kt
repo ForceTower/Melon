@@ -18,14 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.aeri.feature
+package com.forcetower.uefs.core.dynamic
 
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
-import javax.inject.Inject
+import androidx.annotation.WorkerThread
 
-class AERIViewModel @Inject constructor(
-    repository: AERIRepository
-) : ViewModel() {
-    val announcements = repository.getAnnouncements()
+interface DynamicRepository {
+    @WorkerThread
+    fun update(): Int
+
+    @WorkerThread
+    fun getNotifyMessages(): List<NotifyMessage>
 }
+
+data class NotifyMessage(
+    val title: String,
+    val content: String,
+    val imageUrl: String?,
+    val idToHash: String?
+)
