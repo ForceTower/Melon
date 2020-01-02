@@ -172,3 +172,6 @@
 # Proguard for CardSnaper
 -keep class com.forcetower.uefs.feature.event.CardsUpdater { *; }
 -keep class com.ramotion.cardslider.CardSliderLayoutManager { *; }
+
+# Dynamic Features Reflection Calls
+-keep class com.forcetower.uefs.aeri.feature.AERINewsFragment { *; }
