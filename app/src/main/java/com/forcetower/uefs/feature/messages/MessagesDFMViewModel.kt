@@ -101,7 +101,7 @@ class MessagesDFMViewModel @Inject constructor(
                         showProperSplitInstallError(exception.errorCode)
                     }
                 }
-                Timber.e("Error installing module: $exception", exception)
+                Timber.e(exception, "Error installing module: $exception")
             }
     }
 
