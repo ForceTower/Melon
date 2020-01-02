@@ -20,21 +20,46 @@
 
 package com.forcetower.uefs.aeri.core.storage.database.dao
 
+import androidx.paging.DataSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
+import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.uefs.aeri.core.model.Announcement
+import dev.forcetower.oversee.model.NewsMessage
 
 @Dao
 abstract class NewsDao {
-    @Insert(onConflict = OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(announcement: Announcement)
 
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract fun update(announcement: Announcement)
+
     @Transaction
-    open fun insert(announcements: List<Announcement>) {
-        announcements.forEach {
+    open fun insert(news: List<NewsMessage>) {
+        news.mapNotNull {
+            val existent = findByLink(it.link)
+            if (existent == null) {
+                Announcement(0, it.link, it.title, it.imageUrl, it.publishDate, false)
+            } else {
+                update(existent.copy(
+                    title = it.title,
+                    imageUrl = it.imageUrl,
+                    publishDate = it.publishDate
+                ))
+                null
+            }
+        }.forEach {
             insert(it)
         }
     }
+
+    @Query("SELECT * FROM Announcement WHERE link = :link LIMIT 1")
+    abstract fun findByLink(link: String): Announcement?
+
+    @Query("SELECT * FROM Announcement ORDER BY id DESC")
+    abstract fun getAnnouncementsPaged(): DataSource.Factory<Int, Announcement>
 }

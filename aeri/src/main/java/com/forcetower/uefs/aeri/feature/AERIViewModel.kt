@@ -21,5 +21,11 @@
 package com.forcetower.uefs.aeri.feature
 
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
+import javax.inject.Inject
 
-class AERIViewModel : ViewModel()
+class AERIViewModel @Inject constructor(
+    private val repository: AERIRepository
+) : ViewModel() {
+    val announcements = repository.getAnnouncements()
+}

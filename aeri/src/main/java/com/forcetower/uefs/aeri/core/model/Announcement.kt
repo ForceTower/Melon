@@ -21,11 +21,15 @@
 package com.forcetower.uefs.aeri.core.model
 
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity
+@Entity(indices = [
+    Index("link", unique = true)
+])
 data class Announcement(
-    @PrimaryKey(autoGenerate = false)
+    @PrimaryKey(autoGenerate = true)
+    val id: Int,
     val link: String,
     val title: String,
     val imageUrl: String?,

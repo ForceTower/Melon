@@ -21,6 +21,9 @@
 package com.forcetower.uefs.aeri.core.storage.repository
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
+import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import dev.forcetower.oversee.Oversee
@@ -33,9 +36,11 @@ class AERIRepository @Inject constructor(
     @WorkerThread
     fun refreshNews() {
         Oversee.initialize()
-        val news = Oversee.instance.getAERINews().map {
-            Announcement(it.link, it.title, it.imageUrl, it.publishDate, false)
-        }
+        val news = Oversee.instance.getAERINews()
         database.news().insert(news)
+    }
+
+    fun getAnnouncements(): LiveData<PagedList<Announcement>> {
+        return LivePagedListBuilder(database.news().getAnnouncementsPaged(), 20).build()
     }
 }
