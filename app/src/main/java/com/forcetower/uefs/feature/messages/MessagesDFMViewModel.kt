@@ -119,7 +119,7 @@ class MessagesDFMViewModel @Inject constructor(
         super.onCleared()
     }
 
-    fun aeriReflectInstance(context: Context): UFragment {
+    fun aeriReflectInstance(): UFragment {
         val name = "com.forcetower.uefs.aeri.feature.AERINewsFragment"
         val clazz = Class.forName(name)
         return clazz.newInstance() as UFragment
