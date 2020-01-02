@@ -38,15 +38,20 @@ jobs:
           command: scripts/save_lint_results.sh
 
       - run:
+          name: Clean up daemon
+          command: |
+             rm -fr ~/.gradle/daemon/
+
+      - run:
           name: Build App or Publish
           command: |
             if [[ "${CIRCLE_BRANCH}" == "development" ]]
             then
               echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew publishReleaseBundle
             else
-              echo "Starting a debug build"
-              ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              echo "Starting a release build"
+              ./gradlew :app:assembleRelease
             fi
 
       - store_artifacts:
