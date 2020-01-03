@@ -126,7 +126,7 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
-    dynamicFeatures = [":aeri"]
+    dynamicFeatures = [":aeri", ":dashboard"]
 
 
 }
@@ -207,7 +207,7 @@ dependencies {
     implementation "com.google.firebase:firebase-functions:$firebase_functions"
 
     // Logs
-    implementation ("com.crashlytics.sdk.android:crashlytics:$crashlytics_ver") { transitive true }
+    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_ver") { transitive true }
     implementation "com.jakewharton.timber:timber:$timber"
 
     // Google Play
