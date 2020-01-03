@@ -17,18 +17,14 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+package com.forcetower.core.injection.annotation
 
-package com.forcetower.core.injection.annotation;
+import androidx.lifecycle.ViewModel
+import dagger.MapKey
+import kotlin.reflect.KClass
 
-import androidx.lifecycle.ViewModel;
-import dagger.MapKey;
-
-import java.lang.annotation.*;
-
-@Documented
-@Target({ElementType.METHOD})
-@Retention(RetentionPolicy.RUNTIME)
+@MustBeDocumented
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.PROPERTY_GETTER, AnnotationTarget.PROPERTY_SETTER)
+@Retention(AnnotationRetention.RUNTIME)
 @MapKey
-public @interface ViewModelKey {
-    Class<? extends ViewModel> value();
-}
+annotation class ViewModelKey(val value: KClass<out ViewModel>)
