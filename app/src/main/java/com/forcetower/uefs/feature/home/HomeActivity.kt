@@ -316,7 +316,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             analytics.setUserProperty("access_valid", "${access.valid}")
 
             if (!access.valid) {
-                val snack = Snackbar.make(binding.snack, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)
+                val snack = Snackbar.make(binding.root, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)
                 snack.setAction(R.string.invalid_access_snack_solve) {
                     showInvalidAccessDialog()
                     snack.dismiss()
@@ -340,8 +340,9 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     override fun getSnackInstance(string: String, long: Boolean): Snackbar {
-        val snack = Snackbar.make(binding.snack, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
         snack.config()
+        snack.anchorView = binding.bottomNavigation
         return snack
     }
 
@@ -404,7 +405,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private fun showSnackbarForRestartRequired() {
         val message = getString(R.string.in_app_updates_update_ready)
         val restart = getString(R.string.in_app_updates_restart_app)
-        val snack = Snackbar.make(binding.snack, message, Snackbar.LENGTH_INDEFINITE).apply {
+        val snack = Snackbar.make(binding.root, message, Snackbar.LENGTH_INDEFINITE).apply {
             setAction(restart) { updateManager.completeUpdate() }
         }
         snack.config()

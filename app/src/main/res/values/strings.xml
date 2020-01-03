@@ -780,4 +780,5 @@
         <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
     <string name="title_aeri">Notícias AERI</string>
+    <string name="title_dashboard">Dashboard</string>
 </resources>
