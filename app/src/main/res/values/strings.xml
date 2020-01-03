@@ -781,4 +781,5 @@
     </plurals>
     <string name="title_aeri">Notícias AERI</string>
     <string name="title_dashboard">Dashboard</string>
+    <string name="dashboard">Início</string>
 </resources>
