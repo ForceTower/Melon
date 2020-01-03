@@ -21,6 +21,10 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
+        android:id="@+id/dashboard"
+        android:title="@string/dashboard"
+        android:icon="@drawable/ic_dashboard_black_24dp"/>
+    <item
         android:id="@+id/schedule"
         android:title="@string/label_schedule"
         android:icon="@drawable/ic_clock_black_24dp"/>

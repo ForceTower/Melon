@@ -26,6 +26,11 @@
     app:startDestination="@id/schedule">
 
     <fragment
+        android:id="@+id/dashboard"
+        android:name="com.forcetower.uefs.dashboard.feature.DashboardFragment"
+        android:label="Dashboard" />
+
+    <fragment
         android:id="@+id/schedule"
         android:name="com.forcetower.uefs.feature.schedule.ScheduleFragment"
         android:label="ScheduleFragment"
