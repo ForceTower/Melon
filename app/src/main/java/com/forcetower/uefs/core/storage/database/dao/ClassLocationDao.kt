@@ -54,8 +54,8 @@ abstract class ClassLocationDao {
     abstract fun getCurrentVisibleSchedule(): LiveData<List<LocationWithGroup>>
 
     @Transaction
-    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 LIMIT 1")
-    abstract fun getCurrentClass(): LiveData<LocationWithGroup?>
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND cl.startsAtInt > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
+    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<LocationWithGroup?>
 
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
