@@ -96,7 +96,7 @@ class MessagesFragment : UFragment(), Injectable {
         val fragments = mutableListOf<UFragment>()
         fragments += SagresMessagesFragment()
         fragments += UnesMessagesFragment()
-        if (preferences.isStudentFromUEFS()) {
+        if (preferences.isStudentFromUEFS() && preferences.getBoolean("stg_advanced_aeri_tab", true)) {
             fragments += AERIMessageFragment()
         }
 

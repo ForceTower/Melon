@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.setup
 
-import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,7 +33,7 @@ import com.forcetower.uefs.databinding.FragmentSetupConfigurationBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
-import java.util.Locale
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import javax.inject.Inject
 
 class ConfigurationFragment : UFragment(), Injectable {
@@ -73,17 +72,12 @@ class ConfigurationFragment : UFragment(), Injectable {
     }
 
     private fun decideNext() {
-        when (Build.MANUFACTURER.toLowerCase(Locale.getDefault())) {
-            "xiaomi" -> findNavController().navigate(R.id.action_configuration_to_special)
-            "oppo" -> findNavController().navigate(R.id.action_configuration_to_special)
-            "vivo" -> findNavController().navigate(R.id.action_configuration_to_special)
-            "lenovo" -> findNavController().navigate(R.id.action_configuration_to_special)
-            "honor" -> findNavController().navigate(R.id.action_configuration_to_special)
-            "huawei" -> findNavController().navigate(R.id.action_configuration_to_special)
-            else -> {
-                findNavController().navigate(R.id.action_configuration_to_home)
-                requireActivity().finishAfterTransition()
-            }
+        val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireContext())
+        if (autoStart) {
+            findNavController().navigate(R.id.action_configuration_to_special)
+        } else {
+            findNavController().navigate(R.id.action_configuration_to_home)
+            requireActivity().finishAfterTransition()
         }
     }
 

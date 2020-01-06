@@ -146,6 +146,9 @@ dependencies {
     implementation project(path: ':bypass')
     implementation project(path: ':core')
 
+    // Auto start
+    implementation 'com.github.judemanutd:autostarter:1.0.6'
+
     // Juice scrapper
     implementation "com.github.forcetower:juice:$sagres"
 
