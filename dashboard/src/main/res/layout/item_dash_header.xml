@@ -37,9 +37,9 @@
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_image"
+            style="@style/Widget.Dashboard.HeaderCardView"
             android:layout_width="80dp"
             android:layout_height="80dp"
-            style="@style/Widget.Dashboard.HeaderCardView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
@@ -47,13 +47,13 @@
                 android:id="@+id/profile_image"
                 android:layout_width="48dp"
                 android:layout_height="48dp"
-                android:importantForAccessibility="no"
                 android:layout_gravity="center"
+                android:importantForAccessibility="no"
                 app:clipToCircle="@{true}"
                 app:imageUrl="@{viewModel.account.imageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                tools:src="@tools:sample/avatars"/>
+                tools:src="@tools:sample/avatars" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -63,21 +63,25 @@
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnSurface"
             android:textSize="19sp"
-            android:layout_marginTop="16dp"
             app:accountDashboardName="@{viewModel.account.name}"
+            app:layout_constraintBottom_toTopOf="@+id/label_course"
             app:layout_constraintEnd_toStartOf="@+id/card_image"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
             tools:text="Olá, Joaquina!" />
 
         <TextView
             android:id="@+id/label_course"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:text="@{viewModel.course}"
             android:textColor="?attr/colorOnSurfaceLight"
             android:textSize="14sp"
-            android:text="@{viewModel.course}"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/card_image"
+            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_greetings"
             tools:text="Engenharia de Computação" />
