@@ -22,6 +22,8 @@ package com.forcetower.uefs.core.storage.database
 
 import androidx.room.migration.Migration
 import androidx.sqlite.db.SupportSQLiteDatabase
+import com.forcetower.uefs.feature.shared.extensions.createTimeInt
+import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
 
 object M1TO2 : Migration(1, 2) {
     override fun migrate(database: SupportSQLiteDatabase) {
@@ -300,5 +302,28 @@ object M37TO38 : Migration(37, 38) {
 object M38TO39 : Migration(38, 39) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE ClassLocation ADD COLUMN hidden_on_schedule INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M39TO40 : Migration(39, 40) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ClassLocation ADD COLUMN startsAtInt INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE ClassLocation ADD COLUMN endsAtInt INTEGER NOT NULL DEFAULT 0")
+        database.execSQL("ALTER TABLE ClassLocation ADD COLUMN dayInt INTEGER NOT NULL DEFAULT 0")
+
+        val cursor = database.query("SELECT * FROM ClassLocation")
+
+        val uidIndex = cursor.getColumnIndex("uid")
+        val startIndex = cursor.getColumnIndex("starts_at")
+        val endIndex = cursor.getColumnIndex("ends_at")
+        val dayIndex = cursor.getColumnIndex("day")
+
+        while (cursor.moveToNext()) {
+            val uid = cursor.getLong(uidIndex)
+            val start = cursor.getString(startIndex).createTimeInt()
+            val end = cursor.getString(endIndex).createTimeInt()
+            val day = cursor.getString(dayIndex).fromWeekDay()
+            database.execSQL("UPDATE ClassLocation SET startsAtInt = $start, endsAtInt = $end, dayInt = $day WHERE uid = $uid")
+        }
     }
 }
