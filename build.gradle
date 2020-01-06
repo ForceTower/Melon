@@ -83,7 +83,7 @@ buildscript {
 
         // Networking
         okhttp = '4.3.0'
-        retrofit = '2.7.0'
+        retrofit = '2.7.1'
         cookie_jar = "v1.0.1"
 
         // Others
