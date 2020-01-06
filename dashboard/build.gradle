@@ -66,6 +66,9 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
+    // TODO Remove this dependency
+    implementation "com.github.forcetower:juice:$sagres"
+
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.annotation:annotation:$annotation"
@@ -83,6 +86,10 @@ dependencies {
     kapt "com.google.dagger:dagger-android-processor:$dagger"
 
     implementation "com.jakewharton.timber:timber:$timber"
+
+    // Room
+    implementation "androidx.room:room-runtime:$room"
+    kapt "androidx.room:room-compiler:$room"
 
     // Architecture
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"

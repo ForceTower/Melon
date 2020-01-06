@@ -282,6 +282,8 @@
         <item name="android:orientation">vertical</item>
         <item name="iconColor">@color/iconColor</item>
     </style>
+
+    <style name="Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface"/>
     
     <style name="Widget.Melon" parent="@android:style/Widget">
         <item name="iconColor">@color/iconColor</item>
