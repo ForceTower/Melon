@@ -20,9 +20,6 @@
 
 package com.forcetower.uefs.feature.setup
 
-import android.content.ComponentName
-import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -30,11 +27,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.firebase.analytics.FirebaseAnalytics
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import java.util.Locale
 import javax.inject.Inject
 
@@ -59,46 +57,18 @@ class SyncSpecialFragment : UFragment(), Injectable {
 
         val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.getDefault())
 
+        val bundle = bundleOf("manufacturer" to manufacturer)
         if (savedInstanceState == null) {
-            analytics.logEvent("special_settings", bundleOf("manufacturer" to manufacturer))
+            analytics.logEvent("special_settings", bundle)
         }
 
         binding.btnConfig.setOnClickListener {
-            val intent = Intent()
-            when (manufacturer) {
-                "xiaomi" -> intent.component = ComponentName(
-                    "com.miui.securitycenter",
-                    "com.miui.permcenter.autostart.AutoStartManagementActivity"
-                )
-                "oppo" -> intent.component = ComponentName(
-                    "com.coloros.safecenter",
-                    "com.coloros.safecenter.permission.startup.StartupAppListActivity"
-                )
-                "vivo" -> intent.component = ComponentName(
-                    "com.vivo.permissionmanager",
-                    "com.vivo.permissionmanager.activity.BgStartUpManagerActivity"
-                )
-                "honor" -> intent.component = ComponentName(
-                    "com.huawei.systemmanager",
-                    "com.huawei.systemmanager.optimize.process.ProtectActivity"
-                )
-                "huawei" -> intent.component = ComponentName(
-                    "com.huawei.systemmanager",
-                    "com.huawei.systemmanager.optimize.process.ProtectActivity"
-                )
-                else -> intent.action = android.provider.Settings.ACTION_SETTINGS
-            }
-
-            val list = requireContext().packageManager.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY)
-            if (list.size > 0) {
-                if (intent.action != android.provider.Settings.ACTION_SETTINGS) {
-                    try {
-                        analytics.logEvent("open_special_settings", bundleOf("manufacturer" to manufacturer))
-                    } catch (ignored: Throwable) {}
-                }
-                requireContext().startActivity(intent)
+            analytics.logEvent("open_special_settings", bundle)
+            val success = AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireContext())
+            if (success) {
+                analytics.logEvent("open_special_settings_completed", bundle)
             } else {
-                showSnack(getString(R.string.open_settings_failed))
+                analytics.logEvent("open_special_settings_failed", bundle)
             }
         }
     }

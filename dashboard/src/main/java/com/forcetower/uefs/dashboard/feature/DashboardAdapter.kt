@@ -36,12 +36,6 @@ class DashboardAdapter(
     private val viewModel: DashboardViewModel,
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<DashboardAdapter.DashboardHolder>() {
-    var element1: Any? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList())
-    }
-
     var nextClass: LocationWithGroup? = null
     set(value) {
         field = value

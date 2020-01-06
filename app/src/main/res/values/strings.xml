@@ -271,6 +271,16 @@
     <string name="settings_acc_semester_info">Mostrar o semestre pode ser ofensivo</string>
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
+    <string name="settings_adv_auto_start">Auto inicialização</string>
+    <string name="settings_adv_auto_start_info">Algumas marcas impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
+    <string name="settings_adv_battery_optimization">Otimizações da bateria</string>
+    <string name="settings_adv_battery_optimization_info">Marcas proibem execução se o aplicativo está &quot;fechado&quot;, veja como resolver (em inglês)</string>
+    <string name="settings_adv_cat_execution">Execução</string>
+    <string name="settings_adv_cat_execution_info">Correções rápidas para execução em segundo plano</string>
+    <string name="settings_adv_cat_dynamic_feature">Funções Dinâmicas</string>
+    <string name="settings_adv_cat_dynamic_feature_info">Insere ou remove funções do aplicativo</string>
+    <string name="settings_adv_dynamic_feature_aeri">Notícias AERI</string>
+    <string name="settings_adv_dynamic_feature_aeri_info">Controla se a aba é mostrada e se a função deve ser instalada ou não</string>
     <string name="unable_to_open_url">Não foi possível abrir este link :(</string>
     <string name="open_multiple_links">Ainda não é possível abrir mensagens com vários links</string>
     <string name="select_a_link">Selecione um link</string>
@@ -692,6 +702,7 @@
     <string name="discipline_details_classes_hide">Horários</string>
     <string name="discipline_details_hidden">Oculto</string>
     <string name="discipline_start_end_format">%1$s ~ %2$s</string>
+    <string name="settings_auto_start_manager_not_found">Um AutoStartManager não foi encontrado para esta marca e modelo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -782,4 +793,6 @@
     <string name="title_aeri">Notícias AERI</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="dashboard">Início</string>
+    <string name="settings_advanced_label">Avançadas</string>
+    <string name="settings_advanced_info_label">Execução, Energia, funcionalidades e outras coisas</string>
 </resources>

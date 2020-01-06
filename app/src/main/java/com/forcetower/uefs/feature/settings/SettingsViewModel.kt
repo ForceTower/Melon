@@ -20,15 +20,22 @@
 
 package com.forcetower.uefs.feature.settings
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
+import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import javax.inject.Inject
 
 class SettingsViewModel @Inject constructor(
-    private val repository: SettingsRepository
+    private val repository: SettingsRepository,
+    context: Context
 ) : ViewModel() {
+    private val splitInstallManager = SplitInstallManagerFactory.create(context)
     private var done: Boolean = false
+
+    val isDarkModeEnabled: LiveData<Boolean>
+        get() = repository.hasDarkModeEnabled()
 
     fun getAllTheGrades() {
         if (done) return
@@ -36,6 +43,9 @@ class SettingsViewModel @Inject constructor(
         repository.requestAllGradesAndCalculateScore()
     }
 
-    val isDarkModeEnabled: LiveData<Boolean>
-        get() = repository.hasDarkModeEnabled()
+    fun uninstallModuleIfExists(name: String) {
+        if (splitInstallManager.installedModules.contains(name)) {
+            splitInstallManager.deferredUninstall(listOf(name)).addOnCompleteListener {}
+        }
+    }
 }

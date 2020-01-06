@@ -43,4 +43,11 @@
         android:summary="@string/settings_account_info_label"
         android:icon="@drawable/ic_account_accent_24dp"
         android:fragment="com.forcetower.uefs.feature.settings.AccountSettingsFragment"/>
+
+    <Preference
+        android:key="settings_advanced"
+        android:title="@string/settings_advanced_label"
+        android:summary="@string/settings_advanced_info_label"
+        android:icon="@drawable/ic_developer_mode_accent_24dp"
+        android:fragment="com.forcetower.uefs.feature.settings.AdvancedSettingsFragment"/>
 </androidx.preference.PreferenceScreen>
