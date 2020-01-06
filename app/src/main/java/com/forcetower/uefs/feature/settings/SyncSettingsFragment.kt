@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.settings
 
+import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
 import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.SharedPreferences
@@ -161,7 +162,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
 
     @AfterPermissionGranted(RC_LOCATION_PERMISSION)
     private fun checkAndEnableAutoProxy() {
-        val perms = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+        val perms = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION)
         if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
             enableAutoProxy()
         } else {

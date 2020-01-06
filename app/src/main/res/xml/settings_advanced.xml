@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <PreferenceCategory
+        android:title="@string/settings_adv_cat_execution"
+        app:iconSpaceReserved="false"
+        android:summary="@string/settings_adv_cat_execution_info">
+
+        <Preference
+            android:key="stg_advanced_auto_start"
+            app:icon="@drawable/ic_history_accent_24dp"
+            android:title="@string/settings_adv_auto_start"
+            android:summary="@string/settings_adv_auto_start_info" />
+
+        <Preference
+            android:key="stg_advanced_battery_optimization"
+            app:icon="@drawable/ic_battery_charging_full_accent_24dp"
+            android:title="@string/settings_adv_battery_optimization"
+            android:summary="@string/settings_adv_battery_optimization_info"/>
+    </PreferenceCategory>
+
+    <PreferenceCategory
+        android:title="@string/settings_adv_cat_dynamic_feature"
+        app:iconSpaceReserved="false"
+        android:summary="@string/settings_adv_cat_dynamic_feature_info">
+
+        <SwitchPreference
+            android:key="stg_advanced_aeri_tab"
+            android:defaultValue="true"
+            android:title="@string/settings_adv_dynamic_feature_aeri"
+            android:summary="@string/settings_adv_dynamic_feature_aeri_info"/>
+
+    </PreferenceCategory>
+</androidx.preference.PreferenceScreen>

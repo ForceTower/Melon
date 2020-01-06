@@ -73,6 +73,7 @@ class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentComp
                 }
             }
             "settings_account" -> navigateTo(AccountSettingsFragment())
+            "settings_advanced" -> navigateTo(AdvancedSettingsFragment())
         }
         return true
     }
