@@ -20,8 +20,48 @@
 
 package com.forcetower.uefs.dashboard.feature
 
+import android.content.Context
+import android.os.Bundle
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.Keep
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.dashboard.core.injection.DaggerDashboardComponent
+import com.forcetower.uefs.dashboard.databinding.FragmentDashboardBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import javax.inject.Inject
 
 @Keep
-class DashboardFragment : UFragment()
+class DashboardFragment : UFragment() {
+    @Inject
+    lateinit var factory: ViewModelProvider.Factory
+
+    private lateinit var binding: FragmentDashboardBinding
+    private val viewModel: DashboardViewModel by activityViewModels { factory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        val component = (context.applicationContext as UApplication).component
+        DaggerDashboardComponent.builder().appComponent(component).build().inject(this)
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        return FragmentDashboardBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val dashAdapter = DashboardAdapter(viewModel, this)
+        binding.recyclerElements.run {
+            adapter = dashAdapter
+        }
+
+        viewModel.currentClass.observe(this, Observer { dashAdapter.nextClass = it })
+    }
+}

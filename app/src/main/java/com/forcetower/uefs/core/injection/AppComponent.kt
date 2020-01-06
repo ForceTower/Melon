@@ -31,6 +31,8 @@ import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
@@ -73,6 +75,8 @@ interface AppComponent {
 
     fun executors(): AppExecutors
     fun context(): Context
+    fun coreDatabase(): UDatabase
+    fun dataRepository(): SagresDataRepository
 
     fun inject(app: UApplication)
     fun inject(worker: SyncMainWorker)
