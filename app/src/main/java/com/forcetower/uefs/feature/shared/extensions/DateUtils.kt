@@ -23,6 +23,7 @@ package com.forcetower.uefs.feature.shared.extensions
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
+import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -95,6 +96,18 @@ fun String.fromWeekDay(): Int {
         "SEX" -> 6
         "SAB" -> 7
         else -> 0
+    }
+}
+
+fun String.createTimeInt(): Int {
+    return try {
+        val split = this.split(":")
+        val hour = split[0].toInt() * 60
+        val minute = split[1].toInt()
+        hour + minute
+    } catch (t: Throwable) {
+        Timber.e(t, "Failed to parse $this")
+        0
     }
 }
 
