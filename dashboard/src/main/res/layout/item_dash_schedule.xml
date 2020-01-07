@@ -28,6 +28,10 @@
         <variable
             name="location"
             type="com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup" />
+
+        <variable
+            name="viewModel"
+            type="com.forcetower.uefs.dashboard.feature.DashboardViewModel" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -89,7 +93,7 @@
                 android:paddingBottom="16dp"
                 android:textColor="@color/white"
                 android:textSize="30sp"
-                android:text="@{WordUtils.toTitleCase(location.singleGroup().clazz().discipline().name)}"
+                android:text="@{WordUtils.toTitleCase(viewModel.currentClass.singleGroup().clazz().discipline().name)}"
                 app:layout_constraintBottom_toTopOf="@+id/info_time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -105,7 +109,7 @@
                 android:paddingEnd="16dp"
                 android:textSize="18sp"
                 android:layout_marginBottom="4dp"
-                app:disciplineStartsEnds="@{location}"
+                app:disciplineStartsEnds="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/info_location"
@@ -120,7 +124,7 @@
                 android:paddingEnd="16dp"
                 android:textSize="18sp"
                 android:layout_marginBottom="4dp"
-                app:disciplineLocation="@{location}"
+                app:disciplineLocation="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@+id/info_time_remain"
@@ -134,7 +138,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textSize="14sp"
-                app:disciplineStartDifference="@{location}"
+                app:disciplineStartDifference="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintBottom_toTopOf="@id/btn_see_all"
