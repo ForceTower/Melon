@@ -135,7 +135,7 @@ class DashboardAdapter(
             return when {
                 oldItem is Header && newItem is Header -> true
                 oldItem is Schedule && newItem is Schedule -> oldItem.clazz.location.uid == newItem.clazz.location.uid
-                oldItem is Message && newItem is Message -> oldItem == newItem
+                oldItem is Message && newItem is Message -> oldItem.content == newItem.content
                 else -> false
             }
         }

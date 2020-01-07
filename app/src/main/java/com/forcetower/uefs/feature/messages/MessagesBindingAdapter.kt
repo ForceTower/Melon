@@ -110,7 +110,7 @@ fun senderText(tv: TextView, message: Message?) {
         tv.visibility = VISIBLE
         val text = message.senderName
         val title = WordUtils.toTitleCase(text)
-        tv.text = title ?: "::prov_renatinha::"
+        tv.text = title ?: "?????"
     }
 }
 
