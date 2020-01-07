@@ -63,5 +63,6 @@ class DashboardFragment : UFragment() {
         }
 
         viewModel.currentClass.observe(this, Observer { dashAdapter.nextClass = it })
+        viewModel.lastMessage.observe(this, Observer { dashAdapter.lastMessage = it })
     }
 }

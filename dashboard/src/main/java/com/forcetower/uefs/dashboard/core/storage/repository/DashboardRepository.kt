@@ -23,6 +23,7 @@ package com.forcetower.uefs.dashboard.core.storage.repository
 import androidx.lifecycle.LiveData
 import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import java.util.Calendar
@@ -41,5 +42,9 @@ class DashboardRepository @Inject constructor(
         val dayInt = calendar.get(Calendar.DAY_OF_WEEK)
         val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
         return database.classLocationDao().getCurrentClass(dayInt, currentTimeInt)
+    }
+
+    fun getLastMessage(): LiveData<Message?> {
+        return database.messageDao().getLastMessage()
     }
 }

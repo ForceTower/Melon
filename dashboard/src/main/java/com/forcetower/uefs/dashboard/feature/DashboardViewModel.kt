@@ -34,4 +34,5 @@ class DashboardViewModel @Inject constructor(
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Account> = repository.getAccount()
     val currentClass = repository.getCurrentClass()
+    val lastMessage = repository.getLastMessage()
 }
