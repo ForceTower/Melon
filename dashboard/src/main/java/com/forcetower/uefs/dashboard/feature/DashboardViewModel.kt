@@ -21,18 +21,39 @@
 package com.forcetower.uefs.dashboard.feature
 
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
+import com.forcetower.uefs.feature.shared.TimeLiveData
+import timber.log.Timber
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel() {
+    private val timing = TimeLiveData(10_000L)
+
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Account> = repository.getAccount()
-    val currentClass = repository.getCurrentClass()
     val lastMessage = repository.getLastMessage()
+
+    private val _currentClass = MediatorLiveData<LocationWithGroup?>()
+    val currentClass: LiveData<LocationWithGroup?>
+        get() = _currentClass
+
+    init {
+        _currentClass.addSource(timing) { time ->
+            val data = repository.getCurrentClass()
+            Timber.d("Time updated to $time")
+            _currentClass.addSource(data) {
+                Timber.d("Current class updated $it")
+                _currentClass.value = it
+                _currentClass.removeSource(data)
+            }
+        }
+    }
 }
