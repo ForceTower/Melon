@@ -128,6 +128,9 @@ abstract class MessageDao {
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
     abstract fun getAllMessages(): LiveData<List<Message>>
 
+    @Query("SELECT * FROM Message ORDER BY timestamp DESC LIMIT 1")
+    abstract fun getLastMessage(): LiveData<Message?>
+
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
     abstract fun getAllMessagesPaged(): DataSource.Factory<Int, Message>
 

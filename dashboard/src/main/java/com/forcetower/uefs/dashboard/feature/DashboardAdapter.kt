@@ -26,10 +26,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.databinding.ItemDashHeaderBinding
+import com.forcetower.uefs.dashboard.databinding.ItemDashSagresMessageBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashScheduleBinding
+import com.forcetower.uefs.feature.messages.disciplineText
+import com.forcetower.uefs.feature.messages.messageContent
+import com.forcetower.uefs.feature.messages.senderText
 import com.forcetower.uefs.feature.shared.inflate
 
 class DashboardAdapter(
@@ -39,7 +44,13 @@ class DashboardAdapter(
     var nextClass: LocationWithGroup? = null
     set(value) {
         field = value
-        differ.submitList(buildMergedList(nextClass = value))
+        differ.submitList(buildMergedList(clazz = value))
+    }
+
+    var lastMessage: Message? = null
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(message = value))
     }
 
     private val differ = AsyncListDiffer(this, DiffCallback)
@@ -48,6 +59,7 @@ class DashboardAdapter(
         return when (viewType) {
             R.layout.item_dash_header -> DashboardHolder.HeaderHolder(parent.inflate(viewType), viewModel, lifecycleOwner)
             R.layout.item_dash_schedule -> DashboardHolder.ScheduleHolder(parent.inflate(viewType))
+            R.layout.item_dash_sagres_message -> DashboardHolder.MessageHolder(parent.inflate(viewType))
             else -> throw IllegalStateException("No view defined for viewType $viewType")
         }
     }
@@ -61,6 +73,14 @@ class DashboardAdapter(
                 val location = (item as Schedule).clazz
                 holder.binding.location = location
             }
+            is DashboardHolder.MessageHolder -> {
+                val message = item as Message
+                holder.binding.apply {
+                    senderText(messageSender, message)
+                    disciplineText(messageGroup, message)
+                    messageContent(content, message.content)
+                }
+            }
         }
     }
 
@@ -68,16 +88,21 @@ class DashboardAdapter(
         return when (differ.currentList[position]) {
             is Header -> R.layout.item_dash_header
             is Schedule -> R.layout.item_dash_schedule
+            is Message -> R.layout.item_dash_sagres_message
             else -> throw IllegalStateException("No viewType defined for position $position")
         }
     }
 
     private fun buildMergedList(
-        nextClass: LocationWithGroup? = null
+        clazz: LocationWithGroup? = nextClass,
+        message: Message? = lastMessage
     ): List<Any> {
         return mutableListOf<Any>(Header).apply {
-            if (nextClass != null) {
-                add(Schedule(nextClass))
+            if (clazz != null) {
+                add(Schedule(clazz))
+            }
+            if (message != null) {
+                add(message)
             }
         }
     }
@@ -94,11 +119,26 @@ class DashboardAdapter(
             }
         }
         class ScheduleHolder(val binding: ItemDashScheduleBinding) : DashboardHolder(binding.root)
+        class MessageHolder(val binding: ItemDashSagresMessageBinding) : DashboardHolder(binding.root)
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Any>() {
-        override fun areItemsTheSame(oldItem: Any, newItem: Any) = false
-        override fun areContentsTheSame(oldItem: Any, newItem: Any) = false
+        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return when {
+                oldItem is Header && newItem is Header -> true
+                oldItem is Schedule && newItem is Schedule -> true
+                oldItem is Message && newItem is Message -> true
+                else -> false
+            }
+        }
+        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+            return when {
+                oldItem is Header && newItem is Header -> true
+                oldItem is Schedule && newItem is Schedule -> oldItem.clazz.location.uid == newItem.clazz.location.uid
+                oldItem is Message && newItem is Message -> oldItem == newItem
+                else -> false
+            }
+        }
     }
 
     private object Header
