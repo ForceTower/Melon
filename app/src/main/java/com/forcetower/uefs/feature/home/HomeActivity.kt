@@ -293,7 +293,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         viewModel.scheduleHideCount.observe(this, Observer {
             Timber.d("Schedule hidden stuff: $it")
             analytics.setUserProperty("using_schedule_hide", "${it > 0}")
-            analytics.setUserProperty("using_schedule_hide_count", "$it")
+            analytics.setUserProperty("using_schedule_hide_cnt", "$it")
         })
     }
 

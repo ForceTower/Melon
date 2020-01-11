@@ -212,7 +212,7 @@ class SagresSyncRepository @Inject constructor(
         defineMessages(SagresMessageParser.getMessages(homeDoc))
 
         val person = me(score, homeDoc, access)
-        Timber.d("The person from me is $person")
+        Timber.d("The person from me is ${person?.name} ${person?.isMocked}")
         if (person == null) {
             registry.completed = true
             registry.error = -3
@@ -236,11 +236,14 @@ class SagresSyncRepository @Inject constructor(
         var result = 0
         var skipped = 0
 
-        if (!messages(null))
-
         if (!person.isMocked) {
-            if (!messages(person.id)) result += 1 shl 1
+            Timber.d("I guess the person is not a mocked version on it")
+            if (!messages(person.id)) {
+                if (!messages(null)) result += 1 shl 1
+            }
             if (!semesters(person.id)) result += 1 shl 2
+        } else {
+            if (!messages(null)) result += 1 shl 1
         }
 
         val dailyDisciplines = preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
@@ -436,9 +439,12 @@ class SagresSyncRepository @Inject constructor(
         else
             SagresNavigator.instance.messagesHtml()
 
+        Timber.d("Did receive a valid list? ${messages.messages != null}, ${messages.status}")
+
         return when (messages.status) {
             Status.SUCCESS -> {
                 val values = messages.messages?.map { Message.fromMessage(it, false) } ?: emptyList()
+                Timber.d("Messages mapped: ${values.size}")
                 database.messageDao().insertIgnoring(values)
                 messagesNotifications()
                 Timber.d("Messages completed. Messages size is ${values.size}")
@@ -675,6 +681,8 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
+        Timber.d("Is throwable invalid? ${callback.throwable == null}")
+        callback.throwable?.printStackTrace()
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
     }
 
