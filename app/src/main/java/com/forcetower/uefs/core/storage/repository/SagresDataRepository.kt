@@ -61,6 +61,7 @@ class SagresDataRepository @Inject constructor(
             database.demandOfferDao().deleteAll()
             database.serviceRequestDao().deleteAll()
             SagresNavigator.instance.logout()
+            SagresNavigator.instance.putCredentials(null)
         }
     }
 

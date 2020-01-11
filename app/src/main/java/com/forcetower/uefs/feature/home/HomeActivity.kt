@@ -37,6 +37,7 @@ import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -314,6 +315,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             analytics.setUserId(access.username)
             analytics.setUserProperty("institution", SagresNavigator.instance.getSelectedInstitution())
             analytics.setUserProperty("access_valid", "${access.valid}")
+            SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
 
             if (!access.valid) {
                 val snack = Snackbar.make(binding.root, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)
