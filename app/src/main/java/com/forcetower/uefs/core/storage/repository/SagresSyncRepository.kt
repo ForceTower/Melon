@@ -33,6 +33,7 @@ import com.crashlytics.android.Crashlytics
 import com.forcetower.core.getDynamicDataSourceFactory
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
 import com.forcetower.sagres.database.model.SagresDisciplineGroup
@@ -164,8 +165,7 @@ class SagresSyncRepository @Inject constructor(
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
-
-        findAndMatch()
+        SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {
@@ -188,6 +188,10 @@ class SagresSyncRepository @Inject constructor(
             }
         }
 
+        try {
+            findAndMatch()
+        } catch (t: Throwable) { }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
@@ -208,6 +212,7 @@ class SagresSyncRepository @Inject constructor(
         defineMessages(SagresMessageParser.getMessages(homeDoc))
 
         val person = me(score, homeDoc, access)
+        Timber.d("The person from me is $person")
         if (person == null) {
             registry.completed = true
             registry.error = -3
@@ -395,6 +400,7 @@ class SagresSyncRepository @Inject constructor(
             return continueWithHtml(document, username, score)
         } else {
             val me = SagresNavigator.instance.me()
+            Timber.d("Me response: ${me.status}")
             when (me.status) {
                 Status.SUCCESS -> {
                     val person = me.person
@@ -424,6 +430,7 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun messages(userId: Long?): Boolean {
+        Timber.d("Messages was invoked using $userId")
         val messages = if (userId != null)
             SagresNavigator.instance.messages(userId)
         else
