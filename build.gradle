@@ -41,7 +41,7 @@ buildscript {
         flexbox = "1.1.0"
         browser = '1.2.0'
         preference = "1.1.0"
-        fragment = '1.2.0-rc04'
+        fragment = '1.2.0-rc05'
 
         // Architecture
         room = '2.2.3'
