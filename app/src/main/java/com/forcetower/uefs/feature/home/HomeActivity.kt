@@ -323,6 +323,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                     showInvalidAccessDialog()
                     snack.dismiss()
                 }
+                snack.anchorView = binding.bottomNavigation
                 snack.config()
                 snack.show()
             }
@@ -411,6 +412,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             setAction(restart) { updateManager.completeUpdate() }
         }
         snack.config()
+        snack.anchorView = binding.bottomNavigation
         snack.show()
     }
 

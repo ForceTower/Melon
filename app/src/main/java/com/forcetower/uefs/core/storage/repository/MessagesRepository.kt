@@ -72,12 +72,15 @@ class MessagesRepository @Inject constructor(
                 SagresNavigator.instance.messagesHtml()
             }
 
-            Timber.d("Profile status: ${profile.mocked}")
+            Timber.d("Profile mocked: ${profile.mocked}, ${profile.sagresId}, $all")
 
             if (messages.status == Status.SUCCESS) {
+                Timber.d("${messages.messages}")
                 messages.messages.defineInDatabase(database, true)
                 true
             } else {
+                Timber.d("${messages.status}")
+                Timber.d("${messages.throwable?.message}")
                 false
             }
         } else {

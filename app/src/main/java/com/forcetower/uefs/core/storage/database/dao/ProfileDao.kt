@@ -29,6 +29,7 @@ import androidx.room.Transaction
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Profile
+import timber.log.Timber
 
 @Dao
 abstract class ProfileDao {
@@ -50,6 +51,7 @@ abstract class ProfileDao {
             updateProfileMockStatus(person.isMocked)
             if (!person.isMocked) {
                 updateProfileEmail(person.email?.trim() ?: "")
+                Timber.d("Updating profile sagres id to ${person.id} ${person.sagresId}")
                 updateProfileSagresId(person.id)
             }
             if (score >= 0) updateScore(score)

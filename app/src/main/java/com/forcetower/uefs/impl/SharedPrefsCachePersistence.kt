@@ -35,9 +35,16 @@ import com.google.gson.Gson
 class SharedPrefsCachePersistence(
     private val preferences: SharedPreferences
 ) : CachedPersistence {
+    private val gson = Gson()
+
     private val access = object : Storage<SagresCredential>() {
         private val key = "credential"
-        private val map = retrieveMap<SagresCredential>(key)
+        private val map: MutableMap<String, SagresCredential>
+        init {
+            val typeToken = object : TypeToken<MutableMap<String, SagresCredential>>() {}.type
+            val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
+            map = gson.fromJson<MutableMap<String, SagresCredential>>(mapping, typeToken)
+        }
 
         override fun save(id: String, value: SagresCredential): Boolean {
             map[id] = value
@@ -50,7 +57,13 @@ class SharedPrefsCachePersistence(
 
     private val clazz = object : Storage<SagresClass>() {
         private val key = "class"
-        private val map = retrieveMap<SagresClass>(key)
+        private val map: MutableMap<String, SagresClass>
+        init {
+            val typeToken = object : TypeToken<MutableMap<String, SagresClass>>() {}.type
+            val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
+            map = gson.fromJson<MutableMap<String, SagresClass>>(mapping, typeToken)
+        }
+
         override fun save(id: String, value: SagresClass): Boolean {
             map[id] = value
             updateOnPrefs(key, map)
@@ -65,8 +78,13 @@ class SharedPrefsCachePersistence(
     }
 
     private val person = object : Storage<SagresPerson>() {
-        private val key = "message_scope"
-        private val map = retrieveMap<SagresPerson>(key)
+        private val key = "message_person"
+        private val map: MutableMap<String, SagresPerson>
+        init {
+            val typeToken = object : TypeToken<MutableMap<String, SagresPerson>>() {}.type
+            val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
+            map = gson.fromJson<MutableMap<String, SagresPerson>>(mapping, typeToken)
+        }
 
         override fun save(id: String, value: SagresPerson): Boolean {
             map[id] = value
@@ -83,7 +101,12 @@ class SharedPrefsCachePersistence(
 
     private val messageScope = object : Storage<SagresMessageScope>() {
         private val key = "message_scope"
-        private val map = retrieveMap<SagresMessageScope>(key)
+        private val map: MutableMap<String, SagresMessageScope>
+        init {
+            val typeToken = object : TypeToken<MutableMap<String, SagresMessageScope>>() {}.type
+            val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
+            map = gson.fromJson<MutableMap<String, SagresMessageScope>>(mapping, typeToken)
+        }
 
         override fun save(id: String, value: SagresMessageScope): Boolean {
             map[id] = value
@@ -100,7 +123,12 @@ class SharedPrefsCachePersistence(
 
     private val disciplineResumed = object : Storage<SagresDisciplineResumed>() {
         private val key = "discipline_resumed"
-        private val map = retrieveMap<SagresDisciplineResumed>(key)
+        private val map: MutableMap<String, SagresDisciplineResumed>
+        init {
+            val typeToken = object : TypeToken<MutableMap<String, SagresDisciplineResumed>>() {}.type
+            val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
+            map = gson.fromJson<MutableMap<String, SagresDisciplineResumed>>(mapping, typeToken)
+        }
 
         override fun save(id: String, value: SagresDisciplineResumed): Boolean {
             map[id] = value
@@ -113,13 +141,6 @@ class SharedPrefsCachePersistence(
         override fun retrieveFromLink(link: String): SagresDisciplineResumed? {
             return map.values.firstOrNull { it.link == link }
         }
-    }
-
-    private fun <T> retrieveMap(name: String): MutableMap<String, T> {
-        val gson = Gson()
-        val typeToken = object : TypeToken<MutableMap<String, T>>() {}.type
-        val mapping = preferences.getString("cache_temp_mapping_$name", null) ?: "{}"
-        return gson.fromJson(mapping, typeToken)
     }
 
     private fun updateOnPrefs(name: String, map: Any) {
