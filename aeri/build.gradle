@@ -113,4 +113,7 @@ dependencies {
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
+
+    // Google Play
+    implementation "com.google.android.play:core:$gp_core"
 }
