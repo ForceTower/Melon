@@ -38,6 +38,7 @@ import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
+import com.google.android.play.core.splitcompat.SplitCompat
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -49,6 +50,7 @@ class AERINewsFragment : UFragment() {
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        SplitCompat.install(context)
         val component = (context.applicationContext as UApplication).component
         DaggerAERIComponent.builder().appComponent(component).build().inject(this)
         Timber.d("Factory initialized? ${::factory.isInitialized}")
