@@ -28,23 +28,31 @@ import android.view.ViewGroup
 import androidx.annotation.Keep
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.dashboard.core.injection.DaggerDashboardComponent
 import com.forcetower.uefs.dashboard.databinding.FragmentDashboardBinding
+import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.android.play.core.install.model.InstallStatus
+import com.google.android.play.core.splitcompat.SplitCompat
 import javax.inject.Inject
 
 @Keep
 class DashboardFragment : UFragment() {
     @Inject
-    lateinit var factory: ViewModelProvider.Factory
+    lateinit var factory: BaseViewModelFactory
+    @Inject
+    lateinit var appFactory: UViewModelFactory
 
     private lateinit var binding: FragmentDashboardBinding
     private val viewModel: DashboardViewModel by activityViewModels { factory }
+    private val homeViewModel: HomeViewModel by activityViewModels { appFactory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        SplitCompat.install(context)
         val component = (context.applicationContext as UApplication).component
         DaggerDashboardComponent.builder().appComponent(component).build().inject(this)
     }
@@ -62,6 +70,9 @@ class DashboardFragment : UFragment() {
             adapter = dashAdapter
         }
 
+        homeViewModel.inAppUpdateStatus.observe(this, Observer {
+            dashAdapter.updatingApp = it == InstallStatus.DOWNLOADING
+        })
         viewModel.currentClass.observe(this, Observer { dashAdapter.nextClass = it })
         viewModel.lastMessage.observe(this, Observer { dashAdapter.lastMessage = it })
     }

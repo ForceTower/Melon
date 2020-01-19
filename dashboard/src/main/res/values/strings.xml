@@ -25,4 +25,6 @@
     <string name="see_all_classes">Ver todas as aulas</string>
     <string name="dash_schedule_separator">%1$s ~ %2$s</string>
     <string name="dash_schedule_disc_starts_in">Começa em %1$s minutos</string>
+    <string name="dash_updating_app">O aplicativo está sendo atualizado</string>
+    <string name="dash_updating_app_info">Continue usando o aplicativo normalmente, assim que a atualização terminar, uma mensagem será mostrada a você.</string>
 </resources>

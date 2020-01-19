@@ -394,6 +394,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun onStateUpdateChanged(state: InstallState) {
+        viewModel.setCurrentUpdateState(state.installStatus())
         when (state.installStatus()) {
             InstallStatus.DOWNLOADED -> {
                 updateManager.unregisterListener(updateListener)
