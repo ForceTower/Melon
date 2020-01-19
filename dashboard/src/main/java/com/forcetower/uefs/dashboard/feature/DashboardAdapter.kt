@@ -32,6 +32,7 @@ import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.databinding.ItemDashHeaderBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashSagresMessageBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashScheduleBinding
+import com.forcetower.uefs.dashboard.databinding.ItemDashUpdatingAppBinding
 import com.forcetower.uefs.feature.messages.disciplineText
 import com.forcetower.uefs.feature.messages.messageContent
 import com.forcetower.uefs.feature.messages.senderText
@@ -53,6 +54,12 @@ class DashboardAdapter(
         differ.submitList(buildMergedList(message = value))
     }
 
+    var updatingApp: Boolean = false
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(updating = value))
+    }
+
     private val differ = AsyncListDiffer(this, DiffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashboardHolder {
@@ -60,6 +67,7 @@ class DashboardAdapter(
             R.layout.item_dash_header -> DashboardHolder.HeaderHolder(parent.inflate(viewType), viewModel, lifecycleOwner)
             R.layout.item_dash_schedule -> DashboardHolder.ScheduleHolder(parent.inflate(viewType))
             R.layout.item_dash_sagres_message -> DashboardHolder.MessageHolder(parent.inflate(viewType))
+            R.layout.item_dash_updating_app -> DashboardHolder.UpdatingHolder(parent.inflate(viewType))
             else -> throw IllegalStateException("No view defined for viewType $viewType")
         }
     }
@@ -90,15 +98,20 @@ class DashboardAdapter(
             is Header -> R.layout.item_dash_header
             is Schedule -> R.layout.item_dash_schedule
             is Message -> R.layout.item_dash_sagres_message
+            is UpdatingApp -> R.layout.item_dash_updating_app
             else -> throw IllegalStateException("No viewType defined for position $position")
         }
     }
 
     private fun buildMergedList(
         clazz: LocationWithGroup? = nextClass,
-        message: Message? = lastMessage
+        message: Message? = lastMessage,
+        updating: Boolean = updatingApp
     ): List<Any> {
         return mutableListOf<Any>(Header).apply {
+            if (updating) {
+                add(UpdatingApp)
+            }
             if (clazz != null) {
                 add(Schedule(clazz))
             }
@@ -121,12 +134,14 @@ class DashboardAdapter(
         }
         class ScheduleHolder(val binding: ItemDashScheduleBinding) : DashboardHolder(binding.root)
         class MessageHolder(val binding: ItemDashSagresMessageBinding) : DashboardHolder(binding.root)
+        class UpdatingHolder(binding: ItemDashUpdatingAppBinding) : DashboardHolder(binding.root)
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
                 oldItem is Header && newItem is Header -> true
+                oldItem is UpdatingApp && newItem is UpdatingApp -> true
                 oldItem is Schedule && newItem is Schedule -> true
                 oldItem is Message && newItem is Message -> true
                 else -> false
@@ -134,14 +149,14 @@ class DashboardAdapter(
         }
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is Header && newItem is Header -> true
                 oldItem is Schedule && newItem is Schedule -> true
                 oldItem is Message && newItem is Message -> oldItem.content == newItem.content
-                else -> false
+                else -> true
             }
         }
     }
 
     private object Header
+    private object UpdatingApp
     private data class Schedule(val clazz: LocationWithGroup)
 }

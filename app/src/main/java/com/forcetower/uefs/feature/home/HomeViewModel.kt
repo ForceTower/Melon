@@ -47,6 +47,7 @@ import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -72,6 +73,10 @@ class HomeViewModel @Inject constructor(
     private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()
     val passwordChangeProcess: LiveData<Event<Resource<Boolean>>>
         get() = _passwordChangeProcess
+
+    private val _inAppUpdateStatus = MutableLiveData<Int>()
+    val inAppUpdateStatus: LiveData<Int>
+        get() = _inAppUpdateStatus
 
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
@@ -150,5 +155,9 @@ class HomeViewModel @Inject constructor(
 
     fun onSyncSessions() {
         sessionRepository.onSyncSessionsAsync()
+    }
+
+    fun setCurrentUpdateState(@InstallStatus installStatus: Int) {
+        _inAppUpdateStatus.value = installStatus
     }
 }
