@@ -31,7 +31,7 @@ fun List<ClassStatsData>.transformToNewStyle(): List<DisciplineData> {
             // iterate over the lists and transform to new style
             .map { list ->
                 // The new values are composed by all the grades from all sources of the class
-                val values = list.map { SimpleGrade(it.evaluationName, it.evaluationDate, it.evaluationGrade) }
+                val values = list.map { SimpleGrade(it.evaluationName, it.evaluationDate, it.evaluationGrade) }.filter { it.name != null }
                 // The first teacher takes all the grades to himself,
                 //
                 // since the second (or maybe third) teacher will also be iterated over,
@@ -85,7 +85,7 @@ data class DisciplineData(
 )
 
 data class SimpleGrade(
-    val name: String,
+    val name: String? = null,
     val date: String? = null,
     val value: String? = null
 )
