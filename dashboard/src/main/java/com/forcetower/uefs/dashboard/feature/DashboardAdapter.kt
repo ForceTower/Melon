@@ -112,9 +112,11 @@ class DashboardAdapter(
             if (updating) {
                 add(UpdatingApp)
             }
-            if (clazz != null) {
-                add(Schedule(clazz))
-            }
+
+            add(Schedule(clazz))
+//            if (clazz != null) {
+//
+//            }
             if (message != null) {
                 add(message)
             }
@@ -158,5 +160,5 @@ class DashboardAdapter(
 
     private object Header
     private object UpdatingApp
-    private data class Schedule(val clazz: LocationWithGroup)
+    private data class Schedule(val clazz: LocationWithGroup?)
 }

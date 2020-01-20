@@ -27,11 +27,8 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
-import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.annotation.IdRes
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -42,7 +39,6 @@ import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.ColorUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -88,22 +84,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         }.root
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        nightSwitcherListener()
-    }
-
-    private fun nightSwitcherListener() {
-        val config = preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0
-        val active = config == 2
-        binding.switchNight.isChecked = active
-        binding.switchNight.setOnCheckedChangeListener { _, isChecked ->
-            val flag = if (isChecked) AppCompatDelegate.MODE_NIGHT_YES else AppCompatDelegate.MODE_NIGHT_NO
-            val state = if (isChecked) 2 else 1
-            preferences.edit().putString("stg_night_mode", state.toString()).apply()
-            AppCompatDelegate.setDefaultNightMode(flag)
-        }
-    }
-
     private fun editCourse() {
         if (!preferences.isStudentFromUEFS()) return
         val dialog = SelectCourseDialog()
@@ -119,13 +99,11 @@ class HomeBottomFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.account.observe(viewLifecycleOwner, Observer { handleAccount(it) })
+        viewModel.databaseAccount.observe(viewLifecycleOwner, Observer { handleAccount(it) })
     }
 
-    private fun handleAccount(resource: Resource<Account>) {
-        val data = resource.data ?: return
-        toggleNightModeSwitcher(data.darkThemeEnabled)
-        binding.account = data
+    private fun handleAccount(account: Account?) {
+        binding.account = account
     }
 
     private fun featureFlags() {
@@ -142,9 +120,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
         toggleItem(R.id.purchases, storeFlag)
 
-        val dark = preferences.getBoolean("stg_night_mode_menu", true)
-        toggleItem(R.id.dark_theme_event, uefsStudent && dark)
-
         val hourglass = remoteConfig.getBoolean("feature_flag_evaluation") && uefsStudent
         toggleItem(R.id.evaluation, hourglass)
 
@@ -154,13 +129,6 @@ class HomeBottomFragment : UFragment(), Injectable {
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.events, false)
         toggleItem(R.id.flowchart, uefsStudent)
-    }
-
-    private fun toggleNightModeSwitcher(enabled: Boolean?) {
-        binding.switchNight.run {
-            visibility = if (enabled == true) VISIBLE
-            else GONE
-        }
     }
 
     private fun toggleItem(@IdRes id: Int, visible: Boolean) {
@@ -232,17 +200,17 @@ class HomeBottomFragment : UFragment(), Injectable {
                     val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
                     val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                     CropImage.activity(uri)
-                            .setFixAspectRatio(true)
-                            .setAspectRatio(1, 1)
-                            .setCropShape(CropImageView.CropShape.OVAL)
-                            .setBackgroundColor(bg)
-                            .setBorderLineColor(ac)
-                            .setBorderCornerColor(ac)
-                            .setActivityMenuIconColor(ac)
-                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
-                            .setActivityTitle(getString(R.string.cut_profile_image))
-                            .setGuidelines(CropImageView.Guidelines.OFF)
-                            .start(requireContext(), this)
+                        .setFixAspectRatio(true)
+                        .setAspectRatio(1, 1)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setBackgroundColor(bg)
+                        .setBorderLineColor(ac)
+                        .setBorderCornerColor(ac)
+                        .setActivityMenuIconColor(ac)
+                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
+                        .setActivityTitle(getString(R.string.cut_profile_image))
+                        .setGuidelines(CropImageView.Guidelines.OFF)
+                        .start(requireContext(), this)
                 }
             }
             CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {

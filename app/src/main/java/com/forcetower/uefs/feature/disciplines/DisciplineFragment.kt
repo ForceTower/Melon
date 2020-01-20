@@ -37,7 +37,6 @@ import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory

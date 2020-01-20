@@ -35,6 +35,7 @@ import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import pub.devrel.easypermissions.AfterPermissionGranted
@@ -162,7 +163,11 @@ class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
 
     @AfterPermissionGranted(RC_LOCATION_PERMISSION)
     private fun checkAndEnableAutoProxy() {
-        val perms = arrayOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION, ACCESS_BACKGROUND_LOCATION)
+        val permissions = mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
+        if (VersionUtils.isAndroid10()) {
+            permissions.add(ACCESS_BACKGROUND_LOCATION)
+        }
+        val perms = permissions.toTypedArray()
         if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
             enableAutoProxy()
         } else {
