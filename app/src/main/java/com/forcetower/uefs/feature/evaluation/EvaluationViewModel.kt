@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
+import com.forcetower.uefs.core.util.TextTransformUtils
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
 import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
@@ -131,7 +132,8 @@ class EvaluationViewModel @Inject constructor(
         if (source != null) {
             _query.removeSource(source)
         }
-        val newSource = evaluationRepository.queryEntities(text)
+        val transformedText = TextTransformUtils.transform(text)
+        val newSource = evaluationRepository.queryEntities(transformedText)
         currentSource = newSource
         _query.addSource(newSource) {
             _query.value = it
