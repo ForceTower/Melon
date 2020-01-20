@@ -799,4 +799,8 @@
     <string name="aeri_call_in_text">Fique por dentro das noticias do programa de intercambio da universidade!</string>
     <string name="aeri_join_in">Quero ver!</string>
     <string name="aeri_info_notifications">Ativar essa função tambem irá ativar notificações sobre a AERI durante a sincronização</string>
+    <string name="dynamic_feature_fail_network_error">Erro de rede</string>
+    <string name="dynamic_feature_module_unavailable">Módulo indisponível</string>
+    <string name="dynamic_feature_fail_any_else_error">Um erro genérico com código: %1$d</string>
+    <string name="dynamic_feature_aeri_installed">O novo módulo foi instalado!</string>
 </resources>
