@@ -24,6 +24,7 @@ import android.content.Context
 import android.util.Log
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
+import timber.log.Timber
 import kotlin.reflect.full.createInstance
 
 fun getDynamicDataSourceFactory(context: Context, className: String): DynamicDataSourceFactory? {
@@ -31,7 +32,7 @@ fun getDynamicDataSourceFactory(context: Context, className: String): DynamicDat
         val provider = Class.forName(className).kotlin.createInstance() as DynamicDataSourceFactoryProvider
         provider.getFactory(context)
     } catch (e: Throwable) {
-        Log.e("SyncWorker","Failed to get factory", e)
+        Timber.d("Error getting factory")
         null
     }
 }
