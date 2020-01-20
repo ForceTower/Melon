@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentMessagesAeriNotInstalledBinding
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import javax.inject.Inject
 
 class AERINotInstalledFragment : UFragment(), Injectable {
@@ -60,9 +61,27 @@ class AERINotInstalledFragment : UFragment(), Injectable {
 
     private fun requestModuleInstall() {
         dynamicViewModel.requestAERIInstall()
-        binding.run {
-            groupGetStarted.visibility = View.INVISIBLE
-            groupInstalling.visibility = View.VISIBLE
+        dynamicViewModel.sessionStatusLive.observe(viewLifecycleOwner, Observer {
+            onStatusUpdate(it)
+        })
+    }
+
+    private fun onStatusUpdate(@SplitInstallSessionStatus status: Int) {
+        when (status) {
+            SplitInstallSessionStatus.INSTALLING, SplitInstallSessionStatus.DOWNLOADING, SplitInstallSessionStatus.PENDING -> {
+                binding.run {
+                    groupGetStarted.visibility = View.INVISIBLE
+                    groupInstalling.visibility = View.VISIBLE
+                    binding.progressInstall.isIndeterminate = status != SplitInstallSessionStatus.DOWNLOADING
+                }
+            }
+            SplitInstallSessionStatus.INSTALLED -> Unit
+            else -> {
+                binding.run {
+                    groupGetStarted.visibility = View.VISIBLE
+                    groupInstalling.visibility = View.INVISIBLE
+                }
+            }
         }
     }
 }
