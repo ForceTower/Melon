@@ -27,20 +27,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/label_call_in"
+        <ImageView
+            android:id="@+id/image"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="16dp"
-            android:text="Fique por dentro das noticias do programa de intercambio da universidade!"
-            android:textAlignment="gravity"
-            app:layout_constraintBottom_toTopOf="@+id/btn_get_started"
+            android:layout_height="200dp"
+            android:importantForAccessibility="no"
+            android:src="@mipmap/exchange"
+            app:layout_constraintBottom_toTopOf="@+id/label_call_in"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
+
+
+        <TextView
+            android:id="@+id/label_call_in"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/aeri_call_in_text"
+            android:textAlignment="gravity"
+            android:textColor="?attr/colorOnSurface"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toTopOf="@+id/label_info"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/image" />
+
+        <TextView
+            android:id="@+id/label_info"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:gravity="center"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:text="@string/aeri_info_notifications"
+            android:textColor="?attr/colorOnSurfaceLight"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toTopOf="@+id/btn_get_started"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_call_in" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_get_started"
@@ -48,19 +82,20 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Quero ver!"
+            android:layout_marginBottom="32dp"
+            android:text="@string/aeri_join_in"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/label_call_in" />
+            app:layout_constraintTop_toBottomOf="@+id/label_info" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_get_started"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="visible"
-            app:constraint_referenced_ids="label_call_in,btn_get_started"/>
+            app:constraint_referenced_ids="label_call_in,btn_get_started,label_info,image" />
 
         <TextView
             android:id="@+id/label_installing"
@@ -69,36 +104,36 @@
             android:gravity="center"
             android:paddingStart="16dp"
             android:paddingEnd="16dp"
-            android:text="Instalando novo módulo: A aba de Daniel"
+            android:text="@string/install_module_aeri"
             app:layout_constraintBottom_toTopOf="@+id/progress_install"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_chainStyle="packed"/>
+            app:layout_constraintVertical_chainStyle="packed" />
 
         <ProgressBar
             android:id="@+id/progress_install"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:layout_width="0dp"
             android:layout_height="3dp"
-            android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="16dp"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
             android:indeterminate="false"
-            tools:max="100"
-            tools:progress="30"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/label_installing"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            tools:max="100"
+            tools:progress="30" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/group_installing"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="label_installing,progress_install"/>
+            app:constraint_referenced_ids="label_installing,progress_install" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

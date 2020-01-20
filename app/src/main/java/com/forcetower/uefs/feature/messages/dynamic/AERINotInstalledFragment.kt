@@ -40,8 +40,6 @@ class AERINotInstalledFragment : UFragment(), Injectable {
 
     private lateinit var binding: FragmentMessagesAeriNotInstalledBinding
 
-    init { displayName = "Daniel" }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentMessagesAeriNotInstalledBinding.inflate(inflater, container, false).also {
             binding = it
