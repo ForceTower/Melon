@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
@@ -115,6 +116,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var updateManager: AppUpdateManager
     private lateinit var username: String
     private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
+    private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -286,6 +288,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.sendToken().observe(this, Observer { Unit })
+        if (preferences.isStudentFromUEFS()) {
+            // Update and unlock achievements for participating in a class with the creator
+            disciplineViewModel.prepareAndSendStats()
+        }
         if (preferences.isStudentFromUEFS()) {
             viewModel.connectToServiceIfNeeded()
             viewModel.onSyncSessions()
