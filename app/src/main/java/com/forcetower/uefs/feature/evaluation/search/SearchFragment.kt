@@ -64,6 +64,7 @@ class SearchFragment : UFragment(), Injectable {
                 override fun afterTextChanged(edit: Editable?) {
                     val text = edit?.toString() ?: ""
                     if (text.length >= 3 || text.isEmpty()) {
+                        Timber.d("Querying $text")
                         viewModel.query(text)
                     }
                 }
