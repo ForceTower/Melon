@@ -154,22 +154,8 @@ class UApplication : Application(), HasAndroidInjector {
     companion object {
         fun setupDayNightTheme(context: Context) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-            if (!enabled) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                preferences.edit()
-                        .remove("ach_night_mode_enabled")
-                        .remove("stg_night_mode")
-                        .apply()
-            } else {
-                val mode = when (preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0) {
-                    0 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    1 -> AppCompatDelegate.MODE_NIGHT_NO
-                    2 -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_NO
-                }
-                AppCompatDelegate.setDefaultNightMode(mode)
-            }
+            val mode = preferences.getString("stg_night_mode", "-1")?.toIntOrNull() ?: -1
+            AppCompatDelegate.setDefaultNightMode(mode)
         }
     }
 }

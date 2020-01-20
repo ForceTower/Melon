@@ -111,6 +111,7 @@
                     android:id="@+id/dark_theme_event"
                     android:title="@string/label_dark_theme_event"
                     android:menuCategory="secondary"
+                    android:visible="false"
                     android:icon="@drawable/ic_theme_black_24dp"/>
 
                 <item
