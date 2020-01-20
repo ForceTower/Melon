@@ -20,15 +20,19 @@
 
 package com.forcetower.uefs.feature.messages
 
+import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.uefs.R
+import com.forcetower.uefs.REQUEST_INSTALL_AERI_MODULE
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.splitinstall.SplitInstallException
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import com.google.android.play.core.splitinstall.SplitInstallRequest
+import com.google.android.play.core.splitinstall.SplitInstallSessionState
 import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListener
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
@@ -36,7 +40,7 @@ import timber.log.Timber
 import javax.inject.Inject
 
 class MessagesDFMViewModel @Inject constructor(
-    context: Context
+    private val context: Context
 ) : ViewModel() {
     companion object {
         const val AERI_MODULE = "aeri"
@@ -53,20 +57,25 @@ class MessagesDFMViewModel @Inject constructor(
     val downloadStatus: LiveData<Pair<Long, Long>>
         get() = _downloadStatus
 
-    private val _sessionStatus = MutableLiveData<Event<Int>>()
-    val sessionStatus: LiveData<Event<Int>>
-        get() = _sessionStatus
+    private val _sessionState = MutableLiveData<Event<SplitInstallSessionState>>()
+    val sessionState: LiveData<Event<SplitInstallSessionState>>
+        get() = _sessionState
+
+    private val _sessionStatusLive = MutableLiveData<Int>()
+    val sessionStatusLive: LiveData<Int>
+        get() = _sessionStatusLive
 
     private val listener = SplitInstallStateUpdatedListener { state ->
         if (state.sessionId() == sessionId) {
-            _sessionStatus.value = Event(state.status())
+            _sessionState.value = Event(state)
+            _sessionStatusLive.value = state.status()
             when (state.status()) {
                 SplitInstallSessionStatus.FAILED -> {
                     Timber.d("Module install failed with ${state.errorCode()}")
                     showProperSplitInstallError(state.errorCode())
                 }
                 SplitInstallSessionStatus.INSTALLED -> {
-                    _snackbar.value = Event("O módulo novo foi instalado!!!")
+                    _snackbar.value = Event(context.getString(R.string.dynamic_feature_aeri_installed))
                 }
                 SplitInstallSessionStatus.DOWNLOADING -> {
                     val total = state.totalBytesToDownload()
@@ -107,9 +116,9 @@ class MessagesDFMViewModel @Inject constructor(
 
     private fun showProperSplitInstallError(errorCode: Int) {
         val message = when (errorCode) {
-            SplitInstallErrorCode.NETWORK_ERROR -> "Internet ruim"
-            SplitInstallErrorCode.MODULE_UNAVAILABLE -> "O modulo não existe ainda..."
-            else -> "Um problema qualquer, com código $errorCode"
+            SplitInstallErrorCode.NETWORK_ERROR -> context.getString(R.string.dynamic_feature_fail_network_error)
+            SplitInstallErrorCode.MODULE_UNAVAILABLE -> context.getString(R.string.dynamic_feature_module_unavailable)
+            else -> context.getString(R.string.dynamic_feature_fail_any_else_error, errorCode)
         }
         _snackbar.value = Event(message)
     }
@@ -123,5 +132,13 @@ class MessagesDFMViewModel @Inject constructor(
         val name = "com.forcetower.uefs.aeri.feature.AERINewsFragment"
         val clazz = Class.forName(name)
         return clazz.newInstance() as UFragment
+    }
+
+    fun requestUserConfirmation(state: SplitInstallSessionState, activity: Activity?) {
+        try {
+            splitInstallManager.startConfirmationDialogForResult(state, activity, REQUEST_INSTALL_AERI_MODULE)
+        } catch (error: Throwable) {
+            Timber.e("Error sending user confirmation", error)
+        }
     }
 }
