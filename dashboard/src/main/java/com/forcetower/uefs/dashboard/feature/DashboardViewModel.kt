@@ -28,14 +28,16 @@ import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
-import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel() {
-    private val timing = TimeLiveData(10_000L)
+    private val timing = TimeLiveData({
+        Calendar.getInstance().timeInMillis
+    }, 10_000L)
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Account> = repository.getAccount()
@@ -46,11 +48,9 @@ class DashboardViewModel @Inject constructor(
         get() = _currentClass
 
     init {
-        _currentClass.addSource(timing) { time ->
+        _currentClass.addSource(timing) { _ ->
             val data = repository.getCurrentClass()
-            Timber.d("Time updated to $time")
             _currentClass.addSource(data) {
-                Timber.d("Current class updated $it")
                 _currentClass.value = it
                 _currentClass.removeSource(data)
             }
