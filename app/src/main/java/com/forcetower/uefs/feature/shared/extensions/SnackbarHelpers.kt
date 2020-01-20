@@ -39,7 +39,7 @@ fun Snackbar.config(pxElevation: Int = 6) {
 
     try {
         val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
-        at.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+        at.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
         at.isAllCaps = false
         at.typeface = font
     } catch (ignored: Exception) {}

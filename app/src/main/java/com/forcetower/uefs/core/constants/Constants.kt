@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.constants
 
 object Constants {
     const val SELECTED_INSTITUTION_KEY = "selected_institution_worker"
-    const val UNES_SERVICE_BASE_URL = "unes-env.frarj7zp5x.us-east-2.elasticbeanstalk.com"
+    const val UNES_SERVICE_BASE_URL = "unes.forcetower.dev"
     private const val UNES_SERVICE_BASE_UPDATE = "unes.herokuapp.com"
     const val UNES_SERVICE_URL = "http://$UNES_SERVICE_BASE_URL/api/"
     const val UNES_SERVICE_UPDATE = "http://$UNES_SERVICE_BASE_UPDATE/api/"
