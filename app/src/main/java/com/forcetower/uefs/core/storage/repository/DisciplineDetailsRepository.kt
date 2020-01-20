@@ -93,10 +93,25 @@ class DisciplineDetailsRepository @Inject constructor(
         }
     }
 
+    @AnyThread
+    fun contributeCurrent() {
+        executors.diskIO().execute {
+            sendDisciplineDetails(true)
+        }
+    }
+
     @WorkerThread
-    fun sendDisciplineDetails() {
-        val stats = database.classGroupDao().getClassStatsWithAllDirect()
+    fun sendDisciplineDetails(current: Boolean = false) {
         val semesters = database.semesterDao().getSemestersDirect()
+        val currentSemester = semesters.maxBy { it.sagresId }?.sagresId
+
+        val stats = if (current) {
+            currentSemester ?: return
+            database.classGroupDao().getClassStatsWithAllDirect(currentSemester)
+        } else {
+            database.classGroupDao().getClassStatsWithAllDirect()
+        }
+
         val profile = database.profileDao().selectMeDirect() ?: return
 
         val treated = stats.transformToNewStyle()
