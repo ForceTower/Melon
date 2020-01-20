@@ -103,11 +103,6 @@ class DisciplineFragment : UFragment(), Injectable {
         viewModel.navigateToGroupAction.observe(viewLifecycleOwner, EventObserver {
             startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
         })
-
-        if (preferences.isStudentFromUEFS()) {
-            // This will update and unlock achievements for participate in a class with the creator
-            viewModel.prepareAndSendStats()
-        }
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
