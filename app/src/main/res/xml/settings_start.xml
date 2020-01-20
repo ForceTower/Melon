@@ -50,4 +50,13 @@
         android:summary="@string/settings_advanced_info_label"
         android:icon="@drawable/ic_developer_mode_accent_24dp"
         android:fragment="com.forcetower.uefs.feature.settings.AdvancedSettingsFragment"/>
+
+    <ListPreference
+        app:key="stg_night_mode"
+        app:title="@string/settings_theme_dark"
+        app:summary="@string/settings_theme_dark_desc"
+        app:icon="@drawable/ic_brightness_accent_24dp"
+        app:defaultValue="-1"
+        app:entries="@array/settings_theme_titles"
+        app:entryValues="@array/settings_theme_values"/>
 </androidx.preference.PreferenceScreen>

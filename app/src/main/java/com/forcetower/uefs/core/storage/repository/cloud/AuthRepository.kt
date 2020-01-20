@@ -101,7 +101,6 @@ class AuthRepository @Inject constructor(
             val response = service.getAccount().execute()
             if (response.isSuccessful) {
                 val account = response.body()!!
-                preferences.edit().putBoolean("ach_night_mode_enabled", account.darkThemeEnabled).apply()
                 database.accountDao().insert(account)
             }
         } catch (t: Throwable) {}
