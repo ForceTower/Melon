@@ -35,7 +35,6 @@ import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import timber.log.Timber
 import javax.inject.Inject
 
 class AERIMessageFragment : UFragment(), Injectable {
@@ -43,7 +42,7 @@ class AERIMessageFragment : UFragment(), Injectable {
     lateinit var factory: UViewModelFactory
 
     init {
-        displayName = "Daniel"
+        displayName = "AERI"
     }
 
     private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels { factory }
@@ -55,13 +54,10 @@ class AERIMessageFragment : UFragment(), Injectable {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (dynamicFeatureViewModel.isAeriInstalled()) {
-            Timber.i("onViewCreated():: Aeri Installed")
             moveToAeriNews()
         } else {
-            Timber.i("onViewCreated():: Aeri not installed")
             replaceFragment(AERINotInstalledFragment(), "aeri_not_installed")
             dynamicFeatureViewModel.sessionStatus.observe(viewLifecycleOwner, EventObserver {
-                Timber.d("Status updated to $it")
                 if (it == SplitInstallSessionStatus.INSTALLED) {
                     moveToAeriNews()
                 }

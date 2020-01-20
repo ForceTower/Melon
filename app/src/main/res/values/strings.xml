@@ -795,4 +795,8 @@
     <string name="dashboard">Início</string>
     <string name="settings_advanced_label">Avançadas</string>
     <string name="settings_advanced_info_label">Execução, Energia, funcionalidades e outras coisas</string>
+    <string name="install_module_aeri">Instalando novo módulo: Notícias da AERI</string>
+    <string name="aeri_call_in_text">Fique por dentro das noticias do programa de intercambio da universidade!</string>
+    <string name="aeri_join_in">Quero ver!</string>
+    <string name="aeri_info_notifications">Ativar essa função tambem irá ativar notificações sobre a AERI durante a sincronização</string>
 </resources>
