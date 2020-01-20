@@ -44,7 +44,6 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
-import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -325,17 +324,12 @@ class FirebaseMessageRepository @Inject constructor(
     @MainThread
     fun sendNewTokenOrNot(): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()
-        val day = preferences.getInt("_messaging_sync_daily_", -1)
-        val today = Calendar.getInstance().get(Calendar.DAY_OF_MONTH)
-        if (day != today) {
-            executors.diskIO().execute {
-                try {
-                    sendNewToken()
-                    result.postValue(true)
-                    preferences.edit().putInt("_messaging_sync_daily_", today).apply()
-                } catch (t: Throwable) {
-                    result.postValue(false)
-                }
+        executors.diskIO().execute {
+            try {
+                sendNewToken()
+                result.postValue(true)
+            } catch (t: Throwable) {
+                result.postValue(false)
             }
         }
         return result

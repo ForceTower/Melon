@@ -23,11 +23,11 @@ package com.forcetower.uefs.feature.shared
 import androidx.annotation.UiThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
-import java.util.Calendar
 
-class TimeLiveData(
+class TimeLiveData<T>(
+    private val function: () -> T,
     private val intervalMs: Long = 1_000L
-) : MutableLiveData<Long>() {
+) : MutableLiveData<T>() {
     private var isActive = false
     private val taskScheduler = DefaultScheduler
 
@@ -41,7 +41,7 @@ class TimeLiveData(
      */
     @WorkerThread
     fun updateValue() {
-        postValue(Calendar.getInstance().timeInMillis)
+        postValue(function())
     }
 
     /**
