@@ -19,6 +19,6 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
-    <string name="aeri_notification_title">Notícia AERI</string>
+<resources>
+    <string name="aeri_notification_title">AERI News</string>
 </resources>

@@ -21,9 +21,9 @@
 package com.forcetower.uefs.feature.shared.extensions
 
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.snackbar.Snackbar
 
@@ -39,7 +39,7 @@ fun Snackbar.config(pxElevation: Int = 6) {
 
     try {
         val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
-        at.setTextColor(ContextCompat.getColor(context, R.color.colorPrimary))
+        at.setTextColor(ViewUtils.attributeColorUtils(context, R.attr.colorPrimary))
         at.isAllCaps = false
         at.typeface = font
     } catch (ignored: Exception) {}

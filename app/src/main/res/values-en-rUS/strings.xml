@@ -554,7 +554,7 @@
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">The score is quite offensive</string>
     <string name="settings_acc_semester">Semester</string>
-    <string name="settings_acc_semester_info">Show score can be offensive</string>
+    <string name="settings_acc_semester_info">Show semester can be offensive</string>
     <string name="settings_account_info_label">What information should be shown?</string>
     <string name="settings_adv_auto_start">Auto start</string>
     <string name="settings_adv_auto_start_info">Some brands prevent the app auto start, this will try to take you to the right place</string>
