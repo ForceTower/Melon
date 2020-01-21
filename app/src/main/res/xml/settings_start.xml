@@ -57,6 +57,7 @@
         app:summary="@string/settings_theme_dark_desc"
         app:icon="@drawable/ic_brightness_accent_24dp"
         app:defaultValue="-1"
+        app:isPreferenceVisible="false"
         app:entries="@array/settings_theme_titles"
         app:entryValues="@array/settings_theme_values"/>
 </androidx.preference.PreferenceScreen>

@@ -117,7 +117,7 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
 
             val themeAttr = ThemeAttributeValues.ColorPalette(valueThemeOverlay, themeOverlayAttrs, context)
 
-            val button = createCompatRadioButton(group, contentDescriptionArray.getString(i) ?: "")
+            val button = createCompatRadioButton(group, contentDescriptionArray.getString(i) ?: "", overlayId == R.id.theme_feature_background_color)
             button.tag = themeAttr
             themeAttr.customizeRadioButton(button)
 
@@ -131,9 +131,12 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
         contentDescriptionArray.recycle()
     }
 
-    private fun createCompatRadioButton(group: RadioGroup, description: String): AppCompatRadioButton {
+    private fun createCompatRadioButton(group: RadioGroup, description: String, showText: Boolean = false): AppCompatRadioButton {
         val button = AppCompatRadioButton(context)
         button.contentDescription = description
+        if (showText) {
+            button.text = description
+        }
         group.addView(button)
         return button
     }

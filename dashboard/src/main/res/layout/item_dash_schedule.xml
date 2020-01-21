@@ -151,6 +151,7 @@
                 android:layout_height="48dp"
                 android:textColor="@color/white"
                 android:text="@string/see_all_classes"
+                android:visibility="invisible"
                 app:icon="@drawable/ic_chevron_right_black_24dp"
                 app:iconGravity="end"
                 app:iconTint="@color/white"

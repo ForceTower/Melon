@@ -24,6 +24,7 @@ import androidx.lifecycle.LiveData
 import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import java.util.Calendar
@@ -46,5 +47,9 @@ class DashboardRepository @Inject constructor(
 
     fun getLastMessage(): LiveData<Message?> {
         return database.messageDao().getLastMessage()
+    }
+
+    fun getStudentMe(): LiveData<SStudent> {
+        return database.studentServiceDao().getMeStudent()
     }
 }

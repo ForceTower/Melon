@@ -40,6 +40,7 @@
             style="@style/Widget.Dashboard.HeaderCardView"
             android:layout_width="80dp"
             android:layout_height="80dp"
+            android:onClick="@{() -> viewModel.onProfilePictureClick()}"
             app:goneIf="@{viewModel.account.imageUrl == null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent">
@@ -50,6 +51,7 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center"
                 android:importantForAccessibility="no"
+                android:transitionName="student_headshot_transition"
                 app:clipToCircle="@{true}"
                 app:imageUrl="@{viewModel.account.imageUrl}"
                 app:layout_constraintEnd_toEndOf="parent"

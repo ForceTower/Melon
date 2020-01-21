@@ -22,10 +22,13 @@ package com.forcetower.uefs.dashboard.feature
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
+import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
 import java.util.Calendar
@@ -41,11 +44,16 @@ class DashboardViewModel @Inject constructor(
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Account> = repository.getAccount()
+    val student: LiveData<SStudent> = repository.getStudentMe()
     val lastMessage = repository.getLastMessage()
 
     private val _currentClass = MediatorLiveData<LocationWithGroup?>()
     val currentClass: LiveData<LocationWithGroup?>
         get() = _currentClass
+
+    private val _profileClick = MutableLiveData<Event<Pair<Long, Long>>>()
+    val profileClick: LiveData<Event<Pair<Long, Long>>>
+        get() = _profileClick
 
     init {
         _currentClass.addSource(timing) { _ ->
@@ -55,5 +63,12 @@ class DashboardViewModel @Inject constructor(
                 _currentClass.removeSource(data)
             }
         }
+    }
+
+    fun onProfilePictureClick() {
+        val accountId = account.value?.id ?: return
+        val studentId = student.value?.id ?: return
+
+        _profileClick.value = Event(accountId to studentId)
     }
 }

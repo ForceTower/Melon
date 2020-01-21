@@ -124,7 +124,7 @@ class ProfileFragment : UFragment(), Injectable {
         })
 
         binding.up.setOnClickListener {
-            requireActivity().finish()
+            requireActivity().finishAfterTransition()
         }
 
         binding.writeStatement.setOnClickListener {

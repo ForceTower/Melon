@@ -59,7 +59,6 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
-import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherFragment
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -134,7 +133,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
-            ThemeSwitcherFragment().show(supportFragmentManager, "theme-switcher")
         }
     }
 
@@ -292,11 +290,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         viewModel.sendToken().observe(this, Observer { Unit })
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
-            disciplineViewModel.prepareAndSendStats()
-        }
-        if (preferences.isStudentFromUEFS()) {
             viewModel.connectToServiceIfNeeded()
             viewModel.onSyncSessions()
+            disciplineViewModel.prepareAndSendStats()
+            viewModel.getMeProfile()
         }
         viewModel.scheduleHideCount.observe(this, Observer {
             Timber.d("Schedule hidden stuff: $it")

@@ -146,5 +146,10 @@
         android:name="com.forcetower.uefs.feature.flowchart.FlowchartActivity"
         android:label="FlowchartActivity"
         tools:layout="@layout/activity_flowchart"/>
+    <dialog
+        android:id="@+id/theme_switcher"
+        android:name="com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherFragment"
+        android:label="ThemeSwitcher"
+        tools:layout="@layout/fragment_theme_switcher"/>
 
 </navigation>

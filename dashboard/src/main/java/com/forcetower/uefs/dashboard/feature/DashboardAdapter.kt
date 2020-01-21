@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.databinding.ItemDashHeaderBinding
@@ -53,6 +54,8 @@ class DashboardAdapter(
         field = value
         differ.submitList(buildMergedList(message = value))
     }
+
+    var student: SStudent? = null
 
     var updatingApp: Boolean = false
     set(value) {
@@ -132,6 +135,7 @@ class DashboardAdapter(
             init {
                 binding.viewModel = viewModel
                 binding.lifecycleOwner = lifecycleOwner
+                binding.root.setTag(R.id.tag_header_id, "header")
             }
         }
         class ScheduleHolder(val binding: ItemDashScheduleBinding) : DashboardHolder(binding.root)
