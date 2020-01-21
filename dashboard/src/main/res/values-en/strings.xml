@@ -19,6 +19,12 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
-    <string name="aeri_notification_title">Notícia AERI</string>
+<resources>
+    <string name="greetings_dashboard">Hello, %1$s</string>
+    <string name="next_class">Next class</string>
+    <string name="see_all_classes">See all classes</string>
+    <string name="dash_schedule_separator">%1$s ~ %2$s</string>
+    <string name="dash_schedule_disc_starts_in">Starts in %1$s minutes</string>
+    <string name="dash_updating_app">The app is being updated</string>
+    <string name="dash_updating_app_info">You can keep using the app normally while it updates. Once it\'s completed, a message popup</string>
 </resources>
