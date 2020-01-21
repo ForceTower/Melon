@@ -252,12 +252,12 @@
     <string name="create_new_event">Create event</string>
     <string name="dark_theme_good_luck">Good luck!</string>
     <string name="dark_theme_instructions">Instructions</string>
-    <string name="dark_theme_instructions_desc">Acomplish any of the actions below to unlock the theme</string>
+    <string name="dark_theme_instructions_desc">Accomplish any of the actions below to unlock the theme</string>
     <string name="dark_theme_invite_a_friend_title">Gift someone the dark theme</string>
     <string name="dark_theme_invite_sent">Your gift has been sent</string>
     <string name="dark_theme_invites">Everything is better with friends</string>
     <string name="dark_theme_invites_action">Invite someone to the dark side</string>
-    <string name="dark_theme_invites_desc">Acomplishing more than one action will grant you invites. Click the button below to unlock the dark theme for someone</string>
+    <string name="dark_theme_invites_desc">Accomplishing more than one action will grant you invites. Click the button below to unlock the dark theme for someone</string>
     <string name="dark_theme_no_more_invites">The server said you have no invites. The server is always right.</string>
     <string name="dark_theme_send_instructions">Tell me the SAGRES username of the person that will receive the gift. This person needs to be connected to the UNESVerse</string>
     <string name="dark_theme_send_label">Who do you wish to gift?</string>
@@ -301,7 +301,7 @@
     <string name="enter_using_username_instead">Log in using the username instead of email</string>
     <string name="ev_editor_actions">Available actions</string>
     <string name="ev_editor_auth">Authenticate</string>
-    <string name="ev_editor_info">Editor of SIECOMP. Nothing to fancy here. You must be authorized and playing a game in order to change stuff!</string>
+    <string name="ev_editor_info">Editor of SIECOMP. Nothing too fancy here. You must be authorized and playing a game in order to change stuff!</string>
     <string name="ev_editor_password">Password</string>
     <string name="ev_editor_sessions">Sessions</string>
     <string name="ev_editor_speakers">Speakers</string>
@@ -315,7 +315,7 @@
     <string name="evaluation_mean_amount">* Calculated using the data of %1$d students</string>
     <string name="evaluation_options">Your options</string>
     <string name="evaluation_performance">Performance</string>
-    <string name="evaluation_presentation_description">Rate yout teachers! Tell what you think about the classes and the diverse methodologies you found!</string>
+    <string name="evaluation_presentation_description">Rate your teachers! Tell what you think about the classes and the diverse methodologies you found!</string>
     <string name="evaluation_search_hint">Looking for something or someone?</string>
     <string name="evaluation_see_teacher_details">See teacher details</string>
     <string name="evaluation_start">Start</string>
