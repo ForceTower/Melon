@@ -694,4 +694,6 @@
     <string name="you_got">You got</string>
     <string name="you_missed_to_many_classes">You surpassed the missed class limit</string>
     <string name="your_semester_is">You are on the %1$dº semester</string>
+    <string name="label_theme_editor">Theme editor</string>
+    <string name="new_feature_description_01">Teacher evaluation is here!</string>
 </resources>

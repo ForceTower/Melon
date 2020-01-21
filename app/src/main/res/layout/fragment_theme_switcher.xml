@@ -139,6 +139,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
+            android:textAllCaps="false"
             android:text="@string/unes_theme_apply"/>
 
         <com.google.android.material.button.MaterialButton
@@ -147,6 +148,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
+            android:textAllCaps="false"
             android:text="@string/unes_theme_clear"/>
 
     </LinearLayout>
