@@ -155,8 +155,10 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             true
         }
 
-        prepareInterstitialAds()
-        prepareRewardedAds()
+        if (admobEnabled) {
+            prepareInterstitialAds()
+            prepareRewardedAds()
+        }
     }
 
     private fun prepareRewardedAds() {
@@ -166,6 +168,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     private fun loadRewardedAd() {
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        if (!admobEnabled) return
         val request = AdRequest.Builder()
                 .addTestDevice(Constants.ADMOB_TEST_ID)
                 .build()
