@@ -20,17 +20,17 @@
   -->
 
 <resources>
-    <string name="evaluation_welcome">Welcome back, %1$s</string>
-    <string name="mtrl_red">Red</string>
-    <string name="mtrl_purple">Purple</string>
-    <string name="mtrl_indigo">Indigo</string>
-    <string name="mtrl_blue">Blue</string>
-    <string name="mtrl_green">Green</string>
-    <string name="mtrl_yellow">Yellow</string>
-    <string name="mtrl_orange">Orange</string>
-    <string name="mtrl_brown">Brown</string>
-    <string name="mtrl_grey">Grey</string>
-    <string name="mtrl_blue_grey">Blue grey</string>
-    <string name="mtrl_background_black">Black</string>
-    <string name="mtrl_background_dark">Dark</string>
+    <style name="ThemeOverlay.BackgroundPalettes.Black" parent="">
+        <item name="colorStatusBar">@color/backgroundExtreme</item>
+        <item name="android:windowBackground">@color/backgroundExtreme</item>
+        <item name="background">@color/backgroundExtreme</item>
+        <item name="colorSurface">@color/surfaceExtreme</item>
+    </style>
+
+    <style name="ThemeOverlay.BackgroundPalettes.Dark" parent="">
+        <item name="colorStatusBar">@color/background</item>
+        <item name="android:windowBackground">@color/background</item>
+        <item name="background">@color/background</item>
+        <item name="colorSurface">@color/surface</item>
+    </style>
 </resources>

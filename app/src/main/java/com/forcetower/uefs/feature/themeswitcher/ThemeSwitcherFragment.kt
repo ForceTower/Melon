@@ -48,6 +48,8 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentThemeSwitcherBinding.inflate(inflater, container, false)
 
+        chooseThemeButtons()
+
         initThemingValues(
             binding.primaryColors,
             resourceProvider.primaryColors,
@@ -64,11 +66,36 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
             R.id.theme_feature_secondary_color
         )
 
+        initThemingValues(
+            binding.backgroundColors,
+            resourceProvider.backgroundColors,
+            resourceProvider.backgroundColorsContentDescription,
+            resourceProvider.backgroundThemeOverlayAttrs,
+            R.id.theme_feature_background_color
+        )
+
         binding.applyButton.setOnClickListener {
             applyThemeOverlays()
         }
 
+        binding.clearButton.setOnClickListener {
+            ThemeOverlayUtils.clearThemeOverlays(requireActivity())
+            dismiss()
+        }
+
         return binding.root
+    }
+
+    private fun chooseThemeButtons() {
+        val themePreferencesManager = ThemePreferencesManager(requireContext(), resourceProvider)
+        binding.themeToggleGroup.run {
+            check(themePreferencesManager.currentThemeId)
+            addOnButtonCheckedListener { _, checkedId, isChecked ->
+                if (isChecked) {
+                    themePreferencesManager.saveAndApplyTheme(checkedId)
+                }
+            }
+        }
     }
 
     private fun initThemingValues(
@@ -114,7 +141,8 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     private fun applyThemeOverlays() {
         val themesMap = arrayOf(
             intArrayOf(R.id.theme_feature_primary_color, getThemeOverlayResId(binding.primaryColors)),
-            intArrayOf(R.id.theme_feature_secondary_color, getThemeOverlayResId(binding.secondaryColors))
+            intArrayOf(R.id.theme_feature_secondary_color, getThemeOverlayResId(binding.secondaryColors)),
+            intArrayOf(R.id.theme_feature_background_color, getThemeOverlayResId(binding.backgroundColors))
         )
 
         Timber.d("Themes Map: $themesMap")
