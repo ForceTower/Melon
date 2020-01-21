@@ -126,6 +126,9 @@ class HomeBottomFragment : UFragment(), Injectable {
         val bigTray = remoteConfig.getBoolean("feature_flag_big_tray") && uefsStudent
         toggleItem(R.id.big_tray, bigTray)
 
+        val themeSwitcher = remoteConfig.getBoolean("feature_flag_theme_switcher")
+        toggleItem(R.id.theme_switcher, themeSwitcher)
+
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.events, false)
         toggleItem(R.id.flowchart, uefsStudent)

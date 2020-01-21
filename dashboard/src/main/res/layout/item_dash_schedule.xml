@@ -147,11 +147,11 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_see_all"
                 style="@style/Widget.Dashboard.MaterialButton.Dialog"
+                android:onClick="@{() -> viewModel.onShowAllClasses()}"
                 android:layout_width="wrap_content"
                 android:layout_height="48dp"
                 android:textColor="@color/white"
                 android:text="@string/see_all_classes"
-                android:visibility="invisible"
                 app:icon="@drawable/ic_chevron_right_black_24dp"
                 app:iconGravity="end"
                 app:iconTint="@color/white"

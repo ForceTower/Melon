@@ -25,8 +25,8 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.MutableLiveData
 
 class TimeLiveData<T>(
-    private val function: () -> T,
-    private val intervalMs: Long = 1_000L
+    private val intervalMs: Long = 1_000L,
+    @UiThread private val function: () -> T
 ) : MutableLiveData<T>() {
     private var isActive = false
     private val taskScheduler = DefaultScheduler

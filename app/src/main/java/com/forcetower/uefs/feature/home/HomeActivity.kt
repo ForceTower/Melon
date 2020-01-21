@@ -300,6 +300,9 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             analytics.setUserProperty("using_schedule_hide", "${it > 0}")
             analytics.setUserProperty("using_schedule_hide_cnt", "$it")
         })
+        viewModel.onMoveToSchedule.observe(this, EventObserver {
+            binding.bottomNavigation.selectedItemId = R.id.schedule
+        })
     }
 
     private fun onAccessUpdate(access: Access?) {
