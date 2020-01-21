@@ -805,4 +805,12 @@
     <string name="dynamic_feature_aeri_installed">O novo módulo foi instalado!</string>
     <string name="settings_theme_dark">Tema escuro</string>
     <string name="settings_theme_dark_desc">Escolher comportamento padrão do tema escuro</string>
+    <string name="unes_choose_theme_label">Escolher um tema</string>
+    <string name="unes_choose_theme_light">Claro</string>
+    <string name="unes_choose_theme_dark">Escuro</string>
+    <string name="unes_choose_theme_default">Sistema</string>
+    <string name="unes_choose_color_primary">Cor Primária</string>
+    <string name="unes_choose_color_secondary">Cor secundária</string>
+    <string name="unes_theme_apply">Aplicar tema</string>
+    <string name="unes_theme_clear">Limpar tudo</string>
 </resources>

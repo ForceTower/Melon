@@ -50,6 +50,7 @@ import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.syncregistry.SyncRegistryFragment
+import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -115,4 +116,6 @@ abstract class HomeModule {
     abstract fun logoutConfirmationFragment(): LogoutConfirmationFragment
     @ContributesAndroidInjector
     abstract fun selectCourseDialog(): SelectCourseDialog
+    @ContributesAndroidInjector
+    abstract fun themeSwitcher(): ThemeSwitcherFragment
 }

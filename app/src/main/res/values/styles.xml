@@ -46,7 +46,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorAccentDark">@color/colorAccentDark</item>
+        <item name="colorSecondary">@color/colorAccent</item>
 
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
