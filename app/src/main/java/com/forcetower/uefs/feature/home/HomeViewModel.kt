@@ -78,6 +78,10 @@ class HomeViewModel @Inject constructor(
     val inAppUpdateStatus: LiveData<Int>
         get() = _inAppUpdateStatus
 
+    private val _onMoveToSchedule = MutableLiveData<Event<Unit>>()
+    val onMoveToSchedule: LiveData<Event<Unit>>
+        get() = _onMoveToSchedule
+
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
@@ -164,5 +168,9 @@ class HomeViewModel @Inject constructor(
 
     fun getMeProfile() {
         profileRepository.getMeProfileAsync()
+    }
+
+    fun onMoveToSchedule() {
+        _onMoveToSchedule.value = Event(Unit)
     }
 }

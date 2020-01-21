@@ -81,9 +81,8 @@ class DashboardFragment : UFragment() {
         })
         viewModel.currentClass.observe(viewLifecycleOwner, Observer { dashAdapter.nextClass = it })
         viewModel.lastMessage.observe(viewLifecycleOwner, Observer { dashAdapter.lastMessage = it })
-        viewModel.student.observe(viewLifecycleOwner, Observer {
-            dashAdapter.student = it
-        })
+        viewModel.student.observe(viewLifecycleOwner, Observer { dashAdapter.student = it })
+        viewModel.onMoveToSchedule.observe(viewLifecycleOwner, EventObserver { homeViewModel.onMoveToSchedule() })
         viewModel.profileClick.observe(viewLifecycleOwner, EventObserver {
             val accountId = it.first
             val profileId = it.second

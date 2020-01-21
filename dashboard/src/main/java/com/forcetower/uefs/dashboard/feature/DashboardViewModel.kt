@@ -38,9 +38,9 @@ class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel() {
-    private val timing = TimeLiveData({
+    private val timing = TimeLiveData(10_000L) {
         Calendar.getInstance().timeInMillis
-    }, 10_000L)
+    }
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Account> = repository.getAccount()
@@ -54,6 +54,10 @@ class DashboardViewModel @Inject constructor(
     private val _profileClick = MutableLiveData<Event<Pair<Long, Long>>>()
     val profileClick: LiveData<Event<Pair<Long, Long>>>
         get() = _profileClick
+
+    private val _onMoveToSchedule = MutableLiveData<Event<Unit>>()
+    val onMoveToSchedule: LiveData<Event<Unit>>
+        get() = _onMoveToSchedule
 
     init {
         _currentClass.addSource(timing) { _ ->
@@ -70,5 +74,9 @@ class DashboardViewModel @Inject constructor(
         val studentId = student.value?.id ?: return
 
         _profileClick.value = Event(accountId to studentId)
+    }
+
+    fun onShowAllClasses() {
+        _onMoveToSchedule.value = Event(Unit)
     }
 }
