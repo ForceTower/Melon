@@ -37,16 +37,17 @@ import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import timber.log.Timber
 import javax.inject.Inject
 
 class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     @Inject
     lateinit var resourceProvider: ThemeSwitcherResourceProvider
     private lateinit var binding: FragmentThemeSwitcherBinding
+    private lateinit var themePreferencesManager: ThemePreferencesManager
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentThemeSwitcherBinding.inflate(inflater, container, false)
+        themePreferencesManager = ThemePreferencesManager(requireContext())
 
         chooseThemeButtons()
 
@@ -79,7 +80,7 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
         }
 
         binding.clearButton.setOnClickListener {
-            ThemeOverlayUtils.clearThemeOverlays(requireActivity())
+            themePreferencesManager.clearThemeOverlays(requireActivity())
             dismiss()
         }
 
@@ -87,7 +88,6 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     }
 
     private fun chooseThemeButtons() {
-        val themePreferencesManager = ThemePreferencesManager(requireContext(), resourceProvider)
         binding.themeToggleGroup.run {
             check(themePreferencesManager.currentThemeId)
             addOnButtonCheckedListener { _, checkedId, isChecked ->
@@ -139,18 +139,11 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     }
 
     private fun applyThemeOverlays() {
-        val themesMap = arrayOf(
-            intArrayOf(R.id.theme_feature_primary_color, getThemeOverlayResId(binding.primaryColors)),
-            intArrayOf(R.id.theme_feature_secondary_color, getThemeOverlayResId(binding.secondaryColors)),
-            intArrayOf(R.id.theme_feature_background_color, getThemeOverlayResId(binding.backgroundColors))
-        )
+        val primary = getThemeOverlayResId(binding.primaryColors)
+        val secondary = getThemeOverlayResId(binding.secondaryColors)
+        val background = getThemeOverlayResId(binding.backgroundColors)
 
-        Timber.d("Themes Map: $themesMap")
-        for (i in themesMap.indices) {
-            ThemeOverlayUtils.setThemeOverlay(themesMap[i][0], themesMap[i][1])
-        }
-
-        requireActivity().recreate()
+        themePreferencesManager.saveColorsAndApplyThemeOverlay(requireActivity(), primary, secondary, background)
     }
 
     private fun getThemeOverlayResId(radioGroup: RadioGroup): Int {

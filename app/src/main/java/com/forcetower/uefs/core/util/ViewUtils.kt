@@ -20,9 +20,11 @@
 
 package com.forcetower.uefs.core.util
 
+import android.content.Context
 import android.text.TextPaint
 import android.util.DisplayMetrics
 import android.util.TypedValue
+import androidx.annotation.AttrRes
 
 object ViewUtils {
     @JvmStatic
@@ -46,5 +48,13 @@ object ViewUtils {
             maxLineWidth < targetWidth -> getSingleLineTextSize(text, paint, targetWidth, mid, high, precision, metrics)
             else -> mid
         }
+    }
+
+    @JvmStatic
+    fun attributeColorUtils(context: Context, @AttrRes attribute: Int): Int {
+        val typedValue = context.obtainStyledAttributes(intArrayOf(attribute))
+        val color = typedValue.getColor(0, 0)
+        typedValue.recycle()
+        return color
     }
 }
