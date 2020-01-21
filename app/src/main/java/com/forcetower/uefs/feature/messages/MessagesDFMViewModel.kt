@@ -138,7 +138,7 @@ class MessagesDFMViewModel @Inject constructor(
         try {
             splitInstallManager.startConfirmationDialogForResult(state, activity, REQUEST_INSTALL_AERI_MODULE)
         } catch (error: Throwable) {
-            Timber.e("Error sending user confirmation", error)
+            Timber.e(error, "Error sending user confirmation")
         }
     }
 }
