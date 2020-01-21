@@ -81,6 +81,12 @@
                     android:title="@string/label_services_follow_up"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_receipt_black_24dp"/>
+
+                <item
+                    android:id="@+id/theme_switcher"
+                    android:title="@string/label_theme_editor"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_theme_black_24dp"/>
             </group>
         </menu>
     </item>
@@ -94,6 +100,12 @@
                     android:visible="false"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_event_black_24dp"/>
+
+                <item
+                    android:id="@+id/mech_calculator"
+                    android:title="@string/label_mech_calculator"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_dvr_black_24dp"/>
     
                 <item
                     android:id="@+id/reminders"
@@ -106,19 +118,6 @@
                     android:title="@string/label_adventure"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_games_black_24dp"/>
-
-                <item
-                    android:id="@+id/dark_theme_event"
-                    android:title="@string/label_dark_theme_event"
-                    android:menuCategory="secondary"
-                    android:visible="false"
-                    android:icon="@drawable/ic_theme_black_24dp"/>
-
-                <item
-                    android:id="@+id/mech_calculator"
-                    android:title="@string/label_mech_calculator"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_dvr_black_24dp"/>
                 
                 <item
                     android:id="@+id/library"

@@ -20,23 +20,29 @@
 
 package com.forcetower.uefs.dashboard.feature
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.Keep
+import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.core.injection.DaggerDashboardComponent
 import com.forcetower.uefs.dashboard.databinding.FragmentDashboardBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
+import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.splitcompat.SplitCompat
+import timber.log.Timber
 import javax.inject.Inject
 
 @Keep
@@ -70,10 +76,32 @@ class DashboardFragment : UFragment() {
             adapter = dashAdapter
         }
 
-        homeViewModel.inAppUpdateStatus.observe(this, Observer {
+        homeViewModel.inAppUpdateStatus.observe(viewLifecycleOwner, Observer {
             dashAdapter.updatingApp = it == InstallStatus.DOWNLOADING
         })
-        viewModel.currentClass.observe(this, Observer { dashAdapter.nextClass = it })
-        viewModel.lastMessage.observe(this, Observer { dashAdapter.lastMessage = it })
+        viewModel.currentClass.observe(viewLifecycleOwner, Observer { dashAdapter.nextClass = it })
+        viewModel.lastMessage.observe(viewLifecycleOwner, Observer { dashAdapter.lastMessage = it })
+        viewModel.student.observe(viewLifecycleOwner, Observer {
+            dashAdapter.student = it
+        })
+        viewModel.profileClick.observe(viewLifecycleOwner, EventObserver {
+            val accountId = it.first
+            val profileId = it.second
+            val intent = ProfileActivity.startIntent(requireContext(), profileId, accountId)
+
+            val shared = findStudentHeadshot(binding.recyclerElements)
+            val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, "student_headshot_transition")
+            startActivity(intent, option.toBundle())
+        })
+    }
+
+    private fun findStudentHeadshot(entities: ViewGroup): View {
+        entities.forEach {
+            if (it.getTag(R.id.tag_header_id) == "header") {
+                return it.findViewById(R.id.profile_image)
+            }
+        }
+        Timber.e("Could not find view")
+        return entities
     }
 }

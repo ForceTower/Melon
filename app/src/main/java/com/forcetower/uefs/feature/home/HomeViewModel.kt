@@ -161,4 +161,8 @@ class HomeViewModel @Inject constructor(
     fun setCurrentUpdateState(@InstallStatus installStatus: Int) {
         _inAppUpdateStatus.value = installStatus
     }
+
+    fun getMeProfile() {
+        profileRepository.getMeProfileAsync()
+    }
 }
