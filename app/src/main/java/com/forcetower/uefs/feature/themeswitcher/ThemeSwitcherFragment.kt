@@ -37,6 +37,7 @@ import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
@@ -115,6 +116,8 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
             intArrayOf(R.id.theme_feature_primary_color, getThemeOverlayResId(binding.primaryColors)),
             intArrayOf(R.id.theme_feature_secondary_color, getThemeOverlayResId(binding.secondaryColors))
         )
+
+        Timber.d("Themes Map: $themesMap")
         for (i in themesMap.indices) {
             ThemeOverlayUtils.setThemeOverlay(themesMap[i][0], themesMap[i][1])
         }

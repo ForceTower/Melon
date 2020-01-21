@@ -58,7 +58,8 @@ class ThemeSwitcherResourceProvider {
         private val PRIMARY_THEME_OVERLAY_ATTRS = intArrayOf(
                 R.attr.colorPrimary,
                 R.attr.colorPrimaryDark,
-                R.attr.colorPrimaryLight
+                R.attr.colorPrimaryLight,
+                R.attr.colorPrimaryAlpha
         )
 
         @JvmStatic

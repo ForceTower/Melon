@@ -3,7 +3,7 @@
   ~ This file is part of the UNES Open Source Project.
   ~ UNES is licensed under the GNU GPLv3.
   ~
-  ~ Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -19,46 +19,49 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<layout xmlns:app="http://schemas.android.com/apk/res-auto"
-        xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:tools="http://schemas.android.com/tools">
-    <RelativeLayout
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <RelativeLayout
-            android:orientation="horizontal"
+            android:id="@+id/rl_header"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:id="@+id/rl_header"
-            android:layout_alignParentTop="true"
             android:layout_centerHorizontal="true"
-            android:layout_margin="15dp">
+            android:layout_margin="15dp"
+            android:orientation="horizontal"
+            app:layout_constraintEnd_toStartOf="@+id/rl_game_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
             <TextView
+                android:id="@+id/tv_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:fontFamily="sans-serif-light"
                 android:text="@string/game2048"
-                android:textSize="35sp"
-                android:fontFamily="sans-serif-light"
                 android:textColor="@color/colorAccent"
-                android:id="@+id/tv_title"/>
+                android:textSize="35sp" />
 
             <TextView
+                android:id="@+id/tv_unes_edition"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/unes_edition"
-                android:layout_toRightOf="@id/tv_title"
                 android:layout_alignBaseline="@id/tv_title"
+                android:layout_toEndOf="@id/tv_title"
+                android:layout_toRightOf="@id/tv_title"
                 android:fontFamily="sans-serif-light"
+                android:paddingStart="2dp"
+                android:paddingLeft="2dp"
+                android:text="@string/unes_edition"
+                android:textColor="@color/myoteal"
                 android:textSize="12sp"
                 android:textStyle="italic"
-                android:textColor="@color/myoteal"
-                android:paddingLeft="2dp"
-                android:id="@+id/tv_unes_edition"
-                android:paddingStart="2dp"
-                android:layout_toEndOf="@id/tv_title"
-                tools:ignore="RtlSymmetry"/>
+                tools:ignore="RtlSymmetry" />
 
         </RelativeLayout>
 
@@ -66,22 +69,25 @@
             android:id="@+id/rl_scoreview_layout"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_below="@id/rl_header"
             android:layout_centerHorizontal="true"
-            android:layout_below="@id/rl_header">
+            app:layout_constraintEnd_toStartOf="@+id/rl_game_container"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/rl_header">
 
             <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/ll_scorelayout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
                 android:layout_alignParentLeft="true"
-                android:gravity="center_horizontal"
-                android:id="@+id/ll_scorelayout"
-                android:padding="5dp"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="4dp"
                 android:layout_marginRight="4dp"
                 android:background="@drawable/scoreview_background_rectangle_inner"
-                android:layout_alignParentTop="true"
-                android:layout_alignParentStart="true"
-                android:layout_marginEnd="4dp">
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
                     android:id="@+id/tv_score_label"
@@ -95,92 +101,89 @@
                     android:textColor="@color/myoteal" />
 
                 <TextView
+                    android:id="@+id/tv_score"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/zero"
                     android:fontFamily="sans-serif-light"
+                    android:text="@string/zero"
                     android:textColor="@android:color/white"
-                    android:textSize="22sp"
-                    android:id="@+id/tv_score" />
+                    android:textSize="22sp" />
             </LinearLayout>
 
             <LinearLayout
-                android:orientation="vertical"
+                android:id="@+id/ll_highscore_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_toRightOf="@id/ll_scorelayout"
-                android:id="@+id/ll_highscore_layout"
-                android:gravity="center_horizontal"
-                android:background="@drawable/scoreview_background_rectangle_inner"
-                android:padding="5dp"
-                android:layout_marginLeft="8dp"
                 android:layout_alignParentTop="true"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:layout_toEndOf="@id/ll_scorelayout"
-                android:layout_marginStart="8dp">
+                android:layout_toRightOf="@id/ll_scorelayout"
+                android:background="@drawable/scoreview_background_rectangle_inner"
+                android:gravity="center_horizontal"
+                android:orientation="vertical"
+                android:padding="5dp">
 
                 <TextView
+                    android:id="@+id/tv_highscore_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/high_score"
-                    android:gravity="center"
                     android:ems="6"
-                    android:maxEms="6"
                     android:fontFamily="sans-serif-light"
-                    android:textColor="@color/myoteal"
-                    android:id="@+id/tv_highscore_label" />
+                    android:gravity="center"
+                    android:maxEms="6"
+                    android:text="@string/high_score"
+                    android:textColor="@color/myoteal" />
 
                 <TextView
+                    android:id="@+id/tv_highscore"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/zero"
-                    tools:text="2048"
                     android:fontFamily="sans-serif-light"
+                    android:text="@string/zero"
                     android:textColor="@android:color/white"
                     android:textSize="22sp"
-                    android:id="@+id/tv_highscore" />
+                    tools:text="2048" />
             </LinearLayout>
         </RelativeLayout>
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:id="@+id/ll_buttonrow"
-            android:layout_below="@+id/rl_scoreview_layout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
             android:layout_marginTop="14dp"
-            android:layout_marginBottom="14dp"
-            android:layout_alignEnd="@+id/rl_scoreview_layout"
-            android:layout_alignStart="@+id/rl_scoreview_layout"
-            android:layout_alignLeft="@+id/rl_scoreview_layout"
-            android:layout_alignRight="@+id/rl_scoreview_layout">
+            app:layout_constraintEnd_toEndOf="@id/rl_scoreview_layout"
+            app:layout_constraintStart_toStartOf="@id/rl_scoreview_layout"
+            app:layout_constraintTop_toBottomOf="@id/rl_scoreview_layout">
 
 
             <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_sync_black_24dp"
-                android:tint="@color/white"
                 android:id="@+id/ib_reset"
-                android:padding="7dp"
-                android:layout_weight="1"
-                android:layout_marginRight="7dp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/button_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginEnd="7dp"
-                android:contentDescription="@string/reset"/>
+                android:layout_marginRight="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_selector"
+                android:contentDescription="@string/reset"
+                android:padding="7dp"
+                android:textColor="@android:color/white"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_sync_black_24dp" />
 
             <ImageButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:srcCompat="@drawable/ic_undo_black_24dp"
-                android:tint="@color/white"
                 android:id="@+id/ib_undo"
-                android:layout_weight="1"
-                android:padding="7dp"
-                android:layout_marginLeft="7dp"
-                android:textColor="@android:color/white"
-                android:background="@drawable/button_selector"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
                 android:layout_marginStart="7dp"
-                android:contentDescription="@string/undo"/>
+                android:layout_marginLeft="7dp"
+                android:layout_weight="1"
+                android:background="@drawable/button_selector"
+                android:contentDescription="@string/undo"
+                android:padding="7dp"
+                android:textColor="@android:color/white"
+                android:tint="@color/white"
+                app:srcCompat="@drawable/ic_undo_black_24dp" />
 
         </LinearLayout>
 
@@ -190,8 +193,10 @@
             android:layout_height="wrap_content"
             android:layout_margin="10dp"
             android:layout_centerHorizontal="true"
-            android:layout_alignWithParentIfMissing="true"
-            android:layout_below="@id/ll_buttonrow">
+            app:layout_constraintStart_toEndOf="@id/ll_buttonrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
 
             <com.forcetower.uefs.easter.twofoureight.view.GameView
                 android:id="@+id/gameview"
@@ -219,12 +224,15 @@
 
         <View
             android:id="@+id/game_pad"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
             android:layout_margin="10dp"
             android:layout_centerHorizontal="true"
             android:layout_alignWithParentIfMissing="true"
-            android:layout_below="@id/ll_buttonrow"/>
+            app:layout_constraintStart_toEndOf="@id/ll_buttonrow"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
 
-    </RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -20,69 +20,80 @@
   -->
 
 <resources>
+    <style name="ThemeOverlay.PrimaryPalette.DefaultBlue" parent="">
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+    </style>
+
     <style name="ThemeOverlay.PrimaryPalette.Red" parent="">
         <item name="colorPrimary">#e53935</item>
         <item name="colorPrimaryDark">#ab000d</item>
         <item name="colorPrimaryLight">#E07675</item>
+        <item name="colorPrimaryAlpha">#19e53935</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Purple" parent="">
         <item name="colorPrimary">#8e24aa</item>
         <item name="colorPrimaryDark">#5c007a</item>
         <item name="colorPrimaryLight">#8B65A2</item>
+        <item name="colorPrimaryAlpha">#19e53935</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Indigo" parent="">
         <item name="colorPrimary">#3949ab</item>
         <item name="colorPrimaryDark">#00227b</item>
         <item name="colorPrimaryLight">#747CAA</item>
+        <item name="colorPrimaryAlpha">#193949ab</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Blue" parent="">
         <item name="colorPrimary">#1b87e5</item>
         <item name="colorPrimaryDark">#005bb2</item>
         <item name="colorPrimaryLight">#78C0FF</item>
-    </style>
-
-    <style name="ThemeOverlay.PrimaryPallete.DefaultBlue" parent="">
-        <item name="colorPrimary">@color/colorPrimary</item>
-        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-        <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryAlpha">#191b87e5</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Green" parent="">
         <item name="colorPrimary">#43a047</item>
         <item name="colorPrimaryDark">#00701a</item>
         <item name="colorPrimaryLight">#719E72</item>
+        <item name="colorPrimaryAlpha">#1943a047</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Yellow" parent="">
         <item name="colorPrimary">#fdd835</item>
         <item name="colorPrimaryDark">#c6a700</item>
         <item name="colorPrimaryLight">#FADFA2</item>
+        <item name="colorPrimaryAlpha">#19fdd835</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Orange" parent="">
         <item name="colorPrimary">#fb8c00</item>
         <item name="colorPrimaryDark">#c25e00</item>
         <item name="colorPrimaryLight">#FFC17E</item>
+        <item name="colorPrimaryAlpha">#19fb8c00</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Brown" parent="">
         <item name="colorPrimary">#6d4c41</item>
         <item name="colorPrimaryDark">#40241a</item>
         <item name="colorPrimaryLight">#6B5C58</item>
+        <item name="colorPrimaryAlpha">#196d4c41</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.Grey" parent="">
         <item name="colorPrimary">#757575</item>
         <item name="colorPrimaryDark">#494949</item>
         <item name="colorPrimaryLight">#B2DFDB</item>
+        <item name="colorPrimaryAlpha">#19757575</item>
     </style>
 
     <style name="ThemeOverlay.PrimaryPalette.BlueGrey" parent="">
         <item name="colorPrimary">#546e7a</item>
         <item name="colorPrimaryDark">#29434e</item>
         <item name="colorPrimaryLight">#606F7A</item>
+        <item name="colorPrimaryAlpha">#19546e7a</item>
     </style>
 </resources>
