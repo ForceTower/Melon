@@ -112,11 +112,11 @@
     <string name="setup_select_course_label">Select a course</string>
     <string name="setup_next">Next</string>
     <string name="label_course">Course</string>
-    <string name="label_course_selection_information">When you select your couse UNES shows you only the events and other things that are relevant to you</string>
+    <string name="label_course_selection_information">When you select your course UNES shows you only the events and other things that are relevant to you</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
     <string name="cut_profile_image">Cut image</string>
-    <string name="error_select_a_course">Select a couse</string>
+    <string name="error_select_a_course">Select a course</string>
     <string name="label_app_config">General configuration</string>
     <string name="setup_configuration_information">These configurations control the behaviour of the application. You may change them later</string>
     <string name="setup_synchronization">Synchronization frequency</string>
@@ -130,7 +130,7 @@
     <string name="label_documents">Documents</string>
     <string name="bug_report">Bugs, Comments and Suggestions</string>
     <string name="ru_last_update">Last update: %1$s</string>
-    <string name="ru_is_closed_message">The restaurant is close</string>
+    <string name="ru_is_closed_message">The restaurant is closed</string>
     <string name="ru_loading_data">Loading data</string>
     <string name="ru_failed_load_data">Error loading data</string>
     <string name="ru_remaining">remaining</string>
