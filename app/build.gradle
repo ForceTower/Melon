@@ -245,6 +245,7 @@ dependencies {
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
     implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
 }
 
 apply plugin: 'com.google.gms.google-services'

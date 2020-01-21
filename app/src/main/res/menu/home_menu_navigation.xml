@@ -19,7 +19,8 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="@string/sagres_functions">
         <menu>
             <group
@@ -52,6 +53,13 @@
                     android:icon="@drawable/ic_bookmark_border_black_24dp"/>
 
                 <item
+                    android:id="@+id/theme_switcher"
+                    android:title="@string/label_theme_editor"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_theme_black_24dp"
+                    app:contentDescription="theme_editor_name_flag"/>
+
+                <item
                     android:id="@+id/documents"
                     android:title="@string/label_documents"
                     android:menuCategory="secondary"
@@ -81,12 +89,6 @@
                     android:title="@string/label_services_follow_up"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_receipt_black_24dp"/>
-
-                <item
-                    android:id="@+id/theme_switcher"
-                    android:title="@string/label_theme_editor"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_theme_black_24dp"/>
             </group>
         </menu>
     </item>

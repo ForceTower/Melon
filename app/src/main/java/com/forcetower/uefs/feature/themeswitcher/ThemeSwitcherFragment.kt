@@ -26,6 +26,8 @@ import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.GONE
+import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.RadioGroup
 import androidx.annotation.ColorInt
@@ -67,16 +69,24 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
             R.id.theme_feature_secondary_color
         )
 
-        initThemingValues(
-            binding.backgroundColors,
-            resourceProvider.backgroundColors,
-            resourceProvider.backgroundColorsContentDescription,
-            resourceProvider.backgroundThemeOverlayAttrs,
-            R.id.theme_feature_background_color
-        )
+        if (themePreferencesManager.currentThemeId == R.id.theme_light) {
+            binding.backgroundColors.visibility = GONE
+            binding.labelBackground.visibility = GONE
+        } else {
+            binding.backgroundColors.visibility = VISIBLE
+            binding.labelBackground.visibility = VISIBLE
+            initThemingValues(
+                binding.backgroundColors,
+                resourceProvider.backgroundColors,
+                resourceProvider.backgroundColorsContentDescription,
+                resourceProvider.backgroundThemeOverlayAttrs,
+                R.id.theme_feature_background_color
+            )
+        }
 
         binding.applyButton.setOnClickListener {
             applyThemeOverlays()
+            dismiss()
         }
 
         binding.clearButton.setOnClickListener {
