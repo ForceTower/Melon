@@ -48,7 +48,9 @@ object ThemeOverlayUtils {
     }
 
     @JvmStatic
-    fun applyThemeOverlays(activity: Activity) {
-        themeOverlays.forEach { _, value -> activity.setTheme(value) }
+    fun applyThemeOverlays(activity: Activity, except: IntArray = IntArray(0)) {
+        themeOverlays.forEach { key, value ->
+            if (!except.contains(key)) activity.setTheme(value)
+        }
     }
 }

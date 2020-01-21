@@ -30,11 +30,13 @@ abstract class UActivity : AppCompatActivity() {
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
-        ThemeOverlayUtils.applyThemeOverlays(this)
+        if (shouldApplyThemeOverlay()) ThemeOverlayUtils.applyThemeOverlays(this)
         super.onCreate(savedInstanceState)
     }
 
     open fun showSnack(string: String, long: Boolean = false) {}
+
+    open fun shouldApplyThemeOverlay() = true
 
     open fun getSnackInstance(string: String, long: Boolean = false): Snackbar? = null
 }
