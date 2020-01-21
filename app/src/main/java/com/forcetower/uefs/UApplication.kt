@@ -23,14 +23,13 @@ package com.forcetower.uefs
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.PreferenceManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import com.forcetower.uefs.feature.themeswitcher.ThemePreferencesManager
 import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.impl.SharedPrefsCachePersistence
@@ -153,9 +152,10 @@ class UApplication : Application(), HasAndroidInjector {
 
     companion object {
         fun setupDayNightTheme(context: Context) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val mode = preferences.getString("stg_night_mode", "-1")?.toIntOrNull() ?: -1
-            AppCompatDelegate.setDefaultNightMode(mode)
+            ThemePreferencesManager(context).run {
+                applyTheme()
+                retrieveOverlay()
+            }
         }
     }
 }
