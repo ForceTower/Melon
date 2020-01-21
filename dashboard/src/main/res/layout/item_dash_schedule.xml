@@ -41,19 +41,37 @@
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         app:cardElevation="5dp"
-        app:cardCornerRadius="12dp">
+        app:cardCornerRadius="12dp"
+        android:animateLayoutChanges="true">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:animateLayoutChanges="true">
 
             <ImageView
+                android:id="@+id/no_class_image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:imageUrl="@{&quot;https://cdn.dribbble.com/users/851350/screenshots/4314097/vacation.png&quot;}"
+                tools:src="@tools:sample/backgrounds/scenic"
+                android:scaleType="matrix"
+                android:importantForAccessibility="no"
+                app:goneIf="@{location != null}"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/class_image"
                 android:layout_width="0dp"
                 android:layout_height="0dp"
                 app:imageUrl="@{&quot;https://cdn.dribbble.com/users/418188/screenshots/6665427/design_for_education_illustration_tubik.png&quot;}"
                 tools:src="@tools:sample/backgrounds/scenic"
                 android:scaleType="matrix"
                 android:importantForAccessibility="no"
+                app:goneIf="@{location == null}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -79,6 +97,7 @@
                 android:textColor="@color/white"
                 android:textSize="24sp"
                 android:text="@string/next_class"
+                app:goneIf="@{location == null}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
@@ -94,6 +113,7 @@
                 android:textColor="@color/white"
                 android:textSize="30sp"
                 android:text="@{WordUtils.toTitleCase(viewModel.currentClass.singleGroup().clazz().discipline().name)}"
+                app:goneIf="@{location == null}"
                 app:layout_constraintBottom_toTopOf="@+id/info_time"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -109,6 +129,7 @@
                 android:paddingEnd="16dp"
                 android:textSize="18sp"
                 android:layout_marginBottom="4dp"
+                app:goneIf="@{location == null}"
                 app:disciplineStartsEnds="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -124,6 +145,7 @@
                 android:paddingEnd="16dp"
                 android:textSize="18sp"
                 android:layout_marginBottom="4dp"
+                app:goneIf="@{location == null}"
                 app:disciplineLocation="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -138,6 +160,7 @@
                 android:paddingStart="16dp"
                 android:paddingEnd="16dp"
                 android:textSize="14sp"
+                app:goneIf="@{location == null}"
                 app:disciplineStartDifference="@{viewModel.currentClass}"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -158,6 +181,52 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent" />
 
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/with_class_group"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:goneIf="@{location == null}"
+                app:constraint_referenced_ids="info_location,info_name,info_time,info_time_remain,label_top_class_indicator,class_image"
+                tools:visibility="visible"/>
+
+
+            <TextView
+                android:id="@+id/label_top_no_class_indicator"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:textColor="@color/white"
+                android:textSize="24sp"
+                android:text="Por hoje acabou!"
+                app:goneIf="@{location != null}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"/>
+
+            <TextView
+                android:id="@+id/info_no_class"
+                android:layout_width="0dp"
+                android:layout_height="296dp"
+                android:gravity="bottom"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="16dp"
+                android:textColor="@color/white"
+                android:textSize="30sp"
+                android:text="Você não tem mais aulas hoje! Que demais!"
+                app:goneIf="@{location != null}"
+                app:layout_constraintBottom_toTopOf="@+id/info_time"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/label_top_class_indicator" />
+
+            <androidx.constraintlayout.widget.Group
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                tools:visibility="gone"
+                app:constraint_referenced_ids="label_top_no_class_indicator,info_no_class,no_class_image"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>

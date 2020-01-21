@@ -81,6 +81,7 @@ class DashboardAdapter(
         val item = differ.currentList[position]
         when (holder) {
             is DashboardHolder.ScheduleHolder -> {
+                holder.binding.location = (item as Schedule).clazz
                 holder.binding.viewModel = viewModel
                 holder.binding.lifecycleOwner = lifecycleOwner
                 holder.binding.executePendingBindings()
@@ -115,11 +116,7 @@ class DashboardAdapter(
             if (updating) {
                 add(UpdatingApp)
             }
-
             add(Schedule(clazz))
-//            if (clazz != null) {
-//
-//            }
             if (message != null) {
                 add(message)
             }
@@ -155,7 +152,7 @@ class DashboardAdapter(
         }
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is Schedule && newItem is Schedule -> true
+                oldItem is Schedule && newItem is Schedule -> oldItem.clazz?.singleGroup()?.group?.uid == newItem.clazz?.singleGroup()?.group?.uid
                 oldItem is Message && newItem is Message -> oldItem.content == newItem.content
                 else -> true
             }
