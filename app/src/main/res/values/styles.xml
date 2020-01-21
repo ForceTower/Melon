@@ -278,7 +278,7 @@
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
-        <item name="android:background">@color/background</item>
+        <item name="android:background">?attr/background</item>
         <item name="android:orientation">vertical</item>
         <item name="iconColor">@color/iconColor</item>
     </style>

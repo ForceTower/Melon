@@ -809,8 +809,9 @@
     <string name="unes_choose_theme_light">Claro</string>
     <string name="unes_choose_theme_dark">Escuro</string>
     <string name="unes_choose_theme_default">Sistema</string>
-    <string name="unes_choose_color_primary">Cor Primária</string>
+    <string name="unes_choose_color_primary">Cor primária</string>
     <string name="unes_choose_color_secondary">Cor secundária</string>
     <string name="unes_theme_apply">Aplicar tema</string>
     <string name="unes_theme_clear">Limpar tudo</string>
+    <string name="unes_choose_color_background">Background</string>
 </resources>
