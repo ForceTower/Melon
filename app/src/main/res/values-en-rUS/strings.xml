@@ -696,4 +696,5 @@
     <string name="your_semester_is">You are on the %1$dº semester</string>
     <string name="label_theme_editor">Theme editor</string>
     <string name="new_feature_description_01">Teacher evaluation is here!</string>
+    <string name="label_theme_editor_description">Now you can pick you favorite color and use in the app!</string>
 </resources>
