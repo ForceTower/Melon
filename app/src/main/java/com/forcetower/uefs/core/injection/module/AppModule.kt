@@ -24,6 +24,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.room.Room
+import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
@@ -123,4 +124,9 @@ object AppModule {
     @JvmStatic
     fun providePlayGames(context: Context): GooglePlayGamesInstance =
             GooglePlayGamesInstance(context)
+
+    @Provides
+    @Singleton
+    @JvmStatic
+    fun provideThemeSwitcherResourceProvider() = ThemeSwitcherResourceProvider()
 }

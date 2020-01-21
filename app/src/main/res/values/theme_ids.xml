@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="utf-8"?>
 <!--
   ~ This file is part of the UNES Open Source Project.
   ~ UNES is licensed under the GNU GPLv3.
@@ -18,17 +19,11 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
-    <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
+<resources>
+    <item type="id" name="theme_light" />
+    <item type="id" name="theme_dark" />
+    <item type="id" name="theme_default" />
 
-    <string name="mtrl_red">Vermelho</string>
-    <string name="mtrl_purple">Roxo</string>
-    <string name="mtrl_indigo">Indigo</string>
-    <string name="mtrl_blue">Azul</string>
-    <string name="mtrl_green">Verde</string>
-    <string name="mtrl_yellow">Amarelo</string>
-    <string name="mtrl_orange">Laranja</string>
-    <string name="mtrl_brown">Marrom</string>
-    <string name="mtrl_grey">Cinza</string>
-    <string name="mtrl_blue_grey">Cinza azulado</string>
+    <item type="id" name="theme_feature_primary_color" />
+    <item type="id" name="theme_feature_secondary_color" />
 </resources>
