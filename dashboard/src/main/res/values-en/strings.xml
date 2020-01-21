@@ -27,4 +27,6 @@
     <string name="dash_schedule_disc_starts_in">Starts in %1$s minutes</string>
     <string name="dash_updating_app">The app is being updated</string>
     <string name="dash_updating_app_info">You can keep using the app normally while it updates. Once it\'s completed, a message popup</string>
+    <string name="dash_sched_its_over_for_today">That\'s all folks</string>
+    <string name="dash_sched_no_more_classes_today">You got no more classes today! So cool!</string>
 </resources>
