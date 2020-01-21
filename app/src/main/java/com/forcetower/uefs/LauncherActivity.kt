@@ -61,7 +61,6 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
         val viewModel: LaunchViewModel = provideViewModel(factory)
         if (savedInstanceState != null) return
         createNewVersionNotification()
-        onNextFeatureEaster()
 
         viewModel.direction.observe(this, EventObserver {
             Timber.d("Once!")
