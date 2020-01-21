@@ -59,6 +59,7 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
+import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherFragment
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
@@ -133,7 +134,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
-            // ThemeSwitcherFragment().show(supportFragmentManager, "theme-switcher")
+            ThemeSwitcherFragment().show(supportFragmentManager, "theme-switcher")
         }
     }
 

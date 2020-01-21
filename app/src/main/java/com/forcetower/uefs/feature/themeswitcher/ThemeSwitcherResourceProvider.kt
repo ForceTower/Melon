@@ -38,12 +38,20 @@ class ThemeSwitcherResourceProvider {
         get() = R.array.material_secondary_palettes
 
     @get:ArrayRes
+    val backgroundColors: Int
+        get() = R.array.material_background_palettes
+
+    @get:ArrayRes
     val primaryColorsContentDescription: Int
         get() = R.array.material_palettes_content_description
 
     @get:ArrayRes
     val secondaryColorsContentDescription: Int
         get() = R.array.material_palettes_content_description
+
+    @get:ArrayRes
+    val backgroundColorsContentDescription: Int
+        get() = R.array.material_background_content_description
 
     @get:StyleableRes
     val primaryThemeOverlayAttrs: IntArray
@@ -53,7 +61,12 @@ class ThemeSwitcherResourceProvider {
     val secondaryThemeOverlayAttrs: IntArray
         get() = SECONDARY_THEME_OVERLAY_ATTRS
 
+    @get:StyleableRes
+    val backgroundThemeOverlayAttrs: IntArray
+        get() = BACKGROUND_THEME_OVERLAY_ATTRS
+
     companion object {
+        @JvmStatic
         @StyleableRes
         private val PRIMARY_THEME_OVERLAY_ATTRS = intArrayOf(
                 R.attr.colorPrimary,
@@ -65,5 +78,9 @@ class ThemeSwitcherResourceProvider {
         @JvmStatic
         @StyleableRes
         private val SECONDARY_THEME_OVERLAY_ATTRS = intArrayOf(R.attr.colorAccent)
+
+        @JvmStatic
+        @StyleableRes
+        private val BACKGROUND_THEME_OVERLAY_ATTRS = intArrayOf(R.attr.background)
     }
 }

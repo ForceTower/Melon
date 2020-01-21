@@ -46,6 +46,11 @@
         <item>@style/ThemeOverlay.SecondaryPalette.BlueGrey</item>
     </array>
 
+    <array name="material_background_palettes">
+        <item>@style/ThemeOverlay.BackgroundPalettes.Black</item>
+        <item>@style/ThemeOverlay.BackgroundPalettes.Dark</item>
+    </array>
+
     <array name="material_palettes_content_description">
         <item>@string/mtrl_red</item>
         <item>@string/mtrl_purple</item>
@@ -57,5 +62,10 @@
         <item>@string/mtrl_brown</item>
         <item>@string/mtrl_grey</item>
         <item>@string/mtrl_blue_grey</item>
+    </array>
+
+    <array name="material_background_content_description">
+        <item>@string/mtrl_background_black</item>
+        <item>@string/mtrl_background_dark</item>
     </array>
 </resources>
