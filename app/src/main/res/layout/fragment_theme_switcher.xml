@@ -119,6 +119,7 @@
         </HorizontalScrollView>
 
         <TextView
+            android:id="@+id/label_background"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/unes_choose_color_background"/>
