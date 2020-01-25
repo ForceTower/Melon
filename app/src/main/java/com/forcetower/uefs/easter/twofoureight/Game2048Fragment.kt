@@ -265,7 +265,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             binding.tvEndgameOverlay.setText(R.string.game_over)
             activity?.unlockAchievement(R.string.achievement_eu_tentei)
             activity?.incrementAchievementProgress(R.string.achievement_a_prtica_leva__perfeio, 1)
-            if (interstitial.isLoaded && admobEnabled) {
+            if (admobEnabled && interstitial.isLoaded) {
                 interstitial.show()
             }
         } else {
