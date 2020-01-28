@@ -20,7 +20,11 @@
 
 package com.forcetower.uefs.core.model.service
 
+import com.google.gson.annotations.SerializedName
+
 data class AffinityQuestionAnswer(
+    @SerializedName("question_id")
     val questionId: Long,
+    @SerializedName("student_id")
     val studentId: Long
 )
