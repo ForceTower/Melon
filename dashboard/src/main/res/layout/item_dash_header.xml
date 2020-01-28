@@ -33,7 +33,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
-        tools:ignore="RtlSymmetry">
+        tools:ignore="RtlSymmetry"
+        app:goneIf="@{viewModel.account == null}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_image"
