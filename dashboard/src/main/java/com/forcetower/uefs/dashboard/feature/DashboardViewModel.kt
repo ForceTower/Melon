@@ -31,13 +31,14 @@ import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
+import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
-) : ViewModel() {
+) : ViewModel(), AffinityListener {
     private val timing = TimeLiveData(10_000L) {
         Calendar.getInstance().timeInMillis
     }
@@ -46,6 +47,7 @@ class DashboardViewModel @Inject constructor(
     val account: LiveData<Account> = repository.getAccount()
     val student: LiveData<SStudent> = repository.getStudentMe()
     val lastMessage = repository.getLastMessage()
+    val affinity = repository.getAffinityQuestions()
 
     private val _currentClass = MediatorLiveData<LocationWithGroup?>()
     val currentClass: LiveData<LocationWithGroup?>
@@ -78,5 +80,14 @@ class DashboardViewModel @Inject constructor(
 
     fun onShowAllClasses() {
         _onMoveToSchedule.value = Event(Unit)
+    }
+
+    override fun onSelect(questionId: Long, student: SStudent) {
+        Timber.d("Selected $student for $questionId")
+        repository.scheduleAnswerAffinity(questionId, student.id)
+    }
+
+    override fun onShowMoreOptions(questionId: Long) {
+        Timber.d("Showing more options for $questionId")
     }
 }
