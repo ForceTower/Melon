@@ -22,13 +22,32 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="student"
+            type="com.forcetower.uefs.core.model.unes.SStudent" />
+
+        <variable
+            name="affinity"
+            type="com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull" />
+
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.dashboard.feature.AffinityListener" />
+
+        <import type="com.forcetower.sagres.utils.WordUtils"/>
+    </data>
+
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="56dp"
         app:cardCornerRadius="28dp"
+        app:cardElevation="0dp"
         android:layout_marginTop="8dp"
         android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp">
+        android:layout_marginEnd="8dp"
+        android:onClick="@{() -> listener.onSelect(affinity.question.id, student)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -41,6 +60,7 @@
                 android:layout_marginStart="8dp"
                 android:importantForAccessibility="no"
                 app:clipToCircle="@{true}"
+                app:imageUrl="@{student.imageUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -54,6 +74,7 @@
                 android:layout_marginEnd="8dp"
                 android:textColor="?attr/colorOnSurface"
                 android:maxLines="2"
+                android:text="@{WordUtils.toTitleCase(student.name)}"
                 app:layout_constraintBottom_toBottomOf="@+id/user_image"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/user_image"

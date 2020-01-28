@@ -41,6 +41,7 @@ import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
@@ -59,7 +60,8 @@ class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val context: Context,
     private val sessionRepository: UserSessionRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val affinityRepository: AffinityQuestionRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
@@ -172,5 +174,9 @@ class HomeViewModel @Inject constructor(
 
     fun onMoveToSchedule() {
         _onMoveToSchedule.value = Event(Unit)
+    }
+
+    fun getAffinityQuestions() {
+        affinityRepository.getAffinityQuestionsAsync()
     }
 }

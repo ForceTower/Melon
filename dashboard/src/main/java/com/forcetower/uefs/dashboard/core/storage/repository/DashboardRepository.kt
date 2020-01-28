@@ -20,19 +20,24 @@
 
 package com.forcetower.uefs.dashboard.core.storage.repository
 
+import android.content.Context
 import androidx.lifecycle.LiveData
 import com.forcetower.core.injection.annotation.FeatureScope
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import java.util.Calendar
 import javax.inject.Inject
 
 @FeatureScope
 class DashboardRepository @Inject constructor(
-    private val database: UDatabase
+    private val executors: AppExecutors,
+    private val database: UDatabase,
+    private val context: Context
 ) {
     fun getAccount(): LiveData<Account> {
         return database.accountDao().getAccount()
@@ -51,5 +56,12 @@ class DashboardRepository @Inject constructor(
 
     fun getStudentMe(): LiveData<SStudent> {
         return database.studentServiceDao().getMeStudent()
+    }
+
+    fun getAffinityQuestions() = database.affinityQuestion().getUnansweredQuestions()
+
+    fun scheduleAnswerAffinity(questionId: Long, studentId: Long) {
+        executors.diskIO().execute { database.affinityQuestion().answerQuestion(questionId) }
+        AnswerAffinityWorker.createWorker(context, questionId, studentId)
     }
 }

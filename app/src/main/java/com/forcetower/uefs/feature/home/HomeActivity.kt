@@ -152,6 +152,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.onSessionStarted()
             viewModel.account.observe(this, Observer { Unit })
             checkServerAchievements()
+            viewModel.getAffinityQuestions()
         } catch (t: Throwable) {}
         moveToTask()
         satisfactionSurvey()

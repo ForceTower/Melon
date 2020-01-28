@@ -327,3 +327,12 @@ object M39TO40 : Migration(39, 40) {
         }
     }
 }
+
+object M40TO41 : Migration(40, 41) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `AffinityQuestion` (`id` INTEGER NOT NULL, `question` TEXT NOT NULL, `answered` INTEGER NOT NULL, `synced` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+        database.execSQL("CREATE TABLE IF NOT EXISTS `AffinityQuestionAlternative` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `question_id` INTEGER NOT NULL, `student_id` INTEGER NOT NULL, FOREIGN KEY(`question_id`) REFERENCES `AffinityQuestion`(`id`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`student_id`) REFERENCES `SStudent`(`id`) ON UPDATE CASCADE ON DELETE CASCADE)")
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_student_id` ON `AffinityQuestionAlternative` (`student_id`)")
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_question_id` ON `AffinityQuestionAlternative` (`question_id`)")
+    }
+}

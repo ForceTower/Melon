@@ -24,6 +24,8 @@ import android.annotation.SuppressLint
 import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.dashboard.R
 import java.util.Calendar
@@ -79,4 +81,19 @@ fun disciplineStartDifference(tv: TextView, location: LocationWithGroup?) {
         } catch (t: Throwable) { }
     }
     tv.text = context.getString(R.string.dash_schedule_disc_starts_in, "???")
+}
+
+@BindingAdapter(value = ["affinityQuestion", "affinityListener"])
+fun affinityStudentOptions(rv: RecyclerView, question: AffinityQuestionFull?, listener: AffinityListener?) {
+    val alt = question?.alternatives ?: emptyList()
+
+    val adapter: AffinityAlternativeAdapter
+    if (rv.adapter == null) {
+        adapter = AffinityAlternativeAdapter(listener, question)
+        rv.adapter = adapter
+    } else {
+        adapter = rv.adapter as AffinityAlternativeAdapter
+    }
+
+    adapter.submitList(alt)
 }

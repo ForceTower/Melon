@@ -22,6 +22,15 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="affinity"
+            type="com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull" />
+
+        <variable
+            name="listener"
+            type="com.forcetower.uefs.dashboard.feature.AffinityListener" />
+    </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,21 +56,39 @@
                 android:textColor="?attr/colorOnSurface"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
+                android:text="@{affinity.question.question}"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 tools:text="Which of the following colleges you would feel comfortable leading a project?" />
 
             <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recycler_elements"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:scrollbars="none"
+                app:affinityListener="@{listener}"
+                app:affinityQuestion="@{affinity}"
                 app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-                app:spanCount="2"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/question"
+                app:spanCount="2"
                 tools:itemCount="4"
-                tools:listitem="@layout/item_dash_affinity_person_chip"/>
+                tools:listitem="@layout/item_dash_affinity_person_chip" />
+
+            <TextView
+                android:id="@+id/choose_someone_else"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="4dp"
+                android:padding="4dp"
+                android:text="@string/affinity_choose_someone_else"
+                android:textColor="?attr/colorOnSurface"
+                android:onClick="@{() -> listener.onShowMoreOptions(affinity.question.id)}"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/recycler_elements" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
     </com.google.android.material.card.MaterialCardView>

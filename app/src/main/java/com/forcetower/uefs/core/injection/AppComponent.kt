@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
@@ -89,4 +90,5 @@ interface AppComponent {
     fun inject(worker: DisciplinesDetailsWorker)
     fun inject(worker: UploadImageToStorage)
     fun inject(worker: ProfileStatementWorker)
+    fun inject(worker: AnswerAffinityWorker)
 }

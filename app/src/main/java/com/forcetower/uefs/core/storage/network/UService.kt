@@ -39,6 +39,8 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.model.api.DarkInvite
 import com.forcetower.uefs.core.model.api.DarkUnlock
 import com.forcetower.uefs.core.model.service.Achievement
+import com.forcetower.uefs.core.model.service.AffinityQuestionAnswer
+import com.forcetower.uefs.core.model.service.AffinityQuestionDTO
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
@@ -173,7 +175,7 @@ interface UService {
     @GET("adventure/achievement")
     fun getServerAchievements(): Call<UResponse<List<Achievement>>>
 
-    // ---------------------------------
+    // ----------- SIECOMP ------------
 
     @GET("siecomp/list_sessions")
     fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>
@@ -183,4 +185,11 @@ interface UService {
 
     @POST("siecomp/edit_speaker")
     fun updateSpeaker(@Body speaker: Speaker): Call<Void>
+
+    // ---------- Affinity -----------
+    @GET("affinity/questions")
+    fun affinityQuestions(): Call<UResponse<List<AffinityQuestionDTO>>>
+
+    @POST("affinity/answer")
+    fun answerAffinity(@Body answer: AffinityQuestionAnswer): Call<UResponse<Void>>
 }

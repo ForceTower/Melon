@@ -28,8 +28,10 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
+import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.dashboard.R
+import com.forcetower.uefs.dashboard.databinding.ItemDashAffinityQuestionBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashHeaderBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashSagresMessageBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashScheduleBinding
@@ -63,6 +65,12 @@ class DashboardAdapter(
         differ.submitList(buildMergedList(updating = value))
     }
 
+    var affinityList: List<AffinityQuestionFull> = emptyList()
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(affinity = value))
+    }
+
     private val differ = AsyncListDiffer(this, DiffCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DashboardHolder {
@@ -71,6 +79,7 @@ class DashboardAdapter(
             R.layout.item_dash_schedule -> DashboardHolder.ScheduleHolder(parent.inflate(viewType))
             R.layout.item_dash_sagres_message -> DashboardHolder.MessageHolder(parent.inflate(viewType))
             R.layout.item_dash_updating_app -> DashboardHolder.UpdatingHolder(parent.inflate(viewType))
+            R.layout.item_dash_affinity_question -> DashboardHolder.AffinityHolder(parent.inflate(viewType))
             else -> throw IllegalStateException("No view defined for viewType $viewType")
         }
     }
@@ -94,6 +103,13 @@ class DashboardAdapter(
                     messageContent(content, message.content)
                 }
             }
+            is DashboardHolder.AffinityHolder -> {
+                val question = item as AffinityQuestionFull
+                holder.binding.apply {
+                    affinity = question
+                    listener = viewModel
+                }
+            }
         }
     }
 
@@ -103,6 +119,7 @@ class DashboardAdapter(
             is Schedule -> R.layout.item_dash_schedule
             is Message -> R.layout.item_dash_sagres_message
             is UpdatingApp -> R.layout.item_dash_updating_app
+            is AffinityQuestionFull -> R.layout.item_dash_affinity_question
             else -> throw IllegalStateException("No viewType defined for position $position")
         }
     }
@@ -110,13 +127,17 @@ class DashboardAdapter(
     private fun buildMergedList(
         clazz: LocationWithGroup? = nextClass,
         message: Message? = lastMessage,
-        updating: Boolean = updatingApp
+        updating: Boolean = updatingApp,
+        affinity: List<AffinityQuestionFull> = affinityList
     ): List<Any> {
         return mutableListOf<Any>(Header).apply {
             if (updating) {
                 add(UpdatingApp)
             }
+
+            addAll(affinity)
             add(Schedule(clazz))
+
             if (message != null) {
                 add(message)
             }
@@ -138,6 +159,7 @@ class DashboardAdapter(
         class ScheduleHolder(val binding: ItemDashScheduleBinding) : DashboardHolder(binding.root)
         class MessageHolder(val binding: ItemDashSagresMessageBinding) : DashboardHolder(binding.root)
         class UpdatingHolder(binding: ItemDashUpdatingAppBinding) : DashboardHolder(binding.root)
+        class AffinityHolder(val binding: ItemDashAffinityQuestionBinding) : DashboardHolder(binding.root)
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Any>() {
@@ -147,6 +169,7 @@ class DashboardAdapter(
                 oldItem is UpdatingApp && newItem is UpdatingApp -> true
                 oldItem is Schedule && newItem is Schedule -> true
                 oldItem is Message && newItem is Message -> true
+                oldItem is AffinityQuestionFull && newItem is AffinityQuestionFull -> oldItem.question.id == newItem.question.id
                 else -> false
             }
         }
@@ -154,6 +177,7 @@ class DashboardAdapter(
             return when {
                 oldItem is Schedule && newItem is Schedule -> oldItem.clazz?.singleGroup()?.group?.uid == newItem.clazz?.singleGroup()?.group?.uid
                 oldItem is Message && newItem is Message -> oldItem.content == newItem.content
+                oldItem is AffinityQuestionFull && newItem is AffinityQuestionFull -> oldItem.question == newItem.question
                 else -> true
             }
         }

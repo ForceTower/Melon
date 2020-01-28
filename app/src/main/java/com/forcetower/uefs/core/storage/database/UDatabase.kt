@@ -26,6 +26,8 @@ import androidx.room.TypeConverters
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.AffinityQuestion
+import com.forcetower.uefs.core.model.unes.AffinityQuestionAlternative
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
@@ -59,6 +61,7 @@ import com.forcetower.uefs.core.model.unes.UserSession
 import com.forcetower.uefs.core.storage.database.dao.AccessDao
 import com.forcetower.uefs.core.storage.database.dao.AccessTokenDao
 import com.forcetower.uefs.core.storage.database.dao.AccountDao
+import com.forcetower.uefs.core.storage.database.dao.AffinityQuestionDao
 import com.forcetower.uefs.core.storage.database.dao.CalendarDao
 import com.forcetower.uefs.core.storage.database.dao.ClassAbsenceDao
 import com.forcetower.uefs.core.storage.database.dao.ClassDao
@@ -123,8 +126,10 @@ import com.forcetower.uefs.core.util.Converters
     FlowchartDiscipline::class,
     FlowchartRequirement::class,
     ProfileStatement::class,
-    UserSession::class
-], version = 40, exportSchema = true)
+    UserSession::class,
+    AffinityQuestion::class,
+    AffinityQuestionAlternative::class
+], version = 41, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -159,4 +164,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun flowchartRequirementDao(): FlowchartRequirementDao
     abstract fun statementDao(): ProfileStatementDao
     abstract fun userSessionDao(): UserSessionDao
+    abstract fun affinityQuestion(): AffinityQuestionDao
 }
