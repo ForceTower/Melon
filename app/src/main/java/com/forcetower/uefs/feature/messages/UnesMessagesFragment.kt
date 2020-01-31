@@ -69,7 +69,6 @@ class UnesMessagesFragment : UFragment(), Injectable {
         adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
             override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
                 super.onItemRangeInserted(positionStart, itemCount)
-
                 if (positionStart == 0 && initialized) {
                     manager.smoothScrollToPosition(binding.recyclerSagresMessages, null, 0)
                 }
