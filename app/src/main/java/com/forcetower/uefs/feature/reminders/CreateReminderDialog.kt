@@ -26,9 +26,9 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogCreateReminderBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
@@ -79,6 +79,8 @@ class CreateReminderDialog : RoundedDialog(), Injectable {
         if (viewModel.currentDeadline != null)
             calendar.timeInMillis = viewModel.currentDeadline!!
 
+        val color = ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary)
+
         val picker = DatePickerDialog.newInstance({ _, y, m, d ->
             val next = Calendar.getInstance().apply {
                 set(Calendar.YEAR, y)
@@ -86,10 +88,10 @@ class CreateReminderDialog : RoundedDialog(), Injectable {
                 set(Calendar.DAY_OF_MONTH, d)
             }.timeInMillis
             viewModel.currentDeadline = next
-            binding.btnDeadline.iconTint = ColorStateList.valueOf(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+            binding.btnDeadline.iconTint = ColorStateList.valueOf(color)
         }, calendar)
         picker.version = DatePickerDialog.Version.VERSION_2
-        val color = ContextCompat.getColor(requireContext(), R.color.colorPrimary)
+
         picker.accentColor = color
         picker.setOkColor(color)
 

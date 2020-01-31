@@ -27,6 +27,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ItemEventSpeakerInfoBinding
 import timber.log.Timber

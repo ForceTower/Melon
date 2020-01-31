@@ -48,8 +48,6 @@ class SagresDataRepository @Inject constructor(
             firebaseAuth.signOut()
             preferences.edit()
                     .remove("hourglass_status")
-                    .remove("ach_night_mode_enabled")
-                    .remove("stg_night_mode")
                     .apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
@@ -61,6 +59,7 @@ class SagresDataRepository @Inject constructor(
             database.demandOfferDao().deleteAll()
             database.serviceRequestDao().deleteAll()
             SagresNavigator.instance.logout()
+            SagresNavigator.instance.putCredentials(null)
         }
     }
 

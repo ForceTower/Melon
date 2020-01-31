@@ -30,6 +30,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityAboutBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -43,6 +44,7 @@ class AboutActivity : UActivity(), HasAndroidInjector {
     private val adapter: FragmentAdapter by lazy { FragmentAdapter(supportFragmentManager) }
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeOverlayUtils.applyThemeOverlays(this, intArrayOf(R.id.theme_feature_background_color))
         super.onCreate(savedInstanceState)
         DataBindingUtil.setContentView<ActivityAboutBinding>(this, R.layout.activity_about).also {
             binding = it
@@ -71,6 +73,8 @@ class AboutActivity : UActivity(), HasAndroidInjector {
     }
 
     override fun androidInjector() = fragmentInjector
+
+    override fun shouldApplyThemeOverlay() = false
 
     companion object {
         fun startActivity(activity: Activity) {

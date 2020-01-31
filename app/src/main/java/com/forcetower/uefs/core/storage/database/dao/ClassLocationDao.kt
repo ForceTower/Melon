@@ -37,6 +37,8 @@ import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.feature.shared.extensions.createTimeInt
+import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
 import timber.log.Timber
 
 @Dao
@@ -50,6 +52,10 @@ abstract class ClassLocationDao {
     @Transaction
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
     abstract fun getCurrentVisibleSchedule(): LiveData<List<LocationWithGroup>>
+
+    @Transaction
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND cl.startsAtInt > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
+    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<LocationWithGroup?>
 
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
@@ -167,14 +173,18 @@ abstract class ClassLocationDao {
 
     private fun prepareInsertion(group: ClassGroup, profile: Profile, location: SagresDisciplineClassLocation) {
         val entity = ClassLocation(
-                groupId = group.uid,
-                profileId = profile.uid,
-                startsAt = location.startTime,
-                endsAt = location.endTime,
-                campus = location.campus,
-                room = location.room,
-                day = location.day,
-                modulo = location.modulo)
+            groupId = group.uid,
+            profileId = profile.uid,
+            startsAt = location.startTime,
+            endsAt = location.endTime,
+            campus = location.campus,
+            room = location.room,
+            day = location.day,
+            modulo = location.modulo,
+            startsAtInt = location.startTime.createTimeInt(),
+            endsAtInt = location.endTime.createTimeInt(),
+            dayInt = location.day.fromWeekDay()
+        )
 
         insert(entity)
         group.group = location.classGroup

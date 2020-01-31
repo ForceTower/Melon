@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
@@ -45,7 +46,8 @@ import javax.inject.Inject
 
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
-    private val grades: SagresGradesRepository
+    private val grades: SagresGradesRepository,
+    private val detailsRepository: DisciplineDetailsRepository
 ) : ViewModel(), DisciplineActions, MaterialActions, ClassesActions {
 
     val semesters by lazy { repository.getParticipatingSemesters() }
@@ -267,5 +269,9 @@ class DisciplineViewModel @Inject constructor(
     fun updateLocationVisibility(location: ClassLocation) {
         val hideStatus = !location.hiddenOnSchedule
         repository.updateLocationVisibilityAsync(location.uid, hideStatus)
+    }
+
+    fun prepareAndSendStats() {
+        detailsRepository.contributeCurrent()
     }
 }

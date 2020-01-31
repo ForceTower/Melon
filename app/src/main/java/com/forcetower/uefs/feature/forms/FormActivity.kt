@@ -11,6 +11,7 @@ import com.forcetower.uefs.databinding.ActivityFormsBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import timber.log.Timber
@@ -28,6 +29,7 @@ class FormActivity : UActivity(), HasAndroidInjector {
     private lateinit var currentData: List<Question>
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeOverlayUtils.applyThemeOverlays(this, intArrayOf(R.id.theme_feature_background_color))
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_forms)
         viewModel = provideViewModel(factory)
@@ -87,6 +89,8 @@ class FormActivity : UActivity(), HasAndroidInjector {
             )
         )
     }
+
+    override fun shouldApplyThemeOverlay() = false
 
     private fun createFragmentsList(data: List<Question>) {
         val fragments = data.map { InternalFormFragment.newInstance(it) }

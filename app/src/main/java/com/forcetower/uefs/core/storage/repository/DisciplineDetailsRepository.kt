@@ -37,6 +37,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -46,7 +47,8 @@ class DisciplineDetailsRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     private val gradesRepository: SagresGradesRepository,
-    private val service: UService
+    private val service: UService,
+    private val remoteConfig: FirebaseRemoteConfig
 ) {
 
     /**
@@ -93,10 +95,26 @@ class DisciplineDetailsRepository @Inject constructor(
         }
     }
 
+    @AnyThread
+    fun contributeCurrent() {
+        executors.diskIO().execute {
+            val currentOnly = remoteConfig.getBoolean("contribute_only_current")
+            sendDisciplineDetails(currentOnly)
+        }
+    }
+
     @WorkerThread
-    fun sendDisciplineDetails() {
-        val stats = database.classGroupDao().getClassStatsWithAllDirect()
+    fun sendDisciplineDetails(current: Boolean = false) {
         val semesters = database.semesterDao().getSemestersDirect()
+        val currentSemester = semesters.maxBy { it.sagresId }?.sagresId
+
+        val stats = if (current) {
+            currentSemester ?: return
+            database.classGroupDao().getClassStatsWithAllDirect(currentSemester)
+        } else {
+            database.classGroupDao().getClassStatsWithAllDirect()
+        }
+
         val profile = database.profileDao().selectMeDirect() ?: return
 
         val treated = stats.transformToNewStyle()

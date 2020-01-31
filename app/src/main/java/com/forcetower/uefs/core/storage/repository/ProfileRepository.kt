@@ -51,6 +51,23 @@ class ProfileRepository @Inject constructor(
 ) {
     fun getCommonProfile() = database.profileDao().selectMe()
 
+    fun getMeProfileAsync() {
+        executors.networkIO().execute {
+            getMeProfileSync()
+        }
+    }
+
+    @WorkerThread
+    fun getMeProfileSync() {
+        try {
+            val response = service.getMeStudent().execute()
+            val value = response.body()
+            if (value?.data != null) {
+                database.studentServiceDao().insertSingle(value.data.toCommon())
+            }
+        } catch (ignored: Throwable) {}
+    }
+
     fun getMeProfile(): LiveData<Resource<SStudent>> {
         return object : NetworkBoundResource<SStudent, UResponse<SStudentDTO>>(executors) {
             override fun loadFromDb() = database.studentServiceDao().getMeStudent()

@@ -30,14 +30,13 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.widget.CustomSwipeRefreshLayout
 import javax.inject.Inject
 
 class DisciplineSemesterFragment : UFragment(), Injectable {
@@ -66,7 +65,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPerformance: DisciplinePerformanceAdapter
-    private lateinit var swipeRefreshLayout: CustomSwipeRefreshLayout
+    private lateinit var swipeRefreshLayout: com.forcetower.core.widget.CustomSwipeRefreshLayout
     private lateinit var binding: FragmentDisciplineSemesterBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

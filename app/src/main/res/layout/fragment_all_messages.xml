@@ -20,13 +20,10 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
-        <variable
-            name="messagesViewModel"
-            type="com.forcetower.uefs.feature.messages.MessagesViewModel"/>
+
         <variable
             name="profileViewModel"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
@@ -34,7 +31,6 @@
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="?attr/background"
         android:elevation="1dp">
 
         <com.google.android.material.appbar.AppBarLayout
@@ -79,17 +75,10 @@
                 android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
 
-        <com.forcetower.uefs.widget.CustomSwipeRefreshLayout
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/pager_message"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:onSwipeRefresh="@{() -> messagesViewModel.onRefresh()}"
-            app:refreshing="@{safeUnbox(messagesViewModel.refreshing)}"
-            app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
-            <androidx.viewpager.widget.ViewPager
-                android:id="@+id/pager_message"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"/>
-        </com.forcetower.uefs.widget.CustomSwipeRefreshLayout>
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

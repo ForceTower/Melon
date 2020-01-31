@@ -26,6 +26,7 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
+import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.feature.evaluation.discipline.SemesterMean
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -59,7 +60,7 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
     set.setDrawFilled(true)
     set.fillDrawable = ContextCompat.getDrawable(context, R.drawable.gradient_chart_evaluation)
     set.mode = LineDataSet.Mode.CUBIC_BEZIER
-    set.color = ContextCompat.getColor(context, R.color.colorAccent)
+    set.color = ViewUtils.attributeColorUtils(context, R.attr.colorAccent)
     set.setDrawCircles(false)
     set.setDrawValues(false)
 

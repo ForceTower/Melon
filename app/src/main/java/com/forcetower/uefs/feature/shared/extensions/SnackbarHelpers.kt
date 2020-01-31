@@ -20,40 +20,26 @@
 
 package com.forcetower.uefs.feature.shared.extensions
 
-import android.view.ViewGroup
 import android.widget.TextView
-import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.snackbar.Snackbar
 
-fun Snackbar.config(bottomPadding: Int = 12, pxElevation: Int = 6) {
+fun Snackbar.config(pxElevation: Int = 6) {
     val context = view.context
-    val params = view.layoutParams as ViewGroup.MarginLayoutParams
-
-    val px12 = getPixelsFromDp(context, 12).toInt()
     val px6 = getPixelsFromDp(context, pxElevation)
-    val pxB = getPixelsFromDp(context, bottomPadding).toInt()
 
-    params.setMargins(px12, px12, px12, pxB)
     view.elevation = px6
-    view.bringToFront()
-
-    view.layoutParams = params
-
-    view.background = context.getDrawable(R.drawable.snackbar_background)
-
-    val colorOnSurface = ContextCompat.getColor(context, R.color.white)
 
     val font = ResourcesCompat.getFont(context, R.font.product_sans_regular)
     val tv = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_text)
     tv.typeface = font
-    tv.setTextColor(colorOnSurface)
 
     try {
         val at = view.findViewById<TextView>(com.google.android.material.R.id.snackbar_action)
-        at.setTextColor(ContextCompat.getColor(context, R.color.colorAccent))
+        at.setTextColor(ViewUtils.attributeColorUtils(context, R.attr.colorPrimary))
         at.isAllCaps = false
         at.typeface = font
     } catch (ignored: Exception) {}
