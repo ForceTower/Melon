@@ -110,15 +110,17 @@ class DisciplineFragment : UFragment(), Injectable {
         val size = semesters.size
 
         if (ordering && sortedSizeOnce != size) {
-            val suggestedOrdering = preferences.getBoolean("suggested_reordering_of_semesters", false)
-            if (!suggestedOrdering && diffSort != semesters) {
+            val actionTaken = preferences.getBoolean("suggested_reorder_semester_action_taken", false)
+            if (!actionTaken && diffSort != semesters) {
                 sortedSizeOnce = size
-                preferences.edit().putBoolean("suggested_reordering_of_semesters", true).apply()
                 val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), true)
                 snack?.let { bar ->
                     bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_quick_fix)) {
-                        preferences.edit().putBoolean("stg_semester_deterministic_ordering", false).apply()
+                        preferences.edit()
+                            .putBoolean("stg_semester_deterministic_ordering", false)
+                            .putBoolean("suggested_reorder_semester_action_taken", true)
+                            .apply()
                         bar.dismiss()
                         showAppliedChangesSnack()
                     }
@@ -128,10 +130,9 @@ class DisciplineFragment : UFragment(), Injectable {
             }
         }
 
-        return if (ordering) {
-            semesters
-        } else {
-            diffSort
+        return when {
+            ordering -> semesters
+            else -> diffSort
         }
     }
 
@@ -142,7 +143,10 @@ class DisciplineFragment : UFragment(), Injectable {
                 snack?.let { bar ->
                     bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
-                        preferences.edit().putBoolean("stg_semester_deterministic_ordering", true).apply()
+                        preferences.edit()
+                            .putBoolean("stg_semester_deterministic_ordering", true)
+                            .putBoolean("suggested_reorder_semester_action_reversed", true)
+                            .apply()
                         bar.dismiss()
                     }
                     bar.show()
