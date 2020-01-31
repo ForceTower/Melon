@@ -17,7 +17,7 @@ ext {
 
             (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
 
-            def name = "${major}.${minor}.${patch} build ${commit_count} ${postfix}"
+            def name = "${major}.${minor}.${patch}.${commit_count} ${postfix}"
             def code = (21 * 100000) + commit_count
             return [code, name]
         } catch (Exception ignored) {
