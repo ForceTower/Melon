@@ -65,6 +65,11 @@ fun SharedPreferences.isStudentFromUEFS(): Boolean {
     return inst == "UEFS"
 }
 
+fun SharedPreferences.isStudentFromUESC(): Boolean {
+    val inst = getString(SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
+    return inst == "UESC"
+}
+
 fun <T> Subject<T>.toLiveData(): LiveData<T> {
     return LiveDataReactiveStreams.fromPublisher(this.toFlowable(BackpressureStrategy.LATEST))
 }
