@@ -72,7 +72,7 @@ dependencies {
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.annotation:annotation:$annotation"
     implementation "androidx.appcompat:appcompat:$app_compat"
-    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.0.0"
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
     implementation "androidx.palette:palette:$pallete"
