@@ -665,7 +665,7 @@
     <string name="write_statement_hint">O que você deseja dizer?</string>
     <string name="class_item_attached_materials_dialog_title">Materiais anexados</string>
     <string name="class_item_attached_materials_dialog_subtitle">Selecione o material associado a esta aula para visualiza-lo</string>
-    <string name="incorrect_semester_ordering_detected">Parece que os semestres não estão organizados</string>
+    <string name="incorrect_semester_ordering_detected">Parece que os semestres não estão organizados, o app pode não funcionar</string>
     <string name="incorrect_semester_ordering_quick_fix">Corrigir</string>
     <string name="incorrect_semester_ordering_changes_applied">Abra de novo para ver as mudanças</string>
     <string name="incorrect_semester_ordering_undo_changes">Desfazer</string>
