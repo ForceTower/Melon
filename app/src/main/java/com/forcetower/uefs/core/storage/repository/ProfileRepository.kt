@@ -59,11 +59,13 @@ class ProfileRepository @Inject constructor(
 
     @WorkerThread
     fun getMeProfileSync() {
-        val response = service.getMeStudent().execute()
-        val value = response.body()
-        if (value?.data != null) {
-            database.studentServiceDao().insertSingle(value.data.toCommon())
-        }
+        try {
+            val response = service.getMeStudent().execute()
+            val value = response.body()
+            if (value?.data != null) {
+                database.studentServiceDao().insertSingle(value.data.toCommon())
+            }
+        } catch (ignored: Throwable) {}
     }
 
     fun getMeProfile(): LiveData<Resource<SStudent>> {
