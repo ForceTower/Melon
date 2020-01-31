@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.feature.settings.AccountSettingsFragment
+import com.forcetower.uefs.feature.settings.AdvancedSettingsFragment
 import com.forcetower.uefs.feature.settings.RootSettingsFragment
 import com.forcetower.uefs.feature.settings.SyncSettingsFragment
 import dagger.Module
@@ -34,4 +35,6 @@ abstract class SettingsModule {
     abstract fun rootSettingsFragment(): RootSettingsFragment
     @ContributesAndroidInjector
     abstract fun syncSettingsFragment(): SyncSettingsFragment
+    @ContributesAndroidInjector
+    abstract fun advancedSettingsFragment(): AdvancedSettingsFragment
 }

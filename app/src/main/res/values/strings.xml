@@ -271,12 +271,22 @@
     <string name="settings_acc_semester_info">Mostrar o semestre pode ser ofensivo</string>
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
+    <string name="settings_adv_auto_start">Auto inicialização</string>
+    <string name="settings_adv_auto_start_info">Algumas marcas impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
+    <string name="settings_adv_battery_optimization">Otimizações da bateria</string>
+    <string name="settings_adv_battery_optimization_info">Marcas proibem execução se o aplicativo está &quot;fechado&quot;, veja como resolver (em inglês)</string>
+    <string name="settings_adv_cat_execution">Execução</string>
+    <string name="settings_adv_cat_execution_info">Correções rápidas para execução em segundo plano</string>
+    <string name="settings_adv_cat_dynamic_feature">Funções Dinâmicas</string>
+    <string name="settings_adv_cat_dynamic_feature_info">Insere ou remove funções do aplicativo</string>
+    <string name="settings_adv_dynamic_feature_aeri">Notícias AERI</string>
+    <string name="settings_adv_dynamic_feature_aeri_info">Controla se a aba é mostrada e se a função deve ser instalada ou não</string>
     <string name="unable_to_open_url">Não foi possível abrir este link :(</string>
     <string name="open_multiple_links">Ainda não é possível abrir mensagens com vários links</string>
     <string name="select_a_link">Selecione um link</string>
     <string name="demand_selected_disciplines_label">Disciplinas selecionadas:</string>
     <string name="collapse_demand_overview_sheet">Abaixar disciplinas selecionadas</string>
-    <string name="expand_demand_overview_sheet">Levantas disciplinas selecionadas</string>
+    <string name="expand_demand_overview_sheet">Levantar disciplinas selecionadas</string>
     <string name="demand_confirm_button">Confirmar</string>
     <string name="demand_discipline_locked">Disciplina bloqueada</string>
     <string name="demand_discipline_status">Estado atual da disciplina</string>
@@ -362,7 +372,7 @@
     <string name="channel_common_hig">Avisos principais</string>
     <string name="hourglass_what_is_this">O que é isso?</string>
     <string name="ohh_i_see">Ahh ta</string>
-    <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.\n\nEsta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.\n\nNo final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
+    <string name="label_hourglass_information">Você conhece o Barril de Boas? Não? Basicamente os alunos votam dando sua opinião sobre um docente utilizando a escala Barril ou De boas.  Esta versão UNES é um incremento para o que temos com o Barril de Boas, se você decidir contribuir, suas notas serão utilizadas anonimamente para compor uma média geral sobre os professores e matérias, alem disso você pode votar anonimamente para dizer se a disciplina/professor for de boas ou barril.  No final das contas você terá uma ótima ferramenta para descobrir se deve pegar aquela matéria com aquele professor que você não faz a menor ideia se é bom ou se a didática não é tão legal</string>
     <string name="label_evaluation">Paradoxo de Zhonyas</string>
     <string name="hourglass_landing_desc">Antes de começar, o UNES irá baixar os detalhes de todas as disciplinas. Nos encontraremos de novo quando terminar</string>
     <string name="hourglass_landing_title">Oi, você vem sempre aqui?</string>
@@ -379,7 +389,7 @@
     <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
     <string name="donation_service_response_error">Erro ao processar doações</string>
     <string name="label_purchases">Doações e Itens</string>
-    <string name="sku_price_format">%1$s %2$s</string>
+    <string name="sku_price_format" translatable="false">%1$s %2$s</string>
     <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
     <string name="you_bought_this_item">Você comprou o %1$s</string>
     <string name="label_services_follow_up">Solicitações de Serviços</string>
@@ -395,7 +405,7 @@
     <string name="service_requests_ntf_create_format">A solicitação %1$s está sendo observada pelo UNES</string>
     <string name="service_requests_incomplete">Pendentes</string>
     <string name="not_ready_feature">Esta função está em construção!\nObserve o projeto no GitHub para ver o progresso!</string>
-    <string name="project_github">www.github.com/ForceTower/Melon</string>
+    <string name="project_github" translatable="false">www.github.com/ForceTower/Melon</string>
     <string name="obsolete_message">Esta versão do UNES está muito desatualizada e não é mais suportada. Por favor atualize o aplicativo para continuar usando a interface.</string>
     <string name="new_version_ntf_title_format">A versão %1$s do UNES está disponível</string>
     <string name="switch_dark_theme">Tema escuro</string>
@@ -440,13 +450,13 @@
     <string name="mean_needed_in_finals">Nota necessária na final:</string>
     <string name="you_cant_miss_a_class">Você não pode mais faltar</string>
     <string name="you_missed_to_many_classes">Você ultrapassou o limite de faltas</string>
-    <string name="grade_format">%1$.1f</string>
+    <string name="grade_format" translatable="false">%1$.1f</string>
     <string name="ach_distance_title_format">Distância até %1$s</string>
     <string name="ach_distance_amount_format" translatable="false">%1$.1f m</string>
     <string name="not_connected_to_the_adventure">Você não está conectado, por favor deixe a aventura e volte!</string>
     <string name="achievements_client_invalid_reconnect">O cliente da aventura é nulo, deixe a aventura e tente novamente</string>
     <string name="cant_open_achievements_invalid_intent">O google play não quer abrir as conquistas, deixe a aventura e tente novamente</string>
-    <string name="label_mech_calculator">Final Countdown</string>
+    <string name="label_mech_calculator" translatable="false">Final Countdown</string>
     <string name="mech_grade_weight">Peso:</string>
     <string name="mech_grade_value">Nota:</string>
     <string name="mech_result_mean_only">Sua média é %1$.1f</string>
@@ -454,7 +464,7 @@
     <string name="mech_result_wildcard_only">Você precisa tirar %1$.1f em cada nota curinga para passar</string>
     <string name="mech_result_wildcard_and_final">Se você tirar %1$.1f nos curingas vai precisar de %2$.1f na final para passar</string>
     <string name="mech_result_you_lost">Você perdeu! Volte semestre vem</string>
-    <string name="label_create_mech_value">Adicionar Nota</string>
+    <string name="label_create_mech_value">Adicionar nota</string>
     <string name="label_create_mech_value_information">Adicione uma nota ao cálculo da contagem final e descubra o que vai enfrentar</string>
     <string name="label_grade_title">Nota</string>
     <string name="label_mech_weight">Peso</string>
@@ -490,20 +500,20 @@
     <string name="onboarding_label_seconds">S</string>
     <string name="onboarding_get_started">Vamos lá!</string>
     <string name="onboarding_welcome_to_siecomp">Boas-vindas à SIECOMP</string>
-    <string name="onboarding_date_location">De 16 à 22 de outubro na UEFS.F</string>
+    <string name="onboarding_date_location">De 16 à 22 de outubro na UEFS</string>
     <string name="onboarding_customize_schedule">Crie sua programação</string>
     <string name="onboarding_build_sched_benefits">Marque suas sessões favoritas para ficar mais fácil de identificá-las</string>
     <string name="event_starred">Sessão marcada!</string>
     <string name="event_unstarred">Sessão desmarcada</string>
     <string name="session_detail_header_aspect" translatable="false">H,16:9</string>
     <string name="session_detail_speakers_header">Apresentadores / Palestrantes</string>
-    <string name="speaker_headshot_transition">speak_headshot</string>
-    <string name="speaker_link_separator">/</string>
-    <string name="speaker_link_website">Website</string>
-    <string name="speaker_link_twitter">Twitter</string>
-    <string name="speaker_link_github">GitHub</string>
-    <string name="speaker_link_linkedin">LinkedIn</string>
-    <string name="speaker_link_facebook">Facebook</string>
+    <string name="speaker_headshot_transition" translatable="false">speak_headshot</string>
+    <string name="speaker_link_separator" translatable="false">/</string>
+    <string name="speaker_link_website" translatable="false">Website</string>
+    <string name="speaker_link_twitter" translatable="false">Twitter</string>
+    <string name="speaker_link_github" translatable="false">GitHub</string>
+    <string name="speaker_link_linkedin" translatable="false">LinkedIn</string>
+    <string name="speaker_link_facebook" translatable="false">Facebook</string>
     <string name="ev_editor_sessions">Sessões</string>
     <string name="ev_editor_speakers">Apresentadores</string>
     <string name="ev_editor_tags">Tags</string>
@@ -565,7 +575,6 @@
     <string name="evaluation_last_seen">última vez em %1$s</string>
     <string name="evaluation_see_teacher_details">Ver detalhes do professor</string>
     <string name="evaluation_start">Início</string>
-    <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
     <string name="evaluation_search_hint">Procurando por algo ou alguém?</string>
     <string name="welcome_to_unesverse">Boas vindas ao UNESVerso</string>
     <string name="unesverse_description">O gerenciador de funcionalidades compartilhadas do UNES.</string>
@@ -622,7 +631,7 @@
     <string name="evaluation_completed_description">Obrigado por avaliar! Suas respostas ajudarão outras pessoas no futuro</string>
     <string name="whats_new_on_unes">O que há de novo no UNES</string>
     <string name="unes_new_feature_title_01">A avaliação dos professores chegou (voltou?)\nO Paradoxo de Zhonyas</string>
-    <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.\n\nAinda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.\n\nUsem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
+    <string name="new_feature_description_01">A avaliação dos professores chegou ao UNES, a partir de hoje você já pode ver a média geral dizer o que achou das suas disciplinas e dos seus professores, vota lá, diga se é de boas ou barril.  Ainda existe trabalho a ser feito para que a função fique polída, mas já está de maneira boa para uso geral, assim que tiver dados, colocarei as estatísticas das respostas.  Usem com moderação, está lá na tab Mais. Aceito sugestão de nomes</string>
     <string name="settings_sync_discipline_amount">Dados das disciplinas</string>
     <string name="settings_sync_discipline_amount_label">Quantidade de vezes que o aplicativo baixa os detalhes das disciplinas (ajuda a economizar dados)</string>
     <string name="flowchart_semester">Semestres</string>
@@ -637,7 +646,7 @@
     <string name="profile_attr_trustable">Confiável</string>
     <string name="profile_attr_cool">Legal</string>
     <string name="profile_attr_sexy">Sexy</string>
-    <string name="student_headshot_transition">student_headshot_transition</string>
+    <string name="student_headshot_transition" translatable="false">student_headshot_transition</string>
     <string name="flowchart_required_hours">%1$d horas do curso completas</string>
     <string name="flowchart_required_percentage">%1$d%% do curso completo</string>
     <string name="flowchart_recursive_continuation">Requisitos Recursivos</string>
@@ -650,7 +659,7 @@
     <string name="in_app_update_no_update_type">Existe uma nova atualização do aplicativo! Olha lá na loja!</string>
     <string name="discipline_grades_mean">Média final</string>
     <string name="discipline_grades_see_more">Ver detalhes da disciplina</string>
-    <string name="flowchart_select_course">Escolha um Fluxograma</string>
+    <string name="flowchart_select_course">Escolha um fluxograma</string>
     <string name="flowchart_select_course_desc">Estes são os fluxogramas cadastrados, escolha um para ver detalhes</string>
     <string name="write_statement_label">Escreva um depoimento sobre esta pessoa</string>
     <string name="write_statement_hint">O que você deseja dizer?</string>
@@ -692,7 +701,8 @@
     <string name="achievements_throwable_unhandled_error">Seu dispositivo não foi capaz de abrir o Google Play Games de maneira correta</string>
     <string name="discipline_details_classes_hide">Horários</string>
     <string name="discipline_details_hidden">Oculto</string>
-    <string name="discipline_start_end_format">%1$s ~ %2$s</string>
+    <string name="discipline_start_end_format" translatable="false">%1$s ~ %2$s</string>
+    <string name="settings_auto_start_manager_not_found">Um AutoStartManager não foi encontrado para esta marca e modelo</string>
 
     <string-array name="settings_sync_type_titles">
         <item>Periódico</item>
@@ -747,7 +757,7 @@
     </string-array>
 
     <string-array name="settings_theme_values">
-        <item>0</item>
+        <item>-1</item>
         <item>1</item>
         <item>2</item>
     </string-array>
@@ -780,4 +790,30 @@
         <item quantity="one">A sessão começa em %1$s minuto</item>
         <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
+    <string name="title_aeri">Notícias AERI</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="dashboard">Início</string>
+    <string name="settings_advanced_label">Avançadas</string>
+    <string name="settings_advanced_info_label">Execução, energia, funcionalidades e outras coisas</string>
+    <string name="install_module_aeri">Instalando novo módulo: Notícias da AERI</string>
+    <string name="aeri_call_in_text">Fique por dentro das noticias do programa de intercambio da universidade!</string>
+    <string name="aeri_join_in">Quero ver!</string>
+    <string name="aeri_info_notifications">Ativar essa função tambem irá ativar notificações sobre a AERI durante a sincronização</string>
+    <string name="dynamic_feature_fail_network_error">Erro de rede</string>
+    <string name="dynamic_feature_module_unavailable">Módulo indisponível</string>
+    <string name="dynamic_feature_fail_any_else_error">Um erro genérico com código: %1$d</string>
+    <string name="dynamic_feature_aeri_installed">O novo módulo foi instalado!</string>
+    <string name="settings_theme_dark">Tema escuro</string>
+    <string name="settings_theme_dark_desc">Escolher comportamento padrão do tema escuro</string>
+    <string name="unes_choose_theme_label">Escolher um tema</string>
+    <string name="unes_choose_theme_light">Claro</string>
+    <string name="unes_choose_theme_dark">Escuro</string>
+    <string name="unes_choose_theme_default">Sistema</string>
+    <string name="unes_choose_color_primary">Cor primária</string>
+    <string name="unes_choose_color_secondary">Cor secundária</string>
+    <string name="unes_theme_apply">Aplicar tema</string>
+    <string name="unes_theme_clear">Limpar tudo</string>
+    <string name="unes_choose_color_background">Cor de fundo</string>
+    <string name="label_theme_editor">Editor de tema</string>
+    <string name="label_theme_editor_description">Agora você pode usar as cores que quiser no aplicativo</string>
 </resources>

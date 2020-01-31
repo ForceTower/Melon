@@ -21,7 +21,7 @@
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
 import androidx.core.os.bundleOf
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
 
 class GradesFragment : UFragment(), Injectable {

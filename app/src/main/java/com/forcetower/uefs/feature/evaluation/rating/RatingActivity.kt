@@ -35,6 +35,7 @@ import com.forcetower.uefs.databinding.ActivityEvaluationRatingBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import javax.inject.Inject
@@ -51,6 +52,7 @@ class RatingActivity : UActivity(), HasAndroidInjector {
     private var currentData: List<Question>? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        ThemeOverlayUtils.applyThemeOverlays(this, intArrayOf(R.id.theme_feature_background_color))
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation_rating)
         viewModel = provideViewModel(factory)
@@ -97,5 +99,6 @@ class RatingActivity : UActivity(), HasAndroidInjector {
         adapter.setItems(fragments)
     }
 
+    override fun shouldApplyThemeOverlay() = false
     override fun androidInjector() = fragmentInjector
 }

@@ -53,7 +53,10 @@ data class ClassLocation(
     val campus: String?,
     val uuid: String = UUID.randomUUID().toString(),
     @ColumnInfo(name = "hidden_on_schedule")
-    val hiddenOnSchedule: Boolean = false
+    val hiddenOnSchedule: Boolean = false,
+    val startsAtInt: Int,
+    val endsAtInt: Int,
+    val dayInt: Int
 ) : Comparable<ClassLocation> {
 
     override fun toString(): String {

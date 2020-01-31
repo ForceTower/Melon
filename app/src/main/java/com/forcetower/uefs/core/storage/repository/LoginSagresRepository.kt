@@ -30,6 +30,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
 import com.forcetower.sagres.database.model.SagresDisciplineGroup
@@ -103,6 +104,7 @@ class LoginSagresRepository @Inject constructor(
 
     @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
+        SagresNavigator.instance.putCredentials(SagresCredential(username, password))
         val source = SagresNavigator.instance.aLogin(username, password).toLiveData()
         currentStep.value = createStep(R.string.step_logging_in)
         data.addSource(source) { l ->
@@ -113,6 +115,7 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute { database.accessDao().insert(username, password) }
                 me(data, score, Access(username = username, password = password), l.document!!)
             } else {
+                SagresNavigator.instance.putCredentials(null)
                 data.value = Callback.Builder(l.status)
                         .code(l.code)
                         .message(l.message)

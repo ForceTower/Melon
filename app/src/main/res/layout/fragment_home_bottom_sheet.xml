@@ -38,7 +38,6 @@
         android:layout_height="match_parent"
         android:paddingTop="16dp"
         android:clipToPadding="false"
-        android:background="?attr/background"
         android:elevation="1dp">
 
         <androidx.constraintlayout.widget.Guideline
@@ -105,20 +104,6 @@
                 tools:text="Seu score é: 8.7" />
         </LinearLayout>
 
-        <com.google.android.material.switchmaterial.SwitchMaterial
-            android:id="@+id/switch_night"
-            android:visibility="gone"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginEnd="16dp"
-            android:text="@string/switch_dark_theme"
-            android:textColor="?attr/colorOnBackground"
-            app:useMaterialThemeColors="false"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_bottom" />
-
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
@@ -126,13 +111,13 @@
             android:background="@color/home_bottom_color_divider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/switch_night"/>
+            app:layout_constraintTop_toBottomOf="@id/header_bottom"/>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
             android:layout_width="0dp"
             android:layout_height="0dp"
-            android:background="@color/background"
+            android:background="?attr/background"
             app:elevation="0dp"
             app:itemBackground="@drawable/navigation_item_background"
             app:itemIconPadding="@dimen/second_keyline"

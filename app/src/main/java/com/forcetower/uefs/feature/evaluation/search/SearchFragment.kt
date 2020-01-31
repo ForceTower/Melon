@@ -33,7 +33,7 @@ import androidx.core.view.forEach
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -64,6 +64,7 @@ class SearchFragment : UFragment(), Injectable {
                 override fun afterTextChanged(edit: Editable?) {
                     val text = edit?.toString() ?: ""
                     if (text.length >= 3 || text.isEmpty()) {
+                        Timber.d("Querying $text")
                         viewModel.query(text)
                     }
                 }

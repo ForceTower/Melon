@@ -20,12 +20,23 @@
 
 package com.forcetower.uefs.feature.shared
 
+import android.os.Bundle
+import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
+import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
 import com.google.android.material.snackbar.Snackbar
 
 abstract class UActivity : AppCompatActivity() {
 
+    @CallSuper
+    override fun onCreate(savedInstanceState: Bundle?) {
+        if (shouldApplyThemeOverlay()) ThemeOverlayUtils.applyThemeOverlays(this)
+        super.onCreate(savedInstanceState)
+    }
+
     open fun showSnack(string: String, long: Boolean = false) {}
+
+    open fun shouldApplyThemeOverlay() = true
 
     open fun getSnackInstance(string: String, long: Boolean = false): Snackbar? = null
 }
