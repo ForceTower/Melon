@@ -34,7 +34,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
 import com.forcetower.uefs.core.util.toJson

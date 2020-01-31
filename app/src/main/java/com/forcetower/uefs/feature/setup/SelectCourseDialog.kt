@@ -25,7 +25,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.core.vm.UViewModelFactory

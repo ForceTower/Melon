@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="announcement"
+            type="com.forcetower.uefs.aeri.core.model.Announcement" />
+
+        <variable
+            name="interactor"
+            type="com.forcetower.uefs.aeri.feature.AnnouncementInteractor" />
+    </data>
+
+    <com.google.android.material.card.MaterialCardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="8dp"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        android:onClick="@{() -> interactor.onAnnouncementClick(announcement)}">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:scaleType="centerCrop"
+                android:importantForAccessibility="no"
+                app:goneIf="@{announcement.imageUrl == null}"
+                app:imageUrl="@{announcement.imageUrl}"
+                app:layout_constraintDimensionRatio="16:9"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:src="@tools:sample/backgrounds/scenic"/>
+
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="16dp"
+                android:textColor="?attr/colorOnSurface"
+                android:textSize="18sp"
+                android:text="@{announcement.title}"
+                tools:text="Noticias bombásticas!!! O Ciencia sem fronteiras voltou!! Faça seu intercambio hoje mesmo!!!!!"
+                app:layout_constraintTop_toBottomOf="@id/image"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/publish_date"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingStart="16dp"
+                android:paddingEnd="16dp"
+                android:paddingTop="8dp"
+                android:paddingBottom="16dp"
+                android:textSize="13sp"
+                android:text="@{announcement.publishDate}"
+                tools:text="16/07/2020"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/title"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </com.google.android.material.card.MaterialCardView>
+</layout>

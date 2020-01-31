@@ -41,12 +41,14 @@ import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
+import com.google.android.play.core.install.model.InstallStatus
 import javax.inject.Inject
 
 class HomeViewModel @Inject constructor(
@@ -58,7 +60,8 @@ class HomeViewModel @Inject constructor(
     private val profileRepository: ProfileRepository,
     private val context: Context,
     private val sessionRepository: UserSessionRepository,
-    private val accountRepository: AccountRepository
+    private val accountRepository: AccountRepository,
+    private val affinityRepository: AffinityQuestionRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
@@ -73,12 +76,21 @@ class HomeViewModel @Inject constructor(
     val passwordChangeProcess: LiveData<Event<Resource<Boolean>>>
         get() = _passwordChangeProcess
 
+    private val _inAppUpdateStatus = MutableLiveData<Int>()
+    val inAppUpdateStatus: LiveData<Int>
+        get() = _inAppUpdateStatus
+
+    private val _onMoveToSchedule = MutableLiveData<Event<Unit>>()
+    val onMoveToSchedule: LiveData<Event<Unit>>
+        get() = _onMoveToSchedule
+
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Resource<Account>> = accountRepository.getAccount()
+    val databaseAccount = accountRepository.getAccountOnDatabase()
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
     val scheduleHideCount: LiveData<Int> = dataRepository.getScheduleHideCount()
 
@@ -150,5 +162,21 @@ class HomeViewModel @Inject constructor(
 
     fun onSyncSessions() {
         sessionRepository.onSyncSessionsAsync()
+    }
+
+    fun setCurrentUpdateState(@InstallStatus installStatus: Int) {
+        _inAppUpdateStatus.value = installStatus
+    }
+
+    fun getMeProfile() {
+        profileRepository.getMeProfileAsync()
+    }
+
+    fun onMoveToSchedule() {
+        _onMoveToSchedule.value = Event(Unit)
+    }
+
+    fun getAffinityQuestions() {
+        affinityRepository.getAffinityQuestionsAsync()
     }
 }

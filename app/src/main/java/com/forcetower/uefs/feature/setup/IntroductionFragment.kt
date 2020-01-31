@@ -35,7 +35,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.util.ColorUtils

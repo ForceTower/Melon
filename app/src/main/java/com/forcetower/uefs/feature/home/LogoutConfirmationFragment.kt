@@ -26,9 +26,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import androidx.appcompat.view.ContextThemeWrapper
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentLogoutConfirmationBinding
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
@@ -45,10 +44,8 @@ class LogoutConfirmationFragment : BottomSheetDialogFragment(), Injectable {
     private lateinit var binding: FragmentLogoutConfirmationBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val contextThemeWrapper = ContextThemeWrapper(activity, R.style.UTheme)
-        val themedInflater = inflater.cloneInContext(contextThemeWrapper)
         viewModel = provideActivityViewModel(factory)
-        return FragmentLogoutConfirmationBinding.inflate(themedInflater, container, false).also {
+        return FragmentLogoutConfirmationBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
             btnCancel.setOnClickListener { dismiss() }

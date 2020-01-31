@@ -30,7 +30,7 @@
 
         <variable
             name="headshotImageListener"
-            type="com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener"/>
+            type="com.forcetower.core.adapters.ImageLoadListener"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

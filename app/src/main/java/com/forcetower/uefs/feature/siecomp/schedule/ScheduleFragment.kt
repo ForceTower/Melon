@@ -31,7 +31,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver

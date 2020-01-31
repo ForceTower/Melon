@@ -30,8 +30,9 @@ import androidx.core.app.NavUtils
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.lifecycle.Observer
+import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventSpeakerBinding
 import com.forcetower.uefs.feature.shared.UFragment

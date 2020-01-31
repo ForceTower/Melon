@@ -41,7 +41,6 @@ import okhttp3.OkHttpClient
 import org.threeten.bp.ZonedDateTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import timber.log.Timber
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.util.concurrent.TimeUnit
@@ -89,7 +88,6 @@ object NetworkModule {
     fun provideInterceptor(database: UDatabase) = object : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
-            Timber.d("Going to: ${request.url.toUrl()}")
             val host = request.url.host
             return if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
                 val builder = request.headers.newBuilder()

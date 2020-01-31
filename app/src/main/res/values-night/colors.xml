@@ -21,6 +21,8 @@
 
 <resources>
     <color name="background">#1A1A1A</color>
+    <color name="backgroundExtreme">#000000</color>
+    <color name="surfaceExtreme">#1A1A1A</color>
     <color name="surface">#272727</color>
     <color name="surfaceEspecial">#36343a</color>
     <color name="onSurface">#FFFFFF</color>

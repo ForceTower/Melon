@@ -79,7 +79,7 @@ abstract class ClassAbsenceDao {
                     Timber.e("<abs_no_class> :: Class not found for ${it.disciplineCode}_${it.semester}")
                 }
             } catch (exception: Throwable) {
-                Timber.e("Something went wrong at sequence extraction", exception)
+                Timber.e(exception, "Something went wrong at sequence extraction")
             }
         }
     }

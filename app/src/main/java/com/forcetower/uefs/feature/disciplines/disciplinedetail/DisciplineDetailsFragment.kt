@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory

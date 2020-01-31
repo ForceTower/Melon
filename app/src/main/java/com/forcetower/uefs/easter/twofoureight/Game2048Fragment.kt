@@ -38,7 +38,7 @@ import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.databinding.GameFragment2048Binding
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.forcetower.uefs.easter.twofoureight.tools.InputListener
@@ -155,8 +155,10 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             true
         }
 
-        prepareInterstitialAds()
-        prepareRewardedAds()
+        if (admobEnabled) {
+            prepareInterstitialAds()
+            prepareRewardedAds()
+        }
     }
 
     private fun prepareRewardedAds() {
@@ -166,6 +168,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     private fun loadRewardedAd() {
+        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        if (!admobEnabled) return
         val request = AdRequest.Builder()
                 .addTestDevice(Constants.ADMOB_TEST_ID)
                 .build()
@@ -261,7 +265,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             binding.tvEndgameOverlay.setText(R.string.game_over)
             activity?.unlockAchievement(R.string.achievement_eu_tentei)
             activity?.incrementAchievementProgress(R.string.achievement_a_prtica_leva__perfeio, 1)
-            if (interstitial.isLoaded && admobEnabled) {
+            if (admobEnabled && interstitial.isLoaded) {
                 interstitial.show()
             }
         } else {

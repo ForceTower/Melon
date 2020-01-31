@@ -23,18 +23,19 @@ package com.forcetower.uefs
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatDelegate
-import androidx.preference.PreferenceManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.injection.AppComponent
 import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import com.forcetower.uefs.feature.themeswitcher.ThemePreferencesManager
 import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.impl.CrashlyticsTree
+import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
@@ -57,6 +58,11 @@ class UApplication : Application(), HasAndroidInjector {
     @Volatile
     private var injected = false
 
+    override fun attachBaseContext(base: Context?) {
+        super.attachBaseContext(base)
+        SplitCompat.install(this)
+    }
+
     override fun onCreate() {
         if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
             return
@@ -66,7 +72,7 @@ class UApplication : Application(), HasAndroidInjector {
             // Se em debug, print no logcat todas as informações
             Timber.plant(Timber.DebugTree())
         } else {
-            // Em release, enviar apenas exceptions tratadas ;)
+            // Em release, enviar exceptions para o crashlytics
             Timber.plant(CrashlyticsTree())
         }
         // Injeta as dependências. Este é o ponto inicial
@@ -126,7 +132,12 @@ class UApplication : Application(), HasAndroidInjector {
     @Inject
     fun configureSagresNavigator() {
         val selected = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
-        SagresNavigator.initialize(PrefsCookiePersistor(this), selected, AndroidBase64Encoder())
+        SagresNavigator.initialize(
+            PrefsCookiePersistor(this),
+            selected,
+            AndroidBase64Encoder(),
+            SharedPrefsCachePersistence(preferences)
+        )
     }
 
     /**
@@ -141,22 +152,9 @@ class UApplication : Application(), HasAndroidInjector {
 
     companion object {
         fun setupDayNightTheme(context: Context) {
-            val preferences = PreferenceManager.getDefaultSharedPreferences(context)
-            val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-            if (!enabled) {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                preferences.edit()
-                        .remove("ach_night_mode_enabled")
-                        .remove("stg_night_mode")
-                        .apply()
-            } else {
-                val mode = when (preferences.getString("stg_night_mode", "0")?.toIntOrNull() ?: 0) {
-                    0 -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
-                    1 -> AppCompatDelegate.MODE_NIGHT_NO
-                    2 -> AppCompatDelegate.MODE_NIGHT_YES
-                    else -> AppCompatDelegate.MODE_NIGHT_NO
-                }
-                AppCompatDelegate.setDefaultNightMode(mode)
+            ThemePreferencesManager(context).run {
+                applyTheme()
+                retrieveOverlay()
             }
         }
     }

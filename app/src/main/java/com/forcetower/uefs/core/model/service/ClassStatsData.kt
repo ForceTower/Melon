@@ -44,7 +44,7 @@ data class ClassStatsData(
     @ColumnInfo(name = "eval_grade")
     var evaluationGrade: String?,
     @ColumnInfo(name = "eval_name")
-    var evaluationName: String,
+    var evaluationName: String?,
     @ColumnInfo(name = "eval_date")
     var evaluationDate: String?
 ) {

@@ -45,13 +45,15 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
+        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
+
+        <item name="colorSecondary">@color/colorAccent</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <item name="colorAccentDark">@color/colorAccentDark</item>
+        <item name="colorAccentAlpha">@color/colorAccentAlpha</item>
+
 
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
-        <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
-        <item name="colorAccentAlpha">@color/colorAccentAlpha</item>
         <item name="colorOnPrimary">@color/onPrimary</item>
         <item name="colorOnSecondary">@color/onSecondary</item>
         <item name="colorSurface">@color/surface</item>
@@ -61,8 +63,6 @@
         <item name="colorOnBackground">@color/onBackground</item>
         <item name="colorOnBackgroundLight">@color/onBackgroundLight</item>
 
-        <item name="android:textColorPrimary">?attr/colorOnSurface</item>
-        <item name="android:textColorSecondary">?attr/colorOnSurfaceLight</item>
         <item name="android:listDivider">@color/transparent</item>
 
         <item name="colorStatusBar">@color/statusBarColor</item>
@@ -278,10 +278,12 @@
 
     <style name="Widget.AppBar" parent="@style/Widget.Design.AppBarLayout">
         <item name="popupTheme">@style/UTheme.PopupTheme</item>
-        <item name="android:background">@color/background</item>
+        <item name="android:background">?attr/background</item>
         <item name="android:orientation">vertical</item>
         <item name="iconColor">@color/iconColor</item>
     </style>
+
+    <style name="Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface"/>
     
     <style name="Widget.Melon" parent="@android:style/Widget">
         <item name="iconColor">@color/iconColor</item>

@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.repository.cloud
 
+import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
@@ -44,7 +45,8 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase,
-    private val service: UService
+    private val service: UService,
+    private val preferences: SharedPreferences
 ) {
     @MainThread
     fun login(
@@ -89,7 +91,19 @@ class AuthRepository @Inject constructor(
         executors.networkIO().execute {
             val tk = database.accessTokenDao().getAccessTokenDirect()
             if (tk == null) performAccountSyncState()
+            else updateAccount()
         }
+    }
+
+    @WorkerThread
+    private fun updateAccount() {
+        try {
+            val response = service.getAccount().execute()
+            if (response.isSuccessful) {
+                val account = response.body()!!
+                database.accountDao().insert(account)
+            }
+        } catch (t: Throwable) {}
     }
 
     @WorkerThread
@@ -104,6 +118,7 @@ class AuthRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         profile ?: return
         syncProfileState(profile)
+        updateAccount()
     }
 
     @WorkerThread

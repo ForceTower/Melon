@@ -30,8 +30,10 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import com.crashlytics.android.Crashlytics
+import com.forcetower.core.getDynamicDataSourceFactory
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCalendar
+import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.sagres.database.model.SagresDisciplineClassLocation
 import com.forcetower.sagres.database.model.SagresDisciplineGroup
@@ -93,6 +95,17 @@ class SagresSyncRepository @Inject constructor(
 ) {
 
     @WorkerThread
+    private fun findAndMatch() {
+        val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider")
+        aeri?.create()?.run {
+            update()
+            getNotifyMessages().forEach {
+                NotificationCreator.showSimpleNotification(context, it.title, it.content)
+            }
+        }
+    }
+
+    @WorkerThread
     fun performSync(executor: String) {
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
@@ -152,6 +165,7 @@ class SagresSyncRepository @Inject constructor(
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
+        SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {
@@ -174,6 +188,10 @@ class SagresSyncRepository @Inject constructor(
             }
         }
 
+        try {
+            findAndMatch()
+        } catch (t: Throwable) { }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
@@ -194,6 +212,7 @@ class SagresSyncRepository @Inject constructor(
         defineMessages(SagresMessageParser.getMessages(homeDoc))
 
         val person = me(score, homeDoc, access)
+        Timber.d("The person from me is ${person?.name} ${person?.isMocked}")
         if (person == null) {
             registry.completed = true
             registry.error = -3
@@ -217,11 +236,14 @@ class SagresSyncRepository @Inject constructor(
         var result = 0
         var skipped = 0
 
-        if (!messages(null))
-
         if (!person.isMocked) {
-            if (!messages(person.id)) result += 1 shl 1
+            Timber.d("I guess the person is not a mocked version on it")
+            if (!messages(person.id)) {
+                if (!messages(null)) result += 1 shl 1
+            }
             if (!semesters(person.id)) result += 1 shl 2
+        } else {
+            if (!messages(null)) result += 1 shl 1
         }
 
         val dailyDisciplines = preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
@@ -381,6 +403,7 @@ class SagresSyncRepository @Inject constructor(
             return continueWithHtml(document, username, score)
         } else {
             val me = SagresNavigator.instance.me()
+            Timber.d("Me response: ${me.status}")
             when (me.status) {
                 Status.SUCCESS -> {
                     val person = me.person
@@ -410,14 +433,18 @@ class SagresSyncRepository @Inject constructor(
 
     @WorkerThread
     private fun messages(userId: Long?): Boolean {
+        Timber.d("Messages was invoked using $userId")
         val messages = if (userId != null)
             SagresNavigator.instance.messages(userId)
         else
             SagresNavigator.instance.messagesHtml()
 
+        Timber.d("Did receive a valid list? ${messages.messages != null}, ${messages.status}")
+
         return when (messages.status) {
             Status.SUCCESS -> {
                 val values = messages.messages?.map { Message.fromMessage(it, false) } ?: emptyList()
+                Timber.d("Messages mapped: ${values.size}")
                 database.messageDao().insertIgnoring(values)
                 messagesNotifications()
                 Timber.d("Messages completed. Messages size is ${values.size}")
@@ -654,6 +681,8 @@ class SagresSyncRepository @Inject constructor(
     }
 
     private fun produceErrorMessage(callback: BaseCallback<*>) {
+        Timber.d("Is throwable invalid? ${callback.throwable == null}")
+        callback.throwable?.printStackTrace()
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
     }
 

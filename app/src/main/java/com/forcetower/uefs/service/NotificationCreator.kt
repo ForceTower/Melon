@@ -362,6 +362,7 @@ object NotificationCreator {
     fun showNotification(context: Context, id: Long, builder: NotificationCompat.Builder): Boolean {
         val notificationManager = ContextCompat.getSystemService(context, NotificationManager::class.java)
         notificationManager?.notify(id.toInt(), builder.build())
+        Timber.d("Notification manager ${notificationManager != null}")
         return true
     }
 

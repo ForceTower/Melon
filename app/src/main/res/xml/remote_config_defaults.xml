@@ -92,4 +92,12 @@
         <key>satisfaction_survey_pos_flag</key>
         <value>false</value>
     </entry>
+    <entry>
+        <key>contribute_only_current</key>
+        <value>false</value>
+    </entry>
+    <entry>
+        <key>feature_flag_theme_switcher</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>

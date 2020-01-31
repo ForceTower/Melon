@@ -70,21 +70,7 @@ class DarkThemeRepository @Inject constructor(
         val completed = list.filter { it.completed }
         val completedSize = completed.size
         val account = database.accountDao().getAccountDirect()
-
-        val enabled = account?.darkThemeEnabled ?: false
-        val invites = if (completedSize < 2) 0 else (completedSize - 1)
-        if (enabled) {
-            preferences.edit()
-                    .putInt("dark_theme_invites", invites)
-                    .apply()
-        } else {
-            preferences.edit()
-                    .putInt("dark_theme_invites", invites)
-                    .putBoolean("ach_night_mode_enabled", (completedSize > 0))
-                    .apply()
-        }
-
-        if (!enabled && completed.isEmpty()) return
+        if (completed.isEmpty()) return
 
         if (account != null) {
             try {

@@ -38,6 +38,7 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
+import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.siecomp.Speaker
 
@@ -136,12 +137,4 @@ fun createSpeakerLinksView(
     } else {
         textView.visibility = GONE
     }
-}
-
-/**
- * An interface for responding to image loading completion.
- */
-interface ImageLoadListener {
-    fun onImageLoaded()
-    fun onImageLoadFailed()
 }

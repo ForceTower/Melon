@@ -30,7 +30,7 @@
             type="androidx.lifecycle.LiveData&lt;com.forcetower.uefs.core.model.unes.SStudent&gt;" />
         <variable
             name="headshotImageListener"
-            type="com.forcetower.uefs.feature.siecomp.speaker.ImageLoadListener"/>
+            type="com.forcetower.core.adapters.ImageLoadListener"/>
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.profile.ProfileInteractor" />

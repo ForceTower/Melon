@@ -27,14 +27,17 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
 import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
+import timber.log.Timber
 import java.util.Locale
 
 @Dao
 abstract class MessageDao {
 
-    fun insertIgnoring(messages: List<Message>) {
+    @Transaction
+    open fun insertIgnoring(messages: List<Message>) {
         updateOldMessages()
         for (message in messages) {
             val direct = getMessageByHashDirect(message.hashMessage)
@@ -61,6 +64,20 @@ abstract class MessageDao {
 
                 if (message.html && direct.html) {
                     updateDateString(message.sagresId, message.dateString)
+                }
+
+                if (direct.html && !message.html) {
+                    Timber.d("Is this really happening?")
+                    updateTimestamp(direct.sagresId, message.timestamp)
+                    updateSenderProfile(direct.sagresId, message.senderProfile)
+                    updateHtmlParseStatus(direct.sagresId, false)
+
+                    if (message.senderName != null)
+                        updateSenderName(direct.sagresId, message.senderName)
+                    if (message.discipline != null)
+                        updateDisciplineName(direct.sagresId, message.discipline)
+                    if (message.codeDiscipline != null)
+                        updateDisciplineCode(direct.sagresId, message.codeDiscipline)
                 }
             }
             val resume = message.disciplineResume?.trim()
@@ -116,6 +133,18 @@ abstract class MessageDao {
     @Query("UPDATE Message SET attachmentName = :attachmentName WHERE sagres_id = :sagresId")
     protected abstract fun updateAttachmentName(sagresId: Long, attachmentName: String)
 
+    @Query("UPDATE Message SET code_discipline = :codeDiscipline WHERE sagres_id = :sagresId")
+    protected abstract fun updateDisciplineCode(sagresId: Long, codeDiscipline: String)
+
+    @Query("UPDATE Message SET html = :html WHERE sagres_id = :sagresId")
+    protected abstract fun updateHtmlParseStatus(sagresId: Long, html: Boolean)
+
+    @Query("UPDATE Message SET sender_profile = :senderProfile WHERE sagres_id = :sagresId")
+    protected abstract fun updateSenderProfile(sagresId: Long, senderProfile: Int)
+
+    @Query("UPDATE Message SET timestamp = :timestamp WHERE sagres_id = :sagresId")
+    protected abstract fun updateTimestamp(sagresId: Long, timestamp: Long)
+
     @Insert(onConflict = IGNORE)
     protected abstract fun insertIgnore(messages: List<Message>)
 
@@ -127,6 +156,9 @@ abstract class MessageDao {
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
     abstract fun getAllMessages(): LiveData<List<Message>>
+
+    @Query("SELECT * FROM Message ORDER BY timestamp DESC LIMIT 1")
+    abstract fun getLastMessage(): LiveData<Message?>
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
     abstract fun getAllMessagesPaged(): DataSource.Factory<Int, Message>

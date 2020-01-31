@@ -20,6 +20,8 @@
 
 package com.forcetower.uefs.core.injection
 
+import android.content.Context
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.injection.module.ActivityModule
 import com.forcetower.uefs.core.injection.module.AppModule
@@ -29,6 +31,10 @@ import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.SagresDataRepository
+import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
@@ -69,6 +75,12 @@ interface AppComponent {
         fun build(): AppComponent
     }
 
+    fun executors(): AppExecutors
+    fun context(): Context
+    fun coreDatabase(): UDatabase
+    fun dataRepository(): SagresDataRepository
+    fun appViewModelFactory(): UViewModelFactory
+
     fun inject(app: UApplication)
     fun inject(worker: SyncMainWorker)
     fun inject(worker: SyncLinkedWorker)
@@ -78,4 +90,5 @@ interface AppComponent {
     fun inject(worker: DisciplinesDetailsWorker)
     fun inject(worker: UploadImageToStorage)
     fun inject(worker: ProfileStatementWorker)
+    fun inject(worker: AnswerAffinityWorker)
 }

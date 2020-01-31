@@ -26,6 +26,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.UMessage
@@ -63,19 +64,23 @@ class MessagesRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         val access = database.accessDao().getAccessDirect()
         return if (profile != null && access != null) {
-            val messages = if (!profile.mocked)
+            val messages = if (!profile.mocked) {
+                SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
                 SagresNavigator.instance.messages(profile.sagresId, all)
-            else {
+            } else {
                 SagresNavigator.instance.login(access.username, access.password)
                 SagresNavigator.instance.messagesHtml()
             }
 
-            Timber.d("Profile status: ${profile.mocked}")
+            Timber.d("Profile mocked: ${profile.mocked}, ${profile.sagresId}, $all")
 
             if (messages.status == Status.SUCCESS) {
+                Timber.d("${messages.messages}")
                 messages.messages.defineInDatabase(database, true)
                 true
             } else {
+                Timber.d("${messages.status}")
+                Timber.d("${messages.throwable?.message}")
                 false
             }
         } else {

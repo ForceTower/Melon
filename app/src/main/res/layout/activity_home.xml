@@ -54,12 +54,5 @@
             app:menu="@menu/home_bottom_navigation"
             app:itemIconTint="@color/navigation_bottom_color"
             app:itemTextColor="@color/navigation_bottom_color"/>
-
-        <androidx.coordinatorlayout.widget.CoordinatorLayout
-            android:id="@+id/snack"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_gravity="bottom"
-            android:layout_marginBottom="68dp"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

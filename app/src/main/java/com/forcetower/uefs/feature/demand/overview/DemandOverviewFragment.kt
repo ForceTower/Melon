@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.databinding.ObservableFloat
 import androidx.lifecycle.Observer
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDemandOverviewBinding
 import com.forcetower.uefs.feature.demand.DemandViewModel

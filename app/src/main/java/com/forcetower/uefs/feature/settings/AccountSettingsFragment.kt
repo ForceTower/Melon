@@ -25,7 +25,7 @@ import android.os.Bundle
 import android.widget.Toast
 import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import javax.inject.Inject

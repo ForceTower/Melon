@@ -4,10 +4,9 @@ references:
     docker:
       - image: circleci/android:api-29
     working_directory: ~/unes
-    enviroment:
-      JVM_OPTS: -Xmx2586m
-      GRADLE_OPTS: "-Dorg.gradle.daemon=true -Dorg.gradle.workers.max=4"
-      TERM: dumb
+    environment:
+      JVM_OPTS: -Xmx2560m
+      GRADLE_OPTS: -Xmx2048m -XX:+HeapDumpOnOutOfMemoryError -Dorg.gradle.caching=true -Dorg.gradle.configureondemand=true -Dkotlin.compiler.execution.strategy=in-process -Dkotlin.incremental=false
 
 jobs:
   build:
@@ -19,19 +18,34 @@ jobs:
       - run:
           name: Decode Config Files
           command: |
-            echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
-            echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
-            echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
+            if [[ "${GOOGLE_SERVICES}" == "" ]]
+            then
+              mv ~/unes/app/google-services-mock.json ~/unes/app/google-services.json
+            else
+              echo $GOOGLE_SERVICES | base64 --decode > ~/unes/app/google-services.json
+            fi
+
+            if [[ "${PLAY_PUBLISHER}" != "" ]]
+            then
+              echo $PLAY_PUBLISHER | base64 --decode > ~/unes/unes_uefs_publisher.json
+            fi
+
+            if [[ "${APP_SIGNATURE}" != "" ]]
+            then
+              echo $APP_SIGNATURE | base64 --decode > ~/unes/sign.jks
+            else
+              mv ~/unes/sign_mock ~/unes/sign.jks
+            fi
       
       - run: 
           name: Downloading Dependencies
           command: |
-            ./gradlew dependencies --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew dependencies --no-daemon
             
       - run:
           name: Run JVM Checks & Lint
           command: |
-            ./gradlew clean check --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+            ./gradlew clean check --no-daemon
 
       - run:
           name: Save Lint Results
@@ -43,10 +57,10 @@ jobs:
             if [[ "${CIRCLE_BRANCH}" == "development" ]]
             then
               echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              ./gradlew publishReleaseBundle --no-daemon
             else
-              echo "Starting a debug build"
-              ./gradlew :app:assembleRelease --no-daemon -Dkotlin.compiler.execution.strategy=in-proces
+              echo "Starting a release build"
+              ./gradlew :app:assembleRelease --no-daemon
             fi
 
       - store_artifacts:

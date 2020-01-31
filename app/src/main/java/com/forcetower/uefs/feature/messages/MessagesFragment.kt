@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.messages
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -30,13 +31,16 @@ import androidx.appcompat.app.AlertDialog
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.util.getLinks
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
+import com.forcetower.uefs.feature.messages.dynamic.AERIMessageFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
@@ -57,20 +61,20 @@ class MessagesFragment : UFragment(), Injectable {
 
     @Inject
     lateinit var factory: UViewModelFactory
+    @Inject
+    lateinit var preferences: SharedPreferences
 
     private lateinit var binding: FragmentAllMessagesBinding
     private lateinit var profileViewModel: ProfileViewModel
-    private lateinit var messagesViewModel: MessagesViewModel
+    private val messagesViewModel: MessagesViewModel by activityViewModels { factory }
     private lateinit var homeViewModel: HomeViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         profileViewModel = provideActivityViewModel(factory)
-        messagesViewModel = provideActivityViewModel(factory)
         homeViewModel = provideActivityViewModel(factory)
 
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
-            messagesViewModel = this@MessagesFragment.messagesViewModel
             lifecycleOwner = this@MessagesFragment
         }
 
@@ -89,10 +93,14 @@ class MessagesFragment : UFragment(), Injectable {
         tabLayout.addOnTabSelectedListener(TabLayout.ViewPagerOnTabSelectedListener(binding.pagerMessage))
         binding.pagerMessage.addOnPageChangeListener(TabLayout.TabLayoutOnPageChangeListener(tabLayout))
 
-        val sagres = SagresMessagesFragment()
-        val unes = UnesMessagesFragment()
+        val fragments = mutableListOf<UFragment>()
+        fragments += SagresMessagesFragment()
+        fragments += UnesMessagesFragment()
+        if (preferences.isStudentFromUEFS() && preferences.getBoolean("stg_advanced_aeri_tab", true)) {
+            fragments += AERIMessageFragment()
+        }
 
-        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, listOf(sagres, unes))
+        binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

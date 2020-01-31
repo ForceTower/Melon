@@ -40,7 +40,7 @@ import androidx.navigation.fragment.findNavController
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.injection.Injectable
+import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.util.fromJson
