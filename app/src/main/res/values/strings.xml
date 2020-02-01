@@ -82,7 +82,7 @@
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena (Seará)</string>
     <string name="about_unes_2" translatable="false">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
-    <string name="about_unes_3">Espero que gostem</string>
+    <string name="about_unes_3">Versão %1$s - Código %2$d</string>
     <string name="acc_contributor_image">Imagem do contribuidor</string>
     <string name="acc_developer_image">Imagem do Desenvolvedor</string>
     <string name="acc_user_image">Imagem de Usuário</string>

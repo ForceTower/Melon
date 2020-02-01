@@ -132,8 +132,12 @@ android {
 }
 
 play {
+    def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
+    def publishTrack = "internal"
+    if (branch == "master") publishTrack = "production"
+
     serviceAccountCredentials rootProject.file("unes_uefs_publisher.json")
-    track "internal"
+    track publishTrack
     defaultToAppBundles true
 }
 
