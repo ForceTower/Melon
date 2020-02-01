@@ -6,17 +6,17 @@ ext {
 
             def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
 
-            def postfix = "release"
-            // def adder = 0
+            def postfix = "main"
+            def adder = 0
             if (branch == "development") {
-                // adder = 100000
-                postfix = "testing"
+                adder = 10000
+                postfix = "beta"
             }
 
             (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
 
             def name = "${major}.${minor}.${patch}.${commit_count}.rev-${postfix}"
-            def code = (21 * 100000) + commit_count // + adder
+            def code = (21 * 100000) + commit_count + adder
             return [code, name]
         } catch (Exception ignored) {
             System.err.println("No git installed on the machine or not on a git repo. UNES will not automate version name and code")
