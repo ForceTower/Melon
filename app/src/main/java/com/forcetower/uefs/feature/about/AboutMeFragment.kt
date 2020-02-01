@@ -34,6 +34,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -57,7 +58,7 @@ class AboutMeFragment : UFragment(), Injectable {
         about1.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val about2 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_2), binding.textAboutContinuation, null))
         about2.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val about3 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_3), binding.textAboutContinuation, null))
+        val about3 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_3, BuildConfig.VERSION_NAME, BuildConfig.VERSION_CODE), binding.textAboutContinuation, null))
         about3.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about3.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         HtmlUtils.setTextWithNiceLinks(binding.textAboutDescription, about0)
@@ -65,11 +66,11 @@ class AboutMeFragment : UFragment(), Injectable {
         HtmlUtils.setTextWithNiceLinks(binding.textAboutContinuation, sequence)
 
         GlideApp.with(this)
-                .load("https://avatars.githubusercontent.com/ForceTower")
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .circleCrop()
-                .into(binding.imageCreatorPicture)
+            .load("https://avatars.githubusercontent.com/ForceTower")
+            .fallback(R.mipmap.ic_unes_large_image_512)
+            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .circleCrop()
+            .into(binding.imageCreatorPicture)
     }
 }
