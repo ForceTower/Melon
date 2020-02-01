@@ -252,4 +252,11 @@ dependencies {
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
 }
 
+
+afterEvaluate {
+    tasks.named("publishReleaseBundle").configure {
+        mustRunAfter("buildNotes")
+    }
+}
+
 apply plugin: 'com.google.gms.google-services'
