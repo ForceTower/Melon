@@ -1,5 +1,0 @@
-Este update vai alegrar algumas pessoas.
-Acho que uma das partes mais difíceis na construção do UNES é que eu faço ele baseado no meu portal, logo não consigo testar todos os casos existentes, mas tento =D
-
-Correções Bombásticas:
-* A partir deste update, as pessoas que alternaram entre Bacharelado e Licenciatura vão conseguir ver as notas e faltas no aplicativo. [Obrigado Letruska e Lucas]
