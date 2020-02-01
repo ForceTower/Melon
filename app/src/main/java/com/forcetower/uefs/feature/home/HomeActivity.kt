@@ -324,7 +324,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             analytics.setUserId(access.username)
             analytics.setUserProperty("institution", SagresNavigator.instance.getSelectedInstitution())
             analytics.setUserProperty("access_valid", "${access.valid}")
-            SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
+            SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
 
             if (!access.valid) {
                 val snack = Snackbar.make(binding.root, R.string.invalid_access_snack, Snackbar.LENGTH_INDEFINITE)

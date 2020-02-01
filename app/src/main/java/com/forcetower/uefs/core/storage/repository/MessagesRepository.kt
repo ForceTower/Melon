@@ -65,7 +65,7 @@ class MessagesRepository @Inject constructor(
         val access = database.accessDao().getAccessDirect()
         return if (profile != null && access != null) {
             val messages = if (!profile.mocked) {
-                SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
+                SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
                 SagresNavigator.instance.messages(profile.sagresId, all)
             } else {
                 SagresNavigator.instance.login(access.username, access.password)

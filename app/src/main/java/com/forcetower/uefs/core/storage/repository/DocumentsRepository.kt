@@ -90,6 +90,8 @@ class DocumentsRepository @Inject constructor(
                     Document.FLOWCHART -> SagresNavigator.instance.downloadFlowchart(File(folder, document.value))
                     Document.HISTORY -> SagresNavigator.instance.downloadHistory(File(folder, document.value))
                 }
+                Timber.d("Response message ${response.message}")
+                Timber.d(response.throwable, "Hum...")
 
                 database.documentDao().run {
                     updateDownloading(false, document.value)
