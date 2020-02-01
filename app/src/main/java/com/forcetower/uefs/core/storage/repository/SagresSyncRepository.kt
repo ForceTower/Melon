@@ -165,7 +165,7 @@ class SagresSyncRepository @Inject constructor(
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
-        SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password))
+        SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
 
         if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
             try {
