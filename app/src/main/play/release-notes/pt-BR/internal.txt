@@ -1,5 +1,0 @@
-O Horário da SIECOMP está quase completo, faltam alguns detalhes.
-Mas, e possível ver todas as sessões (as desse semestre serão colocadas em breve)
-
-Falta a implementação da notificação quando alguma coisa de uma sessão for modificada, neste caso vou precisar pensar se continuarei com este data source, ou migrarei tudo para o Firestore :)
-Falta a implementação do painel administrativo disso, pq né...
