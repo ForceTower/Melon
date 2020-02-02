@@ -76,7 +76,8 @@
     <string name="label_terms_and_conditions_p2">[Terms of Service](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md) and the [Privacy Policy](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md)</string>
     <string name="about_unes_0">UNES is a tool to help students during the academic live. UNES will periodically fetch the data available at the [Sagres Portal] (http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">UNES was developed by João Paulo Sena (Seará)</string>
-    <string name="about_unes_3">Hope you like it</string>
+    <string name="about_unes_3">Version %1$s</string>
+    <string name="about_unes_4">Code %1$d</string>
     <string name="acc_contributor_image">Contributor image</string>
     <string name="acc_developer_image">Developer image</string>
     <string name="acc_user_image">User image</string>

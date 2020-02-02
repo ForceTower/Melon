@@ -31,7 +31,9 @@ import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.forcetower.core.interfaces.notification.NotifyMessage
+import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.oversee.Oversee
+import timber.log.Timber
 import javax.inject.Inject
 
 class AERIRepository @Inject constructor(
@@ -39,7 +41,16 @@ class AERIRepository @Inject constructor(
     private val database: AERIDatabase,
     private val executors: AppExecutors
 ) {
-    private val notificationTitle = context.getString(R.string.aeri_notification_title)
+    private val notificationTitle: String
+    init {
+        val success = SplitCompat.install(context)
+        notificationTitle = if (!success) {
+            Timber.e("Failed to install split compat")
+            "AERI"
+        } else {
+            context.getString(R.string.aeri_notification_title)
+        }
+    }
 
     fun refreshNewsAsync(): LiveData<Boolean> {
         val result = MutableLiveData<Boolean>()

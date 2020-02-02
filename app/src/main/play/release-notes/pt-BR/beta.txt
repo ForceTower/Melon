@@ -1,8 +1,0 @@
-Doações e compras.
-
-Sim, o UNES agora tem um lojinha.
-Nesta lojinha poderemos comprar coisas com o gold gerado pelas nossas conquistas e com cash.
-
-No momento só tem coisa com cash, porque era o mais fácil de implementar e quero dinheiro e somente um item tem efeito.
-
-Futuramente será vendido o tema escuro nessa loja, claro, um numero limitado.

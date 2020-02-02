@@ -36,6 +36,7 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import org.threeten.bp.ZonedDateTime
@@ -67,6 +68,7 @@ object NetworkModule {
     @JvmStatic
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
+            .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
             .followRedirects(true)
             .cookieJar(cookieJar)
             .connectTimeout(1, TimeUnit.MINUTES)

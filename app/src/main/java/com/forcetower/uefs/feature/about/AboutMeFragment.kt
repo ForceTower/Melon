@@ -34,6 +34,7 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -52,24 +53,27 @@ class AboutMeFragment : UFragment(), Injectable {
     }
 
     private fun setupInterface() {
-        val about0 = markdown.markdownToSpannable(getString(R.string.about_unes_0), binding.textAboutDescription, null)
+        val about0 = SpannableString(markdown.markdownToSpannable(getString(R.string.about_unes_0), binding.textAboutDescription, null))
+        about0.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about0.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val about1 = SpannableString(getString(R.string.about_unes_1))
         about1.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val about2 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_2), binding.textAboutContinuation, null))
         about2.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val about3 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_3), binding.textAboutContinuation, null))
+        val about3 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_3, BuildConfig.VERSION_NAME), binding.textAboutContinuation, null))
         about3.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about3.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+        val about4 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_4, BuildConfig.VERSION_CODE), binding.textAboutContinuation, null))
+        about4.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about4.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         HtmlUtils.setTextWithNiceLinks(binding.textAboutDescription, about0)
-        val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", about3)
+        val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", about3, "\n", about4)
         HtmlUtils.setTextWithNiceLinks(binding.textAboutContinuation, sequence)
 
         GlideApp.with(this)
-                .load("https://avatars.githubusercontent.com/ForceTower")
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .circleCrop()
-                .into(binding.imageCreatorPicture)
+            .load("https://avatars.githubusercontent.com/ForceTower")
+            .fallback(R.mipmap.ic_unes_large_image_512)
+            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .circleCrop()
+            .into(binding.imageCreatorPicture)
     }
 }
