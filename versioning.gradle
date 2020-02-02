@@ -2,23 +2,21 @@ ext {
     buildVersion = {
         try {
             def commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
+            def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
 
-            def postfix = "[release]"
             def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
-            if (patch.endsWith("dev")) {
-                patch = patch.replaceAll("[^0-9]", "")
-                postfix = "[development]"
-            } else {
-                if (patch.endsWith("pr")) {
-                    patch = patch.replaceAll("[^0-9]", "")
-                    postfix = "[pre-release]"
-                }
+
+            def postfix = "main"
+            def adder = 0
+            if (branch == "development") {
+                adder = 10000
+                postfix = "beta"
             }
 
             (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
 
-            def name = "${major}.${minor}.${patch}.${commit_count} ${postfix}"
-            def code = (21 * 100000) + commit_count
+            def name = "${major}.${minor}.${patch}.${commit_count}.rev-${postfix}"
+            def code = (21 * 100000) + commit_count + adder
             return [code, name]
         } catch (Exception ignored) {
             System.err.println("No git installed on the machine or not on a git repo. UNES will not automate version name and code")
