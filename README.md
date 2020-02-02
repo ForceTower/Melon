@@ -13,6 +13,9 @@ Com o tempo, ele se tornou um pouco mais que isso, mas notificações e acesso o
 
 Contribuições para o projeto são muito bem vindas e qualquer dúvida, erro, sugestão de feature ou melhoria de código basta colocar nas issues e tento resolver :v
 
+### Está querendo ver o código antigo e ter nostalgias?
+Você pode encontrar o UNES v0.0.1-alpha0 [neste repositório](https://github.com/ForceTower/Pineapple). Até onde sei, ele precisa de uma atualização nas constantes, mas ainda deve executar bem.
+
 ### Compilando o Melon
 Para um guia detalhado sobre como compilar o aplicativo e testar você mesmo, visite o [guia de contribuição](https://github.com/ForceTower/Melon/blob/development/CONTRIBUTING.md#preparação-do-projeto-unes-melon)
 
@@ -32,7 +35,7 @@ Apesar do foco do aplicativo ser a Universidade Estadual de Feira de Santana (UE
 Para adicionar suporte a outras universidades/faculdades basta adicionar os endereços base nas [constantes](https://github.com/ForceTower/Juice/blob/unsuspended/src/main/kotlin/com/forcetower/sagres/Constants.kt) do aplicativo.
 
 ### Adicionando uma mensagem nova ao login
-Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento de coisas.
+Você tambem pode contribuir com o projeto colocando uma mensagem aleatória que será exibida durante o carregamento dos dados iniciais.
 Você pode editar o arquivo [login_messages.json](https://github.com/ForceTower/Melon/blob/development/app/src/main/assets/login_messages.json) e mandar o seu PR :)
 
 As suas mensagens serão avaliadas e se aprovadas elas poderão aparecer no aplicativo!

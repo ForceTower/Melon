@@ -104,7 +104,7 @@ class LoginSagresRepository @Inject constructor(
 
     @MainThread
     private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
-        SagresNavigator.instance.putCredentials(SagresCredential(username, password))
+        SagresNavigator.instance.putCredentials(SagresCredential(username, password, SagresNavigator.instance.getSelectedInstitution()))
         val source = SagresNavigator.instance.aLogin(username, password).toLiveData()
         currentStep.value = createStep(R.string.step_logging_in)
         data.addSource(source) { l ->
