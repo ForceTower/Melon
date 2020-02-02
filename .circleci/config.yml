@@ -54,7 +54,7 @@ jobs:
       - run:
           name: Build App or Publish
           command: |
-            if [[ "${CIRCLE_BRANCH}" == "development" ] || [ "${CIRCLE_BRANCH}" == "master" ]]
+            if [ "${CIRCLE_BRANCH}" == "development" ] || [ "${CIRCLE_BRANCH}" == "master" ]
             then
               echo "Starting the publish build!"
               ./gradlew publishReleaseBundle --no-daemon
