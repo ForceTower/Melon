@@ -33,7 +33,6 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.core.view.get
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
@@ -172,7 +171,9 @@ class HomeBottomFragment : UFragment(), Injectable {
                 .descriptionTextColorInt(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorOnPrimary)),
             object : TapTargetView.Listener() {
                 override fun onTargetClick(view: TapTargetView) {
-                    findNavController().navigate(R.id.theme_switcher)
+                    try {
+                        findNavController().navigate(R.id.theme_switcher)
+                    } catch (ignored: Throwable) {}
                     view.dismiss(true)
                 }
             }
