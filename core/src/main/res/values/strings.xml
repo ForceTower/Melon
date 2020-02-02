@@ -34,4 +34,7 @@
 
     <string name="mtrl_background_black">Preto</string>
     <string name="mtrl_background_dark">Escuro</string>
+
+    <string name="dynamic_feature_fail">Erro na função dinâmica</string>
+    <string name="dynamic_feature_error_description">Parece que o seu dispositivo não joga muito bem com coisas novas chegando sob demanda, hum...</string>
 </resources>
