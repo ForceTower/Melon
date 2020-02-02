@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -53,20 +54,30 @@ class AERINewsFragment : UFragment() {
         SplitCompat.install(context)
         val component = (context.applicationContext as UApplication).component
         DaggerAERIComponent.builder().appComponent(component).build().inject(this)
-        Timber.d("Factory initialized? ${::factory.isInitialized}")
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentAeriNewsBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.apply {
-            messagesViewModel = viewModel
-            lifecycleOwner = this@AERINewsFragment
-        }.root
+        try {
+            return FragmentAeriNewsBinding.inflate(inflater, container, false).also {
+                binding = it
+            }.apply {
+                messagesViewModel = viewModel
+                lifecycleOwner = this@AERINewsFragment
+            }.root
+        } catch (error: Throwable) {
+            AlertDialog.Builder(requireContext())
+                .setTitle(com.forcetower.core.R.string.dynamic_feature_fail)
+                .setMessage(com.forcetower.core.R.string.dynamic_feature_error_description)
+                .create()
+                .show()
+            Timber.e(error, "Failed inflating layout")
+            return null
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (!::binding.isInitialized) return
         val adapter = AERIMessagesAdapter(viewModel)
         binding.apply {
             recyclerNews.adapter = adapter

@@ -33,4 +33,7 @@
     <string name="mtrl_blue_grey">Blue grey</string>
     <string name="mtrl_background_black">Black</string>
     <string name="mtrl_background_dark">Dark</string>
+
+    <string name="dynamic_feature_fail">Dynamic Feature error</string>
+    <string name="dynamic_feature_error_description">It seems like your device does not like when things get added dynamically</string>
 </resources>

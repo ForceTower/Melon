@@ -107,6 +107,7 @@ class ScheduleFragment : UFragment(), Injectable {
 
             if (VersionUtils.isMarshmallow()) {
                 layoutData.setOnScrollChangeListener { _, _, _, _, _ ->
+                    if (isDetached || !isAdded) return@setOnScrollChangeListener
                     if (layoutData.scrollY > 0)
                         appBar.elevation = getPixelsFromDp(requireContext(), 4)
                     else
