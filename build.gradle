@@ -151,25 +151,4 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task buildNotes {
-    doFirst {
-        try {
-            def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
-            if (branch == "master") {
-                def lastTag = "git describe --abbrev=0".execute([], project.rootDir).text.trim()
-                def tagMessage = "git tag -l --format=%(contents) ${lastTag}".execute([], project.rootDir).text.trim()
-                def production = new File(project.rootDir, "app/src/main/play/release-notes/pt-BR/production.txt")
-                production.text = tagMessage
-            } else if (branch == "development") {
-                def message = "git log -1 --pretty=%B".execute([], project.rootDir).text.trim().split(":").reverse()[0]
-                def internal = new File(project.rootDir, "app/src/main/play/release-notes/pt-BR/internal.txt")
-                internal.text = message
-            }
-        } catch (Exception ignored) {
-            System.err.println("No git installed on the machine or not on a git repo. UNES will not generate release notes")
-        }
-    }
-}
-
-
 apply from: "versioning.gradle"
