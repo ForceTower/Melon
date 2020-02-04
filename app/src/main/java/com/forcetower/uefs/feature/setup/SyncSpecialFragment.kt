@@ -20,17 +20,21 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import java.util.Locale
@@ -70,6 +74,15 @@ class SyncSpecialFragment : UFragment(), Injectable {
             } else {
                 analytics.logEvent("open_special_settings_failed", bundle)
             }
+        }
+        binding.labelAutoStartPath.setOnClickListener {
+            CustomTabActivityHelper.openCustomTab(
+                requireActivity(),
+                CustomTabsIntent.Builder()
+                    .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                    .addDefaultShareMenuItem()
+                    .build(),
+                Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}"))
         }
     }
 }
