@@ -274,7 +274,7 @@ task buildNotes {
 
 afterEvaluate {
     tasks.named("publishReleaseBundle").configure {
-        mustRunAfter("buildNotes")
+        dependsOn("buildNotes")
     }
 }
 

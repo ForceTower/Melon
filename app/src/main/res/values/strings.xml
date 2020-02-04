@@ -817,4 +817,6 @@
     <string name="unes_choose_color_background">Cor de fundo</string>
     <string name="label_theme_editor">Editor de tema</string>
     <string name="label_theme_editor_description">Agora você pode usar as cores que quiser no aplicativo</string>
+    <string name="extra_config">Configurações Adicionais</string>
+    <string name="auto_start_text">Auto inicialização</string>
 </resources>

@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -34,6 +35,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import java.util.Locale
 import javax.inject.Inject
 
 class ConfigurationFragment : UFragment(), Injectable {
@@ -73,7 +75,11 @@ class ConfigurationFragment : UFragment(), Injectable {
 
     private fun decideNext() {
         val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireContext())
-        if (autoStart) {
+        val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+            "samsung" -> true
+            else -> false
+        }
+        if (autoStart || brands) {
             findNavController().navigate(R.id.action_configuration_to_special)
         } else {
             findNavController().navigate(R.id.action_configuration_to_home)
