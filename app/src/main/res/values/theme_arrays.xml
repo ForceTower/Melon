@@ -64,6 +64,7 @@
         <item>@string/mtrl_brown</item>
         <item>@string/mtrl_grey</item>
         <item>@string/mtrl_blue_grey</item>
+        <item>@string/mtrl_pink</item> 
     </array>
 
     <array name="material_background_content_description">
