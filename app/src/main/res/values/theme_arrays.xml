@@ -31,6 +31,7 @@
         <item>@style/ThemeOverlay.PrimaryPalette.Brown</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Grey</item>
         <item>@style/ThemeOverlay.PrimaryPalette.BlueGrey</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Pink</item>
     </array>
 
     <array name="material_secondary_palettes">
@@ -44,6 +45,7 @@
         <item>@style/ThemeOverlay.SecondaryPalette.Brown</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Grey</item>
         <item>@style/ThemeOverlay.SecondaryPalette.BlueGrey</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Pink</item>
     </array>
 
     <array name="material_background_palettes">
