@@ -69,4 +69,9 @@
         <item name="colorAccent">#546e7a</item>
         <item name="colorSecondary">#546e7a</item>
     </style>
+
+    <style name="ThemeOverlay.SecondaryPalette.Pink" parent="">
+        <item name="colorAccent">#EC407A</item>
+        <item name="colorSecondary">#EC407A</item>
+    </style>
 </resources>
