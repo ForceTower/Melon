@@ -35,6 +35,7 @@ import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.widget.CompoundButtonCompat
+import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
@@ -69,7 +70,7 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
             R.id.theme_feature_secondary_color
         )
 
-        if (themePreferencesManager.currentThemeId == R.id.theme_light) {
+        if (!requireContext().isDarkTheme) {
             binding.backgroundColors.visibility = GONE
             binding.labelBackground.visibility = GONE
         } else {
