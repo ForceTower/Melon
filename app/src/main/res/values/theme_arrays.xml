@@ -22,6 +22,7 @@
 <resources>
     <array name="material_primary_palettes">
         <item>@style/ThemeOverlay.PrimaryPalette.Red</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Pink</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Purple</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Indigo</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Blue</item>
@@ -31,11 +32,11 @@
         <item>@style/ThemeOverlay.PrimaryPalette.Brown</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Grey</item>
         <item>@style/ThemeOverlay.PrimaryPalette.BlueGrey</item>
-        <item>@style/ThemeOverlay.PrimaryPalette.Pink</item>
     </array>
 
     <array name="material_secondary_palettes">
         <item>@style/ThemeOverlay.SecondaryPalette.Red</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Pink</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Purple</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Indigo</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Blue</item>
@@ -45,7 +46,6 @@
         <item>@style/ThemeOverlay.SecondaryPalette.Brown</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Grey</item>
         <item>@style/ThemeOverlay.SecondaryPalette.BlueGrey</item>
-        <item>@style/ThemeOverlay.SecondaryPalette.Pink</item>
     </array>
 
     <array name="material_background_palettes">
@@ -55,6 +55,7 @@
 
     <array name="material_palettes_content_description">
         <item>@string/mtrl_red</item>
+        <item>@string/mtrl_pink</item>
         <item>@string/mtrl_purple</item>
         <item>@string/mtrl_indigo</item>
         <item>@string/mtrl_blue</item>
@@ -64,7 +65,6 @@
         <item>@string/mtrl_brown</item>
         <item>@string/mtrl_grey</item>
         <item>@string/mtrl_blue_grey</item>
-        <item>@string/mtrl_pink</item> 
     </array>
 
     <array name="material_background_content_description">
