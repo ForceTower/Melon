@@ -80,7 +80,7 @@
             <View
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:background="?attr/colorPrimaryLight"
+                android:background="?attr/colorPrimaryDark"
                 android:alpha="0.6"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -221,12 +221,6 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/label_top_class_indicator" />
-
-            <androidx.constraintlayout.widget.Group
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                tools:visibility="gone"
-                app:constraint_referenced_ids="label_top_no_class_indicator,info_no_class,no_class_image"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
     </com.google.android.material.card.MaterialCardView>
