@@ -24,28 +24,44 @@
         <item>@style/ThemeOverlay.PrimaryPalette.Red</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Pink</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Purple</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.DeepPurple</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Indigo</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Blue</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.LightBlue</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Cyan</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Teal</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Green</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.LightGreen</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Lime</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Yellow</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Amber</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Orange</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.DeepOrange</item>
         <item>@style/ThemeOverlay.PrimaryPalette.Brown</item>
-        <item>@style/ThemeOverlay.PrimaryPalette.Grey</item>
-        <item>@style/ThemeOverlay.PrimaryPalette.BlueGrey</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.Gray</item>
+        <item>@style/ThemeOverlay.PrimaryPalette.BlueGray</item>
     </array>
 
     <array name="material_secondary_palettes">
         <item>@style/ThemeOverlay.SecondaryPalette.Red</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Pink</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Purple</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.DeepPurple</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Indigo</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Blue</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.LightBlue</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Cyan</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Teal</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Green</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.LightGreen</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Lime</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Yellow</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Amber</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Orange</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.DeepOrange</item>
         <item>@style/ThemeOverlay.SecondaryPalette.Brown</item>
-        <item>@style/ThemeOverlay.SecondaryPalette.Grey</item>
-        <item>@style/ThemeOverlay.SecondaryPalette.BlueGrey</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.Gray</item>
+        <item>@style/ThemeOverlay.SecondaryPalette.BlueGray</item>
     </array>
 
     <array name="material_background_palettes">
@@ -54,17 +70,25 @@
     </array>
 
     <array name="material_palettes_content_description">
-        <item>@string/mtrl_red</item>
-        <item>@string/mtrl_pink</item>
-        <item>@string/mtrl_purple</item>
-        <item>@string/mtrl_indigo</item>
-        <item>@string/mtrl_blue</item>
-        <item>@string/mtrl_green</item>
-        <item>@string/mtrl_yellow</item>
-        <item>@string/mtrl_orange</item>
-        <item>@string/mtrl_brown</item>
-        <item>@string/mtrl_grey</item>
-        <item>@string/mtrl_blue_grey</item>
+        <item>@string/generated_material_red</item>
+        <item>@string/generated_material_pink</item>
+        <item>@string/generated_material_purple</item>
+        <item>@string/generated_material_deep_purple</item>
+        <item>@string/generated_material_indigo</item>
+        <item>@string/generated_material_blue</item>
+        <item>@string/generated_material_light_blue</item>
+        <item>@string/generated_material_cyan</item>
+        <item>@string/generated_material_teal</item>
+        <item>@string/generated_material_green</item>
+        <item>@string/generated_material_light_green</item>
+        <item>@string/generated_material_lime</item>
+        <item>@string/generated_material_yellow</item>
+        <item>@string/generated_material_amber</item>
+        <item>@string/generated_material_orange</item>
+        <item>@string/generated_material_deep_orange</item>
+        <item>@string/generated_material_brown</item>
+        <item>@string/generated_material_gray</item>
+        <item>@string/generated_material_blue_gray</item>
     </array>
 
     <array name="material_background_content_description">
