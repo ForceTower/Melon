@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.themeswitcher
 
+import android.app.Dialog
 import android.content.Context
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -29,6 +30,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import android.widget.RadioGroup
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
@@ -39,7 +41,10 @@ import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
@@ -47,6 +52,22 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
     lateinit var resourceProvider: ThemeSwitcherResourceProvider
     private lateinit var binding: FragmentThemeSwitcherBinding
     private lateinit var themePreferencesManager: ThemePreferencesManager
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val sheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        try {
+            sheetDialog.setOnShowListener {
+                val bottomSheet = sheetDialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)!!
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.skipCollapsed = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        } catch (t: Throwable) {
+            Timber.d(t, "Hum...")
+        }
+        return sheetDialog
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         binding = FragmentThemeSwitcherBinding.inflate(inflater, container, false)
