@@ -49,12 +49,12 @@
         android:entries="@array/settings_ntf_grade_spoiler_titles"
         android:entryValues="@array/settings_ntf_grade_spoiler_values"/>
 
-    <SwitchPreference
-        app:key="stg_night_mode_menu"
-        app:defaultValue="true"
-        app:title="@string/settings_theme_menu"
-        app:summaryOn="@string/settings_theme_menu_desc_enabled"
-        app:summaryOff="@string/settings_theme_menu_desc_disabled"/>
+<!--    <SwitchPreference-->
+<!--        app:key="stg_night_mode_menu"-->
+<!--        app:defaultValue="true"-->
+<!--        app:title="@string/settings_theme_menu"-->
+<!--        app:summaryOn="@string/settings_theme_menu_desc_enabled"-->
+<!--        app:summaryOff="@string/settings_theme_menu_desc_disabled"/>-->
 
     <SwitchPreference
         app:key="stg_show_empty_day_schedule"
