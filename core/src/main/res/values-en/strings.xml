@@ -22,6 +22,7 @@
 <resources>
     <string name="evaluation_welcome">Welcome back, %1$s</string>
     <string name="mtrl_red">Red</string>
+    <string name="mtrl_pink">Pink</string>
     <string name="mtrl_purple">Purple</string>
     <string name="mtrl_indigo">Indigo</string>
     <string name="mtrl_blue">Blue</string>

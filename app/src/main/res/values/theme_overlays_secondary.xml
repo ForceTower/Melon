@@ -25,6 +25,11 @@
         <item name="colorSecondary">#e53935</item>
     </style>
 
+    <style name="ThemeOverlay.SecondaryPalette.Pink" parent="">
+        <item name="colorAccent">#EC407A</item>
+        <item name="colorSecondary">#EC407A</item>
+    </style>
+
     <style name="ThemeOverlay.SecondaryPalette.Purple" parent="">
         <item name="colorAccent">#8e24aa</item>
         <item name="colorSecondary">#8e24aa</item>
@@ -68,10 +73,5 @@
     <style name="ThemeOverlay.SecondaryPalette.BlueGrey" parent="">
         <item name="colorAccent">#546e7a</item>
         <item name="colorSecondary">#546e7a</item>
-    </style>
-
-    <style name="ThemeOverlay.SecondaryPalette.Pink" parent="">
-        <item name="colorAccent">#EC407A</item>
-        <item name="colorSecondary">#EC407A</item>
     </style>
 </resources>
