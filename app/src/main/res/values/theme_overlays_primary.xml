@@ -34,6 +34,13 @@
         <item name="colorPrimaryAlpha">#19e53935</item>
     </style>
 
+    <style name="ThemeOverlay.PrimaryPalette.Pink" parent="">
+        <item name="colorPrimary">#EC407A</item>
+        <item name="colorPrimaryDark">#D81b60</item>
+        <item name="colorPrimaryLight">#f48fb1</item>
+        <item name="colorPrimaryAlpha">#19EC407A</item>
+    </style>
+
     <style name="ThemeOverlay.PrimaryPalette.Purple" parent="">
         <item name="colorPrimary">#8e24aa</item>
         <item name="colorPrimaryDark">#5c007a</item>
@@ -95,12 +102,5 @@
         <item name="colorPrimaryDark">#29434e</item>
         <item name="colorPrimaryLight">#606F7A</item>
         <item name="colorPrimaryAlpha">#19546e7a</item>
-    </style>
-
-    <style name="ThemeOverlay.PrimaryPalette.Pink" parent="">
-        <item name="colorPrimary">#EC407A</item>
-        <item name="colorPrimaryDark">#D81b60</item>
-        <item name="colorPrimaryLight">#f48fb1</item>
-        <item name="colorPrimaryAlpha">#19EC407A</item>
     </style>
 </resources>

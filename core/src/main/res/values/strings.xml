@@ -22,6 +22,7 @@
     <string name="evaluation_welcome">Bem vindo de volta, %1$s</string>
 
     <string name="mtrl_red">Vermelho</string>
+    <string name="mtrl_pink">Rosa</string>
     <string name="mtrl_purple">Roxo</string>
     <string name="mtrl_indigo">Indigo</string>
     <string name="mtrl_blue">Azul</string>
