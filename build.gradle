@@ -151,4 +151,13 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+
+subprojects {
+    tasks.whenTaskAdded {
+        if (name == 'preBuild') {
+            mustRunAfter 'lintKotlin'
+        }
+    }
+}
+
 apply from: "versioning.gradle"
