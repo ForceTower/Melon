@@ -18,35 +18,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-apply plugin: 'com.android.library'
+apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
+apply plugin: 'org.jmailen.kotlinter'
 
 android {
     compileSdkVersion 29
-    buildToolsVersion "29.0.2"
-
 
     defaultConfig {
         minSdkVersion 21
         targetSdkVersion 29
-        versionCode 1
-        versionName "1.0"
-
-        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        consumerProguardFiles 'consumer-rules.pro'
+        def (code, name) = buildVersion()
+        versionCode code
+        versionName name
     }
 
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+    kapt {
+        correctErrorTypes true
+        javacOptions {
+            option("-Xmaxerrs", 1000)
         }
-    }
-
-    dataBinding {
-        enabled true
     }
 
     compileOptions {
@@ -58,15 +51,18 @@ android {
         jvmTarget = "1.8"
     }
 
+    dataBinding {
+        enabled true
+    }
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:$kotlin_version"
+    implementation project(':app')
+    implementation project(':core')
 
-    // TODO Remove this dep
-    implementation "com.github.forcetower:juice:$sagres"
+    // Kotlin
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
@@ -75,21 +71,23 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.palette:palette:$pallete"
-    implementation "androidx.browser:browser:$browser"
-    implementation "androidx.preference:preference:$preference"
-    implementation "com.google.android:flexbox:$flexbox"
-    implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
 
-    implementation "com.jakewharton.timber:timber:$timber"
+    // Lifecycle
+    implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
+    // Navigation
     implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
+    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
 
-    // Image
-    implementation "com.github.bumptech.glide:glide:$glide"
-    kapt "com.github.bumptech.glide:compiler:$glide"
+    // Room
+    implementation "androidx.room:room-runtime:$room"
+    kapt "androidx.room:room-compiler:$room"
+    implementation "androidx.room:room-ktx:$room"
 
     // Dependency injection
     implementation "com.google.dagger:dagger:$dagger"
@@ -97,4 +95,11 @@ dependencies {
     implementation "com.google.dagger:dagger-android:$dagger"
     implementation "com.google.dagger:dagger-android-support:$dagger"
     kapt "com.google.dagger:dagger-android-processor:$dagger"
+
+    // Logs
+    implementation "com.jakewharton.timber:timber:$timber"
+
+    // DateTime
+    implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
+
 }
