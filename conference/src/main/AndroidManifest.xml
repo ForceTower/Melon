@@ -33,7 +33,8 @@
     </dist:module>
 
     <application tools:ignore="AllowBackup,MissingApplicationIcon">
-        <activity android:name=".feature.ConferenceActivity">
+        <activity android:name=".ConferenceActivity"
+            android:theme="@style/UTheme.LightNav.Conference.Impl">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

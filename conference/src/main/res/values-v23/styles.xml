@@ -19,13 +19,9 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/schedule">
-
-    <fragment
-        android:id="@+id/schedule"
-        android:name="dev.forcetower.conference.feature.schedule.ScheduleFragment"
-        android:label="ScheduleFragment" />
-</navigation>
+<resources>
+    <style name="UTheme.LightNav.Conference.Impl">
+        <item name="android:windowTranslucentNavigation">true</item>
+        <item name="android:windowLightStatusBar">@bool/not_on_night_mode</item>
+    </style>
+</resources>
