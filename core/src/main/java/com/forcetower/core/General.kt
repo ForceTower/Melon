@@ -21,7 +21,6 @@
 package com.forcetower.core
 
 import android.content.Context
-import android.util.Log
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
 import timber.log.Timber
