@@ -342,6 +342,10 @@
         <item name="iconColor">@color/iconColor</item>
     </style>
 
+    <style name="Widget.UTheme" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
+
     <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
     </style>
@@ -434,4 +438,7 @@
         <item name="android:minHeight">24dp</item>
         <item name="android:maxHeight">24dp</item>
     </style>
+
+    <style name="UTheme.LightNav.Conference" />
+    <style name="UTheme.LightNav.Conference.Impl" />
 </resources>

@@ -19,13 +19,18 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<navigation xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph.xml"
-    app:startDestination="@id/schedule">
+<resources>
+    <color name="teal">#31e7b6</color>
+    <color name="light_blue">#27e5fd</color>
+    <color name="yellow">#fcd230</color>
+    <color name="orange">#ff6c00</color>
+    <color name="indigo">#4768fd</color>
 
-    <fragment
-        android:id="@+id/schedule"
-        android:name="dev.forcetower.conference.feature.schedule.ScheduleFragment"
-        android:label="ScheduleFragment" />
-</navigation>
+    <integer-array name="swipe_refresh_colors">
+        <item>@color/indigo</item>
+        <item>@color/teal</item>
+        <item>@color/light_blue</item>
+        <item>@color/yellow</item>
+        <item>@color/orange</item>
+    </integer-array>
+</resources>

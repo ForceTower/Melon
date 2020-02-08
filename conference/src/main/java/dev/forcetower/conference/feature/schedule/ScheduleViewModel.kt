@@ -18,16 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.feature
+package dev.forcetower.conference.feature.schedule
 
-import android.os.Bundle
-import com.forcetower.uefs.feature.shared.UActivity
-import dev.forcetower.conference.R
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import javax.inject.Inject
 
-class ConferenceActivity : UActivity() {
+class ScheduleViewModel @Inject constructor() : ViewModel() {
+    // TODO Implement logic
+    val isLoading: LiveData<Boolean> = MutableLiveData()
+    val refreshing: LiveData<Boolean> = MutableLiveData()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_conference)
+    fun onSwipeRefresh() {
     }
 }
