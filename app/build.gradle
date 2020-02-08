@@ -126,7 +126,7 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard"]
+    dynamicFeatures = [":aeri", ":dashboard", ":conference"]
 
 
 }
