@@ -146,6 +146,13 @@ class ScheduleFragment : UDynamicFragment() {
             }
         }
 
+        binding.dayIndicators.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                super.onScrolled(recyclerView, dx, dy)
+                dayIndicatorItemDecoration.userScrolled = true
+            }
+        })
+
         binding.executeBindingsAfter {
             isEmpty = list.isEmpty()
         }
