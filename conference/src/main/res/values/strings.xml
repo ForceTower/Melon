@@ -29,4 +29,5 @@
     <string name="reservation_reserved">Reservado</string>
     <string name="reservation_pending">Reserva pendente</string>
     <string name="reservation_disabled">Reservar está desativado</string>
+    <string name="time_header_decor_hours">horas</string>
 </resources>

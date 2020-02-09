@@ -25,6 +25,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.feature.shared.executeBindingsAfter
 import com.forcetower.uefs.feature.shared.inflate
 import dev.forcetower.conference.R
 import dev.forcetower.conference.core.model.persistence.Session
@@ -39,7 +40,11 @@ class ScheduleAdapter(
     }
 
     override fun onBindViewHolder(holder: SessionHolder, position: Int) {
-        // TODO Implement!
+        holder.binding.executeBindingsAfter {
+            sessionData = getItem(position)
+            actions = viewModel
+            lifecycleOwner = this@ScheduleAdapter.lifecycleOwner
+        }
     }
 
     inner class SessionHolder(val binding: ItemScheduleSessionBinding) : RecyclerView.ViewHolder(binding.root)

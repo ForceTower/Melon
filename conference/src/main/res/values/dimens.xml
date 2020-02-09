@@ -21,4 +21,5 @@
 
 <resources>
     <dimen name="session_keyline">64dp</dimen>
+    <dimen name="schedule_item_padding_vertical">8dp</dimen>
 </resources>
