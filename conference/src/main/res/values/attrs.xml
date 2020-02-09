@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <!-- Reservation states -->
+    <!-- Event is reservable; user has no reservation status-->
+    <attr name="state_reservable" format="boolean" />
+    <!-- Event is not reservable -->
+    <attr name="state_reservation_disabled" format="boolean" />
+    <!-- Event is reservable; user can join wait list -->
+    <attr name="state_wait_list_available" format="boolean" />
+    <!-- Reservation request is pending for this event -->
+    <attr name="state_reservation_pending" format="boolean" />
+    <!-- User has reserved a seat for the event -->
+    <attr name="state_reserved" format="boolean" />
+    <!-- User is on the wait list for the event -->
+    <attr name="state_wait_listed" format="boolean" />
+
+    <declare-styleable name="ReserveButton">
+        <attr name="state_reservable" />
+        <attr name="state_reserved" />
+        <attr name="state_reservation_disabled" />
+        <attr name="state_wait_list_available" />
+        <attr name="state_wait_listed" />
+        <attr name="state_reservation_pending" />
+    </declare-styleable>
+</resources>
