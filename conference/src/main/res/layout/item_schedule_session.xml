@@ -34,8 +34,8 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
+        android:paddingTop="@dimen/schedule_item_padding_vertical"
+        android:paddingBottom="@dimen/schedule_item_padding_vertical"
         android:onClick="@{() -> actions.onOpenSession(sessionData)}">
 
         <androidx.constraintlayout.widget.Guideline
@@ -58,6 +58,7 @@
             android:layout_height="wrap_content"
             android:textAlignment="viewStart"
             android:textAppearance="?textAppearanceListItem"
+            android:text="@{sessionData.title}"
             app:layout_constraintEnd_toStartOf="@+id/bookmark_session"
             app:layout_constraintStart_toEndOf="@id/guideline_start"
             app:layout_constraintTop_toTopOf="parent"

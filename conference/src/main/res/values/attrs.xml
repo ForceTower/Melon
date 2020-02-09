@@ -42,4 +42,28 @@
         <attr name="state_wait_listed" />
         <attr name="state_reservation_pending" />
     </declare-styleable>
+
+    <declare-styleable name="DayIndicatorDecoration">
+        <attr name="android:color" />
+        <attr name="insetHorizontal" format="dimension" />
+        <attr name="insetVertical" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="TimeHeader">
+        <attr name="android:width" />
+        <attr name="android:padding" />
+        <attr name="android:textColor" />
+        <attr name="android:fontFamily" />
+        <attr name="timeTextSize" format="dimension" />
+        <attr name="meridiemTextSize" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="DaySeparatorDecoration">
+        <attr name="android:width" />
+        <attr name="android:height" />
+        <attr name="android:textColor" />
+        <attr name="android:textSize" />
+        <attr name="android:fontFamily" />
+        <attr name="verticalBias" />
+    </declare-styleable>
 </resources>

@@ -20,16 +20,17 @@
 
 package dev.forcetower.conference.core.utils
 
-import android.annotation.SuppressLint
 import dev.forcetower.conference.core.model.persistence.ConferenceDay
 import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 
 object TimeUtils {
     private const val formatPattern = "d 'de' MMM"
-    @SuppressLint("ConstantLocale")
-    val FORMATTER_MONTH_DAY: DateTimeFormatter =
-        DateTimeFormatter.ofPattern(formatPattern, Locale.getDefault())
 
-    fun getShortNameDay(day: ConferenceDay): String = FORMATTER_MONTH_DAY.format(day.start)
+    private fun getFormatter(pattern: String): DateTimeFormatter {
+        return DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+    }
+
+    fun getShortNameDay(day: ConferenceDay): String = getFormatter(formatPattern).format(day.start)
+    fun getLongNameDay(day: ConferenceDay): String = getFormatter("EEEE, dd 'de' MMMM").format(day.start)
 }
