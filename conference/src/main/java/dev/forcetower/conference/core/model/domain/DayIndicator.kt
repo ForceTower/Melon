@@ -18,14 +18,19 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.bindings
+package dev.forcetower.conference.core.model.domain
 
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
-import dev.forcetower.conference.core.model.domain.DayIndicator
-import dev.forcetower.conference.core.utils.TimeUtils
+import dev.forcetower.conference.core.model.persistence.ConferenceDay
 
-@BindingAdapter("indicatorText")
-fun setIndicatorText(view: TextView, dayIndicator: DayIndicator) {
-    view.text = TimeUtils.getShortNameDay(dayIndicator.day)
+data class DayIndicator(
+    val day: ConferenceDay,
+    val checked: Boolean
+) {
+    override fun equals(other: Any?): Boolean =
+        this === other || (other is DayIndicator && day == other.day)
+
+    override fun hashCode(): Int = day.hashCode()
+
+    fun areUiContentsTheSame(other: DayIndicator) =
+        checked == other.checked
 }

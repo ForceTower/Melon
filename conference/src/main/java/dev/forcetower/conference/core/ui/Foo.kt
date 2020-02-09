@@ -18,19 +18,4 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.model.general
-
-import dev.forcetower.conference.core.model.persistence.ConferenceDay
-
-data class DayIndicator(
-    val day: ConferenceDay,
-    val checked: Boolean
-) {
-    override fun equals(other: Any?): Boolean =
-        this === other || (other is DayIndicator && day == other.day)
-
-    override fun hashCode(): Int = day.hashCode()
-
-    fun areUiContentsTheSame(other: DayIndicator) =
-        checked == other.checked
-}
+package dev.forcetower.conference.core.ui

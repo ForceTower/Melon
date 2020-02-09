@@ -25,7 +25,7 @@
     <data>
         <variable
             name="indicator"
-            type="dev.forcetower.conference.core.model.general.DayIndicator" />
+            type="dev.forcetower.conference.core.model.domain.DayIndicator" />
 
         <variable
             name="viewModel"

@@ -18,14 +18,11 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.bindings
+package dev.forcetower.conference.core.model.domain
 
-import android.widget.TextView
-import androidx.databinding.BindingAdapter
-import dev.forcetower.conference.core.model.domain.DayIndicator
-import dev.forcetower.conference.core.utils.TimeUtils
+import dev.forcetower.conference.core.model.persistence.Session
 
-@BindingAdapter("indicatorText")
-fun setIndicatorText(view: TextView, dayIndicator: DayIndicator) {
-    view.text = TimeUtils.getShortNameDay(dayIndicator.day)
-}
+data class ScheduleUiData(
+    val sessions: List<Session>,
+    val indexed: ConferenceDayIndexed
+)

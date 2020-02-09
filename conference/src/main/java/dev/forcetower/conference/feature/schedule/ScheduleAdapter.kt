@@ -25,34 +25,27 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.feature.shared.executeBindingsAfter
 import com.forcetower.uefs.feature.shared.inflate
 import dev.forcetower.conference.R
-import dev.forcetower.conference.core.model.domain.DayIndicator
-import dev.forcetower.conference.databinding.ItemScheduleDayIndicatorBinding
+import dev.forcetower.conference.core.model.persistence.Session
+import dev.forcetower.conference.databinding.ItemScheduleSessionBinding
 
-class DayAdapter(
-    private val scheduleViewModel: ScheduleViewModel,
+class ScheduleAdapter(
+    private val viewModel: ScheduleViewModel,
     private val lifecycleOwner: LifecycleOwner
-) : ListAdapter<DayIndicator, DayAdapter.DayHolder>(DiffCallback) {
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DayHolder {
-        return DayHolder(parent.inflate(R.layout.item_schedule_day_indicator))
+) : ListAdapter<Session, ScheduleAdapter.SessionHolder>(SessionDiff) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SessionHolder {
+        return SessionHolder(parent.inflate(R.layout.item_schedule_session))
     }
 
-    override fun onBindViewHolder(holder: DayHolder, position: Int) {
-        holder.binding.executeBindingsAfter {
-            indicator = getItem(position)
-            viewModel = scheduleViewModel
-            lifecycleOwner = this@DayAdapter.lifecycleOwner
-        }
+    override fun onBindViewHolder(holder: SessionHolder, position: Int) {
+        // TODO Implement!
     }
 
-    inner class DayHolder(val binding: ItemScheduleDayIndicatorBinding) : RecyclerView.ViewHolder(binding.root)
+    inner class SessionHolder(val binding: ItemScheduleSessionBinding) : RecyclerView.ViewHolder(binding.root)
 
-    private object DiffCallback : DiffUtil.ItemCallback<DayIndicator>() {
-        override fun areItemsTheSame(oldItem: DayIndicator, newItem: DayIndicator) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: DayIndicator, newItem: DayIndicator) =
-            oldItem.areUiContentsTheSame(newItem)
+    private object SessionDiff : DiffUtil.ItemCallback<Session>() {
+        override fun areItemsTheSame(oldItem: Session, newItem: Session) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: Session, newItem: Session) = oldItem == newItem
     }
 }
