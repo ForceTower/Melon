@@ -26,6 +26,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.feature.shared.UDynamicFragment
 import com.forcetower.uefs.feature.shared.clearDecorations
@@ -36,6 +39,9 @@ import dev.forcetower.conference.core.model.domain.DayIndicator
 import dev.forcetower.conference.core.model.domain.ScheduleUiData
 import dev.forcetower.conference.core.model.persistence.ConferenceDay
 import dev.forcetower.conference.core.model.persistence.Session
+import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
+import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
+import dev.forcetower.conference.core.ui.widget.BubbleDecoration
 import dev.forcetower.conference.databinding.FragmentScheduleBinding
 import org.threeten.bp.ZonedDateTime
 import java.util.UUID
@@ -47,6 +53,7 @@ class ScheduleFragment : UDynamicFragment() {
     private lateinit var binding: FragmentScheduleBinding
     private lateinit var dayAdapter: DayAdapter
     private lateinit var scheduleAdapter: ScheduleAdapter
+    private lateinit var dayIndicatorItemDecoration: BubbleDecoration
     private val viewModel by viewModels<ScheduleViewModel> { factory }
 
     private var cachedBubbleRange: IntRange? = null
@@ -58,11 +65,52 @@ class ScheduleFragment : UDynamicFragment() {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentScheduleBinding.inflate(inflater, container, false).also {
+        dayAdapter = DayAdapter(viewModel, this)
+        scheduleAdapter = ScheduleAdapter(viewModel, this)
+
+        FragmentScheduleBinding.inflate(inflater, container, false).also {
             binding = it
-            dayAdapter = DayAdapter(viewModel, this)
             binding.dayIndicators.adapter = dayAdapter
+            binding.recyclerSchedule.adapter = scheduleAdapter
         }.root
+
+        dayIndicatorItemDecoration = BubbleDecoration(binding.root.context)
+        binding.dayIndicators.addItemDecoration(dayIndicatorItemDecoration)
+
+        binding.recyclerSchedule.run {
+            (itemAnimator as DefaultItemAnimator).run {
+                supportsChangeAnimations = false
+                addDuration = 160L
+                moveDuration = 160L
+                changeDuration = 160L
+                removeDuration = 120L
+            }
+
+            addOnScrollListener(object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
+                    onScheduleScrolled()
+                }
+            })
+        }
+
+        return binding.root
+    }
+
+    private fun onScheduleScrolled() {
+        val manager = (binding.recyclerSchedule.layoutManager) as LinearLayoutManager
+        val first = manager.findFirstVisibleItemPosition()
+        val last = manager.findLastVisibleItemPosition()
+        if (first < 0 || last < 0) {
+            return
+        }
+
+        val firstDay = dayIndexed.dayForPosition(first) ?: return
+        val lastDay = dayIndexed.dayForPosition(last) ?: return
+        val highlightRange = dayIndexed.days.indexOf(firstDay)..dayIndexed.days.indexOf(lastDay)
+        if (highlightRange != cachedBubbleRange) {
+            cachedBubbleRange = highlightRange
+            buildDayIndicators(days)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -85,16 +133,16 @@ class ScheduleFragment : UDynamicFragment() {
         binding.recyclerSchedule.run {
             clearDecorations()
             if (list.isNotEmpty()) {
-//                addItemDecoration(
-//                    ScheduleTimeHeadersDecoration(
-//                        context, list
-//                    )
-//                )
-//                addItemDecoration(
-//                    DaySeparatorItemDecoration(
-//                        context, indexed
-//                    )
-//                )
+                addItemDecoration(
+                    ScheduleTimeHeadersDecoration(
+                        context, list
+                    )
+                )
+                addItemDecoration(
+                    DaySeparatorItemDecoration(
+                        context, indexed
+                    )
+                )
             }
         }
 
@@ -104,41 +152,43 @@ class ScheduleFragment : UDynamicFragment() {
     }
 
     private fun buildDayIndicators(days: List<ConferenceDay>) {
-//        val bubbleRange = cachedBubbleRange ?: return
+        val bubbleRange = cachedBubbleRange ?: return
         val mapped = days.mapIndexed { index: Int, day: ConferenceDay ->
-            DayIndicator(day = day, checked = false)
+            DayIndicator(day = day, checked = index in bubbleRange)
         }
         dayAdapter.submitList(mapped)
+        dayIndicatorItemDecoration.bubbleRange = bubbleRange
     }
 
     companion object {
         val days = listOf(
-            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now(), ZonedDateTime.now().plusHours(3), 1),
-            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(1), ZonedDateTime.now().plusDays(1).plusHours(3), 1),
-            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(2), ZonedDateTime.now().plusDays(2).plusHours(3), 1),
-            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(3), ZonedDateTime.now().plusDays(3).plusHours(3), 1),
-            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(4), ZonedDateTime.now().plusDays(4).plusHours(3), 1)
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now(), ZonedDateTime.now().plusHours(8), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(1), ZonedDateTime.now().plusDays(1).plusHours(8), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(2), ZonedDateTime.now().plusDays(2).plusHours(8), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(3), ZonedDateTime.now().plusDays(3).plusHours(8), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(4), ZonedDateTime.now().plusDays(4).plusHours(8), 1)
         )
 
-        val sessions = (0..20).map {
+        val sessions = (0..60).map {
+            val day = days[it % days.size]
+            val sorted = (3..10).random().toLong()
             Session(
                 UUID.randomUUID().toString(),
-                ZonedDateTime.now().plusHours(3),
-                ZonedDateTime.now().plusHours(4),
+                day.start.plusHours(sorted),
+                day.start.plusHours(sorted + 2),
                 "A different session",
                 "I put nintendo switch over people doing dumb stuff",
                 "Center Auditorium",
                 "https://www.hoohle.com",
                 1,
-                days[it % days.size].id
+                day.id
             )
-        }
+        }.sortedBy { it.startTime }
 
         private fun buildConferenceDayIndexer(sessions: List<Session>): ConferenceDayIndexed {
-            val sorted = sessions.sortedBy { it.startTime }
             val mapping = days
                 .associateWith { day ->
-                    sorted.indexOfFirst {
+                    sessions.indexOfFirst {
                         day.contains(it)
                     }
                 }

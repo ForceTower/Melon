@@ -33,6 +33,15 @@ android {
         def (code, name) = buildVersion()
         versionCode code
         versionName name
+
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [
+                        "room.schemaLocation": "$projectDir/schemas".toString(),
+                        "room.incremental"   : "true"
+                ]
+            }
+        }
     }
 
     kapt {

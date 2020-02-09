@@ -23,13 +23,20 @@ package dev.forcetower.conference.feature.schedule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dev.forcetower.conference.core.model.persistence.Session
 import javax.inject.Inject
 
-class ScheduleViewModel @Inject constructor() : ViewModel() {
+class ScheduleViewModel @Inject constructor() : ViewModel(), ScheduleActions {
     // TODO Implement logic
     val isLoading: LiveData<Boolean> = MutableLiveData()
     val refreshing: LiveData<Boolean> = MutableLiveData()
 
     fun onSwipeRefresh() {
+    }
+
+    override fun onOpenSession(session: Session) {
+    }
+
+    override fun onStarClick(session: Session) {
     }
 }
