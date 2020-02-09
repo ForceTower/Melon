@@ -17,11 +17,9 @@ jobs:
         GOOGLE_SERVICES_JSON: ${{ secrets.google_services_json }}
     - name: Create files
       run: echo $GOOGLE_SERVICES_JSON > app/google-services.json
-    - uses: pCYSl5EDgo/cat@master
-      id: hello
-      with:
-        path: app/google-services.json
 
-    - run: echo $TEXT
-      env:
-        TEXT: ${{ steps.hello.outputs.text }}
+    - name: Upload result for job
+      uses: actions/upload-artifact@v1
+      with:
+        name: services
+        path: app/google-services.json
