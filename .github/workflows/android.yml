@@ -20,7 +20,7 @@ jobs:
     - uses: pCYSl5EDgo/cat@master
       id: hello
       with:
-        path: text.txt
+        path: app/google-services.json
 
     - run: echo $TEXT
       env:
