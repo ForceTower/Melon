@@ -49,6 +49,8 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
     private var animator: ValueAnimator? = null
     private var pendingAnimation = false
 
+    var userScrolled = false
+
     private var progress = 1f
 
     var bubbleRange: IntRange = -1..-1
@@ -79,6 +81,15 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
             currentRect.set(temp)
 
             startAnimatorIfNeeded(previousRect, currentRect, parent)
+        } else if (userScrolled) {
+            userScrolled = false
+            animator?.cancel()
+
+            computeTargetRect(parent, state, bubbleRange, temp)
+            previousRect.set(currentRect)
+            currentRect.set(temp)
+            progress = 1f
+            parent.invalidateItemDecorations()
         }
 
         val rect = getDrawingRect(previousRect, currentRect)
