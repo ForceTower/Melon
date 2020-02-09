@@ -20,17 +20,24 @@
 
 package dev.forcetower.conference.core.model.persistence
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
 
 @Entity
-data class ConferenceDay(
+data class Tag(
     @PrimaryKey
     val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
+    val category: String,
+    @ColumnInfo(index = true)
+    val tagName: String,
+    val orderInCategory: Int,
+    @ColumnInfo(index = true)
+    val displayName: String,
+    val color: Int,
+    val fontColor: Int? = null
 ) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
+    override fun equals(other: Any?): Boolean = this === other || (other is Tag && other.id == id)
+    override fun hashCode(): Int = id.hashCode()
+    fun isUiContentEqual(other: Tag) = color == other.color && displayName == other.displayName
 }

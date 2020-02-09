@@ -20,24 +20,35 @@
 
 package dev.forcetower.conference.feature.schedule
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.uefs.feature.shared.UDynamicFragment
+import dev.forcetower.conference.core.injection.DaggerConferenceComponent
 import dev.forcetower.conference.core.model.general.DayIndicator
 import dev.forcetower.conference.core.model.persistence.ConferenceDay
 import dev.forcetower.conference.databinding.FragmentScheduleBinding
 import org.threeten.bp.ZonedDateTime
-import timber.log.Timber
+import java.util.UUID
+import javax.inject.Inject
 
-class ScheduleFragment : UFragment() {
+class ScheduleFragment : UDynamicFragment() {
+    @Inject
+    lateinit var factory: BaseViewModelFactory
     private lateinit var binding: FragmentScheduleBinding
     private lateinit var dayAdapter: DayAdapter
-    private val viewModel by viewModels<ScheduleViewModel>()
+    private val viewModel by viewModels<ScheduleViewModel> { factory }
 
     private var cachedBubbleRange: IntRange? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        DaggerConferenceComponent.builder().appComponent(component).build().inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentScheduleBinding.inflate(inflater, container, false).also {
@@ -57,18 +68,16 @@ class ScheduleFragment : UFragment() {
         val mapped = days.mapIndexed { index: Int, day: ConferenceDay ->
             DayIndicator(day = day, checked = false)
         }
-
-        Timber.d("Setting $mapped")
         dayAdapter.submitList(mapped)
     }
 
     companion object {
         val days = listOf(
-            ConferenceDay(ZonedDateTime.now(), ZonedDateTime.now().plusHours(3)),
-            ConferenceDay(ZonedDateTime.now().plusDays(1), ZonedDateTime.now().plusDays(1).plusHours(3)),
-            ConferenceDay(ZonedDateTime.now().plusDays(2), ZonedDateTime.now().plusDays(2).plusHours(3)),
-            ConferenceDay(ZonedDateTime.now().plusDays(3), ZonedDateTime.now().plusDays(3).plusHours(3)),
-            ConferenceDay(ZonedDateTime.now().plusDays(4), ZonedDateTime.now().plusDays(4).plusHours(3))
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now(), ZonedDateTime.now().plusHours(3), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(1), ZonedDateTime.now().plusDays(1).plusHours(3), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(2), ZonedDateTime.now().plusDays(2).plusHours(3), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(3), ZonedDateTime.now().plusDays(3).plusHours(3), 1),
+            ConferenceDay(UUID.randomUUID().toString(), ZonedDateTime.now().plusDays(4), ZonedDateTime.now().plusDays(4).plusHours(3), 1)
         )
     }
 }

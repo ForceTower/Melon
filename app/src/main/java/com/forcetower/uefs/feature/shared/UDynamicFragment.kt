@@ -18,19 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.model.persistence
+package com.forcetower.uefs.feature.shared
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
+import android.content.Context
+import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.AppComponent
+import com.google.android.play.core.splitcompat.SplitCompat
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
+abstract class UDynamicFragment : UFragment() {
+    protected lateinit var component: AppComponent
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        SplitCompat.install(context)
+        component = (context.applicationContext as UApplication).component
+    }
 }

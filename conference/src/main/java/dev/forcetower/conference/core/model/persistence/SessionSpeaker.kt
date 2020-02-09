@@ -21,16 +21,22 @@
 package dev.forcetower.conference.core.model.persistence
 
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.ForeignKey.CASCADE
+import androidx.room.Index
 import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-}
+@Entity(indices = [
+    Index(value = ["session", "speaker"], unique = true),
+    Index(value = ["session"]),
+    Index(value = ["speaker"])
+], foreignKeys = [
+    ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = CASCADE),
+    ForeignKey(entity = Speaker::class, parentColumns = ["id"], childColumns = ["speaker"], onDelete = CASCADE)
+])
+data class SessionSpeaker(
+    @PrimaryKey(autoGenerate = true)
+    val id: Long,
+    val session: String,
+    val speaker: String
+)

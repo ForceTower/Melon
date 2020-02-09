@@ -18,19 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.model.persistence
+package dev.forcetower.conference.core.injection.module
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
+import dagger.Module
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-}
+@Module
+object ConferenceDaggerModule
