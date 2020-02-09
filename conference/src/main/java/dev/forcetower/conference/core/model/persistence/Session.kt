@@ -20,17 +20,36 @@
 
 package dev.forcetower.conference.core.model.persistence
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Ignore
 import androidx.room.PrimaryKey
 import org.threeten.bp.ZonedDateTime
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
+@Entity(foreignKeys = [
+    ForeignKey(entity = ConferenceDay::class, parentColumns = ["id"], childColumns = ["dayId"])
+])
+data class Session(
+    @PrimaryKey(autoGenerate = false)
     val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
+    val startTime: ZonedDateTime,
+    val endTime: ZonedDateTime,
+    @ColumnInfo(index = true)
+    val title: String,
+    @ColumnInfo(index = true)
+    val description: String,
+    val room: String,
+    val photoUrl: String?,
+    val type: Int,
+    @ColumnInfo(index = true)
+    val dayId: String
 ) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
+    val hasPhoto inline get() = !photoUrl.isNullOrBlank()
+    @Ignore
+    val duration = endTime.toInstant().toEpochMilli() - startTime.toInstant().toEpochMilli()
+
+    fun isOverlapping(session: Session): Boolean {
+        return this.startTime < session.endTime && this.endTime > session.startTime
+    }
 }

@@ -18,19 +18,9 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.model.persistence
+package dev.forcetower.conference.core.database.dao
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
+import androidx.room.Dao
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-}
+@Dao
+abstract class SessionDao

@@ -20,17 +20,25 @@
 
 package dev.forcetower.conference.core.model.persistence
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
 
 @Entity
-data class ConferenceDay(
+data class Speaker(
     @PrimaryKey
     val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
+    @ColumnInfo(index = true)
+    val name: String,
+    val imageUrl: String,
+    val company: String?,
+    @ColumnInfo(index = true)
+    val biography: String,
+    val appUser: Long? = null,
+    val websiteUrl: String? = null,
+    val twitterUrl: String? = null,
+    val githubUrl: String? = null,
+    val linkedInUrl: String? = null
 ) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
+    val hasCompany inline get() = !company.isNullOrBlank()
 }

@@ -25,12 +25,14 @@ import androidx.room.PrimaryKey
 import org.threeten.bp.ZonedDateTime
 
 @Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
+data class Conference(
+    @PrimaryKey(autoGenerate = false)
+    val id: Long,
+    val name: String,
+    val description: String,
+    val targetCourse: String,
+    val openForAll: Boolean,
     val start: ZonedDateTime,
     val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-}
+    val imageUrl: String
+)

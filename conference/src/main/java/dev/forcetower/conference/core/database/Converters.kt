@@ -18,19 +18,22 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.model.persistence
+package dev.forcetower.conference.core.database
 
-import androidx.room.Entity
-import androidx.room.PrimaryKey
+import androidx.room.TypeConverter
 import org.threeten.bp.ZonedDateTime
 
-@Entity
-data class ConferenceDay(
-    @PrimaryKey
-    val id: String,
-    val start: ZonedDateTime,
-    val end: ZonedDateTime,
-    val conferenceId: Long
-) {
-    operator fun contains(session: Session) = start <= session.startTime && end >= session.endTime
+object Converters {
+
+    @TypeConverter
+    @JvmStatic
+    fun zonedDateTimeToString(zoned: ZonedDateTime): String {
+        return zoned.toString()
+    }
+
+    @TypeConverter
+    @JvmStatic
+    fun stringToZonedDateTime(value: String): ZonedDateTime {
+        return ZonedDateTime.parse(value)
+    }
 }
