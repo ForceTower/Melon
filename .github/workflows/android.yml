@@ -18,6 +18,6 @@ jobs:
     - name: Create files
       run: echo $GOOGLE_SERVICES_JSON > app/google-services.json
     - name: Echoing
-      run: echo $GOOGLE_SERVICES_JSON
+      run: cat app/google-services.json
     - name: Build with Gradle
       run: ./gradlew build
