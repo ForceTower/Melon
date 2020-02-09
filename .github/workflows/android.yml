@@ -13,5 +13,9 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
+      env:
+        GOOGLE_SERVICES_JSON: ${{ secrets.google_services_json }}
+    - name: Create files
+      run: echo $GOOGLE_SERVICES_JSON > ~/runner/work/Melon/Melon/app/google-services.json
     - name: Build with Gradle
       run: ./gradlew build
