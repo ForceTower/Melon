@@ -14,9 +14,9 @@ jobs:
       with:
         java-version: 1.8
       env:
-        GOOGLE_SERVICES_JSON: ${{ secrets.google_services_json }}
+        SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
     - name: Create files
-      run: echo $GOOGLE_SERVICES_JSON > app/google-services.json
+      run: gpg --quiet --batch --yes --decrypt --passphrase="$LARGE_SECRET_PASSPHRASE" --output app/google-services.json app/google-services.json.gpg
 
     - name: Upload result for job
       uses: actions/upload-artifact@v1
