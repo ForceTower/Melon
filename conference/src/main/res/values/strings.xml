@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
+    <string name="title_schedule">Programação</string>
+    <string name="schedule_filters_empty">Nenhuma sessão encontrada!</string>
+    <string name="star_session">Marcar</string>
+    <string name="reservation_reservable">Reservar assento</string>
+    <string name="reservation_waitlist_available">Entrar na lista de espera</string>
+    <string name="reservation_waitlisted">Lista de espera</string>
+    <string name="reservation_reserved">Reservado</string>
+    <string name="reservation_pending">Reserva pendente</string>
+    <string name="reservation_disabled">Reservar está desativado</string>
+    <string name="time_header_decor_hours">horas</string>
+</resources>
