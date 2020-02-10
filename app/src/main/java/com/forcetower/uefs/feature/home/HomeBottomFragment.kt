@@ -137,7 +137,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
         toggleItem(R.id.adventure, uefsStudent)
-        toggleItem(R.id.events, false)
+        toggleItem(R.id.events, uefsStudent)
         toggleItem(R.id.flowchart, uefsStudent)
 
         val revealThemeSwitcher = preferences.getBoolean("feature_reveal_theme_editor", false)

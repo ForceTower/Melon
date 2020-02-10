@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.forcetower.uefs.core.model.service.Event
+import com.forcetower.uefs.core.model.unes.Event
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
 import javax.inject.Inject
@@ -40,7 +40,7 @@ class EventRepository @Inject constructor(
                     Timber.d("Events Task result is null")
                     data.postValue(emptyList())
                 } else {
-                    val list = result.documents.map { it.toObject(Event::class.java)!!.apply { id = it.id } }
+                    val list = result.documents.map { it.toObject(Event::class.java)!!.copy(id = it.id) }
                     Timber.d("Event List: $list")
                     data.postValue(list)
                 }

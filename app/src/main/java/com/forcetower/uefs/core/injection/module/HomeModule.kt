@@ -30,7 +30,6 @@ import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.document.DocumentsFragment
-import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.home.InvalidAccessDialog
@@ -80,8 +79,6 @@ abstract class HomeModule {
     abstract fun documentsFragment(): DocumentsFragment
     @ContributesAndroidInjector
     abstract fun syncRegistryFragment(): SyncRegistryFragment
-    @ContributesAndroidInjector
-    abstract fun eventFragment(): EventFragment
     @ContributesAndroidInjector
     abstract fun calendarFragment(): CalendarFragment
     @ContributesAndroidInjector

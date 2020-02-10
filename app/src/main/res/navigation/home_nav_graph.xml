@@ -74,9 +74,8 @@
     
     <fragment
         android:id="@+id/events"
-        android:name="com.forcetower.uefs.feature.event.EventFragment"
-        android:label="EventFragment"
-        tools:layout="@layout/fragment_events"/>
+        android:name="dev.forcetower.event.feature.listing.EventFragment"
+        android:label="EventFragment"/>
     
     <fragment
         android:id="@+id/calendar"

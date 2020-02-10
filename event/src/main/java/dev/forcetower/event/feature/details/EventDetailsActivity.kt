@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,10 +18,15 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.event
+package dev.forcetower.event.feature.details
 
-import com.forcetower.uefs.core.model.service.Event
+import android.os.Bundle
+import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 
-interface EventActions {
-    fun onOpen(event: Event)
+class EventDetailsActivity : UActivity() {
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        postponeEnterTransition(500L)
+    }
 }
