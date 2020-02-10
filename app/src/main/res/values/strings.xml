@@ -820,4 +820,5 @@
     <string name="extra_config">Configurações Adicionais</string>
     <string name="auto_start_text">Auto inicialização</string>
     <string name="title_conference" translatable="false">Grandes Eventos</string>
+    <string name="title_event">Eventos</string>
 </resources>

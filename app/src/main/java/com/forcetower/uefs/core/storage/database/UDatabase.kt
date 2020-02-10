@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
@@ -128,8 +129,9 @@ import com.forcetower.uefs.core.util.Converters
     ProfileStatement::class,
     UserSession::class,
     AffinityQuestion::class,
-    AffinityQuestionAlternative::class
-], version = 41, exportSchema = true)
+    AffinityQuestionAlternative::class,
+    Event::class
+], version = 42, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
