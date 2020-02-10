@@ -28,6 +28,7 @@ import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.drawable.Icon
 import android.os.Build
+import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
 import androidx.core.graphics.createBitmap
@@ -107,3 +108,5 @@ fun Boolean.asInt(): Int {
 fun Int.asBoolean(): Boolean {
     return this >= 1
 }
+
+fun View.isRtl() = layoutDirection == View.LAYOUT_DIRECTION_RTL

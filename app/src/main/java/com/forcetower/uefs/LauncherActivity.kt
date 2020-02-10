@@ -62,6 +62,15 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
+        //         val intent = Intent(Intent.ACTION_VIEW).setClassName(
+        //            this,
+        //            "dev.forcetower.conference.ConferenceActivity"
+        //        )
+        //
+        //        startActivity(intent)
+        //        finish()
+        //        return
+
         viewModel.direction.observe(this, EventObserver {
             Timber.d("Once!")
             // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
