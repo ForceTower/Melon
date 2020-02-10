@@ -26,6 +26,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.WindowInsets
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
@@ -168,37 +169,6 @@ fun dateFromLong(view: TextView, value: Long?) {
     view.text = str
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, ViewPaddingState) -> Unit) {
-    // Create a snapshot of the view's padding state
-    val paddingState = createStateForView(this)
-    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-        f(v, insets, paddingState)
-        insets
-    }
-    requestApplyInsetsWhenAttached()
-}
-
-/**
- * Call [View.requestApplyInsets] in a safe away. If we're attached it calls it straight-away.
- * If not it sets an [View.OnAttachStateChangeListener] and waits to be attached before calling
- * [View.requestApplyInsets].
- */
-fun View.requestApplyInsetsWhenAttached() {
-    if (isAttachedToWindow) {
-        requestApplyInsets()
-    } else {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                v.requestApplyInsets()
-            }
-
-            override fun onViewDetachedFromWindow(v: View) = Unit
-        })
-    }
-}
-
-private fun createStateForView(view: View) = ViewPaddingState(view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom, view.paddingStart, view.paddingEnd)
-
 /**
  * An interface for responding to image loading completion.
  */
@@ -215,3 +185,66 @@ data class ViewPaddingState(
     val start: Int,
     val end: Int
 )
+
+@BindingAdapter(
+    "paddingStartSystemWindowInsets",
+    "paddingTopSystemWindowInsets",
+    "paddingEndSystemWindowInsets",
+    "paddingBottomSystemWindowInsets",
+    requireAll = false
+)
+fun applySystemWindows(
+    view: View,
+    applyLeft: Boolean,
+    applyTop: Boolean,
+    applyRight: Boolean,
+    applyBottom: Boolean
+) {
+    view.doOnApplyWindowInsets { _, insets, padding ->
+        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
+        val top = if (applyTop) insets.systemWindowInsetTop else 0
+        val right = if (applyRight) insets.systemWindowInsetRight else 0
+        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+
+        view.setPadding(
+            padding.left + left,
+            padding.top + top,
+            padding.right + right,
+            padding.bottom + bottom
+        )
+    }
+}
+
+data class InitialPadding(
+        val left: Int,
+        val top: Int,
+        val right: Int,
+        val bottom: Int
+)
+
+private fun recordInitialPaddingForView(view: View) = InitialPadding(
+        view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+
+fun View.requestApplyInsetsWhenAttached() {
+    if (isAttachedToWindow) {
+        requestApplyInsets()
+    } else {
+        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
+            override fun onViewAttachedToWindow(v: View) {
+                v.requestApplyInsets()
+            }
+
+            override fun onViewDetachedFromWindow(v: View) = Unit
+        })
+    }
+}
+
+
+fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
+    val initialPadding = recordInitialPaddingForView(this)
+    setOnApplyWindowInsetsListener { v, insets ->
+        f(v, insets, initialPadding)
+        insets
+    }
+    requestApplyInsetsWhenAttached()
+}

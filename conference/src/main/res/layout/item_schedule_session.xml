@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="sessionData"
+            type="dev.forcetower.conference.core.model.persistence.Session" />
+
+        <variable
+            name="actions"
+            type="dev.forcetower.conference.feature.schedule.ScheduleActions" />
+    </data>
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingTop="@dimen/schedule_item_padding_vertical"
+        android:paddingBottom="@dimen/schedule_item_padding_vertical"
+        android:onClick="@{() -> actions.onOpenSession(sessionData)}">
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_start"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_begin="@dimen/session_keyline" />
+
+        <androidx.constraintlayout.widget.Guideline
+            android:id="@+id/guideline_end"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:orientation="vertical"
+            app:layout_constraintGuide_end="@dimen/margin_small" />
+
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            android:textAppearance="?textAppearanceListItem"
+            android:text="@{sessionData.title}"
+            app:layout_constraintEnd_toStartOf="@+id/bookmark_session"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Welcome to the course! It's amazing!" />
+
+        <com.google.android.material.internal.CheckableImageButton
+            android:id="@+id/bookmark_session"
+            android:layout_width="@dimen/a11y_min_touch_target"
+            android:layout_height="@dimen/a11y_min_touch_target"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/star_session"
+            android:onClick="@{() -> actions.onStarClick(sessionData)}"
+            android:src="@drawable/asld_star_event"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <dev.forcetower.conference.core.ui.reservation.ReservationTextView
+            android:id="@+id/reservation_status"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_micro"
+            android:drawablePadding="@dimen/spacing_normal"
+            android:gravity="center_vertical"
+            android:textColor="?attr/colorOnSurface"
+            app:layout_constraintStart_toEndOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/title"
+            tools:drawableStart="@drawable/ic_reserved"
+            tools:text="Reserved"
+            tools:visibility="visible" />
+
+        <TextView
+            android:id="@+id/length_location"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="viewStart"
+            app:layout_constraintBottom_toTopOf="@id/tags_barrier"
+            app:layout_constraintEnd_toStartOf="@id/guideline_end"
+            app:layout_constraintStart_toStartOf="@id/guideline_start"
+            app:layout_constraintTop_toBottomOf="@id/reservation_status"
+            tools:text="2 hours / Center Auditorium" />
+
+        <androidx.constraintlayout.widget.Barrier
+            android:id="@+id/tags_barrier"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:barrierDirection="bottom"
+            app:constraint_referenced_ids="length_location" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
