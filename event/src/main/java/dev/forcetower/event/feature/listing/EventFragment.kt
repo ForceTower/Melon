@@ -31,6 +31,7 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UDynamicFragment
@@ -79,6 +80,11 @@ class EventFragment : UDynamicFragment() {
             )
             startActivity(intent, options.toBundle())
         })
+
+        binding.btnCreateEvent.setOnClickListener {
+            val directions = EventFragmentDirections.actionEventsToCreateEvent()
+            findNavController().navigate(directions)
+        }
     }
 
     private fun findEventShot(entities: ViewGroup, id: Long): View {
