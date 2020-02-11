@@ -248,7 +248,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
      * navigation bar) whilst elastic drags are performed and
      * [finishes][Activity.finishAfterTransition] the activity when drag dismissed.
      */
-    class SystemChromeFader(private val activity: Activity) : ElasticDragDismissCallback() {
+    open class SystemChromeFader(private val activity: Activity) : ElasticDragDismissCallback() {
         private val statusBarAlpha: Int = Color.alpha(activity.window.statusBarColor)
         private val navBarAlpha: Int = Color.alpha(activity.window.navigationBarColor)
         private val fadeNavBar: Boolean = activity.isNavBarOnBottom()

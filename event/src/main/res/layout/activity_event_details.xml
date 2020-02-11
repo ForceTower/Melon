@@ -49,27 +49,6 @@
             android:background="?attr/colorSurface"
             android:transitionName="@string/transition_detail_background" />
 
-        <FrameLayout
-            android:id="@+id/back_wrapper"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:background="@android:color/transparent"
-            android:elevation="@dimen/z_fab_over_touchable_app_bar"
-            app:paddingTopSystemWindowInsets="@{true}">
-
-            <ImageButton
-                android:id="@+id/back"
-                android:layout_width="?android:actionBarSize"
-                android:layout_height="?android:actionBarSize"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:contentDescription="@string/back_button"
-                android:tint="@android:color/white"
-                android:src="@drawable/ic_arrow_back_black_24dp"
-                android:background="@drawable/mid_grey_ripple"
-                tools:tint="?attr/colorOnSurface"/>
-        </FrameLayout>
-
         <com.forcetower.core.widget.ParallaxScrimageView
             android:id="@+id/image"
             android:layout_width="match_parent"
@@ -92,6 +71,27 @@
             app:heightDimension="3"
             app:widthDimension="4"
             tools:targetApi="m" />
+
+        <FrameLayout
+            android:id="@+id/back_wrapper"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
+            android:elevation="@dimen/z_fab_over_touchable_app_bar"
+            app:paddingTopSystemWindowInsets="@{true}">
+
+            <ImageButton
+                android:id="@+id/back"
+                android:layout_width="?android:actionBarSize"
+                android:layout_height="?android:actionBarSize"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="16dp"
+                android:contentDescription="@string/back_button"
+                android:tint="@android:color/white"
+                android:src="@drawable/ic_arrow_back_black_24dp"
+                android:background="@drawable/mid_grey_ripple"
+                tools:tint="?attr/colorOnSurface"/>
+        </FrameLayout>
 
         <androidx.core.widget.NestedScrollView
             android:id="@+id/body_scroll"
