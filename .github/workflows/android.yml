@@ -15,11 +15,21 @@ jobs:
         java-version: 1.8
       env:
         SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
-    - name: Create files
-      run: ./decrypt_files.sh
-
+    
+    - name: Decode Google Services
+      run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
+      
+    - name: Dependencies
+      run: ./gradlew dependencies
+    
+    - name: Lint & JVM Checks
+      run: ./gradlew check
+    
+    - name: Build Release App
+      run: ./gradlew assembleRelease
+    
     - name: Upload result for job
       uses: actions/upload-artifact@v1
       with:
-        name: services
-        path: app/google-services.json
+        name: apk
+        path: app/build/outputs/apk/release/app-release.apk
