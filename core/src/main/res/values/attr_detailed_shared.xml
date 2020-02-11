@@ -20,16 +20,10 @@
   -->
 
 <resources>
-    <style name="UTheme.Translucent.Event">
-        <item name="android:colorControlActivated">?attr/colorAccent</item>
-        <item name="android:windowAllowReturnTransitionOverlap">false</item>
-        <item name="android:windowAllowEnterTransitionOverlap">false</item>
-    </style>
 
-    <style name="UTheme.Translucent.Event.Details">
-        <item name="android:windowSharedElementEnterTransition">@transition/detailed_shared_enter</item>
-        <item name="android:windowSharedElementReturnTransition">@transition/detailed_shared_return</item>
-        <item name="android:windowEnterTransition">@transition/detailed_enter</item>
-        <item name="android:windowReturnTransition">@transition/detailed_return</item>
-    </style>
+    <declare-styleable name="DetailedSharedEnter">
+        <attr name="heightDim" format="float" />
+        <attr name="widthDim" format="float" />
+    </declare-styleable>
+
 </resources>
