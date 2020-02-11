@@ -20,17 +20,14 @@
 
 package dev.forcetower.event.feature.details
 
-import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import android.util.TypedValue
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
-import com.forcetower.core.utils.ColorUtils
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.shared.UActivity
@@ -67,16 +64,6 @@ class EventDetailsActivity : UActivity() {
                     .clearFilters()
                     .generate { palette -> applyFullImagePalette(palette) }
 
-                val twentyFourDip = TypedValue.applyDimension(
-                    TypedValue.COMPLEX_UNIT_DIP,
-                    24f,
-                    resources.displayMetrics
-                ).toInt()
-                Palette.from(bitmap)
-                    .maximumColorCount(3)
-                    .clearFilters()
-                    .setRegion(0, 0, bitmap.width - 1, twentyFourDip)
-                    .generate { palette -> applyTopPalette(bitmap, palette) }
                 binding.image.background = null
                 startPostponedEnterTransition()
             }
@@ -127,26 +114,6 @@ class EventDetailsActivity : UActivity() {
             palette, 0.3f, 0.6f,
             ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
         )
-    }
-
-    fun applyTopPalette(bitmap: Bitmap, palette: Palette?) {
-        val lightness = ColorUtils.isDark(palette)
-        val isDark = if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
-            ColorUtils.isDark(bitmap, bitmap.width / 2, 0)
-        } else {
-            lightness == ColorUtils.IS_DARK
-        }
-
-        // color the status bar.
-        var statusBarColor = window.statusBarColor
-        ColorUtils.getMostPopulousSwatch(palette)?.let {
-            statusBarColor = ColorUtils.scrimify(it.rgb, isDark, SCRIM_ADJUSTMENT)
-            if (!isDark) {
-                ViewUtils.setLightStatusBar(binding.image)
-            } else {
-                ViewUtils.setDarkStatusBar(binding.image)
-            }
-        }
     }
 
     companion object {
