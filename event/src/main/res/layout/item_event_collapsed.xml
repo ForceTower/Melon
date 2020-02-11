@@ -27,12 +27,17 @@
         <variable
             name="event"
             type="com.forcetower.uefs.core.model.unes.Event" />
+
+        <variable
+            name="actions"
+            type="dev.forcetower.event.feature.listing.EventActions" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingStart="16dp"
-        android:paddingEnd="16dp">
+        android:paddingEnd="16dp"
+        android:onClick="@{() -> actions.onEventClick(event)}">
 
         <TextView
             android:id="@+id/title"

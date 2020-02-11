@@ -74,13 +74,13 @@ fun speakerImage(
         if (listener != null) {
             imageLoad.listener(object : RequestListener<Drawable> {
                 override fun onResourceReady(
-                    resource: Drawable?,
+                    resource: Drawable,
                     model: Any?,
                     target: Target<Drawable>?,
                     dataSource: DataSource?,
                     isFirstResource: Boolean
                 ): Boolean {
-                    listener.onImageLoaded()
+                    listener.onImageLoaded(resource)
                     return false
                 }
 

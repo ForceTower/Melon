@@ -18,22 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.event.feature.listing
+package dev.forcetower.event.core.injection
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import com.forcetower.uefs.core.model.unes.Event
-import javax.inject.Inject
+import com.forcetower.core.injection.annotation.FeatureScope
+import com.forcetower.uefs.core.injection.AppComponent
+import dagger.Component
+import dev.forcetower.event.core.injection.module.ViewModelModule
+import dev.forcetower.event.feature.details.EventDetailsActivity
+import dev.forcetower.event.feature.listing.EventFragment
 
-typealias SingleEventAction = com.forcetower.uefs.core.vm.Event<Event>
-
-class EventViewModel @Inject constructor() : ViewModel(), EventActions {
-    private val _onEventClicked = MutableLiveData<SingleEventAction>()
-    val onEventClicked: LiveData<SingleEventAction>
-        get() = _onEventClicked
-
-    override fun onEventClick(event: Event) {
-        _onEventClicked.value = SingleEventAction(event)
-    }
+@FeatureScope
+@Component(
+    modules = [
+        ViewModelModule::class
+    ],
+    dependencies = [AppComponent::class]
+)
+interface EventComponent {
+    fun inject(activity: EventDetailsActivity)
+    fun inject(fragment: EventFragment)
 }

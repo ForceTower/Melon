@@ -20,19 +20,35 @@
 
 package dev.forcetower.event.feature.listing
 
+import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
+import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.core.model.unes.Event
-import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.core.vm.EventObserver
+import com.forcetower.uefs.feature.shared.UDynamicFragment
+import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentEventBinding
+import dev.forcetower.event.feature.details.EventDetailsActivity
 import org.threeten.bp.ZonedDateTime
 import java.util.UUID
+import javax.inject.Inject
 
-class EventFragment : UFragment() {
+class EventFragment : UDynamicFragment() {
+    @Inject
+    lateinit var factory: BaseViewModelFactory
     private lateinit var binding: FragmentEventBinding
     private lateinit var adapter: EventAdapter
+    private val viewModel: EventViewModel by viewModels { factory }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentEventBinding.inflate(inflater, container, false).also {
@@ -42,9 +58,16 @@ class EventFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = EventAdapter()
+        adapter = EventAdapter(viewModel)
         binding.recyclerEvents.adapter = adapter
         adapter.submitList(events)
+
+        viewModel.onEventClicked.observe(viewLifecycleOwner, EventObserver {
+            val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
+                putExtra("event_id", it.id)
+            }
+            startActivity(intent)
+        })
     }
 
     companion object {

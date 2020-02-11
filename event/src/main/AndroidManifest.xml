@@ -32,7 +32,10 @@
     </dist:module>
 
     <application>
-        <activity android:name=".feature.details.EventDetailsActivity">
+        <activity
+            android:name=".feature.details.EventDetailsActivity"
+            android:parentActivityName="com.forcetower.uefs.feature.home.HomeActivity"
+            android:theme="@style/UTheme.Translucent.Event.Details">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>

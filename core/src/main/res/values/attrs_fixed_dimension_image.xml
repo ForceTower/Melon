@@ -20,7 +20,10 @@
   -->
 
 <resources>
-    <string name="general_events">Eventos</string>
-    <string name="back_button">Voltar</string>
-    <string name="go_to_register_page">Eu quero ir!</string>
+
+    <declare-styleable name="FixedDimensionImageView">
+        <attr name="heightDimension" format="float" />
+        <attr name="widthDimension" format="float" />
+    </declare-styleable>
+
 </resources>

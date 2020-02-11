@@ -25,17 +25,23 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Event
+import com.forcetower.uefs.feature.shared.executeBindingsAfter
 import com.forcetower.uefs.feature.shared.inflate
 import dev.forcetower.event.R
 import dev.forcetower.event.databinding.ItemEventCollapsedBinding
 
-class EventAdapter : ListAdapter<Event, EventAdapter.EventHolder>(EventDiff) {
+class EventAdapter(
+    private val actions: EventActions
+) : ListAdapter<Event, EventAdapter.EventHolder>(EventDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventHolder {
         return EventHolder(parent.inflate(R.layout.item_event_collapsed))
     }
 
     override fun onBindViewHolder(holder: EventHolder, position: Int) {
-        holder.binding.event = getItem(position)
+        holder.binding.executeBindingsAfter {
+            event = getItem(position)
+            actions = this@EventAdapter.actions
+        }
     }
 
     inner class EventHolder(val binding: ItemEventCollapsedBinding) : RecyclerView.ViewHolder(binding.root)
