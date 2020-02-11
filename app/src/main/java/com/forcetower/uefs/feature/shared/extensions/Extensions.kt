@@ -26,7 +26,11 @@ import android.content.Intent
 import android.content.pm.ShortcutInfo
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.graphics.drawable.Icon
+import android.graphics.drawable.LayerDrawable
+import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.view.View
 import androidx.annotation.DrawableRes
@@ -40,6 +44,7 @@ import androidx.fragment.app.FragmentTransaction
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import java.io.File
@@ -62,6 +67,24 @@ fun Activity.postponeEnterTransition(timeout: Long) {
     window.decorView.postDelayed(timeout) {
         startPostponedEnterTransition()
     }
+}
+
+val LayerDrawable.layers: List<Drawable>
+    get() = (0 until numberOfLayers).map { getDrawable(it) }
+
+fun Drawable.getBitmap(): Bitmap? {
+    if (this is TransitionDrawable) {
+        layers.forEach {
+            val bmp = it.getBitmap()
+            if (bmp != null) return bmp
+        }
+    }
+    if (this is BitmapDrawable) {
+        return bitmap
+    } else if (this is GifDrawable) {
+        return firstFrame
+    }
+    return null
 }
 
 @RequiresApi(Build.VERSION_CODES.N_MR1)

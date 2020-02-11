@@ -20,17 +20,21 @@
 
 package dev.forcetower.event.feature.listing
 
+import android.app.ActivityOptions
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Pair
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.forEach
 import androidx.fragment.app.viewModels
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UDynamicFragment
+import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentEventBinding
 import dev.forcetower.event.feature.details.EventDetailsActivity
@@ -66,8 +70,23 @@ class EventFragment : UDynamicFragment() {
             val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
                 putExtra("event_id", it.id)
             }
-            startActivity(intent)
+            val container = findEventShot(binding.recyclerEvents, it.id)
+            val options = ActivityOptions.makeSceneTransitionAnimation(
+                requireActivity(),
+                Pair.create(container, getString(R.string.transition_event_image)),
+                Pair.create(container, getString(R.string.transition_detail_background))
+            )
+            startActivity(intent, options.toBundle())
         })
+    }
+
+    private fun findEventShot(entities: ViewGroup, id: String): View {
+        entities.forEach {
+            if (it.getTag(R.id.tag_event_id) == id) {
+                return it.findViewById(R.id.image)
+            }
+        }
+        return entities
     }
 
     companion object {

@@ -131,7 +131,8 @@
     </style>
 
     <style name="UTheme.Translucent.Event" />
-    <style name="UTheme.Translucent.Event.Details" />
+    <style name="UTheme.Translucent.Event.Impl" />
+    <style name="UTheme.Translucent.Event.Impl.Details" />
 
     <style name="UTheme.Translucent.About">
         <item name="android:windowEnterTransition">@transition/about_enter</item>
