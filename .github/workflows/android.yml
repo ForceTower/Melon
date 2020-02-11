@@ -5,15 +5,12 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        java: [ 11.0.3 ]
     steps:
     - uses: actions/checkout@v2
     - name: set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: ${{ matrix.java }}
+        java-version: 1.8
       env:
         SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
     
@@ -29,7 +26,7 @@ jobs:
       run: ./gradlew check
     
     - name: Build Release App
-      run: ./gradlew assembleRelease
+      run: ./gradlew bundleRelease
     
     - name: Upload result for job
       uses: actions/upload-artifact@v1
