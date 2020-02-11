@@ -20,27 +20,138 @@
 
 package dev.forcetower.event.feature.details
 
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.os.Bundle
+import android.util.TypedValue
+import android.view.View
+import androidx.core.content.ContextCompat
+import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
+import androidx.palette.graphics.Palette
+import com.forcetower.core.adapters.ImageLoadListener
+import com.forcetower.core.utils.ColorUtils
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.shared.UActivity
+import com.forcetower.uefs.feature.shared.extensions.getBitmap
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
+import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
+import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.R
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
 import org.threeten.bp.ZonedDateTime
 import java.util.UUID
 
 class EventDetailsActivity : UActivity() {
+    private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
     lateinit var binding: ActivityEventDetailsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        SplitCompat.installActivity(this)
         super.onCreate(savedInstanceState)
         postponeEnterTransition(500L)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_details)
+        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+
         binding.event = event
+
+        val headLoadListener = object : ImageLoadListener {
+            override fun onImageLoaded(drawable: Drawable) {
+                val bitmap = drawable.getBitmap() ?: return
+
+                Palette.from(bitmap)
+                    .clearFilters()
+                    .generate { palette -> applyFullImagePalette(palette) }
+
+                val twentyFourDip = TypedValue.applyDimension(
+                    TypedValue.COMPLEX_UNIT_DIP,
+                    24f,
+                    resources.displayMetrics
+                ).toInt()
+                Palette.from(bitmap)
+                    .maximumColorCount(3)
+                    .clearFilters()
+                    .setRegion(0, 0, bitmap.width - 1, twentyFourDip)
+                    .generate { palette -> applyTopPalette(bitmap, palette) }
+                binding.image.background = null
+                startPostponedEnterTransition()
+            }
+            override fun onImageLoadFailed() {
+                binding.image.background = null
+                startPostponedEnterTransition()
+            }
+        }
+
+        binding.imageListener = headLoadListener
+
+        chromeFader = object : ElasticDragDismissFrameLayout.SystemChromeFader(this) {
+            override fun onDragDismissed() {
+                finishAfterTransition()
+            }
+        }
+
+        binding.apply {
+            bodyScroll.setOnScrollChangeListener { _: NestedScrollView, _: Int, scrollY: Int, _: Int, _: Int ->
+                image.offset = -scrollY
+            }
+            back.setOnClickListener { finishAfterTransition() }
+        }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        binding.draggableFrame.addListener(chromeFader)
+    }
+
+    override fun onPause() {
+        binding.draggableFrame.removeListener(chromeFader)
+        super.onPause()
+    }
+
+    override fun onBackPressed() {
+        finishAfterTransition()
+    }
+
+    fun applyFullImagePalette(palette: Palette?) {
+        // color the ripple on the image spacer (default is grey)
+        binding.imageSpacer.background = ViewUtils.createRipple(
+            palette, 0.25f, 0.5f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+        )
+        // slightly more opaque ripple on the pinned image to compensate for the scrim
+        binding.image.foreground = ViewUtils.createRipple(
+            palette, 0.3f, 0.6f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+        )
+    }
+
+    fun applyTopPalette(bitmap: Bitmap, palette: Palette?) {
+        val lightness = ColorUtils.isDark(palette)
+        val isDark = if (lightness == ColorUtils.LIGHTNESS_UNKNOWN) {
+            ColorUtils.isDark(bitmap, bitmap.width / 2, 0)
+        } else {
+            lightness == ColorUtils.IS_DARK
+        }
+
+        // color the status bar.
+        var statusBarColor = window.statusBarColor
+        ColorUtils.getMostPopulousSwatch(palette)?.let {
+            statusBarColor = ColorUtils.scrimify(it.rgb, isDark, SCRIM_ADJUSTMENT)
+            if (!isDark) {
+                ViewUtils.setLightStatusBar(binding.image)
+            } else {
+                ViewUtils.setDarkStatusBar(binding.image)
+            }
+        }
     }
 
     companion object {
+        private const val SCRIM_ADJUSTMENT = 0.075f
+
         val event = Event(
             UUID.randomUUID().toString(),
             "XXIII SIECOMP",

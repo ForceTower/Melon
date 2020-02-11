@@ -38,9 +38,11 @@ class EventAdapter(
     }
 
     override fun onBindViewHolder(holder: EventHolder, position: Int) {
+        val item = getItem(position)
         holder.binding.executeBindingsAfter {
-            event = getItem(position)
+            event = item
             actions = this@EventAdapter.actions
+            root.setTag(R.id.tag_event_id, item.id)
         }
     }
 
