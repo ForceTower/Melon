@@ -5,12 +5,15 @@ on: [push]
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        java: [ 11.0.3 ]
     steps:
     - uses: actions/checkout@v2
-    - name: set up JDK 1.8
+    - name: set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: ${{ matrix.java }}
       env:
         SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
     
