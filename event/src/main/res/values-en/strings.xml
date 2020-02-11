@@ -19,9 +19,9 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
-    <string name="general_events">Eventos</string>
-    <string name="back_button">Voltar</string>
-    <string name="go_to_register_page">Eu quero ir!</string>
-    <string name="no_events_created">Nossa, tão vazio!</string>
+<resources>
+    <string name="general_events">Events</string>
+    <string name="back_button">Back</string>
+    <string name="go_to_register_page">I\'m on it!</string>
+    <string name="no_events_created">Wow, such empty!</string>
 </resources>

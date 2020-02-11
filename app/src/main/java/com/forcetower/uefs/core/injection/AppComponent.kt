@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
@@ -78,6 +79,7 @@ interface AppComponent {
     fun executors(): AppExecutors
     fun context(): Context
     fun coreDatabase(): UDatabase
+    fun service(): UService
     fun dataRepository(): SagresDataRepository
     fun appViewModelFactory(): UViewModelFactory
 

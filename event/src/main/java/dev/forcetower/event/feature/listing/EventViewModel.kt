@@ -24,14 +24,19 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Event
+import dev.forcetower.event.core.repository.EventRepository
 import javax.inject.Inject
 
 typealias SingleEventAction = com.forcetower.uefs.core.vm.Event<Event>
 
-class EventViewModel @Inject constructor() : ViewModel(), EventActions {
+class EventViewModel @Inject constructor(
+    private val repository: EventRepository
+) : ViewModel(), EventActions {
     private val _onEventClicked = MutableLiveData<SingleEventAction>()
     val onEventClicked: LiveData<SingleEventAction>
         get() = _onEventClicked
+
+    val events = repository.events
 
     override fun onEventClick(event: Event) {
         _onEventClicked.value = SingleEventAction(event)
