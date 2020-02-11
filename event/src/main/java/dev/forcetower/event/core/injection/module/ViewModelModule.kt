@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,17 +18,24 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.util
+package dev.forcetower.event.core.injection.module
 
-import androidx.annotation.CheckResult
-import androidx.annotation.ColorInt
-import androidx.annotation.IntRange
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.core.injection.annotation.ViewModelKey
+import dagger.Binds
+import dagger.Module
+import dagger.multibindings.IntoMap
+import dev.forcetower.event.feature.listing.EventViewModel
 
-object ColorUtils {
-    @CheckResult
-    @ColorInt
-    @JvmStatic
-    fun modifyAlpha(@ColorInt color: Int, @IntRange(from = 0, to = 255) alpha: Int): Int {
-        return color and 0x00ffffff or (alpha shl 24)
-    }
+@Module
+abstract class ViewModelModule {
+    @Binds
+    @IntoMap
+    @ViewModelKey(EventViewModel::class)
+    abstract fun bindAuthViewModel(vm: EventViewModel): ViewModel
+
+    @Binds
+    abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory
 }

@@ -20,7 +20,13 @@
   -->
 
 <resources>
-    <string name="general_events">Eventos</string>
-    <string name="back_button">Voltar</string>
-    <string name="go_to_register_page">Eu quero ir!</string>
+    <style name="UTheme.Translucent.Event">
+        <item name="android:colorControlActivated">?attr/colorAccent</item>
+        <item name="android:windowAllowReturnTransitionOverlap">false</item>
+        <item name="android:windowAllowEnterTransitionOverlap">false</item>
+    </style>
+
+    <style name="UTheme.Translucent.Event.Details">
+
+    </style>
 </resources>

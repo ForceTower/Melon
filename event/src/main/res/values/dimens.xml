@@ -20,7 +20,6 @@
   -->
 
 <resources>
-    <string name="general_events">Eventos</string>
-    <string name="back_button">Voltar</string>
-    <string name="go_to_register_page">Eu quero ir!</string>
+    <dimen name="event_collapsed_app_bar_height">168dp</dimen>
+    <dimen name="z_fab_over_touchable_app_bar">9dp</dimen>
 </resources>

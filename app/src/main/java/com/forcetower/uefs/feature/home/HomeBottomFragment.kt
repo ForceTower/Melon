@@ -42,7 +42,7 @@ import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
