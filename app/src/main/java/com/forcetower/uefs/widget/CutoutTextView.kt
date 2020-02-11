@@ -34,7 +34,7 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.util.ViewUtils
+import com.forcetower.core.utils.ViewUtils
 
 class CutoutTextView(ctx: Context, attrs: AttributeSet) : View(ctx, attrs) {
     private val textPaint: TextPaint = TextPaint(Paint.ANTI_ALIAS_FLAG)

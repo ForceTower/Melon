@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,15 +18,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.util
+package com.forcetower.core.utils
 
 import android.content.Context
+import android.graphics.drawable.Drawable
 import android.text.TextPaint
 import android.util.DisplayMetrics
+import android.util.Property
 import android.util.TypedValue
 import androidx.annotation.AttrRes
 
 object ViewUtils {
+    val DRAWABLE_ALPHA: Property<Drawable, Int> =
+        AnimUtils.createIntProperty(object : AnimUtils.IntProp<Drawable>("alpha") {
+            override operator fun set(`object`: Drawable, value: Int) {
+                `object`.alpha = value
+            }
+
+            override operator fun get(`object`: Drawable): Int {
+                return `object`.alpha
+            }
+        })
+
     @JvmStatic
     fun getSingleLineTextSize(
         text: String,
