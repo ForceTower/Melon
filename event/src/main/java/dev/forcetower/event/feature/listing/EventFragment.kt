@@ -30,16 +30,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Observer
 import com.forcetower.core.base.BaseViewModelFactory
-import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UDynamicFragment
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentEventBinding
 import dev.forcetower.event.feature.details.EventDetailsActivity
-import org.threeten.bp.ZonedDateTime
-import java.util.UUID
 import javax.inject.Inject
 
 class EventFragment : UDynamicFragment() {
@@ -64,7 +62,10 @@ class EventFragment : UDynamicFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = EventAdapter(viewModel)
         binding.recyclerEvents.adapter = adapter
-        adapter.submitList(events)
+        viewModel.events.observe(viewLifecycleOwner, Observer {
+            adapter.submitList(it)
+            binding.isEmpty = it.isEmpty()
+        })
 
         viewModel.onEventClicked.observe(viewLifecycleOwner, EventObserver {
             val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
@@ -80,36 +81,12 @@ class EventFragment : UDynamicFragment() {
         })
     }
 
-    private fun findEventShot(entities: ViewGroup, id: String): View {
+    private fun findEventShot(entities: ViewGroup, id: Long): View {
         entities.forEach {
             if (it.getTag(R.id.tag_event_id) == id) {
                 return it.findViewById(R.id.image)
             }
         }
         return entities
-    }
-
-    companion object {
-        val events = listOf(
-            Event(
-                UUID.randomUUID().toString(),
-                "XXIII SIECOMP",
-                "Muita coisa engraçada e gente legal",
-                "https://images.even3.com.br/UPJVSvZBwbrcakjVHQLyiz90jHU=/1300x536/smart/even3.blob.core.windows.net/banner/BannerXXIISIECOMP.e34ffcd81b1d4a019044.jpg",
-                "João Paulo",
-                1,
-                "Ele mesmo",
-                ZonedDateTime.now().plusDays(3),
-                ZonedDateTime.now().plusDays(3).plusHours(3),
-                "Na sua casa",
-                9.99,
-                20,
-                null,
-                true,
-                ZonedDateTime.now(),
-                true,
-                canModify = true
-            )
-        )
     }
 }

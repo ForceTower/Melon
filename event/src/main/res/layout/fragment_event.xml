@@ -20,7 +20,13 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="isEmpty"
+            type="Boolean" />
+    </data>
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -36,12 +42,30 @@
                 app:title="@string/general_events" />
         </com.google.android.material.appbar.AppBarLayout>
 
+        <TextView
+            android:id="@+id/empty"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginBottom="56dp"
+            android:layout_marginHorizontal="32dp"
+            android:gravity="center_horizontal"
+            android:textAppearance="?android:textAppearanceMedium"
+            android:drawableTop="@drawable/no_items_found_204"
+            android:drawablePadding="16dp"
+            android:text="@string/no_events_created"
+            app:goneUnless="@{isEmpty}"
+            tools:targetApi="o"
+            tools:visibility="visible" />
+
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_events"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:paddingBottom="64dp"
             android:clipToPadding="false"
+            app:goneIf="@{isEmpty}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"/>
 

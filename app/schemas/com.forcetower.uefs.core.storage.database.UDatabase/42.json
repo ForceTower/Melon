@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 42,
-    "identityHash": "4036184d60173c927c8fde51d3544f63",
+    "identityHash": "82216de9043823e3acbc1b8b3e65e0fa",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -2799,12 +2799,12 @@
       },
       {
         "tableName": "Event",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, `participating` INTEGER NOT NULL, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
             "columnName": "id",
-            "affinity": "TEXT",
+            "affinity": "INTEGER",
             "notNull": true
           },
           {
@@ -2902,6 +2902,12 @@
             "columnName": "canModify",
             "affinity": "INTEGER",
             "notNull": true
+          },
+          {
+            "fieldPath": "participating",
+            "columnName": "participating",
+            "affinity": "INTEGER",
+            "notNull": true
           }
         ],
         "primaryKey": {
@@ -2917,7 +2923,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '4036184d60173c927c8fde51d3544f63')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '82216de9043823e3acbc1b8b3e65e0fa')"
     ]
   }
 }

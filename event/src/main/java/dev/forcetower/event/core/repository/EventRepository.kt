@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,13 +18,30 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.repository
+package dev.forcetower.event.core.repository
 
-import com.forcetower.uefs.core.model.unes.Event
-import com.google.firebase.firestore.CollectionReference
+import androidx.lifecycle.liveData
+import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
+import kotlinx.coroutines.Dispatchers
+import timber.log.Timber
 import javax.inject.Inject
-import javax.inject.Named
 
 class EventRepository @Inject constructor(
-    @Named(Event.COLLECTION) private val collection: CollectionReference
-)
+    private val database: UDatabase,
+    private val service: UService
+) {
+
+    val events = liveData(Dispatchers.IO) {
+        emitSource(database.eventDao().all())
+        try {
+            val result = service.events()
+            val data = result.data
+            if (data != null) {
+                database.eventDao().insert(data)
+            }
+        } catch (error: Throwable) {
+            Timber.i("An error ${error.message}")
+        }
+    }
+}

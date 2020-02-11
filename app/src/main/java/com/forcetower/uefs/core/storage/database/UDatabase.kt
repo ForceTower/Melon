@@ -77,6 +77,7 @@ import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
+import com.forcetower.uefs.core.storage.database.dao.EventDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDisciplineDao
@@ -167,4 +168,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun statementDao(): ProfileStatementDao
     abstract fun userSessionDao(): UserSessionDao
     abstract fun affinityQuestion(): AffinityQuestionDao
+    abstract fun eventDao(): EventDao
 }
