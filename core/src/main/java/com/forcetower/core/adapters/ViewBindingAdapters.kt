@@ -20,33 +20,19 @@
 
 package com.forcetower.core.adapters
 
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.WindowInsets
-import android.widget.ImageView
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.forcetower.core.R
 import com.forcetower.core.widget.CircularOutlineProvider
 import com.forcetower.core.widget.CustomSwipeRefreshLayout
 import com.forcetower.sagres.utils.WordUtils
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -64,62 +50,6 @@ fun View.bindLayoutFullscreen(previousFullscreen: Boolean, fullscreen: Boolean) 
 fun clipToCircle(view: View, clip: Boolean) {
     view.clipToOutline = clip
     view.outlineProvider = if (clip) CircularOutlineProvider else null
-}
-
-@BindingAdapter(value = ["imageUri", "placeholder", "clipCircle", "listener"], requireAll = false)
-fun imageUri(imageView: ImageView, imageUri: Uri?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
-    val placeholderDrawable = placeholder ?: AppCompatResources.getDrawable(
-            imageView.context, R.mipmap.ic_unes_large_image_512
-    )
-    val circular = clipCircle ?: false
-    var request = when (imageUri) {
-        null -> {
-            Timber.d("Unsetting image url")
-            Glide.with(imageView)
-                    .load(placeholderDrawable)
-        }
-        else -> {
-            Glide.with(imageView)
-                    .load(imageUri)
-                    .apply(RequestOptions().placeholder(placeholderDrawable))
-        }
-    }
-    request = if (circular) {
-        request.circleCrop()
-    } else {
-        request
-    }
-
-    if (listener != null) {
-        request = request.listener(object : RequestListener<Drawable> {
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoaded()
-                return false
-            }
-
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoadFailed()
-                return false
-            }
-        })
-    }
-    request.into(imageView)
-}
-
-@BindingAdapter(value = ["imageUrl", "placeholder", "clipCircle", "listener"], requireAll = false)
-fun imageUrl(imageView: ImageView, imageUrl: String?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
-    imageUri(imageView, imageUrl?.toUri(), placeholder, clipCircle, listener)
 }
 
 @BindingAdapter("swipeRefreshColors")
@@ -178,14 +108,6 @@ fun dateFromLong(view: TextView, value: Long?) {
     view.text = str
 }
 
-/**
- * An interface for responding to image loading completion.
- */
-interface ImageLoadListener {
-    fun onImageLoaded()
-    fun onImageLoadFailed()
-}
-
 data class ViewPaddingState(
     val left: Int,
     val top: Int,
@@ -225,10 +147,10 @@ fun applySystemWindows(
 }
 
 data class InitialPadding(
-        val left: Int,
-        val top: Int,
-        val right: Int,
-        val bottom: Int
+    val left: Int,
+    val top: Int,
+    val right: Int,
+    val bottom: Int
 )
 
 private fun recordInitialPaddingForView(view: View) = InitialPadding(
@@ -247,7 +169,6 @@ fun View.requestApplyInsetsWhenAttached() {
         })
     }
 }
-
 
 fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
     val initialPadding = recordInitialPaddingForView(this)

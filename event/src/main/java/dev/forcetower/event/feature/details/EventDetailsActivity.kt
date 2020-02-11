@@ -21,12 +21,44 @@
 package dev.forcetower.event.feature.details
 
 import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
+import dev.forcetower.event.R
+import dev.forcetower.event.databinding.ActivityEventDetailsBinding
+import org.threeten.bp.ZonedDateTime
+import java.util.UUID
 
 class EventDetailsActivity : UActivity() {
+    lateinit var binding: ActivityEventDetailsBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         postponeEnterTransition(500L)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_event_details)
+        binding.event = event
+    }
+
+    companion object {
+        val event = Event(
+            UUID.randomUUID().toString(),
+            "XXIII SIECOMP",
+            "Muita coisa engraçada e gente legal",
+            "https://images.even3.com.br/UPJVSvZBwbrcakjVHQLyiz90jHU=/1300x536/smart/even3.blob.core.windows.net/banner/BannerXXIISIECOMP.e34ffcd81b1d4a019044.jpg",
+            "João Paulo",
+            1,
+            "Ele mesmo",
+            ZonedDateTime.now().plusDays(3),
+            ZonedDateTime.now().plusDays(3).plusHours(3),
+            "Na sua casa",
+            9.99,
+            20,
+            null,
+            true,
+            ZonedDateTime.now(),
+            true,
+            canModify = true
+        )
     }
 }

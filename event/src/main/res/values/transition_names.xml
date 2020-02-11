@@ -20,7 +20,7 @@
   -->
 
 <resources>
-    <string name="general_events">Eventos</string>
-    <string name="back_button">Voltar</string>
-    <string name="go_to_register_page">Eu quero ir!</string>
+    <string name="transition_event_image" translatable="false">event</string>
+    <string name="transition_event_title" translatable="false">event_title</string>
+    <string name="transition_detail_background" translatable="false">detail_background</string>
 </resources>

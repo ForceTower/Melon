@@ -34,7 +34,7 @@ import androidx.lifecycle.Observer
 import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentProfileBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
