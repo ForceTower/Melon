@@ -42,7 +42,7 @@ import dev.forcetower.conference.core.model.persistence.Session
 import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
 import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
 import dev.forcetower.conference.core.ui.widget.BubbleDecoration
-import dev.forcetower.conference.databinding.FragmentScheduleBinding
+import dev.forcetower.conference.databinding.FragmentConferenceScheduleBinding
 import org.threeten.bp.ZonedDateTime
 import java.util.UUID
 import javax.inject.Inject
@@ -50,7 +50,7 @@ import javax.inject.Inject
 class ScheduleFragment : UDynamicFragment() {
     @Inject
     lateinit var factory: BaseViewModelFactory
-    private lateinit var binding: FragmentScheduleBinding
+    private lateinit var binding: FragmentConferenceScheduleBinding
     private lateinit var dayAdapter: DayAdapter
     private lateinit var scheduleAdapter: ScheduleAdapter
     private lateinit var dayIndicatorItemDecoration: BubbleDecoration
@@ -68,7 +68,7 @@ class ScheduleFragment : UDynamicFragment() {
         dayAdapter = DayAdapter(viewModel, this)
         scheduleAdapter = ScheduleAdapter(viewModel, this)
 
-        FragmentScheduleBinding.inflate(inflater, container, false).also {
+        FragmentConferenceScheduleBinding.inflate(inflater, container, false).also {
             binding = it
             binding.dayIndicators.adapter = dayAdapter
             binding.recyclerSchedule.adapter = scheduleAdapter
