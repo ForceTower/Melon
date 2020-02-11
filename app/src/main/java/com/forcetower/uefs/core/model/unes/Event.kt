@@ -22,28 +22,40 @@ package com.forcetower.uefs.core.model.unes
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.SerializedName
 import org.threeten.bp.ZonedDateTime
 
 @Entity
 data class Event(
     @PrimaryKey(autoGenerate = false)
-    val id: String,
+    val id: Long,
     val name: String,
     val description: String,
+    @SerializedName("image_url")
     val imageUrl: String,
+    @SerializedName("creator_name")
     val creatorName: String,
+    @SerializedName("creator_id")
     val creatorId: Long,
+    @SerializedName("offered_by")
     val offeredBy: String,
+    @SerializedName("start_date")
     val startDate: ZonedDateTime,
+    @SerializedName("end_date")
     val endDate: ZonedDateTime,
     val location: String,
     val price: Double?,
+    @SerializedName("certificate_hours")
     val certificateHours: Int?,
+    @SerializedName("course-id")
     val courseId: Int?,
     val featured: Boolean,
+    @SerializedName("created_at")
     val createdAt: ZonedDateTime,
     val approved: Boolean,
-    val canModify: Boolean
+    @SerializedName("can_modify")
+    val canModify: Boolean,
+    val participating: Boolean
 ) {
 
     override fun toString(): String {

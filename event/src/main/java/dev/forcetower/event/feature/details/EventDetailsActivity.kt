@@ -38,7 +38,6 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.R
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
 import org.threeten.bp.ZonedDateTime
-import java.util.UUID
 
 class EventDetailsActivity : UActivity() {
     private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
@@ -120,7 +119,7 @@ class EventDetailsActivity : UActivity() {
         private const val SCRIM_ADJUSTMENT = 0.075f
 
         val event = Event(
-            UUID.randomUUID().toString(),
+            1,
             "XXIII SIECOMP",
             "Muita coisa engraçada e gente legal",
             "https://images.even3.com.br/UPJVSvZBwbrcakjVHQLyiz90jHU=/1300x536/smart/even3.blob.core.windows.net/banner/BannerXXIISIECOMP.e34ffcd81b1d4a019044.jpg",
@@ -136,7 +135,8 @@ class EventDetailsActivity : UActivity() {
             true,
             ZonedDateTime.now(),
             true,
-            canModify = true
+            canModify = true,
+            participating = false
         )
     }
 }

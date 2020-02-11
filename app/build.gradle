@@ -187,7 +187,6 @@ dependencies {
     implementation "androidx.paging:paging-runtime:$paging"
 
     // Room
-    implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
 
     // Work manager
