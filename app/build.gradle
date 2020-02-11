@@ -250,6 +250,16 @@ dependencies {
     implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
+
+    // Add missing dependencies for JDK 9+
+    if (JavaVersion.current().ordinal() >= JavaVersion.VERSION_1_9.ordinal()) {
+        kapt "com.sun.xml.bind:jaxb-core:2.3.0.1"
+        kapt "javax.xml.bind:jaxb-api:2.3.1"
+        kapt "com.sun.xml.bind:jaxb-impl:2.3.2"
+
+        annotationProcessor "com.sun.xml.bind:jaxb-core:2.3.0.1"
+        annotationProcessor "javax.xml.bind:jaxb-api:2.3.1"
+    }
 }
 
 task buildNotes {
