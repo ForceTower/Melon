@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -86,7 +87,7 @@ class ProfileFragment : UFragment(), Injectable {
         })
 
         val headLoadListener = object : ImageLoadListener {
-            override fun onImageLoaded() { activity?.startPostponedEnterTransition() }
+            override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
             override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
         }
 

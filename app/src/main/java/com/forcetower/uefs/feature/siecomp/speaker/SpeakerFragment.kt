@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.siecomp.speaker
 
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -66,7 +67,7 @@ class SpeakerFragment : UFragment(), Injectable {
         })
 
         val headLoadListener = object : ImageLoadListener {
-            override fun onImageLoaded() { activity?.startPostponedEnterTransition() }
+            override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
             override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
         }
 
