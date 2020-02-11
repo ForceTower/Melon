@@ -25,4 +25,16 @@
     <string name="go_to_register_page">Eu quero ir!</string>
     <string name="create_new_event">Criar evento</string>
     <string name="no_events_created">Nossa, tão vazio!</string>
+    <string name="event_name">Nome</string>
+    <string name="event_description">Descrição</string>
+    <string name="event_location">Local</string>
+    <string name="event_start">Início</string>
+    <string name="event_end">Término</string>
+    <string name="event_course">Curso alvo</string>
+    <string name="event_price">Preço da entrada</string>
+    <string name="event_certificate">Horas do certificado</string>
+    <string name="event_check_certificate">Certificado</string>
+    <string name="event_check_open_for_all">Aberto a qualquer curso</string>
+    <string name="event_check_free">Gratuito</string>
+    <string name="event_create_preview">Visualizar evento</string>
 </resources>

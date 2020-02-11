@@ -178,11 +178,6 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
 
-    implementation "androidx.navigation:navigation-ui:$navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
-    implementation "androidx.navigation:navigation-fragment:$navigation"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
-
     // Paging
     implementation "androidx.paging:paging-runtime:$paging"
 
