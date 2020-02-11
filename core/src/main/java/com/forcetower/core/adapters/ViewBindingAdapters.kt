@@ -31,8 +31,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
@@ -216,10 +214,10 @@ fun applySystemWindows(
 }
 
 data class InitialPadding(
-        val left: Int,
-        val top: Int,
-        val right: Int,
-        val bottom: Int
+    val left: Int,
+    val top: Int,
+    val right: Int,
+    val bottom: Int
 )
 
 private fun recordInitialPaddingForView(view: View) = InitialPadding(
@@ -238,7 +236,6 @@ fun View.requestApplyInsetsWhenAttached() {
         })
     }
 }
-
 
 fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
     val initialPadding = recordInitialPaddingForView(this)
