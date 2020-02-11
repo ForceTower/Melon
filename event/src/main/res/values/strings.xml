@@ -23,5 +23,6 @@
     <string name="general_events">Eventos</string>
     <string name="back_button">Voltar</string>
     <string name="go_to_register_page">Eu quero ir!</string>
+    <string name="create_new_event">Criar evento</string>
     <string name="no_events_created">Nossa, tão vazio!</string>
 </resources>

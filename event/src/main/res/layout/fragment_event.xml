@@ -58,7 +58,6 @@
             tools:targetApi="o"
             tools:visibility="visible" />
 
-
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_events"
             android:layout_width="match_parent"
