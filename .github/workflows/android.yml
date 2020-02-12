@@ -17,6 +17,7 @@ jobs:
         java-version: 1.8
       env:
         GOOGLE_SERVICES_PASSWORD: ${{ secrets.GOOGLE_SERVICES_PASSWORD }}
+        PLAY_PUBLISHER_PASSWORD: ${{ secrets.PLAY_PUBLISHER_PASSWORD }}
         SIGNATURE_PASSWORD: ${{ secrets.SIGNATURE_PASSWORD }}
         SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
         UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
@@ -28,6 +29,9 @@ jobs:
 
     - name: Decode Signature
       run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SIGNATURE_PASSWORD }}" --output sign.jks sign.jks.gpg
+
+    - name: Decode Publishing Secrets
+      run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.PLAY_PUBLISHER_PASSWORD }}" --output unes_uefs_publisher.json unes_uefs_publisher.json.gpg
       
     - name: Dependencies
       run: ./gradlew dependencies
