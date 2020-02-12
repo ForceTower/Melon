@@ -89,7 +89,7 @@ buildscript {
 
         // Others
         gson = '2.8.6'
-        jsoup = "1.12.1"
+        jsoup = '1.12.2'
         chart_view = "v3.1.0"
         about_libraries = "7.0.0-rc1"
         easy_permissions = "0.3.0"
