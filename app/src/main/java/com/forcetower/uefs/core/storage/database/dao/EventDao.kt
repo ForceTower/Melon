@@ -40,7 +40,7 @@ abstract class EventDao {
         internalInsert(events)
     }
 
-    @Query("DELETE FROM Event WHERE sending = 0")
+    @Query("DELETE FROM Event WHERE sending = 0 or sending is null")
     protected abstract suspend fun deleteAll()
 
     @Insert(onConflict = REPLACE)
