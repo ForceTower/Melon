@@ -70,7 +70,7 @@ class EventFragment : UDynamicFragment() {
 
         viewModel.onEventClicked.observe(viewLifecycleOwner, EventObserver {
             val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
-                putExtra("event_id", it.id)
+                putExtra("eventId", it.id)
             }
             val container = findEventShot(binding.recyclerEvents, it.id)
             val options = ActivityOptions.makeSceneTransitionAnimation(

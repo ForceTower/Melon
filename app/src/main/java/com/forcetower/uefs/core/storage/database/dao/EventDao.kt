@@ -31,7 +31,7 @@ import com.forcetower.uefs.core.model.unes.Event
 
 @Dao
 abstract class EventDao {
-    @Query("SELECT * FROM Event WHERE fakeTemp != 1")
+    @Query("SELECT * FROM Event WHERE fakeTemp is null or fakeTemp = 0")
     abstract fun all(): LiveData<List<Event>>
 
     @Insert(onConflict = REPLACE)

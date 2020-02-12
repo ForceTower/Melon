@@ -37,16 +37,15 @@ object ObjectUtils {
     val ZDT_DESERIALIZER: JsonDeserializer<ZonedDateTime> = JsonDeserializer { json, _, _ ->
         val jsonPrimitive = json.asJsonPrimitive
         try {
-
             // if provided as String - '2011-12-03 10:15:30'
             if (jsonPrimitive.isString) {
                 val patterns = arrayOf(
-                        "yyyy-MM-dd HH:mm:ss",
-                        "yyyy-MM-dd'T'HH:mmX",
-                        "yyyy-MM-dd'T'HH:mm:ssX",
-                        "yyyy-MM-dd'T'HH:mmZ",
-                        "yyyy-MM-dd'T'HH:mm:ssZ",
-                        "yyyy-MM-dd'T'HH:mm:ssZ"
+                    "yyyy-MM-dd HH:mm:ss",
+                    "yyyy-MM-dd'T'HH:mmX",
+                    "yyyy-MM-dd'T'HH:mm:ssX",
+                    "yyyy-MM-dd'T'HH:mmZ",
+                    "yyyy-MM-dd'T'HH:mm:ssZ",
+                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
                 )
                 for (pattern in patterns) {
                     try {
