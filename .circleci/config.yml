@@ -40,12 +40,12 @@ jobs:
       - run: 
           name: Downloading Dependencies
           command: |
-            ./gradlew dependencies --no-daemon
+            ./gradlew dependencies
             
       - run:
           name: Run JVM Checks & Lint
           command: |
-            ./gradlew clean check --no-daemon
+            ./gradlew check
 
       - run:
           name: Save Lint Results
@@ -57,10 +57,10 @@ jobs:
             if [ "${CIRCLE_BRANCH}" == "development" ] || [ "${CIRCLE_BRANCH}" == "master" ]
             then
               echo "Starting the publish build!"
-              ./gradlew publishReleaseBundle --no-daemon
+              ./gradlew publishReleaseBundle
             else
               echo "Starting a release build"
-              ./gradlew :app:assembleRelease --no-daemon
+              ./gradlew :app:assembleRelease
             fi
 
       - store_artifacts:
