@@ -93,10 +93,6 @@ dependencies {
     // Room
     kapt "androidx.room:room-compiler:$room"
 
-    // Architecture
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
-
     // Paging
     implementation "androidx.paging:paging-runtime:$paging"
 
