@@ -46,7 +46,6 @@ abstract class EventDao {
     @Insert(onConflict = REPLACE)
     protected abstract suspend fun internalInsert(events: List<Event>)
 
-
     @Query("UPDATE Event SET participating = :participating WHERE id = :id")
     abstract suspend fun updateParticipatingStatus(id: Long, participating: Boolean)
 
