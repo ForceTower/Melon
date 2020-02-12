@@ -55,7 +55,8 @@ data class Event(
     val approved: Boolean,
     @SerializedName("can_modify")
     val canModify: Boolean,
-    val participating: Boolean
+    val participating: Boolean,
+    val fakeTemp: Boolean? = false
 ) {
 
     override fun toString(): String {

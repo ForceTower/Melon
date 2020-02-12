@@ -25,11 +25,12 @@ import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
+import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Event
 
 @Dao
 abstract class EventDao {
-    @Query("SELECT * FROM Event")
+    @Query("SELECT * FROM Event WHERE fakeTemp != 1")
     abstract fun all(): LiveData<List<Event>>
 
     @Insert(onConflict = REPLACE)
@@ -37,4 +38,21 @@ abstract class EventDao {
 
     @Query("UPDATE Event SET participating = :participating WHERE id = :id")
     abstract suspend fun updateParticipatingStatus(id: Long, participating: Boolean)
+
+    @Query("SELECT * FROM Event WHERE id = :eventId")
+    abstract fun get(eventId: Long): LiveData<Event>
+
+    @Transaction
+    open suspend fun insertSingle(insert: Event): Long {
+        val event = selectHighestId()
+        val id = (event?.id ?: 0) + 2000
+        val copy = insert.copy(id = id)
+        return internalInsertSingle(copy)
+    }
+
+    @Query("SELECT * FROM Event ORDER BY id DESC LIMIT 1")
+    protected abstract fun selectHighestId(): Event?
+
+    @Insert(onConflict = REPLACE)
+    protected abstract fun internalInsertSingle(event: Event): Long
 }
