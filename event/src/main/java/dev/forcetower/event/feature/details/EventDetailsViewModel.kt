@@ -18,25 +18,14 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.event.core.injection
+package dev.forcetower.event.feature.details
 
-import com.forcetower.core.injection.annotation.FeatureScope
-import com.forcetower.uefs.core.injection.AppComponent
-import dagger.Component
-import dev.forcetower.event.core.injection.module.ViewModelModule
-import dev.forcetower.event.feature.create.CreateEventFragment
-import dev.forcetower.event.feature.details.EventDetailsActivity
-import dev.forcetower.event.feature.listing.EventFragment
+import androidx.lifecycle.ViewModel
+import dev.forcetower.event.core.repository.EventRepository
+import javax.inject.Inject
 
-@FeatureScope
-@Component(
-    modules = [
-        ViewModelModule::class
-    ],
-    dependencies = [AppComponent::class]
-)
-interface EventComponent {
-    fun inject(activity: EventDetailsActivity)
-    fun inject(fragment: EventFragment)
-    fun inject(fragment: CreateEventFragment)
+class EventDetailsViewModel @Inject constructor(
+    private val repository: EventRepository
+) : ViewModel() {
+    fun loadModel(id: Long) = repository.getEvent(id)
 }

@@ -27,6 +27,8 @@ import com.forcetower.core.injection.annotation.ViewModelKey
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
+import dev.forcetower.event.feature.create.CreationViewModel
+import dev.forcetower.event.feature.details.EventDetailsViewModel
 import dev.forcetower.event.feature.listing.EventViewModel
 
 @Module
@@ -35,6 +37,16 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(EventViewModel::class)
     abstract fun bindAuthViewModel(vm: EventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreationViewModel::class)
+    abstract fun bindCreationViewModel(vm: CreationViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EventDetailsViewModel::class)
+    abstract fun bindEventDetailsViewModel(vm: EventDetailsViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory

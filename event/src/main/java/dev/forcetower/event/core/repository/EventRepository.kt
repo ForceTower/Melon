@@ -20,10 +20,14 @@
 
 package dev.forcetower.event.core.repository
 
+import android.net.Uri
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import kotlinx.coroutines.Dispatchers
+import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -31,6 +35,9 @@ class EventRepository @Inject constructor(
     private val database: UDatabase,
     private val service: UService
 ) {
+    fun getEvent(eventId: Long): LiveData<Event> {
+        return database.eventDao().get(eventId)
+    }
 
     val events = liveData(Dispatchers.IO) {
         emitSource(database.eventDao().all())
@@ -43,5 +50,41 @@ class EventRepository @Inject constructor(
         } catch (error: Throwable) {
             Timber.i("An error ${error.message}")
         }
+    }
+
+    fun create(
+        name: String,
+        location: String,
+        description: String,
+        image: Uri,
+        start: ZonedDateTime,
+        end: ZonedDateTime,
+        offeredBy: String,
+        price: Double?,
+        courseId: Int?,
+        certificateHours: Int?
+    ): LiveData<Long> = liveData(Dispatchers.IO) {
+        val event = Event(
+            0,
+            name,
+            description,
+            image.toString(),
+            "Seu nome aqui",
+            1,
+            offeredBy,
+            start,
+            end,
+            location,
+            price,
+            certificateHours,
+            courseId,
+            featured = false,
+            canModify = false,
+            participating = false,
+            approved = false,
+            fakeTemp = true,
+            createdAt = ZonedDateTime.now()
+        )
+        emit(database.eventDao().insertSingle(event))
     }
 }

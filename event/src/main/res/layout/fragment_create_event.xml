@@ -33,7 +33,8 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical">
+                android:orientation="vertical"
+                android:animateLayoutChanges="true">
 
                 <com.forcetower.core.widget.FixedDimensionImageView
                     android:id="@+id/image"
@@ -111,6 +112,7 @@
                         android:layout_height="match_parent"
                         android:cursorVisible="false"
                         android:focusable="false"
+                        android:singleLine="true"
                         android:focusableInTouchMode="false"
                         android:textColor="?attr/colorOnSurface"
                         android:hint="@string/event_start"/>
@@ -130,9 +132,26 @@
                         android:layout_height="match_parent"
                         android:cursorVisible="false"
                         android:focusable="false"
+                        android:singleLine="true"
                         android:focusableInTouchMode="false"
                         android:textColor="?attr/colorOnSurface"
                         android:hint="@string/event_end"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_offered_by"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/event_organization"
+                        android:singleLine="true"
+                        android:inputType="textAutoCorrect|textAutoComplete"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.checkbox.MaterialCheckBox
@@ -146,12 +165,13 @@
                     android:checked="true"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:visibility="gone">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_price"
                         android:layout_width="match_parent"
@@ -172,11 +192,11 @@
                     android:checked="true"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_certificate"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_certificate"
@@ -198,12 +218,13 @@
                     android:checked="true"/>
 
                 <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_course"
                     style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="16dp"
-                    android:layout_marginTop="4dp">
+                    android:visibility="gone">
 
                     <com.google.android.material.textfield.TextInputEditText
                         android:id="@+id/input_course"
