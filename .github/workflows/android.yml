@@ -39,7 +39,7 @@ jobs:
     - name: Lint & JVM Checks
       run: ./gradlew check
     
-    - name: Build Release App
+    - name: Publish Release App
       run: ./gradlew publishReleaseBundle
     
     - name: Upload result for job
