@@ -1,8 +1,7 @@
 # UNES - (UNES Não É Sagres)
 ![Preview-Screens](https://github.com/ForceTower/Melon/blob/development/screens.png)
 
-![Android CI](https://github.com/ForceTower/Melon/workflows/Android%20CI/badge.svg?branch=development)
-[![CircleCI](https://circleci.com/gh/ForceTower/Melon.svg?style=svg)](https://circleci.com/gh/ForceTower/Melon)
+![Android CI](https://github.com/ForceTower/Melon/workflows/Android%20CI/badge.svg?branch=development
 
 O aplicativo oficial pode ser encontrado na [PlayStore](https://play.google.com/store/apps/details?id=com.forcetower.uefs)
 
