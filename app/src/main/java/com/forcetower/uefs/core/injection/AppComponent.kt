@@ -48,6 +48,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 /**
@@ -80,6 +81,7 @@ interface AppComponent {
     fun context(): Context
     fun coreDatabase(): UDatabase
     fun service(): UService
+    fun client(): OkHttpClient
     fun dataRepository(): SagresDataRepository
     fun appViewModelFactory(): UViewModelFactory
 

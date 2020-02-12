@@ -24,6 +24,7 @@ import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.uefs.core.injection.AppComponent
 import dagger.Component
 import dev.forcetower.event.core.injection.module.ViewModelModule
+import dev.forcetower.event.core.work.CreateEventWorker
 import dev.forcetower.event.feature.create.CreateEventFragment
 import dev.forcetower.event.feature.details.EventDetailsActivity
 import dev.forcetower.event.feature.listing.EventFragment
@@ -39,4 +40,5 @@ interface EventComponent {
     fun inject(activity: EventDetailsActivity)
     fun inject(fragment: EventFragment)
     fun inject(fragment: CreateEventFragment)
+    fun inject(worker: CreateEventWorker)
 }

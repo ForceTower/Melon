@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 42,
-    "identityHash": "5c9485ec0614198172004bced4664d89",
+    "identityHash": "e0ee92afe4d1f2f80359e8592845872b",
     "entities": [
       {
         "tableName": "AccessToken",
@@ -2799,7 +2799,7 @@
       },
       {
         "tableName": "Event",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, `participating` INTEGER NOT NULL, `fakeTemp` INTEGER, PRIMARY KEY(`id`))",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, `participating` INTEGER NOT NULL, `fakeTemp` INTEGER, `sending` INTEGER, PRIMARY KEY(`id`))",
         "fields": [
           {
             "fieldPath": "id",
@@ -2914,6 +2914,12 @@
             "columnName": "fakeTemp",
             "affinity": "INTEGER",
             "notNull": false
+          },
+          {
+            "fieldPath": "sending",
+            "columnName": "sending",
+            "affinity": "INTEGER",
+            "notNull": false
           }
         ],
         "primaryKey": {
@@ -2929,7 +2935,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5c9485ec0614198172004bced4664d89')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, 'e0ee92afe4d1f2f80359e8592845872b')"
     ]
   }
 }

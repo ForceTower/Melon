@@ -23,8 +23,10 @@ package dev.forcetower.event.feature.create
 import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
+import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
@@ -36,6 +38,7 @@ class CreationViewModel @Inject constructor(
     var imageUri: Uri? = null
     var start: Long = utc.timeInMillis
     var end: Long = utc.timeInMillis
+    var createdId: Long? = null
 
     fun loadModel(eventId: Long): LiveData<Event> {
         return repository.getEvent(eventId)
@@ -54,5 +57,9 @@ class CreationViewModel @Inject constructor(
         certificateHours: Int?
     ): LiveData<Long> {
         return repository.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours)
+    }
+
+    fun confirmCreate(id: Long) = viewModelScope.launch {
+        repository.scheduleCreate(id)
     }
 }

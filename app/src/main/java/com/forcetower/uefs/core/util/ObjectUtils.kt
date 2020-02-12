@@ -20,13 +20,17 @@
 
 package com.forcetower.uefs.core.util
 
+import android.annotation.SuppressLint
 import com.forcetower.uefs.BuildConfig
 import com.google.gson.JsonDeserializer
 import com.google.gson.JsonParseException
+import com.google.gson.JsonPrimitive
+import com.google.gson.JsonSerializer
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import org.threeten.bp.format.DateTimeFormatter
+import java.util.Locale
 
 object ObjectUtils {
     @JvmStatic
@@ -61,5 +65,11 @@ object ObjectUtils {
         }
 
         throw JsonParseException("Unable to parse ZonedDateTime")
+    }
+
+    @SuppressLint("ConstantLocale")
+    val ZDT_SERIALIZER: JsonSerializer<ZonedDateTime> = JsonSerializer { src, _, _ ->
+        val formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss", Locale.getDefault())
+        JsonPrimitive(formatter.format(src))
     }
 }

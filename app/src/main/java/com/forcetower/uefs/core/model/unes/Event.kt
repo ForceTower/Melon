@@ -47,7 +47,7 @@ data class Event(
     val price: Double?,
     @SerializedName("certificate_hours")
     val certificateHours: Int?,
-    @SerializedName("course-id")
+    @SerializedName("course_id")
     val courseId: Int?,
     val featured: Boolean,
     @SerializedName("created_at")
@@ -56,7 +56,8 @@ data class Event(
     @SerializedName("can_modify")
     val canModify: Boolean,
     val participating: Boolean,
-    val fakeTemp: Boolean? = false
+    val fakeTemp: Boolean? = false,
+    val sending: Boolean? = false
 ) {
 
     override fun toString(): String {

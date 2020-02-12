@@ -31,6 +31,10 @@
         <variable
             name="imageListener"
             type="com.forcetower.core.adapters.ImageLoadListener" />
+
+        <variable
+            name="actions"
+            type="dev.forcetower.event.feature.details.EventDetailsActions" />
     </data>
     
     <com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
@@ -200,6 +204,25 @@
                     android:textSize="18sp"
                     android:text="@string/go_to_register_page"
                     android:textAllCaps="false"
+                    app:goneIf="@{event.fakeTemp}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_description"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_confirm_create"
+                    android:layout_width="wrap_content"
+                    android:layout_height="60dp"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="32dp"
+                    android:paddingStart="32dp"
+                    android:paddingEnd="32dp"
+                    android:textSize="18sp"
+                    android:text="@string/confirm_event_creation"
+                    android:textAllCaps="false"
+                    android:onClick="@{() -> actions.onConfirmCreation(event)}"
+                    app:goneUnless="@{event.fakeTemp}"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/event_description"

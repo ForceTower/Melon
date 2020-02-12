@@ -50,4 +50,6 @@
     <string name="event_date_invalid">Sem data => Sem evento</string>
     <string name="event_date_end_before_start">Acaba antes de começar, pode isso?</string>
     <string name="event_date_start_before_today">Começa antes de hoje?</string>
+    <string name="confirm_event_creation">Confirmar criação</string>
+    <string name="some_bad_stuff_happened">Perdi o controle, não sei o que é mais para salvar, faz de novo</string>
 </resources>

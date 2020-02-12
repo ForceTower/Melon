@@ -20,6 +20,7 @@
 
 package dev.forcetower.event.feature.details
 
+import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
@@ -68,12 +69,20 @@ class EventDetailsActivity : UActivity() {
 
         val id = intent.getLongExtra("eventId", 0L)
         if (id == 0L) {
+            setResult(Activity.RESULT_CANCELED)
             finish()
             return
         }
 
+        binding.actions = viewModel
+
         viewModel.loadModel(id).observe(this, Observer {
             binding.event = it
+        })
+
+        viewModel.onEventCreationSent.observe(this, Observer {
+            setResult(Activity.RESULT_OK)
+            finishAfterTransition()
         })
 
         val headLoadListener = object : ImageLoadListener {

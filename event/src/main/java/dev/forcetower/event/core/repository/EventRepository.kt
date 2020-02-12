@@ -20,21 +20,39 @@
 
 package dev.forcetower.event.core.repository
 
+import android.content.Context
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.net.Uri
+import android.util.Base64
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import androidx.room.withTransaction
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.util.ImgurUploader
+import com.google.android.play.core.splitcompat.SplitCompat
+import dev.forcetower.event.core.work.CreateEventWorker
 import kotlinx.coroutines.Dispatchers
+import okhttp3.OkHttpClient
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.util.UUID
 import javax.inject.Inject
 
 class EventRepository @Inject constructor(
     private val database: UDatabase,
-    private val service: UService
+    private val service: UService,
+    private val context: Context,
+    private val client: OkHttpClient
 ) {
+    init {
+        SplitCompat.install(context)
+    }
+
     fun getEvent(eventId: Long): LiveData<Event> {
         return database.eventDao().get(eventId)
     }
@@ -86,5 +104,49 @@ class EventRepository @Inject constructor(
             createdAt = ZonedDateTime.now()
         )
         emit(database.eventDao().insertSingle(event))
+    }
+
+    suspend fun scheduleCreate(id: Long) {
+        CreateEventWorker.createWorker(context, id)
+        database.withTransaction {
+            database.eventDao().clearTemps()
+            database.eventDao().setSending(id, true)
+        }
+    }
+
+    suspend fun sendEvent(eventId: Long): Int {
+        val event = database.eventDao().getDirect(eventId) ?: return -1
+
+        val url = if (event.imageUrl.startsWith("http")) {
+            event.imageUrl
+        } else {
+            // TODO make this a dependent work
+            val uri = Uri.parse(event.imageUrl)
+            val resolver = context.applicationContext.contentResolver
+            val stream: InputStream
+            try {
+                stream = resolver.openInputStream(uri) ?: return -1
+            } catch (exception: Throwable) {
+                return -1
+            }
+
+            val image = BitmapFactory.decodeStream(stream)
+            image ?: return -1
+            val baos = ByteArrayOutputStream()
+            image.compress(Bitmap.CompressFormat.PNG, 100, baos)
+            val data = baos.toByteArray()
+            val encoded = Base64.encodeToString(data, Base64.DEFAULT)
+            val upload = ImgurUploader.upload(client, encoded, "event-unes-${UUID.randomUUID().toString().substring(0, 4)}") ?: return 1
+            upload.link
+        }
+
+        Timber.d("Using image link $url")
+        Timber.d("After save...")
+        return try {
+            service.sendEvent(event.copy(imageUrl = url))
+            0
+        } catch (error: Throwable) {
+            1
+        }
     }
 }
