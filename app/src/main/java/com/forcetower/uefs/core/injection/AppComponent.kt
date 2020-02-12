@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
@@ -47,6 +48,7 @@ import dagger.BindsInstance
 import dagger.Component
 import dagger.android.AndroidInjectionModule
 import dagger.android.support.AndroidSupportInjectionModule
+import okhttp3.OkHttpClient
 import javax.inject.Singleton
 
 /**
@@ -78,6 +80,8 @@ interface AppComponent {
     fun executors(): AppExecutors
     fun context(): Context
     fun coreDatabase(): UDatabase
+    fun service(): UService
+    fun client(): OkHttpClient
     fun dataRepository(): SagresDataRepository
     fun appViewModelFactory(): UViewModelFactory
 

@@ -29,7 +29,7 @@ import android.graphics.Paint
 import android.graphics.RectF
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.core.util.AnimUtils.lerp
+import com.forcetower.core.utils.AnimUtils.lerp
 import dev.forcetower.conference.R
 import kotlin.math.max
 import kotlin.math.min

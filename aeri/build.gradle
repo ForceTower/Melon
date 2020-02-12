@@ -91,7 +91,6 @@ dependencies {
     implementation "androidx.fragment:fragment-ktx:$fragment"
 
     // Room
-    implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
 
     // Architecture

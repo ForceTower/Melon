@@ -29,7 +29,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.siecomp.Tag
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.feature.siecomp.schedule.TagsAdapter
 import timber.log.Timber
 

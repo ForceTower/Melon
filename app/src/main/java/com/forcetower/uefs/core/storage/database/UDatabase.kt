@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
@@ -76,6 +77,7 @@ import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
+import com.forcetower.uefs.core.storage.database.dao.EventDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDao
 import com.forcetower.uefs.core.storage.database.dao.FlowchartDisciplineDao
@@ -128,8 +130,9 @@ import com.forcetower.uefs.core.util.Converters
     ProfileStatement::class,
     UserSession::class,
     AffinityQuestion::class,
-    AffinityQuestionAlternative::class
-], version = 41, exportSchema = true)
+    AffinityQuestionAlternative::class,
+    Event::class
+], version = 42, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
@@ -165,4 +168,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun statementDao(): ProfileStatementDao
     abstract fun userSessionDao(): UserSessionDao
     abstract fun affinityQuestion(): AffinityQuestionDao
+    abstract fun eventDao(): EventDao
 }

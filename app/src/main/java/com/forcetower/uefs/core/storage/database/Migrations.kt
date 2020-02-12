@@ -336,3 +336,9 @@ object M40TO41 : Migration(40, 41) {
         database.execSQL("CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_question_id` ON `AffinityQuestionAlternative` (`question_id`)")
     }
 }
+
+object M41TO42 : Migration(41, 42) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `Event` (`id` TEXT NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, PRIMARY KEY(`id`))")
+    }
+}

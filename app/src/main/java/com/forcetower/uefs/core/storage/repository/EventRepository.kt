@@ -20,52 +20,11 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.forcetower.uefs.core.model.service.Event
+import com.forcetower.uefs.core.model.unes.Event
 import com.google.firebase.firestore.CollectionReference
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
 class EventRepository @Inject constructor(
     @Named(Event.COLLECTION) private val collection: CollectionReference
-) {
-    fun getCurrentEvents(): LiveData<List<Event>> {
-        val data = MutableLiveData<List<Event>>()
-        collection.whereEqualTo("approved", true).get().addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                val result = task.result
-                if (result == null) {
-                    Timber.d("Events Task result is null")
-                    data.postValue(emptyList())
-                } else {
-                    val list = result.documents.map { it.toObject(Event::class.java)!!.apply { id = it.id } }
-                    Timber.d("Event List: $list")
-                    data.postValue(list)
-                }
-            } else {
-                Timber.d("Unsuccessful task. Exception ${task.exception?.message}")
-                data.postValue(emptyList())
-            }
-        }
-        return data
-    }
-
-    fun getEvents(): LiveData<List<Event>> {
-        val data = MutableLiveData<List<Event>>()
-        collection.whereEqualTo("approved", true).addSnapshotListener { snapshot, exception ->
-            if (exception != null) {
-                Timber.d("Exception on document read")
-            } else {
-                if (snapshot != null) {
-                    val list = snapshot.documents.map { it.toObject(Event::class.java)!! }
-                    data.postValue(list)
-                } else {
-                    data.postValue(emptyList())
-                }
-            }
-        }
-        return data
-    }
-}
+)
