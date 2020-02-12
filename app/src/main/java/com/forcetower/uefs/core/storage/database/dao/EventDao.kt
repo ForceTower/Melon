@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -56,8 +57,9 @@ abstract class EventDao {
     @Insert(onConflict = REPLACE)
     protected abstract fun internalInsertSingle(event: Event): Long
 
+    @WorkerThread
     @Query("UPDATE Event SET sending = :sending WHERE id = :id")
-    abstract suspend fun setSending(id: Long, sending: Boolean)
+    abstract fun setSending(id: Long, sending: Int)
 
     @Query("DELETE FROM Event WHERE fakeTemp = 1 AND sending = 0")
     abstract suspend fun clearTemps()
@@ -69,5 +71,5 @@ abstract class EventDao {
     abstract suspend fun getDirect(eventId: Long): Event?
 
     @Query("UPDATE Event SET imageUrl = :link WHERE id = :id")
-    abstract suspend fun updateImageUrl(id: Long, link: String)
+    abstract fun updateImageUrl(id: Long, link: String)
 }

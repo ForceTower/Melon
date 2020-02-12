@@ -110,7 +110,7 @@ class EventRepository @Inject constructor(
         CreateEventWorker.createWorker(context, id)
         database.withTransaction {
             database.eventDao().clearTemps()
-            database.eventDao().setSending(id, true)
+            database.eventDao().setSending(id, 1)
         }
     }
 
@@ -137,13 +137,17 @@ class EventRepository @Inject constructor(
             val data = baos.toByteArray()
             val encoded = Base64.encodeToString(data, Base64.DEFAULT)
             val upload = ImgurUploader.upload(client, encoded, "event-unes-${UUID.randomUUID().toString().substring(0, 4)}") ?: return 1
+            database.eventDao().updateImageUrl(eventId, upload.link)
+            Timber.d("After save...")
             upload.link
         }
 
         Timber.d("Using image link $url")
-        Timber.d("After save...")
         return try {
             service.sendEvent(event.copy(imageUrl = url))
+            Timber.d("set not sending anymore: exec")
+            database.eventDao().setSending(eventId, 0)
+            Timber.d("set not sending anymore: completed")
             0
         } catch (error: Throwable) {
             1

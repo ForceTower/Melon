@@ -357,6 +357,7 @@ class CreateEventFragment : UDynamicFragment() {
                         return
                     }
                     viewModel.confirmCreate(created)
+                    showSnack(getString(R.string.event_scheduled_to_send))
                     findNavController().popBackStack()
                 }
             }
