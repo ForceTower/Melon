@@ -23,12 +23,16 @@ package dev.forcetower.event.feature.details
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.View
+import androidx.activity.viewModels
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
+import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.utils.ViewUtils
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
@@ -36,15 +40,24 @@ import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
 import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.R
+import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
 import org.threeten.bp.ZonedDateTime
+import javax.inject.Inject
 
 class EventDetailsActivity : UActivity() {
+    @Inject
+    lateinit var factory: BaseViewModelFactory
+
     private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
     lateinit var binding: ActivityEventDetailsBinding
 
+    private val viewModel by viewModels<EventDetailsViewModel> { factory }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         SplitCompat.installActivity(this)
+        val component = (applicationContext as UApplication).component
+        DaggerEventComponent.builder().appComponent(component).build().inject(this)
         super.onCreate(savedInstanceState)
         postponeEnterTransition(500L)
 
@@ -53,7 +66,15 @@ class EventDetailsActivity : UActivity() {
             View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
             View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
 
-        binding.event = event
+        val id = intent.getLongExtra("eventId", 0L)
+        if (id == 0L) {
+            finish()
+            return
+        }
+
+        viewModel.loadModel(id).observe(this, Observer {
+            binding.event = it
+        })
 
         val headLoadListener = object : ImageLoadListener {
             override fun onImageLoaded(drawable: Drawable) {
