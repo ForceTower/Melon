@@ -12,6 +12,7 @@
 -assumenosideeffects class timber.log.Timber {
     public static *** v(...);
     public static *** d(...);
+    public static *** i(...);
 }
 
 # Work around android fragment artifact bug
