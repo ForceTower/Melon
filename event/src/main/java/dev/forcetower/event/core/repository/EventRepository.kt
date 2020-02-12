@@ -64,6 +64,7 @@ class EventRepository @Inject constructor(
             val data = result.data
             if (data != null) {
                 database.eventDao().insert(data)
+                Timber.d("Information saved!")
             }
         } catch (error: Throwable) {
             Timber.i("An error ${error.message}")
