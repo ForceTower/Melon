@@ -197,4 +197,7 @@ interface UService {
     // --------- General Events ---------
     @GET("events")
     suspend fun events(): UResponse<List<Event>>
+
+    @POST("events/create")
+    suspend fun sendEvent(@Body event: Event): UResponse<Void>
 }
