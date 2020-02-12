@@ -55,4 +55,19 @@ abstract class EventDao {
 
     @Insert(onConflict = REPLACE)
     protected abstract fun internalInsertSingle(event: Event): Long
+
+    @Query("UPDATE Event SET sending = :sending WHERE id = :id")
+    abstract suspend fun setSending(id: Long, sending: Boolean)
+
+    @Query("DELETE FROM Event WHERE fakeTemp = 1 AND sending = 0")
+    abstract suspend fun clearTemps()
+
+    @Query("DELETE FROM Event WHERE id = :id")
+    abstract suspend fun deleteSingle(id: Long)
+
+    @Query("SELECT * FROM Event WHERE id = :eventId")
+    abstract suspend fun getDirect(eventId: Long): Event?
+
+    @Query("UPDATE Event SET imageUrl = :link WHERE id = :id")
+    abstract suspend fun updateImageUrl(id: Long, link: String)
 }

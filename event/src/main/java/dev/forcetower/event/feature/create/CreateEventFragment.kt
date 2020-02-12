@@ -30,6 +30,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.extensions.isDarkTheme
@@ -52,6 +53,7 @@ import dev.forcetower.event.feature.details.EventDetailsActivity
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
+import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -275,6 +277,7 @@ class CreateEventFragment : UDynamicFragment() {
 
         viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours)
             .observe(viewLifecycleOwner, Observer {
+                viewModel.createdId = it
                 preview(it)
             })
     }
@@ -283,7 +286,7 @@ class CreateEventFragment : UDynamicFragment() {
         val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
             putExtra("eventId", id)
         }
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_PREVIEW_EVENT)
     }
 
     private fun populateInterface(event: Event) {
@@ -345,6 +348,18 @@ class CreateEventFragment : UDynamicFragment() {
                         .start(requireContext(), this)
                 }
             }
+            REQUEST_PREVIEW_EVENT -> {
+                Timber.d("Result code $resultCode")
+                if (resultCode == Activity.RESULT_OK) {
+                    val created = viewModel.createdId
+                    if (created == null) {
+                        showSnack(getString(R.string.some_bad_stuff_happened))
+                        return
+                    }
+                    viewModel.confirmCreate(created)
+                    findNavController().popBackStack()
+                }
+            }
             CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
                 val result = CropImage.getActivityResult(data)
                 if (resultCode == Activity.RESULT_OK) {
@@ -361,5 +376,6 @@ class CreateEventFragment : UDynamicFragment() {
 
     companion object {
         private const val REQUEST_SELECT_PICTURE = 9000
+        private const val REQUEST_PREVIEW_EVENT = 10000
     }
 }

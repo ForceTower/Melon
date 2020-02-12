@@ -184,11 +184,6 @@ dependencies {
     // Room
     kapt "androidx.room:room-compiler:$room"
 
-    // Work manager
-    implementation "androidx.work:work-runtime:$work_manager"
-    implementation "androidx.work:work-runtime-ktx:$work_manager"
-    implementation "androidx.work:work-gcm:$work_manager"
-
     // Dependency injection
     implementation "com.google.dagger:dagger:$dagger"
     kapt "com.google.dagger:dagger-compiler:$dagger"
@@ -218,13 +213,6 @@ dependencies {
     implementation "com.android.billingclient:billing:$gp_billing_client"
     implementation "com.google.android.gms:play-services-ads:$gp_admob"
     implementation "com.google.android.play:core:$gp_core"
-
-    // Networking
-    implementation "com.squareup.okhttp3:okhttp:$okhttp"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
-    implementation "com.github.franmontiel:PersistentCookieJar:$cookie_jar"
 
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"

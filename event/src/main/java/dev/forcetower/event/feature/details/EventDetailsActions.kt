@@ -20,24 +20,8 @@
 
 package dev.forcetower.event.feature.details
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Event
-import dev.forcetower.event.core.repository.EventRepository
-import dev.forcetower.event.feature.listing.SingleEventAction
-import javax.inject.Inject
 
-class EventDetailsViewModel @Inject constructor(
-    private val repository: EventRepository
-) : ViewModel(), EventDetailsActions {
-    private val _eventCreationSent = MutableLiveData<SingleEventAction>()
-    val onEventCreationSent: LiveData<SingleEventAction>
-        get() = _eventCreationSent
-
-    fun loadModel(id: Long) = repository.getEvent(id)
-
-    override fun onConfirmCreation(event: Event) {
-        _eventCreationSent.value = SingleEventAction(event)
-    }
+interface EventDetailsActions {
+    fun onConfirmCreation(event: Event)
 }
