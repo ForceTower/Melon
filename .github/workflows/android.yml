@@ -20,9 +20,6 @@ jobs:
         PLAY_PUBLISHER_PASSWORD: ${{ secrets.PLAY_PUBLISHER_PASSWORD }}
         SIGNATURE_PASSWORD: ${{ secrets.SIGNATURE_PASSWORD }}
         SERVICES_PASSWORD: ${{ secrets.SERVICES_PASSWORD }}
-        UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
-        UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
-        UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
 
     - name: Decode Google Services
       run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GOOGLE_SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
@@ -41,6 +38,10 @@ jobs:
     
     - name: Publish Release App
       run: ./gradlew publishReleaseBundle
+      env:
+        UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
+        UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
+        UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
     
     - name: Upload result for job
       uses: actions/upload-artifact@v1
