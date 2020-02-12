@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.databinding.ItemScheduleBlockClassBinding
 import com.forcetower.uefs.databinding.ItemScheduleBlockHeadNotBinding
 import com.forcetower.uefs.databinding.ItemScheduleBlockHeaderBinding

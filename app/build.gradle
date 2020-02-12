@@ -126,7 +126,7 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard", ":conference"]
+    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event"]
 
 
 }
@@ -178,22 +178,11 @@ dependencies {
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
 
-    implementation "androidx.navigation:navigation-ui:$navigation"
-    implementation "androidx.navigation:navigation-ui-ktx:$navigation"
-    implementation "androidx.navigation:navigation-fragment:$navigation"
-    implementation "androidx.navigation:navigation-fragment-ktx:$navigation"
-
     // Paging
     implementation "androidx.paging:paging-runtime:$paging"
 
     // Room
-    implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-
-    // Work manager
-    implementation "androidx.work:work-runtime:$work_manager"
-    implementation "androidx.work:work-runtime-ktx:$work_manager"
-    implementation "androidx.work:work-gcm:$work_manager"
 
     // Dependency injection
     implementation "com.google.dagger:dagger:$dagger"
@@ -225,18 +214,10 @@ dependencies {
     implementation "com.google.android.gms:play-services-ads:$gp_admob"
     implementation "com.google.android.play:core:$gp_core"
 
-    // Networking
-    implementation "com.squareup.okhttp3:okhttp:$okhttp"
-    implementation "com.squareup.okhttp3:logging-interceptor:$okhttp"
-    implementation "com.squareup.retrofit2:retrofit:$retrofit"
-    implementation "com.squareup.retrofit2:converter-gson:$retrofit"
-    implementation "com.github.franmontiel:PersistentCookieJar:$cookie_jar"
-
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"
     kapt "com.github.bumptech.glide:compiler:$glide"
     implementation "com.airbnb.android:lottie:$lottie"
-    implementation "com.theartofdev.edmodo:android-image-cropper:$image_cropper"
 
     // Others
     implementation "com.google.code.gson:gson:$gson"
@@ -245,7 +226,6 @@ dependencies {
     implementation "com.mikepenz:aboutlibraries:$about_libraries"
     implementation "pub.devrel:easypermissions:$easy_permissions"
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
-    implementation "com.wdullaer:materialdatetimepicker:$date_time_picker"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
     implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"

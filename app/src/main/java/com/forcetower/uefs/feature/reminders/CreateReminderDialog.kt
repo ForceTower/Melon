@@ -28,7 +28,7 @@ import android.view.View
 import android.view.ViewGroup
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.util.ViewUtils
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogCreateReminderBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
