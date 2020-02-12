@@ -34,8 +34,18 @@ abstract class EventDao {
     @Query("SELECT * FROM Event WHERE fakeTemp is null or fakeTemp = 0")
     abstract fun all(): LiveData<List<Event>>
 
+    @Transaction
+    open suspend fun insert(events: List<Event>) {
+        deleteAll()
+        internalInsert(events)
+    }
+
+    @Query("DELETE FROM Event WHERE sending = 0")
+    protected abstract suspend fun deleteAll()
+
     @Insert(onConflict = REPLACE)
-    abstract suspend fun insert(events: List<Event>)
+    protected abstract suspend fun internalInsert(events: List<Event>)
+
 
     @Query("UPDATE Event SET participating = :participating WHERE id = :id")
     abstract suspend fun updateParticipatingStatus(id: Long, participating: Boolean)
