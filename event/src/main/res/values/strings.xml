@@ -53,4 +53,5 @@
     <string name="confirm_event_creation">Confirmar criação</string>
     <string name="some_bad_stuff_happened">Perdi o controle, não sei o que é mais para salvar, faz de novo</string>
     <string name="event_scheduled_to_send">O evento foi agendado para envio e análise</string>
+    <string name="event_details">Detalhes</string>
 </resources>
