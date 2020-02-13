@@ -6,6 +6,9 @@ on:
       - '*'
       - '!master'
       - '!development'
+  pull_request:
+    branches:
+      - '*'
 
 jobs:
   build:
