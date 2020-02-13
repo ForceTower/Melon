@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.model.unes
 
+import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -57,7 +58,12 @@ data class Event(
     val canModify: Boolean,
     val participating: Boolean,
     val fakeTemp: Boolean? = false,
-    val sending: Boolean? = false
+    val sending: Boolean? = false,
+    @SerializedName("register_page")
+    val registerPage: String?,
+    @SerializedName("can_approve")
+    @ColumnInfo(defaultValue = "0")
+    val canApprove: Boolean = false
 ) {
 
     override fun toString(): String {

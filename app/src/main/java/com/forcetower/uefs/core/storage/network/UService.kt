@@ -200,4 +200,12 @@ interface UService {
 
     @POST("events/create")
     suspend fun sendEvent(@Body event: Event): UResponse<Void>
+
+    @FormUrlEncoded
+    @POST("events/approve")
+    suspend fun approveEvent(@Field("id") id: Long): UResponse<Void>
+
+    @FormUrlEncoded
+    @POST("events/delete")
+    suspend fun deleteEvent(@Field("id") id: Long): UResponse<Void>
 }

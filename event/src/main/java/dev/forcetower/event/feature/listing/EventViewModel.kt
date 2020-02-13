@@ -23,8 +23,10 @@ package dev.forcetower.event.feature.listing
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 typealias SingleEventAction = com.forcetower.uefs.core.vm.Event<Event>
@@ -40,5 +42,17 @@ class EventViewModel @Inject constructor(
 
     override fun onEventClick(event: Event) {
         _onEventClicked.value = SingleEventAction(event)
+    }
+
+    override fun approve(event: Event) {
+        viewModelScope.launch {
+            repository.approve(event.id)
+        }
+    }
+
+    override fun delete(event: Event) {
+        viewModelScope.launch {
+            repository.delete(event.id)
+        }
     }
 }
