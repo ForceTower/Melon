@@ -19,9 +19,6 @@ jobs:
       with:
         java-version: 1.8
 
-    - name: Running Git
-      run: git rev-list --all --count
-
     - name: Decode Google Services
       run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GOOGLE_SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
 
