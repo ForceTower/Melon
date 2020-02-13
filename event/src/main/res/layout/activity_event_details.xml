@@ -124,32 +124,6 @@
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintDimensionRatio="H,4:3"/>
 
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:cardElevation="4dp"
-                    android:layout_marginEnd="16dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/image_spacer"
-                    app:layout_constraintBottom_toBottomOf="@id/image_spacer">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal"
-                        android:gravity="center">
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:padding="16dp"
-                            android:background="?attr/colorSurface"
-                            android:textColor="?attr/colorSecondary"
-                            android:textSize="16sp"
-                            app:formattedDate="@{event.startDate}"
-                            tools:text="20 de set ▪ 20h"/>
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-
                 <TextView
                     android:id="@+id/event_title"
                     android:layout_width="0dp"
@@ -176,58 +150,131 @@
                     android:textSize="16sp"
                     android:text="@{event.location}"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/event_title"
+                    app:layout_constraintTop_toBottomOf="@id/event_organization"
                     app:layout_constraintEnd_toEndOf="parent"
                     tools:text="@sample/event.json/events/location"/>
+
+                <TextView
+                    android:id="@+id/event_organization"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp"
+                    android:layout_marginTop="4dp"
+                    android:textSize="12sp"
+                    android:textColor="?attr/colorOnSurfaceLight"
+                    android:text="@{event.offeredBy}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_title"
+                    tools:text="Diretorio Acadêmico de Engenharia de Computação" />
 
                 <TextView
                     android:id="@+id/event_description"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:text="@{event.description}"
-                    android:textSize="14sp"
-                    android:textColor="?attr/colorOnSurface"
-                    android:layout_marginTop="16dp"
                     android:paddingStart="16dp"
                     android:paddingEnd="16dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/event_location"
+                    android:layout_marginTop="16dp"
+                    android:text="@{event.description}"
+                    android:textColor="?attr/colorOnSurface"
+                    android:textSize="14sp"
                     app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/event_location"
                     tools:text="@sample/event.json/events/description" />
 
                 <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_to_register"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
                     android:layout_marginTop="32dp"
                     android:layout_marginBottom="32dp"
                     android:paddingStart="32dp"
                     android:paddingEnd="32dp"
-                    android:textSize="18sp"
                     android:text="@string/go_to_register_page"
                     android:textAllCaps="false"
-                    app:goneIf="@{event.fakeTemp}"
+                    android:textSize="18sp"
+                    app:goneIf="@{event.fakeTemp || event.registerPage == null}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/event_description"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    app:layout_constraintTop_toBottomOf="@+id/text_start" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_confirm_create"
                     android:layout_width="wrap_content"
                     android:layout_height="60dp"
-                    android:layout_marginTop="32dp"
                     android:layout_marginBottom="32dp"
+                    android:onClick="@{() -> actions.onConfirmCreation(event)}"
                     android:paddingStart="32dp"
                     android:paddingEnd="32dp"
-                    android:textSize="18sp"
                     android:text="@string/confirm_event_creation"
                     android:textAllCaps="false"
-                    android:onClick="@{() -> actions.onConfirmCreation(event)}"
+                    android:textSize="18sp"
                     app:goneUnless="@{event.fakeTemp}"
+                    app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/text_start" />
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/product_sans_regular"
+                    android:textSize="16sp"
+                    app:eventPrice="@{event.price}"
+                    app:chipIcon="@drawable/ic_monetization_on_black_24dp"
+                    app:chipIconTint="@android:color/white"
+                    app:chipBackgroundColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_spacer"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/image_spacer"
+                    tools:text="@string/event_free"/>
+
+                <com.google.android.material.chip.Chip
+                    android:id="@+id/chip_certificate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:textColor="@android:color/white"
+                    android:fontFamily="@font/product_sans_regular"
+                    android:textSize="16sp"
+                    app:eventCertificate="@{event.certificateHours}"
+                    app:chipIcon="@drawable/ic_file_certificate_black_24dp"
+                    app:chipIconTint="@android:color/white"
+                    app:chipBackgroundColor="@color/red"
+                    app:layout_constraintBottom_toBottomOf="@+id/image_spacer"
+                    app:layout_constraintStart_toEndOf="@id/chip_price"
+                    app:layout_constraintTop_toBottomOf="@+id/image_spacer"
+                    tools:text="12 horas"/>
+
+                <TextView
+                    android:id="@+id/label_start"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:text="@string/event_start"
+                    android:textColor="?attr/colorOnBackground"
+                    app:layout_constraintBottom_toBottomOf="@+id/text_start"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/text_start" />
+
+                <TextView
+                    android:id="@+id/text_start"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp"
+                    android:textColor="?attr/colorAccent"
+                    android:textSize="16sp"
+                    app:formattedDate="@{event.startDate}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toEndOf="@id/label_start"
                     app:layout_constraintTop_toBottomOf="@+id/event_description"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
+                    tools:text="20 de set ▪ 20h" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>

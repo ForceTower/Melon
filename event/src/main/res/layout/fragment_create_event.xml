@@ -237,6 +237,33 @@
                         android:hint="@string/event_course"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
+                <com.google.android.material.checkbox.MaterialCheckBox
+                    android:id="@+id/check_register_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/event_check_has_register_page"
+                    android:checked="true"/>
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/layout_register_page"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="16dp"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:visibility="visible">
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/input_register_page"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:hint="@string/event_register_page"
+                        android:singleLine="true"
+                        android:inputType="textWebEditText|textUri"/>
+                </com.google.android.material.textfield.TextInputLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btn_complete"
                     android:layout_width="match_parent"

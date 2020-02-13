@@ -34,7 +34,6 @@ import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
@@ -43,7 +42,6 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
-import org.threeten.bp.ZonedDateTime
 import javax.inject.Inject
 
 class EventDetailsActivity : UActivity() {
@@ -147,26 +145,5 @@ class EventDetailsActivity : UActivity() {
 
     companion object {
         private const val SCRIM_ADJUSTMENT = 0.075f
-
-        val event = Event(
-            1,
-            "XXIII SIECOMP",
-            "Muita coisa engraçada e gente legal",
-            "https://images.even3.com.br/UPJVSvZBwbrcakjVHQLyiz90jHU=/1300x536/smart/even3.blob.core.windows.net/banner/BannerXXIISIECOMP.e34ffcd81b1d4a019044.jpg",
-            "João Paulo",
-            1,
-            "Ele mesmo",
-            ZonedDateTime.now().plusDays(3),
-            ZonedDateTime.now().plusDays(3).plusHours(3),
-            "Na sua casa",
-            9.99,
-            20,
-            null,
-            true,
-            ZonedDateTime.now(),
-            true,
-            canModify = true,
-            participating = false
-        )
     }
 }

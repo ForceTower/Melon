@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.util.ImgurUploader
 import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.core.work.CreateEventWorker
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
@@ -81,7 +82,8 @@ class EventRepository @Inject constructor(
         offeredBy: String,
         price: Double?,
         courseId: Int?,
-        certificateHours: Int?
+        certificateHours: Int?,
+        registerPage: String?
     ): LiveData<Long> = liveData(Dispatchers.IO) {
         val event = Event(
             0,
@@ -102,7 +104,8 @@ class EventRepository @Inject constructor(
             participating = false,
             approved = false,
             fakeTemp = true,
-            createdAt = ZonedDateTime.now()
+            createdAt = ZonedDateTime.now(),
+            registerPage = registerPage
         )
         emit(database.eventDao().insertSingle(event))
     }
@@ -152,6 +155,28 @@ class EventRepository @Inject constructor(
             0
         } catch (error: Throwable) {
             1
+        }
+    }
+
+    suspend fun approve(eventId: Long) {
+        withContext(Dispatchers.IO) {
+            try {
+                service.approveEvent(eventId)
+                database.eventDao().setApproved(eventId, true)
+            } catch (error: Throwable) {
+                Timber.e(error, "Failed to approve event")
+            }
+        }
+    }
+
+    suspend fun delete(eventId: Long) {
+        withContext(Dispatchers.IO) {
+            try {
+                service.deleteEvent(eventId)
+                database.eventDao().deleteSingle(eventId)
+            } catch (error: Throwable) {
+                Timber.e(error, "Failed to delete event")
+            }
         }
     }
 }
