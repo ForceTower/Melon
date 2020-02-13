@@ -42,7 +42,8 @@ import com.forcetower.core.R
     "listener",
     "crossFade",
     "overrideImageWidth",
-    "overrideImageHeight"
+    "overrideImageHeight",
+    "dontTransform"
 ], requireAll = false)
 fun imageUri(
     imageView: ImageView,
@@ -53,7 +54,8 @@ fun imageUri(
     listener: ImageLoadListener? = null,
     crossFade: Boolean? = false,
     overrideWidth: Int? = null,
-    overrideHeight: Int? = null
+    overrideHeight: Int? = null,
+    dontTransform: Boolean? = false
 ) {
     val url = imageUrl ?: imageUri
     val placeholderDrawable = placeholder ?: AppCompatResources.getDrawable(
@@ -78,6 +80,7 @@ fun imageUri(
     if (overrideWidth != null && overrideHeight != null) {
         request = request.override(overrideWidth, overrideHeight)
     }
+    if (dontTransform == true) request = request.dontTransform()
 
     if (listener != null) {
         request = request.listener(object : RequestListener<Drawable> {

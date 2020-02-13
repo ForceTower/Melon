@@ -67,6 +67,7 @@
             app:listener="@{imageListener}"
             app:overrideImageWidth="@{400}"
             app:overrideImageHeight="@{300}"
+            app:dontTransform="@{true}"
             app:crossFade="@{true}"
             app:scrimColor="@color/scrim"
             app:scrimAlpha="0"
