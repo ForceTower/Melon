@@ -54,9 +54,10 @@ class CreationViewModel @Inject constructor(
         offeredBy: String,
         price: Double?,
         courseId: Int?,
-        certificateHours: Int?
+        certificateHours: Int?,
+        registerPage: String?
     ): LiveData<Long> {
-        return repository.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours)
+        return repository.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours, registerPage)
     }
 
     fun confirmCreate(id: Long) = viewModelScope.launch {

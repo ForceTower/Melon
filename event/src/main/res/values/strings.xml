@@ -54,4 +54,11 @@
     <string name="some_bad_stuff_happened">Perdi o controle, não sei o que é mais para salvar, faz de novo</string>
     <string name="event_scheduled_to_send">O evento foi agendado para envio e análise</string>
     <string name="event_details">Detalhes</string>
+    <string name="event_free">Gratuito</string>
+    <string name="event_price_format">%1$.2f</string>
+    <string name="event_certificate_hours_format">%1$d horas</string>
+    <string name="event_check_has_register_page">Página de cadastro</string>
+    <string name="event_register_page">Página de cadastro</string>
+    <string name="event_delete">Apagar</string>
+    <string name="event_approve">Aprovar</string>
 </resources>

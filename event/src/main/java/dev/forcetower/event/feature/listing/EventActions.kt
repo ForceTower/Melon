@@ -24,4 +24,6 @@ import com.forcetower.uefs.core.model.unes.Event
 
 interface EventActions {
     fun onEventClick(event: Event)
+    fun approve(event: Event)
+    fun delete(event: Event)
 }

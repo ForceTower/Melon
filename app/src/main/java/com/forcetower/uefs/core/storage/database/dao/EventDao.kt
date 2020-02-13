@@ -81,4 +81,7 @@ abstract class EventDao {
 
     @Query("UPDATE Event SET imageUrl = :link WHERE id = :id")
     abstract fun updateImageUrl(id: Long, link: String)
+
+    @Query("UPDATE Event SET approved = :approved WHERE id = :id")
+    abstract suspend fun setApproved(id: Long, approved: Boolean)
 }

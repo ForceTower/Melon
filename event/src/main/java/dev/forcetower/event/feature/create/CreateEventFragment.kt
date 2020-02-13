@@ -97,6 +97,9 @@ class CreateEventFragment : UDynamicFragment() {
         binding.checkOpenForAll.setOnCheckedChangeListener { _, isChecked ->
             binding.layoutCourse.visibility = (!isChecked).toVisibility()
         }
+        binding.checkRegisterPage.setOnCheckedChangeListener { _, isChecked ->
+            binding.layoutRegisterPage.visibility = isChecked.toVisibility()
+        }
 
         binding.inputStartTime.setOnClickListener {
             binding.inputStartTime.error = null
@@ -257,6 +260,19 @@ class CreateEventFragment : UDynamicFragment() {
                 return
             }
         }
+
+        val register = binding.checkRegisterPage.isChecked
+        val page = if (!register) {
+            null
+        } else {
+            val text = binding.inputRegisterPage.text.toString()
+            if (text.trim().length < 4) {
+                binding.inputOfferedBy.error = getString(R.string.event_error_too_small)
+                return
+            }
+            text
+        }
+
         val certificate = binding.checkCertificate.isChecked
         val certificateHours = if (!certificate) {
             null
@@ -275,7 +291,7 @@ class CreateEventFragment : UDynamicFragment() {
             return
         }
 
-        viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours)
+        viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours, page)
             .observe(viewLifecycleOwner, Observer {
                 viewModel.createdId = it
                 preview(it)
