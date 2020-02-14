@@ -26,6 +26,7 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -45,11 +46,13 @@ import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.baddevice.BadDeviceFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
@@ -78,10 +81,12 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class HomeActivity : UGameActivity(), HasAndroidInjector {
@@ -156,6 +161,24 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         } catch (t: Throwable) {}
         moveToTask()
         satisfactionSurvey()
+        boringDevice()
+    }
+
+    private fun boringDevice() {
+        val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this)
+        val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+            "samsung" -> VersionUtils.isNougat()
+            else -> false
+        }
+        val saw = preferences.getBoolean("saw_bad_device_information", false)
+        if ((autoStart || brands) && !saw) {
+            val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), true)
+            snack.setAction(R.string.not_eligible_check) {
+                val fragment = BadDeviceFragment()
+                fragment.show(supportFragmentManager, "bad_device_modal")
+            }
+            snack.show()
+        }
     }
 
     private fun satisfactionSurvey() {

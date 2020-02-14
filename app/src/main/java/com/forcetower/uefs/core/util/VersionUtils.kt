@@ -24,6 +24,7 @@ import android.os.Build
 
 object VersionUtils {
     fun isOreo() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
+    fun isNougat() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.N
     fun isMarshmallow() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.M
     fun isAndroid10() = Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q
 }
