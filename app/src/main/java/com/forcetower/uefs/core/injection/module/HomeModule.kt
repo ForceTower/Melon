@@ -24,6 +24,7 @@ import com.forcetower.uefs.easter.darktheme.DarkThemeUnlockFragment
 import com.forcetower.uefs.easter.darktheme.InviteDarkThemeFragment
 import com.forcetower.uefs.feature.adventure.AdventureFragment
 import com.forcetower.uefs.feature.adventure.AdventureSignInDialog
+import com.forcetower.uefs.feature.baddevice.BadDeviceFragment
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
 import com.forcetower.uefs.feature.calendar.CalendarFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
@@ -115,4 +116,6 @@ abstract class HomeModule {
     abstract fun selectCourseDialog(): SelectCourseDialog
     @ContributesAndroidInjector
     abstract fun themeSwitcher(): ThemeSwitcherFragment
+    @ContributesAndroidInjector
+    abstract fun badDevice(): BadDeviceFragment
 }
