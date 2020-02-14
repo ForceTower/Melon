@@ -22,9 +22,11 @@ package dev.forcetower.event.feature.details
 
 import android.app.Activity
 import android.graphics.drawable.Drawable
+import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import androidx.activity.viewModels
+import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
@@ -34,9 +36,11 @@ import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
+import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
 import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.R
@@ -78,9 +82,20 @@ class EventDetailsActivity : UActivity() {
             binding.event = it
         })
 
-        viewModel.onEventCreationSent.observe(this, Observer {
+        viewModel.onEventCreationSent.observe(this, EventObserver {
             setResult(Activity.RESULT_OK)
             finishAfterTransition()
+        })
+
+        viewModel.onEventMoveToPage.observe(this, EventObserver {
+            it.registerPage ?: return@EventObserver
+            CustomTabActivityHelper.openCustomTab(
+                this,
+                CustomTabsIntent.Builder()
+                    .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
+                    .addDefaultShareMenuItem()
+                    .build(),
+                Uri.parse(it.registerPage))
         })
 
         val headLoadListener = object : ImageLoadListener {
