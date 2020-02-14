@@ -30,4 +30,7 @@
     <string name="dash_sched_its_over_for_today">Por hoje acabou!</string>
     <string name="dash_sched_no_more_classes_today">Você não tem mais aulas hoje! Que demais!</string>
     <string name="affinity_choose_someone_else">Escolher outra pessoa</string>
+    <string name="dash_schedule_disc_started_in">Comecou %1$s minutos atrás</string>
+    <string name="dash_schedule_your_current_class">Você deveria estar em...</string>
+    <string name="dash_schedule_disc_started_just_now">Acabou de começar</string>
 </resources>
