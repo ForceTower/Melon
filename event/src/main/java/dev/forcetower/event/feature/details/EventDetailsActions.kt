@@ -24,4 +24,5 @@ import com.forcetower.uefs.core.model.unes.Event
 
 interface EventDetailsActions {
     fun onConfirmCreation(event: Event)
+    fun onMoveToPage(event: Event)
 }

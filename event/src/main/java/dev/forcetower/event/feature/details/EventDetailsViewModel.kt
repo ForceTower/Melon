@@ -35,9 +35,17 @@ class EventDetailsViewModel @Inject constructor(
     val onEventCreationSent: LiveData<SingleEventAction>
         get() = _eventCreationSent
 
+    private val _eventMoveToPage = MutableLiveData<SingleEventAction>()
+    val onEventMoveToPage: LiveData<SingleEventAction>
+        get() = _eventMoveToPage
+
     fun loadModel(id: Long) = repository.getEvent(id)
 
     override fun onConfirmCreation(event: Event) {
         _eventCreationSent.value = SingleEventAction(event)
+    }
+
+    override fun onMoveToPage(event: Event) {
+        _eventMoveToPage.value = SingleEventAction(event)
     }
 }

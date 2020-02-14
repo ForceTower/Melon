@@ -28,6 +28,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.webkit.URLUtil
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -267,7 +268,11 @@ class CreateEventFragment : UDynamicFragment() {
         } else {
             val text = binding.inputRegisterPage.text.toString()
             if (text.trim().length < 4) {
-                binding.inputOfferedBy.error = getString(R.string.event_error_too_small)
+                binding.inputRegisterPage.error = getString(R.string.event_error_too_small)
+                return
+            }
+            if (!URLUtil.isValidUrl(text)) {
+                binding.inputRegisterPage.error = getString(R.string.event_not_valid_url)
                 return
             }
             text
