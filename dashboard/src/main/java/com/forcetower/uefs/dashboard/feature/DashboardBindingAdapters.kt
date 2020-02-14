@@ -29,6 +29,7 @@ import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
 import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.dashboard.R
 import java.util.Calendar
+import kotlin.math.abs
 
 @SuppressLint("DefaultLocale")
 @BindingAdapter("accountDashboardName")
@@ -71,11 +72,19 @@ fun disciplineStartDifference(tv: TextView, location: LocationWithGroup?) {
             val calendar = Calendar.getInstance()
             val nowMin = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
 
-            val diff = (classMin - nowMin)
-            if (diff <= 120) {
-                tv.text = context.getString(R.string.dash_schedule_disc_starts_in, diff.toString())
-            } else {
-                tv.visibility = View.INVISIBLE
+            when (val diff = (classMin - nowMin)) {
+                0 -> tv.text = context.getString(R.string.dash_schedule_disc_started_just_now)
+                in 1..60 -> {
+                    tv.visibility = View.VISIBLE
+                    tv.text = context.getString(R.string.dash_schedule_disc_starts_in, diff.toString())
+                }
+                in -30..-1 -> {
+                    tv.visibility = View.VISIBLE
+                    tv.text = context.getString(R.string.dash_schedule_disc_started_in, abs(diff).toString())
+                }
+                else -> {
+                    tv.visibility = View.INVISIBLE
+                }
             }
             return
         } catch (t: Throwable) { }
@@ -96,4 +105,15 @@ fun affinityStudentOptions(rv: RecyclerView, question: AffinityQuestionFull?, li
     }
 
     adapter.submitList(alt)
+}
+
+@BindingAdapter("nextOrCurrentClassIndicator")
+fun nextOrCurrentClassIndicator(tv: TextView, isCurrentClass: Boolean?) {
+    isCurrentClass ?: return
+    val stringRes = if (isCurrentClass) {
+        R.string.dash_schedule_your_current_class
+    } else {
+        R.string.next_class
+    }
+    tv.text = tv.context.getString(stringRes)
 }
