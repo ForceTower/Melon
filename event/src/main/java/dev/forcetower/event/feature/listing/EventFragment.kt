@@ -64,7 +64,7 @@ class EventFragment : UDynamicFragment() {
         adapter = EventAdapter(viewModel)
         binding.recyclerEvents.adapter = adapter
         viewModel.events.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
+            adapter.submitList(it.sortedBy { value -> value.startDate })
             binding.isEmpty = it.isEmpty()
         })
 
