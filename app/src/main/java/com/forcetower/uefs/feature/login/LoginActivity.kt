@@ -22,9 +22,7 @@ package com.forcetower.uefs.feature.login
 
 import android.content.Intent
 import android.content.SharedPreferences
-import android.content.res.Configuration
 import android.os.Bundle
-import androidx.appcompat.app.AppCompatDelegate
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -58,27 +56,6 @@ class LoginActivity : UActivity(), HasAndroidInjector {
         coursesViewModel.courses.observe(this, Observer {
             Timber.d("Courses Status: ${it.status}")
         })
-
-        if (savedInstanceState == null) {
-            onActivityStart()
-        }
-    }
-
-    private fun onActivityStart() {
-        val enabled = preferences.getBoolean("ach_night_mode_enabled", false)
-        if (enabled) return
-
-        when (resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK) {
-            Configuration.UI_MODE_NIGHT_NO -> Unit
-            Configuration.UI_MODE_NIGHT_YES -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                recreate()
-            }
-            Configuration.UI_MODE_NIGHT_UNDEFINED -> {
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                recreate()
-            }
-        }
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.login_nav_host).navigateUp()
