@@ -60,6 +60,10 @@ class EventRepository @Inject constructor(
 
     val events = liveData(Dispatchers.IO) {
         emitSource(database.eventDao().all())
+        fetchEvents()
+    }
+
+    private suspend fun fetchEvents() {
         try {
             val result = service.events()
             val data = result.data
@@ -141,7 +145,9 @@ class EventRepository @Inject constructor(
             val data = baos.toByteArray()
             val encoded = Base64.encodeToString(data, Base64.DEFAULT)
             val upload = ImgurUploader.upload(client, encoded, "event-unes-${UUID.randomUUID().toString().substring(0, 4)}") ?: return 1
-            database.eventDao().updateImageUrl(eventId, upload.link)
+            withContext(Dispatchers.IO) {
+                database.eventDao().updateImageUrl(eventId, upload.link)
+            }
             Timber.d("After save...")
             upload.link
         }
@@ -150,7 +156,10 @@ class EventRepository @Inject constructor(
         return try {
             service.sendEvent(event.copy(imageUrl = url))
             Timber.d("set not sending anymore: exec")
-            database.eventDao().setSending(eventId, 0)
+            withContext(Dispatchers.IO) {
+                database.eventDao().setSending(eventId, 0)
+                fetchEvents()
+            }
             Timber.d("set not sending anymore: completed")
             0
         } catch (error: Throwable) {
