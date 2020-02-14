@@ -34,20 +34,21 @@ abstract class EventDao {
     @Query("SELECT * FROM Event WHERE fakeTemp is null or fakeTemp = 0")
     abstract fun all(): LiveData<List<Event>>
 
+    @WorkerThread
     @Transaction
-    open suspend fun insert(events: List<Event>) {
+    open fun insert(events: List<Event>) {
         deleteAll()
         internalInsert(events)
     }
 
     @Query("DELETE FROM Event WHERE sending = 0 or sending is null")
-    protected abstract suspend fun deleteAll()
+    protected abstract fun deleteAll()
 
     @Insert(onConflict = REPLACE)
-    protected abstract suspend fun internalInsert(events: List<Event>)
+    protected abstract fun internalInsert(events: List<Event>)
 
     @Query("UPDATE Event SET participating = :participating WHERE id = :id")
-    abstract suspend fun updateParticipatingStatus(id: Long, participating: Boolean)
+    abstract fun updateParticipatingStatus(id: Long, participating: Boolean)
 
     @Query("SELECT * FROM Event WHERE id = :eventId")
     abstract fun get(eventId: Long): LiveData<Event>
@@ -71,17 +72,17 @@ abstract class EventDao {
     abstract fun setSending(id: Long, sending: Int)
 
     @Query("DELETE FROM Event WHERE fakeTemp = 1 AND sending = 0")
-    abstract suspend fun clearTemps()
+    abstract fun clearTemps()
 
     @Query("DELETE FROM Event WHERE id = :id")
-    abstract suspend fun deleteSingle(id: Long)
+    abstract fun deleteSingle(id: Long)
 
     @Query("SELECT * FROM Event WHERE id = :eventId")
-    abstract suspend fun getDirect(eventId: Long): Event?
+    abstract fun getDirect(eventId: Long): Event?
 
     @Query("UPDATE Event SET imageUrl = :link WHERE id = :id")
     abstract fun updateImageUrl(id: Long, link: String)
 
     @Query("UPDATE Event SET approved = :approved WHERE id = :id")
-    abstract suspend fun setApproved(id: Long, approved: Boolean)
+    abstract fun setApproved(id: Long, approved: Boolean)
 }

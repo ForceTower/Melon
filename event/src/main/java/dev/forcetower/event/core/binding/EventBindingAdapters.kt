@@ -51,6 +51,7 @@ fun eventCertificate(tv: TextView, hours: Int?) {
     if (hours == null) {
         tv.visibility = View.GONE
     } else {
+        tv.visibility = View.VISIBLE
         val string = context.getString(R.string.event_certificate_hours_format, hours)
         tv.text = string
     }
