@@ -53,4 +53,12 @@
     <string name="confirm_event_creation">Confirm creation</string>
     <string name="some_bad_stuff_happened">I lost control, do that again</string>
     <string name="event_scheduled_to_send">Event scheduled to send and analysis</string>
+    <string name="event_certificate_hours_format">%1$d hours</string>
+    <string name="event_approve">Approve</string>
+    <string name="event_check_has_register_page">Register page</string>
+    <string name="event_delete">Delete</string>
+    <string name="event_details">Details</string>
+    <string name="event_free">Free</string>
+    <string name="event_price_format">%1$.2f</string>
+    <string name="event_register_page">Register page</string>
 </resources>
