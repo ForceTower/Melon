@@ -28,11 +28,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.core.base.BaseViewModelFactory
-import com.forcetower.uefs.R
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
@@ -94,7 +93,7 @@ class AERINewsFragment : UFragment() {
             CustomTabActivityHelper.openCustomTab(
                 requireActivity(),
                 CustomTabsIntent.Builder()
-                    .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                    .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary))
                     .addDefaultShareMenuItem()
                     .build(),
                 Uri.parse(it.link))
