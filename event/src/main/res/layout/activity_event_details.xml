@@ -195,6 +195,7 @@
                     android:text="@string/go_to_register_page"
                     android:textAllCaps="false"
                     android:textSize="18sp"
+                    android:onClick="@{() -> actions.onMoveToPage(event)}"
                     app:goneIf="@{event.fakeTemp || event.registerPage == null}"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
