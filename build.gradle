@@ -75,7 +75,7 @@ buildscript {
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = "1.6.4"
+        gp_core = '1.6.5'
         gp_auth = "17.0.0"
         gp_games = '19.0.0'
         gp_location = "17.0.0"
@@ -89,7 +89,7 @@ buildscript {
 
         // Others
         gson = '2.8.6'
-        jsoup = '1.12.2'
+        jsoup = '1.12.1'
         chart_view = "v3.1.0"
         about_libraries = "7.0.0-rc1"
         easy_permissions = "0.3.0"
