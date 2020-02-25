@@ -64,6 +64,6 @@
         <attr name="android:textColor" />
         <attr name="android:textSize" />
         <attr name="android:fontFamily" />
-        <attr name="verticalBias" />
+        <attr name="verticalBias" format="float" />
     </declare-styleable>
 </resources>
