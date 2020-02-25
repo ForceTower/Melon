@@ -41,15 +41,15 @@ buildscript {
         flexbox = "1.1.0"
         browser = '1.2.0'
         preference = "1.1.0"
-        fragment = '1.2.1'
+        fragment = '1.2.2'
         swipe_refresh = "1.0.0"
 
         // Architecture
-        room = '2.2.3'
+        room = '2.2.4'
         lifecycle = '2.2.0'
         paging = '2.1.1'
         navigation = '2.2.1'
-        work_manager = '2.3.1'
+        work_manager = '2.3.2'
 
         // Dependency Injection
         dagger = '2.26'
