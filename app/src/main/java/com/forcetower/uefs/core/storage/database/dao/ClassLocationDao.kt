@@ -85,8 +85,6 @@ abstract class ClassLocationDao {
             selectAllSemestersDirect().min()
         }
 
-        locations.groupBy { it.day }
-
         val profile = getMeProfile()
         if (semester == null || profile == null) return
         val hidden = getHiddenLocations()
@@ -160,6 +158,11 @@ abstract class ClassLocationDao {
         }
 
         hidden.forEach { setClassHiddenHidden(true, it.groupId, it.day, it.startsAt, it.endsAt, it.profileId) }
+    }
+
+    private fun shrinkSchedule(locations: List<SagresDisciplineClassLocation>) {
+        val result = mutableMapOf<String, List<SagresDisciplineClassLocation>>()
+        val entries = locations.groupBy { it.day }.mapKeys { it.key.trim() }.entries
     }
 
     @WorkerThread

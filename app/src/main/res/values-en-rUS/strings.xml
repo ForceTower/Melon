@@ -697,4 +697,8 @@
     <string name="label_theme_editor_description">Now you can pick you favorite color and use in the app!</string>
     <string name="extra_config">Additional Settings</string>
     <string name="auto_start_text">Auto start</string>
+
+    <string name="settings_schedule_shrinking">Shrink schedule</string>
+    <string name="settings_schedule_shrinking_on">Combining same classes together</string>
+    <string name="settings_schedule_shrinking_off">Displaying as received by the website</string>
 </resources>

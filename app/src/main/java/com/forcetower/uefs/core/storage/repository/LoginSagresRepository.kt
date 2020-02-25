@@ -393,7 +393,13 @@ class LoginSagresRepository @Inject constructor(
     private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
         if (locations == null) return
         val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
-        database.classLocationDao().putSchedule(locations, ordering)
+        val shrinkSchedule = preferences.getBoolean("stg_schedule_shrinking", true)
+//        if (shrinkSchedule) {
+//            val shrink = LocationShrinker.shrink(locations)
+//            database.classLocationDao().putSchedule(shrink, ordering)
+//        } else {
+            database.classLocationDao().putSchedule(locations, ordering)
+//        }
     }
 
     @WorkerThread

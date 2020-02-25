@@ -65,6 +65,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.util.LocationShrinker
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
@@ -646,7 +647,13 @@ class SagresSyncRepository @Inject constructor(
     private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
         locations ?: return
         val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
-        database.classLocationDao().putSchedule(locations, ordering)
+        val shrinkSchedule = preferences.getBoolean("stg_schedule_shrinking", true)
+        if (shrinkSchedule) {
+            val shrink = LocationShrinker.shrink(locations)
+            database.classLocationDao().putSchedule(shrink, ordering)
+        } else {
+            database.classLocationDao().putSchedule(locations, ordering)
+        }
     }
 
     @WorkerThread

@@ -834,4 +834,7 @@
     <string name="bad_device_p9" translatable="false">Este não é um problema novo, na verdade marcas chinesas comecaram a fazer isso a quase 2 anos:\nhttps://issuetracker.google.com/issues/122098785\nhttps://issuetracker.google.com/issues/148005702</string>
     <string name="bad_device_p10" translatable="false">Enfim, enquanto o google não convencer sua marca a adotar o comportamento esperado do sistema. Você terá que fazer isso :)</string>
     <string name="bad_device_got_it" translatable="false">Entendi</string>
+    <string name="settings_schedule_shrinking">Encolher horários</string>
+    <string name="settings_schedule_shrinking_on">Juntando horários de disciplinas próximas</string>
+    <string name="settings_schedule_shrinking_off">Mostrando exatamente como o Portal</string>
 </resources>
