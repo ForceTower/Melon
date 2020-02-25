@@ -60,7 +60,7 @@ class BigTrayFragment : UFragment(), Injectable {
             textToolbarTitle.text = getString(R.string.label_big_tray)
             appBar.elevation = 0f
         }
-        binding.btnNotification.setOnClickListener { BigTrayService.startService(context!!) }
+        binding.btnNotification.setOnClickListener { BigTrayService.startService(requireContext()) }
     }
 
     override fun onStart() {

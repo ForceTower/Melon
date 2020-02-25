@@ -58,7 +58,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
         if (VersionUtils.isMarshmallow()) {
             findPreference<SwitchPreference>("stg_advanced_ignore_doze")?.let {
                 val pm = context?.getSystemService(Context.POWER_SERVICE) as PowerManager?
-                val ignoring = pm?.isIgnoringBatteryOptimizations(context!!.packageName) ?: false
+                val ignoring = pm?.isIgnoringBatteryOptimizations(requireContext().packageName) ?: false
                 it.isChecked = ignoring
             }
         }
@@ -71,7 +71,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
             it.setOnPreferenceClickListener {
                 val result = AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireContext())
                 if (!result) {
-                    Snackbar.make(view!!, getString(R.string.settings_auto_start_manager_not_found), Snackbar.LENGTH_SHORT).show()
+                    Snackbar.make(requireView(), getString(R.string.settings_auto_start_manager_not_found), Snackbar.LENGTH_SHORT).show()
                 }
                 true
             }
