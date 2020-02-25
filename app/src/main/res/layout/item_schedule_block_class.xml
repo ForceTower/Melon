@@ -27,8 +27,8 @@
             name="scheduleActions"
             type="com.forcetower.uefs.feature.schedule.ScheduleActions"/>
         <variable
-            name="group"
-            type="com.forcetower.uefs.core.storage.database.accessors.GroupWithClass"/>
+            name="data"
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData" />
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -40,7 +40,7 @@
         app:strokeWidth="1dp"
         app:cardElevation="0dp"
         app:strokeColor="@color/blue_accent"
-        android:onClick="@{() -> scheduleActions.onClick(cardRoot, group)}"
+        android:onClick="@{() -> scheduleActions.onClick(cardRoot, data)}"
         android:onLongClick="@{(view) -> scheduleActions.onLongClick(view)}">
         <LinearLayout
             android:orientation="vertical"
@@ -53,6 +53,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="@sample/classes.json/data/classCode"
+                android:text="@{data.classData.discipline.code}"
                 android:gravity="center"
                 android:textSize="@dimen/schedule_block_primary_text"
                 android:textColor="?attr/colorOnSurface" />
@@ -66,6 +67,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 tools:text="@sample/classes.json/data/group"
+                android:text="@{data.group.group}"
                 android:gravity="center"
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="@dimen/schedule_block_second_text"/>
