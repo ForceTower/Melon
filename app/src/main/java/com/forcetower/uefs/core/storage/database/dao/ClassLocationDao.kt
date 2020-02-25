@@ -84,6 +84,9 @@ abstract class ClassLocationDao {
         } else {
             selectAllSemestersDirect().min()
         }
+
+        locations.groupBy { it.day }
+
         val profile = getMeProfile()
         if (semester == null || profile == null) return
         val hidden = getHiddenLocations()
@@ -159,6 +162,7 @@ abstract class ClassLocationDao {
         hidden.forEach { setClassHiddenHidden(true, it.groupId, it.day, it.startsAt, it.endsAt, it.profileId) }
     }
 
+    @WorkerThread
     @Query("SELECT * FROM ClassLocation WHERE hidden_on_schedule = 1")
     protected abstract fun getHiddenLocations(): List<ClassLocation>
 
