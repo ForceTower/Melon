@@ -45,7 +45,7 @@ import com.forcetower.uefs.feature.messages.dynamic.AERINotInstalledFragment
 import com.forcetower.uefs.feature.purchases.PurchasesFragment
 import com.forcetower.uefs.feature.reminders.CreateReminderDialog
 import com.forcetower.uefs.feature.reminders.RemindersFragment
-import com.forcetower.uefs.feature.schedule.ScheduleFragment
+import com.forcetower.uefs.feature.schedule.SchedulePerformanceFragment
 import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
@@ -69,7 +69,7 @@ abstract class HomeModule {
     @ContributesAndroidInjector
     abstract fun homeBottomFragment(): HomeBottomFragment
     @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
+    abstract fun schedulePerformanceFragment(): SchedulePerformanceFragment
     @ContributesAndroidInjector
     abstract fun disciplineFragment(): DisciplineFragment
     @ContributesAndroidInjector
