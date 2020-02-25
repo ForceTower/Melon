@@ -20,7 +20,7 @@ jobs:
         java-version: 1.8
 
     - name: Prepare Enviromnent
-      run: sdkmanager --install "ndk;20.0.5594570"
+      run: sudo $ANDROID_HOME/tools/bin/sdkmanager --install "ndk;20.0.5594570"
 
     - name: Decode Google Services
       run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GOOGLE_SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
