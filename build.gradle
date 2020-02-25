@@ -104,7 +104,7 @@ buildscript {
         google_play_services = "4.3.0"
         fabric = "1.28.0"
         kotlinter = "1.26.0"
-        play_publisher = "2.2.0"
+        play_publisher = "2.7.1"
         bundletool = "0.10.0"
     }
 
