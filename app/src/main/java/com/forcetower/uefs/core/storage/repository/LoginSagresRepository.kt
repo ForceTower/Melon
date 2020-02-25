@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.util.LocationShrinker
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toLiveData
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
@@ -394,12 +395,12 @@ class LoginSagresRepository @Inject constructor(
         if (locations == null) return
         val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
         val shrinkSchedule = preferences.getBoolean("stg_schedule_shrinking", true)
-//        if (shrinkSchedule) {
-//            val shrink = LocationShrinker.shrink(locations)
-//            database.classLocationDao().putSchedule(shrink, ordering)
-//        } else {
+        if (shrinkSchedule) {
+            val shrink = LocationShrinker.shrink(locations)
+            database.classLocationDao().putSchedule(shrink, ordering)
+        } else {
             database.classLocationDao().putSchedule(locations, ordering)
-//        }
+        }
     }
 
     @WorkerThread
