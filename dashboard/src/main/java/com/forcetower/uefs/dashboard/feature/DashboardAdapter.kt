@@ -26,6 +26,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
@@ -69,6 +70,12 @@ class DashboardAdapter(
     set(value) {
         field = value
         differ.submitList(buildMergedList(affinity = value))
+    }
+
+    var currentAccount: Account? = null
+    set(value) {
+        field = value
+        differ.submitList(buildMergedList(account = value))
     }
 
     private val differ = AsyncListDiffer(this, DiffCallback)
@@ -128,9 +135,14 @@ class DashboardAdapter(
         clazz: LocationWithGroup? = nextClass,
         message: Message? = lastMessage,
         updating: Boolean = updatingApp,
-        affinity: List<AffinityQuestionFull> = affinityList
+        affinity: List<AffinityQuestionFull> = affinityList,
+        account: Account? = currentAccount
     ): List<Any> {
-        return mutableListOf<Any>(Header).apply {
+        return mutableListOf<Any>().apply {
+            if (account != null) {
+                add(Header)
+            }
+
             if (updating) {
                 add(UpdatingApp)
             }

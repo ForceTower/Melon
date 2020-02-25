@@ -39,8 +39,8 @@ class DashboardRepository @Inject constructor(
     private val database: UDatabase,
     private val context: Context
 ) {
-    fun getAccount(): LiveData<Account> {
-        return database.accountDao().getAccount()
+    fun getAccount(): LiveData<Account?> {
+        return database.accountDao().getAccountNullable()
     }
 
     fun getCurrentClass(): LiveData<LocationWithGroup?> {
