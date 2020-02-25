@@ -184,6 +184,7 @@ class ScheduleBlockAdapter(
             if (!colors.containsKey(code)) colors[code] = index++
             val color = colors[code]
 
+            // working by reference... lul
             classes.add(InnerLocation(location = l, time = time, colorIndex = color))
             if (!times.contains(time)) times.add(time)
         }

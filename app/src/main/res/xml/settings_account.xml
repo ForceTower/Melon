@@ -69,4 +69,11 @@
         app:title="@string/settings_semester_deterministic_ordering"
         app:summaryOn="@string/settings_semester_deterministic_ordering_info_on"
         app:summaryOff="@string/settings_semester_deterministic_ordering_info_off"/>
+
+    <SwitchPreference
+        app:key="stg_schedule_shrinking"
+        app:defaultValue="true"
+        app:title="@string/settings_schedule_shrinking"
+        app:summaryOn="@string/settings_schedule_shrinking_on"
+        app:summaryOff="@string/settings_schedule_shrinking_off"/>
 </androidx.preference.PreferenceScreen>
