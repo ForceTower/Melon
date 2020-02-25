@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/schedule"
-        android:name="com.forcetower.uefs.feature.schedule.ScheduleFragment"
+        android:name="com.forcetower.uefs.feature.schedule.SchedulePerformanceFragment"
         android:label="ScheduleFragment"
         tools:layout="@layout/fragment_schedule"/>
 
