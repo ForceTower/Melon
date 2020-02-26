@@ -41,6 +41,7 @@ class ScheduleLinePerformanceAdapter(
             differ.submitList(buildList(value))
         }
 
+    // Can be moved to a worker thread
     private fun buildList(value: Map<Int, List<ProcessedClassLocation>>): List<ProcessedClassLocation> {
         return value.filter { it.key != -1 }
             .mapValues { entry ->

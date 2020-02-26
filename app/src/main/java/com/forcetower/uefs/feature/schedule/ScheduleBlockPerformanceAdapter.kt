@@ -51,6 +51,7 @@ class ScheduleBlockPerformanceAdapter(
     private val colors = context.resources.getIntArray(R.array.discipline_colors)
     private var colorIndex = 0
 
+    // Can be moved to a worker thread
     private fun buildList(values: Map<Int, List<ProcessedClassLocation>>): List<ProcessedClassLocation> {
         // the grid render is row by row... so...
         val result = mutableListOf<ProcessedClassLocation>()
