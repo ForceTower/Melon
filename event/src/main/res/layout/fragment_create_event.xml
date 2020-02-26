@@ -151,7 +151,7 @@
                         android:layout_height="wrap_content"
                         android:hint="@string/event_organization"
                         android:singleLine="true"
-                        android:inputType="textAutoCorrect|textAutoComplete"/>
+                        android:inputType="textAutoCorrect|textAutoComplete|textCapSentences"/>
                 </com.google.android.material.textfield.TextInputLayout>
 
                 <com.google.android.material.checkbox.MaterialCheckBox
