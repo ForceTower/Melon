@@ -29,6 +29,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
@@ -38,7 +39,10 @@ import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.GlideApp
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
+import com.forcetower.uefs.feature.setup.CourseSelectionCallback
+import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UDynamicFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.textfield.TextInputEditText
@@ -112,7 +116,25 @@ class CreateEventFragment : UDynamicFragment() {
             startDatePicker(binding.inputEndTime, false)
         }
 
+        binding.inputCourse.setOnClickListener {
+            binding.inputCourse.error = null
+            startCoursePicker()
+        }
+
         binding.btnComplete.setOnClickListener { saveDataAndPreview() }
+    }
+
+    private fun startCoursePicker() {
+        val dialog = SelectCourseDialog().apply {
+            arguments = bundleOf("hide_description" to true)
+        }
+        dialog.setCallback(object : CourseSelectionCallback {
+            override fun onSelected(course: Course) {
+                viewModel.selectedCourse = course
+                binding.inputCourse.setText(course.name)
+            }
+        })
+        dialog.show(childFragmentManager, "dialog_course")
     }
 
     private fun startDatePicker(input: TextInputEditText, start: Boolean) {
@@ -253,13 +275,16 @@ class CreateEventFragment : UDynamicFragment() {
             }
         }
         val open = binding.checkOpenForAll.isChecked
-        val courseId = if (open) null else {
-            try {
-                binding.inputCourse.text.toString().toInt()
-            } catch (error: Throwable) {
-                binding.inputCourse.error = getString(R.string.how_did_you)
+        val courseId = if (!open) {
+            val course = viewModel.selectedCourse
+            if (course == null) {
+                binding.inputCourse.error = getString(R.string.select_a_course)
                 return
+            } else {
+                course.id.toInt()
             }
+        } else {
+            null
         }
 
         val register = binding.checkRegisterPage.isChecked

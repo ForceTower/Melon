@@ -62,4 +62,5 @@
     <string name="event_approve">Aprovar</string>
     <string name="event_certificate_hours_format">%1$d horas</string>
     <string name="event_not_valid_url">Este link não é válido</string>
+    <string name="select_a_course">Selecione um curso alvo</string>
 </resources>

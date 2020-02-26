@@ -62,4 +62,5 @@
     <string name="event_price_format">%1$.2f</string>
     <string name="event_register_page">Register page</string>
     <string name="event_not_valid_url">This link is not valid</string>
+    <string name="select_a_course">Select the target course</string>
 </resources>
