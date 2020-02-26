@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.content.Context
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
@@ -28,6 +29,7 @@ import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Build
 import android.os.Bundle
+import android.os.PowerManager
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -165,13 +167,16 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun boringDevice() {
+        if (!VersionUtils.isMarshmallow()) return
         val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this)
         val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
             "samsung" -> VersionUtils.isNougat()
             else -> false
         }
-        val saw = preferences.getBoolean("saw_bad_device_information", false)
-        if ((autoStart || brands) && !saw) {
+        val saw = preferences.getBoolean("saw_bad_device_information_key", false)
+        val pm = getSystemService(Context.POWER_SERVICE) as PowerManager?
+        val ignoring = pm?.isIgnoringBatteryOptimizations(packageName) ?: false
+        if ((autoStart || brands) && !saw && !ignoring) {
             val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), true)
             snack.setAction(R.string.not_eligible_check) {
                 val fragment = BadDeviceFragment()

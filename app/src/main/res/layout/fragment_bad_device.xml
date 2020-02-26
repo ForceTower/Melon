@@ -86,13 +86,19 @@
                 android:layout_marginTop="8dp"
                 android:text="@string/bad_device_p7"/>
 
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_adv_settings"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:textAllCaps="false"
+                android:text="@string/move_to_advanced_settings"/>
+
             <TextView
                 android:id="@+id/links1"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
-                android:textSize="18sp"
-                android:textColor="?attr/colorOnBackground"
                 android:text="@string/bad_device_p8"/>
 
             <TextView

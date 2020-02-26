@@ -273,7 +273,7 @@
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
     <string name="settings_adv_auto_start">Auto inicialização</string>
-    <string name="settings_adv_auto_start_info">Algumas marcas impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
+    <string name="settings_adv_auto_start_info">Algumas marcas, como Xiaomi, impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
     <string name="settings_adv_battery_optimization">Otimizações da bateria</string>
     <string name="settings_adv_battery_optimization_info">Marcas proibem execução se o aplicativo está &quot;fechado&quot;, veja como resolver (em inglês)</string>
     <string name="settings_adv_cat_execution">Execução</string>
@@ -829,12 +829,18 @@
     <string name="bad_device_p4" translatable="false">O UNES registra no sistema uma tarefa para Sincronizar os dados na frequencia que você escolher, e obedece algumas regras: o aplicativo precisa estar conectado à internet e a bateria não pode estar fraca (abaixo de 20%), assim o app não irá gastar sua bateria se você estiver em um momento crítico.</string>
     <string name="bad_device_p5" translatable="false">O problema acontece quando algumas marcas de aparelhos bloqueiam esse comportamento. A sua está nessa lista, por isso você está vendo essa mensagem</string>
     <string name="bad_device_p6" translatable="false">Não é algo que qualquer desenvolvedor de aplicativos consegue resolver, é algo ligado diretamente ao sistema operacional.</string>
-    <string name="bad_device_p7" translatable="false">A boa noticia é que você pode tentar resolver isso</string>
-    <string name="bad_device_p8" translatable="false">Acesse https://dontkillmyapp.com, procure sua marca e siga os passos</string>
+    <string name="bad_device_p7" translatable="false">A boa noticia é que você pode tentar resolver isso, visite as configurações avançadas</string>
+    <string name="bad_device_p8" translatable="false">Ou acesse https://dontkillmyapp.com, procure sua marca e siga os passos</string>
     <string name="bad_device_p9" translatable="false">Este não é um problema novo, na verdade marcas chinesas comecaram a fazer isso a quase 2 anos:\nhttps://issuetracker.google.com/issues/122098785\nhttps://issuetracker.google.com/issues/148005702</string>
     <string name="bad_device_p10" translatable="false">Enfim, enquanto o google não convencer sua marca a adotar o comportamento esperado do sistema. Você terá que fazer isso :)</string>
     <string name="bad_device_got_it" translatable="false">Entendi</string>
     <string name="settings_schedule_shrinking">Encolher horários</string>
     <string name="settings_schedule_shrinking_on">Juntando horários de disciplinas próximas</string>
     <string name="settings_schedule_shrinking_off">Mostrando exatamente como o Portal</string>
+    <string name="settings_adv_doze_mode">Ignorar modo doze</string>
+    <string name="settings_adv_doze_mode_info">Em algumas marcas, como Xiaomi, ativar essa função resolve os problemas</string>
+    <string name="settings_adv_doze_mode_info_disabled">Somente disponível no Android 6.0+</string>
+    <string name="move_to_advanced_settings">Ir para Configurações Avançadas</string>
+    <string name="settings_accept_ignore_doze">A frequencia foi redefinida para 1 hora para melhorar a bateria</string>
+    <string name="settings_refuse_ignore_doze">Você negou as permissões</string>
 </resources>
