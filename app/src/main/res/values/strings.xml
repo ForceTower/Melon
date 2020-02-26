@@ -791,7 +791,7 @@
         <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
     <string name="title_aeri" translatable="false">Notícias AERI</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
     <string name="dashboard">Início</string>
     <string name="settings_advanced_label">Avançadas</string>
     <string name="settings_advanced_info_label">Execução, energia, funcionalidades e outras coisas</string>
@@ -819,8 +819,7 @@
     <string name="extra_config">Configurações Adicionais</string>
     <string name="auto_start_text">Auto inicialização</string>
     <string name="title_conference" translatable="false">Grandes Eventos</string>
-    <string name="title_event">Eventos</string>
-    <string name="your_device_might_not_be_eligible">Esta marca não permite execução em segundo plano</string>
+    <string name="title_event" translatable="false">Eventos</string>
     <string name="not_eligible_check">Ver</string>
     <string name="bad_device_title" translatable="false">Execução em segundo plano</string>
     <string name="bad_device_p1" translatable="false">Se você está vendo isso, existe uma grande chance de você não receber notificações ou o \"Aplicativo só atualiza quando eu abro\"</string>
@@ -843,4 +842,5 @@
     <string name="move_to_advanced_settings">Ir para Configurações Avançadas</string>
     <string name="settings_accept_ignore_doze">A frequencia foi redefinida para 1 hora para melhorar a bateria</string>
     <string name="settings_refuse_ignore_doze">Você negou as permissões</string>
+    <string name="your_device_might_not_be_eligible">Problemas com notificações? Vem aqui!</string>
 </resources>
