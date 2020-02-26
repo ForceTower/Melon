@@ -22,6 +22,8 @@ package com.forcetower.uefs.feature.settings
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
@@ -92,14 +94,33 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
     }
 
     private fun updateDozePreferences() {
+        when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+            "xiaomi", "redmi" -> updateXiaomiBattery()
+            else -> updateDefaultBattery()
+        }
+    }
+
+    private fun updateXiaomiBattery() {
+        val preference = findPreference<Preference>("stg_advanced_ignore_battery_xiaomi") ?: return
+        preference.isVisible = true
+        preference.setOnPreferenceClickListener {
+            powerXiaomi()
+            true
+        }
+    }
+
+    private fun updateDefaultBattery() {
+        val preference = findPreference<SwitchPreference>("stg_advanced_ignore_doze") ?: return
+        preference.isVisible = true
         if (VersionUtils.isMarshmallow()) {
-            findPreference<SwitchPreference>("stg_advanced_ignore_doze")?.let {
+            preference.let {
                 val pm = context?.getSystemService(Context.POWER_SERVICE) as PowerManager?
-                val ignoring = pm?.isIgnoringBatteryOptimizations(requireContext().packageName) ?: false
+                val ignoring = pm?.isIgnoringBatteryOptimizations(requireContext().packageName)
+                    ?: false
                 it.isChecked = ignoring
             }
         } else {
-            findPreference<SwitchPreference>("stg_advanced_ignore_doze")?.let {
+            preference.let {
                 it.isEnabled = false
                 it.setSummary(R.string.settings_adv_doze_mode_info_disabled)
             }
@@ -109,7 +130,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
     private fun onPreferenceChange(preference: SharedPreferences, key: String) {
         when (key) {
             "stg_advanced_aeri_tab" -> aeriTabs(preference.getBoolean(key, true))
-            "stg_advanced_ignore_doze" -> ignoreDoze(preference.getBoolean(key, false))
+            "stg_advanced_ignore_doze" -> dozeDefault(preference.getBoolean(key, false))
         }
     }
 
@@ -119,8 +140,22 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
         }
     }
 
+    private fun powerXiaomi() {
+        try {
+            val intent = Intent()
+            intent.component = ComponentName("com.miui.powerkeeper", "com.miui.powerkeeper.ui.HiddenAppsConfigActivity")
+            intent.putExtra("package_name", requireContext().packageName)
+            intent.putExtra("package_label", getText(R.string.app_name))
+            // Uses the same code because frequency will be reset on completion
+            startActivityForResult(intent, REQUEST_IGNORE_DOZE)
+        } catch (throwable: ActivityNotFoundException) {
+            Timber.e(throwable, "Xiaomi without a power keeper")
+            dozeDefault(true)
+        }
+    }
+
     @SuppressLint("BatteryLife")
-    private fun ignoreDoze(ignore: Boolean) {
+    private fun dozeDefault(ignore: Boolean) {
         if (!VersionUtils.isMarshmallow()) return
         if (!ignore) {
             val intent = Intent(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS)
