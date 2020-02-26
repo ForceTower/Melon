@@ -49,10 +49,15 @@ class EventScheduleActivity : UActivity(), HasAndroidInjector {
         }
     }
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
-        snack.config()
+    override fun showSnack(string: String, duration: Int) {
+        val snack = getSnackInstance(string, duration)
         snack.show()
+    }
+
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.root, string, duration)
+        snack.config()
+        return snack
     }
 
     override fun androidInjector() = fragmentInjector
