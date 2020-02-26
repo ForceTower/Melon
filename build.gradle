@@ -83,7 +83,7 @@ buildscript {
         gp_admob = '18.3.0'
 
         // Networking
-        okhttp = '4.3.1'
+        okhttp = '4.4.0'
         retrofit = '2.7.1'
         cookie_jar = "v1.0.1"
 
