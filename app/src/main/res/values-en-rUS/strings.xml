@@ -701,4 +701,12 @@
     <string name="settings_schedule_shrinking">Shrink schedule</string>
     <string name="settings_schedule_shrinking_on">Combining same classes together</string>
     <string name="settings_schedule_shrinking_off">Displaying as received by the website</string>
+    <string name="not_eligible_check">See</string>
+    <string name="settings_adv_doze_mode">Ignore doze mode</string>
+    <string name="settings_adv_doze_mode_info">In some brands, like Xiaomi, enable this might solve the problems</string>
+    <string name="settings_adv_doze_mode_info_disabled">Only available on Android 6.0+</string>
+    <string name="move_to_advanced_settings">Move to Advanced Settings</string>
+    <string name="settings_accept_ignore_doze">Sync frequency redefined to 1 hour to save battery</string>
+    <string name="settings_refuse_ignore_doze">You denied the permissions</string>
+    <string name="your_device_might_not_be_eligible">Problems with notifications? Come here!</string>
 </resources>

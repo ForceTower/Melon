@@ -73,10 +73,6 @@ class DashboardAdapter(
     }
 
     var currentAccount: Account? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(account = value))
-    }
 
     private val differ = AsyncListDiffer(this, DiffCallback)
 
@@ -135,14 +131,9 @@ class DashboardAdapter(
         clazz: LocationWithGroup? = nextClass,
         message: Message? = lastMessage,
         updating: Boolean = updatingApp,
-        affinity: List<AffinityQuestionFull> = affinityList,
-        account: Account? = currentAccount
+        affinity: List<AffinityQuestionFull> = affinityList
     ): List<Any> {
-        return mutableListOf<Any>().apply {
-            if (account != null) {
-                add(Header)
-            }
-
+        return mutableListOf<Any>(Header).apply {
             if (updating) {
                 add(UpdatingApp)
             }
