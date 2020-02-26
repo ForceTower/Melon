@@ -843,4 +843,7 @@
     <string name="settings_accept_ignore_doze">A frequencia foi redefinida para 1 hora para melhorar a bateria</string>
     <string name="settings_refuse_ignore_doze">Você negou as permissões</string>
     <string name="your_device_might_not_be_eligible">Problemas com notificações? Vem aqui!</string>
+    <string name="doze_mode">Remover restrições de bateria</string>
+    <string name="settings_adv_ignore_battery_xiaomi">Remover restrições de bateria</string>
+    <string name="settings_adv_ignore_battery_xiaomi_info">Remova as restrições da bateria, isso irá resolver o problema no Xiaomi</string>
 </resources>
