@@ -228,7 +228,7 @@ class CreateEventFragment : UDynamicFragment() {
         val start = try {
             val text = binding.inputStartTime.text.toString()
             if (text.trim().length < 4) {
-                showSnack(getString(R.string.event_date_invalid), true)
+                showSnack(getString(R.string.event_date_invalid))
                 return
             }
             val parsed = ZonedDateTime.parse(text)

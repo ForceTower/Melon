@@ -33,6 +33,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CA
 import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS
 import com.google.android.gms.common.ConnectionResult.NETWORK_ERROR
 import com.google.android.gms.common.api.ApiException
+import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -94,12 +95,12 @@ abstract class UGameActivity : UActivity() {
 
     fun openAchievements() {
         if (!mGamesInstance.isConnected()) {
-            showSnack(getString(R.string.not_connected_to_the_adventure), true)
+            showSnack(getString(R.string.not_connected_to_the_adventure), Snackbar.LENGTH_LONG)
             return
         }
         val client = mGamesInstance.achievementsClient
         if (client == null) {
-            showSnack(getString(R.string.achievements_client_invalid_reconnect), true)
+            showSnack(getString(R.string.achievements_client_invalid_reconnect), Snackbar.LENGTH_LONG)
             return
         }
 
@@ -111,7 +112,7 @@ abstract class UGameActivity : UActivity() {
                         startActivityForResult(intent, PLAY_GAMES_ACHIEVEMENTS)
                         return@addOnCompleteListener
                     } else {
-                        showSnack(getString(R.string.cant_open_achievements_invalid_intent), true)
+                        showSnack(getString(R.string.cant_open_achievements_invalid_intent), Snackbar.LENGTH_LONG)
                     }
                 } else {
                     showSnack("${getString(R.string.unable_to_open_achievements)} ${it.exception?.message}")

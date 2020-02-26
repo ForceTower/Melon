@@ -173,7 +173,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         }
         val saw = preferences.getBoolean("saw_bad_device_information_key", false)
         if ((autoStart || brands) && !saw) {
-            val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), true)
+            val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), Snackbar.LENGTH_INDEFINITE)
             snack.setAction(R.string.not_eligible_check) {
                 val fragment = BadDeviceFragment()
                 fragment.show(supportFragmentManager, "bad_device_modal")
@@ -370,13 +370,13 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = getSnackInstance(string, long)
+    override fun showSnack(string: String, duration: Int) {
+        val snack = getSnackInstance(string, duration)
         snack.show()
     }
 
-    override fun getSnackInstance(string: String, long: Boolean): Snackbar {
-        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.root, string, duration)
         snack.config()
         snack.anchorView = binding.bottomNavigation
         return snack
@@ -460,7 +460,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                 }
                 RESULT_IN_APP_UPDATE_FAILED -> {
                     val message = getString(R.string.in_app_update_request_failed)
-                    showSnack(message, true)
+                    showSnack(message, Snackbar.LENGTH_LONG)
                 }
             }
         }

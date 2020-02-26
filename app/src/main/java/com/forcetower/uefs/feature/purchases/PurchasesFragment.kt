@@ -46,6 +46,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
 import java.util.Calendar
@@ -133,7 +134,7 @@ class PurchasesFragment : UFragment(), Injectable, PurchasesUpdatedListener, Bil
             if (values != null) details.addAll(values)
             skuAdapter.submitList(values)
         } else {
-            showSnack(getString(R.string.donation_service_response_error), true)
+            showSnack(getString(R.string.donation_service_response_error), Snackbar.LENGTH_LONG)
             analytics.logEvent("purchases_failed", null)
         }
     }

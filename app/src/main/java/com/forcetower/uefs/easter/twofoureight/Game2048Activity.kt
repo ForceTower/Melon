@@ -78,10 +78,14 @@ class Game2048Activity : UGameActivity(), HasAndroidInjector {
         revealAchievement(R.string.achievement_a_prtica_leva__perfeio)
     }
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = Snackbar.make(findViewById(R.id.container), string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun showSnack(string: String, duration: Int) {
+        getSnackInstance(string, duration).show()
+    }
+
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(findViewById(R.id.container), string, duration)
         snack.config()
-        snack.show()
+        return snack
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {

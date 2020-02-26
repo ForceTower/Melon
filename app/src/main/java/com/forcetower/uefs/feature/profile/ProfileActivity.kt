@@ -52,13 +52,13 @@ class ProfileActivity : UActivity(), HasAndroidInjector {
         }
     }
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = getSnackInstance(string, long)
+    override fun showSnack(string: String, duration: Int) {
+        val snack = getSnackInstance(string, duration)
         snack.show()
     }
 
-    override fun getSnackInstance(string: String, long: Boolean): Snackbar {
-        val snack = Snackbar.make(binding.rootContainer, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.rootContainer, string, duration)
         snack.config()
         return snack
     }

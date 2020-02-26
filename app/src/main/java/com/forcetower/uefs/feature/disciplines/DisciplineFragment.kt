@@ -113,7 +113,7 @@ class DisciplineFragment : UFragment(), Injectable {
             val actionTaken = preferences.getBoolean("suggested_reorder_semester_action_taken", false)
             if (!actionTaken && diffSort != semesters) {
                 sortedSizeOnce = size
-                val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), true)
+                val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), Snackbar.LENGTH_INDEFINITE)
                 snack?.let { bar ->
                     bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_quick_fix)) {
