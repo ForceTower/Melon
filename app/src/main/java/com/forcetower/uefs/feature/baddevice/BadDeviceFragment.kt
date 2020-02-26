@@ -33,6 +33,7 @@ import android.widget.FrameLayout
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentBadDeviceBinding
+import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -62,7 +63,7 @@ class BadDeviceFragment : BottomSheetDialogFragment(), Injectable {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentBadDeviceBinding.inflate(inflater, container, false).also {
             it.btnOk.setOnClickListener {
-                preferences.edit().putBoolean("saw_bad_device_information", true).apply()
+                preferences.edit().putBoolean("saw_bad_device_information_key", true).apply()
                 dismiss()
             }
             it.links1.apply {
@@ -80,6 +81,14 @@ class BadDeviceFragment : BottomSheetDialogFragment(), Injectable {
                 text = spannable
                 movementMethod = LinkMovementMethod.getInstance()
                 autoLinkMask = autoLinkMask or Linkify.WEB_URLS
+            }
+            it.btnAdvSettings.setOnClickListener {
+                preferences.edit().putBoolean("saw_bad_device_information_key", true).apply()
+                val intent = SettingsActivity.startIntent(requireContext()).apply {
+                    putExtra("move_to_screen", 3)
+                }
+                startActivity(intent)
+                dismiss()
             }
         }.root
     }
