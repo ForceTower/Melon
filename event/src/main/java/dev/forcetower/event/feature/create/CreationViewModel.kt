@@ -24,6 +24,7 @@ import android.net.Uri
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
@@ -39,6 +40,7 @@ class CreationViewModel @Inject constructor(
     var start: Long = utc.timeInMillis
     var end: Long = utc.timeInMillis
     var createdId: Long? = null
+    var selectedCourse: Course? = null
 
     fun loadModel(eventId: Long): LiveData<Event> {
         return repository.getEvent(eventId)
