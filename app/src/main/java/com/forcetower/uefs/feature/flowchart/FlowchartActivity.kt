@@ -43,10 +43,14 @@ class FlowchartActivity : UActivity(), HasAndroidInjector {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_flowchart)
     }
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun showSnack(string: String, duration: Int) {
+        getSnackInstance(string, duration).show()
+    }
+
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.root, string, duration)
         snack.config()
-        snack.show()
+        return snack
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.flowchart_nav_host).navigateUp()
