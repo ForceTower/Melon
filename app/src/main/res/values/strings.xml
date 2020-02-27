@@ -273,7 +273,7 @@
     <string name="settings_acc_score">Score</string>
     <string name="settings_acc_score_info">O score é o mais ofensivo de todos</string>
     <string name="settings_adv_auto_start">Auto inicialização</string>
-    <string name="settings_adv_auto_start_info">Algumas marcas, como Xiaomi, impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
+    <string name="settings_adv_auto_start_info">Algumas marcas impedem a auto inicialização do aplicativo, isso tentará te levar ao lugar correto</string>
     <string name="settings_adv_battery_optimization">Otimizações da bateria</string>
     <string name="settings_adv_battery_optimization_info">Marcas proibem execução se o aplicativo está &quot;fechado&quot;, veja como resolver (em inglês)</string>
     <string name="settings_adv_cat_execution">Execução</string>
@@ -837,7 +837,7 @@
     <string name="settings_schedule_shrinking_on">Juntando horários de disciplinas próximas</string>
     <string name="settings_schedule_shrinking_off">Mostrando exatamente como o Portal</string>
     <string name="settings_adv_doze_mode">Ignorar modo doze</string>
-    <string name="settings_adv_doze_mode_info">Em algumas marcas, como Xiaomi, ativar essa função resolve os problemas</string>
+    <string name="settings_adv_doze_mode_info">Em algumas marcas, ignorar o modo doze resolve os problemas de sincronização</string>
     <string name="settings_adv_doze_mode_info_disabled">Somente disponível no Android 6.0+</string>
     <string name="move_to_advanced_settings">Ir para Configurações Avançadas</string>
     <string name="settings_accept_ignore_doze">A frequencia foi redefinida para 1 hora para melhorar a bateria</string>
@@ -845,5 +845,5 @@
     <string name="your_device_might_not_be_eligible">Problemas com notificações? Vem aqui!</string>
     <string name="doze_mode">Remover restrições de bateria</string>
     <string name="settings_adv_ignore_battery_xiaomi">Remover restrições de bateria</string>
-    <string name="settings_adv_ignore_battery_xiaomi_info">Remova as restrições da bateria, isso irá resolver o problema no Xiaomi</string>
+    <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria irá resolver os problemas de sincronização</string>
 </resources>
