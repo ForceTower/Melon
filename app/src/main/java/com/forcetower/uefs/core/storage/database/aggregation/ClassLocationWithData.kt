@@ -30,4 +30,8 @@ data class ClassLocationWithData(
     val location: ClassLocation,
     @Relation(parentColumn = "group_id", entityColumn = "uid", entity = ClassGroup::class)
     val groupData: ClassGroupWithData
-)
+) : Comparable<ClassLocationWithData> {
+    override fun compareTo(other: ClassLocationWithData): Int {
+        return location.compareTo(other.location)
+    }
+}

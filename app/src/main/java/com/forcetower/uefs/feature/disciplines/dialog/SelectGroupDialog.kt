@@ -25,7 +25,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.fromJson
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
@@ -40,7 +40,7 @@ class SelectGroupDialog : RoundedDialog(), Injectable {
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
     private lateinit var binding: DialogSelectDisciplineGroupBinding
-    private lateinit var value: ClassWithGroups
+    private lateinit var value: ClassFullWithGroup
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)

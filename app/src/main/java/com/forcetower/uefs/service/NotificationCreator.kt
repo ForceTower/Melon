@@ -38,8 +38,8 @@ import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
-import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.storage.database.aggregation.ClassMaterialWithClass
+import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeActivity
@@ -83,7 +83,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().clazz.singleDiscipline().name
+        val discipline = grade.clazz.discipline.name
         val message = context.getString(R.string.notification_grade_created, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_created_title))
@@ -101,7 +101,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().clazz.singleDiscipline().name
+        val discipline = grade.clazz.discipline.name
         val message = context.getString(R.string.notification_grade_changed, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_VALUE_CHANGED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_changed_title))
@@ -119,7 +119,7 @@ object NotificationCreator {
             return
         }
 
-        val discipline = grade.clazz().clazz.singleDiscipline().name
+        val discipline = grade.clazz.discipline.name
         val message = context.getString(R.string.notification_grade_date_change, grade.grade.name, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GRADES_CREATED_ID)
             .setContentTitle(context.getString(R.string.notification_grade_date_change_title))
@@ -138,7 +138,7 @@ object NotificationCreator {
         }
 
         val spoiler = getPreferences(context).getString("stg_ntf_grade_spoiler", "1")?.toIntOrNull() ?: 1
-        val discipline = grade.clazz().clazz.singleDiscipline().name
+        val discipline = grade.clazz.discipline.name
         Timber.d("Spoiler level: $spoiler")
 
         val message = when (spoiler) {
@@ -324,7 +324,7 @@ object NotificationCreator {
 
     fun showMaterialPostedNotification(context: Context, it: ClassMaterialWithClass) {
         if (!shouldShowNotification("stg_ntf_material_posted", context)) return
-        val discipline = it.group()?.clazz()?.discipline()?.name ?: context.getString(R.string.undefined)
+        val discipline = it.group.classData.discipline.name
         val title = it.material.name
         val content = context.getString(R.string.material_posted_ntf_content, title, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_DISCIPLINE_MATERIAL_POSTED)
@@ -332,7 +332,7 @@ object NotificationCreator {
                 .setContentText(content)
                 .setStyle(createBigText(content))
                 .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
-                .setContentIntent(createDisciplineDetailsIntent(context, it.group()?.group))
+                .setContentIntent(createDisciplineDetailsIntent(context, it.group.group))
 
         addOptions(context, builder)
         showNotification(context, it.material.uid, builder)

@@ -27,7 +27,7 @@
         <import type="com.forcetower.sagres.utils.WordUtils"/>
         <variable
             name="location"
-            type="com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup" />
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData" />
 
         <variable
             name="viewModel"
@@ -114,7 +114,7 @@
                 android:paddingBottom="16dp"
                 android:textColor="@color/white"
                 android:textSize="30sp"
-                android:text="@{WordUtils.toTitleCase(viewModel.currentClass.singleGroup().clazz().discipline().name)}"
+                android:text="@{WordUtils.toTitleCase(viewModel.currentClass.groupData.classData.discipline.name)}"
                 app:goneIf="@{location == null}"
                 app:layout_constraintBottom_toTopOf="@+id/info_time"
                 app:layout_constraintEnd_toEndOf="parent"

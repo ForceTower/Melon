@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,19 +18,28 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.database.accessors
+package com.forcetower.uefs.core.storage.database.aggregation
 
 import androidx.room.Embedded
 import androidx.room.Relation
+import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.Semester
 
-class ClassFullWithGroup {
+data class ClassFullWithGroup(
     @Embedded
-    lateinit var clazz: ClassWithDiscipline
-    // TODO Watch this guy
+    val clazz: Class,
+    @Relation(parentColumn = "discipline_id", entityColumn = "uid")
+    val discipline: Discipline,
+    @Relation(parentColumn = "semester_id", entityColumn = "uid")
+    val semester: Semester,
     @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassGroup::class)
-    lateinit var groups: List<ClassGroup>
+    val groups: List<ClassGroup>,
     @Relation(parentColumn = "uid", entityColumn = "class_id", entity = ClassAbsence::class)
-    lateinit var absences: List<ClassAbsence>
-}
+    val absences: List<ClassAbsence>,
+    @Relation(parentColumn = "uid", entityColumn = "class_id", entity = Grade::class)
+    val grades: List<Grade>
+)

@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:textColor="?attr/colorOnSurfaceLight"
             android:textSize="18sp"
-            app:absenceCount="@{viewModel.clazz.clazz.clazz.missedClasses}"
+            app:absenceCount="@{viewModel.clazz.clazz.missedClasses}"
             app:absenceAmount="@{viewModel.absencesAmount}"
             app:layout_constraintBottom_toTopOf="@+id/text_absences_label"
             app:layout_constraintStart_toStartOf="parent"

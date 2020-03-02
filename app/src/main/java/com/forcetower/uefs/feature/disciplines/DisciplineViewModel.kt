@@ -32,8 +32,7 @@ import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
-import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
@@ -88,8 +87,8 @@ class DisciplineViewModel @Inject constructor(
     val loadClassDetails: LiveData<Boolean>
         get() = _loadClassDetails
 
-    private val _navigateToDisciplineAction = MutableLiveData<Event<ClassWithGroups>>()
-    val navigateToDisciplineAction: LiveData<Event<ClassWithGroups>>
+    private val _navigateToDisciplineAction = MutableLiveData<Event<ClassFullWithGroup>>()
+    val navigateToDisciplineAction: LiveData<Event<ClassFullWithGroup>>
         get() = _navigateToDisciplineAction
 
     private val _navigateToGroupAction = MutableLiveData<Event<ClassGroup>>()
@@ -211,7 +210,7 @@ class DisciplineViewModel @Inject constructor(
         this.classId.setValueIfNew(classId)
     }
 
-    override fun classClicked(clazz: ClassWithGroups) {
+    override fun classClicked(clazz: ClassFullWithGroup) {
         _navigateToDisciplineAction.value = Event(clazz)
     }
 

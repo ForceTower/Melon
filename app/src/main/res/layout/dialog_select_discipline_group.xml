@@ -27,7 +27,7 @@
     <data>
         <variable
             name="clazzGroups"
-            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup"/>
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_common"
             tools:text="@string/label_select_discipline_group_info"
-            android:text="@{@string/label_select_discipline_group_info(clazzGroups.discipline().name)}"
+            android:text="@{@string/label_select_discipline_group_info(clazzGroups.discipline.name)}"
             android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/select_group_label" />

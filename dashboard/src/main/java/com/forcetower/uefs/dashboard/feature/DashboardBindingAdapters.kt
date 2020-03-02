@@ -25,8 +25,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.dashboard.R
 import java.util.Calendar
 import kotlin.math.abs
@@ -41,7 +41,7 @@ fun accountDashboardName(tv: TextView, name: String?) {
 }
 
 @BindingAdapter("disciplineStartsEnds")
-fun disciplineStartsEnds(tv: TextView, location: LocationWithGroup?) {
+fun disciplineStartsEnds(tv: TextView, location: ClassLocationWithData?) {
     val start = location?.location?.startsAt ?: "????"
     val ends = location?.location?.endsAt ?: "????"
     tv.text = tv.context.getString(R.string.dash_schedule_separator, start, ends)
@@ -49,7 +49,7 @@ fun disciplineStartsEnds(tv: TextView, location: LocationWithGroup?) {
 
 @SuppressLint("DefaultLocale")
 @BindingAdapter("disciplineLocation")
-fun disciplineLocation(tv: TextView, location: LocationWithGroup?) {
+fun disciplineLocation(tv: TextView, location: ClassLocationWithData?) {
     val room = location?.location?.room?.toUpperCase()
     val module = location?.location?.modulo?.toLowerCase()?.capitalize()
     val campus = location?.location?.campus?.toUpperCase()
@@ -59,7 +59,7 @@ fun disciplineLocation(tv: TextView, location: LocationWithGroup?) {
 }
 
 @BindingAdapter("disciplineStartDifference")
-fun disciplineStartDifference(tv: TextView, location: LocationWithGroup?) {
+fun disciplineStartDifference(tv: TextView, location: ClassLocationWithData?) {
     val context = tv.context
     val starts = location?.location?.startsAt
     if (starts != null) {

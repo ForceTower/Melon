@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,22 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.database.accessors
+package com.forcetower.uefs.core.storage.database.aggregation
 
 import androidx.room.Embedded
+import androidx.room.Junction
 import androidx.room.Relation
-import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.model.unes.ClassLocation
+import com.forcetower.uefs.core.model.unes.AffinityQuestion
+import com.forcetower.uefs.core.model.unes.AffinityQuestionAlternative
+import com.forcetower.uefs.core.model.unes.SStudent
 
-class LocationWithGroup : Comparable<LocationWithGroup> {
-    override fun compareTo(other: LocationWithGroup): Int {
-        return location.compareTo(other.location)
-    }
-
+data class AffinityQuestionFull(
     @Embedded
-    lateinit var location: ClassLocation
-    @Relation(parentColumn = "group_id", entityColumn = "uid", entity = ClassGroup::class)
-    lateinit var groups: List<GroupWithClass>
-
-    fun singleGroup(): GroupWithClass = groups[0]
-}
+    val question: AffinityQuestion,
+    @Relation(
+        entity = SStudent::class,
+        entityColumn = "id",
+        parentColumn = "id",
+        associateBy = Junction(value = AffinityQuestionAlternative::class, parentColumn = "question_id", entityColumn = "student_id")
+    )
+    val alternatives: List<SStudent>
+)

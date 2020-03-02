@@ -66,7 +66,7 @@ class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
 
         viewModel.clazz.observe(this, Observer {
             if (it != null) {
-                val teacher = Constants.HARD_DISCIPLINES[it.clazz.discipline().code]
+                val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
                 if (teacher != null) {
                     if (teacher == "__ANY__") {
                         unlockAchievement(R.string.achievement_vale_das_sombras)

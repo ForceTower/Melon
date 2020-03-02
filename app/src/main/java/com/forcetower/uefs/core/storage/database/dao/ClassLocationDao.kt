@@ -36,7 +36,6 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
@@ -53,7 +52,7 @@ abstract class ClassLocationDao {
 
     @Transaction
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
-    abstract fun getCurrentVisibleSchedule(): LiveData<List<LocationWithGroup>>
+    abstract fun getCurrentVisibleSchedule(): LiveData<List<ClassLocationWithData>>
 
     @Transaction
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
@@ -61,7 +60,7 @@ abstract class ClassLocationDao {
 
     @Transaction
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND (((cl.endsAtInt - cl.startsAtInt) / 2) + cl.startsAtInt) > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
-    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<LocationWithGroup?>
+    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<ClassLocationWithData?>
 
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>

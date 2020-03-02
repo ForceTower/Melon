@@ -32,7 +32,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.crashlytics.android.Crashlytics
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -114,7 +114,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
         })
     }
 
-    private fun populateInterface(classes: List<ClassWithGroups>) {
+    private fun populateInterface(classes: List<ClassFullWithGroup>) {
         adapterPerformance.classes = classes
     }
 }

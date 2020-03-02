@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,18 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.database.accessors
+package com.forcetower.uefs.core.storage.database.aggregation
 
 import androidx.room.Embedded
 import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Grade
 
-class GradeWithClassStudent {
+data class GradeWithClassStudent(
     @Embedded
-    lateinit var grade: Grade
+    val grade: Grade,
     @Relation(parentColumn = "class_id", entityColumn = "uid", entity = Class::class)
-    lateinit var classes: List<ClassFullWithGroup>
-
-    fun clazz() = classes[0]
-}
+    val clazz: ClassFullWithGroup
+)
