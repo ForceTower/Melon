@@ -96,8 +96,8 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
     private fun updateDozePreferences() {
         when (Build.BRAND.toLowerCase(Locale.getDefault())) {
             "xiaomi", "redmi" -> updateXiaomiBattery()
-            else -> updateDefaultBattery()
         }
+        updateDefaultBattery()
     }
 
     private fun updateXiaomiBattery() {
