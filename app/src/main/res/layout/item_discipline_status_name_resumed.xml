@@ -29,7 +29,7 @@
             type="com.forcetower.uefs.feature.common.DisciplineActions"/>
         <variable
             name="clazzGroup"
-            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup"/>
         <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -45,7 +45,7 @@
             android:id="@+id/name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:text="@{WordUtils.toTitleCase(clazzGroup.discipline().name)}"
+            android:text="@{WordUtils.toTitleCase(clazzGroup.discipline.name)}"
             android:textSize="19sp"
             android:textColor="?attr/colorOnBackground"
             app:layout_constraintStart_toStartOf="parent"
@@ -58,7 +58,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:text="@{clazzGroup.discipline().code}"
+            android:text="@{clazzGroup.discipline.code}"
             android:textColor="?attr/colorPrimary"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/name"
@@ -70,8 +70,8 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
             android:layout_marginTop="4dp"
-            app:departmentStrip="@{clazzGroup.discipline().department}"
-            app:goneUnless="@{clazzGroup.discipline().department != null}"
+            app:departmentStrip="@{clazzGroup.discipline.department}"
+            app:goneUnless="@{clazzGroup.discipline.department != null}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/code"
             app:layout_constraintTop_toBottomOf="@+id/name"

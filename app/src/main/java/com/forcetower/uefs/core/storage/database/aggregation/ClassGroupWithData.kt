@@ -29,5 +29,5 @@ data class ClassGroupWithData(
     @Embedded
     val group: ClassGroup,
     @Relation(parentColumn = "class_id", entityColumn = "uid", entity = Class::class)
-    val classData: ClassWithData
+    val classData: ClassWithDiscipline
 )

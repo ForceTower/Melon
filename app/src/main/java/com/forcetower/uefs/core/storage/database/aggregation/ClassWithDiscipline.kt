@@ -26,7 +26,7 @@ import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
 
-data class ClassWithData(
+data class ClassWithDiscipline(
     @Embedded
     val clazz: Class,
     @Relation(parentColumn = "discipline_id", entityColumn = "uid")

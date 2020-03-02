@@ -27,7 +27,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
@@ -41,15 +41,15 @@ class DisciplinePerformanceAdapter(
     private val viewModel: DisciplineViewModel
 ) : RecyclerView.Adapter<DisciplinePerformanceAdapter.DisciplineHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
-    var classes: List<ClassWithGroups> = emptyList()
+    var classes: List<ClassFullWithGroup> = emptyList()
         set(value) {
             field = value
             differ.submitList(buildMergedList(classes))
         }
 
-    private fun buildMergedList(classes: List<ClassWithGroups>): List<Any> {
+    private fun buildMergedList(classes: List<ClassFullWithGroup>): List<Any> {
         val list = mutableListOf<Any>()
-        classes.sortedBy { it.discipline().name }.forEachIndexed { index, clazz ->
+        classes.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
             if (index != 0)
                 list += Divider
 
@@ -190,7 +190,7 @@ class DisciplinePerformanceAdapter(
     private object DiffCallback : DiffUtil.ItemCallback<Any>() {
         override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is Header && newItem is Header -> newItem.clazz.discipline().uid == oldItem.clazz.discipline().uid
+                oldItem is Header && newItem is Header -> newItem.clazz.discipline.uid == oldItem.clazz.discipline.uid
                 oldItem is Final && newItem is Final -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
                 oldItem is Mean && newItem is Mean -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
                 oldItem is Score && newItem is Score -> newItem.grade.uid == oldItem.grade.uid
@@ -202,9 +202,9 @@ class DisciplinePerformanceAdapter(
 
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is Header && newItem is Header -> newItem.clazz.discipline() == oldItem.clazz.discipline()
-                oldItem is Final && newItem is Final -> newItem.clazz.clazz == oldItem.clazz.clazz
-                oldItem is Mean && newItem is Mean -> newItem.clazz.clazz == oldItem.clazz.clazz
+                oldItem is Header && newItem is Header -> newItem.clazz.discipline == oldItem.clazz.discipline
+                oldItem is Final && newItem is Final -> newItem.clazz == oldItem.clazz
+                oldItem is Mean && newItem is Mean -> newItem.clazz == oldItem.clazz
                 oldItem is Score && newItem is Score -> newItem.grade == oldItem.grade
                 oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
                 else -> true
@@ -212,10 +212,10 @@ class DisciplinePerformanceAdapter(
         }
     }
 
-    private data class Header(val clazz: ClassWithGroups)
-    private data class Score(val clazz: ClassWithGroups, val grade: Grade)
-    private data class Final(val clazz: ClassWithGroups)
-    private data class Mean(val clazz: ClassWithGroups)
-    private data class GroupingName(val clazz: ClassWithGroups, val name: String)
+    private data class Header(val clazz: ClassFullWithGroup)
+    private data class Score(val clazz: ClassFullWithGroup, val grade: Grade)
+    private data class Final(val clazz: ClassFullWithGroup)
+    private data class Mean(val clazz: ClassFullWithGroup)
+    private data class GroupingName(val clazz: ClassFullWithGroup, val name: String)
     private object Divider
 }

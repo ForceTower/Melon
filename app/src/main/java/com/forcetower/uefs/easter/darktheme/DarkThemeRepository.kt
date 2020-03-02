@@ -121,7 +121,7 @@ class DarkThemeRepository @Inject constructor(
     @WorkerThread
     private fun createHoursPrecondition(): Precondition {
         val list = database.classDao().getAllDirect()
-        val credits = list.asSequence().map { it.discipline().credits }.sum()
+        val credits = list.asSequence().map { it.discipline.credits }.sum()
         Timber.d("Credits: $credits")
         return Precondition(context.getString(R.string.precondition_3), context.getString(R.string.precondition_3_desc, credits), credits >= 2200)
     }

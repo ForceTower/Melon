@@ -29,7 +29,7 @@
             type="com.forcetower.uefs.feature.common.DisciplineActions"/>
         <variable
             name="clazzGroup"
-            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup"/>
     </data>
 
     <com.google.android.material.card.MaterialCardView
@@ -95,7 +95,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/guide_score"
                 app:layout_constraintStart_toStartOf="@+id/guide_image_margin"
                 app:layout_constraintTop_toTopOf="parent"
-                android:text="@{clazzGroup.discipline().name}"
+                android:text="@{clazzGroup.discipline.name}"
                 tools:text="Métodologia da Pesquisa e Desenvolvimento em Engenharia de Computação"/>
 
             <com.forcetower.uefs.widget.CircleProgressBar

@@ -33,9 +33,8 @@ import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithDiscipline
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassWithDiscipline
 import timber.log.Timber
 
 @Dao
@@ -72,11 +71,11 @@ abstract class ClassDao {
 
     @Transaction
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId AND c.schedule_only = 0")
-    abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>>
+    abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassFullWithGroup>>
 
     @Transaction
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId AND c.schedule_only = 0")
-    abstract fun getClassesWithGradesFromSemesterDirect(semesterId: Long): List<ClassWithGroups>
+    abstract fun getClassesWithGradesFromSemesterDirect(semesterId: Long): List<ClassFullWithGroup>
 
     @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?

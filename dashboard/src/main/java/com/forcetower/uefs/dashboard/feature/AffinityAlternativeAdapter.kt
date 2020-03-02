@@ -25,7 +25,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.SStudent
-import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
+import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.databinding.ItemDashAffinityPersonChipBinding
 import com.forcetower.uefs.feature.shared.inflate

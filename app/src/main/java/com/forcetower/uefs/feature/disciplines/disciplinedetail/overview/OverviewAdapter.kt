@@ -29,7 +29,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
-import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineScheduleHideBinding
 import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
@@ -124,7 +124,7 @@ class OverviewAdapter(
                 list += DisciplineDraft
             }
 
-            if (clazz.clazz.discipline().shortText != null) {
+            if (clazz.discipline.shortText != null) {
                 list += DisciplineShort
             }
 
@@ -132,7 +132,7 @@ class OverviewAdapter(
                 list += DisciplineTeacher
             }
 
-            if (clazz.clazz.discipline().resume != null) {
+            if (clazz.discipline.resume != null) {
                 list += DisciplineResume
             }
 

@@ -18,19 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.database.accessors
+package com.forcetower.uefs.core.storage.database.aggregation
 
 import androidx.room.Embedded
 import androidx.room.Relation
-import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassMaterial
 
-class GroupWithClass {
+data class ClassMaterialWithClass(
     @Embedded
-    lateinit var group: ClassGroup
-    @Relation(parentColumn = "class_id", entityColumn = "uid", entity = Class::class)
-    lateinit var classes: List<ClassWithDiscipline>
-
-    fun singleClass() = classes[0]
-    fun clazz() = classes[0]
-}
+    val material: ClassMaterial,
+    @Relation(parentColumn = "group_id", entityColumn = "uid", entity = ClassGroup::class)
+    val group: ClassGroupWithData
+)

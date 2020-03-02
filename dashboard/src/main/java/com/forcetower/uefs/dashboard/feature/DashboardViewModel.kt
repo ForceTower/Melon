@@ -27,7 +27,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.SStudent
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
@@ -50,8 +50,8 @@ class DashboardViewModel @Inject constructor(
     val lastMessage = repository.getLastMessage()
     val affinity = repository.getAffinityQuestions()
 
-    private val _currentClass = MediatorLiveData<LocationWithGroup?>()
-    val currentClass: LiveData<LocationWithGroup?>
+    private val _currentClass = MediatorLiveData<ClassLocationWithData?>()
+    val currentClass: LiveData<ClassLocationWithData?>
         get() = _currentClass
 
     val isCurrentClass = currentClass.map {

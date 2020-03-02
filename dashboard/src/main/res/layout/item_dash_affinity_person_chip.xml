@@ -30,7 +30,7 @@
 
         <variable
             name="affinity"
-            type="com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull" />
+            type="com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull" />
 
         <variable
             name="listener"
