@@ -528,7 +528,7 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun materialsNotifications() {
         database.classMaterialDao().run {
-            getAllUnnotified().filter { it.group() != null }.forEach {
+            getAllUnnotified().forEach {
                 NotificationCreator.showMaterialPostedNotification(context, it)
             }
             markAllNotified()

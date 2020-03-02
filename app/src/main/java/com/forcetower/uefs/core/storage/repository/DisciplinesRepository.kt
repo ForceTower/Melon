@@ -33,9 +33,8 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.ClassFullWithGroup
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
-import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -49,11 +48,11 @@ class DisciplinesRepository @Inject constructor(
         return database.semesterDao().getParticipatingSemesters()
     }
 
-    fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassWithGroups>> {
+    fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassFullWithGroup>> {
         return database.classDao().getClassesWithGradesFromSemester(semesterId)
     }
 
-    fun getClassGroup(classGroupId: Long): LiveData<GroupWithClass?> {
+    fun getClassGroup(classGroupId: Long): LiveData<ClassGroupWithData?> {
         return database.classGroupDao().getWithRelations(classGroupId)
     }
 
@@ -93,9 +92,9 @@ class DisciplinesRepository @Inject constructor(
                 Timber.d("Class Group with ID: $groupId was not found")
                 result.postValue(false)
             } else {
-                val clazz = value.clazz()
-                val semester = clazz.semester().name
-                val code = clazz.discipline().code
+                val clazz = value.classData
+                val semester = clazz.semester.name
+                val code = clazz.discipline.code
                 val group = value.group.group
 
                 Timber.d("Code: $code. Semester: $semester. Group: $group")

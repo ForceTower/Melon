@@ -26,7 +26,7 @@ import androidx.room.Dao
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.ClassMaterial
-import com.forcetower.uefs.core.storage.database.accessors.ClassMaterialWithClass
+import com.forcetower.uefs.core.storage.database.aggregation.ClassMaterialWithClass
 
 @Dao
 abstract class ClassMaterialDao {
