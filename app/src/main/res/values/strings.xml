@@ -845,5 +845,5 @@
     <string name="your_device_might_not_be_eligible">Problemas com notificações? Vem aqui!</string>
     <string name="doze_mode">Remover restrições de bateria</string>
     <string name="settings_adv_ignore_battery_xiaomi">Remover restrições de bateria</string>
-    <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria irá resolver os problemas de sincronização</string>
+    <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria melhora os problemas de sincronização</string>
 </resources>

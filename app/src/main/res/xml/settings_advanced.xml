@@ -37,7 +37,7 @@
             app:title="@string/settings_adv_doze_mode"
             app:icon="@drawable/ic_bell_sleep_accent_24dp"
             app:summary="@string/settings_adv_doze_mode_info"
-            app:isPreferenceVisible="false"/>
+            app:isPreferenceVisible="true"/>
 
         <Preference
             app:key="stg_advanced_ignore_battery_xiaomi"
