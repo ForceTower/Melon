@@ -55,12 +55,12 @@ buildscript {
         dagger = '2.26'
 
         // Firebase
-        firebase_core = '17.2.2'
+        firebase_core = '17.2.3'
         firebase_auth = '19.2.0'
-        firebase_messaging = '20.1.0'
-        firebase_firestore = '21.4.0'
+        firebase_messaging = '20.1.2'
+        firebase_firestore = '21.4.1'
         firebase_storage = '19.1.1'
-        firebase_remote_config = '19.1.1'
+        firebase_remote_config = '19.1.2'
         firebase_functions = '19.0.2'
         in_app_messaging = "19.0.1"
         firebase_ui_storage = "4.3.1"
@@ -80,7 +80,7 @@ buildscript {
         gp_games = '19.0.0'
         gp_location = "17.0.0"
         gp_billing_client = '2.1.0'
-        gp_admob = '18.3.0'
+        gp_admob = '19.0.0'
 
         // Networking
         okhttp = '4.4.0'
@@ -100,7 +100,7 @@ buildscript {
         rx_kotlin = "2.4.0-RC3"
 
         // Build Versions
-        android_gradle_plugin = '3.6.0'
+        android_gradle_plugin = '3.6.1'
         google_play_services = "4.3.0"
         fabric = "1.28.0"
         kotlinter = "1.26.0"
