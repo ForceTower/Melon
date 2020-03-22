@@ -171,7 +171,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
         if (!admobEnabled) return
         val request = AdRequest.Builder()
-                .addTestDevice(Constants.ADMOB_TEST_ID)
                 .build()
         rewardedVideoAd.loadAd(getString(R.string.admob_rewarded_2048_back_10_times), request)
     }
