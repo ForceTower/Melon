@@ -160,8 +160,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.getAffinityQuestions()
         } catch (t: Throwable) {}
         moveToTask()
-        satisfactionSurvey()
-        boringDevice()
+        // satisfactionSurvey()
+        // boringDevice()
     }
 
     private fun boringDevice() {
