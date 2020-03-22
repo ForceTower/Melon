@@ -567,7 +567,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private fun setupSmallAd(unitId: String) {
         val adView = AdView(this)
         adView.id = R.id.adViewConnect
-        adView.adSize = AdSize.SMART_BANNER
+        adView.adSize = AdSize.BANNER
         adView.adUnitId = unitId
         placeAdViewOnLayout(adView)
     }

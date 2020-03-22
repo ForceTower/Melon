@@ -74,6 +74,7 @@ dependencies {
     implementation "androidx.preference:preference:$preference"
     implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     // Dependency injection
     implementation "com.google.dagger:dagger:$dagger"
