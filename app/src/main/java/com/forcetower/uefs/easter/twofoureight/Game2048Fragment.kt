@@ -367,7 +367,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     override fun onRewardedVideoAdClosed() {
-
     }
 
     override fun onRewardedVideoAdFailedToLoad(reason: Int) {
