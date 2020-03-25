@@ -133,7 +133,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         updateManager = AppUpdateManagerFactory.create(this)
 
         val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        setupAds()
+        setupAds(admobEnabled)
 
         if (savedInstanceState == null) {
             onActivityStart()
