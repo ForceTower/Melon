@@ -48,6 +48,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
+import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
@@ -122,6 +123,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var username: String
     private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
     private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
+    private val billingViewModel: BillingViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -142,6 +144,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun setupAds(willShowAds: Boolean = true) {
+        if (billingViewModel.isGoldMonkey) {
+            showSnack("Macaco gold plus")
+            return
+        }
         MobileAds.initialize(this)
         prepareAdsForPublic(willShowAds)
     }

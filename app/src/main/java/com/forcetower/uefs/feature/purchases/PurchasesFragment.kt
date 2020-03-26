@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
@@ -36,7 +37,6 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import javax.inject.Inject
@@ -49,12 +49,14 @@ class PurchasesFragment : UFragment(), Injectable {
     @Inject
     lateinit var analytics: FirebaseAnalytics
 
-    private lateinit var viewModel: BillingViewModel
+    private val viewModel: BillingViewModel by activityViewModels { factory }
     private lateinit var binding: FragmentPurchasesBinding
     private lateinit var skuAdapter: SkuDetailsAdapter
 
     private val list: MutableList<String> = mutableListOf()
     private val details: MutableList<SkuDetails> = mutableListOf()
+
+    private var currentUsername: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,7 +67,6 @@ class PurchasesFragment : UFragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentPurchasesBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -87,6 +88,9 @@ class PurchasesFragment : UFragment(), Injectable {
         viewModel.selectSku.observe(viewLifecycleOwner, EventObserver {
             purchaseFlow(it)
         })
+        viewModel.currentUsername.observe(viewLifecycleOwner, Observer {
+            currentUsername = it
+        })
     }
 
     private fun processDetails(result: SkuDetailsResult) {
@@ -102,6 +106,9 @@ class PurchasesFragment : UFragment(), Injectable {
     }
 
     private fun purchaseFlow(details: SkuDetails) {
-        viewModel.launchBillingFlow(requireActivity(), details)
+        val username = currentUsername
+        if (username != null) {
+            viewModel.launchBillingFlow(requireActivity(), details, username)
+        }
     }
 }
