@@ -18,31 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.injection.module.effect.purchase
+package com.forcetower.uefs.core.effects.purchases
 
 import android.content.SharedPreferences
-import com.forcetower.uefs.core.effects.purchases.MonkeyGoldEffect
-import com.forcetower.uefs.core.effects.purchases.PurchaseEffect
-import com.forcetower.uefs.core.effects.purchases.ScoreIncreaseEffect
-import com.forcetower.uefs.core.effects.purchases.SubscriptionEffect
-import dagger.Module
-import dagger.Provides
-import javax.inject.Named
-import javax.inject.Singleton
+import javax.inject.Inject
 
-@Module
-object PurchaseModule {
-    @Named("scoreIncreaseEffect")
-    @Provides
-    @Singleton
-    fun scoreIncreaseEffect(preferences: SharedPreferences): PurchaseEffect {
-        return ScoreIncreaseEffect(preferences)
+class MonkeyGoldEffect @Inject constructor(
+    private val preferences: SharedPreferences
+) : SubscriptionEffect {
+    override fun runEffect() {
+        preferences.edit().putBoolean("__monkey_gold_user_enabled__", true).apply()
     }
 
-    @Named("monkeyGoldEffect")
-    @Provides
-    @Singleton
-    fun monkeyGoldEffect(preferences: SharedPreferences): SubscriptionEffect {
-        return MonkeyGoldEffect(preferences)
+    override fun removeEffect() {
+        preferences.edit().putBoolean("__monkey_gold_user_enabled__", false).apply()
+    }
+
+    override fun isEffectActive(): Boolean {
+        return preferences.getBoolean("__monkey_gold_user_enabled__", false)
     }
 }
