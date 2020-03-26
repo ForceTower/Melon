@@ -64,6 +64,12 @@ class BillingViewModel @Inject constructor(
         }
     }
 
+    val isGoldMonkey: Boolean
+        get() = repository.isMonkeyGold()
+
+    val currentUsername: LiveData<String?>
+        get() = repository.getUsername()
+
     fun getSkus() = repository.getManagedSkus()
 
     val subscriptions = Transformations.switchMap(getSkus()) { skuList -> getSubscriptions(skuList) }
@@ -120,9 +126,10 @@ class BillingViewModel @Inject constructor(
         }
     }
 
-    fun launchBillingFlow(activity: Activity, details: SkuDetails) {
+    fun launchBillingFlow(activity: Activity, details: SkuDetails, username: String) {
         val params = BillingFlowParams.newBuilder()
             .setSkuDetails(details)
+            .setAccountId(username)
             .build()
 
         billingClient.launchBillingFlow(activity, params)
