@@ -100,7 +100,7 @@ class PurchasesFragment : UFragment(), Injectable {
             if (values != null) details.addAll(values)
             skuAdapter.submitList(values)
         } else {
-            showSnack(getString(R.string.donation_service_response_error), Snackbar.LENGTH_LONG)
+            showSnack("${getString(R.string.donation_service_response_error)} ${result.responseCode}", Snackbar.LENGTH_LONG)
             analytics.logEvent("purchases_failed", null)
         }
     }

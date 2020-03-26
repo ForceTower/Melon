@@ -149,6 +149,8 @@ class BillingViewModel @Inject constructor(
         purchases.forEach {
             if (!it.isAutoRenewing) {
                 consume(it)
+            } else {
+                _snack.postValue(Event(R.string.purchase_subscription_started))
             }
         }
     }
