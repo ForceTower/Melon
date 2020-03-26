@@ -387,7 +387,7 @@
     <string name="changed_my_mind">Mudei de ideia</string>
     <string name="all_right">Tudo bem</string>
     <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
-    <string name="donation_service_response_error">Erro ao processar doações</string>
+    <string name="donation_service_response_error">Erro ao processar produtos</string>
     <string name="label_purchases">Doações e Itens</string>
     <string name="sku_price_format" translatable="false">%1$s %2$s</string>
     <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
@@ -846,4 +846,7 @@
     <string name="doze_mode">Remover restrições de bateria</string>
     <string name="settings_adv_ignore_battery_xiaomi">Remover restrições de bateria</string>
     <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria melhora os problemas de sincronização</string>
+    <string name="purchase_update_error">Erro nas compras (sad noises)</string>
+    <string name="purchase_item_already_owned">Você ja tem esse item</string>
+    <string name="purchase_you_bought_a_consumable_item">Você comprou um item consumíverl</string>
 </resources>
