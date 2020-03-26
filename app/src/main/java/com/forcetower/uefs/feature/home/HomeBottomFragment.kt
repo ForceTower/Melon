@@ -125,7 +125,7 @@ class HomeBottomFragment : UFragment(), Injectable {
         val uefsStudent = preferences.isStudentFromUEFS()
 
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
-        toggleItem(R.id.purchases, storeFlag)
+        toggleItem(R.id.purchases, true)
 
         val hourglass = remoteConfig.getBoolean("feature_flag_evaluation") && uefsStudent
         toggleItem(R.id.evaluation, hourglass)
