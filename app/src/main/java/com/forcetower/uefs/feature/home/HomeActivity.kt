@@ -144,8 +144,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun setupAds(willShowAds: Boolean = true) {
+        // yes, really easy to bypass lul
         if (billingViewModel.isGoldMonkey) {
-            showSnack("Macaco gold plus")
             return
         }
         MobileAds.initialize(this)
