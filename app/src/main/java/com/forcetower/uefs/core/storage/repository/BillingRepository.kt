@@ -22,11 +22,17 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.android.billingclient.api.Purchase
+import com.forcetower.uefs.core.effects.purchases.PurchaseEffect
 import com.google.firebase.firestore.FirebaseFirestore
+import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 class BillingRepository @Inject constructor(
-    val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    @Named("scoreIncreaseEffect")
+    private val scoreIncreaseEffect: PurchaseEffect
 ) {
 
     fun getManagedSkus(): LiveData<List<String>> {
@@ -38,5 +44,15 @@ class BillingRepository @Inject constructor(
             }
         }
         return result
+    }
+
+    fun handlePurchases(purchases: List<Purchase>) {
+        purchases.forEach { purchase ->
+            // TODO Make the effects consume the token if needed (should billing client be moved to dagger? Hum....)
+            when (purchase.sku) {
+                "score_increase_common" -> scoreIncreaseEffect.runEffect()
+                "unes_gold_monkey" -> Timber.d("User is a gold monkey now")
+            }
+        }
     }
 }

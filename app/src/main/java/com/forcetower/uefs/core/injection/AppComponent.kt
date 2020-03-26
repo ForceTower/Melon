@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.injection.module.NetworkModule
 import com.forcetower.uefs.core.injection.module.ReceiverModule
 import com.forcetower.uefs.core.injection.module.ServicesModule
 import com.forcetower.uefs.core.injection.module.ViewModelModule
+import com.forcetower.uefs.core.injection.module.effect.purchase.PurchaseModule
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
@@ -67,7 +68,8 @@ import javax.inject.Singleton
         FirestoreModule::class,
         ServicesModule::class,
         ViewModelModule::class,
-        ActivityModule::class
+        ActivityModule::class,
+        PurchaseModule::class
     ]
 )
 interface AppComponent {
