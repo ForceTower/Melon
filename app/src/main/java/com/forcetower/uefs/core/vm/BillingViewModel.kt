@@ -65,7 +65,20 @@ class BillingViewModel @Inject constructor(
     }
 
     val isGoldMonkey: Boolean
-        get() = repository.isMonkeyGold()
+        get() = queryGoldMonkey()
+
+    private fun queryGoldMonkey(): Boolean {
+        val response = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
+        if (response.responseCode == BillingClient.BillingResponseCode.OK) {
+            val purchases = response.purchasesList
+            if (purchases.isEmpty()) {
+                repository.cancelSubscriptions()
+            } else {
+                repository.handlePurchases(purchases)
+            }
+        }
+        return repository.isGoldMonkey()
+    }
 
     val currentUsername: LiveData<String?>
         get() = repository.getUsername()
