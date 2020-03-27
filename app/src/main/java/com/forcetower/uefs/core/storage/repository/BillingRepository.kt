@@ -64,7 +64,11 @@ class BillingRepository @Inject constructor(
         }
     }
 
-    fun isMonkeyGold(): Boolean {
+    fun isGoldMonkey(): Boolean {
         return monkeyGoldEffect.isEffectActive()
+    }
+
+    fun cancelSubscriptions() {
+        monkeyGoldEffect.removeEffect()
     }
 }
