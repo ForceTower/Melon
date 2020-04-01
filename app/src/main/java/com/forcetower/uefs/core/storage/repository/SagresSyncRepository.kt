@@ -393,8 +393,9 @@ class SagresSyncRepository @Inject constructor(
     private fun onInvalidLogin() {
         val access = database.accessDao().getAccessDirect()
         if (access != null && access.valid) {
-            database.accessDao().setAccessValidation(false)
-            NotificationCreator.showInvalidAccessNotification(context)
+//            This is disabled... for now
+//            database.accessDao().setAccessValidation(false)
+//            NotificationCreator.showInvalidAccessNotification(context)
         }
     }
 
