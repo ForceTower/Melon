@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.feature.login.LoadingFragment
 import com.forcetower.uefs.feature.login.SigningInFragment
+import com.forcetower.uefs.feature.login.TechNopeCaptchaFragment
 import dagger.Module
 import dagger.android.ContributesAndroidInjector
 
@@ -31,4 +32,6 @@ abstract class LoginModule {
     abstract fun bindLoadingFragment(): LoadingFragment
     @ContributesAndroidInjector
     abstract fun bindSigningInFragment(): SigningInFragment
+    @ContributesAndroidInjector
+    abstract fun bindTechNopeCaptchaFragment(): TechNopeCaptchaFragment
 }
