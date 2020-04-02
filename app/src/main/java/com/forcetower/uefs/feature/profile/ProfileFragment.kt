@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.profile
 
 import android.app.Activity
 import android.content.Intent
+import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,7 +35,7 @@ import androidx.lifecycle.Observer
 import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentProfileBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
@@ -86,7 +87,7 @@ class ProfileFragment : UFragment(), Injectable {
         })
 
         val headLoadListener = object : ImageLoadListener {
-            override fun onImageLoaded() { activity?.startPostponedEnterTransition() }
+            override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
             override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
         }
 

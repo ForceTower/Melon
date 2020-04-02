@@ -22,12 +22,26 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
+import com.android.billingclient.api.Purchase
+import com.forcetower.uefs.core.effects.purchases.PurchaseEffect
+import com.forcetower.uefs.core.effects.purchases.SubscriptionEffect
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.google.firebase.firestore.FirebaseFirestore
 import javax.inject.Inject
+import javax.inject.Named
 
 class BillingRepository @Inject constructor(
-    val firestore: FirebaseFirestore
+    private val firestore: FirebaseFirestore,
+    private val database: UDatabase,
+    @Named("scoreIncreaseEffect") private val scoreIncreaseEffect: PurchaseEffect,
+    @Named("monkeyGoldEffect") private val monkeyGoldEffect: SubscriptionEffect
 ) {
+
+    fun getUsername(): LiveData<String?> {
+        val source = database.accessDao().getAccess()
+        return Transformations.map(source) { it?.username }
+    }
 
     fun getManagedSkus(): LiveData<List<String>> {
         val result = MutableLiveData<List<String>>()
@@ -38,5 +52,23 @@ class BillingRepository @Inject constructor(
             }
         }
         return result
+    }
+
+    fun handlePurchases(purchases: List<Purchase>) {
+        purchases.forEach { purchase ->
+            // TODO Make the effects consume the token if needed (should billing client be moved to dagger? Hum....)
+            when (purchase.sku) {
+                "score_increase_common" -> scoreIncreaseEffect.runEffect()
+                "unes_gold_monkey" -> monkeyGoldEffect.runEffect()
+            }
+        }
+    }
+
+    fun isGoldMonkey(): Boolean {
+        return monkeyGoldEffect.isEffectActive()
+    }
+
+    fun cancelSubscriptions() {
+        monkeyGoldEffect.removeEffect()
     }
 }

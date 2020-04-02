@@ -28,7 +28,7 @@ import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import java.util.Calendar
 import javax.inject.Inject
@@ -39,11 +39,11 @@ class DashboardRepository @Inject constructor(
     private val database: UDatabase,
     private val context: Context
 ) {
-    fun getAccount(): LiveData<Account> {
-        return database.accountDao().getAccount()
+    fun getAccount(): LiveData<Account?> {
+        return database.accountDao().getAccountNullable()
     }
 
-    fun getCurrentClass(): LiveData<LocationWithGroup?> {
+    fun getCurrentClass(): LiveData<ClassLocationWithData?> {
         val calendar = Calendar.getInstance()
         val dayInt = calendar.get(Calendar.DAY_OF_WEEK)
         val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)

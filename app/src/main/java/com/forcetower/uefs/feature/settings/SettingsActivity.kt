@@ -58,6 +58,12 @@ class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentComp
                 add(R.id.fragment_container, RootSettingsFragment())
             }
         }
+
+        when (intent.getIntExtra("move_to_screen", -1)) {
+            0 -> navigateTo(SyncSettingsFragment())
+            2 -> navigateTo(AccountSettingsFragment())
+            3 -> navigateTo(AdvancedSettingsFragment())
+        }
     }
 
     override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {

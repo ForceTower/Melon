@@ -33,7 +33,7 @@ import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.GradeWithClassStudent
+import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import timber.log.Timber
 
 @Dao

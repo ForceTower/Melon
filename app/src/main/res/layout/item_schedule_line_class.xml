@@ -25,11 +25,11 @@
 
     <data>
         <variable
-            name="location"
-            type="com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup"/>
+            name="data"
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData" />
 
         <variable
-            name="interactor"
+            name="actions"
             type="com.forcetower.uefs.feature.schedule.ScheduleActions"/>
     </data>
 
@@ -45,7 +45,7 @@
         app:cardElevation="3dp"
         android:clickable="true"
         android:focusable="true"
-        android:onClick="@{() -> interactor.onLocationClick(cardRoot, location)}">
+        android:onClick="@{() -> actions.onLocationClick(cardRoot, data)}">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -66,7 +66,7 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:maxLines="1"
-                android:text="@{location.location.startsAt}"
+                android:text="@{data.location.startsAt}"
                 android:textAlignment="center"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintBottom_toTopOf="@+id/divider_time"
@@ -100,7 +100,7 @@
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
                 android:maxLines="1"
-                android:text="@{location.location.endsAt}"
+                android:text="@{data.location.endsAt}"
                 android:textAlignment="center"
                 android:textColor="?attr/colorOnSurface"
                 app:layout_constraintBottom_toBottomOf="parent"
@@ -116,7 +116,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="16dp"
                 android:maxLines="1"
-                android:text="@{location.singleGroup().singleClass().singleDiscipline().name.trim()}"
+                android:text="@{data.groupData.classData.discipline.name.trim()}"
                 android:textColor="?attr/colorPrimary"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_start_time"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -139,7 +139,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
-                android:text="@{location.singleGroup().singleClass().singleDiscipline().code}"
+                android:text="@{data.groupData.classData.discipline.code}"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_end_time"
@@ -153,7 +153,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:maxLines="1"
-                android:text="@{location.location.modulo}"
+                android:text="@{data.location.modulo}"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_end_time"
@@ -166,7 +166,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:maxLines="1"
-                android:text="@{location.location.room}"
+                android:text="@{data.location.room}"
                 android:textSize="12sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_end_time"

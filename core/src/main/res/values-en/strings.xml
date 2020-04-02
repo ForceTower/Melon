@@ -22,6 +22,7 @@
 <resources>
     <string name="evaluation_welcome">Welcome back, %1$s</string>
     <string name="mtrl_red">Red</string>
+    <string name="mtrl_pink">Pink</string>
     <string name="mtrl_purple">Purple</string>
     <string name="mtrl_indigo">Indigo</string>
     <string name="mtrl_blue">Blue</string>
@@ -36,4 +37,28 @@
 
     <string name="dynamic_feature_fail">Dynamic Feature error</string>
     <string name="dynamic_feature_error_description">It seems like your device does not like when things get added dynamically</string>
+
+    <!-- Generated Colors -->
+
+    <string name="generated_material_red">Red</string>
+    <string name="generated_material_pink">Pink</string>
+    <string name="generated_material_purple">Purple</string>
+    <string name="generated_material_deep_purple">Deep purple</string>
+    <string name="generated_material_indigo">Indigo</string>
+    <string name="generated_material_blue">Blue</string>
+    <string name="generated_material_light_blue">Light Blue</string>
+    <string name="generated_material_cyan">Cyan</string>
+    <string name="generated_material_teal">Teal</string>
+    <string name="generated_material_green">Green</string>
+    <string name="generated_material_light_green">Light Green</string>
+    <string name="generated_material_lime">Lime</string>
+    <string name="generated_material_yellow">Yellow</string>
+    <string name="generated_material_amber">Amber</string>
+    <string name="generated_material_orange">Orange</string>
+    <string name="generated_material_deep_orange">Deep Orange</string>
+    <string name="generated_material_brown">Brown</string>
+    <string name="generated_material_gray">Gray</string>
+    <string name="generated_material_blue_gray">Blue Gray</string>
+
+    <!-- End of generated colors -->
 </resources>

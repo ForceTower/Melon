@@ -73,7 +73,6 @@
             android:contentDescription="@string/acc_event_mark_session"
             android:checked="@{data.isStarred()}"
             android:onClick="@{() -> listener.onStarClicked(data)}"
-            android:src="@drawable/asld_star_event"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 

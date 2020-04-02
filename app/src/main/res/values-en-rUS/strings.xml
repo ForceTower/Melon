@@ -250,7 +250,6 @@
     <string name="connected_to_play_games">Welcome to the adventure</string>
     <string name="connected_to_the_unesverse">You are connected to the UNESVerse!</string>
     <string name="contributor_commits">%1$d commits</string>
-    <string name="create_new_event">Create event</string>
     <string name="dark_theme_good_luck">Good luck!</string>
     <string name="dark_theme_instructions">Instructions</string>
     <string name="dark_theme_instructions_desc">Accomplish any of the actions below to unlock the theme</string>
@@ -646,8 +645,6 @@
     <string name="switch_dark_theme">Dark theme</string>
     <string name="teacher_evaluation_entity">Teacher</string>
     <string name="students_discorevery_is_not_for_now">( ͡° ͜ʖ ͡°) Student discovery will be introduced in the future</string>
-    <string name="title_aeri">AERI News</string>
-    <string name="title_dashboard">Dashboard</string>
     <string name="unable_to_login">Unable to login</string>
     <string name="unable_to_open_achievements">Google couldn\'t handle requests right now</string>
     <string name="unable_to_open_url">Unable to open link</string>
@@ -698,4 +695,18 @@
     <string name="label_theme_editor">Theme editor</string>
     <string name="new_feature_description_01">Teacher evaluation is here!</string>
     <string name="label_theme_editor_description">Now you can pick you favorite color and use in the app!</string>
+    <string name="extra_config">Additional Settings</string>
+    <string name="auto_start_text">Auto start</string>
+
+    <string name="settings_schedule_shrinking">Shrink schedule</string>
+    <string name="settings_schedule_shrinking_on">Combining same classes together</string>
+    <string name="settings_schedule_shrinking_off">Displaying as received by the website</string>
+    <string name="not_eligible_check">See</string>
+    <string name="settings_adv_doze_mode">Ignore doze mode</string>
+    <string name="settings_adv_doze_mode_info">In some brands, like Xiaomi, enable this might solve the problems</string>
+    <string name="settings_adv_doze_mode_info_disabled">Only available on Android 6.0+</string>
+    <string name="move_to_advanced_settings">Move to Advanced Settings</string>
+    <string name="settings_accept_ignore_doze">Sync frequency redefined to 1 hour to save battery</string>
+    <string name="settings_refuse_ignore_doze">You denied the permissions</string>
+    <string name="your_device_might_not_be_eligible">Problems with notifications? Come here!</string>
 </resources>

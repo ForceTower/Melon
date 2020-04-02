@@ -24,13 +24,13 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.databinding.ItemDisciplineCollapsedBinding
 import com.forcetower.uefs.feature.shared.inflater
 
 class DisciplineSemesterAdapter(
     private val viewModel: DisciplineViewModel
-) : ListAdapter<ClassWithGroups, ClassHolder>(ClassDiff) {
+) : ListAdapter<ClassFullWithGroup, ClassHolder>(ClassDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassHolder {
         val binding = ItemDisciplineCollapsedBinding.inflate(parent.inflater(), parent, false)
         return ClassHolder(binding)
@@ -53,7 +53,7 @@ class DisciplineSemesterAdapter(
 
 class ClassHolder(val binding: ItemDisciplineCollapsedBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object ClassDiff : DiffUtil.ItemCallback<ClassWithGroups>() {
-    override fun areItemsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem.clazz.uid == newItem.clazz.uid && oldItem.discipline().uid == newItem.discipline().uid
-    override fun areContentsTheSame(oldItem: ClassWithGroups, newItem: ClassWithGroups) = oldItem == newItem
+private object ClassDiff : DiffUtil.ItemCallback<ClassFullWithGroup>() {
+    override fun areItemsTheSame(oldItem: ClassFullWithGroup, newItem: ClassFullWithGroup) = oldItem.clazz.uid == newItem.clazz.uid && oldItem.discipline.uid == newItem.discipline.uid
+    override fun areContentsTheSame(oldItem: ClassFullWithGroup, newItem: ClassFullWithGroup) = oldItem == newItem
 }
