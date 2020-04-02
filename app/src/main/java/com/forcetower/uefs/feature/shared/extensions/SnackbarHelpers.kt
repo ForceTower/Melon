@@ -23,7 +23,7 @@ package com.forcetower.uefs.feature.shared.extensions
 import android.widget.TextView
 import androidx.core.content.res.ResourcesCompat
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.util.ViewUtils
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.snackbar.Snackbar
 

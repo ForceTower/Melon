@@ -24,13 +24,13 @@ import com.forcetower.uefs.easter.darktheme.DarkThemeUnlockFragment
 import com.forcetower.uefs.easter.darktheme.InviteDarkThemeFragment
 import com.forcetower.uefs.feature.adventure.AdventureFragment
 import com.forcetower.uefs.feature.adventure.AdventureSignInDialog
+import com.forcetower.uefs.feature.baddevice.BadDeviceFragment
 import com.forcetower.uefs.feature.bigtray.BigTrayFragment
 import com.forcetower.uefs.feature.calendar.CalendarFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineSemesterFragment
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.document.DocumentsFragment
-import com.forcetower.uefs.feature.event.EventFragment
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
 import com.forcetower.uefs.feature.home.HomeBottomFragment
 import com.forcetower.uefs.feature.home.InvalidAccessDialog
@@ -45,7 +45,7 @@ import com.forcetower.uefs.feature.messages.dynamic.AERINotInstalledFragment
 import com.forcetower.uefs.feature.purchases.PurchasesFragment
 import com.forcetower.uefs.feature.reminders.CreateReminderDialog
 import com.forcetower.uefs.feature.reminders.RemindersFragment
-import com.forcetower.uefs.feature.schedule.ScheduleFragment
+import com.forcetower.uefs.feature.schedule.SchedulePerformanceFragment
 import com.forcetower.uefs.feature.servicesfollowup.RequestedServicesFragment
 import com.forcetower.uefs.feature.servicesfollowup.ServicesFollowUpFragment
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
@@ -69,7 +69,7 @@ abstract class HomeModule {
     @ContributesAndroidInjector
     abstract fun homeBottomFragment(): HomeBottomFragment
     @ContributesAndroidInjector
-    abstract fun scheduleFragment(): ScheduleFragment
+    abstract fun schedulePerformanceFragment(): SchedulePerformanceFragment
     @ContributesAndroidInjector
     abstract fun disciplineFragment(): DisciplineFragment
     @ContributesAndroidInjector
@@ -80,8 +80,6 @@ abstract class HomeModule {
     abstract fun documentsFragment(): DocumentsFragment
     @ContributesAndroidInjector
     abstract fun syncRegistryFragment(): SyncRegistryFragment
-    @ContributesAndroidInjector
-    abstract fun eventFragment(): EventFragment
     @ContributesAndroidInjector
     abstract fun calendarFragment(): CalendarFragment
     @ContributesAndroidInjector
@@ -118,4 +116,6 @@ abstract class HomeModule {
     abstract fun selectCourseDialog(): SelectCourseDialog
     @ContributesAndroidInjector
     abstract fun themeSwitcher(): ThemeSwitcherFragment
+    @ContributesAndroidInjector
+    abstract fun badDevice(): BadDeviceFragment
 }

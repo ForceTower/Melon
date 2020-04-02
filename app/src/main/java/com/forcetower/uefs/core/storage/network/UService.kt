@@ -48,6 +48,7 @@ import com.forcetower.uefs.core.model.service.FlowchartDTO
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.unes.CreateStatementParams
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudentDTO
@@ -192,4 +193,19 @@ interface UService {
 
     @POST("affinity/answer")
     fun answerAffinity(@Body answer: AffinityQuestionAnswer): Call<UResponse<Void>>
+
+    // --------- General Events ---------
+    @GET("events")
+    suspend fun events(): UResponse<List<Event>>
+
+    @POST("events/create")
+    suspend fun sendEvent(@Body event: Event): UResponse<Void>
+
+    @FormUrlEncoded
+    @POST("events/approve")
+    suspend fun approveEvent(@Field("id") id: Long): UResponse<Void>
+
+    @FormUrlEncoded
+    @POST("events/delete")
+    suspend fun deleteEvent(@Field("id") id: Long): UResponse<Void>
 }

@@ -167,7 +167,7 @@ class AdventureRepository @Inject constructor(
                 var valid = false
                 classes.forEach { clazz ->
                     val points = clazz.clazz.finalScore ?: 0.0
-                    val credits = clazz.discipline().credits
+                    val credits = clazz.discipline.credits
 
                     if (points >= 0) {
                         accumulatedMean += points * credits
@@ -181,7 +181,7 @@ class AdventureRepository @Inject constructor(
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
 
-                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline().code.toUpperCase(Locale.getDefault())]
+                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline.code.toUpperCase(Locale.getDefault())]
                     if (teacher != null && points >= 5) {
                         if (teacher == "__ANY__") {
                             data[R.string.achievement_vale_das_sombras] = -1
@@ -219,7 +219,7 @@ class AdventureRepository @Inject constructor(
                     if (absences.isEmpty()) data[R.string.achievement_eu_estou_sempre_l] = -1
                     if (clazz.clazz.missedClasses >= credits / 4) data[R.string.achievement_nunca_nem_vi] = -1
 
-                    val name = clazz.discipline().name
+                    val name = clazz.discipline.name
                     if (name.matches("(?i)(.*)introdu([cç])([aã])o(.*)".toRegex())) {
                         introduction++
                     } else if (name.matches("(?i)(.*)int(r)?\\.(.*)".toRegex())) {
@@ -255,7 +255,7 @@ class AdventureRepository @Inject constructor(
             val classes = database.classDao().getClassesWithGradesFromSemesterDirect(current.uid)
             classes.forEach { clazz ->
                 val points = clazz.clazz.finalScore ?: -1.0
-                val credits = clazz.discipline().credits
+                val credits = clazz.discipline.credits
 
                 if (points >= 0) {
                     accumulatedMean += points * credits

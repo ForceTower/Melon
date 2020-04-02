@@ -37,6 +37,7 @@ import androidx.lifecycle.Observer
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.R
@@ -67,6 +68,8 @@ class SigningInFragment : UFragment(), Injectable {
     private lateinit var binding: FragmentSigningInBinding
     private lateinit var viewModel: LoginViewModel
     private lateinit var messages: Array<String>
+
+    private val args by navArgs<SigningInFragmentArgs>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -130,9 +133,9 @@ class SigningInFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel = provideViewModel(factory)
-        viewModel.getLogin().observe(viewLifecycleOwner, Observer<Callback>(this::onLoginProgress))
+        viewModel.getLogin().observe(viewLifecycleOwner, Observer(this::onLoginProgress))
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
-        viewModel.getStep().observe(viewLifecycleOwner, Observer<LoginSagresRepository.Step>(this::onStep))
+        viewModel.getStep().observe(viewLifecycleOwner, Observer(this::onStep))
         doLogin()
     }
 
@@ -153,14 +156,14 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun doLogin() {
-        val username = arguments?.getString("username")
-        val password = arguments?.getString("password")
+        val username = args.username
+        val password = args.password
 
-        if (username.isNullOrBlank() || password.isNullOrBlank()) {
+        if (username.isBlank() || password.isBlank()) {
             showSnack(getString(R.string.error_invalid_credentials))
             view?.findNavController()?.popBackStack()
         } else {
-            viewModel.login(username, password, true)
+            viewModel.login(username, password, true, args.skipLogin)
             if (username.contains("@")) {
                 binding.textTips.setText(getString(R.string.enter_using_username_instead))
                 binding.textTips.fadeIn()

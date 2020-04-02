@@ -36,7 +36,7 @@ import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -113,7 +113,7 @@ class DisciplineFragment : UFragment(), Injectable {
             val actionTaken = preferences.getBoolean("suggested_reorder_semester_action_taken", false)
             if (!actionTaken && diffSort != semesters) {
                 sortedSizeOnce = size
-                val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), true)
+                val snack = getSnack(getString(R.string.incorrect_semester_ordering_detected), Snackbar.LENGTH_INDEFINITE)
                 snack?.let { bar ->
                     bar.duration = Snackbar.LENGTH_INDEFINITE
                     bar.setAction(getString(R.string.incorrect_semester_ordering_quick_fix)) {
@@ -157,7 +157,7 @@ class DisciplineFragment : UFragment(), Injectable {
         }, 1000)
     }
 
-    private fun handleNavigateToDisciplineDetails(it: ClassWithGroups) {
+    private fun handleNavigateToDisciplineDetails(it: ClassFullWithGroup) {
         when {
             it.groups.isEmpty() -> homeViewModel.showSnack(getString(R.string.no_class_groups))
             it.groups.size == 1 -> startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.clazz.uid, it.groups[0].uid))
@@ -165,7 +165,7 @@ class DisciplineFragment : UFragment(), Injectable {
         }
     }
 
-    private fun showGroupDialog(it: ClassWithGroups) {
+    private fun showGroupDialog(it: ClassFullWithGroup) {
         val dialog = SelectGroupDialog().apply {
             arguments = bundleOf("groups" to it.toJson())
         }

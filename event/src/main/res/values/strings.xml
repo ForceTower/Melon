@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt-BR">
+    <string name="general_events">Eventos</string>
+    <string name="back_button">Voltar</string>
+    <string name="go_to_register_page">Eu quero ir!</string>
+    <string name="create_new_event">Criar evento</string>
+    <string name="no_events_created">Nossa, tão vazio!</string>
+    <string name="event_name">Nome</string>
+    <string name="event_description">Descrição</string>
+    <string name="event_location">Local</string>
+    <string name="event_start">Início</string>
+    <string name="event_end">Término</string>
+    <string name="event_course">Curso alvo</string>
+    <string name="event_price">Preço da entrada</string>
+    <string name="event_certificate">Horas do certificado</string>
+    <string name="event_check_certificate">Certificado</string>
+    <string name="event_check_open_for_all">Aberto a qualquer curso</string>
+    <string name="event_check_free">Gratuito</string>
+    <string name="event_create_preview">Visualizar evento</string>
+    <string name="cant_start_activity_for_picking_image">Não é possível escolher uma foto neste dispositivo</string>
+    <string name="cut_event_image">Cortar imagem</string>
+    <string name="certificate_hours_must_be_integer">As horas devem ser inteiras</string>
+    <string name="must_select_image">Todos os eventos precisam de uma imagem</string>
+    <string name="event_organization">Organização</string>
+    <string name="certificate_hours_must_be_number">Deve ser um número</string>
+    <string name="must_be_number">Deve ser um número</string>
+    <string name="how_did_you">Como você... Oq???</string>
+    <string name="select_a_date">Selecione uma data</string>
+    <string name="event_error_too_small">Pequeno demais!</string>
+    <string name="event_date_invalid">Sem data => Sem evento</string>
+    <string name="event_date_end_before_start">Acaba antes de começar, pode isso?</string>
+    <string name="event_date_start_before_today">Começa antes de hoje?</string>
+    <string name="confirm_event_creation">Confirmar criação</string>
+    <string name="some_bad_stuff_happened">Perdi o controle, não sei o que é mais para salvar, faz de novo</string>
+    <string name="event_scheduled_to_send">O evento foi agendado para envio e análise</string>
+    <string name="event_details">Detalhes</string>
+    <string name="event_free">Gratuito</string>
+    <string name="event_price_format">%1$.2f</string>
+    <string name="event_check_has_register_page">Página de cadastro</string>
+    <string name="event_register_page">Página de cadastro</string>
+    <string name="event_delete">Apagar</string>
+    <string name="event_approve">Aprovar</string>
+    <string name="event_certificate_hours_format">%1$d horas</string>
+    <string name="event_not_valid_url">Este link não é válido</string>
+    <string name="select_a_course">Selecione um curso alvo</string>
+</resources>

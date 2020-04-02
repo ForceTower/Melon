@@ -21,9 +21,9 @@
 package com.forcetower.uefs.feature.common
 
 import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 
 interface DisciplineActions {
-    fun classClicked(clazz: ClassWithGroups)
+    fun classClicked(clazz: ClassFullWithGroup)
     fun groupSelected(clazz: ClassGroup)
 }

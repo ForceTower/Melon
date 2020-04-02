@@ -121,6 +121,7 @@
         <item name="android:windowIsFloating">false</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowNoTitle">true</item>
+        <item name="android:windowDrawsSystemBarBackgrounds">true</item>
     </style>
     
     <style name="UTheme.TransparentStatus" parent="UTheme.LightNav">
@@ -128,6 +129,10 @@
         <item name="android:windowTranslucentStatus">true</item>
         <item name="android:statusBarColor">@android:color/transparent</item>
     </style>
+
+    <style name="UTheme.Translucent.Event" />
+    <style name="UTheme.Translucent.Event.Impl" />
+    <style name="UTheme.Translucent.Event.Impl.Details" />
 
     <style name="UTheme.Translucent.About">
         <item name="android:windowEnterTransition">@transition/about_enter</item>
@@ -342,6 +347,10 @@
         <item name="iconColor">@color/iconColor</item>
     </style>
 
+    <style name="Widget.UTheme" parent="@android:style/Widget">
+        <item name="iconColor">@color/iconColor</item>
+    </style>
+
     <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
     </style>
@@ -434,4 +443,7 @@
         <item name="android:minHeight">24dp</item>
         <item name="android:maxHeight">24dp</item>
     </style>
+
+    <style name="UTheme.LightNav.Conference" />
+    <style name="UTheme.LightNav.Conference.Impl" />
 </resources>

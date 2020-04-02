@@ -32,7 +32,7 @@ import com.forcetower.uefs.core.model.service.AffinityQuestionDTO
 import com.forcetower.uefs.core.model.unes.AffinityQuestion
 import com.forcetower.uefs.core.model.unes.AffinityQuestionAlternative
 import com.forcetower.uefs.core.model.unes.SStudent
-import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
+import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
 
 @Dao
 abstract class AffinityQuestionDao {

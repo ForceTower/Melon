@@ -24,7 +24,6 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.MotionEvent
@@ -36,9 +35,9 @@ import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
-import com.forcetower.uefs.R
-import com.forcetower.uefs.core.constants.Constants
+import androidx.preference.PreferenceManager
 import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.GameFragment2048Binding
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.forcetower.uefs.easter.twofoureight.tools.InputListener
@@ -48,13 +47,8 @@ import com.forcetower.uefs.easter.twofoureight.view.Game
 import com.forcetower.uefs.easter.twofoureight.view.Tile
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.gms.ads.reward.RewardItem
-import com.google.android.gms.ads.reward.RewardedVideoAd
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
@@ -73,8 +67,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var darkRepository: DarkThemeRepository
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private var downX: Float = 0.toFloat()
     private var downY: Float = 0.toFloat()
@@ -85,8 +77,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     private lateinit var mGame: Game
     private lateinit var binding: GameFragment2048Binding
     private var activity: UGameActivity? = null
-    private lateinit var interstitial: InterstitialAd
-    private lateinit var rewardedVideoAd: RewardedVideoAd
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -122,8 +112,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         input.setView(binding.gameview)
         input.setGame(mGame)
 
-        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-
         binding.tvTitle.setOnClickListener {
             if (!mGame.isEndlessMode) {
                 mGame.setEndlessMode()
@@ -137,8 +125,8 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         }
 
         binding.ibUndo.setOnClickListener {
-            if (mGame.score > 100000 && backs <= 0 && admobEnabled) {
-                promptBuyBacks()
+            if (mGame.score > 100000 && backs <= 0) {
+                onRewarded()
             } else {
                 mGame.revertUndoState()
                 backs -= 1
@@ -154,42 +142,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             Toast.makeText(activity, getString(R.string.start_new_game), Toast.LENGTH_SHORT).show()
             true
         }
-
-        if (admobEnabled) {
-            prepareInterstitialAds()
-            prepareRewardedAds()
-        }
-    }
-
-    private fun prepareRewardedAds() {
-        rewardedVideoAd = MobileAds.getRewardedVideoAdInstance(requireContext())
-        rewardedVideoAd.rewardedVideoAdListener = this
-        loadRewardedAd()
-    }
-
-    private fun loadRewardedAd() {
-        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        if (!admobEnabled) return
-        val request = AdRequest.Builder()
-                .addTestDevice(Constants.ADMOB_TEST_ID)
-                .build()
-        rewardedVideoAd.loadAd(getString(R.string.admob_rewarded_2048_back_10_times), request)
-    }
-
-    private fun prepareInterstitialAds() {
-        interstitial = InterstitialAd(requireContext())
-        interstitial.adUnitId = getString(R.string.admob_interstitial_2048_lost_game)
-        val request = AdRequest.Builder()
-                .addTestDevice(Constants.ADMOB_TEST_ID)
-                .build()
-        interstitial.loadAd(request)
-    }
-
-    private fun promptBuyBacks() {
-        if (rewardedVideoAd.isLoaded) {
-            rewardedVideoAd.show()
-        }
-        onRewarded()
     }
 
     private fun onRewarded() {
@@ -207,15 +159,11 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     override fun onPause() {
-        if (::rewardedVideoAd.isInitialized)
-            rewardedVideoAd.pause(requireContext())
         save()
         super.onPause()
     }
 
     override fun onResume() {
-        if (::rewardedVideoAd.isInitialized)
-            rewardedVideoAd.resume(requireContext())
         load()
         if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
             binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
@@ -224,8 +172,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     override fun onDestroy() {
-        if (::rewardedVideoAd.isInitialized)
-            rewardedVideoAd.destroy(requireContext())
         super.onDestroy()
     }
 
@@ -253,7 +199,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
 
     override fun onGameStateChanged(state: Game.State?) {
         Timber.d("Game state changed to: %s", state!!)
-        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
         if (state == Game.State.WON || state == Game.State.ENLESS_WON) {
             binding.tvEndgameOverlay.visibility = VISIBLE
             binding.tvEndgameOverlay.setText(R.string.you_win)
@@ -265,9 +210,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             binding.tvEndgameOverlay.setText(R.string.game_over)
             activity?.unlockAchievement(R.string.achievement_eu_tentei)
             activity?.incrementAchievementProgress(R.string.achievement_a_prtica_leva__perfeio, 1)
-            if (admobEnabled && interstitial.isLoaded) {
-                interstitial.show()
-            }
         } else {
             binding.tvEndgameOverlay.visibility = GONE
         }
@@ -425,7 +367,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     override fun onRewardedVideoAdClosed() {
-        loadRewardedAd()
     }
 
     override fun onRewardedVideoAdFailedToLoad(reason: Int) {

@@ -23,27 +23,23 @@ package com.forcetower.uefs.feature.home
 import android.app.Activity
 import android.content.Intent
 import android.content.SharedPreferences
-import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
-import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.forcetower.core.injection.Injectable
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.util.ColorUtils
-import com.forcetower.uefs.core.util.ViewUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
@@ -55,9 +51,6 @@ import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.getkeepsafe.taptargetview.TapTarget
-import com.getkeepsafe.taptargetview.TapTargetView
-import com.google.android.material.internal.NavigationMenuItemView
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
@@ -137,47 +130,8 @@ class HomeBottomFragment : UFragment(), Injectable {
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
         toggleItem(R.id.adventure, uefsStudent)
-        toggleItem(R.id.events, false)
+        toggleItem(R.id.events, uefsStudent)
         toggleItem(R.id.flowchart, uefsStudent)
-
-        val revealThemeSwitcher = preferences.getBoolean("feature_reveal_theme_editor", false)
-        if (themeSwitcher && !revealThemeSwitcher) {
-            preferences.edit().putBoolean("feature_reveal_theme_editor", true).apply()
-            Handler().post {
-                revealThemeSwitcher()
-            }
-        }
-    }
-
-    private fun revealThemeSwitcher() {
-        val list = arrayListOf<View>()
-        val context = requireContext()
-        val dp24 = getPixelsFromDp(context, 24).toInt()
-        binding.navigationView.findViewsWithText(list, "theme_editor_name_flag", View.FIND_VIEWS_WITH_CONTENT_DESCRIPTION)
-        val menuView = list[0] as NavigationMenuItemView
-        val allTop = getPixelsFromDp(context, 120).toInt()
-
-        val rect = Rect(menuView.left + dp24, menuView.top + allTop, dp24 * 2, menuView.bottom + allTop)
-
-        TapTargetView.showFor(
-            requireActivity(),
-            TapTarget.forBounds(rect, getString(R.string.label_theme_editor), getString(R.string.label_theme_editor_description))
-                .drawShadow(true)
-                .cancelable(true)
-                .textTypeface(ResourcesCompat.getFont(requireContext(), R.font.product_sans_regular))
-                .dimColorInt(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
-                .transparentTarget(true)
-                .titleTextColorInt(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorOnPrimary))
-                .descriptionTextColorInt(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorOnPrimary)),
-            object : TapTargetView.Listener() {
-                override fun onTargetClick(view: TapTargetView) {
-                    try {
-                        findNavController().navigate(R.id.theme_switcher)
-                    } catch (ignored: Throwable) {}
-                    view.dismiss(true)
-                }
-            }
-        )
     }
 
     private fun toggleItem(@IdRes id: Int, visible: Boolean) {

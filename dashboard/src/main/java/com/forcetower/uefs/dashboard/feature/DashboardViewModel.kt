@@ -24,9 +24,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.SStudent
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
@@ -39,19 +40,29 @@ class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel(), AffinityListener {
-    private val timing = TimeLiveData(10_000L) {
+    private val timing = TimeLiveData(5_000L) {
         Calendar.getInstance().timeInMillis
     }
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
-    val account: LiveData<Account> = repository.getAccount()
+    val account: LiveData<Account?> = repository.getAccount()
     val student: LiveData<SStudent> = repository.getStudentMe()
     val lastMessage = repository.getLastMessage()
     val affinity = repository.getAffinityQuestions()
 
-    private val _currentClass = MediatorLiveData<LocationWithGroup?>()
-    val currentClass: LiveData<LocationWithGroup?>
+    private val _currentClass = MediatorLiveData<ClassLocationWithData?>()
+    val currentClass: LiveData<ClassLocationWithData?>
         get() = _currentClass
+
+    val isCurrentClass = currentClass.map {
+        val calendar = Calendar.getInstance()
+        val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+        val startInt = it?.location?.startsAtInt
+        if (startInt == null) false
+        else {
+            startInt <= currentTimeInt
+        }
+    }
 
     private val _profileClick = MutableLiveData<Event<Pair<Long, Long>>>()
     val profileClick: LiveData<Event<Pair<Long, Long>>>

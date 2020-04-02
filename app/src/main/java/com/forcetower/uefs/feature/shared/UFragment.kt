@@ -27,19 +27,19 @@ import timber.log.Timber
 abstract class UFragment : Fragment() {
     var displayName: String = javaClass.simpleName
 
-    fun showSnack(string: String, long: Boolean = false) {
+    fun showSnack(string: String, duration: Int = Snackbar.LENGTH_SHORT) {
         val activity = activity
         if (activity is UActivity) {
-            activity.showSnack(string, long)
+            activity.showSnack(string, duration)
         } else {
             Timber.d("Not part of UActivity")
         }
     }
 
-    fun getSnack(string: String, long: Boolean = false): Snackbar? {
+    fun getSnack(string: String, duration: Int = Snackbar.LENGTH_SHORT): Snackbar? {
         val activity = activity
         return if (activity is UActivity) {
-            activity.getSnackInstance(string, long)
+            activity.getSnackInstance(string, duration)
         } else {
             Timber.d("Not part of UActivity")
             null

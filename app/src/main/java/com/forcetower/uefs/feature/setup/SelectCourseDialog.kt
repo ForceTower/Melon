@@ -44,11 +44,13 @@ class SelectCourseDialog : RoundedDialog(), Injectable {
     private var callback: CourseSelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+        val hide = arguments?.getBoolean("hide_description") ?: false
         viewModel = provideActivityViewModel(factory)
         return DialogSelectCourseBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener { dismiss() }
             it.btnOk.setOnClickListener { select() }
+            it.labelCourseInformation.visibility = if (hide) View.GONE else View.VISIBLE
         }.root
     }
 

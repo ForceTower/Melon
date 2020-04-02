@@ -336,3 +336,27 @@ object M40TO41 : Migration(40, 41) {
         database.execSQL("CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_question_id` ON `AffinityQuestionAlternative` (`question_id`)")
     }
 }
+
+object M41TO42 : Migration(41, 42) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `Event` (`id` INTEGER NOT NULL, `name` TEXT NOT NULL, `description` TEXT NOT NULL, `imageUrl` TEXT NOT NULL, `creatorName` TEXT NOT NULL, `creatorId` INTEGER NOT NULL, `offeredBy` TEXT NOT NULL, `startDate` TEXT NOT NULL, `endDate` TEXT NOT NULL, `location` TEXT NOT NULL, `price` REAL, `certificateHours` INTEGER, `courseId` INTEGER, `featured` INTEGER NOT NULL, `createdAt` TEXT NOT NULL, `approved` INTEGER NOT NULL, `canModify` INTEGER NOT NULL, `participating` INTEGER NOT NULL, `fakeTemp` INTEGER, `sending` INTEGER, PRIMARY KEY(`id`))")
+    }
+}
+
+object M42TO43 : Migration(42, 43) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Event ADD COLUMN registerPage TEXT DEFAULT NULL")
+    }
+}
+
+object M43TO44 : Migration(43, 44) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE Event ADD COLUMN canApprove INTEGER NOT NULL DEFAULT 0")
+    }
+}
+
+object M44TO45 : Migration(44, 45) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("UPDATE Access SET valid = 1")
+    }
+}

@@ -31,15 +31,12 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
-import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.random.Random
 
 /**
  * A atividade inicial do aplicativo, ela tem o papel de decidir qual tela mostrar
@@ -61,6 +58,15 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
         val viewModel: LaunchViewModel = provideViewModel(factory)
         if (savedInstanceState != null) return
         createNewVersionNotification()
+
+        //         val intent = Intent(Intent.ACTION_VIEW).setClassName(
+        //            this,
+        //            "dev.forcetower.conference.ConferenceActivity"
+        //        )
+        //
+        //        startActivity(intent)
+        //        finish()
+        //        return
 
         viewModel.direction.observe(this, EventObserver {
             Timber.d("Once!")
@@ -86,31 +92,6 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
             NotificationCreator.showSimpleNotification(this, title, notes)
             preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
         }
-    }
-
-    private fun onNextFeatureEaster() {
-        val lucky = Random.nextInt(100)
-        if (lucky < 90) {
-            Timber.d("Unlucky!")
-            return
-        }
-        val resourceProvider = ThemeSwitcherResourceProvider()
-
-        val themesMap = arrayOf(
-            intArrayOf(R.id.theme_feature_primary_color, getRandomTheme(resourceProvider.primaryColors)),
-            intArrayOf(R.id.theme_feature_secondary_color, getRandomTheme(resourceProvider.secondaryColors))
-        )
-
-        for (i in themesMap.indices) {
-            ThemeOverlayUtils.setThemeOverlay(themesMap[i][0], themesMap[i][1])
-        }
-    }
-
-    private fun getRandomTheme(overlays: Int): Int {
-        val themeAttrs = resources.obtainTypedArray(overlays)
-        val resource = themeAttrs.getResourceId(Random.nextInt(themeAttrs.length()), 0)
-        themeAttrs.recycle()
-        return resource
     }
 
     override fun androidInjector() = fragmentInjector

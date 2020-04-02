@@ -26,10 +26,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
-import com.forcetower.uefs.core.storage.database.accessors.AffinityQuestionFull
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.databinding.ItemDashAffinityQuestionBinding
 import com.forcetower.uefs.dashboard.databinding.ItemDashHeaderBinding
@@ -45,7 +46,7 @@ class DashboardAdapter(
     private val viewModel: DashboardViewModel,
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<DashboardAdapter.DashboardHolder>() {
-    var nextClass: LocationWithGroup? = null
+    var nextClass: ClassLocationWithData? = null
     set(value) {
         field = value
         differ.submitList(buildMergedList(clazz = value))
@@ -70,6 +71,8 @@ class DashboardAdapter(
         field = value
         differ.submitList(buildMergedList(affinity = value))
     }
+
+    var currentAccount: Account? = null
 
     private val differ = AsyncListDiffer(this, DiffCallback)
 
@@ -125,7 +128,7 @@ class DashboardAdapter(
     }
 
     private fun buildMergedList(
-        clazz: LocationWithGroup? = nextClass,
+        clazz: ClassLocationWithData? = nextClass,
         message: Message? = lastMessage,
         updating: Boolean = updatingApp,
         affinity: List<AffinityQuestionFull> = affinityList
@@ -175,7 +178,7 @@ class DashboardAdapter(
         }
         override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
             return when {
-                oldItem is Schedule && newItem is Schedule -> oldItem.clazz?.singleGroup()?.group?.uid == newItem.clazz?.singleGroup()?.group?.uid
+                oldItem is Schedule && newItem is Schedule -> oldItem.clazz?.groupData?.group?.uid == newItem.clazz?.groupData?.group?.uid
                 oldItem is Message && newItem is Message -> oldItem.content == newItem.content
                 oldItem is AffinityQuestionFull && newItem is AffinityQuestionFull -> oldItem.question == newItem.question
                 else -> true
@@ -185,5 +188,5 @@ class DashboardAdapter(
 
     private object Header
     private object UpdatingApp
-    private data class Schedule(val clazz: LocationWithGroup?)
+    private data class Schedule(val clazz: ClassLocationWithData?)
 }

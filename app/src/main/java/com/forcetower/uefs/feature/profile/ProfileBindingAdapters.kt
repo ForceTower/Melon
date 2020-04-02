@@ -165,4 +165,5 @@ fun getZonedTimeStampedDate(view: TextView, zonedDate: ZonedDateTime?) {
         }
     }
     view.text = value
+    view.visibility = View.VISIBLE
 }

@@ -26,10 +26,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -92,7 +92,7 @@ class ContributorsFragment : UFragment(), Injectable {
         CustomTabActivityHelper.openCustomTab(
             requireActivity(),
             CustomTabsIntent.Builder()
-                .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
                 .addDefaultShareMenuItem()
                 .build(),
             Uri.parse(string))

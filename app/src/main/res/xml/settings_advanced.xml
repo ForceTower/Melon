@@ -32,6 +32,20 @@
             android:title="@string/settings_adv_auto_start"
             android:summary="@string/settings_adv_auto_start_info" />
 
+        <SwitchPreference
+            app:key="stg_advanced_ignore_doze"
+            app:title="@string/settings_adv_doze_mode"
+            app:icon="@drawable/ic_bell_sleep_accent_24dp"
+            app:summary="@string/settings_adv_doze_mode_info"
+            app:isPreferenceVisible="true"/>
+
+        <Preference
+            app:key="stg_advanced_ignore_battery_xiaomi"
+            app:title="@string/settings_adv_ignore_battery_xiaomi"
+            app:icon="@drawable/ic_bell_sleep_accent_24dp"
+            app:summary="@string/settings_adv_ignore_battery_xiaomi_info"
+            app:isPreferenceVisible="false" />
+
         <Preference
             android:key="stg_advanced_battery_optimization"
             app:icon="@drawable/ic_battery_charging_full_accent_24dp"

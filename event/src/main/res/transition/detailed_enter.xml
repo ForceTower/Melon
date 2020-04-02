@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<transitionSet
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <transitionSet>
+        <targets>
+            <target android:excludeId="@android:id/navigationBarBackground" />
+            <target android:excludeId="@android:id/statusBarBackground" />
+            <target android:excludeId="@id/image" />
+            <target android:excludeId="@id/back_wrapper" />
+        </targets>
+        <transition
+            class="com.forcetower.core.transition.StaggeredDistanceSlide"
+            app:spread="5"
+            android:duration="350"
+            android:interpolator="@android:interpolator/linear_out_slow_in" />
+        <fade
+            android:startDelay="250"
+            android:duration="100"
+            android:interpolator="@android:interpolator/linear" />
+    </transitionSet>
+
+    <transition
+        class="com.forcetower.core.transition.BackgroundFade"
+        android:startDelay="300"
+        android:duration="150"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@id/event_title" />
+            <target android:targetId="@id/event_location" />
+            <target android:targetId="@id/event_description" />
+        </targets>
+    </transition>
+
+    <fade
+        android:startDelay="300"
+        android:duration="100"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@id/back_wrapper" />
+        </targets>
+    </fade>
+
+    <fade
+        android:duration="350"
+        android:interpolator="@android:interpolator/linear">
+        <targets>
+            <target android:targetId="@android:id/statusBarBackground" />
+            <target android:targetId="@android:id/navigationBarBackground" />
+        </targets>
+    </fade>
+
+</transitionSet>

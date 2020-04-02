@@ -20,16 +20,22 @@
 
 package com.forcetower.uefs.feature.feedback
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSendFeedbackBinding
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import com.google.android.material.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import timber.log.Timber
 import javax.inject.Inject
 
 class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
@@ -37,6 +43,22 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
     lateinit var factory: UViewModelFactory
     lateinit var viewModel: FeedbackViewModel
     lateinit var binding: FragmentSendFeedbackBinding
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val sheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        try {
+            sheetDialog.setOnShowListener {
+                val bottomSheet = sheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)!!
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.skipCollapsed = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        } catch (t: Throwable) {
+            Timber.d(t, "Hum...")
+        }
+        return sheetDialog
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideViewModel(factory)

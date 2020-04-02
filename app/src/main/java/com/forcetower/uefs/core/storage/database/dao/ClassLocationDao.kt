@@ -36,9 +36,10 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 @Dao
@@ -51,11 +52,15 @@ abstract class ClassLocationDao {
 
     @Transaction
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
-    abstract fun getCurrentVisibleSchedule(): LiveData<List<LocationWithGroup>>
+    abstract fun getCurrentVisibleSchedule(): LiveData<List<ClassLocationWithData>>
 
     @Transaction
-    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND cl.startsAtInt > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
-    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<LocationWithGroup?>
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
+    abstract fun getCurrentVisibleSchedulePerformance(): Flow<List<ClassLocationWithData>>
+
+    @Transaction
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND (((cl.endsAtInt - cl.startsAtInt) / 2) + cl.startsAtInt) > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
+    abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<ClassLocationWithData?>
 
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
@@ -84,6 +89,7 @@ abstract class ClassLocationDao {
         } else {
             selectAllSemestersDirect().min()
         }
+
         val profile = getMeProfile()
         if (semester == null || profile == null) return
         val hidden = getHiddenLocations()
@@ -159,6 +165,7 @@ abstract class ClassLocationDao {
         hidden.forEach { setClassHiddenHidden(true, it.groupId, it.day, it.startsAt, it.endsAt, it.profileId) }
     }
 
+    @WorkerThread
     @Query("SELECT * FROM ClassLocation WHERE hidden_on_schedule = 1")
     protected abstract fun getHiddenLocations(): List<ClassLocation>
 
@@ -224,4 +231,7 @@ abstract class ClassLocationDao {
 
     @Insert(onConflict = IGNORE)
     protected abstract fun insertGroup(group: ClassGroup): Long
+
+    @Query("SELECT COUNT(cl.uid) FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")
+    abstract fun hasSchedule(): LiveData<Boolean>
 }

@@ -53,7 +53,7 @@
                     android:importantForAccessibility="no"
                     android:scaleType="centerInside"
                     app:imageUrl="@{imageTop}"
-                    android:visibility="gone"/>
+                    app:goneIf="@{imageTop == null}"/>
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recycler_sku"

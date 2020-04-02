@@ -35,7 +35,7 @@
         android:minHeight="80dp"
         android:paddingStart="16dp"
         tools:ignore="RtlSymmetry"
-        app:goneIf="@{viewModel.account == null}">
+        app:goneIf="@{viewModel.account.username == null}">
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/card_image"

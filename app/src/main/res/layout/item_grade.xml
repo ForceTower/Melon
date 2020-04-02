@@ -29,7 +29,7 @@
             type="com.forcetower.uefs.core.model.unes.Grade"/>
         <variable
             name="clazzGroup"
-            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups" />
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup" />
         <variable
             name="listener"
             type="com.forcetower.uefs.feature.common.DisciplineActions" />

@@ -89,14 +89,10 @@ dependencies {
     implementation "com.google.android:flexbox:$flexbox"
     implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     // Room
-    implementation "androidx.room:room-runtime:$room"
     kapt "androidx.room:room-compiler:$room"
-
-    // Architecture
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
     // Paging
     implementation "androidx.paging:paging-runtime:$paging"

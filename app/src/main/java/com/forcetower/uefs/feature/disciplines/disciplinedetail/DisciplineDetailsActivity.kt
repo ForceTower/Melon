@@ -66,7 +66,7 @@ class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
 
         viewModel.clazz.observe(this, Observer {
             if (it != null) {
-                val teacher = Constants.HARD_DISCIPLINES[it.clazz.discipline().code]
+                val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
                 if (teacher != null) {
                     if (teacher == "__ANY__") {
                         unlockAchievement(R.string.achievement_vale_das_sombras)
@@ -82,10 +82,14 @@ class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
         })
     }
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun showSnack(string: String, duration: Int) {
+        getSnackInstance(string, duration).show()
+    }
+
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.root, string, duration)
         snack.config()
-        snack.show()
+        return snack
     }
 
     override fun androidInjector() = fragmentInjector

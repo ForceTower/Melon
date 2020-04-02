@@ -24,6 +24,14 @@ import androidx.annotation.WorkerThread
 import com.forcetower.core.interfaces.notification.NotifyMessage
 
 interface DynamicDataSource {
+    /**
+     * Returns an integer flag as an status of success or fail...
+     *
+     * This flag is used by the updater for checks.
+     * 0 -> Success
+     * 1..Integer.MAX -> Success, but something funny happened
+     * Integer.MIN..-1 -> Failed, and something funny might have happened
+     */
     @WorkerThread
     fun update(): Int
 

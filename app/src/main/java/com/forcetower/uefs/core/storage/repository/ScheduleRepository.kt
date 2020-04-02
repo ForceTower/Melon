@@ -21,12 +21,16 @@
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.annotation.WorkerThread
+import androidx.lifecycle.LiveData
 import com.crashlytics.android.Crashlytics
+import com.forcetower.uefs.core.model.ui.ProcessedClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -62,4 +66,32 @@ class ScheduleRepository @Inject constructor(
             Crashlytics.logException(t)
         }
     }
+
+    fun getProcessedSchedule(): Flow<Map<Int, List<ProcessedClassLocation>>> {
+        val source = database.classLocationDao().getCurrentVisibleSchedulePerformance()
+        return source.map { data ->
+            val timers = data.map { Timed(it.location.startsAtInt, it.location.endsAtInt, it.location.startsAt, it.location.endsAt) }.distinctBy { it.start }.sortedBy { it.start }
+            data.groupBy { it.location.dayInt }.mapValues { entry ->
+                val dayList = timers.map { timed ->
+                    val location = entry.value.find { it.location.startsAtInt == timed.start && it.location.endsAtInt == timed.end }
+                    val element = if (location == null) ProcessedClassLocation.EmptySpace() else ProcessedClassLocation.ElementSpace(location)
+                    element
+                }
+                dayList
+            }.toMutableMap().apply {
+                put(-1, timers.map { ProcessedClassLocation.TimeSpace(it.startString, it.endString, it.start, it.end) })
+            }.toMap()
+        }
+    }
+
+    fun hasSchedule(): LiveData<Boolean> {
+        return database.classLocationDao().hasSchedule()
+    }
+
+    private data class Timed(
+        val start: Int,
+        val end: Int,
+        val startString: String,
+        val endString: String
+    )
 }

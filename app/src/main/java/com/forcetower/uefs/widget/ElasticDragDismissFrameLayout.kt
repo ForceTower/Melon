@@ -28,8 +28,8 @@ import android.view.View
 import android.widget.FrameLayout
 
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.util.AnimUtils
-import com.forcetower.uefs.core.util.ColorUtils
+import com.forcetower.core.utils.AnimUtils
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.feature.shared.extensions.isNavBarOnBottom
 
 import java.util.ArrayList
@@ -248,7 +248,7 @@ class ElasticDragDismissFrameLayout @JvmOverloads constructor(
      * navigation bar) whilst elastic drags are performed and
      * [finishes][Activity.finishAfterTransition] the activity when drag dismissed.
      */
-    class SystemChromeFader(private val activity: Activity) : ElasticDragDismissCallback() {
+    open class SystemChromeFader(private val activity: Activity) : ElasticDragDismissCallback() {
         private val statusBarAlpha: Int = Color.alpha(activity.window.statusBarColor)
         private val navBarAlpha: Int = Color.alpha(activity.window.navigationBarColor)
         private val fadeNavBar: Boolean = activity.isNavBarOnBottom()

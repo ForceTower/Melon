@@ -32,7 +32,7 @@
 
     <fragment
         android:id="@+id/schedule"
-        android:name="com.forcetower.uefs.feature.schedule.ScheduleFragment"
+        android:name="com.forcetower.uefs.feature.schedule.SchedulePerformanceFragment"
         android:label="ScheduleFragment"
         tools:layout="@layout/fragment_schedule"/>
 
@@ -74,9 +74,22 @@
     
     <fragment
         android:id="@+id/events"
-        android:name="com.forcetower.uefs.feature.event.EventFragment"
-        android:label="EventFragment"
-        tools:layout="@layout/fragment_events"/>
+        android:name="dev.forcetower.event.feature.listing.EventFragment"
+        android:label="EventFragment">
+        <action
+            android:id="@+id/action_events_to_create_event"
+            app:destination="@id/create_event" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/create_event"
+        android:name="dev.forcetower.event.feature.create.CreateEventFragment"
+        android:label="CreateEventFragment">
+        <argument
+            android:name="eventId"
+            app:argType="long"
+            android:defaultValue="0L" />
+    </fragment>
     
     <fragment
         android:id="@+id/calendar"
