@@ -354,3 +354,9 @@ object M43TO44 : Migration(43, 44) {
         database.execSQL("ALTER TABLE Event ADD COLUMN canApprove INTEGER NOT NULL DEFAULT 0")
     }
 }
+
+object M44TO45 : Migration(44, 45) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("UPDATE Access SET valid = 1")
+    }
+}

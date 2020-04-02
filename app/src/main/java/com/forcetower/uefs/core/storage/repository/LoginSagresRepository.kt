@@ -80,7 +80,7 @@ class LoginSagresRepository @Inject constructor(
     fun getProfileMe() = database.profileDao().selectMe()
 
     @MainThread
-    fun login(username: String, password: String, deleteDatabase: Boolean = false): LiveData<Callback> {
+    fun login(username: String, password: String, deleteDatabase: Boolean = false, skipLogin: Boolean = false): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
         resetSteps()
         if (deleteDatabase) {
@@ -93,21 +93,27 @@ class LoginSagresRepository @Inject constructor(
                 database.profileDao().deleteMe()
                 database.semesterDao().deleteAll()
                 executor.mainThread().execute {
-                    login(signIn, username, password)
+                    login(signIn, username, password, skipLogin)
                 }
             }
         } else {
             incSteps()
-            login(signIn, username, password)
+            login(signIn, username, password, skipLogin)
         }
         return signIn
     }
 
     @MainThread
-    private fun login(data: MediatorLiveData<Callback>, username: String, password: String) {
+    private fun login(data: MediatorLiveData<Callback>, username: String, password: String, skipLogin: Boolean) {
         SagresNavigator.instance.putCredentials(SagresCredential(username, password, SagresNavigator.instance.getSelectedInstitution()))
-        val source = SagresNavigator.instance.aLogin(username, password).toLiveData()
-        currentStep.value = createStep(R.string.step_logging_in)
+
+        val source = if (!skipLogin) {
+            currentStep.value = createStep(R.string.step_logging_in)
+            SagresNavigator.instance.aLogin(username, password).toLiveData()
+        } else {
+            currentStep.value = createStep(R.string.step_login_bypassed)
+            SagresNavigator.instance.aStartPage().toLiveData()
+        }
         data.addSource(source) { l ->
             if (l.status == Status.SUCCESS) {
                 data.removeSource(source)
@@ -136,7 +142,7 @@ class LoginSagresRepository @Inject constructor(
         } else {
             val me = SagresNavigator.instance.aMe().toLiveData()
             data.addSource(me) { m ->
-                Timber.d("Me status ${m.status} ${m.code}")
+                Timber.d("Me status ${m.status} ${m.code} ${m.throwable}")
                 if (m.status == Status.SUCCESS) {
                     data.removeSource(me)
                     Timber.d("Me Completed. You are ${m.person?.name} and your CPF is ${m.person?.getCpf()}")
@@ -149,6 +155,7 @@ class LoginSagresRepository @Inject constructor(
                         Timber.d("SPerson is null")
                     }
                 } else if (m.status == Status.RESPONSE_FAILED || m.status == Status.NETWORK_ERROR) {
+                    m.throwable?.printStackTrace()
                     continueUsingHtml(document, username, score, access, data)
                 } else {
                     Timber.d("The status ${m.status}")
