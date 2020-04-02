@@ -20,96 +20,36 @@
 
 package com.forcetower.core.adapters
 
-import android.graphics.drawable.Drawable
-import android.net.Uri
 import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.widget.ImageView
+import android.view.WindowInsets
 import android.widget.TextView
-import androidx.appcompat.content.res.AppCompatResources
-import androidx.core.net.toUri
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.DataSource
-import com.bumptech.glide.load.engine.GlideException
-import com.bumptech.glide.request.RequestListener
-import com.bumptech.glide.request.RequestOptions
-import com.bumptech.glide.request.target.Target
 import com.forcetower.core.R
 import com.forcetower.core.widget.CircularOutlineProvider
 import com.forcetower.core.widget.CustomSwipeRefreshLayout
 import com.forcetower.sagres.utils.WordUtils
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+
+@BindingAdapter("layoutFullscreen")
+fun View.bindLayoutFullscreen(previousFullscreen: Boolean, fullscreen: Boolean) {
+    if (previousFullscreen != fullscreen && fullscreen) {
+        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
+            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+    }
+}
 
 @BindingAdapter("clipToCircle")
 fun clipToCircle(view: View, clip: Boolean) {
     view.clipToOutline = clip
     view.outlineProvider = if (clip) CircularOutlineProvider else null
-}
-
-@BindingAdapter(value = ["imageUri", "placeholder", "clipCircle", "listener"], requireAll = false)
-fun imageUri(imageView: ImageView, imageUri: Uri?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
-    val placeholderDrawable = placeholder ?: AppCompatResources.getDrawable(
-            imageView.context, R.mipmap.ic_unes_large_image_512
-    )
-    val circular = clipCircle ?: false
-    var request = when (imageUri) {
-        null -> {
-            Timber.d("Unsetting image url")
-            Glide.with(imageView)
-                    .load(placeholderDrawable)
-        }
-        else -> {
-            Glide.with(imageView)
-                    .load(imageUri)
-                    .apply(RequestOptions().placeholder(placeholderDrawable))
-        }
-    }
-    request = if (circular) {
-        request.circleCrop()
-    } else {
-        request
-    }
-
-    if (listener != null) {
-        request = request.listener(object : RequestListener<Drawable> {
-            override fun onResourceReady(
-                resource: Drawable?,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoaded()
-                return false
-            }
-
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoadFailed()
-                return false
-            }
-        })
-    }
-    request.into(imageView)
-}
-
-@BindingAdapter(value = ["imageUrl", "placeholder", "clipCircle", "listener"], requireAll = false)
-fun imageUrl(imageView: ImageView, imageUrl: String?, placeholder: Drawable?, clipCircle: Boolean?, listener: ImageLoadListener?) {
-    imageUri(imageView, imageUrl?.toUri(), placeholder, clipCircle, listener)
 }
 
 @BindingAdapter("swipeRefreshColors")
@@ -168,21 +108,54 @@ fun dateFromLong(view: TextView, value: Long?) {
     view.text = str
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, ViewPaddingState) -> Unit) {
-    // Create a snapshot of the view's padding state
-    val paddingState = createStateForView(this)
-    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-        f(v, insets, paddingState)
-        insets
+data class ViewPaddingState(
+    val left: Int,
+    val top: Int,
+    val right: Int,
+    val bottom: Int,
+    val start: Int,
+    val end: Int
+)
+
+@BindingAdapter(
+    "paddingStartSystemWindowInsets",
+    "paddingTopSystemWindowInsets",
+    "paddingEndSystemWindowInsets",
+    "paddingBottomSystemWindowInsets",
+    requireAll = false
+)
+fun applySystemWindows(
+    view: View,
+    applyLeft: Boolean,
+    applyTop: Boolean,
+    applyRight: Boolean,
+    applyBottom: Boolean
+) {
+    view.doOnApplyWindowInsets { _, insets, padding ->
+        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
+        val top = if (applyTop) insets.systemWindowInsetTop else 0
+        val right = if (applyRight) insets.systemWindowInsetRight else 0
+        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+
+        view.setPadding(
+            padding.left + left,
+            padding.top + top,
+            padding.right + right,
+            padding.bottom + bottom
+        )
     }
-    requestApplyInsetsWhenAttached()
 }
 
-/**
- * Call [View.requestApplyInsets] in a safe away. If we're attached it calls it straight-away.
- * If not it sets an [View.OnAttachStateChangeListener] and waits to be attached before calling
- * [View.requestApplyInsets].
- */
+data class InitialPadding(
+    val left: Int,
+    val top: Int,
+    val right: Int,
+    val bottom: Int
+)
+
+private fun recordInitialPaddingForView(view: View) = InitialPadding(
+        view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+
 fun View.requestApplyInsetsWhenAttached() {
     if (isAttachedToWindow) {
         requestApplyInsets()
@@ -197,21 +170,11 @@ fun View.requestApplyInsetsWhenAttached() {
     }
 }
 
-private fun createStateForView(view: View) = ViewPaddingState(view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom, view.paddingStart, view.paddingEnd)
-
-/**
- * An interface for responding to image loading completion.
- */
-interface ImageLoadListener {
-    fun onImageLoaded()
-    fun onImageLoadFailed()
+fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
+    val initialPadding = recordInitialPaddingForView(this)
+    setOnApplyWindowInsetsListener { v, insets ->
+        f(v, insets, initialPadding)
+        insets
+    }
+    requestApplyInsetsWhenAttached()
 }
-
-data class ViewPaddingState(
-    val left: Int,
-    val top: Int,
-    val right: Int,
-    val bottom: Int,
-    val start: Int,
-    val end: Int
-)

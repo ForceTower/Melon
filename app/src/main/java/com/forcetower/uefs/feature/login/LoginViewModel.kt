@@ -37,9 +37,9 @@ class LoginViewModel @Inject constructor(private val repository: LoginSagresRepo
 
     fun getStep() = repository.currentStep
 
-    fun login(username: String, password: String, deleteDatabase: Boolean = false) {
+    fun login(username: String, password: String, deleteDatabase: Boolean = false, skipLogin: Boolean = false) {
         if (!loginRunning) {
-            val login = repository.login(username, password, deleteDatabase)
+            val login = repository.login(username, password, deleteDatabase, skipLogin)
             loginRunning = true
             loginSrc.addSource(login) {
                 loginRunning = when (it.status) {

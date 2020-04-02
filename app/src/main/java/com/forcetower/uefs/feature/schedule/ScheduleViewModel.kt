@@ -22,37 +22,42 @@ package com.forcetower.uefs.feature.schedule
 
 import android.view.View
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.database.accessors.GroupWithClass
-import com.forcetower.uefs.core.storage.database.accessors.LocationWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
+import com.forcetower.uefs.core.storage.repository.ScheduleRepository
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class ScheduleViewModel @Inject constructor(
     private val database: UDatabase,
+    private val repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository
 ) : ViewModel(), ScheduleActions {
 
-    val scheduleSrc by lazy { database.classLocationDao().getCurrentVisibleSchedule() }
+    val hasSchedule = repository.hasSchedule()
+    val schedule = repository.getProcessedSchedule().asLiveData(Dispatchers.IO)
 
     override fun onLongClick(view: View): Boolean {
         Game2048Activity.startActivity(view.context)
         return false
     }
 
-    override fun onClick(view: View, group: GroupWithClass) {
+    override fun onClick(view: View, group: ClassGroupWithData) {
         val context = view.context
-        val intent = DisciplineDetailsActivity.startIntent(context, group.clazz().clazz.uid, group.group.uid)
+        val intent = DisciplineDetailsActivity.startIntent(context, group.classData.clazz.uid, group.group.uid)
         context.startActivity(intent)
     }
 
-    override fun onLocationClick(view: View, location: LocationWithGroup) {
-        val group = location.singleGroup()
-        if (group.singleClass().clazz.scheduleOnly) return
+    override fun onLocationClick(view: View, location: ClassLocationWithData) {
+        val group = location.groupData
+        if (group.classData.clazz.scheduleOnly) return
         val context = view.context
-        val intent = DisciplineDetailsActivity.startIntent(context, group.clazz().clazz.uid, group.group.uid)
+        val intent = DisciplineDetailsActivity.startIntent(context, group.classData.clazz.uid, group.group.uid)
         context.startActivity(intent)
     }
 

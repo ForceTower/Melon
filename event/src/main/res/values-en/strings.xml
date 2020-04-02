@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="general_events">Events</string>
+    <string name="back_button">Back</string>
+    <string name="go_to_register_page">I\'m on it!</string>
+    <string name="create_new_event">Create event</string>
+    <string name="no_events_created">Wow, such empty!</string>
+    <string name="event_name">Name</string>
+    <string name="event_description">Description</string>
+    <string name="event_location">Location</string>
+    <string name="event_start">Start</string>
+    <string name="event_end">End</string>
+    <string name="event_course">Target course</string>
+    <string name="event_price">Ticket</string>
+    <string name="event_certificate">Certificate hours</string>
+    <string name="event_check_certificate">Certificate</string>
+    <string name="event_check_open_for_all">Any course</string>
+    <string name="event_check_free">Free</string>
+    <string name="event_create_preview">Preview event</string>
+    <string name="cant_start_activity_for_picking_image">Can not choose a picture on this device</string>
+    <string name="cut_event_image">Cut image</string>
+    <string name="certificate_hours_must_be_integer">Hours must be integers</string>
+    <string name="must_select_image">All events must have an image</string>
+    <string name="event_organization">Organization</string>
+    <string name="certificate_hours_must_be_number">Must be a number</string>
+    <string name="must_be_number">Must be a number</string>
+    <string name="how_did_you">How did you... What??</string>
+    <string name="select_a_date">Pick a date</string>
+    <string name="event_error_too_small">Too small</string>
+    <string name="event_date_invalid">No date => No event</string>
+    <string name="event_date_end_before_start">It ends before begins, really?</string>
+    <string name="event_date_start_before_today">It starts before today?</string>
+    <string name="confirm_event_creation">Confirm creation</string>
+    <string name="some_bad_stuff_happened">I lost control, do that again</string>
+    <string name="event_scheduled_to_send">Event scheduled to send and analysis</string>
+    <string name="event_certificate_hours_format">%1$d hours</string>
+    <string name="event_approve">Approve</string>
+    <string name="event_check_has_register_page">Register page</string>
+    <string name="event_delete">Delete</string>
+    <string name="event_details">Details</string>
+    <string name="event_free">Free</string>
+    <string name="event_price_format">%1$.2f</string>
+    <string name="event_register_page">Register page</string>
+    <string name="event_not_valid_url">This link is not valid</string>
+    <string name="select_a_course">Select the target course</string>
+</resources>

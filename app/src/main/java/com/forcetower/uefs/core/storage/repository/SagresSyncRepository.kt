@@ -65,6 +65,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.util.LocationShrinker
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
@@ -198,18 +199,17 @@ class SagresSyncRepository @Inject constructor(
         val homeDoc = login(access)
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
+
+        // Since stuff is just broken....
         if (homeDoc == null) {
             registry.completed = true
             registry.error = -2
             registry.success = false
             registry.message = "Login falhou"
-            registry.end = System.currentTimeMillis()
-            database.syncRegistryDao().update(registry)
-            return
+        } else {
+            defineSchedule(SagresScheduleParser.getSchedule(homeDoc))
+            defineMessages(SagresMessageParser.getMessages(homeDoc))
         }
-
-        defineSchedule(SagresScheduleParser.getSchedule(homeDoc))
-        defineMessages(SagresMessageParser.getMessages(homeDoc))
 
         val person = me(score, homeDoc, access)
         Timber.d("The person from me is ${person?.name} ${person?.isMocked}")
@@ -217,7 +217,15 @@ class SagresSyncRepository @Inject constructor(
             registry.completed = true
             registry.error = -3
             registry.success = false
-            registry.message = "Busca de usuário falhou no Sagres"
+            registry.message = "The dream is over"
+            registry.end = System.currentTimeMillis()
+            database.syncRegistryDao().update(registry)
+            return
+        } else if (homeDoc == null && person.isMocked) {
+            registry.completed = true
+            registry.error = -4
+            registry.success = false
+            registry.message = "The dream is over"
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
             return
@@ -239,9 +247,19 @@ class SagresSyncRepository @Inject constructor(
         if (!person.isMocked) {
             Timber.d("I guess the person is not a mocked version on it")
             if (!messages(person.id)) {
-                if (!messages(null)) result += 1 shl 1
+                if (homeDoc != null && !messages(null)) result += 1 shl 1
             }
             if (!semesters(person.id)) result += 1 shl 2
+            if (homeDoc == null) {
+                registry.completed = true
+                registry.error = 10
+                registry.success = true
+                registry.message = "Partial sync"
+                registry.executor = "${registry.executor}-Parc"
+                registry.end = System.currentTimeMillis()
+                database.syncRegistryDao().update(registry)
+                return
+            }
         } else {
             if (!messages(null)) result += 1 shl 1
         }
@@ -392,12 +410,13 @@ class SagresSyncRepository @Inject constructor(
     private fun onInvalidLogin() {
         val access = database.accessDao().getAccessDirect()
         if (access != null && access.valid) {
-            database.accessDao().setAccessValidation(false)
-            NotificationCreator.showInvalidAccessNotification(context)
+//            This is disabled... for now
+//            database.accessDao().setAccessValidation(false)
+//            NotificationCreator.showInvalidAccessNotification(context)
         }
     }
 
-    private fun me(score: Double, document: Document, access: Access): SagresPerson? {
+    private fun me(score: Double, document: Document?, access: Access): SagresPerson? {
         val username = access.username
         if (username.contains("@")) {
             return continueWithHtml(document, username, score)
@@ -424,7 +443,7 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document, username: String, score: Double): SagresPerson {
+    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson {
         val name = SagresBasicParser.getName(document) ?: username
         val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
         database.profileDao().insert(person, score)
@@ -527,7 +546,7 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun materialsNotifications() {
         database.classMaterialDao().run {
-            getAllUnnotified().filter { it.group() != null }.forEach {
+            getAllUnnotified().forEach {
                 NotificationCreator.showMaterialPostedNotification(context, it)
             }
             markAllNotified()
@@ -646,7 +665,13 @@ class SagresSyncRepository @Inject constructor(
     private fun defineSchedule(locations: List<SagresDisciplineClassLocation>?) {
         locations ?: return
         val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
-        database.classLocationDao().putSchedule(locations, ordering)
+        val shrinkSchedule = preferences.getBoolean("stg_schedule_shrinking", true)
+        if (shrinkSchedule) {
+            val shrink = LocationShrinker.shrink(locations)
+            database.classLocationDao().putSchedule(shrink, ordering)
+        } else {
+            database.classLocationDao().putSchedule(locations, ordering)
+        }
     }
 
     @WorkerThread

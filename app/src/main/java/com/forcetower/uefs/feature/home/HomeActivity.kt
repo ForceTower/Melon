@@ -26,6 +26,7 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -45,11 +46,14 @@ import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
+import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.baddevice.BadDeviceFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
@@ -78,10 +82,12 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 
 class HomeActivity : UGameActivity(), HasAndroidInjector {
@@ -117,6 +123,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var username: String
     private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
     private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
+    private val billingViewModel: BillingViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -127,8 +134,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
         updateManager = AppUpdateManagerFactory.create(this)
 
-        val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        setupAds(admobEnabled)
+        // val admobEnabled = remoteConfig.getBoolean("admob_enabled")
+        setupAds(false)
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -137,6 +144,12 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun setupAds(willShowAds: Boolean = true) {
+        // yes, really easy to bypass lul
+//        if (billingViewModel.isGoldMonkey) {
+//            showSnack("Macaco gold!")
+//            return
+//        }
+//        showSnack("Não é macaco gold...")
         MobileAds.initialize(this)
         prepareAdsForPublic(willShowAds)
     }
@@ -155,7 +168,26 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.getAffinityQuestions()
         } catch (t: Throwable) {}
         moveToTask()
-        satisfactionSurvey()
+        // satisfactionSurvey()
+        // boringDevice()
+    }
+
+    private fun boringDevice() {
+        if (!VersionUtils.isMarshmallow()) return
+        val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this)
+        val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+            "samsung" -> VersionUtils.isNougat()
+            else -> false
+        }
+        val saw = preferences.getBoolean("saw_bad_device_information_key", false)
+        if ((autoStart || brands) && !saw) {
+            val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), Snackbar.LENGTH_INDEFINITE)
+            snack.setAction(R.string.not_eligible_check) {
+                val fragment = BadDeviceFragment()
+                fragment.show(supportFragmentManager, "bad_device_modal")
+            }
+            snack.show()
+        }
     }
 
     private fun satisfactionSurvey() {
@@ -346,13 +378,13 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
     override fun onSupportNavigateUp(): Boolean = findNavController(R.id.home_nav_host).navigateUp()
 
-    override fun showSnack(string: String, long: Boolean) {
-        val snack = getSnackInstance(string, long)
+    override fun showSnack(string: String, duration: Int) {
+        val snack = getSnackInstance(string, duration)
         snack.show()
     }
 
-    override fun getSnackInstance(string: String, long: Boolean): Snackbar {
-        val snack = Snackbar.make(binding.root, string, if (long) Snackbar.LENGTH_LONG else Snackbar.LENGTH_SHORT)
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
+        val snack = Snackbar.make(binding.root, string, duration)
         snack.config()
         snack.anchorView = binding.bottomNavigation
         return snack
@@ -436,7 +468,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
                 }
                 RESULT_IN_APP_UPDATE_FAILED -> {
                     val message = getString(R.string.in_app_update_request_failed)
-                    showSnack(message, true)
+                    showSnack(message, Snackbar.LENGTH_LONG)
                 }
             }
         }
@@ -543,7 +575,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private fun setupSmallAd(unitId: String) {
         val adView = AdView(this)
         adView.id = R.id.adViewConnect
-        adView.adSize = AdSize.SMART_BANNER
+        adView.adSize = AdSize.BANNER
         adView.adUnitId = unitId
         placeAdViewOnLayout(adView)
     }

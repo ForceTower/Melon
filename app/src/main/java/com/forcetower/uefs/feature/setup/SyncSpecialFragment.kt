@@ -20,19 +20,30 @@
 
 package com.forcetower.uefs.feature.setup
 
+import android.annotation.SuppressLint
+import android.content.ActivityNotFoundException
+import android.content.ComponentName
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
@@ -48,6 +59,7 @@ class SyncSpecialFragment : UFragment(), Injectable {
         }.root
     }
 
+    @SuppressLint("BatteryLife")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
 
         binding.btnNext.setOnClickListener {
@@ -70,6 +82,38 @@ class SyncSpecialFragment : UFragment(), Injectable {
             } else {
                 analytics.logEvent("open_special_settings_failed", bundle)
             }
+        }
+
+        binding.labelAutoStartPath.setOnClickListener {
+            CustomTabActivityHelper.openCustomTab(
+                requireActivity(),
+                CustomTabsIntent.Builder()
+                    .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
+                    .addDefaultShareMenuItem()
+                    .build(),
+                Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}"))
+        }
+        if (VersionUtils.isMarshmallow()) {
+            binding.btnDoze.setOnClickListener {
+                if (Build.BRAND.equals("xiaomi", ignoreCase = true) || Build.BRAND.equals("redmi", ignoreCase = true)) {
+                    try {
+                        val intent = Intent()
+                        intent.component = ComponentName("com.miui.powerkeeper", "com.miui.powerkeeper.ui.HiddenAppsConfigActivity")
+                        intent.putExtra("package_name", requireContext().packageName)
+                        intent.putExtra("package_label", getText(R.string.app_name))
+                        startActivity(intent)
+                    } catch (throwable: ActivityNotFoundException) {
+                        Timber.e(throwable, "Xiaomi without a power keeper")
+                    }
+                } else {
+                    val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
+                        data = Uri.parse("package:${context?.packageName}")
+                    }
+                    startActivity(intent)
+                }
+            }
+        } else {
+            binding.btnDoze.visibility = View.GONE
         }
     }
 }

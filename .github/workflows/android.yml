@@ -1,0 +1,48 @@
+name: Android Publisher CI
+
+on:
+  push:
+    branches:
+      - master
+      - development
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+
+    - name: Set up JDK
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+
+    - name: Decode Google Services
+      run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GOOGLE_SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
+
+    - name: Decode Signature
+      run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.SIGNATURE_PASSWORD }}" --output sign.jks sign.jks.gpg
+
+    - name: Decode Publishing Secrets
+      run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.PLAY_PUBLISHER_PASSWORD }}" --output unes_uefs_publisher.json unes_uefs_publisher.json.gpg
+      
+    - name: Dependencies
+      run: ./gradlew dependencies
+    
+    - name: Lint & JVM Checks
+      run: ./gradlew check
+    
+    - name: Publish Release App
+      run: ./gradlew publishReleaseBundle
+      env:
+        UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
+        UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
+        UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
+    
+    - name: Upload result for job
+      uses: actions/upload-artifact@v1
+      with:
+        name: bundle
+        path: app/build/outputs/bundle/release/app-release.aab

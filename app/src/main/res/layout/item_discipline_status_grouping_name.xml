@@ -11,7 +11,7 @@
             type="String"/>
         <variable
             name="clazzGroup"
-            type="com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups"/>
+            type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup"/>
         <import type="com.forcetower.sagres.utils.WordUtils"/>
     </data>
 

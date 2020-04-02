@@ -35,7 +35,7 @@ import android.view.View
 import android.view.animation.Interpolator
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.util.AnimUtils
+import com.forcetower.core.utils.AnimUtils
 import java.util.Arrays
 import kotlin.math.abs
 import kotlin.math.max

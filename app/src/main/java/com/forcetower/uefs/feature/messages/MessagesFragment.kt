@@ -45,6 +45,7 @@ import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import javax.inject.Inject
 
@@ -114,7 +115,7 @@ class MessagesFragment : UFragment(), Injectable {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(viewLifecycleOwner, EventObserver { openLink(it) })
-        messagesViewModel.snackMessage.observe(viewLifecycleOwner, EventObserver { showSnack(getString(it), true) })
+        messagesViewModel.snackMessage.observe(viewLifecycleOwner, EventObserver { showSnack(getString(it), Snackbar.LENGTH_LONG) })
     }
 
     private fun openLink(content: String) {

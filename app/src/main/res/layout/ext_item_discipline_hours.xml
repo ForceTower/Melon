@@ -33,7 +33,7 @@
         android:layout_height="60dp"
         android:layout_marginHorizontal="8dp"
         android:paddingHorizontal="8dp"
-        android:onLongClick="@{view -> viewModel.resetGroups(viewModel.clazz.clazz.clazz)}">
+        android:onLongClick="@{view -> viewModel.resetGroups(viewModel.clazz.clazz)}">
     
         <TextView
             android:id="@+id/text_absences"
@@ -41,7 +41,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:disciplineCredits="@{viewModel.clazz.clazz.discipline().credits}"
+            app:disciplineCredits="@{viewModel.clazz.discipline.credits}"
             android:textColor="?attr/colorOnSurfaceLight"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="parent"

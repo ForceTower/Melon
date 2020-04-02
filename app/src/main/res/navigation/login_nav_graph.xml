@@ -50,6 +50,9 @@
         <action
             android:id="@+id/action_login_open_about"
             app:destination="@id/activity_about" />
+        <action
+            android:id="@+id/action_login_form_to_tech_nope_captcha_stuff"
+            app:destination="@id/login_tech_nope" />
     </fragment>
 
     <fragment
@@ -59,17 +62,34 @@
         tools:layout="@layout/fragment_signing_in">
         <argument
             android:name="username"
-            android:defaultValue="username"
             app:argType="string"/>
         <argument
             android:name="password"
-            android:defaultValue="password"
             app:argType="string"/>
         <action
             android:id="@+id/action_login_to_setup"
             app:destination="@id/activity_setup"
             app:enterAnim="@anim/scale_up_fade_in"
             app:exitAnim="@anim/scale_down" />
+        <argument
+            android:name="skipLogin"
+            app:argType="boolean"
+            android:defaultValue="false" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/login_tech_nope"
+        android:name="com.forcetower.uefs.feature.login.TechNopeCaptchaFragment"
+        android:label="TechNopeCaptcha" >
+        <argument
+            android:name="username"
+            app:argType="string" />
+        <argument
+            android:name="password"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_login_tech_nope_to_login_signing_in"
+            app:destination="@id/login_signing_in" />
     </fragment>
 
     <activity

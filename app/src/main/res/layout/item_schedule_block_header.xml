@@ -20,6 +20,13 @@
   -->
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="day"
+            type="String" />
+    </data>
+
     <TextView
         android:id="@+id/text_header"
         android:layout_width="@dimen/schedule_block_width"
@@ -27,6 +34,7 @@
         android:gravity="center"
         android:layout_margin="2dp"
         tools:text="SEG"
+        android:text="@{day}"
         android:textSize="@dimen/schedule_block_primary_text"
         android:textColor="?attr/colorOnBackground" />
 </layout>

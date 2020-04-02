@@ -26,7 +26,7 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.storage.database.accessors.ClassWithGroups
+import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
@@ -56,7 +56,7 @@ fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listen
 }
 
 @BindingAdapter("classStudentGrade")
-fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups?) {
+fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassFullWithGroup?) {
     val value = clazz?.clazz?.finalScore
     if (value == null) {
         cpb.setProgress(0.0f)
@@ -66,7 +66,7 @@ fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassWithGroups?) {
 }
 
 @BindingAdapter("classStudentGrade")
-fun classStudentGrade(tv: TextView, clazz: ClassWithGroups?) {
+fun classStudentGrade(tv: TextView, clazz: ClassFullWithGroup?) {
     val value = clazz?.clazz?.finalScore
     if (value == null) {
         tv.text = "??"
@@ -76,7 +76,7 @@ fun classStudentGrade(tv: TextView, clazz: ClassWithGroups?) {
 }
 
 @BindingAdapter("gradeNeededInFinal")
-fun gradeNeededInFinal(tv: TextView, clazz: ClassWithGroups?) {
+fun gradeNeededInFinal(tv: TextView, clazz: ClassFullWithGroup?) {
     val value = clazz?.clazz?.partialScore
     if (value == null) {
         tv.text = "??"
@@ -86,7 +86,7 @@ fun gradeNeededInFinal(tv: TextView, clazz: ClassWithGroups?) {
     }
 }
 
-fun getClassWithGroupsGrade(clazz: ClassWithGroups): Double? {
+fun getClassWithGroupsGrade(clazz: ClassFullWithGroup): Double? {
     if (clazz.groups.isNotEmpty()) {
         return clazz.clazz.finalScore
     }

@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.widget
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.BitmapShader
@@ -66,6 +67,7 @@ class RatingBarVectorFix @JvmOverloads constructor(
      * Converts a drawable to a tiled version of itself. It will recursively
      * traverse layer and state list drawables.
      */
+    @SuppressLint("RestrictedApi")
     private fun tileify(drawable: Drawable, clip: Boolean): Drawable {
         if (drawable is DrawableWrapper) {
             var inner: Drawable? = drawable.wrappedDrawable

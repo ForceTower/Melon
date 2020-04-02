@@ -23,8 +23,8 @@
 
     <data>
         <variable
-            name="inner"
-            type="com.forcetower.uefs.feature.schedule.InnerLocation"/>
+            name="timed"
+            type="com.forcetower.uefs.core.model.ui.ProcessedClassLocation.TimeSpace" />
     </data>
     <LinearLayout
         android:orientation="vertical"
@@ -40,7 +40,7 @@
             android:gravity="center"
             tools:text="07:30"
             android:textSize="@dimen/schedule_block_primary_text"
-            android:text="@{inner.time.start}"
+            android:text="@{timed.start}"
             android:textColor="?attr/colorOnBackground" />
 
         <TextView
@@ -49,7 +49,7 @@
             android:layout_height="wrap_content"
             android:gravity="center"
             tools:text="09:30"
-            android:text="@{inner.time.end}"
+            android:text="@{timed.end}"
             android:textSize="@dimen/schedule_block_primary_text"
             android:textColor="?attr/colorOnBackground" />
 

@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.google.android.material.snackbar.Snackbar
 import javax.inject.Inject
 
 class InviteDarkThemeFragment : UFragment(), Injectable {
@@ -74,7 +75,7 @@ class InviteDarkThemeFragment : UFragment(), Injectable {
                         401 -> R.string.you_are_not_connected_to_the_unesverso
                         else -> R.string.what_firebase_says_the_app_commits
                     }
-                    showSnack(getString(messageRes), true)
+                    showSnack(getString(messageRes), Snackbar.LENGTH_LONG)
                 }
                 Status.LOADING -> Unit
             }

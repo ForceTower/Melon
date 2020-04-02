@@ -34,9 +34,9 @@ abstract class UActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
     }
 
-    open fun showSnack(string: String, long: Boolean = false) {}
+    open fun showSnack(string: String, duration: Int = Snackbar.LENGTH_SHORT) {}
 
     open fun shouldApplyThemeOverlay() = true
 
-    open fun getSnackInstance(string: String, long: Boolean = false): Snackbar? = null
+    open fun getSnackInstance(string: String, duration: Int = Snackbar.LENGTH_SHORT): Snackbar? = null
 }

@@ -70,6 +70,7 @@
     <string name="data_step_format">Passo %1$d de %2$d: %3$s</string>
     <string name="step_delete_database">Apagando dados</string>
     <string name="step_logging_in">Fazendo login</string>
+    <string name="step_login_bypassed">O login foi pulado... Esse captcha estraga coisas</string>
     <string name="step_finding_profile">Buscando perfil</string>
     <string name="step_fetching_messages">Buscando mensagens</string>
     <string name="step_fetching_semesters">Buscando semestres</string>
@@ -367,7 +368,6 @@
     <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
     <string name="label_score_undefined">Não achei seu score</string>
     <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
-    <string name="create_new_event">Criar Evento</string>
     <string name="demand_open_title">Demanda Web</string>
     <string name="demand_open_text">A demanda web foi aberta. Faça a sua pelo UNES!</string>
     <string name="channel_common_hig">Avisos principais</string>
@@ -388,7 +388,7 @@
     <string name="changed_my_mind">Mudei de ideia</string>
     <string name="all_right">Tudo bem</string>
     <string name="hourglass_init_message">Relaxe enquanto eu tomo conta de tudo</string>
-    <string name="donation_service_response_error">Erro ao processar doações</string>
+    <string name="donation_service_response_error">Erro ao processar produtos</string>
     <string name="label_purchases">Doações e Itens</string>
     <string name="sku_price_format" translatable="false">%1$s %2$s</string>
     <string name="you_bought_an_item">Você comprou um item. Ainda não tem nome :)</string>
@@ -791,8 +791,8 @@
         <item quantity="one">A sessão começa em %1$s minuto</item>
         <item quantity="other">A sessão começa em %1$s minutos</item>
     </plurals>
-    <string name="title_aeri">Notícias AERI</string>
-    <string name="title_dashboard">Dashboard</string>
+    <string name="title_aeri" translatable="false">Notícias AERI</string>
+    <string name="title_dashboard" translatable="false">Dashboard</string>
     <string name="dashboard">Início</string>
     <string name="settings_advanced_label">Avançadas</string>
     <string name="settings_advanced_info_label">Execução, energia, funcionalidades e outras coisas</string>
@@ -817,4 +817,38 @@
     <string name="unes_choose_color_background">Cor de fundo</string>
     <string name="label_theme_editor">Editor de tema</string>
     <string name="label_theme_editor_description">Agora você pode usar as cores que quiser no aplicativo</string>
+    <string name="extra_config">Configurações Adicionais</string>
+    <string name="auto_start_text">Auto inicialização</string>
+    <string name="title_conference" translatable="false">Grandes Eventos</string>
+    <string name="title_event" translatable="false">Eventos</string>
+    <string name="not_eligible_check">Ver</string>
+    <string name="bad_device_title" translatable="false">Execução em segundo plano</string>
+    <string name="bad_device_p1" translatable="false">Se você está vendo isso, existe uma grande chance de você não receber notificações ou o \"Aplicativo só atualiza quando eu abro\"</string>
+    <string name="bad_device_p2" translatable="false">Se você quiser uma solução para isso, leia até o fim ou se não é seu caso feche e continue. Mas, você foi avisado</string>
+    <string name="bad_device_p3" translatable="false">Uma das partes importantes desse app é o famoso Sincronizador (SyncWorker), em termos curtos, ele inicia o aplicativo automaticamente, atualiza seus dados, te notifica e fecha o aplicativo novamente.</string>
+    <string name="bad_device_p4" translatable="false">O UNES registra no sistema uma tarefa para Sincronizar os dados na frequencia que você escolher, e obedece algumas regras: o aplicativo precisa estar conectado à internet e a bateria não pode estar fraca (abaixo de 20%), assim o app não irá gastar sua bateria se você estiver em um momento crítico.</string>
+    <string name="bad_device_p5" translatable="false">O problema acontece quando algumas marcas de aparelhos bloqueiam esse comportamento. A sua está nessa lista, por isso você está vendo essa mensagem</string>
+    <string name="bad_device_p6" translatable="false">Não é algo que qualquer desenvolvedor de aplicativos consegue resolver, é algo ligado diretamente ao sistema operacional.</string>
+    <string name="bad_device_p7" translatable="false">A boa noticia é que você pode tentar resolver isso, visite as configurações avançadas</string>
+    <string name="bad_device_p8" translatable="false">Ou acesse https://dontkillmyapp.com, procure sua marca e siga os passos</string>
+    <string name="bad_device_p9" translatable="false">Este não é um problema novo, na verdade marcas chinesas comecaram a fazer isso a quase 2 anos:\nhttps://issuetracker.google.com/issues/122098785\nhttps://issuetracker.google.com/issues/148005702</string>
+    <string name="bad_device_p10" translatable="false">Enfim, enquanto o google não convencer sua marca a adotar o comportamento esperado do sistema. Você terá que fazer isso :)</string>
+    <string name="bad_device_got_it" translatable="false">Entendi</string>
+    <string name="settings_schedule_shrinking">Encolher horários</string>
+    <string name="settings_schedule_shrinking_on">Juntando horários de disciplinas próximas</string>
+    <string name="settings_schedule_shrinking_off">Mostrando exatamente como o Portal</string>
+    <string name="settings_adv_doze_mode">Ignorar modo doze</string>
+    <string name="settings_adv_doze_mode_info">Em algumas marcas, ignorar o modo doze resolve os problemas de sincronização</string>
+    <string name="settings_adv_doze_mode_info_disabled">Somente disponível no Android 6.0+</string>
+    <string name="move_to_advanced_settings">Ir para Configurações Avançadas</string>
+    <string name="settings_accept_ignore_doze">A frequencia foi redefinida para 1 hora para melhorar a bateria</string>
+    <string name="settings_refuse_ignore_doze">Você negou as permissões</string>
+    <string name="your_device_might_not_be_eligible">Problemas com notificações? Vem aqui!</string>
+    <string name="doze_mode">Remover restrições de bateria</string>
+    <string name="settings_adv_ignore_battery_xiaomi">Remover restrições de bateria</string>
+    <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria melhora os problemas de sincronização</string>
+    <string name="purchase_update_error">Erro nas compras (sad noises)</string>
+    <string name="purchase_item_already_owned">Você ja tem esse item</string>
+    <string name="purchase_you_bought_a_consumable_item">Você comprou um item consumíverl</string>
+    <string name="purchase_subscription_started">A inscrição começou!</string>
 </resources>
