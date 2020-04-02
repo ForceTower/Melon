@@ -64,12 +64,19 @@ class MessagesRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         val access = database.accessDao().getAccessDirect()
         return if (profile != null && access != null) {
+            SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
             val messages = if (!profile.mocked) {
-                SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
                 SagresNavigator.instance.messages(profile.sagresId, all)
             } else {
-                SagresNavigator.instance.login(access.username, access.password)
-                SagresNavigator.instance.messagesHtml()
+                val me = SagresNavigator.instance.me()
+                val person = me.person
+                if (person != null) {
+                    database.profileDao().insert(person)
+                    SagresNavigator.instance.messages(person.id, all)
+                } else {
+                    SagresNavigator.instance.login(access.username, access.password)
+                    SagresNavigator.instance.messagesHtml()
+                }
             }
 
             Timber.d("Profile mocked: ${profile.mocked}, ${profile.sagresId}, $all")
@@ -80,7 +87,6 @@ class MessagesRepository @Inject constructor(
                 true
             } else {
                 Timber.d("${messages.status}")
-                Timber.d("${messages.throwable?.message}")
                 false
             }
         } else {

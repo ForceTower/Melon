@@ -38,7 +38,7 @@ data class SyncRegistry(
     var completed: Boolean = false,
     var success: Boolean = false,
     var error: Int = 0,
-    val executor: String,
+    var executor: String,
     var message: String = "Nothing",
     val networkType: Int,
     val network: String,
