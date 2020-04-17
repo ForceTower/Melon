@@ -196,7 +196,9 @@ class SagresSyncRepository @Inject constructor(
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
-        val homeDoc = login(access)
+
+
+        val homeDoc = if (!preferences.isStudentFromUEFS()) login(access) else null
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
 
@@ -220,16 +222,19 @@ class SagresSyncRepository @Inject constructor(
             registry.message = "The dream is over"
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
-            return
-        } else if (homeDoc == null && person.isMocked) {
-            registry.completed = true
-            registry.error = -4
-            registry.success = false
-            registry.message = "The dream is over"
-            registry.end = System.currentTimeMillis()
-            database.syncRegistryDao().update(registry)
+            NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
             return
         }
+//        else if (homeDoc == null && person.isMocked) {
+//            registry.completed = true
+//            registry.error = -4
+//            registry.success = false
+//            registry.message = "The dream is over"
+//            registry.end = System.currentTimeMillis()
+//            database.syncRegistryDao().update(registry)
+//            NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
+//            return
+//        }
 
         executors.others().execute {
             try {
