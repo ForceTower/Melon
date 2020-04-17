@@ -208,4 +208,8 @@ interface UService {
     @FormUrlEncoded
     @POST("events/delete")
     suspend fun deleteEvent(@Field("id") id: Long): UResponse<Void>
+
+    // ---------- Toss a coin ------
+    @POST("cookies/save")
+    suspend fun preparedSession(): UResponse<Void>
 }
