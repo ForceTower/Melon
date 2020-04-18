@@ -80,7 +80,7 @@ class LoginSagresRepository @Inject constructor(
     fun getProfileMe() = database.profileDao().selectMe()
 
     @MainThread
-    fun login(username: String, password: String, deleteDatabase: Boolean = false, skipLogin: Boolean = false): LiveData<Callback> {
+    fun login(username: String, password: String, captcha: String?, deleteDatabase: Boolean = false, skipLogin: Boolean = false): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
         resetSteps()
         if (deleteDatabase) {
@@ -93,23 +93,23 @@ class LoginSagresRepository @Inject constructor(
                 database.profileDao().deleteMe()
                 database.semesterDao().deleteAll()
                 executor.mainThread().execute {
-                    login(signIn, username, password, skipLogin)
+                    login(signIn, username, password, captcha, skipLogin)
                 }
             }
         } else {
             incSteps()
-            login(signIn, username, password, skipLogin)
+            login(signIn, username, password, captcha, skipLogin)
         }
         return signIn
     }
 
     @MainThread
-    private fun login(data: MediatorLiveData<Callback>, username: String, password: String, skipLogin: Boolean) {
+    private fun login(data: MediatorLiveData<Callback>, username: String, password: String, captcha: String?, skipLogin: Boolean) {
         SagresNavigator.instance.putCredentials(SagresCredential(username, password, SagresNavigator.instance.getSelectedInstitution()))
 
         val source = if (!skipLogin) {
             currentStep.value = createStep(R.string.step_logging_in)
-            SagresNavigator.instance.aLogin(username, password).toLiveData()
+            SagresNavigator.instance.aLogin(username, password, captcha).toLiveData()
         } else {
             currentStep.value = createStep(R.string.step_login_bypassed)
             SagresNavigator.instance.aStartPage().toLiveData()

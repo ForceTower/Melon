@@ -158,12 +158,13 @@ class SigningInFragment : UFragment(), Injectable {
     private fun doLogin() {
         val username = args.username
         val password = args.password
+        val captcha = args.captchaToken
 
         if (username.isBlank() || password.isBlank()) {
             showSnack(getString(R.string.error_invalid_credentials))
             view?.findNavController()?.popBackStack()
         } else {
-            viewModel.login(username, password, true, args.skipLogin)
+            viewModel.login(username, password, captcha, true)
             if (username.contains("@")) {
                 binding.textTips.setText(getString(R.string.enter_using_username_instead))
                 binding.textTips.fadeIn()
