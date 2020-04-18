@@ -299,8 +299,8 @@ class LoginSagresRepository @Inject constructor(
         val grades = SagresNavigator.instance.aGetCurrentGrades().toLiveData()
         currentStep.value = createStep(R.string.step_fetching_grades)
         data.addSource(grades) { g ->
-            when {
-                g.status == Status.SUCCESS -> {
+            when (g.status) {
+                Status.SUCCESS -> {
                     data.removeSource(grades)
 
                     Timber.d("Grades received: ${g.grades}")
@@ -319,22 +319,22 @@ class LoginSagresRepository @Inject constructor(
 
                     services(data)
                 }
-                g.status == Status.LOADING -> {
+                Status.LOADING -> {
                     data.value = Callback.Builder(g.status)
-                            .code(g.code)
-                            .message(g.message)
-                            .throwable(g.throwable)
-                            .document(g.document)
-                            .build()
+                        .code(g.code)
+                        .message(g.message)
+                        .throwable(g.throwable)
+                        .document(g.document)
+                        .build()
                 }
                 else -> {
                     Timber.d("Data status: ${g.status} ${g.code} ${g.throwable?.message}")
                     data.value = Callback.Builder(Status.GRADES_FAILED)
-                            .code(g.code)
-                            .message(g.message)
-                            .throwable(g.throwable)
-                            .document(g.document)
-                            .build()
+                        .code(g.code)
+                        .message(g.message)
+                        .throwable(g.throwable)
+                        .document(g.document)
+                        .build()
                 }
             }
         }
@@ -363,6 +363,8 @@ class LoginSagresRepository @Inject constructor(
                             .build()
                 }
                 else -> {
+                    Timber.d("ANOTHER ONE!")
+                    executor.networkIO().execute { sessionRepository.onLogin() }
                     data.value = Callback.Builder(Status.COMPLETED)
                             .code(s.code)
                             .message(s.message)

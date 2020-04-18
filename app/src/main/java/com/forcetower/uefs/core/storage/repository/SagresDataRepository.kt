@@ -87,6 +87,9 @@ class SagresDataRepository @Inject constructor(
         }
     }
 
+    // TODO [REQUIRES PATCHING SAVID-1]
+    // TODO This one actually requires a new login, so must show captcha (for now)
+    // TODO Use this for captcha invalidation as well! Cool!
     fun attemptLoginWithNewPassword(password: String): LiveData<Resource<Boolean>> {
         val result = MutableLiveData<Resource<Boolean>>()
         executor.networkIO().execute {

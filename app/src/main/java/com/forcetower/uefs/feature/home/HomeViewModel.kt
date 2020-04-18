@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.repository.AccountRepository
+import com.forcetower.uefs.core.storage.repository.CookieSessionRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
@@ -61,7 +62,8 @@ class HomeViewModel @Inject constructor(
     private val context: Context,
     private val sessionRepository: UserSessionRepository,
     private val accountRepository: AccountRepository,
-    private val affinityRepository: AffinityQuestionRepository
+    private val affinityRepository: AffinityQuestionRepository,
+    private val userCookieSessionRepository: CookieSessionRepository
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
@@ -178,5 +180,9 @@ class HomeViewModel @Inject constructor(
 
     fun getAffinityQuestions() {
         affinityRepository.getAffinityQuestionsAsync()
+    }
+
+    fun goodCookies() {
+        userCookieSessionRepository.getGoodCookies()
     }
 }

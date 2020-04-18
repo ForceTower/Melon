@@ -20,15 +20,16 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import android.content.SharedPreferences
 import android.webkit.CookieManager
 import androidx.annotation.WorkerThread
+import com.forcetower.sagres.SagresNavigator
+import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.network.UService
 import timber.log.Timber
 import javax.inject.Inject
 
 class CookieSessionRepository @Inject constructor(
-    private val preferences: SharedPreferences,
+    private val executors: AppExecutors,
     private val service: UService
 ) {
     @WorkerThread
@@ -40,5 +41,18 @@ class CookieSessionRepository @Inject constructor(
         } catch (error: Throwable) {
             Timber.e(error, "This user wont update. Omega lul")
         }
+    }
+
+    fun getGoodCookies() {
+        executors.networkIO().execute {
+            getGoodCookiesSync()
+        }
+    }
+
+    private fun getGoodCookiesSync() {
+        try {
+            val cookies = service.getSession().execute().body()?.data
+            cookies?.let { SagresNavigator.instance.setCookiesOnClient(it) }
+        } catch (error: Throwable) {}
     }
 }
