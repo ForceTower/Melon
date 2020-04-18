@@ -324,7 +324,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
-            viewModel.onSyncSessions()
+            // viewModel.onSyncSessions()
+            viewModel.goodCookies()
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }

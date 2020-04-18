@@ -193,6 +193,19 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
+        if (preferences.isStudentFromUEFS()) {
+            try {
+                val response = service.getSession().execute()
+                val cookies = response.body()?.data
+                cookies?.let {
+                    Timber.d("We got it guys!")
+                    SagresNavigator.instance.setCookiesOnClient(it)
+                }
+            } catch (error: Throwable) {
+                // Unable to fetch good cookies... Good luck!
+            }
+        }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
@@ -224,16 +237,6 @@ class SagresSyncRepository @Inject constructor(
             NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
             return
         }
-//        else if (homeDoc == null && person.isMocked) {
-//            registry.completed = true
-//            registry.error = -4
-//            registry.success = false
-//            registry.message = "The dream is over"
-//            registry.end = System.currentTimeMillis()
-//            database.syncRegistryDao().update(registry)
-//            NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
-//            return
-//        }
 
         executors.others().execute {
             try {
@@ -396,6 +399,7 @@ class SagresSyncRepository @Inject constructor(
     }
 
     fun login(access: Access): Document? {
+        // TODO [REQUIRES PATCHING SAVID-1]
         val login = SagresNavigator.instance.login(access.username, access.password)
         when (login.status) {
             Status.SUCCESS -> {
@@ -438,7 +442,7 @@ class SagresSyncRepository @Inject constructor(
                         Timber.e("Page loaded but API returned invalid types")
                     }
                 }
-                Status.RESPONSE_FAILED -> {
+                Status.RESPONSE_FAILED, Status.NETWORK_ERROR -> {
                     return continueWithHtml(document, username, score)
                 }
                 else -> produceErrorMessage(me)
@@ -447,8 +451,9 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson {
-        val name = SagresBasicParser.getName(document) ?: username
+    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson? {
+        val start = SagresNavigator.instance.startPage().document ?: return null
+        val name = SagresBasicParser.getName(start) ?: username
         val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
         database.profileDao().insert(person, score)
         return person

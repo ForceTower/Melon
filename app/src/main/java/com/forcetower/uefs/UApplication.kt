@@ -39,6 +39,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -130,13 +131,14 @@ class UApplication : Application(), HasAndroidInjector {
      * Inicializa o objeto de conexão com o Sagres
      */
     @Inject
-    fun configureSagresNavigator() {
+    fun configureSagresNavigator(client: OkHttpClient) {
         val selected = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
         SagresNavigator.initialize(
             PrefsCookiePersistor(this),
             selected,
             AndroidBase64Encoder(),
-            SharedPrefsCachePersistence(preferences)
+            SharedPrefsCachePersistence(preferences),
+            baseClient = client
         )
     }
 

@@ -74,7 +74,7 @@ class MessagesRepository @Inject constructor(
                     database.profileDao().insert(person)
                     SagresNavigator.instance.messages(person.id, all)
                 } else {
-                    SagresNavigator.instance.login(access.username, access.password)
+                    // TODO [REQUIRES PATCHING SAVID-1]
                     SagresNavigator.instance.messagesHtml()
                 }
             }
