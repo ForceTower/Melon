@@ -72,9 +72,10 @@
             app:enterAnim="@anim/scale_up_fade_in"
             app:exitAnim="@anim/scale_down" />
         <argument
-            android:name="skipLogin"
-            app:argType="boolean"
-            android:defaultValue="false" />
+            android:name="captchaToken"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null"/>
     </fragment>
 
     <fragment
