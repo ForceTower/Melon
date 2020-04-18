@@ -40,25 +40,25 @@ buildscript {
         pallete = "1.0.0"
         flexbox = "1.1.0"
         browser = '1.2.0'
-        preference = "1.1.0"
-        fragment = '1.2.3'
+        preference = '1.1.1'
+        fragment = '1.2.4'
         swipe_refresh = "1.0.0"
 
         // Architecture
         room = '2.2.5'
         lifecycle = '2.2.0'
         paging = '2.1.2'
-        navigation = '2.2.1'
+        navigation = '2.2.2'
         work_manager = '2.3.4'
 
         // Dependency Injection
         dagger = '2.27'
 
         // Firebase
-        firebase_core = '17.2.3'
+        firebase_core = '17.3.0'
         firebase_auth = '19.3.0'
-        firebase_messaging = '20.1.3'
-        firebase_firestore = '21.4.1'
+        firebase_messaging = '20.1.5'
+        firebase_firestore = '21.4.2'
         firebase_storage = '19.1.1'
         firebase_remote_config = '19.1.3'
         firebase_functions = '19.0.2'
@@ -75,15 +75,15 @@ buildscript {
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = '1.7.1'
-        gp_auth = "17.0.0"
+        gp_core = '1.7.2'
+        gp_auth = '18.0.0'
         gp_games = '19.0.0'
         gp_location = "17.0.0"
-        gp_billing_client = '2.1.0'
-        gp_admob = '19.0.1'
+        gp_billing_client = '2.2.0'
+        gp_admob = '19.1.0'
 
         // Networking
-        okhttp = '4.4.1'
+        okhttp = '4.5.0'
         retrofit = '2.8.1'
         cookie_jar = "v1.0.1"
 
@@ -96,7 +96,7 @@ buildscript {
         card_slider = '0.3.1'
         date_time_picker = '4.2.3'
         floating_search = "2.1.1"
-        zoned_time_date = '1.2.2'
+        zoned_time_date = '1.2.3'
         rx_kotlin = "2.4.0-RC3"
 
         // Build Versions

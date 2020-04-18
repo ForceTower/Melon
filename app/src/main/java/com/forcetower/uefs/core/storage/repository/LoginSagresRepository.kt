@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.LocationShrinker
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toLiveData
@@ -67,6 +68,8 @@ class LoginSagresRepository @Inject constructor(
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val authRepository: AuthRepository,
+    private val sessionRepository: CookieSessionRepository,
     private val context: Context
 ) {
     val currentStep: MutableLiveData<Step> = MutableLiveData()
@@ -119,7 +122,13 @@ class LoginSagresRepository @Inject constructor(
                 data.removeSource(source)
                 val score = SagresBasicParser.getScore(l.document)
                 Timber.d("Login Completed. Score parsed: $score")
-                executor.diskIO().execute { database.accessDao().insert(username, password) }
+                executor.diskIO().execute {
+                    database.accessDao().insert(username, password)
+                    if (preferences.isStudentFromUEFS()) {
+                        authRepository.syncLogin(username, password)
+                        sessionRepository.onLogin()
+                    }
+                }
                 me(data, score, Access(username = username, password = password), l.document!!)
             } else {
                 SagresNavigator.instance.putCredentials(null)
