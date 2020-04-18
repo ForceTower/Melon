@@ -197,7 +197,6 @@ class SagresSyncRepository @Inject constructor(
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
 
-
         val homeDoc = if (!preferences.isStudentFromUEFS()) login(access) else null
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")

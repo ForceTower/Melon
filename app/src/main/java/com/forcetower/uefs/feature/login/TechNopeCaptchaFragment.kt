@@ -24,24 +24,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.ConsoleMessage
 import android.webkit.JavascriptInterface
-import android.webkit.WebChromeClient
 import android.webkit.WebView
-import android.webkit.WebViewClient
 import androidx.annotation.Keep
-import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.injection.Injectable
-import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentTechNopeCaptchaBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar
 import timber.log.Timber
 import javax.inject.Inject
-
 
 class TechNopeCaptchaFragment : UFragment(), Injectable {
     @Inject
@@ -72,7 +66,7 @@ class TechNopeCaptchaFragment : UFragment(), Injectable {
             }
             scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
             isScrollbarFadingEnabled = false
-            addJavascriptInterface(this@TechNopeCaptchaFragment, "BridgeWebView");
+            addJavascriptInterface(this@TechNopeCaptchaFragment, "BridgeWebView")
         }
     }
 
