@@ -338,6 +338,18 @@ object NotificationCreator {
         showNotification(context, it.material.uid, builder)
     }
 
+    fun createCookieSyncServiceNotification(context: Context, close: PendingIntent): Notification {
+        return notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_SYNC_SERVICE_FOREGROUND, false)
+            .setContentTitle(context.getString(R.string.label_service_sync_foreground))
+            .setContentText(context.getString(R.string.label_service_sync_foreground_desc))
+            .addAction(R.drawable.ic_close_black_24dp, context.getString(R.string.ru_close_notification), close)
+            .setOnlyAlertOnce(true)
+            .setContentIntent(createOpenIntent(context))
+            .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .build()
+    }
+
     private fun notificationBuilder(context: Context, groupId: String, autoCancel: Boolean = true): NotificationCompat.Builder {
         val builder = NotificationCompat.Builder(context, groupId)
         builder.setAutoCancel(autoCancel)

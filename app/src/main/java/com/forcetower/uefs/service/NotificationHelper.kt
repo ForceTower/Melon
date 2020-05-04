@@ -57,6 +57,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         val remote = createChannel(CHANNEL_GENERAL_REMOTE_ID, getString(R.string.remote), NotificationManager.IMPORTANCE_DEFAULT)
         val eventGen = createChannel(CHANNEL_EVENTS_GENERAL_ID, getString(R.string.channel_events_general), NotificationManager.IMPORTANCE_DEFAULT)
         val bigTray = createChannel(CHANNEL_GENERAL_BIGTRAY_ID, getString(R.string.channel_big_tray_quota), NotificationManager.IMPORTANCE_LOW)
+        val serviceFrg = createChannel(CHANNEL_GENERAL_SYNC_SERVICE_FOREGROUND, getString(R.string.channel_service_sync_foreground), NotificationManager.IMPORTANCE_LOW)
         val commonLow = createChannel(CHANNEL_GENERAL_COMMON_LOW_ID, getString(R.string.channel_common_low), NotificationManager.IMPORTANCE_LOW)
         val commonDef = createChannel(CHANNEL_GENERAL_COMMON_HIG_ID, getString(R.string.channel_common_hig), NotificationManager.IMPORTANCE_HIGH)
         val svcCreate = createChannel(CHANNEL_SVC_REQ_CREATE_ID, getString(R.string.channel_svc_req_create), NotificationManager.IMPORTANCE_LOW)
@@ -76,6 +77,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         bigTray.group = CHANNEL_GROUP_GENERAL_ID
         commonLow.group = CHANNEL_GROUP_GENERAL_ID
         commonDef.group = CHANNEL_GROUP_GENERAL_ID
+        serviceFrg.group = CHANNEL_GROUP_GENERAL_ID
         svcCreate.group = CHANNEL_GROUP_SERVICE_REQUEST_ID
         svcUpdate.group = CHANNEL_GROUP_SERVICE_REQUEST_ID
         materialPost.group = CHANNEL_GROUP_DISCIPLINE_ID
@@ -91,6 +93,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         manager.createNotificationChannel(remote)
         manager.createNotificationChannel(eventGen)
         manager.createNotificationChannel(bigTray)
+        manager.createNotificationChannel(serviceFrg)
         manager.createNotificationChannel(commonLow)
         manager.createNotificationChannel(commonDef)
         manager.createNotificationChannel(svcCreate)
@@ -142,6 +145,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         const val CHANNEL_GENERAL_COMMON_HIG_ID = "com.forcetower.uefs.GENERAL.COMMON.HIGH"
         const val CHANNEL_GENERAL_REMOTE_ID = "com.forcetower.uefs.GENERAL.REMOTE"
         const val CHANNEL_GENERAL_BIGTRAY_ID = "com.forcetower.uefs.GENERAL.BIGTRAY"
+        const val CHANNEL_GENERAL_SYNC_SERVICE_FOREGROUND = "com.forcetower.uefs.SYNC.FOREGROUND"
         const val CHANNEL_EVENTS_GENERAL_ID = "com.forcetower.uefs.EVENTS.GENERAL"
         const val CHANNEL_SVC_REQ_CREATE_ID = "com.forcetower.uefs.SERVICE_REQUEST.CREATE"
         const val CHANNEL_SVC_REQ_UPDATE_ID = "com.forcetower.uefs.SERVICE_REQUEST.UPDATE"

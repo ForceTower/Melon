@@ -709,4 +709,7 @@
     <string name="settings_accept_ignore_doze">Sync frequency redefined to 1 hour to save battery</string>
     <string name="settings_refuse_ignore_doze">You denied the permissions</string>
     <string name="your_device_might_not_be_eligible">Problems with notifications? Come here!</string>
+    <string name="channel_service_sync_foreground">Persistent data update</string>
+    <string name="label_service_sync_foreground">Updater</string>
+    <string name="label_service_sync_foreground_desc">UNES is active</string>
 </resources>
