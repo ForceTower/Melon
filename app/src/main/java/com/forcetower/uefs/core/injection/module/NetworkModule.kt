@@ -77,7 +77,7 @@ object NetworkModule {
             .addInterceptor(interceptor)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = if (BuildConfig.DEBUG)
-                    HttpLoggingInterceptor.Level.BODY
+                    HttpLoggingInterceptor.Level.HEADERS
                 else
                     HttpLoggingInterceptor.Level.NONE
             })
