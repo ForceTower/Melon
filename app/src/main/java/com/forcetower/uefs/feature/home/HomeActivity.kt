@@ -44,7 +44,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
-import com.forcetower.uefs.architecture.service.sync.SyncService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.util.VersionUtils
@@ -167,10 +166,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.account.observe(this, Observer { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
-            if (preferences.isStudentFromUEFS()) {
-                val intent = Intent(this, SyncService::class.java)
-                startService(intent)
-            }
+//            if (preferences.isStudentFromUEFS()) {
+//                val intent = Intent(this, SyncService::class.java)
+//                startService(intent)
+//            }
         } catch (t: Throwable) {}
         moveToTask()
         // satisfactionSurvey()
