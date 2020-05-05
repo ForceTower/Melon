@@ -65,8 +65,10 @@ class SyncService : LifecycleService() {
     override fun onCreate() {
         AndroidInjection.inject(this)
         super.onCreate()
+        Timber.d("Created service ;)")
         microRepository.access.observe(this, accessObserver)
         notificationManager = NotificationManagerCompat.from(this)
+        startComponent()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -81,8 +83,14 @@ class SyncService : LifecycleService() {
     }
 
     private fun startComponent() {
-        if (shouldRequestSyncUpdate) return
+        Timber.d("Start component")
+        if (shouldRequestSyncUpdate) {
+            Timber.d("Already requesting...")
+            return
+        }
+        Timber.d("Start requesteer")
         shouldRequestSyncUpdate = true
+        createNotification()
         updateDataForService()
     }
 
@@ -164,8 +172,7 @@ class SyncService : LifecycleService() {
     companion object {
         const val STOP_SERVICE_ACTION = "com.forcetower.uefs.sync.STOP_FOREGROUND_SERVICE"
         const val START_SERVICE_ACTION = "com.forcetower.uefs.sync.START_FOREGROUND_SERVICE"
-//        const val UPDATE_DATA_INTERVAL = 900_000L // 15 minutes
-        const val UPDATE_DATA_INTERVAL = 120_000L // 2 minutes
+        const val UPDATE_DATA_INTERVAL = 450_000L // 15 minutes
         const val SYNC_NOTIFICATION: Int = 0xb751
     }
 }
