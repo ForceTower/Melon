@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -31,12 +32,16 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import timber.log.Timber
 import javax.inject.Inject
 
 class SagresGradesRepository @Inject constructor(
-    val database: UDatabase,
-    val executors: AppExecutors
+    private val database: UDatabase,
+    private val service: UService,
+    private val executors: AppExecutors,
+    private val preferences: SharedPreferences
 ) {
     @AnyThread
     fun getGradesAsync(semesterId: Long, needLogin: Boolean): LiveData<Int> {
@@ -54,12 +59,22 @@ class SagresGradesRepository @Inject constructor(
         access ?: return NO_ACCESS
 
         return if (needLogin) {
-            val login = SagresNavigator.instance.login(access.username, access.password)
-            if (login.status == Status.SUCCESS && login.document != null) {
-                Timber.d("[$semesterSagresId] Login Completed Correctly")
-                proceed(semesterSagresId)
+            if (!preferences.isStudentFromUEFS()) {
+                val login = SagresNavigator.instance.login(access.username, access.password)
+                if (login.status == Status.SUCCESS && login.document != null) {
+                    Timber.d("[$semesterSagresId] Login Completed Correctly")
+                    proceed(semesterSagresId)
+                } else {
+                    INVALID_ACCESS
+                }
             } else {
-                INVALID_ACCESS
+                val cookies = service.getSession().execute().body()?.data
+                if (cookies != null) {
+                    SagresNavigator.instance.setCookiesOnClient(cookies)
+                    proceed(semesterSagresId)
+                } else {
+                    INVALID_ACCESS
+                }
             }
         } else {
             proceed(semesterSagresId)

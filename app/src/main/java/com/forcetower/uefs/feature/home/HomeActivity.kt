@@ -166,6 +166,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.account.observe(this, Observer { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
+//            if (preferences.isStudentFromUEFS()) {
+//                val intent = Intent(this, SyncService::class.java)
+//                startService(intent)
+//            }
         } catch (t: Throwable) {}
         moveToTask()
         // satisfactionSurvey()
@@ -324,7 +328,8 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
-            viewModel.onSyncSessions()
+            // viewModel.onSyncSessions()
+            viewModel.goodCookies()
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }

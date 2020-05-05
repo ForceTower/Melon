@@ -18,31 +18,43 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.login
+package com.forcetower.uefs.feature.captcha
 
+import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
+import android.widget.FrameLayout
 import androidx.annotation.Keep
-import androidx.navigation.fragment.findNavController
-import androidx.navigation.fragment.navArgs
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentTechNopeCaptchaBinding
-import com.forcetower.uefs.feature.shared.UFragment
-import com.google.android.material.snackbar.Snackbar
+import com.google.android.material.R
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import timber.log.Timber
-import javax.inject.Inject
 
-class TechNopeCaptchaFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+class CaptchaResolverFragment : BottomSheetDialogFragment() {
     private lateinit var binding: FragmentTechNopeCaptchaBinding
-    private val args by navArgs<TechNopeCaptchaFragmentArgs>()
+    private lateinit var callback: CaptchaResolvedCallback
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val sheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        try {
+            sheetDialog.setOnShowListener {
+                val bottomSheet = sheetDialog.findViewById<FrameLayout>(R.id.design_bottom_sheet)!!
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.skipCollapsed = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        } catch (t: Throwable) {
+            Timber.d(t, "Hum...")
+        }
+        return sheetDialog
+    }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentTechNopeCaptchaBinding.inflate(inflater, container, false).also {
@@ -52,7 +64,6 @@ class TechNopeCaptchaFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        showSnack("Eu odeio essa parte...", Snackbar.LENGTH_LONG)
         binding.webView.apply {
             loadDataWithBaseURL("http://academico2.uefs.br", data, "text/html; charset=utf-8", "UTF-8", null)
             settings.apply {
@@ -66,7 +77,7 @@ class TechNopeCaptchaFragment : UFragment(), Injectable {
             }
             scrollBarStyle = WebView.SCROLLBARS_OUTSIDE_OVERLAY
             isScrollbarFadingEnabled = false
-            addJavascriptInterface(this@TechNopeCaptchaFragment, "BridgeWebView")
+            addJavascriptInterface(this@CaptchaResolverFragment, "BridgeWebView")
         }
     }
 
@@ -74,10 +85,16 @@ class TechNopeCaptchaFragment : UFragment(), Injectable {
     @JavascriptInterface
     fun reCaptchaCallback(token: String) {
         Timber.d("reCaptcha token $token")
-        val directions = TechNopeCaptchaFragmentDirections.actionLoginTechNopeToLoginSigningIn(args.username, args.password).apply {
-            captchaToken = token
-        }
-        findNavController().navigate(directions)
+        callback.onCaptchaResolved(token)
+        dismiss()
+    }
+
+    fun setCallback(callback: CaptchaResolvedCallback) {
+        this.callback = callback
+    }
+
+    interface CaptchaResolvedCallback {
+        fun onCaptchaResolved(token: String)
     }
 
     companion object {

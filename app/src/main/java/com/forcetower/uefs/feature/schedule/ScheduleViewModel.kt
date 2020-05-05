@@ -21,26 +21,30 @@
 package com.forcetower.uefs.feature.schedule
 
 import android.view.View
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.ScheduleRepository
+import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
 class ScheduleViewModel @Inject constructor(
-    private val database: UDatabase,
-    private val repository: ScheduleRepository,
+    repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository
 ) : ViewModel(), ScheduleActions {
 
     val hasSchedule = repository.hasSchedule()
     val schedule = repository.getProcessedSchedule().asLiveData(Dispatchers.IO)
+
+    private val _onRefresh = MutableLiveData<Event<Unit>>()
+    val onRefresh: LiveData<Event<Unit>> = _onRefresh
 
     override fun onLongClick(view: View): Boolean {
         Game2048Activity.startActivity(view.context)
@@ -61,7 +65,11 @@ class ScheduleViewModel @Inject constructor(
         context.startActivity(intent)
     }
 
+    fun doRefreshData(gToken: String?) {
+        sagresSyncRepository.asyncSync(gToken)
+    }
+
     override fun refreshData() {
-        sagresSyncRepository.asyncSync()
+        _onRefresh.value = Event(Unit)
     }
 }
