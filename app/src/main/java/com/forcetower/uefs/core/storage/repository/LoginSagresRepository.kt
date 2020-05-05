@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.LocationShrinker
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toLiveData
@@ -67,6 +68,8 @@ class LoginSagresRepository @Inject constructor(
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val authRepository: AuthRepository,
+    private val sessionRepository: CookieSessionRepository,
     private val context: Context
 ) {
     val currentStep: MutableLiveData<Step> = MutableLiveData()
@@ -80,7 +83,7 @@ class LoginSagresRepository @Inject constructor(
     fun getProfileMe() = database.profileDao().selectMe()
 
     @MainThread
-    fun login(username: String, password: String, deleteDatabase: Boolean = false, skipLogin: Boolean = false): LiveData<Callback> {
+    fun login(username: String, password: String, captcha: String?, deleteDatabase: Boolean = false, skipLogin: Boolean = false): LiveData<Callback> {
         val signIn = MediatorLiveData<Callback>()
         resetSteps()
         if (deleteDatabase) {
@@ -93,23 +96,23 @@ class LoginSagresRepository @Inject constructor(
                 database.profileDao().deleteMe()
                 database.semesterDao().deleteAll()
                 executor.mainThread().execute {
-                    login(signIn, username, password, skipLogin)
+                    login(signIn, username, password, captcha, skipLogin)
                 }
             }
         } else {
             incSteps()
-            login(signIn, username, password, skipLogin)
+            login(signIn, username, password, captcha, skipLogin)
         }
         return signIn
     }
 
     @MainThread
-    private fun login(data: MediatorLiveData<Callback>, username: String, password: String, skipLogin: Boolean) {
+    private fun login(data: MediatorLiveData<Callback>, username: String, password: String, captcha: String?, skipLogin: Boolean) {
         SagresNavigator.instance.putCredentials(SagresCredential(username, password, SagresNavigator.instance.getSelectedInstitution()))
 
         val source = if (!skipLogin) {
             currentStep.value = createStep(R.string.step_logging_in)
-            SagresNavigator.instance.aLogin(username, password).toLiveData()
+            SagresNavigator.instance.aLogin(username, password, captcha).toLiveData()
         } else {
             currentStep.value = createStep(R.string.step_login_bypassed)
             SagresNavigator.instance.aStartPage().toLiveData()
@@ -119,7 +122,13 @@ class LoginSagresRepository @Inject constructor(
                 data.removeSource(source)
                 val score = SagresBasicParser.getScore(l.document)
                 Timber.d("Login Completed. Score parsed: $score")
-                executor.diskIO().execute { database.accessDao().insert(username, password) }
+                executor.diskIO().execute {
+                    database.accessDao().insert(username, password)
+                    if (preferences.isStudentFromUEFS()) {
+                        authRepository.syncLogin(username, password)
+                        sessionRepository.onLogin()
+                    }
+                }
                 me(data, score, Access(username = username, password = password), l.document!!)
             } else {
                 SagresNavigator.instance.putCredentials(null)
@@ -290,8 +299,8 @@ class LoginSagresRepository @Inject constructor(
         val grades = SagresNavigator.instance.aGetCurrentGrades().toLiveData()
         currentStep.value = createStep(R.string.step_fetching_grades)
         data.addSource(grades) { g ->
-            when {
-                g.status == Status.SUCCESS -> {
+            when (g.status) {
+                Status.SUCCESS -> {
                     data.removeSource(grades)
 
                     Timber.d("Grades received: ${g.grades}")
@@ -310,22 +319,22 @@ class LoginSagresRepository @Inject constructor(
 
                     services(data)
                 }
-                g.status == Status.LOADING -> {
+                Status.LOADING -> {
                     data.value = Callback.Builder(g.status)
-                            .code(g.code)
-                            .message(g.message)
-                            .throwable(g.throwable)
-                            .document(g.document)
-                            .build()
+                        .code(g.code)
+                        .message(g.message)
+                        .throwable(g.throwable)
+                        .document(g.document)
+                        .build()
                 }
                 else -> {
                     Timber.d("Data status: ${g.status} ${g.code} ${g.throwable?.message}")
                     data.value = Callback.Builder(Status.GRADES_FAILED)
-                            .code(g.code)
-                            .message(g.message)
-                            .throwable(g.throwable)
-                            .document(g.document)
-                            .build()
+                        .code(g.code)
+                        .message(g.message)
+                        .throwable(g.throwable)
+                        .document(g.document)
+                        .build()
                 }
             }
         }
@@ -354,6 +363,8 @@ class LoginSagresRepository @Inject constructor(
                             .build()
                 }
                 else -> {
+                    Timber.d("ANOTHER ONE!")
+                    executor.networkIO().execute { sessionRepository.onLogin() }
                     data.value = Callback.Builder(Status.COMPLETED)
                             .code(s.code)
                             .message(s.message)

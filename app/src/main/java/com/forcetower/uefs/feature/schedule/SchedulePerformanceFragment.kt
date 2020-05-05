@@ -32,10 +32,13 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSchedulePerformanceBinding
+import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.max
 
@@ -75,6 +78,10 @@ class SchedulePerformanceFragment : UFragment(), Injectable {
             adapterLine.elements = it
         })
 
+        viewModel.onRefresh.observe(viewLifecycleOwner, EventObserver {
+            onRefresh()
+        })
+
         if (TimeUtils.eventHasEnded()) {
             binding.btnConferenceSchedule.visibility = View.GONE
         } else {
@@ -85,5 +92,22 @@ class SchedulePerformanceFragment : UFragment(), Injectable {
                 }
             })
         }
+    }
+
+    private fun onRefresh() {
+        if (!preferences.isStudentFromUEFS()) {
+            viewModel.doRefreshData(null)
+            return
+        }
+
+        val fragment = CaptchaResolverFragment()
+        fragment.setCallback(object : CaptchaResolverFragment.CaptchaResolvedCallback {
+            override fun onCaptchaResolved(token: String) {
+                Timber.d("Token received $token")
+                viewModel.doRefreshData(token)
+            }
+        })
+
+        fragment.show(childFragmentManager, "captcha_resolver")
     }
 }
