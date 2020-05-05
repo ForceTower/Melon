@@ -234,7 +234,7 @@ class SagresSyncRepository @Inject constructor(
             registry.message = "The dream is over"
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
-            NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
+            // NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
             return
         }
 
