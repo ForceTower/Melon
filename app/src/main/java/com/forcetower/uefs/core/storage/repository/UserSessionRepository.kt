@@ -1,15 +1,12 @@
 package com.forcetower.uefs.core.storage.repository
 
-import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
-import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.unes.UserSession
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import timber.log.Timber
 import java.util.Calendar
 import java.util.UUID
@@ -20,8 +17,8 @@ import javax.inject.Singleton
 class UserSessionRepository @Inject constructor(
     private val database: UDatabase,
     private val service: UService,
-    private val executors: AppExecutors,
-    private val preferences: SharedPreferences,
+//    private val executors: AppExecutors,
+//    private val preferences: SharedPreferences,
     private val authRepository: AuthRepository
 ) {
 
@@ -96,30 +93,30 @@ class UserSessionRepository @Inject constructor(
 
     @AnyThread
     fun onUserInteractionAsync() {
-        if (!preferences.isStudentFromUEFS()) return
-        executors.diskIO().execute { onUserInteraction() }
+//        if (!preferences.isStudentFromUEFS()) return
+//        executors.diskIO().execute { onUserInteraction() }
     }
 
     @AnyThread
     fun onSessionStartedAsync() {
-        if (!preferences.isStudentFromUEFS()) return
-        executors.diskIO().execute { onSessionStarted() }
+//        if (!preferences.isStudentFromUEFS()) return
+//        executors.diskIO().execute { onSessionStarted() }
     }
 
     @AnyThread
     fun onUserClickedAdAsync() {
-        if (!preferences.isStudentFromUEFS()) return
-        executors.diskIO().execute { onUserClickedAd() }
+//        if (!preferences.isStudentFromUEFS()) return
+//        executors.diskIO().execute { onUserClickedAd() }
     }
 
     @AnyThread
     fun onUserAdImpressionAsync() {
-        if (!preferences.isStudentFromUEFS()) return
-        executors.diskIO().execute { onUserAdImpression() }
+//        if (!preferences.isStudentFromUEFS()) return
+//        executors.diskIO().execute { onUserAdImpression() }
     }
 
     @AnyThread
     fun onSyncSessionsAsync() {
-        executors.networkIO().execute { syncSessions() }
+        // executors.networkIO().execute { syncSessions() }
     }
 }

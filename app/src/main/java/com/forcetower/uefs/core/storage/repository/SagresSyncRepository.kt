@@ -107,14 +107,14 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun performSync(executor: String) {
+    fun performSync(executor: String, gToken: String? = null) {
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
         access ?: Timber.d("Access is null, sync will not continue")
         if (access != null) {
             Crashlytics.setUserIdentifier(access.username)
             // Only one sync may be active at a time
-            synchronized(S_LOCK) { execute(access, registry, executor) }
+            synchronized(S_LOCK) { execute(access, registry, executor, gToken) }
         } else {
             registry.completed = true
             registry.error = -1
@@ -161,7 +161,7 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun execute(access: Access, registry: SyncRegistry, executor: String) {
+    private fun execute(access: Access, registry: SyncRegistry, executor: String, gToken: String?) {
         val uid = database.syncRegistryDao().insert(registry)
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
@@ -193,10 +193,24 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
+//        if (preferences.isStudentFromUEFS()) {
+//            try {
+//                val response = service.getSession().execute()
+//                val cookies = response.body()?.data
+//                cookies?.let {
+//                    Timber.d("We got it guys!")
+//                    SagresNavigator.instance.setCookiesOnClient(it)
+//                }
+//            } catch (error: Throwable) {
+//                // Unable to fetch good cookies... Good luck!
+//            }
+//        }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
-        val homeDoc = login(access)
+
+        val homeDoc = if (!preferences.isStudentFromUEFS() || gToken != null) login(access, gToken) else null
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
 
@@ -220,14 +234,7 @@ class SagresSyncRepository @Inject constructor(
             registry.message = "The dream is over"
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
-            return
-        } else if (homeDoc == null && person.isMocked) {
-            registry.completed = true
-            registry.error = -4
-            registry.success = false
-            registry.message = "The dream is over"
-            registry.end = System.currentTimeMillis()
-            database.syncRegistryDao().update(registry)
+            // NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
             return
         }
 
@@ -391,8 +398,8 @@ class SagresSyncRepository @Inject constructor(
         }
     }
 
-    fun login(access: Access): Document? {
-        val login = SagresNavigator.instance.login(access.username, access.password)
+    fun login(access: Access, gToken: String?): Document? {
+        val login = SagresNavigator.instance.login(access.username, access.password, gToken)
         when (login.status) {
             Status.SUCCESS -> {
                 return login.document
@@ -434,7 +441,7 @@ class SagresSyncRepository @Inject constructor(
                         Timber.e("Page loaded but API returned invalid types")
                     }
                 }
-                Status.RESPONSE_FAILED -> {
+                Status.RESPONSE_FAILED, Status.NETWORK_ERROR -> {
                     return continueWithHtml(document, username, score)
                 }
                 else -> produceErrorMessage(me)
@@ -443,8 +450,9 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson {
-        val name = SagresBasicParser.getName(document) ?: username
+    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson? {
+        val start = SagresNavigator.instance.startPage().document ?: return null
+        val name = SagresBasicParser.getName(start) ?: username
         val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
         database.profileDao().insert(person, score)
         return person
@@ -712,8 +720,10 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @MainThread
-    fun asyncSync() {
-        executors.networkIO().execute { performSync("Manual") }
+    fun asyncSync(gToken: String?) {
+        executors.networkIO().execute {
+            performSync("Manual", gToken)
+        }
     }
 
     companion object {
