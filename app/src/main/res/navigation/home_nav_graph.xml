@@ -143,6 +143,12 @@
         android:label="MechanicalCalculator"
         tools:layout="@layout/fragment_mech_calculator"/>
 
+    <fragment
+        android:id="@+id/captcha_resolver"
+        android:name="com.forcetower.uefs.feature.captcha.CaptchaResolverFragment"
+        android:label="CaptchaResolver"
+        tools:layout="@layout/fragment_tech_nope_captcha"/>
+
     <activity
         android:id="@+id/demand"
         android:name="com.forcetower.uefs.feature.demand.DemandActivity"
