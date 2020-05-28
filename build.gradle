@@ -100,7 +100,7 @@ buildscript {
         rx_kotlin = "2.4.0-RC3"
 
         // Build Versions
-        android_gradle_plugin = '3.6.3'
+        android_gradle_plugin = '4.0.0'
         google_play_services = "4.3.0"
         fabric = "1.28.0"
         kotlinter = "1.26.0"
