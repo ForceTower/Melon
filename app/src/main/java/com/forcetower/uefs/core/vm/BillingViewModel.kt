@@ -142,7 +142,7 @@ class BillingViewModel @Inject constructor(
     fun launchBillingFlow(activity: Activity, details: SkuDetails, username: String) {
         val params = BillingFlowParams.newBuilder()
             .setSkuDetails(details)
-            .setAccountId(username)
+            .setObfuscatedAccountId(username)
             .build()
 
         billingClient.launchBillingFlow(activity, params)
