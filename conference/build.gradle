@@ -63,6 +63,11 @@ android {
     buildFeatures {
         dataBinding true
     }
+
+    lintOptions {
+        // AGP 4.0 can't detect Activities from other modules?
+        disable 'Instantiatable'
+    }
 }
 
 dependencies {
