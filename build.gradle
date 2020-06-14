@@ -41,7 +41,7 @@ buildscript {
         flexbox = "1.1.0"
         browser = '1.2.0'
         preference = '1.1.1'
-        fragment = '1.2.4'
+        fragment = '1.2.5'
         swipe_refresh = "1.0.0"
 
         // Architecture
@@ -55,7 +55,7 @@ buildscript {
         dagger = '2.28'
 
         // Firebase
-        firebase_core = '17.4.2'
+        firebase_core = '17.4.3'
         firebase_auth = '19.3.1'
         firebase_messaging = '20.2.0'
         firebase_firestore = '21.4.3'
@@ -63,6 +63,7 @@ buildscript {
         firebase_remote_config = '19.1.4'
         firebase_functions = '19.0.2'
         in_app_messaging = "19.0.1"
+        firebase_crashlytics = "17.0.1"
         firebase_ui_storage = "4.3.1"
 
         // Logs
@@ -71,7 +72,7 @@ buildscript {
 
         // Image
         glide = '4.11.0'
-        lottie = '3.4.0'
+        lottie = '3.4.1'
         image_cropper = "2.8.0"
 
         // Google Services
@@ -79,7 +80,7 @@ buildscript {
         gp_auth = '18.0.0'
         gp_games = '19.0.0'
         gp_location = "17.0.0"
-        gp_billing_client = '2.2.1'
+        gp_billing_client = '3.0.0'
         gp_admob = '19.1.0'
 
         // Networking
@@ -97,15 +98,15 @@ buildscript {
         date_time_picker = '4.2.3'
         floating_search = "2.1.1"
         zoned_time_date = '1.2.4'
-        rx_kotlin = "2.4.0-RC3"
+        rx_kotlin = "2.4.0"
 
         // Build Versions
         android_gradle_plugin = '4.0.0'
-        google_play_services = "4.3.0"
-        fabric = "1.28.0"
+        google_play_services = "4.3.3"
         kotlinter = "1.26.0"
         play_publisher = "2.7.1"
         bundletool = "0.10.0"
+        crashlytics = "2.1.1"
     }
 
     repositories {
@@ -122,11 +123,11 @@ buildscript {
         classpath "com.android.tools.build:gradle:$android_gradle_plugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$google_play_services"
-        classpath "io.fabric.tools:gradle:$fabric"
         classpath "com.github.triplet.gradle:play-publisher:$play_publisher"
         classpath "org.jmailen.gradle:kotlinter-gradle:$kotlinter"
         classpath "com.android.tools.build:bundletool:$bundletool"
         classpath "androidx.navigation:navigation-safe-args-gradle-plugin:$navigation"
+        classpath "com.google.firebase:firebase-crashlytics-gradle:$crashlytics"
     }
 }
 

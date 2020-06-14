@@ -22,7 +22,6 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
@@ -137,7 +136,7 @@ class FirebaseAuthRepository @Inject constructor(
             preferences.edit().putString("current_firebase_token", token).apply()
             data["firebaseToken"] = token
         } catch (t: Throwable) {
-            Crashlytics.logException(t)
+            Timber.e(t)
         }
 
         userCollection.document(uid).set(data, SetOptions.merge())

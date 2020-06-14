@@ -28,7 +28,6 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -85,7 +84,7 @@ abstract class ClassDao {
 
     @Transaction
     open fun insert(dis: SagresDiscipline, validated: Boolean) {
-        Timber.d("Unformated discipline $dis")
+        Timber.d("Unformatted discipline $dis")
         var clazz = getClassDirect(dis.semester.trim(), dis.code.trim())
         Timber.d("Inserting clazz... $clazz")
         if (clazz == null) {
@@ -100,12 +99,10 @@ abstract class ClassDao {
                 insert(clazz)
             } else {
                 if (semester == null) {
-                    Timber.d("Semester not found ${dis.semester.trim()}")
-                    Crashlytics.logException(Throwable("Semester not found ${dis.semester.trim()}"))
+                    Timber.e("Semester not found ${dis.semester.trim()}")
                 }
                 if (discipline != null) {
-                    Timber.d("Discipline not found ${discipline.code}")
-                    Crashlytics.logException(Throwable("Discipline not found ${discipline.code}"))
+                    Timber.e("Discipline not found ${discipline.code}")
                 }
             }
         }

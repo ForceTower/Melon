@@ -23,7 +23,6 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Query
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 import timber.log.Timber
 
@@ -63,9 +62,7 @@ abstract class FlowchartRequirementDao {
                         if (diff != 0) diff else compareValues(a.shownName, b.shownName)
                     })
         } catch (t: Throwable) {
-            Timber.e(t, "A stack overflow!")
-            Crashlytics.log("Probably a stack overflow happened on requirements!!!")
-            Crashlytics.logException(t)
+            Timber.e(t, "A stack overflow on requirements!")
         }
         return emptyList()
     }
@@ -92,9 +89,7 @@ abstract class FlowchartRequirementDao {
                         if (diff != 0) diff else compareValues(a.shownName, b.shownName)
                     })
         } catch (t: Throwable) {
-            Timber.e(t, "A stack overflow!")
-            Crashlytics.log("Probably a stack overflow happened on unlock!!!")
-            Crashlytics.logException(t)
+            Timber.e(t, "A stack overflow on unlock!")
         }
         return emptyList()
     }
