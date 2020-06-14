@@ -160,7 +160,7 @@
 -keep class com.ramotion.cardslider.CardSliderLayoutManager { *; }
 
 # Dynamic Features Reflection Calls
--keepnames class com.forcetower.uefs.aeri.feature.AERINewsFragment
+-keep class com.forcetower.uefs.aeri.feature.AERINewsFragment
 -keep class * extends androidx.databinding.DataBinderMapper { *; }
 
 -keepnames class * implements com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
