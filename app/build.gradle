@@ -23,9 +23,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs'
-apply plugin: 'io.fabric'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion compileSdk
@@ -96,6 +96,10 @@ android {
     }
 
     buildTypes {
+        debug {
+            minifyEnabled true
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
@@ -204,9 +208,9 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
     implementation "com.google.firebase:firebase-config:$firebase_remote_config"
     implementation "com.google.firebase:firebase-functions:$firebase_functions"
+    implementation "com.google.firebase:firebase-crashlytics:$firebase_crashlytics"
 
     // Logs
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_ver") { transitive true }
     implementation "com.jakewharton.timber:timber:$timber"
 
     // Google Play

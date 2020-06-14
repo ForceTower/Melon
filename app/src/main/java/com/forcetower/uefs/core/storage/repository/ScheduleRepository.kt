@@ -22,7 +22,6 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.ui.ProcessedClassLocation
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -63,7 +62,7 @@ class ScheduleRepository @Inject constructor(
         try {
             Tasks.await(reference.set(mapped, SetOptions.merge()))
         } catch (t: Throwable) {
-            Crashlytics.logException(t)
+            Timber.e(t)
         }
     }
 

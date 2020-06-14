@@ -29,7 +29,6 @@ import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.crashlytics.android.Crashlytics
 import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
@@ -37,6 +36,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import timber.log.Timber
 import javax.inject.Inject
 
 class DisciplineSemesterFragment : UFragment(), Injectable {
@@ -81,7 +81,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Crashlytics.logException(t) }
+        try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Timber.e(t) }
 
         adapterPerformance = DisciplinePerformanceAdapter(viewModel)
         recyclerView.adapter = adapterPerformance

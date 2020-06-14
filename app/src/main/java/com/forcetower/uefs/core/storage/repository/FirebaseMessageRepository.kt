@@ -26,7 +26,6 @@ import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.work.WorkManager
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
@@ -80,7 +79,7 @@ class FirebaseMessageRepository @Inject constructor(
             "hourglass_initiator" -> hourglassRunner()
             "worker_cancel" -> cancelWorker(data)
             "remote_preferences" -> promotePreferences(data)
-            null -> Crashlytics.log("Invalid notification received. No Identifier.")
+            null -> Timber.e("Invalid notification received. No Identifier.")
         }
     }
 
@@ -181,8 +180,7 @@ class FirebaseMessageRepository @Inject constructor(
         val unique = data["unique"]
         val version = data["version"]?.toIntOrNull()
         if (unique == null || version == null) {
-            Timber.d("You need to specify a unique key and a version for this to work")
-            Crashlytics.log("You need to specify a unique key and a version for this to work")
+            Timber.e("You need to specify a unique key and a version for this to work")
             return
         }
 
@@ -208,13 +206,13 @@ class FirebaseMessageRepository @Inject constructor(
         val timestamp = data["timestamp"]
 
         if (message == null || teacher == null || timestamp == null || discipline == null) {
-            Crashlytics.log("Invalid notification received. No message, teacher or timestamp")
+            Timber.e("Invalid notification received. No message, teacher or timestamp")
             return
         }
 
         val sent = timestamp.toLongOrNull()
         if (sent == null) {
-            Crashlytics.log("Invalid notification received. Send time is invalid. Teacher: $teacher, $message")
+            Timber.e("Invalid notification received. Send time is invalid. Teacher: $teacher, $message")
             return
         }
 
@@ -230,7 +228,7 @@ class FirebaseMessageRepository @Inject constructor(
         val institution = data["institution"]
 
         if (title == null || message == null) {
-            Crashlytics.log("Bad notification created. It was ignored")
+            Timber.e("Bad notification created. It was ignored")
             return
         }
 
@@ -246,7 +244,7 @@ class FirebaseMessageRepository @Inject constructor(
         val image = data["image"]
 
         if (id == null || title == null || description == null) {
-            Crashlytics.log("Bad notification created. It was ignored")
+            Timber.e("Bad notification created. It was ignored")
             return
         }
 
@@ -274,7 +272,7 @@ class FirebaseMessageRepository @Inject constructor(
                 preferences.edit().putBoolean(unique, true).apply()
         } catch (t: Throwable) {
             Timber.d("Failed executing database promotion. ${t.message}")
-            Crashlytics.logException(t)
+            Timber.e(t)
         }
     }
 
@@ -282,7 +280,7 @@ class FirebaseMessageRepository @Inject constructor(
         Timber.d("Simple notification received")
         val notification = message.notification
         if (notification == null) {
-            Crashlytics.log("Invalidation of notification happened really quickly")
+            Timber.e("Invalidation of notification happened really quickly")
             return
         }
 
@@ -290,7 +288,7 @@ class FirebaseMessageRepository @Inject constructor(
         val title = notification.title
 
         if (content == null || title == null) {
-            Crashlytics.log("Bad notification created. It was ignored")
+            Timber.e("Bad notification created. It was ignored")
             return
         }
 
@@ -315,7 +313,7 @@ class FirebaseMessageRepository @Inject constructor(
                 try {
                     Tasks.await(task)
                 } catch (t: Throwable) {
-                    Crashlytics.logException(t)
+                    Timber.e(t)
                 }
             }
         }

@@ -26,7 +26,6 @@ import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MediatorLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.sagres.operation.Status
@@ -134,7 +133,7 @@ class DemandRepository @Inject constructor(
             analytics.logEvent("demand_user_exception_at_worker", bundleOf(
                 "message" to t.message
             ))
-            Crashlytics.logException(t)
+            Timber.e(t)
         }
     }
 }
