@@ -849,7 +849,7 @@
     <string name="settings_adv_ignore_battery_xiaomi_info">Remover as restricoes da bateria melhora os problemas de sincronização</string>
     <string name="purchase_update_error">Erro nas compras (sad noises)</string>
     <string name="purchase_item_already_owned">Você ja tem esse item</string>
-    <string name="purchase_you_bought_a_consumable_item">Você comprou um item consumíverl</string>
+    <string name="purchase_you_bought_a_consumable_item">Você comprou um item consumível</string>
     <string name="purchase_subscription_started">A inscrição começou!</string>
     <string name="channel_service_sync_foreground">Atualização de dados persistente</string>
     <string name="label_service_sync_foreground">Atualizações</string>
