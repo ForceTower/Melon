@@ -42,28 +42,28 @@ buildscript {
         browser = '1.2.0'
         preference = '1.1.1'
         fragment = '1.2.5'
-        swipe_refresh = "1.0.0"
+        swipe_refresh = '1.1.0'
 
         // Architecture
         room = '2.2.5'
         lifecycle = '2.2.0'
         paging = '2.1.2'
-        navigation = '2.2.2'
+        navigation = '2.3.0'
         work_manager = '2.3.4'
 
         // Dependency Injection
-        dagger = '2.28'
+        dagger = '2.28.1'
 
         // Firebase
-        firebase_core = '17.4.3'
-        firebase_auth = '19.3.1'
-        firebase_messaging = '20.2.0'
-        firebase_firestore = '21.4.3'
+        firebase_core = '17.4.4'
+        firebase_auth = '19.3.2'
+        firebase_messaging = '20.2.3'
+        firebase_firestore = '21.5.0'
         firebase_storage = '19.1.1'
-        firebase_remote_config = '19.1.4'
+        firebase_remote_config = '19.2.0'
         firebase_functions = '19.0.2'
         in_app_messaging = "19.0.1"
-        firebase_crashlytics = "17.0.1"
+        firebase_crashlytics = '17.1.1'
         firebase_ui_storage = "4.3.1"
 
         // Logs
@@ -81,10 +81,10 @@ buildscript {
         gp_games = '19.0.0'
         gp_location = "17.0.0"
         gp_billing_client = '3.0.0'
-        gp_admob = '19.1.0'
+        gp_admob = '19.2.0'
 
         // Networking
-        okhttp = '4.7.2'
+        okhttp = '4.8.0'
         retrofit = '2.9.0'
         cookie_jar = "v1.0.1"
 
