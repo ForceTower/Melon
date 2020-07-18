@@ -40,27 +40,22 @@ import javax.inject.Singleton
 object FirebaseCoreModule {
     @Provides
     @Singleton
-    @JvmStatic
     fun provideAuth(): FirebaseAuth = FirebaseAuth.getInstance()
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance()
 
     @Provides
     @Reusable
-    @JvmStatic
     fun provideAnalytics(context: Context): FirebaseAnalytics = FirebaseAnalytics.getInstance(context)
 
     @Provides
     @Reusable
-    @JvmStatic
     fun provideMessaging(): FirebaseMessaging = FirebaseMessaging.getInstance()
 
     @Provides
     @Reusable
-    @JvmStatic
     fun provideRemoteConfig(): FirebaseRemoteConfig {
         val config = FirebaseRemoteConfig.getInstance()
         val settings = FirebaseRemoteConfigSettings.Builder()
@@ -82,7 +77,6 @@ object FirebaseCoreModule {
 
     @Provides
     @Reusable
-    @JvmStatic
     fun provideFunctions(): FirebaseFunctions {
         return FirebaseFunctions.getInstance()
     }

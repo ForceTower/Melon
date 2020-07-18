@@ -36,48 +36,40 @@ import javax.inject.Named
 
 @Module
 object FirestoreModule {
-    @JvmStatic
     @Provides
     @Reusable
     fun provideFirestore(): FirebaseFirestore = FirebaseFirestore.getInstance()
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(Profile.COLLECTION)
     fun provideUserCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Profile.COLLECTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(Event.COLLECTION)
     fun provideEventCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Event.COLLECTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(Discipline.COLLECTION)
     fun provideDisciplineCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Discipline.COLLECTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(UMessage.COLLECTION)
     fun provideUnesMessagesCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(UMessage.COLLECTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(ClassStatsData.STATS_CONTRIBUTION)
     fun provideStatsContributionCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(ClassStatsData.STATS_CONTRIBUTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(Feedback.COLLECTION)
     fun provideFeedbackCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(Feedback.COLLECTION)
 
-    @JvmStatic
     @Provides
     @Reusable
     @Named(SyncFrequency.COLLECTION)
