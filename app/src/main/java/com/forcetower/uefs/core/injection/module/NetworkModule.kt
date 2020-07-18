@@ -54,18 +54,15 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideCookieHandler(): CookieHandler = CookieManager()
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideCookieJar(context: Context): PersistentCookieJar =
             PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
@@ -86,7 +83,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideInterceptor(database: UDatabase) = object : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request = chain.request()
@@ -113,18 +109,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideGson(): Gson {
         return GsonBuilder()
-                .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
-                .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_SERIALIZER)
-                .serializeNulls()
-                .create()
+            .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
+            .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_SERIALIZER)
+            .serializeNulls()
+            .create()
     }
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideService(client: OkHttpClient, gson: Gson): UService {
         return Retrofit.Builder()
             .baseUrl(Constants.UNES_SERVICE_URL)
@@ -137,7 +131,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideGithubService(client: OkHttpClient): GithubService {
         return Retrofit.Builder()
             .baseUrl("https://api.github.com/")
@@ -150,7 +143,6 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideTemporaryService(client: OkHttpClient): APIService {
         return Retrofit.Builder()
             .baseUrl(Constants.UNES_SERVICE_UPDATE)
