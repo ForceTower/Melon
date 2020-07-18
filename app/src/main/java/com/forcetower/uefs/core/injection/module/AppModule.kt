@@ -82,19 +82,16 @@ object AppModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideContext(application: UApplication): Context =
             application.applicationContext
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideSharedPreferences(context: Context): SharedPreferences =
             PreferenceManager.getDefaultSharedPreferences(context)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
                 .addMigrations(
@@ -110,7 +107,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideApiDatabase(context: Context): APIDatabase =
             Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
                 .fallbackToDestructiveMigration()
@@ -118,7 +114,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideEventDatabase(context: Context): EventDatabase =
             Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
                     .fallbackToDestructiveMigration()
@@ -126,12 +121,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    @JvmStatic
     fun providePlayGames(context: Context): GooglePlayGamesInstance =
             GooglePlayGamesInstance(context)
 
     @Provides
     @Singleton
-    @JvmStatic
     fun provideThemeSwitcherResourceProvider() = ThemeSwitcherResourceProvider()
 }
