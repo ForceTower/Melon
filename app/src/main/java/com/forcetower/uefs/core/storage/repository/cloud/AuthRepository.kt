@@ -161,7 +161,7 @@ class AuthRepository @Inject constructor(
                 Timber.e("Failed with code: ${response.code()}")
             }
         } catch (t: Throwable) {
-            Timber.e(t)
+            Timber.e(t, "failed to connect to api")
         }
         return null
     }
