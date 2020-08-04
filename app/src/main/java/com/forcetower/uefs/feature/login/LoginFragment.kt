@@ -28,7 +28,7 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
-import com.forcetower.sagres.SagresNavigator
+import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -75,19 +75,17 @@ class LoginFragment : UFragment() {
 
         if (error) return
 
-        // val extras = FragmentNavigatorExtras(binding.imageUnes to getString(R.string.user_image_transition))
-
         val info = bundleOf(
             "username" to username,
             "password" to password
         )
-        if (SagresNavigator.instance.getSelectedInstitution() != "UEFS") {
+
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
             findNavController().navigate(R.id.action_login_form_to_signing_in, info)
         } else {
             val directions = LoginFragmentDirections.actionLoginFormToTechNopeCaptchaStuff(username, password)
             findNavController().navigate(directions)
         }
-        // ), null, extras)
     }
 
     private fun toAbout() {

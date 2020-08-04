@@ -30,6 +30,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.forcetower.core.injection.Injectable
+import com.forcetower.sagres.Constants
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
@@ -95,7 +96,8 @@ class SchedulePerformanceFragment : UFragment(), Injectable {
     }
 
     private fun onRefresh() {
-        if (!preferences.isStudentFromUEFS()) {
+        Timber.d("Refresh requested.... ${Constants.getParameter("REQUIRES_CAPTCHA")}")
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
             viewModel.doRefreshData(null)
             return
         }

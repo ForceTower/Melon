@@ -29,6 +29,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.FrameLayout
 import androidx.annotation.Keep
+import com.forcetower.sagres.Constants
 import com.forcetower.uefs.databinding.FragmentTechNopeCaptchaBinding
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -65,7 +66,7 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         binding.webView.apply {
-            loadDataWithBaseURL("http://academico2.uefs.br", data, "text/html; charset=utf-8", "UTF-8", null)
+            loadDataWithBaseURL(Constants.getParameter("CAPTCHA_BASE"), data, "text/html; charset=utf-8", "UTF-8", null)
             settings.apply {
                 javaScriptEnabled = true
                 userAgentString = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/75.0.3770.100 Safari/537.36"
@@ -98,7 +99,7 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
     }
 
     companion object {
-        private const val data = "<html>\n" +
+        private val data = "<html>\n" +
             "    <head>\n" +
             "      <title>Shit</title>\n" +
             "      <meta content='width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=0' name='viewport' />\n" +
@@ -145,7 +146,7 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
             "    </head>\n" +
             "    <body>\n" +
             "        <div class=\"g-recaptcha\"\n" +
-            "          data-sitekey=\"6Lc5M-UUAAAAAOFIqIdUEP2BeaqFi3f-71HscRlB\"\n" +
+            "          data-sitekey=\"" + Constants.getParameter("CAPTCHA_SITE_KEY") + "\"\n" +
             "          data-callback=\"captchaResponse\">\n" +
             "        </div>\n" +
             "    </body>\n" +
