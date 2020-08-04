@@ -79,8 +79,13 @@ abstract class NetworkBoundResource<ResultType, RequestType>
                     }
                 }
                 is ApiErrorResponse -> {
-                    result.addSource(dbSource) { newData ->
-                        setValue(Resource.error(response.errorMessage, newData))
+                    executors.diskIO().execute {
+                        onErrorCallback()
+                        executors.mainThread().execute {
+                            result.addSource(dbSource) { newData ->
+                                setValue(Resource.error(response.errorMessage, newData))
+                            }
+                        }
                     }
                 }
             }
@@ -107,4 +112,6 @@ abstract class NetworkBoundResource<ResultType, RequestType>
     abstract fun createCall(): LiveData<ApiResponse<RequestType>>
     @WorkerThread
     abstract fun saveCallResult(value: RequestType)
+    @WorkerThread
+    open fun onErrorCallback() = Unit
 }

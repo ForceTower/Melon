@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
+import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
@@ -34,6 +35,10 @@ interface CourseDao {
 
     @Query("SELECT * FROM Course ORDER BY name")
     fun selectAll(): LiveData<List<Course>>
+
+    @WorkerThread
+    @Query("SELECT * FROM Course ORDER BY name")
+    fun selectAllDirect(): List<Course>
 
     @Query("SELECT * FROM Course WHERE id = :course")
     fun getCourse(course: Long): LiveData<Course?>
