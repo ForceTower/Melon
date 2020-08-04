@@ -34,7 +34,6 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import timber.log.Timber
 import javax.inject.Inject
 
