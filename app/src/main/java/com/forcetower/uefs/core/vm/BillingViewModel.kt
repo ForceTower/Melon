@@ -70,7 +70,7 @@ class BillingViewModel @Inject constructor(
     private fun queryGoldMonkey(): Boolean {
         val response = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
         if (response.responseCode == BillingClient.BillingResponseCode.OK) {
-            val purchases = response.purchasesList
+            val purchases = response.purchasesList ?: emptyList()
             if (purchases.isEmpty()) {
                 repository.cancelSubscriptions()
             } else {
@@ -119,8 +119,8 @@ class BillingViewModel @Inject constructor(
         return inAppProducts
     }
 
-    override fun onPurchasesUpdated(result: BillingResult?, purchases: List<Purchase>?) {
-        when (result?.responseCode) {
+    override fun onPurchasesUpdated(result: BillingResult, purchases: List<Purchase>?) {
+        when (result.responseCode) {
             BillingClient.BillingResponseCode.OK -> {
                 if (purchases != null) {
                     handlePurchases(purchases)
@@ -134,7 +134,7 @@ class BillingViewModel @Inject constructor(
             }
             else -> {
                 _snack.postValue(Event(R.string.purchase_update_error))
-                Timber.e("Error purchase: ${result?.responseCode}")
+                Timber.e("Error purchase: ${result.responseCode}")
             }
         }
     }
@@ -142,7 +142,7 @@ class BillingViewModel @Inject constructor(
     fun launchBillingFlow(activity: Activity, details: SkuDetails, username: String) {
         val params = BillingFlowParams.newBuilder()
             .setSkuDetails(details)
-            .setAccountId(username)
+            .setObfuscatedAccountId(username)
             .build()
 
         billingClient.launchBillingFlow(activity, params)
@@ -153,7 +153,7 @@ class BillingViewModel @Inject constructor(
         if (result.purchasesList == null) {
             Timber.d("Update purchase: Null purchase list")
         } else {
-            handlePurchases(result.purchasesList)
+            handlePurchases(result.purchasesList ?: emptyList())
         }
     }
 
@@ -170,8 +170,8 @@ class BillingViewModel @Inject constructor(
 
     override fun onBillingServiceDisconnected() = Unit
 
-    override fun onBillingSetupFinished(result: BillingResult?) {
-        if (result?.responseCode == BillingClient.BillingResponseCode.OK) {
+    override fun onBillingSetupFinished(result: BillingResult) {
+        if (result.responseCode == BillingClient.BillingResponseCode.OK) {
             updatePurchases()
         }
     }

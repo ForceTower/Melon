@@ -29,7 +29,6 @@ import android.telephony.TelephonyManager
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
-import com.crashlytics.android.Crashlytics
 import com.forcetower.core.getDynamicDataSourceFactory
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCalendar
@@ -72,6 +71,7 @@ import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
@@ -112,7 +112,7 @@ class SagresSyncRepository @Inject constructor(
         val access = database.accessDao().getAccessDirect()
         access ?: Timber.d("Access is null, sync will not continue")
         if (access != null) {
-            Crashlytics.setUserIdentifier(access.username)
+            FirebaseCrashlytics.getInstance().setUserId(access.username)
             // Only one sync may be active at a time
             synchronized(S_LOCK) { execute(access, registry, executor, gToken) }
         } else {
@@ -244,7 +244,7 @@ class SagresSyncRepository @Inject constructor(
                 firebaseAuthRepository.loginToFirebase(person, access, reconnect)
                 preferences.edit().putBoolean("firebase_reconnect_update", false).apply()
             } catch (t: Throwable) {
-                Crashlytics.logException(t)
+                Timber.e(t)
             }
         }
 
@@ -345,7 +345,7 @@ class SagresSyncRepository @Inject constructor(
             }
             createNewVersionNotification()
         } catch (t: Throwable) {
-            Crashlytics.logException(t)
+            Timber.e(t)
         }
 
         registry.completed = true

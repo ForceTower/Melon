@@ -28,7 +28,6 @@ import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.unes.Message
 import timber.log.Timber
 import java.util.Locale
@@ -101,7 +100,7 @@ abstract class MessageDao {
             if (existing == null) setMessageHash(message.uid, hash)
             else {
                 deleteMessage(message.uid)
-                Crashlytics.logException(Exception("Collision of messages ${existing.senderName} and ${message.codeDiscipline}"))
+                Timber.e("Collision of messages ${existing.senderName} and ${message.codeDiscipline}")
             }
         }
     }

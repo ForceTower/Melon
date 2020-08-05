@@ -228,7 +228,7 @@ class DisciplineViewModel @Inject constructor(
         if (_refreshing.value == null || _refreshing.value == false) {
             Timber.d("Something will actually happen")
             _refreshing.value = true
-            val result = grades.getGradesAsync(semesterId, true)
+            val result = grades.getGradesAsync(semesterId, false)
             _refreshing.addSource(result) {
                 _refreshing.removeSource(result)
                 if (it == SagresGradesRepository.SUCCESS) {

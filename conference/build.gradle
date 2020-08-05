@@ -60,8 +60,13 @@ android {
         jvmTarget = "1.8"
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
+    }
+
+    lintOptions {
+        // AGP 4.0 can't detect Activities from other modules?
+        disable 'Instantiatable'
     }
 }
 

@@ -24,11 +24,11 @@ import android.os.Handler
 import android.os.Looper
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import timber.log.Timber
 import javax.inject.Inject
 
 class BigTrayRepository @Inject constructor(
@@ -80,7 +80,7 @@ class BigTrayRepository @Inject constructor(
                     if (values.size == 2) {
                         return BigTrayData.createData(values)
                     } else {
-                        Crashlytics.log("The size of the big tray has changed to ${values.size}")
+                        Timber.e("The size of the big tray has changed to ${values.size}")
                     }
                 }
             }

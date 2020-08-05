@@ -26,7 +26,6 @@ import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.api.DarkInvite
@@ -76,7 +75,7 @@ class DarkThemeRepository @Inject constructor(
             try {
                 service.requestDarkThemeUnlock(DarkUnlock(completedSize)).execute()
             } catch (throwable: Throwable) {
-                Crashlytics.logException(throwable)
+                Timber.e(throwable)
             }
         }
     }

@@ -22,7 +22,6 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.google.firebase.firestore.CollectionReference
 import timber.log.Timber
@@ -50,11 +49,11 @@ class SyncFrequencyRepository @Inject constructor(
                 }
                 exception != null -> {
                     Timber.d("Exception: ${exception.message}")
-                    Crashlytics.logException(exception)
+                    Timber.e(exception)
                     result.postValue(listOf(SyncFrequency()))
                 }
                 else -> {
-                    Crashlytics.log("Something really odd happened")
+                    Timber.e("Something really odd happened")
                     result.postValue(listOf(SyncFrequency()))
                 }
             }

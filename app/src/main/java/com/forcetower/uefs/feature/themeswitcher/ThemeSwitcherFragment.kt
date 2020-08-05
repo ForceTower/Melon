@@ -206,7 +206,11 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
 
             @ColorInt
             private fun convertToDisplay(@ColorInt color: Int): Int {
-                return if (color == Color.WHITE) Color.BLACK else color
+                return if (color == Color.WHITE)
+                    Color.BLACK
+                else if (color == Color.BLACK)
+                    Color.WHITE
+                else color
             }
         }
     }
