@@ -39,7 +39,7 @@ object AppInjection {
      */
     fun create(application: UApplication): AppComponent {
         application.registerActivityLifecycleCallbacks(object : ActLifecycleCbAdapter() {
-            override fun onActivityCreated(activity: Activity?, savedInstanceState: Bundle?) {
+            override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
                 handle(activity)
             }
         })
