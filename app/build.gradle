@@ -23,9 +23,9 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'androidx.navigation.safeargs'
-apply plugin: 'io.fabric'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
+apply plugin: 'com.google.firebase.crashlytics'
 
 android {
     compileSdkVersion compileSdk
@@ -65,7 +65,7 @@ android {
             abiFilters "arm64-v8a", "armeabi", "armeabi-v7a", "mips", "mips64", "x86", "x86_64"
         }
 
-        ndkVersion "21.0.6113669"
+        ndkVersion "21.3.6528147"
     }
 
     signingConfigs {
@@ -103,8 +103,8 @@ android {
         }
     }
 
-    dataBinding {
-        enabled true
+    buildFeatures {
+        dataBinding true
     }
 
     kapt {
@@ -204,9 +204,9 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
     implementation "com.google.firebase:firebase-config:$firebase_remote_config"
     implementation "com.google.firebase:firebase-functions:$firebase_functions"
+    implementation "com.google.firebase:firebase-crashlytics:$firebase_crashlytics"
 
     // Logs
-    implementation("com.crashlytics.sdk.android:crashlytics:$crashlytics_ver") { transitive true }
     implementation "com.jakewharton.timber:timber:$timber"
 
     // Google Play

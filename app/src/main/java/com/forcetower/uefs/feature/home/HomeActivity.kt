@@ -36,7 +36,6 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
-import com.crashlytics.android.Crashlytics
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.uefs.AppExecutors
@@ -355,8 +354,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         } else {
             username = access.username
             mGamesInstance.changePlayerName(access.username)
-            Crashlytics.setUserIdentifier(access.username)
-            Crashlytics.setUserName(firebaseAuth.currentUser?.email)
 
             analytics.setUserId(access.username)
             analytics.setUserProperty("institution", SagresNavigator.instance.getSelectedInstitution())

@@ -24,7 +24,6 @@ import android.os.Build
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.crashlytics.android.Crashlytics
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.Feedback
 import com.forcetower.uefs.core.model.unes.Access
@@ -34,6 +33,7 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.iid.FirebaseInstanceId
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -70,7 +70,7 @@ class FeedbackRepository @Inject constructor(
             try {
                 token = Tasks.await(FirebaseInstanceId.getInstance().instanceId).token
             } catch (throwable: Throwable) {
-                Crashlytics.logException(throwable)
+                Timber.e(throwable)
             }
 
             feedback.currentToken = token
@@ -78,7 +78,7 @@ class FeedbackRepository @Inject constructor(
             try {
                 Tasks.await(collection.add(feedback))
             } catch (throwable: Throwable) {
-                Crashlytics.logException(throwable)
+                Timber.e(throwable)
             }
         }
         result.postValue(true)
