@@ -25,6 +25,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
 import com.forcetower.sagres.database.model.SagresGrade
@@ -33,7 +34,6 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -59,7 +59,7 @@ class SagresGradesRepository @Inject constructor(
         access ?: return NO_ACCESS
 
         return if (needLogin) {
-            if (!preferences.isStudentFromUEFS()) {
+            if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
                 val login = SagresNavigator.instance.login(access.username, access.password)
                 if (login.status == Status.SUCCESS && login.document != null) {
                     Timber.d("[$semesterSagresId] Login Completed Correctly")
@@ -68,13 +68,7 @@ class SagresGradesRepository @Inject constructor(
                     INVALID_ACCESS
                 }
             } else {
-                val cookies = service.getSession().execute().body()?.data
-                if (cookies != null) {
-                    SagresNavigator.instance.setCookiesOnClient(cookies)
-                    proceed(semesterSagresId)
-                } else {
-                    INVALID_ACCESS
-                }
+                proceed(semesterSagresId)
             }
         } else {
             proceed(semesterSagresId)

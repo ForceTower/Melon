@@ -1,0 +1,198 @@
+[
+    {
+        "id": 1,
+        "name": "Engenharia de Computação",
+        "description": "O Engenheiro de Computação é um profissional com formação plena em Engenharia, preparado em assuntos de Computação para especificar, conceber, desenvolver, implementar, adaptar, produzir, industrializar, instalar e manter sistemas computacionais, bem como perfazer a integração de recursos físicos e lógicos necessários para o atendimento das necessidades informacionais, computacionais e da automação de organizações em geral.",
+        "image_url": "https://i.imgur.com/camanOt.png",
+        "since": "2003-01-01 00:00:00"
+    },
+    {
+        "id": 2,
+        "name": "Engenharia Civil",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 3,
+        "name": "Engenharia de Alimentos",
+        "description": "O engenheiro de alimentos é o profissional capaz de desempenhar atividades da engenharia em escala industrial alimentícia, desenvolvendo projetos e processos produtivos, a partir de caracteristicas de qualidade dos recursos e aumento da produtividade, cuidando de todas as etapas de preparo e conservação de alimento de origem vegetal e animal",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 4,
+        "name": "Licenciatura em Matemática",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 5,
+        "name": "Licenciatura e Bacharelado em Física",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 6,
+        "name": "Licenciatura em Química",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 7,
+        "name": "Administração",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 8,
+        "name": "Ciências Contábeis",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 9,
+        "name": "Ciências Econômicas",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 10,
+        "name": "Licenciatura e Bacharelado em Filosofia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 11,
+        "name": "Licenciatura em História",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 12,
+        "name": "Licenciatura e Bacharelado em Geografia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 13,
+        "name": "Pedagogia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 14,
+        "name": "Direito",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 15,
+        "name": "Psicologia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 16,
+        "name": "Licenciatura em Letras Vernáculas",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 17,
+        "name": "Licenciatura em Letras c/ Inglês",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 18,
+        "name": "Licenciatura em Letras c/ Francês",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 19,
+        "name": "Licenciatura em Letras c/ Espanhol",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 20,
+        "name": "Licenciatura em Música",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 21,
+        "name": "Licenciatura em Ciências Biológicas",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 22,
+        "name": "Bacharelado em Ciências Biológicas",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 23,
+        "name": "Licenciatura em Educação Física",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 24,
+        "name": "Enfermagem",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 25,
+        "name": "Odontologia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 26,
+        "name": "Farmácia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 27,
+        "name": "Medicina",
+        "description": "",
+        "image_url": "",
+        "since": null
+    },
+    {
+        "id": 28,
+        "name": "Agronomia",
+        "description": "",
+        "image_url": "",
+        "since": null
+    }
+]

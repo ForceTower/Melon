@@ -29,8 +29,8 @@ import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.persist.CachedPersistence
 import com.forcetower.sagres.persist.Storage
 import com.forcetower.uefs.core.util.toJson
-import com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class SharedPrefsCachePersistence(
     private val preferences: SharedPreferences

@@ -24,7 +24,7 @@ jobs:
         java-version: 1.8
     
     - name: Use Mocked Google Services
-      run: mv google-services-mock.json app/google-services.json
+      run: mv app/google-services-mock.json app/google-services.json
 
     - name: Use Mocked Signature
       run: mv sign_mock sign.jks
