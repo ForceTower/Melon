@@ -122,7 +122,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var username: String
     private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
     private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
-    private val billingViewModel: BillingViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
