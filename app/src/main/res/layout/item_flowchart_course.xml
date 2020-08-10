@@ -63,7 +63,7 @@
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:src="@drawable/ic_navigate_next_black_24dp"
-            android:tint="?attr/colorPrimary"
+            app:tint="?attr/colorPrimary"
             android:importantForAccessibility="no"
             app:layout_constraintBottom_toBottomOf="@id/title"
             app:layout_constraintEnd_toEndOf="parent"
