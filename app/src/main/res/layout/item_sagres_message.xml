@@ -113,7 +113,7 @@
                 android:contentDescription="@string/share_message"
                 android:onClick="@{() -> listener.onMessageShare(card, 0)}"
                 android:padding="8dp"
-                android:tint="?attr/colorAccent"
+                app:tint="?attr/colorAccent"
                 android:src="@drawable/ic_share_black_24dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/text_message_content" />

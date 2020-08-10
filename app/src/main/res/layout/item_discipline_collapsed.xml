@@ -79,7 +79,7 @@
                 app:layout_constraintEnd_toStartOf="@+id/guide_image_margin"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
-                android:tint="@color/dis_04"/>
+                app:tint="@color/dis_04"/>
 
             <TextView
                 android:id="@+id/text_discipline_name"
