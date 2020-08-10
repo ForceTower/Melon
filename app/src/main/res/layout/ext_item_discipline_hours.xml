@@ -59,7 +59,7 @@
             android:alpha="0.6"
             android:importantForAccessibility="no"
             android:src="@drawable/ic_clock_black_24dp"
-            android:tint="?attr/colorOnSurface"
+            app:tint="?attr/colorOnSurface"
             app:layout_constraintBottom_toBottomOf="@+id/text_absences"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
