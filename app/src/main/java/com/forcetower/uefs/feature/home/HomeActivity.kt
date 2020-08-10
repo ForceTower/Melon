@@ -47,7 +47,6 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
