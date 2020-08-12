@@ -45,7 +45,6 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import timber.log.Timber
 import javax.inject.Inject
 
-@Keep
 class DashboardFragment : UFragment() {
     @Inject
     lateinit var factory: BaseViewModelFactory
