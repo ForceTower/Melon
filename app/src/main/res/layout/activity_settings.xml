@@ -48,7 +48,7 @@
                     android:focusable="true"
                     android:layout_marginStart="8dp"
                     android:layout_gravity="center_vertical"
-                    android:tint="?attr/colorOnBackground"
+                    app:tint="?attr/colorOnBackground"
                     android:src="@drawable/ic_arrow_back_black_24dp" />
 
                 <TextView

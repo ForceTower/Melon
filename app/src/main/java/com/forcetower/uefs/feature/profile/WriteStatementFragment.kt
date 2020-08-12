@@ -104,7 +104,7 @@ class WriteStatementFragment : UFragment(), Injectable {
     }
 
     private fun onShowWarningUserAgreement() {
-        MaterialAlertDialogBuilder(context)
+        MaterialAlertDialogBuilder(requireContext())
             .setTitle(R.string.write_statement_agreement_title)
             .setMessage(R.string.write_statement_agreement_message)
             .setCancelable(true)
