@@ -134,7 +134,7 @@ class MessagesDFMViewModel @Inject constructor(
         return clazz.newInstance() as UFragment
     }
 
-    fun requestUserConfirmation(state: SplitInstallSessionState, activity: Activity?) {
+    fun requestUserConfirmation(state: SplitInstallSessionState, activity: Activity) {
         try {
             splitInstallManager.startConfirmationDialogForResult(state, activity, REQUEST_INSTALL_AERI_MODULE)
         } catch (error: Throwable) {

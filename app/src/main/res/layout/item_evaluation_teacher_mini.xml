@@ -72,7 +72,7 @@
             android:layout_height="24dp"
             android:contentDescription="@string/evaluation_see_teacher_details"
             android:src="@drawable/ic_chevron_right_black_24dp"
-            android:tint="?attr/colorAccent"
+            app:tint="?attr/colorAccent"
             app:layout_constraintBottom_toBottomOf="@+id/last_seen"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/name" />
