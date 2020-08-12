@@ -25,13 +25,13 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
-    compileSdkVersion 29
-    buildToolsVersion "29.0.2"
+    compileSdkVersion 30
+    buildToolsVersion "30.0.1"
 
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName "1.0"
 

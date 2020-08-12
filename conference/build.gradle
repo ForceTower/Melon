@@ -25,11 +25,11 @@ apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         def (code, name) = buildVersion()
         versionCode code
         versionName name

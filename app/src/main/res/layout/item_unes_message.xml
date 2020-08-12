@@ -120,7 +120,7 @@
                 android:onClick="@{() -> listener.onMessageShare(card, 1)}"
                 android:padding="8dp"
                 android:src="@drawable/ic_share_black_24dp"
-                android:tint="?attr/colorAccent"
+                app:tint="?attr/colorAccent"
                 app:layout_constraintBottom_toBottomOf="@id/text_date_number"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@id/text_date_number" />

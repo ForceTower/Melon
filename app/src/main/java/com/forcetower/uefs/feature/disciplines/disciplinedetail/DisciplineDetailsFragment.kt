@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -59,7 +60,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     @Inject
-    @field:Named(Discipline.COLLECTION)
+    @Named(Discipline.COLLECTION)
     lateinit var firestore: CollectionReference
 
     private lateinit var viewModel: DisciplineViewModel
@@ -87,7 +88,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         val menuAdapter = ItemsDisciplineAdapter()
         binding.recyclerDisciplineItems.apply {
             adapter = menuAdapter
-            addItemDecoration(DividerItemDecorator(context.getDrawable(R.drawable.divider)!!, DividerItemDecoration.HORIZONTAL))
+            addItemDecoration(DividerItemDecorator(ContextCompat.getDrawable(context, R.drawable.divider)!!, DividerItemDecoration.HORIZONTAL))
         }
 
         binding.up.setOnClickListener {

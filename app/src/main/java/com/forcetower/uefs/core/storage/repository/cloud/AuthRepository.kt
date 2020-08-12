@@ -75,7 +75,7 @@ class AuthRepository @Inject constructor(
         result.addSource(accessSrc) {
             result.removeSource(accessSrc)
             if (it != null) {
-                val loginSrc = login(it.username, it.password, LOGIN_METHOD_SAGRES)
+                val loginSrc = login(it.username, it.password, LOGIN_METHOD_UNES)
                 result.addSource(loginSrc) { res ->
                     result.value = res
                 }
