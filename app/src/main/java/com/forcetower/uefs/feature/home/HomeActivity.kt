@@ -26,7 +26,6 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
-import android.os.Build
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.annotation.StringRes
@@ -45,15 +44,12 @@ import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
-import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
-import com.forcetower.uefs.feature.baddevice.BadDeviceFragment
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
-import com.forcetower.uefs.feature.forms.FormActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UGameActivity
@@ -66,7 +62,6 @@ import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.AdSize
 import com.google.android.gms.ads.AdView
 import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -80,12 +75,9 @@ import com.google.android.play.core.install.model.UpdateAvailability
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.android.DispatchingAndroidInjector
 import dagger.android.HasAndroidInjector
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 
 class HomeActivity : UGameActivity(), HasAndroidInjector {
@@ -131,24 +123,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 
         updateManager = AppUpdateManagerFactory.create(this)
 
-        // val admobEnabled = remoteConfig.getBoolean("admob_enabled")
-        setupAds(false)
-
         if (savedInstanceState == null) {
             onActivityStart()
             subscribeToTopics()
         }
-    }
-
-    private fun setupAds(willShowAds: Boolean = true) {
-        // yes, really easy to bypass lul
-//        if (billingViewModel.isGoldMonkey) {
-//            showSnack("Macaco gold!")
-//            return
-//        }
-//        showSnack("Não é macaco gold...")
-        MobileAds.initialize(this)
-        prepareAdsForPublic(willShowAds)
     }
 
     private fun subscribeToTopics() {
@@ -169,59 +147,9 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 //            }
         } catch (t: Throwable) {}
         moveToTask()
-        // satisfactionSurvey()
-        // boringDevice()
-    }
-
-    private fun boringDevice() {
-        if (!VersionUtils.isMarshmallow()) return
-        val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(this)
-        val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
-            "samsung" -> VersionUtils.isNougat()
-            else -> false
-        }
-        val saw = preferences.getBoolean("saw_bad_device_information_key", false)
-        if ((autoStart || brands) && !saw) {
-            val snack = getSnackInstance(getString(R.string.your_device_might_not_be_eligible), Snackbar.LENGTH_INDEFINITE)
-            snack.setAction(R.string.not_eligible_check) {
-                val fragment = BadDeviceFragment()
-                fragment.show(supportFragmentManager, "bad_device_modal")
-            }
-            snack.show()
-        }
-    }
-
-    private fun satisfactionSurvey() {
-        val config = remoteConfig.getBoolean("satisfaction_survey_pos_flag")
-        val answered = preferences.getBoolean("answered_forms_satisfaction_pos", false)
-        if (!config || answered || !preferences.isStudentFromUEFS()) return
-
-        val installTime = packageManager.getPackageInfo(packageName, 0).firstInstallTime
-        val checkDate = Calendar.getInstance().apply {
-            set(2019, 11, 1, 0, 0, 0)
-        }
-
-        val checkTime = checkDate.timeInMillis
-
-        if (installTime <= checkTime) {
-            startActivity(Intent(this, FormActivity::class.java))
-        } else {
-            Timber.d("Verification of date failed... User will not share opinion")
-            Timber.d("Current check date: ${checkDate.time}")
-            Timber.d("Install Time $installTime")
-        }
     }
 
     private fun verifyUpdates() {
-//        val check = preferences.getInt("daily_check_updates", -1)
-//        val hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY)
-//        if (hour >= check + 6) {
-//            Timber.d("Update check postponed")
-//            return
-//        }
-
-//        preferences.edit().putInt("daily_check_updates", hour).apply()
-
         val updateTask = updateManager.appUpdateInfo
         val required = remoteConfig.getLong("version_disable")
         updateTask.addOnSuccessListener {
