@@ -28,9 +28,6 @@ import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
 import androidx.activity.viewModels
-import androidx.annotation.StringRes
-import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.constraintlayout.widget.ConstraintSet
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
@@ -42,8 +39,8 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
+import com.forcetower.uefs.architecture.service.sync.SyncService
 import com.forcetower.uefs.core.model.unes.Access
-import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UViewModelFactory
@@ -57,11 +54,6 @@ import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
 import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.AdSize
-import com.google.android.gms.ads.AdView
-import com.google.android.gms.ads.InterstitialAd
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
@@ -141,10 +133,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.account.observe(this, Observer { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
-//            if (preferences.isStudentFromUEFS()) {
-//                val intent = Intent(this, SyncService::class.java)
-//                startService(intent)
-//            }
+            if (preferences.isStudentFromUEFS()) {
+                val intent = Intent(this, SyncService::class.java)
+                startService(intent)
+            }
         } catch (t: Throwable) {}
         moveToTask()
     }
@@ -253,8 +245,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
-            // viewModel.onSyncSessions()
-            viewModel.goodCookies()
+//            viewModel.goodCookies()
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
@@ -410,155 +401,5 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onUserInteraction()
-    }
-
-    private fun prepareAdsForPublic(willShowAd: Boolean = true) {
-        if (!willShowAd) return
-
-        executors.others().execute {
-            val account = viewModel.getAccountSync()
-            onSelectAdType(account, willShowAd)
-        }
-    }
-
-    private fun onSelectAdType(account: Account?, willShowAd: Boolean) {
-        if (!willShowAd || account == null) return
-
-        val code = when (account.grouping) {
-            // Everyone with no experiment
-            null, 0 -> R.string.admob_common
-
-            // Simple groups
-            1 -> R.string.admob_frequency_low
-            2 -> R.string.admob_frequency_medium
-            3 -> R.string.admob_frequency_high
-
-            4 -> R.string.admob_size_small
-            5 -> R.string.admob_size_medium
-            6 -> R.string.admob_size_big
-
-            7 -> R.string.admob_content_rich_text
-            8 -> R.string.admob_content_everything
-
-            // Split group variance
-            11 -> R.string.admob_frequency_low_var_1
-            12 -> R.string.admob_frequency_medium_var_1
-            13 -> R.string.admob_frequency_high_var_1
-
-            14 -> R.string.admob_size_small_var_1
-            15 -> R.string.admob_size_medium_var_1
-            16 -> R.string.admob_size_big_var_1
-
-            17 -> R.string.admob_content_rich_text_var_1
-            18 -> R.string.admob_content_everything_var_1
-
-            // Default group values
-            21 -> R.string.admob_frequency_default
-            24 -> R.string.admob_size_default
-
-            // User on experiment, but with no value
-            30 -> R.string.admob_std_experiment_join
-
-            else -> null
-        }
-
-        code ?: return
-        executors.mainThread().execute { onAdTypeSelected(code, account.grouping ?: 0) }
-    }
-
-    private fun onAdTypeSelected(@StringRes code: Int, grouping: Int) {
-        val unitId = getString(code)
-        when (grouping) {
-            4 -> setupSmallAd(unitId)
-            5 -> setupMediumAd(unitId)
-            else -> setupInterstitial(unitId)
-        }
-    }
-
-    private fun setupInterstitial(unitId: String) {
-        val interstitial = InterstitialAd(this)
-        val request = AdRequest.Builder().build()
-        interstitial.adUnitId = unitId
-        interstitial.loadAd(request)
-        interstitial.adListener = object : AdListener() {
-            override fun onAdLoaded() {
-                interstitial.show()
-                viewModel.onUserAdImpression()
-            }
-
-            override fun onAdClicked() {
-                viewModel.onUserClickedAd()
-            }
-        }
-    }
-
-    private fun setupMediumAd(unitId: String) {
-        val adView = AdView(this)
-        adView.id = R.id.adViewConnect
-        adView.adSize = AdSize.LARGE_BANNER
-        adView.adUnitId = unitId
-        placeAdViewOnLayout(adView)
-    }
-
-    private fun setupSmallAd(unitId: String) {
-        val adView = AdView(this)
-        adView.id = R.id.adViewConnect
-        adView.adSize = AdSize.BANNER
-        adView.adUnitId = unitId
-        placeAdViewOnLayout(adView)
-    }
-
-    private fun placeAdViewOnLayout(adView: AdView) {
-        adView.adListener = object : AdListener() {
-            override fun onAdLoaded() { viewModel.onUserAdImpression() }
-            override fun onAdClicked() { viewModel.onUserClickedAd() }
-        }
-
-        val set = ConstraintSet()
-        val constraintLayout = binding.internalContent
-
-        constraintLayout.addView(
-            adView, ConstraintLayout.LayoutParams(
-                ConstraintLayout.LayoutParams.MATCH_CONSTRAINT,
-                ConstraintLayout.LayoutParams.WRAP_CONTENT
-            )
-        )
-        set.clone(constraintLayout)
-        set.connect(
-            R.id.adViewConnect,
-            ConstraintSet.BOTTOM,
-            constraintLayout.id,
-            ConstraintSet.BOTTOM,
-            0
-        )
-        set.connect(
-            R.id.adViewConnect,
-            ConstraintSet.START,
-            constraintLayout.id,
-            ConstraintSet.START,
-            0
-        )
-        set.connect(
-            R.id.adViewConnect,
-            ConstraintSet.END,
-            constraintLayout.id,
-            ConstraintSet.END,
-            0
-        )
-        set.applyTo(constraintLayout)
-
-        val contentSet = ConstraintSet()
-        contentSet.clone(constraintLayout)
-        contentSet.connect(
-            R.id.home_nav_host,
-            ConstraintSet.BOTTOM,
-            R.id.adViewConnect,
-            ConstraintSet.TOP,
-            0
-        )
-        contentSet.applyTo(constraintLayout)
-
-        val request = AdRequest.Builder().build()
-        adView.loadAd(request)
     }
 }

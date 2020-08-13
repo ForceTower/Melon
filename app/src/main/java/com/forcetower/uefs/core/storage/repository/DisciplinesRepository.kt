@@ -23,6 +23,7 @@ package com.forcetower.uefs.core.storage.repository
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
@@ -99,7 +100,9 @@ class DisciplinesRepository @Inject constructor(
 
                 Timber.d("Code: $code. Semester: $semester. Group: $group")
 
-                SagresNavigator.instance.login(access.username, access.password)
+                if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+                    SagresNavigator.instance.login(access.username, access.password)
+                }
                 val callback = SagresNavigator.instance.disciplinesExperimental(semester, code, group)
                 if (callback.status == Status.COMPLETED) {
                     val groups = callback.getGroups()
