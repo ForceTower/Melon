@@ -64,7 +64,8 @@ fun disciplineText(tv: TextView, message: Message?) {
 }
 
 @BindingAdapter(value = ["messageTimestamp"])
-fun getTimeStampedDate(view: TextView, message: Message) {
+fun getTimeStampedDate(view: TextView, message: Message?) {
+    message ?: return
     if (!message.html) {
         val time = message.timestamp
         val context = view.context
