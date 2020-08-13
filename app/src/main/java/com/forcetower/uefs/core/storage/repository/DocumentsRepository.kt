@@ -25,8 +25,10 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
+import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
@@ -80,7 +82,13 @@ class DocumentsRepository @Inject constructor(
             data.postValue(Resource.error("Access is null", 700, Exception("No Access")))
         } else {
             database.documentDao().updateDownloading(true, document.value)
-            val login = SagresNavigator.instance.login(access.username, access.password)
+            val login = if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+                SagresNavigator.instance.login(access.username, access.password)
+            } else {
+                // TODO Change this
+                LoginCallback(Status.INVALID_LOGIN)
+            }
+
             if (login.status == Status.INVALID_LOGIN) {
                 Timber.d("Login failed. Login status is: ${login.status}")
                 data.postValue(Resource.error("Login Failed", 800, Exception("Login Failed")))

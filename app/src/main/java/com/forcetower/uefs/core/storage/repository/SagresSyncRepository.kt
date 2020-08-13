@@ -49,7 +49,6 @@ import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -77,7 +76,6 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
-import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -168,49 +166,40 @@ class SagresSyncRepository @Inject constructor(
         registry.uid = uid
         SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
 
-        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
-            try {
-                val call = syncService.getUpdate()
-                val response = call.execute()
-                if (response.isSuccessful) {
-                    val body = response.body()
-                    if (body != null && !body.manager) {
-                        registry.completed = true
-                        registry.error = -4
-                        registry.success = false
-                        registry.message = "Atualização negada"
-                        registry.end = System.currentTimeMillis()
-                        database.syncRegistryDao().update(registry)
-                        return
-                    }
-                }
-            } catch (t: Throwable) {
-                Timber.e(t, "An error just happened... It will complete anyways")
-            }
-        }
+//        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
+//            try {
+//                val call = syncService.getUpdate()
+//                val response = call.execute()
+//                if (response.isSuccessful) {
+//                    val body = response.body()
+//                    if (body != null && !body.manager) {
+//                        registry.completed = true
+//                        registry.error = -4
+//                        registry.success = false
+//                        registry.message = "Atualização negada"
+//                        registry.end = System.currentTimeMillis()
+//                        database.syncRegistryDao().update(registry)
+//                        return
+//                    }
+//                }
+//            } catch (t: Throwable) {
+//                Timber.e(t, "An error just happened... It will complete anyways")
+//            }
+//        }
 
         try {
             findAndMatch()
         } catch (t: Throwable) { }
 
-//        if (preferences.isStudentFromUEFS()) {
-//            try {
-//                val response = service.getSession().execute()
-//                val cookies = response.body()?.data
-//                cookies?.let {
-//                    Timber.d("We got it guys!")
-//                    SagresNavigator.instance.setCookiesOnClient(it)
-//                }
-//            } catch (error: Throwable) {
-//                // Unable to fetch good cookies... Good luck!
-//            }
-//        }
-
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
 
-        val homeDoc = if (!preferences.isStudentFromUEFS() || gToken != null) login(access, gToken) else null
+        val homeDoc = when {
+            preferences.isStudentFromUEFS() && gToken == null -> initialPage()
+            !preferences.isStudentFromUEFS() || gToken != null -> login(access, gToken)
+            else -> null
+        }
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
 
@@ -234,7 +223,6 @@ class SagresSyncRepository @Inject constructor(
             registry.message = "The dream is over"
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
-            // NotificationCreator.showSimpleNotification(context, "CAAAAAARLL!", "That kills sessions...")
             return
         }
 
@@ -396,6 +384,15 @@ class SagresSyncRepository @Inject constructor(
             NotificationCreator.showSimpleNotification(context, title, notes)
             preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
         }
+    }
+
+    private fun initialPage(): Document? {
+        val document = SagresNavigator.instance.startPage()
+        when (document.status) {
+            Status.SUCCESS -> return document.document
+            else -> produceErrorMessage(document)
+        }
+        return null
     }
 
     fun login(access: Access, gToken: String?): Document? {
