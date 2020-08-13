@@ -67,7 +67,7 @@ class LoginFragment : UFragment() {
             error = true
         }
 
-        if (password.isBlank() || password.length < 3) {
+        if (password.isBlank() || password.length < 2) {
             binding.editPass.error = getString(R.string.error_too_small)
             binding.editPass.requestFocus()
             error = true
