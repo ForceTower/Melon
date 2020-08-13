@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.annotation.Keep
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
@@ -44,6 +45,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import timber.log.Timber
 import javax.inject.Inject
 
+@Keep
 class DashboardFragment : UFragment() {
     @Inject
     lateinit var factory: BaseViewModelFactory

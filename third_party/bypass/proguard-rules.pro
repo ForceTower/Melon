@@ -1,2 +1,2 @@
 # Proguard for Bypass
--keep class in.uncod.android.bypass.** { *; }
+-keep class in.uncod.android.bypass.* { *; }

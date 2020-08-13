@@ -179,6 +179,7 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun onLoginProgress(callback: Callback) {
+        Timber.d("${callback.status}, ${callback.message}")
         when (callback.status) {
             Status.STARTED -> Timber.d("Status: Started")
             Status.LOADING -> Timber.d("Status: Loading")
@@ -250,6 +251,6 @@ class SigningInFragment : UFragment(), Injectable {
         binding.textHelloUser.text = ""
         binding.textHelloUser.fadeOut()
         binding.textTips.fadeOut()
-        view?.findNavController()?.popBackStack()
+        view?.findNavController()?.popBackStack(R.id.login_form, false)
     }
 }
