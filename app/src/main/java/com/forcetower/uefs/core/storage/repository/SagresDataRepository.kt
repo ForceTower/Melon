@@ -23,8 +23,10 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
+import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -98,8 +100,12 @@ class SagresDataRepository @Inject constructor(
                 result.postValue(Resource.error("", false))
             } else {
                 result.postValue(Resource.loading(null))
-                val username = access.username
-                val callback = SagresNavigator.instance.login(username, password)
+                val callback = if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+                    SagresNavigator.instance.login(access.username, access.password)
+                } else {
+                    // TODO Change this
+                    LoginCallback(Status.INVALID_LOGIN)
+                }
                 if (callback.status == Status.INVALID_LOGIN) {
                     result.postValue(Resource.success(false))
                 } else {
