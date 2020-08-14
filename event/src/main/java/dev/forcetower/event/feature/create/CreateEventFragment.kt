@@ -34,22 +34,24 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.GlideApp
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.setup.CourseSelectionCallback
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
-import com.forcetower.uefs.feature.shared.UDynamicFragment
+import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.textfield.TextInputEditText
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import dagger.hilt.android.AndroidEntryPoint
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.binding.formattedDate
 import dev.forcetower.event.core.injection.DaggerEventComponent
@@ -60,18 +62,25 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.Calendar
-import javax.inject.Inject
 
-class CreateEventFragment : UDynamicFragment() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
-    private val viewModel: CreationViewModel by viewModels { factory }
+@AndroidEntryPoint
+class CreateEventFragment : UFragment() {
+    private val viewModel: CreationViewModel by viewModels()
     private lateinit var binding: FragmentCreateEventBinding
     private val args by navArgs<CreateEventFragmentArgs>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+        DaggerEventComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    context.applicationContext,
+                    EventModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

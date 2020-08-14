@@ -31,28 +31,24 @@ import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.HtmlUtils
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentLoadingBinding
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class LoadingFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+@AndroidEntryPoint
+class LoadingFragment : UFragment() {
+    private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoadingBinding
-    private lateinit var viewModel: LoginViewModel
     private lateinit var markdown: Bypass
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -68,7 +64,7 @@ class LoadingFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = provideViewModel(factory)
+
         viewModel.getAccess().observe(viewLifecycleOwner, Observer { onReceiveToken(it) })
     }
 

@@ -28,13 +28,14 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.util.Base64
 import androidx.annotation.WorkerThread
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.ImgurUploader
@@ -46,9 +47,9 @@ import java.io.InputStream
 import java.util.UUID
 import javax.inject.Inject
 
-class UploadImageToStorage(
-    context: Context,
-    params: WorkerParameters
+class UploadImageToStorage @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var client: OkHttpClient
@@ -60,7 +61,6 @@ class UploadImageToStorage(
     @SuppressLint("WrongThread")
     @WorkerThread
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
         Timber.d("Started picture upload")
         val tUri = inputData.getString(URI) ?: return Result.failure()
 

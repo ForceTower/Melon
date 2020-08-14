@@ -20,23 +20,24 @@
 
 package dev.forcetower.event.core.injection
 
-import com.forcetower.core.injection.annotation.FeatureScope
-import com.forcetower.uefs.core.injection.AppComponent
+import android.content.Context
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
+import dagger.BindsInstance
 import dagger.Component
-import dev.forcetower.event.core.injection.module.ViewModelModule
 import dev.forcetower.event.core.work.CreateEventWorker
 import dev.forcetower.event.feature.create.CreateEventFragment
 import dev.forcetower.event.feature.details.EventDetailsActivity
 import dev.forcetower.event.feature.listing.EventFragment
 
-@FeatureScope
-@Component(
-    modules = [
-        ViewModelModule::class
-    ],
-    dependencies = [AppComponent::class]
-)
+@Component(dependencies = [EventModuleDependencies::class])
 interface EventComponent {
+    @Component.Builder
+    interface Builder {
+        fun context(@BindsInstance context: Context): Builder
+        fun dependencies(dependencies: EventModuleDependencies): Builder
+        fun build(): EventComponent
+    }
+
     fun inject(activity: EventDetailsActivity)
     fun inject(fragment: EventFragment)
     fun inject(fragment: CreateEventFragment)

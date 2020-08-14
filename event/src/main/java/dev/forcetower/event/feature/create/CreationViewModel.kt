@@ -21,6 +21,7 @@
 package dev.forcetower.event.feature.create
 
 import android.net.Uri
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,9 +31,8 @@ import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import java.util.Calendar
-import javax.inject.Inject
 
-class CreationViewModel @Inject constructor(
+class CreationViewModel @ViewModelInject constructor(
     private val repository: EventRepository
 ) : ViewModel() {
     private val utc: Calendar = Calendar.getInstance()

@@ -20,15 +20,15 @@
 
 package com.forcetower.uefs.feature.login
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
-import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repository: LoginSagresRepository) : ViewModel() {
+class LoginViewModel @ViewModelInject constructor(private val repository: LoginSagresRepository) : ViewModel() {
     private var loginSrc: MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
     private var connected: Boolean = false

@@ -26,18 +26,15 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentMessagesAeriNotInstalledBinding
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class AERINotInstalledFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private val dynamicViewModel: MessagesDFMViewModel by activityViewModels { factory }
+@AndroidEntryPoint
+class AERINotInstalledFragment : UFragment() {
+    private val dynamicViewModel: MessagesDFMViewModel by activityViewModels()
 
     private lateinit var binding: FragmentMessagesAeriNotInstalledBinding
 

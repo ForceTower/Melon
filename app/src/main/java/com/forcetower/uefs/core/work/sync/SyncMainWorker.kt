@@ -24,6 +24,8 @@ import android.content.Context
 import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
 import androidx.annotation.WorkerThread
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -31,17 +33,15 @@ import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
-
-class SyncMainWorker(
-    context: Context,
-    params: WorkerParameters
+class SyncMainWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
@@ -49,7 +49,6 @@ class SyncMainWorker(
     @WorkerThread
     override fun doWork(): Result {
         try {
-            (applicationContext as UApplication).component.inject(this)
             Timber.d("Main Worker started")
             repository.performSync("Principal")
             Timber.d("Main Worker completed")

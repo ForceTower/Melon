@@ -26,30 +26,25 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.core.model.bigtray.isOpen
 import com.forcetower.uefs.core.model.bigtray.percentage
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentBigTrayBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.formatDateTime
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class BigTrayFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: BigTrayViewModel
+@AndroidEntryPoint
+class BigTrayFragment : UFragment() {
+    private val viewModel: BigTrayViewModel by viewModels()
     private lateinit var binding: FragmentBigTrayBinding
     private var hasData = false
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentBigTrayBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

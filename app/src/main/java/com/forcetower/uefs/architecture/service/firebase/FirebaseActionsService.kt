@@ -23,18 +23,14 @@ package com.forcetower.uefs.architecture.service.firebase
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class FirebaseActionsService : FirebaseMessagingService() {
     @Inject
     lateinit var repository: FirebaseMessageRepository
-
-    override fun onCreate() {
-        super.onCreate()
-        AndroidInjection.inject(this)
-    }
 
     override fun onMessageReceived(message: RemoteMessage) {
         Timber.d("Message received: $message")

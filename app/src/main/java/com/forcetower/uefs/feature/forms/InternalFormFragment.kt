@@ -5,22 +5,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.core.model.unes.Question
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogEvaluationInternalQuestionBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class InternalFormFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: FormsViewModel
+@AndroidEntryPoint
+class InternalFormFragment : UFragment() {
+    private val viewModel: FormsViewModel by activityViewModels()
     private lateinit var question: Question
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         val args = requireNotNull(arguments)
         val last = args.getBoolean("last", false)
         question = Question(args.getLong("id"), args.getString("question")!!, args.getString("description"), teacher = false, discipline = false, last = last, formId = args.getString("formId"))

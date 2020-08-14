@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.dashboard.feature
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,9 +35,8 @@ import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
 import timber.log.Timber
 import java.util.Calendar
-import javax.inject.Inject
 
-class DashboardViewModel @Inject constructor(
+class DashboardViewModel @ViewModelInject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel(), AffinityListener {

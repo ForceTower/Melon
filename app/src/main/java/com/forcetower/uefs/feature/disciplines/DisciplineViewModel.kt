@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.disciplines
 
 import android.view.View
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -41,9 +42,8 @@ import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesActions
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
-import javax.inject.Inject
 
-class DisciplineViewModel @Inject constructor(
+class DisciplineViewModel @ViewModelInject constructor(
     private val repository: DisciplinesRepository,
     private val grades: SagresGradesRepository,
     private val detailsRepository: DisciplineDetailsRepository

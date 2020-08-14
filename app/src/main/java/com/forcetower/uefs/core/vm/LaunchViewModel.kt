@@ -20,15 +20,15 @@
 
 package com.forcetower.uefs.core.vm
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
-import javax.inject.Inject
 
-class LaunchViewModel @Inject constructor(
+class LaunchViewModel @ViewModelInject constructor(
     database: UDatabase
 ) : ViewModel() {
     var started = false

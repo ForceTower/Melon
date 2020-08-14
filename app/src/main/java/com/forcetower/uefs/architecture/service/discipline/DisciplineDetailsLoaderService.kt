@@ -38,10 +38,11 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.util.isConnectedToInternet
 import com.forcetower.uefs.service.NotificationCreator
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class DisciplineDetailsLoaderService : LifecycleService() {
 
     companion object {
@@ -67,7 +68,6 @@ class DisciplineDetailsLoaderService : LifecycleService() {
 
     override fun onCreate() {
         super.onCreate()
-        AndroidInjection.inject(this)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {

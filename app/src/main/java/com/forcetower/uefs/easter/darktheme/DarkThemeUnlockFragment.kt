@@ -24,24 +24,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDarkThemeUnlockBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class DarkThemeUnlockFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: DarkThemeViewModel
-    lateinit var binding: FragmentDarkThemeUnlockBinding
+@AndroidEntryPoint
+class DarkThemeUnlockFragment : UFragment() {
+    private val viewModel: DarkThemeViewModel by activityViewModels()
+    private lateinit var binding: FragmentDarkThemeUnlockBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentDarkThemeUnlockBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

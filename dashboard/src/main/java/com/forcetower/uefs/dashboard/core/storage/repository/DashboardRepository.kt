@@ -22,7 +22,6 @@ package com.forcetower.uefs.dashboard.core.storage.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Message
@@ -32,8 +31,9 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithDa
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Singleton
 
-@FeatureScope
+@Singleton
 class DashboardRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase,

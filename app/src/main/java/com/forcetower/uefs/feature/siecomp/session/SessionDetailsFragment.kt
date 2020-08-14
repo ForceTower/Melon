@@ -28,27 +28,22 @@ import android.view.ViewGroup
 import androidx.core.app.NavUtils
 import androidx.core.view.doOnLayout
 import androidx.core.view.forEach
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventSessionDetailsBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class SessionDetailsFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: SIECOMPSessionViewModel
+@AndroidEntryPoint
+class SessionDetailsFragment : UFragment() {
+    private val viewModel: SIECOMPSessionViewModel by activityViewModels()
     private lateinit var binding: FragmentEventSessionDetailsBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         binding = FragmentEventSessionDetailsBinding.inflate(inflater, container, false).apply {
             up.setOnClickListener {
                 NavUtils.navigateUpFromSameTask(requireActivity())

@@ -25,23 +25,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.core.model.unes.Question
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogEvaluationCompletedQuestionBinding
 import com.forcetower.uefs.databinding.DialogEvaluationInternalQuestionBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class InternalQuestionFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: EvaluationRatingViewModel
+@AndroidEntryPoint
+class InternalQuestionFragment : UFragment() {
+    private val viewModel: EvaluationRatingViewModel by activityViewModels()
     private var question: Question? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         val args = requireNotNull(arguments)
         val last = args.getBoolean("last", false)
         question = Question(args.getLong("id"), args.getString("question")!!, args.getString("description"), teacher = false, discipline = false, last = last)

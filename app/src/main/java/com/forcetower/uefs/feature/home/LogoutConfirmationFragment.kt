@@ -26,25 +26,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentLogoutConfirmationBinding
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
-import javax.inject.Inject
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
-class LogoutConfirmationFragment : BottomSheetDialogFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: HomeViewModel
+@AndroidEntryPoint
+class LogoutConfirmationFragment : BottomSheetDialogFragment() {
+    private val viewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: FragmentLogoutConfirmationBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentLogoutConfirmationBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {

@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.aeri.feature
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -27,9 +28,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class AERIViewModel @Inject constructor(
+class AERIViewModel @ViewModelInject constructor(
     private val repository: AERIRepository
 ) : ViewModel(), AnnouncementInteractor {
     val announcements = repository.getAnnouncements()

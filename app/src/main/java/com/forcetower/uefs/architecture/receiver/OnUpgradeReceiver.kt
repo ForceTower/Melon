@@ -20,25 +20,26 @@
 
 package com.forcetower.uefs.architecture.receiver
 
-import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import com.forcetower.core.base.DaggerBroadcastReceiver
 import com.forcetower.uefs.core.storage.repository.UpgradeRepository
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class OnUpgradeReceiver : BroadcastReceiver() {
+@AndroidEntryPoint
+class OnUpgradeReceiver : DaggerBroadcastReceiver() {
     @Inject
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var repository: UpgradeRepository
 
-    override fun onReceive(context: Context, intent: Intent?) {
-        if (intent == null || Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
-        AndroidInjection.inject(this, context)
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        if (Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
         repository.onUpgrade()
 
         val type = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0

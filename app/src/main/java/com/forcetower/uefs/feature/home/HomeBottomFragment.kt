@@ -30,18 +30,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.forcetower.core.injection.Injectable
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
 import com.forcetower.uefs.feature.feedback.SendFeedbackFragment
@@ -49,29 +48,24 @@ import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.forcetower.uefs.feature.setup.CourseSelectionCallback
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class HomeBottomFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var viewModelFactory: UViewModelFactory
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject
-    lateinit var preferences: SharedPreferences
+@AndroidEntryPoint
+class HomeBottomFragment : UFragment() {
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject lateinit var preferences: SharedPreferences
 
     private lateinit var binding: HomeBottomBinding
-    private lateinit var viewModel: HomeViewModel
+    private val viewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(viewModelFactory)
-
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {

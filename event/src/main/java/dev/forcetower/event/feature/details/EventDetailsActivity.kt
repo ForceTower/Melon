@@ -33,9 +33,8 @@ import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
-import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
@@ -43,24 +42,30 @@ import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
-import javax.inject.Inject
 
 class EventDetailsActivity : UActivity() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
-
     private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
     lateinit var binding: ActivityEventDetailsBinding
 
-    private val viewModel by viewModels<EventDetailsViewModel> { factory }
+    private val viewModel by viewModels<EventDetailsViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         SplitCompat.installActivity(this)
-        val component = (applicationContext as UApplication).component
-        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+        DaggerEventComponent.builder()
+            .context(this)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    EventModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
         postponeEnterTransition(500L)
 

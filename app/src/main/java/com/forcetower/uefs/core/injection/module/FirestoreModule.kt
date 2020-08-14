@@ -32,9 +32,12 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Named
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object FirestoreModule {
     @Provides
     @Reusable

@@ -24,25 +24,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.databinding.FragmentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.NamedFragmentAdapter
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class ServicesFollowUpFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: ServicesFollowUpViewModel
-    lateinit var binding: FragmentServicesFollowupBinding
+@AndroidEntryPoint
+class ServicesFollowUpFragment : UFragment() {
+    private val viewModel: ServicesFollowUpViewModel by activityViewModels()
+    private lateinit var binding: FragmentServicesFollowupBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {

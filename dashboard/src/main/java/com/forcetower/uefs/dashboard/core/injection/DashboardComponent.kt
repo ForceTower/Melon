@@ -20,21 +20,18 @@
 
 package com.forcetower.uefs.dashboard.core.injection
 
-import com.forcetower.core.injection.annotation.FeatureScope
-import com.forcetower.uefs.core.injection.AppComponent
-import com.forcetower.uefs.dashboard.core.injection.module.ViewModelModule
+import android.content.Context
+import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
 import com.forcetower.uefs.dashboard.feature.DashboardFragment
+import dagger.BindsInstance
 import dagger.Component
 
-@FeatureScope
-@Component(
-    modules = [ViewModelModule::class],
-    dependencies = [AppComponent::class]
-)
+@Component(dependencies = [DashboardModuleDependencies::class])
 interface DashboardComponent {
     @Component.Builder
     interface Builder {
-        fun appComponent(component: AppComponent): Builder
+        fun context(@BindsInstance context: Context): Builder
+        fun dependencies(dependencies: DashboardModuleDependencies): Builder
         fun build(): DashboardComponent
     }
 

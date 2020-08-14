@@ -20,15 +20,15 @@
 
 package dev.forcetower.event.feature.details
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
 import dev.forcetower.event.feature.listing.SingleEventAction
-import javax.inject.Inject
 
-class EventDetailsViewModel @Inject constructor(
+class EventDetailsViewModel @ViewModelInject constructor(
     private val repository: EventRepository
 ) : ViewModel(), EventDetailsActions {
     private val _eventCreationSent = MutableLiveData<SingleEventAction>()

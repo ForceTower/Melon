@@ -111,13 +111,6 @@ dependencies {
 
     api "com.wdullaer:materialdatetimepicker:$date_time_picker"
 
-    // Dependency injection
-    implementation "com.google.dagger:dagger:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
-
     // Networking
     api "com.squareup.okhttp3:okhttp:$okhttp"
     api "com.squareup.okhttp3:logging-interceptor:$okhttp"

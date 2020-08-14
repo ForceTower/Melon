@@ -20,7 +20,8 @@
 
 package com.forcetower.uefs.feature.teachers
 
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class TeachersFragment : UFragment(), Injectable
+@AndroidEntryPoint
+class TeachersFragment : UFragment()

@@ -20,26 +20,23 @@
 
 package com.forcetower.uefs.aeri.core.injection
 
-import com.forcetower.uefs.aeri.core.injection.module.AERIDaggerModule
-import com.forcetower.uefs.aeri.core.injection.module.ViewModelModule
+import android.content.Context
 import com.forcetower.uefs.aeri.feature.AERINewsFragment
-import com.forcetower.uefs.core.injection.AppComponent
-import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
+import com.forcetower.uefs.aeri.core.injection.module.AERIDaggerModule
+import com.forcetower.uefs.core.injection.dependencies.AERIModuleDependencies
+import dagger.BindsInstance
 import dagger.Component
 
-@FeatureScope
 @Component(
-    modules = [
-        AERIDaggerModule::class,
-        ViewModelModule::class
-    ],
-    dependencies = [AppComponent::class]
+    modules = [AERIDaggerModule::class],
+    dependencies = [AERIModuleDependencies::class]
 )
 interface AERIComponent {
     @Component.Builder
     interface Builder {
-        fun appComponent(component: AppComponent): Builder
+        fun context(@BindsInstance context: Context): Builder
+        fun dependencies(dependencies: AERIModuleDependencies): Builder
         fun build(): AERIComponent
     }
 

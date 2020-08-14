@@ -26,7 +26,6 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
 import com.forcetower.uefs.GooglePlayGamesInstance
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.M1TO2
@@ -75,15 +74,18 @@ import com.forcetower.uefs.core.storage.database.M44TO45
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
+import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object AppModule {
 
     @Provides
     @Singleton
-    fun provideContext(application: UApplication): Context =
-            application.applicationContext
+    fun provideContext(@ApplicationContext context: Context): Context = context
 
     @Provides
     @Singleton
