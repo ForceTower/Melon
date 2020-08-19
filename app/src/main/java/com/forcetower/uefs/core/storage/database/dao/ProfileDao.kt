@@ -29,12 +29,14 @@ import androidx.room.Transaction
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Profile
+import dev.forcetower.breaker.model.Person
 import timber.log.Timber
+import java.util.*
 
 @Dao
 abstract class ProfileDao {
     @Insert(onConflict = REPLACE)
-    abstract fun insert(profile: Profile)
+    abstract fun insert(profile: Profile): Long
 
     @Query("SELECT * FROM Profile WHERE me = 1 LIMIT 1")
     abstract fun selectMeDirect(): Profile?
@@ -58,6 +60,28 @@ abstract class ProfileDao {
         } else {
             profile = Profile(name = name, email = person.email?.trim(), sagresId = person.id, me = true, score = score)
             insert(profile)
+        }
+    }
+
+    @Transaction
+    open suspend fun insert(person: Person): Long {
+        val name = WordUtils.toTitleCase(person.name) ?: ""
+        val me = selectMeDirect()
+        if (me != null) {
+            updateProfileName(name)
+            updateProfileMockStatus(false)
+            updateProfileSagresId(person.id)
+            person.email?.toLowerCase(Locale.getDefault())?.let {
+                updateProfileEmail(it)
+            }
+            return me.uid
+        } else {
+            return insert(Profile(
+                name = person.name,
+                email = person.email,
+                sagresId = person.id,
+                me = true
+            ))
         }
     }
 
