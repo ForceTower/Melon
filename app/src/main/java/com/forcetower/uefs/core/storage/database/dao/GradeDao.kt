@@ -226,9 +226,9 @@ abstract class GradeDao {
                         classId = classId,
                         name = grade.name,
                         notified = notified,
-                        grade = grade.value?.toString() ?: "",
+                        grade = grade.value?.toString(),
                         grouping = evaluation.name.hashCode(),
-                        groupingName = evaluation.name,
+                        groupingName = evaluation.name ?: "Notas",
                         date = grade.date
                     ))
                 } else {
@@ -250,9 +250,10 @@ abstract class GradeDao {
                         Timber.d("No changes detected between ${current.name} ${current.grouping} and ${grade.name} ${evaluation.name.hashCode()}")
                     }
 
+
                     if (current.groupingName != evaluation.name) {
                         shouldUpdate = true
-                        current.groupingName = evaluation.name
+                        current.groupingName = evaluation.name ?: "Notas"
                     }
 
                     current.notified = if (notify) current.notified else 0

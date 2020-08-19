@@ -85,7 +85,7 @@
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
             app:layout_constraintTop_toBottomOf="@+id/text_evaluation_name"
-            android:text="@{grade.date}"
+            app:evaluationDate="@{grade}"
             tools:text="01/10/2018" />
 
         <TextView
@@ -98,7 +98,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/guideline_grade"
             app:layout_constraintTop_toTopOf="parent"
-            android:text="@{grade.grade}"
+            app:gradeFormat="@{grade}"
             tools:text="8.7"
             android:textColor="?attr/colorAccent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>

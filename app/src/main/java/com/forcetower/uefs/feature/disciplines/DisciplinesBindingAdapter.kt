@@ -31,6 +31,8 @@ import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
 import kotlin.math.max
 
@@ -62,6 +64,31 @@ fun classStudentGrade(cpb: CircleProgressBar, clazz: ClassFullWithGroup?) {
         cpb.setProgress(0.0f)
     } else {
         cpb.setProgressWithAnimation(value.toFloat() * 10)
+    }
+}
+
+@BindingAdapter("gradeFormat")
+fun gradeFormat(tv: TextView, value: Grade?) {
+    val grade = value?.gradeDouble()
+    if (grade == null) {
+        tv.text = tv.context.getString(R.string.grade_not_published)
+    } else {
+        tv.text = tv.context.getString(R.string.grade_format, grade.toFloat())
+    }
+}
+
+@BindingAdapter("evaluationDate")
+fun evaluationDate(tv: TextView, value: Grade?) {
+    val date = value?.date
+    if (date == null) {
+        tv.text = tv.context.getString(R.string.grade_date_unknown)
+    } else {
+        try {
+            tv.text = OffsetDateTime.parse(date).format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))
+        } catch (error: Throwable) {
+            Timber.d(error, "Not from pattern")
+            tv.text = date
+        }
     }
 }
 

@@ -854,4 +854,6 @@
     <string name="channel_service_sync_foreground">Atualização de dados persistente</string>
     <string name="label_service_sync_foreground">Atualizações</string>
     <string name="label_service_sync_foreground_desc">O UNES está ativo</string>
+    <string name="grade_not_published">Não publicada</string>
+    <string name="grade_date_unknown">Sem data</string>
 </resources>
