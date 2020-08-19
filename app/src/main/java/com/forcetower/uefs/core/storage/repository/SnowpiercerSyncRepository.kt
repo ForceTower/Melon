@@ -117,6 +117,14 @@ class SnowpiercerSyncRepository @Inject constructor(
             }
         }
 
+        registry.completed = true
+        registry.error = 0
+        registry.success = true
+        registry.skipped = 0
+        registry.message = "Completo"
+        registry.end = System.currentTimeMillis()
+        database.syncRegistryDao().update(registry)
+
     }
 
     private suspend fun defineDisciplinesData(disciplines: List<DisciplineData>, semesterId: Long, localProfileId: Long) {
@@ -146,19 +154,22 @@ class SnowpiercerSyncRepository @Inject constructor(
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
                     clazz.allocations.forEach { allocation ->
-                        allocations.add(ClassLocation(
-                            groupId = groupId,
-                            campus = allocation.space.campus,
-                            modulo = allocation.space.modulo,
-                            room = allocation.space.location,
-                            day = allocation.time.day.toWeekDay(),
-                            dayInt = allocation.time.day,
-                            startsAt = allocation.time.start.removeSeconds(),
-                            endsAt = allocation.time.end.removeSeconds(),
-                            startsAtInt = allocation.time.start.createTimeInt(),
-                            endsAtInt = allocation.time.end.createTimeInt(),
-                            profileId = localProfileId
-                        ))
+                        val time = allocation.time
+                        if (time != null) {
+                            allocations.add(ClassLocation(
+                                groupId = groupId,
+                                campus = allocation.space?.campus,
+                                modulo = allocation.space?.modulo,
+                                room = allocation.space?.location,
+                                day = time.day.toWeekDay(),
+                                dayInt = time.day,
+                                startsAt = time.start.removeSeconds(),
+                                endsAt = time.end.removeSeconds(),
+                                startsAtInt = time.start.createTimeInt(),
+                                endsAtInt = time.end.createTimeInt(),
+                                profileId = localProfileId
+                            ))
+                        }
                     }
                 }
                 database.gradesDao().putGradesNewWay(classId, it.evaluations)
