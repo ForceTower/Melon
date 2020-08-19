@@ -107,7 +107,7 @@ class DisciplineDetailsRepository @Inject constructor(
     @WorkerThread
     fun sendDisciplineDetails(current: Boolean = false) {
         val semesters = database.semesterDao().getSemestersDirect()
-        val currentSemester = semesters.maxBy { it.sagresId }?.sagresId
+        val currentSemester = semesters.maxByOrNull { it.sagresId }?.sagresId
 
         val stats = if (current) {
             currentSemester ?: return

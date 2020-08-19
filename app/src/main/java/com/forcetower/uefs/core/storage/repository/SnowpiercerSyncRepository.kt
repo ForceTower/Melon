@@ -98,6 +98,11 @@ class SnowpiercerSyncRepository @Inject constructor(
             defineMessages(page)
         }
 
+        if (messagesOutcome is Outcome.Error) {
+            Timber.d("Messages error code: ${messagesOutcome.code}")
+            messagesOutcome.error.printStackTrace()
+        }
+
         val semestersOutcome = orchestra.semesters(person.id)
         val currentSemester = (semestersOutcome as? Outcome.Success)?.let { success ->
             val semesters = success.value
@@ -107,6 +112,11 @@ class SnowpiercerSyncRepository @Inject constructor(
             current
         }
 
+        if (semestersOutcome is Outcome.Error) {
+            Timber.d("Semester error code: ${semestersOutcome.code}")
+            semestersOutcome.error.printStackTrace()
+        }
+
         // if no current semester... back off
         currentSemester?.let { semester ->
             val gradesOutcome = orchestra.grades(person.id, semester.id)
@@ -114,6 +124,11 @@ class SnowpiercerSyncRepository @Inject constructor(
                 val disciplines = success.value
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
                 defineDisciplinesData(disciplines, currentSemesterIns.uid, localProfileId)
+            }
+
+            if (gradesOutcome is Outcome.Error) {
+                Timber.d("The error code: ${gradesOutcome.code}")
+                gradesOutcome.error.printStackTrace()
             }
         }
 
