@@ -46,7 +46,7 @@ class DisciplinesProcessor(
                         credits = clazz.hours,
                         draft = false,
                         group = clazz.groupName,
-                        teacher = clazz.teacher.name
+                        teacher = clazz.teacher?.name?.toTitleCase()
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
                     if (currentSemester?.uid == semesterId) {
@@ -58,8 +58,8 @@ class DisciplinesProcessor(
                                     campus = allocation.space?.campus,
                                     modulo = allocation.space?.modulo,
                                     room = allocation.space?.location,
-                                    day = time.day.toWeekDay(),
-                                    dayInt = time.day,
+                                    day = (time.day + 1).toWeekDay(),
+                                    dayInt = time.day + 1,
                                     startsAt = time.start.removeSeconds(),
                                     endsAt = time.end.removeSeconds(),
                                     startsAtInt = time.start.createTimeInt(),
