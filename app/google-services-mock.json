@@ -51,6 +51,35 @@
         }
       },
       "admob_app_id": "ca-app-pub-1234567890670806~1234567890"
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:123456789000:android:10111213145cff24",
+        "android_client_info": {
+          "package_name": "com.forcetower.uefs.debug"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "123456789000-0123456789012345678908ido45oq7c6.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDzXxGfq12345678901234567Sx5tP-18Q"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "371085821263-9cc3ql698lueuq04rnimuedb3qnrcjf6.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
     }
   ],
   "configuration_version": "1"
