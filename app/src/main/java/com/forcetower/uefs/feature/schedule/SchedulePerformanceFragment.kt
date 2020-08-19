@@ -39,6 +39,7 @@ import com.forcetower.uefs.databinding.FragmentSchedulePerformanceBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.max
@@ -46,7 +47,8 @@ import kotlin.math.max
 class SchedulePerformanceFragment : UFragment(), Injectable {
     @Inject lateinit var preferences: SharedPreferences
     @Inject lateinit var factory: UViewModelFactory
-    private val viewModel by viewModels<ScheduleViewModel> { factory }
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    private val viewModel by activityViewModels<ScheduleViewModel> { factory }
     private val profileViewModel by activityViewModels<ProfileViewModel> { factory }
 
     private lateinit var binding: FragmentSchedulePerformanceBinding
@@ -97,8 +99,9 @@ class SchedulePerformanceFragment : UFragment(), Injectable {
 
     private fun onRefresh() {
         Timber.d("Refresh requested.... ${Constants.getParameter("REQUIRES_CAPTCHA")}")
-        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
-            viewModel.doRefreshData(null)
+        val snowpiercer = remoteConfig.getBoolean("feature_flag_use_snowpiercer") && preferences.isStudentFromUEFS()
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
+            viewModel.doRefreshData(null, snowpiercer)
             return
         }
 
@@ -106,7 +109,7 @@ class SchedulePerformanceFragment : UFragment(), Injectable {
         fragment.setCallback(object : CaptchaResolverFragment.CaptchaResolvedCallback {
             override fun onCaptchaResolved(token: String) {
                 Timber.d("Token received $token")
-                viewModel.doRefreshData(token)
+                viewModel.doRefreshData(token, false)
             }
         })
 

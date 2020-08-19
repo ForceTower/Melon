@@ -133,10 +133,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             viewModel.account.observe(this, Observer { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
-            if (preferences.isStudentFromUEFS()) {
-                val intent = Intent(this, SyncService::class.java)
-                startService(intent)
-            }
+//            if (preferences.isStudentFromUEFS()) {
+//                val intent = Intent(this, SyncService::class.java)
+//                startService(intent)
+//            }
         } catch (t: Throwable) {}
         moveToTask()
     }
