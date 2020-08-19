@@ -79,7 +79,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptSignIn(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                .addOnCompleteListener(executors.others(), { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -99,7 +99,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptCreateAccount(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                .addOnCompleteListener(executors.others(), { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {

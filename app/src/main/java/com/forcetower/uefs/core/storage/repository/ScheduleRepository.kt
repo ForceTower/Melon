@@ -45,7 +45,7 @@ class ScheduleRepository @Inject constructor(
     @WorkerThread
     fun saveSchedule(userId: String) {
         val schedule = database.classLocationDao().getCurrentScheduleDirect()
-        val semester = database.semesterDao().getSemestersDirect().maxBy { it.sagresId }
+        val semester = database.semesterDao().getSemestersDirect().maxByOrNull { it.sagresId }
         if (schedule.isEmpty() || semester == null) {
             Timber.d("It's too late to apologize")
             return

@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
+import dev.forcetower.breaker.model.ClassEvaluation
 import timber.log.Timber
 
 @Dao
@@ -92,12 +93,15 @@ abstract class GradeDao {
 
             var clazz = getClass(code, it.semesterId)
             if (clazz != null) {
+                // this is the default scenario, class already exists and we are good to go
                 if (clazz.scheduleOnly) updateClassScheduleOnly(clazz.uid, false)
                 if (score != null) updateClassScore(clazz.uid, score)
                 if (partialScore != null) updateClassPartialScore(clazz.uid, partialScore)
 
                 prepareInsertion(clazz, it, notify)
             } else {
+                // this is the less optimal scenario, you have the grades, but nothing else.
+                // the app must create all now!
                 Timber.d("<grades_clazz_404> :: Clazz not found for ${code}_${it.semesterId}")
                 val index = nameOne.lastIndexOf("(")
                 val realIndex = if (index == -1) nameOne.length else index
@@ -150,6 +154,8 @@ abstract class GradeDao {
 
     private fun prepareInsertion(clazz: Class, it: SagresGrade, notify: Boolean) {
         // This is used to select the best grade when multiple ones with same identifier is found
+
+        // This part filters out the useless grades we get from html
         val values = HashMap<String, SagresGradeInfo>()
         it.values.forEach { g ->
             var grade = values["${g.grouping}<><>${g.name}"]
@@ -163,6 +169,7 @@ abstract class GradeDao {
             values["${g.grouping}<><>${g.name}"] = grade
         }
 
+        // this actually inserts stuff into the database
         values.values.forEach { i ->
             val grade = getNamedGradeDirect(clazz.uid, i.name, i.grouping)
             if (grade == null) {
@@ -201,6 +208,57 @@ abstract class GradeDao {
 
                 grade.notified = if (notify) grade.notified else 0
                 if (shouldUpdate) update(grade)
+            }
+        }
+    }
+
+    @Transaction
+    open fun putGradesNewWay(classId: Long, evaluations: List<ClassEvaluation>, notify: Boolean = true) {
+        evaluations.forEach { evaluation ->
+            evaluation.grades.forEach { grade ->
+                Timber.d("Attempt to insert ${evaluation.name} ${grade.name} ${grade.value}")
+                val current = getNamedGradeDirect(classId, grade.name, evaluation.name.hashCode())
+                Timber.d("Attempt to override ${current?.name} ${current?.groupingName} ${current?.grade}")
+                Timber.d("Current $current")
+                if (current == null) {
+                    val notified = if (grade.hasGrade()) 3 else 1
+                    insert(Grade(
+                        classId = classId,
+                        name = grade.name,
+                        notified = notified,
+                        grade = grade.value?.toString(),
+                        grouping = evaluation.name.hashCode(),
+                        groupingName = evaluation.name ?: "Notas",
+                        date = grade.date
+                    ))
+                } else {
+                    var shouldUpdate = true
+                    val score = grade.value?.toString() ?: ""
+                    if (current.hasGrade() && grade.hasGrade() && score != current.grade) {
+                        current.notified = 4
+                        current.grade = score
+                        current.date = grade.date
+                    } else if (!current.hasGrade() && grade.hasGrade()) {
+                        current.notified = 3
+                        current.grade = score
+                        current.date = grade.date
+                    } else if (!current.hasGrade() && !grade.hasGrade() && current.date != grade.date) {
+                        current.notified = 2
+                        current.date = grade.date
+                    } else {
+                        shouldUpdate = false
+                        Timber.d("No changes detected between ${current.name} ${current.grouping} and ${grade.name} ${evaluation.name.hashCode()}")
+                    }
+
+
+                    if (current.groupingName != evaluation.name) {
+                        shouldUpdate = true
+                        current.groupingName = evaluation.name ?: "Notas"
+                    }
+
+                    current.notified = if (notify) current.notified else 0
+                    if (shouldUpdate) update(current)
+                }
             }
         }
     }

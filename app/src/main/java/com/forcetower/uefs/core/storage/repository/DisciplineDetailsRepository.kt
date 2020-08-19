@@ -24,6 +24,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
+import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresDiscipline
 import com.forcetower.sagres.database.model.SagresDisciplineGroup
@@ -106,7 +107,7 @@ class DisciplineDetailsRepository @Inject constructor(
     @WorkerThread
     fun sendDisciplineDetails(current: Boolean = false) {
         val semesters = database.semesterDao().getSemestersDirect()
-        val currentSemester = semesters.maxBy { it.sagresId }?.sagresId
+        val currentSemester = semesters.maxByOrNull { it.sagresId }?.sagresId
 
         val stats = if (current) {
             currentSemester ?: return
@@ -149,7 +150,9 @@ class DisciplineDetailsRepository @Inject constructor(
     fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
         val access = database.accessDao().getAccessDirect()
         if (access != null) {
-            SagresNavigator.instance.login(access.username, access.password)
+            if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+                SagresNavigator.instance.login(access.username, access.password)
+            }
             val experimental = SagresNavigator.instance.disciplinesExperimental(
                 discover = false,
                 partialLoad = partialLoad

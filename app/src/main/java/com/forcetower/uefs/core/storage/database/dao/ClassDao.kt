@@ -42,7 +42,7 @@ abstract class ClassDao {
     abstract fun insert(classes: List<Class>)
 
     @Insert(onConflict = IGNORE)
-    abstract fun insert(clazz: Class)
+    abstract fun insert(clazz: Class): Long
 
     @Update
     abstract fun update(clazz: Class)
@@ -112,6 +112,19 @@ abstract class ClassDao {
             update(clazz)
         }
     }
+
+    open suspend fun insertNewWays(clazz: Class): Long {
+        val current = getClassDirectlyNew(clazz.semesterId, clazz.disciplineId)
+        return if (current != null) {
+            update(current.copy(finalScore = clazz.finalScore, missedClasses = clazz.missedClasses))
+            current.uid
+        } else {
+            insert(clazz)
+        }
+    }
+
+    @Query("SELECT * FROM Class WHERE semester_id = :semesterId AND discipline_id = :disciplineId")
+    abstract suspend fun getClassDirectlyNew(semesterId: Long, disciplineId: Long): Class?
 
     @Delete
     abstract fun delete(clazz: Class)
