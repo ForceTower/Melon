@@ -51,4 +51,3 @@
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 
 -repackageclasses forcetower
-

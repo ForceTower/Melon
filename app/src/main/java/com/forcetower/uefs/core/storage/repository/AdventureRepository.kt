@@ -249,7 +249,7 @@ class AdventureRepository @Inject constructor(
         }
 
         // Takes only the current semester
-        val current = semesters.maxBy { it.sagresId }
+        val current = semesters.maxByOrNull { it.sagresId }
         if (current != null) {
             var hours = 0
             val classes = database.classDao().getClassesWithGradesFromSemesterDirect(current.uid)

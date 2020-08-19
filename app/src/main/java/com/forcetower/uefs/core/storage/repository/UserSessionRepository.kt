@@ -67,8 +67,8 @@ class UserSessionRepository @Inject constructor(
 
         Timber.d("Session sync will be performed")
 
-        val start = sessions.map { it.started }.min() ?: 0
-        val end = sessions.map { it.started }.max() ?: 0
+        val start = sessions.map { it.started }.minOrNull() ?: 0
+        val end = sessions.map { it.started }.maxOrNull() ?: 0
         val dto = UserSessionDTO(start, end, sessions)
         try {
             val response = service.saveSessions(dto).execute()
