@@ -147,9 +147,6 @@ class SyncService : LifecycleService() {
                     createNotification()
                     Timber.d("Running Calling the cops")
                     microRepository.callTheCops()
-                    Timber.d("Cops called. Start the phoenix")
-                    generalRepository.performSync("Phoenix")
-                    Timber.d("Update completed. Good job officer")
                 } catch (error: Throwable) {
                     Timber.d("Failed with exception... It's probably gone")
                     disable()

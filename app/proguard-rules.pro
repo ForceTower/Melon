@@ -34,6 +34,8 @@
 
 ## Models
 -keep class com.forcetower.uefs.core.model.** { *; }
+-keep class dev.forcetower.breaker.model.** { *; }
+-keep class dev.forcetower.breaker.dto.** { *; }
 
 ## Gson
 -keepattributes Signature
@@ -50,4 +52,3 @@
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 
 -repackageclasses forcetower
-

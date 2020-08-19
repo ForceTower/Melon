@@ -27,7 +27,7 @@ import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class MicroSyncRepository @Inject constructor(
-    private val database: UDatabase
+    database: UDatabase
 ) {
     val access = database.accessDao().getAccess()
 

@@ -76,6 +76,9 @@
             app:argType="string"
             app:nullable="true"
             android:defaultValue="@null"/>
+        <argument
+            android:name="snowpiercer"
+            app:argType="boolean" />
     </fragment>
 
     <fragment

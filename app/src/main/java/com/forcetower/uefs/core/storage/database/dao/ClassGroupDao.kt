@@ -109,6 +109,43 @@ abstract class ClassGroupDao {
         return group
     }
 
+    open suspend fun insertNewWay(group: ClassGroup): Long {
+        val groups = selectGroupsFromClassDirect(group.classId)
+        when {
+            // just insert, you are brand new
+            groups.isEmpty() -> {
+                return insert(group)
+            }
+            groups.size == 1 -> {
+                val current = groups.first()
+                // are we merging?
+                return if (current.group.equals("unique", ignoreCase = true) || current.group.equals(group.group, ignoreCase = true)) {
+                    // yes, we are
+                    update(group.copy(uid = current.uid, ignored = current.ignored))
+                    current.uid
+                } else {
+                    // no, we are not, you new
+                    insert(group)
+                }
+            }
+            // there are plenty of groups here... find the one that fits
+            else -> {
+                val current = groups.firstOrNull { it.group == "unique" || it.group.equals(group.group, ignoreCase = true) }
+                return if (current != null) {
+                    // merge the fitter
+                    update(group.copy(uid = current.uid, ignored = current.ignored))
+                    current.uid
+                } else {
+                    // no one fits
+                    insert(group)
+                }
+            }
+        }
+    }
+
+    @Query("SELECT * FROM ClassGroup WHERE class_id = :classId")
+    abstract suspend fun selectGroupsFromClassDirect(classId: Long): List<ClassGroup>
+
     @Update
     abstract fun update(group: ClassGroup)
 

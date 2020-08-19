@@ -58,7 +58,7 @@ android {
 }
 
 kotlinter {
-    allowWildcardImports false
+
 }
 
 dependencies {

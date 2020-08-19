@@ -143,11 +143,7 @@ object NotificationCreator {
 
         val message = when (spoiler) {
             1 -> {
-                val value = grade.grade.grade.trim()
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
-                    .toDoubleOrNull()
+                val value = grade.grade.gradeDouble()
                 Timber.d("Level 1 spoiler value: $value")
                 if (value == null) context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
                 else when (value) {
