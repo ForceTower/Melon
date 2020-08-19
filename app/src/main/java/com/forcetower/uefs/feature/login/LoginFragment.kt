@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.login
 
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -28,12 +29,18 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.injection.Injectable
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import javax.inject.Inject
 
-class LoginFragment : UFragment() {
+class LoginFragment : UFragment(), Injectable {
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject lateinit var preferences: SharedPreferences
     private lateinit var binding: FragmentLoginFormBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -75,12 +82,14 @@ class LoginFragment : UFragment() {
 
         if (error) return
 
+        val snowpiercer = preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
         val info = bundleOf(
             "username" to username,
-            "password" to password
+            "password" to password,
+            "snowpiercer" to snowpiercer
         )
 
-        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
             findNavController().navigate(R.id.action_login_form_to_signing_in, info)
         } else {
             val directions = LoginFragmentDirections.actionLoginFormToTechNopeCaptchaStuff(username, password)

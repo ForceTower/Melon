@@ -77,7 +77,7 @@ abstract class ProfileDao {
             return me.uid
         } else {
             return insert(Profile(
-                name = person.name,
+                name = name,
                 email = person.email,
                 sagresId = person.id,
                 me = true
