@@ -32,8 +32,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.forcetower.uefs.R
 import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.getLinks
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
@@ -47,6 +49,7 @@ import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class MessagesFragment : UFragment(), Injectable {
@@ -64,6 +67,8 @@ class MessagesFragment : UFragment(), Injectable {
     lateinit var factory: UViewModelFactory
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var database: UDatabase
 
     private lateinit var binding: FragmentAllMessagesBinding
     private lateinit var profileViewModel: ProfileViewModel
@@ -102,6 +107,12 @@ class MessagesFragment : UFragment(), Injectable {
         }
 
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
+        binding.textToolbarTitle.setOnLongClickListener {
+            lifecycleScope.launch {
+                database.messageDao().deleteAllSuspend()
+            }
+            true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

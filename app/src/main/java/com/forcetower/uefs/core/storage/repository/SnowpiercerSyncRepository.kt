@@ -123,7 +123,8 @@ class SnowpiercerSyncRepository @Inject constructor(
         database.withTransaction {
             val allocations = mutableListOf<ClassLocation>()
             disciplines.forEach {
-                val discipline = Discipline(name = it.name, code = it.code, credits = it.hours, resume = it.program, department = it.department)
+                val resume = if (it.program.isNullOrBlank()) null else it.program
+                val discipline = Discipline(name = it.name, code = it.code, credits = it.hours, resume = resume, department = it.department)
                 val disciplineId = database.disciplineDao().insertOrUpdate(discipline)
                 Timber.d("Discipline id inserted: $disciplineId at $semesterId")
                 val bound = Class(
