@@ -105,7 +105,7 @@ class SnowpiercerSyncRepository @Inject constructor(
 
         if (messagesOutcome is Outcome.Error) {
             Timber.d("Messages error code: ${messagesOutcome.code}")
-            messagesOutcome.error.printStackTrace()
+            Timber.e(messagesOutcome.error, "Failed to execute grades")
         }
 
         val semestersOutcome = orchestra.semesters(person.id)
@@ -119,7 +119,7 @@ class SnowpiercerSyncRepository @Inject constructor(
 
         if (semestersOutcome is Outcome.Error) {
             Timber.d("Semester error code: ${semestersOutcome.code}")
-            semestersOutcome.error.printStackTrace()
+            Timber.e(semestersOutcome.error, "Failed to execute semesters")
         }
 
         // if no current semester... back off
@@ -133,7 +133,7 @@ class SnowpiercerSyncRepository @Inject constructor(
 
             if (gradesOutcome is Outcome.Error) {
                 Timber.d("Grades error code: ${gradesOutcome.code}")
-                gradesOutcome.error.printStackTrace()
+                Timber.e(gradesOutcome.error, "Failed to execute grades")
             }
         }
 
