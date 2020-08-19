@@ -99,7 +99,10 @@ android {
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled false
+            minifyEnabled true
+        }
+        debug {
+            applicationIdSuffix '.debug'
         }
     }
 
@@ -144,7 +147,7 @@ play {
 }
 
 kotlinter {
-    allowWildcardImports false
+
 }
 
 dependencies {
@@ -160,6 +163,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "dev.forcetower.unes:snowpiercer:1.0.3"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"

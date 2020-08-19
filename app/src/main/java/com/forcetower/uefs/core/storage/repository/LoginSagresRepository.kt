@@ -454,15 +454,15 @@ class LoginSagresRepository @Inject constructor(
         private var currentStep = 0
         private const val stepCount = 7
 
-        private fun resetSteps() {
+        fun resetSteps() {
             currentStep = 0
         }
 
-        private fun incSteps() {
+        fun incSteps() {
             currentStep++
         }
 
-        private fun createStep(@StringRes desc: Int): Step = Step(currentStep++, desc)
+        fun createStep(@StringRes desc: Int): Step = Step(currentStep++, desc)
     }
 
     data class Step(val step: Int, @StringRes val res: Int) {

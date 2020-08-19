@@ -104,7 +104,7 @@ class DisciplineEvaluationFragment : UFragment(), Injectable {
                         }.sortedBy { id * -1 },
                         teachers.groupBy { it.teacherId }.entries.map { entry ->
                             val appearances = entry.value
-                            val appear = appearances.maxBy { it.semesterSystemId }!!
+                            val appear = appearances.maxByOrNull { it.semesterSystemId }!!
                             val mean = appearances.sumByDouble { it.mean } / appearances.size
                             TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
                         }.sortedBy { it.name }

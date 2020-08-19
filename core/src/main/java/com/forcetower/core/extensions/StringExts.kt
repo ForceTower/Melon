@@ -23,3 +23,7 @@ package com.forcetower.core.extensions
 fun String.isCaptchaRequired(): Boolean {
     return this.equals("UEFS", ignoreCase = true) || this.equals("UESC", ignoreCase = true)
 }
+
+fun String.removeSeconds(): String {
+    return this.split(":").take(2).joinToString(":")
+}

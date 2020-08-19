@@ -20,18 +20,15 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
+import androidx.room.*
 import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.Query
-import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Discipline
 import timber.log.Timber
 
 @Dao
 abstract class DisciplineDao {
     @Insert(onConflict = IGNORE)
-    abstract fun insert(discipline: Discipline)
+    abstract fun insert(discipline: Discipline): Long
 
     @Transaction
     open fun insert(disciplines: List<Discipline>) {
@@ -54,4 +51,20 @@ abstract class DisciplineDao {
 
     @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code) LIMIT 1")
     abstract fun getDisciplineByCodeDirect(code: String): Discipline?
+
+    @Transaction
+    open suspend fun insertOrUpdate(value: Discipline): Long {
+        val current = getDisciplineByCodeDirect(value.code)
+        return if (current != null) {
+            if (current != value) {
+                update(value.copy(uid = current.uid))
+            }
+            current.uid
+        } else {
+            insert(value)
+        }
+    }
+
+    @Update(onConflict = IGNORE)
+    abstract suspend fun update(value: Discipline)
 }
