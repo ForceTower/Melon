@@ -29,7 +29,6 @@ import android.content.pm.ShortcutManager
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.sagres.SagresNavigator
@@ -39,7 +38,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
-import com.forcetower.uefs.architecture.service.sync.SyncService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
@@ -130,7 +128,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             initShortcuts()
             verifyUpdates()
             viewModel.onSessionStarted()
-            viewModel.account.observe(this, Observer { Unit })
+            viewModel.account.observe(this, { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
 //            if (preferences.isStudentFromUEFS()) {
@@ -182,7 +180,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun verifyDarkTheme() {
-        viewModel.verifyDarkTheme().observe(this, Observer { Unit })
+        viewModel.verifyDarkTheme().observe(this, { Unit })
     }
 
     private fun moveToTask() {
@@ -238,10 +236,10 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     private fun setupUserData() {
-        viewModel.access.observe(this, Observer { onAccessUpdate(it) })
+        viewModel.access.observe(this, { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this, Observer { Unit })
+        viewModel.sendToken().observe(this, { Unit })
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
@@ -249,7 +247,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
-        viewModel.scheduleHideCount.observe(this, Observer {
+        viewModel.scheduleHideCount.observe(this, {
             Timber.d("Schedule hidden stuff: $it")
             analytics.setUserProperty("using_schedule_hide", "${it > 0}")
             analytics.setUserProperty("using_schedule_hide_cnt", "$it")
@@ -310,7 +308,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements().observe(this, Observer {
+        adventureViewModel.checkAchievements().observe(this, {
             it.entries.forEach { achievement ->
                 if (achievement.value == -1)
                     unlockAchievement(achievement.key)
@@ -322,13 +320,13 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     override fun checkNotConnectedAchievements() {
-        adventureViewModel.checkNotConnectedAchievements().observe(this, Observer { Unit })
+        adventureViewModel.checkNotConnectedAchievements().observe(this, { Unit })
     }
 
     override fun androidInjector() = fragmentInjector
 
     private fun checkServerAchievements() {
-        adventureViewModel.checkServerAchievements().observe(this, Observer { achievements ->
+        adventureViewModel.checkServerAchievements().observe(this, { achievements ->
             achievements.forEach { achievement ->
                 try {
                     if (achievement.progress != null) {
