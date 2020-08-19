@@ -89,7 +89,7 @@ data class Message(
             ).apply { disciplineResume = me.objective }
 
         fun fromMessage(me: dev.forcetower.breaker.model.Message, notified: Boolean): Message {
-            val timestamp = OffsetDateTime.parse (me.timestamp).toInstant().toEpochMilli()
+            val timestamp = OffsetDateTime.parse(me.timestamp).toInstant().toEpochMilli()
             return Message(
                 content = me.content.replace("\\n", "\n"),
                 sagresId = me.id,

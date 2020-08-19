@@ -24,6 +24,7 @@ class DisciplinesProcessor(
 ) : UTask {
     override suspend fun execute() {
         database.withTransaction {
+            val currentSemester = database.semesterDao().getSemestersDirect().maxByOrNull { it.sagresId }
             val allocations = mutableListOf<ClassLocation>()
             disciplines.forEach {
                 val resume = if (it.program.isNullOrBlank()) null else it.program
@@ -48,22 +49,24 @@ class DisciplinesProcessor(
                         teacher = clazz.teacher.name
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
-                    clazz.allocations.forEach { allocation ->
-                        val time = allocation.time
-                        if (time != null) {
-                            allocations.add(ClassLocation(
-                                groupId = groupId,
-                                campus = allocation.space?.campus,
-                                modulo = allocation.space?.modulo,
-                                room = allocation.space?.location,
-                                day = time.day.toWeekDay(),
-                                dayInt = time.day,
-                                startsAt = time.start.removeSeconds(),
-                                endsAt = time.end.removeSeconds(),
-                                startsAtInt = time.start.createTimeInt(),
-                                endsAtInt = time.end.createTimeInt(),
-                                profileId = localProfileId
-                            ))
+                    if (currentSemester?.uid == semesterId) {
+                        clazz.allocations.forEach { allocation ->
+                            val time = allocation.time
+                            if (time != null) {
+                                allocations.add(ClassLocation(
+                                    groupId = groupId,
+                                    campus = allocation.space?.campus,
+                                    modulo = allocation.space?.modulo,
+                                    room = allocation.space?.location,
+                                    day = time.day.toWeekDay(),
+                                    dayInt = time.day,
+                                    startsAt = time.start.removeSeconds(),
+                                    endsAt = time.end.removeSeconds(),
+                                    startsAtInt = time.start.createTimeInt(),
+                                    endsAtInt = time.end.createTimeInt(),
+                                    profileId = localProfileId
+                                ))
+                            }
                         }
                     }
                 }
