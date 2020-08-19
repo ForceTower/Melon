@@ -86,7 +86,6 @@ fun evaluationDate(tv: TextView, value: Grade?) {
         try {
             tv.text = OffsetDateTime.parse(date).format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))
         } catch (error: Throwable) {
-            Timber.d(error, "Not from pattern")
             tv.text = date
         }
     }
