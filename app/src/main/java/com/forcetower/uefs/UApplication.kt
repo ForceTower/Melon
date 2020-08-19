@@ -69,13 +69,13 @@ class UApplication : Application(), HasAndroidInjector {
             return
         }
 
-//        if (BuildConfig.DEBUG) {
+        if (BuildConfig.DEBUG) {
             // Se em debug, print no logcat todas as informações
             Timber.plant(Timber.DebugTree())
-//        } else {
-//            // Em release, enviar exceptions para o crashlytics
-//            Timber.plant(CrashlyticsTree())
-//        }
+        } else {
+            // Em release, enviar exceptions para o crashlytics
+            Timber.plant(CrashlyticsTree())
+        }
         // Injeta as dependências. Este é o ponto inicial
         injectApplicationIfNecessary()
         super.onCreate()
