@@ -11,8 +11,8 @@
       "type": "SINGLE",
       "filters": [],
       "properties": [],
-      "versionCode": 2111842,
-      "versionName": "10.0.5.1842.rev-beta",
+      "versionCode": 2111844,
+      "versionName": "10.0.5.1844.rev-beta",
       "enabled": true,
       "outputFile": "app-release.apk"
     }

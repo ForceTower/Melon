@@ -23,23 +23,42 @@ package com.forcetower.uefs.feature.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
+import com.forcetower.uefs.core.storage.repository.SnowpiercerLoginRepository
+import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
+import kotlinx.coroutines.Dispatchers
 import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(private val repository: LoginSagresRepository) : ViewModel() {
+class LoginViewModel @Inject constructor(
+    private val repository: LoginSagresRepository,
+    private val snowpiercerLogin: SnowpiercerLoginRepository
+) : ViewModel() {
     private var loginSrc: MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
     private var connected: Boolean = false
 
     fun getAccess() = repository.getAccess()
 
-    fun getStep() = repository.currentStep
+    fun getStep(snowpiercer: Boolean) = if (snowpiercer) snowpiercerLogin.currentStep else repository.currentStep
 
-    fun login(username: String, password: String, captcha: String?, deleteDatabase: Boolean = false, skipLogin: Boolean = false) {
+    fun login(
+        username: String,
+        password: String,
+        captcha: String?,
+        snowpiercer: Boolean,
+        deleteDatabase: Boolean = false,
+        skipLogin: Boolean = false
+    ) {
         if (!loginRunning) {
-            val login = repository.login(username, password, captcha, deleteDatabase, skipLogin)
+            val login = if (snowpiercer) {
+                snowpiercerLogin.connect(username, password, deleteDatabase).asLiveData(Dispatchers.IO)
+            } else {
+                repository.login(username, password, captcha, deleteDatabase, skipLogin)
+            }
             loginRunning = true
             loginSrc.addSource(login) {
                 loginRunning = when (it.status) {
