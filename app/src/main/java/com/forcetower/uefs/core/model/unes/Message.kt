@@ -91,7 +91,7 @@ data class Message(
         fun fromMessage(me: dev.forcetower.breaker.model.Message, notified: Boolean): Message {
             val timestamp = OffsetDateTime.parse (me.timestamp).toInstant().toEpochMilli()
             return Message(
-                content = me.content,
+                content = me.content.replace("\\n", "\n"),
                 sagresId = me.id,
                 senderName = me.sender,
                 senderProfile = me.senderType,
@@ -99,7 +99,7 @@ data class Message(
                 notified = notified,
                 html = false,
                 processingTime = System.currentTimeMillis(),
-                hashMessage = me.content.toLowerCase(Locale.getDefault()).trim().hashCode().toLong()
+                hashMessage = me.content.replace("\\n", "\n").toLowerCase(Locale.getDefault()).trim().hashCode().toLong()
             )
         }
     }
