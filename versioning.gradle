@@ -7,9 +7,9 @@ ext {
             def (major, minor, patch) = version.toLowerCase().replaceAll('-', '').tokenize('.')
 
             def postfix = "main"
-            def adder = 0
+            def adder = 10000
             if (branch == "development") {
-                adder = 10000
+                adder = 20000
                 postfix = "beta"
             }
 
