@@ -34,6 +34,7 @@
 
 ## Models
 -keep class com.forcetower.uefs.core.model.** { *; }
+-keep class dev.forcetower.breaker.model.** { *; }
 
 ## Gson
 -keepattributes Signature
