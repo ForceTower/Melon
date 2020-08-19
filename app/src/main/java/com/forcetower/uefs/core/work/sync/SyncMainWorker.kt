@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
-import androidx.annotation.WorkerThread
 import androidx.work.*
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
@@ -55,7 +54,7 @@ class SyncMainWorker(
             (applicationContext as UApplication).component.inject(this)
             Timber.d("Main Worker started")
             if (preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")) {
-                snowpiercer.performSync("Principal")
+                snowpiercer.performSync("Snowpiercer")
             } else {
                 repository.performSync("Principal")
             }
