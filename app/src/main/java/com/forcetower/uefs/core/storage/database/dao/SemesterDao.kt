@@ -74,7 +74,7 @@ abstract class SemesterDao {
     protected abstract fun updateName(sagresId: Long, name: String)
 
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
-    protected abstract fun getSemesterDirect(sagresId: Long): Semester?
+    abstract fun getSemesterDirect(sagresId: Long): Semester?
 
     @Insert(onConflict = IGNORE)
     protected abstract fun internalInsertIgnoring(semesters: List<Semester>)

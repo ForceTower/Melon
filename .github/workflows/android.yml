@@ -31,8 +31,8 @@ jobs:
     - name: Dependencies
       run: ./gradlew dependencies
     
-    - name: Lint & JVM Checks
-      run: ./gradlew check
+#    - name: Lint & JVM Checks
+#      run: ./gradlew check
     
     - name: Publish Release App
       run: ./gradlew publishReleaseBundle

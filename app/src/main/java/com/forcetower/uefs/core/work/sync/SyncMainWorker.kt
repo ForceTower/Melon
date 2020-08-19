@@ -21,20 +21,18 @@
 package com.forcetower.uefs.core.work.sync
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
 import androidx.annotation.WorkerThread
-import androidx.work.BackoffPolicy
-import androidx.work.Constraints
-import androidx.work.NetworkType
-import androidx.work.PeriodicWorkRequestBuilder
-import androidx.work.WorkManager
-import androidx.work.Worker
-import androidx.work.WorkerParameters
+import androidx.work.*
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
+import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.enqueueUnique
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -42,16 +40,25 @@ import javax.inject.Inject
 class SyncMainWorker(
     context: Context,
     params: WorkerParameters
-) : Worker(context, params) {
+) : CoroutineWorker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
+    @Inject
+    lateinit var snowpiercer: SnowpiercerSyncRepository
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject
+    lateinit var preferences: SharedPreferences
 
-    @WorkerThread
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         try {
             (applicationContext as UApplication).component.inject(this)
             Timber.d("Main Worker started")
-            repository.performSync("Principal")
+            if (preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")) {
+                snowpiercer.performSync("Principal")
+            } else {
+                repository.performSync("Principal")
+            }
             Timber.d("Main Worker completed")
         } catch (t: Throwable) {
             Timber.d("Worker ignored the error so it may continue")
