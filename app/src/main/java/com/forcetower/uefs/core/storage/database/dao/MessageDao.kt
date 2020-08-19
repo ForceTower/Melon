@@ -34,6 +34,8 @@ import java.util.Locale
 
 @Dao
 abstract class MessageDao {
+    @Query("DELETE FROM Message")
+    abstract suspend fun deleteAllSuspend()
 
     @Transaction
     open fun insertIgnoring(messages: List<Message>) {
