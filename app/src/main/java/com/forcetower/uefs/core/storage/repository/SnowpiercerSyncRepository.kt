@@ -18,9 +18,13 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
+import com.forcetower.uefs.core.task.definers.MessagesProcessor
+import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
+import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
@@ -29,6 +33,7 @@ import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.*
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -95,7 +100,7 @@ class SnowpiercerSyncRepository @Inject constructor(
         val messagesOutcome = orchestra.messages(person.id)
         (messagesOutcome as? Outcome.Success)?.let { success ->
             val page = success.value
-            defineMessages(page)
+            MessagesProcessor(page, database, context, false).execute()
         }
 
         if (messagesOutcome is Outcome.Error) {
@@ -106,7 +111,7 @@ class SnowpiercerSyncRepository @Inject constructor(
         val semestersOutcome = orchestra.semesters(person.id)
         val currentSemester = (semestersOutcome as? Outcome.Success)?.let { success ->
             val semesters = success.value
-            defineSemesters(semesters)
+            SemestersProcessor(database, semesters).execute()
 
             val current = semesters.maxByOrNull { it.id }
             current
@@ -123,11 +128,11 @@ class SnowpiercerSyncRepository @Inject constructor(
             (gradesOutcome as? Outcome.Success)?.let { success ->
                 val disciplines = success.value
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
-                defineDisciplinesData(disciplines, currentSemesterIns.uid, localProfileId)
+                DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId).execute()
             }
 
             if (gradesOutcome is Outcome.Error) {
-                Timber.d("The error code: ${gradesOutcome.code}")
+                Timber.d("Grades error code: ${gradesOutcome.code}")
                 gradesOutcome.error.printStackTrace()
             }
         }
@@ -140,75 +145,6 @@ class SnowpiercerSyncRepository @Inject constructor(
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
 
-    }
-
-    private suspend fun defineDisciplinesData(disciplines: List<DisciplineData>, semesterId: Long, localProfileId: Long) {
-        database.withTransaction {
-            val allocations = mutableListOf<ClassLocation>()
-            disciplines.forEach {
-                val resume = if (it.program.isNullOrBlank()) null else it.program
-                val discipline = Discipline(name = it.name, code = it.code, credits = it.hours, resume = resume, department = it.department)
-                val disciplineId = database.disciplineDao().insertOrUpdate(discipline)
-                Timber.d("Discipline id inserted: $disciplineId at $semesterId")
-                val bound = Class(
-                    disciplineId = disciplineId,
-                    semesterId = semesterId,
-                    scheduleOnly = false,
-                    missedClasses = it.result?.missedClasses ?: 0,
-                    finalScore = it.result?.mean
-                )
-
-                val classId = database.classDao().insertNewWays(bound)
-                it.classes.forEach { clazz ->
-                    val group = ClassGroup(
-                        classId = classId,
-                        credits = clazz.hours,
-                        draft = false,
-                        group = clazz.groupName,
-                        teacher = clazz.teacher.name
-                    )
-                    val groupId = database.classGroupDao().insertNewWay(group)
-                    clazz.allocations.forEach { allocation ->
-                        val time = allocation.time
-                        if (time != null) {
-                            allocations.add(ClassLocation(
-                                groupId = groupId,
-                                campus = allocation.space?.campus,
-                                modulo = allocation.space?.modulo,
-                                room = allocation.space?.location,
-                                day = time.day.toWeekDay(),
-                                dayInt = time.day,
-                                startsAt = time.start.removeSeconds(),
-                                endsAt = time.end.removeSeconds(),
-                                startsAtInt = time.start.createTimeInt(),
-                                endsAtInt = time.end.createTimeInt(),
-                                profileId = localProfileId
-                            ))
-                        }
-                    }
-                }
-                database.gradesDao().putGradesNewWay(classId, it.evaluations)
-            }
-            database.classLocationDao().putNewSchedule(allocations)
-        }
-    }
-
-    private fun defineMessages(page: MessagesDataPage) {
-        val messages = page.messages
-        database.messageDao().insertIgnoring(messages.map { Message.fromMessage(it, false) })
-
-        val newMessages = database.messageDao().getNewMessages()
-        database.messageDao().setAllNotified()
-        newMessages.forEach { it.notify(context) }
-    }
-
-    private suspend fun defineSemesters(semesters: List<dev.forcetower.breaker.model.Semester>) {
-        database.withTransaction {
-            semesters.forEach {
-                val semester = Semester(sagresId = it.id, name = it.code, codename = it.description)
-                database.semesterDao().insertIgnoring(semester)
-            }
-        }
     }
 
     private suspend fun defineUser(person: Person): Long {
