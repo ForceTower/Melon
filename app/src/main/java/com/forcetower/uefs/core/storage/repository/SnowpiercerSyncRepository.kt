@@ -1,43 +1,32 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
-import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
-import androidx.room.withTransaction
-import com.forcetower.core.extensions.removeSeconds
 import com.forcetower.core.getDynamicDataSourceFactory
-import com.forcetower.uefs.core.model.unes.*
-import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.NetworkType
+import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
-import com.forcetower.uefs.feature.shared.extensions.createTimeInt
-import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
-import com.forcetower.uefs.feature.shared.extensions.toTitleCase
-import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.forcetower.breaker.Orchestra
-import dev.forcetower.breaker.model.*
+import dev.forcetower.breaker.model.Authorization
+import dev.forcetower.breaker.model.Person
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -45,10 +34,7 @@ import javax.inject.Singleton
 class SnowpiercerSyncRepository @Inject constructor(
     client: OkHttpClient,
     private val context: Context,
-    private val database: UDatabase,
-    private val service: UService,
-    private val remoteConfig: FirebaseRemoteConfig,
-    private val preferences: SharedPreferences
+    private val database: UDatabase
 ) {
     private val orchestra = Orchestra.Builder().client(client).build()
 
