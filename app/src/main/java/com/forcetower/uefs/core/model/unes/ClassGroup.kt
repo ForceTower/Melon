@@ -50,7 +50,8 @@ data class ClassGroup(
     var draft: Boolean = true,
     var ignored: Boolean = false,
     @ColumnInfo(name = "teacher_id")
-    var teacherId: Long? = null
+    var teacherId: Long? = null,
+    val sagresId: Long? = null
 ) {
 
     fun selectiveCopy(grp: SagresDisciplineGroup) {

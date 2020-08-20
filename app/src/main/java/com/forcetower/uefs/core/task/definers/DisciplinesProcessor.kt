@@ -48,7 +48,8 @@ class DisciplinesProcessor(
                         credits = clazz.hours,
                         draft = false,
                         group = clazz.groupName,
-                        teacher = clazz.teacher?.name?.toTitleCase()
+                        teacher = clazz.teacher?.name?.toTitleCase(),
+                        sagresId = clazz.id
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
                     if (currentSemester?.uid == semesterId) {
@@ -70,6 +71,7 @@ class DisciplinesProcessor(
                                 ))
                             }
                         }
+                        LectureProcessor(context, database, groupId, clazz.lectures, true).execute()
                     }
                 }
                 database.gradesDao().putGradesNewWay(classId, it.evaluations, notify)
