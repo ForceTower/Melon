@@ -73,6 +73,8 @@ import com.forcetower.uefs.core.storage.database.M42TO43
 import com.forcetower.uefs.core.storage.database.M43TO44
 import com.forcetower.uefs.core.storage.database.M44TO45
 import com.forcetower.uefs.core.storage.database.M45TO46
+import com.forcetower.uefs.core.storage.database.M45TO47
+import com.forcetower.uefs.core.storage.database.M46TO47
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -104,7 +106,7 @@ object AppModule {
                     M12TO13, M13TO14, M14TO15, M15TO16, M16TO17, M17TO18, M18TO19, M19TO20, M20TO21,
                     M21TO22, M22TO23, M23TO24, M24TO25, M25TO26, M26TO27, M27TO28, M28TO29, M29TO30,
                     M30TO31, M31TO32, M32TO33, M33TO34, M34TO35, M35TO36, M36TO37, M37TO38, M38TO39,
-                    M39TO40, M40TO41, M41TO42, M42TO43, M43TO44, M44TO45, M45TO46
+                    M39TO40, M40TO41, M41TO42, M42TO43, M43TO44, M44TO45, M45TO47, M45TO46, M46TO47
                 )
                 .enableMultiInstanceInvalidation()
                 .fallbackToDestructiveMigrationOnDowngrade()

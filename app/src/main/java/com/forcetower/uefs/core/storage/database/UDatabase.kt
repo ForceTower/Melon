@@ -132,7 +132,7 @@ import com.forcetower.uefs.core.util.Converters
     AffinityQuestion::class,
     AffinityQuestionAlternative::class,
     Event::class
-], version = 46, exportSchema = true)
+], version = 47, exportSchema = true)
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
     abstract fun accessDao(): AccessDao
