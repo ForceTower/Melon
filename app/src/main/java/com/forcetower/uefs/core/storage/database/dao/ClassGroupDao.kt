@@ -197,4 +197,7 @@ abstract class ClassGroupDao {
     @WorkerThread
     @Query("SELECT * FROM ClassGroup WHERE class_id = :classId")
     abstract fun getGroupsFromClassDirect(classId: Long): List<ClassGroup>
+
+    @Query("SELECT * FROM ClassGroup WHERE sagresId = :id")
+    abstract suspend fun getByElementalIdDirect(id: Long): ClassGroup?
 }
