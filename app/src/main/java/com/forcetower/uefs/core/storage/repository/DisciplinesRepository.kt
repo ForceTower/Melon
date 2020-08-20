@@ -98,9 +98,8 @@ class DisciplinesRepository @Inject constructor(
         emit(true)
         val access = database.accessDao().getAccessDirect()
         val profile = database.profileDao().selectMeDirect()
-        val sagresGroupId = database.classGroupDao().getGroupDirect(groupId)?.sagresId
 
-        if (access == null || profile == null || sagresGroupId == null) {
+        if (access == null || profile == null) {
             emit(false)
             return@flow
         }
@@ -108,8 +107,14 @@ class DisciplinesRepository @Inject constructor(
         val orchestra = Orchestra.Builder().client(client).build()
         orchestra.setAuthorization(Authorization(access.username, access.password))
 
-        (orchestra.lectures(sagresGroupId, 0, 0) as? Outcome.Success)?.value?.let {
-            LectureProcessor(context, database, groupId, it, false).execute()
+        val sagresGroupId = database.classGroupDao().getGroupDirect(groupId)?.sagresId
+        if (sagresGroupId != null) {
+            val lectures = orchestra.lectures(sagresGroupId, 0, 0)
+            if (lectures is Outcome.Success) {
+                LectureProcessor(context, database, groupId, lectures.value, false).execute()
+            } else if (lectures is Outcome.Error) {
+                Timber.e(lectures.error, "Error during lectures. Code ${lectures.code}")
+            }
         }
         emit(false)
     }
