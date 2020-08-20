@@ -6,38 +6,29 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
-import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
-import androidx.room.withTransaction
-import com.forcetower.core.extensions.removeSeconds
 import com.forcetower.core.getDynamicDataSourceFactory
-import com.forcetower.uefs.core.model.unes.*
-import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.NetworkType
+import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
+import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
-import com.forcetower.uefs.feature.shared.extensions.createTimeInt
-import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
-import com.forcetower.uefs.feature.shared.extensions.toTitleCase
-import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.forcetower.breaker.Orchestra
-import dev.forcetower.breaker.model.*
+import dev.forcetower.breaker.model.Authorization
+import dev.forcetower.breaker.model.Person
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.util.*
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -46,8 +37,6 @@ class SnowpiercerSyncRepository @Inject constructor(
     client: OkHttpClient,
     private val context: Context,
     private val database: UDatabase,
-    private val service: UService,
-    private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
 ) {
     private val orchestra = Orchestra.Builder().client(client).build()
@@ -72,8 +61,6 @@ class SnowpiercerSyncRepository @Inject constructor(
 
     private suspend fun execute(access: Access, registry: SyncRegistry) {
         val uid = database.syncRegistryDao().insert(registry)
-        val calendar = Calendar.getInstance()
-        val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
 
         try {
@@ -129,6 +116,22 @@ class SnowpiercerSyncRepository @Inject constructor(
                 val disciplines = success.value
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
                 DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId, true).execute()
+
+
+                if (shouldUpdateDisciplines()) {
+                    disciplines.flatMap { it.classes }
+                        .map { clazz -> clazz.id to orchestra.lectures(clazz.id, 0, 0) }
+                        .forEach { pair ->
+                            val (id, outcome) = pair
+                            if (outcome is Outcome.Success) {
+                                val group = database.classGroupDao().getByElementalIdDirect(id)
+                                if (group != null) {
+                                    LectureProcessor(context, database, group.uid, outcome.value, true)
+                                }
+                            }
+                        }
+                }
+
             }
 
             if (gradesOutcome is Outcome.Error) {
@@ -200,6 +203,26 @@ class SnowpiercerSyncRepository @Inject constructor(
                 SyncRegistry(executor = executor, network = info.ssid, networkType = NetworkType.WIFI.ordinal)
             }
         }
+    }
+
+    private fun shouldUpdateDisciplines(): Boolean {
+        val calendar = Calendar.getInstance()
+        val today = calendar.get(Calendar.DAY_OF_MONTH)
+
+        val dailyDisciplines = preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
+        val currentDaily = preferences.getInt("daily_discipline_count", 0)
+        val currentDayDiscipline = preferences.getInt("daily_discipline_day", -1)
+        val lastDailyHour = preferences.getInt("daily_discipline_hour", 0)
+        val isNewDaily = currentDayDiscipline != today || dailyDisciplines == -1
+        val currentDailyHour = calendar.get(Calendar.HOUR_OF_DAY)
+
+        val (actualDailyCount, nextHour) = if (isNewDaily)
+            0 to -1
+        else
+            currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
+
+        return ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
+            (currentDailyHour >= nextHour)
     }
 
     private fun produceErrorMessage(outcome: Outcome.Error<*>) {

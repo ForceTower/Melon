@@ -61,7 +61,7 @@
             app:layout_constraintStart_toEndOf="@id/text_absences"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_chainStyle="packed" />
-    
+
         <TextView
             android:id="@+id/text_absences_label"
             android:layout_width="wrap_content"
@@ -70,8 +70,6 @@
             android:textColor="?attr/colorOnSurfaceLight"
             android:textSize="13sp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/imageView2"
-            app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintStart_toStartOf="@+id/text_absences"
             app:layout_constraintTop_toBottomOf="@+id/imageView2" />
 

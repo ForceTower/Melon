@@ -90,7 +90,7 @@ class DisciplineFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.semesters.observe(viewLifecycleOwner, Observer {
+        viewModel.semesters.observe(viewLifecycleOwner, {
             val actualList = applySortOptions(it)
             adapter.submitList(actualList)
         })
