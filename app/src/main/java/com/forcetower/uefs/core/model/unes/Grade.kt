@@ -40,8 +40,7 @@ import java.util.UUID
     ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["class_id"]),
-    Index(value = ["name", "class_id", "grouping"], unique = true),
-    Index(value = ["uuid"], unique = true)
+    Index(value = ["name", "class_id", "grouping"], unique = true)
 ])
 data class Grade(
     @PrimaryKey(autoGenerate = true)
@@ -53,8 +52,7 @@ data class Grade(
     var grade: String?,
     var grouping: Int,
     var groupingName: String,
-    var notified: Int = 0,
-    val uuid: String = UUID.randomUUID().toString()
+    var notified: Int = 0
 ) {
     fun hasGrade(): Boolean {
         val grade = this.grade
