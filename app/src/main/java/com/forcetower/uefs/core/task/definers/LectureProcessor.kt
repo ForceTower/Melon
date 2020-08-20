@@ -12,6 +12,7 @@ import dev.forcetower.breaker.model.Lecture
 class LectureProcessor(
     private val context: Context,
     private val database: UDatabase,
+    // local database group id :)
     private val groupId: Long,
     private val lectures: List<Lecture>,
     private val notify: Boolean
