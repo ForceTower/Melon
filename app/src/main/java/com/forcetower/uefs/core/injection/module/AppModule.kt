@@ -110,6 +110,7 @@ object AppModule {
                     M39TO40, M40TO41, M41TO42, M42TO43, M43TO44, M44TO45, M45TO47, M45TO46, M46TO47,
                     M47TO48
                 )
+                .fallbackToDestructiveMigration()
                 .enableMultiInstanceInvalidation()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()

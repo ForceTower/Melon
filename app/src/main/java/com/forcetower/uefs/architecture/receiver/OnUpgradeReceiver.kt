@@ -39,18 +39,5 @@ class OnUpgradeReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent?) {
         if (intent == null || Intent.ACTION_MY_PACKAGE_REPLACED != intent.action) return
         AndroidInjection.inject(this, context)
-        repository.onUpgrade()
-
-        val type = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
-        if (type != 0) {
-            var period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
-            preferences.edit().putString("stg_sync_worker_type", "0").apply()
-            SyncLinkedWorker.stopWorker(context)
-            if (period < 15) {
-                period = 15
-                preferences.edit().putString("stg_sync_frequency", "15").apply()
-            }
-            SyncMainWorker.createWorker(context, period)
-        }
     }
 }
