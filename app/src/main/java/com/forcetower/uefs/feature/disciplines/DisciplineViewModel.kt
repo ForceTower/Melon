@@ -25,6 +25,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
@@ -40,13 +42,17 @@ import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesActions
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 class DisciplineViewModel @Inject constructor(
     private val repository: DisciplinesRepository,
     private val grades: SagresGradesRepository,
-    private val detailsRepository: DisciplineDetailsRepository
+    private val detailsRepository: DisciplineDetailsRepository,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
 ) : ViewModel(), DisciplineActions, MaterialActions, ClassesActions {
 
     val semesters by lazy { repository.getParticipatingSemesters() }
@@ -133,7 +139,11 @@ class DisciplineViewModel @Inject constructor(
 
         _loadClassDetails.addSource(classGroupId) {
             if (it != null) {
-                val src = repository.loadClassDetails(it)
+                val src = if (snowpiercerEnabled) {
+                    repository.loadClassDetailsSnowflake(it).asLiveData(Dispatchers.IO)
+                } else {
+                    repository.loadClassDetails(it)
+                }
                 _loadClassDetails.addSource(src) { loading ->
                     _loadClassDetails.value = loading
                 }

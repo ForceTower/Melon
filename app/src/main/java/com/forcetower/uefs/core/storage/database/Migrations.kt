@@ -397,3 +397,10 @@ object M45TO47 : Migration(45, 47) {
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Grade_name_class_id_grouping` ON `Grade` (`name`, `class_id`, `grouping`)")
     }
 }
+
+
+object M47TO48 : Migration(47, 48) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ClassGroup ADD COLUMN sagresId INTEGER DEFAULT NULL")
+    }
+}
