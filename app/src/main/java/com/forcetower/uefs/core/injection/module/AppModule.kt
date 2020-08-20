@@ -101,7 +101,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
-            Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unesco.db")
+            Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
                 .addMigrations(
                     M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
                     M12TO13, M13TO14, M14TO15, M15TO16, M16TO17, M17TO18, M18TO19, M19TO20, M20TO21,
@@ -110,7 +110,6 @@ object AppModule {
                     M39TO40, M40TO41, M41TO42, M42TO43, M43TO44, M44TO45, M45TO47, M45TO46, M46TO47,
                     M47TO48
                 )
-                .fallbackToDestructiveMigration()
                 .enableMultiInstanceInvalidation()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
