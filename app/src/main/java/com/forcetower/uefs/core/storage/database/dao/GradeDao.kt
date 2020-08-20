@@ -217,14 +217,14 @@ abstract class GradeDao {
         evaluations.forEach { evaluation ->
             evaluation.grades.forEach { grade ->
                 Timber.d("Attempt to insert ${evaluation.name} ${grade.name} ${grade.value}")
-                val current = getNamedGradeDirect(classId, grade.name, evaluation.name.hashCode())
+                val current = getNamedGradeDirect(classId, "${grade.nameShort} - ${grade.name}", evaluation.name.hashCode())
                 Timber.d("Attempt to override ${current?.name} ${current?.groupingName} ${current?.grade}")
                 Timber.d("Current $current")
                 if (current == null) {
                     val notified = if (grade.hasGrade()) 3 else 1
                     insert(Grade(
                         classId = classId,
-                        name = grade.name,
+                        name = "${grade.nameShort} - ${grade.name}",
                         notified = if (notify) notified else 0,
                         grade = grade.value?.toString(),
                         grouping = evaluation.name.hashCode(),
