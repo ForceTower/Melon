@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.Context
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -36,12 +37,24 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
+import com.forcetower.uefs.core.task.definers.LectureProcessor
+import dev.forcetower.breaker.Orchestra
+import dev.forcetower.breaker.model.Authorization
+import dev.forcetower.breaker.result.Outcome
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import okhttp3.internal.wait
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
 class DisciplinesRepository @Inject constructor(
+    private val context: Context,
+    private val client: OkHttpClient,
     private val database: UDatabase,
     private val executors: AppExecutors
 ) {
@@ -79,6 +92,31 @@ class DisciplinesRepository @Inject constructor(
 
     fun getLocationsFromClass(classId: Long): LiveData<List<ClassLocation>> {
         return database.classLocationDao().getLocationsOfClass(classId)
+    }
+
+    fun loadClassDetailsSnowflake(groupId: Long) = flow {
+        emit(true)
+        val access = database.accessDao().getAccessDirect()
+        val profile = database.profileDao().selectMeDirect()
+
+        if (access == null || profile == null) {
+            emit(false)
+            return@flow
+        }
+
+        val orchestra = Orchestra.Builder().client(client).build()
+        orchestra.setAuthorization(Authorization(access.username, access.password))
+
+        val sagresGroupId = database.classGroupDao().getGroupDirect(groupId)?.sagresId
+        if (sagresGroupId != null) {
+            val lectures = orchestra.lectures(sagresGroupId, 0, 0)
+            if (lectures is Outcome.Success) {
+                LectureProcessor(context, database, groupId, lectures.value, false).execute()
+            } else if (lectures is Outcome.Error) {
+                Timber.e(lectures.error, "Error during lectures. Code ${lectures.code}")
+            }
+        }
+        emit(false)
     }
 
     @AnyThread

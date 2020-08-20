@@ -121,7 +121,7 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         adapter.submitList(list)
     }
 
-    private inner class DetailsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+    private class DetailsAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
         private val tabs = mutableListOf<Pair<String, Fragment>>()
         override fun getItem(position: Int) = tabs[position].second
         override fun getCount() = tabs.size

@@ -25,12 +25,12 @@ import android.text.Spanned
 import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.MotionEvent
-import androidx.appcompat.widget.AppCompatTextView
+import com.google.android.material.textview.MaterialTextView
 
 class HtmlTextView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-) : AppCompatTextView(context, attrs) {
+) : MaterialTextView(context, attrs) {
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
         val action = event.action
