@@ -9,11 +9,11 @@
 # ------------------------ Timber ------------------------------
 # This removes all the logging using timber.d and timber.v
 # note that timber.e is kept in code
-#-assumenosideeffects class timber.log.Timber {
-#    public static *** v(...);
-#    public static *** d(...);
-#    public static *** i(...);
-#}
+-assumenosideeffects class timber.log.Timber {
+    public static *** v(...);
+    public static *** d(...);
+    public static *** i(...);
+}
 
 # Work around android fragment artifact bug
 -keep class androidx.navigation.fragment.NavHostFragment { *; }
