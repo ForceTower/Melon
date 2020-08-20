@@ -12,6 +12,7 @@ import com.forcetower.uefs.core.task.UTask
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import com.forcetower.uefs.feature.shared.extensions.toWeekDay
+import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.DisciplineData
 import timber.log.Timber
 
@@ -20,7 +21,8 @@ class DisciplinesProcessor(
     private val database: UDatabase,
     private val disciplines: List<DisciplineData>,
     private val semesterId: Long,
-    private val localProfileId: Long
+    private val localProfileId: Long,
+    private val notify: Boolean
 ) : UTask {
     override suspend fun execute() {
         database.withTransaction {
@@ -70,9 +72,25 @@ class DisciplinesProcessor(
                         }
                     }
                 }
-                database.gradesDao().putGradesNewWay(classId, it.evaluations)
+                database.gradesDao().putGradesNewWay(classId, it.evaluations, notify)
             }
+
             database.classLocationDao().putNewSchedule(allocations)
+
+            database.gradesDao().run {
+                val posted = getPostedGradesDirect()
+                val create = getCreatedGradesDirect()
+                val change = getChangedGradesDirect()
+                val date = getDateChangedGradesDirect()
+
+                markAllNotified()
+
+                posted.forEach { NotificationCreator.showSagresPostedGradesNotification(it, context) }
+                create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
+                change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
+                date.forEach { NotificationCreator.showSagresDateGradesNotification(it, context) }
+            }
         }
     }
+
 }
