@@ -121,7 +121,7 @@ class SnowpiercerLoginRepository @Inject constructor(
             (gradesOutcome as? Outcome.Success)?.let { success ->
                 val disciplines = success.value
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
-                DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId).execute()
+                DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId, false).execute()
             }
 
             if (gradesOutcome is Outcome.Error) {

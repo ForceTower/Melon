@@ -213,7 +213,7 @@ abstract class GradeDao {
     }
 
     @Transaction
-    open fun putGradesNewWay(classId: Long, evaluations: List<ClassEvaluation>, notify: Boolean = true) {
+    open suspend fun putGradesNewWay(classId: Long, evaluations: List<ClassEvaluation>, notify: Boolean = true) {
         evaluations.forEach { evaluation ->
             evaluation.grades.forEach { grade ->
                 Timber.d("Attempt to insert ${evaluation.name} ${grade.name} ${grade.value}")
@@ -225,7 +225,7 @@ abstract class GradeDao {
                     insert(Grade(
                         classId = classId,
                         name = grade.name,
-                        notified = notified,
+                        notified = if (notify) notified else 0,
                         grade = grade.value?.toString(),
                         grouping = evaluation.name.hashCode(),
                         groupingName = evaluation.name ?: "Notas",

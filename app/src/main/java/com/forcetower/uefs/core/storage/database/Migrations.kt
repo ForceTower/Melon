@@ -373,3 +373,27 @@ object M45TO46 : Migration(45, 46) {
         database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Grade_uuid` ON `Grade` (`uuid`)")
     }
 }
+
+object M46TO47 : Migration(46, 47) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `Grades_TEMP` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT, `grade` TEXT, `grouping` INTEGER NOT NULL, `groupingName` TEXT NOT NULL, `notified` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("INSERT INTO Grades_TEMP SELECT uid, class_id, name, date, grade, grouping, groupingName, notified FROM Grade")
+        database.execSQL("DROP TABLE Grade")
+        database.execSQL("ALTER TABLE Grades_TEMP RENAME TO Grade")
+
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_Grade_class_id` ON `Grade` (`class_id`)")
+        database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Grade_name_class_id_grouping` ON `Grade` (`name`, `class_id`, `grouping`)")
+    }
+}
+
+object M45TO47 : Migration(45, 47) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("CREATE TABLE IF NOT EXISTS `Grades_TEMP` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `class_id` INTEGER NOT NULL, `name` TEXT NOT NULL, `date` TEXT, `grade` TEXT, `grouping` INTEGER NOT NULL, `groupingName` TEXT NOT NULL, `notified` INTEGER NOT NULL, FOREIGN KEY(`class_id`) REFERENCES `Class`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        database.execSQL("INSERT INTO Grades_TEMP SELECT uid, class_id, name, date, grade, grouping, groupingName, notified FROM Grade")
+        database.execSQL("DROP TABLE Grade")
+        database.execSQL("ALTER TABLE Grades_TEMP RENAME TO Grade")
+
+        database.execSQL("CREATE INDEX IF NOT EXISTS `index_Grade_class_id` ON `Grade` (`class_id`)")
+        database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Grade_name_class_id_grouping` ON `Grade` (`name`, `class_id`, `grouping`)")
+    }
+}

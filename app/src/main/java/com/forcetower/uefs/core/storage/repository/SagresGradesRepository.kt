@@ -80,7 +80,7 @@ class SagresGradesRepository @Inject constructor(
             val outcome = orchestra.grades(profile.sagresId, semesterId)
             if (outcome is Outcome.Success) {
                 val currentSemester = database.semesterDao().getSemesterDirect(semesterId)
-                DisciplinesProcessor(context, database, outcome.value, currentSemester!!.uid, profile.uid).execute()
+                DisciplinesProcessor(context, database, outcome.value, currentSemester!!.uid, profile.uid, false).execute()
                 emit(SUCCESS)
             } else {
                 emit(CURRENT_GRADES_FAILED)
