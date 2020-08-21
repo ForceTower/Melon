@@ -180,7 +180,13 @@ fun disciplineAbsence(tv: TextView, sequence: Int?, date: String?) {
     val seq = sequence ?: 0
     val dat = date ?: "??/??/????"
 
-    val text = ctx.getString(R.string.discipline_absence_date_format, seq, dat)
+    val dated = try {
+        OffsetDateTime.parse(dat).format(DateTimeFormatter.ofPattern("dd/MM/YYYY"))
+    } catch (error: Throwable) {
+        dat
+    }
+
+    val text = ctx.getString(R.string.discipline_absence_date_format, seq, dated)
     tv.text = text
 }
 

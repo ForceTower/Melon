@@ -35,6 +35,7 @@ import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
+import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
@@ -112,6 +113,32 @@ object NotificationCreator {
 
         addOptions(context, builder)
         showNotification(context, grade.grade.uid, builder)
+    }
+
+    fun showAbsenceNotification(absence: ClassAbsence, context: Context, created: Boolean) {
+        if (!shouldShowNotification("stg_ntf_absence", context)) {
+            return
+        }
+
+        val channel = if (created)
+            NotificationHelper.CHANNEL_ABSENCE_CREATE_ID
+        else
+            NotificationHelper.CHANNEL_ABSENCE_REMOVE_ID
+
+        val message = if (created)
+            context.getString(R.string.notification_absence_posted, absence.description.toTitleCase())
+        else
+            context.getString(R.string.notification_absence_deleted, absence.description.toTitleCase())
+
+        val builder = notificationBuilder(context, channel)
+            .setContentTitle(context.getString(R.string.notification_absence_posted_title))
+            .setContentText(message)
+            .setContentIntent(createOpenIntent(context))
+            .setColor(ContextCompat.getColor(context, R.color.dis_07))
+            .setStyle(createBigText(message))
+
+        addOptions(context, builder)
+        showNotification(context, 1000 + absence.uid, builder)
     }
 
     fun showSagresDateGradesNotification(grade: GradeWithClassStudent, context: Context) {

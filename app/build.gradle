@@ -156,14 +156,14 @@ dependencies {
     implementation project(path: ':core')
 
     // Auto start
-    implementation 'com.github.judemanutd:autostarter:1.0.6'
+    implementation 'com.github.judemanutd:autostarter:1.0.8'
 
     // Juice scrapper
     implementation "com.github.forcetower:juice:$sagres"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "dev.forcetower.unes:snowpiercer:1.0.6"
+    implementation "dev.forcetower.unes:snowpiercer:1.0.7"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"

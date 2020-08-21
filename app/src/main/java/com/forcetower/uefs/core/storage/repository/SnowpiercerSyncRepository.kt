@@ -16,6 +16,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
+import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
@@ -121,14 +122,26 @@ class SnowpiercerSyncRepository @Inject constructor(
 
 
                 if (shouldUpdateDisciplines()) {
-                    disciplines.flatMap { it.classes }
-                        .map { clazz -> clazz.id to orchestra.lectures(clazz.id, 0, 0) }
+                    val classes = disciplines.flatMap { it.classes }
+
+                    classes.map { clazz -> clazz.id to orchestra.lectures(clazz.id, 0, 0) }
                         .forEach { pair ->
                             val (id, outcome) = pair
                             if (outcome is Outcome.Success) {
                                 val group = database.classGroupDao().getByElementalIdDirect(id)
                                 if (group != null) {
-                                    LectureProcessor(context, database, group.uid, outcome.value, true)
+                                    LectureProcessor(context, database, group.uid, outcome.value, true).execute()
+                                }
+                            }
+                        }
+
+                    classes.map { clazz -> clazz.id to orchestra.absences(person.id, clazz.id, 0, 0) }
+                        .forEach { pair ->
+                            val (id, outcome) = pair
+                            if (outcome is Outcome.Success) {
+                                val group = database.classGroupDao().getByElementalIdDirect(id)
+                                if (group != null) {
+                                    MissedLectureProcessor(context, database, localProfileId, group.uid, outcome.value, true).execute()
                                 }
                             }
                         }
