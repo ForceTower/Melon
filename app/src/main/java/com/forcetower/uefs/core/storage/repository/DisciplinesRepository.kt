@@ -38,6 +38,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
+import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
@@ -120,6 +121,13 @@ class DisciplinesRepository @Inject constructor(
                 LectureProcessor(context, database, groupId, lectures.value, false).execute()
             } else if (lectures is Outcome.Error) {
                 Timber.e(lectures.error, "Error during lectures. Code ${lectures.code}")
+            }
+
+            val absences = orchestra.absences(profile.sagresId, sagresGroupId, 0, 0)
+            if (absences is Outcome.Success) {
+                MissedLectureProcessor(context, database, profile.uid, groupId, absences.value, false).execute()
+            } else if (absences is Outcome.Error) {
+                Timber.e(absences.error, "Error during absences. Code ${absences.code}")
             }
         }
         emit(false)
