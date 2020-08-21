@@ -864,4 +864,5 @@
     <string name="notification_absence_posted_title">Falta publicada</string>
     <string name="settings_ntf_absence">Faltas</string>
     <string name="settings_ntf_absence_info">Notificar quando uma falta for registrada ou apagada</string>
+    <string name="notification_absence_removed_title">Falta removida</string>
 </resources>
