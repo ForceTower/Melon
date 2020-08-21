@@ -47,6 +47,12 @@
             android:title="@string/settings_ntf_material_posted"
             android:summary="@string/settings_ntf_material_posted_info"/>
 
+        <SwitchPreference
+            android:defaultValue="true"
+            android:key="stg_ntf_absence"
+            android:title="@string/settings_ntf_absence"
+            android:summary="@string/settings_ntf_absence_info"/>
+
     </PreferenceCategory>
     
     <PreferenceCategory
