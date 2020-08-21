@@ -49,6 +49,7 @@ import okhttp3.OkHttpClient
 import okhttp3.internal.wait
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -56,7 +57,8 @@ class DisciplinesRepository @Inject constructor(
     private val context: Context,
     private val client: OkHttpClient,
     private val database: UDatabase,
-    private val executors: AppExecutors
+    private val executors: AppExecutors,
+    @Named("webViewUA") private val agent: String
 ) {
     fun getParticipatingSemesters(): LiveData<List<Semester>> {
         return database.semesterDao().getParticipatingSemesters()
@@ -104,7 +106,11 @@ class DisciplinesRepository @Inject constructor(
             return@flow
         }
 
-        val orchestra = Orchestra.Builder().client(client).build()
+        val orchestra = Orchestra.Builder()
+            .userAgent(agent)
+            .client(client)
+            .build()
+
         orchestra.setAuthorization(Authorization(access.username, access.password))
 
         val sagresGroupId = database.classGroupDao().getGroupDirect(groupId)?.sagresId

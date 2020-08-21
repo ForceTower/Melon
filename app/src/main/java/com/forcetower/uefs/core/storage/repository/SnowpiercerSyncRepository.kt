@@ -30,16 +30,18 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class SnowpiercerSyncRepository @Inject constructor(
     client: OkHttpClient,
+    @Named("webViewUA") agent: String,
     private val context: Context,
     private val database: UDatabase,
     private val preferences: SharedPreferences
 ) {
-    private val orchestra = Orchestra.Builder().client(client).build()
+    private val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
 
     @WorkerThread
     suspend fun performSync(executor: String) {
