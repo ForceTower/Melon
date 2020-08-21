@@ -27,8 +27,13 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.sagres.SagresNavigator
@@ -62,6 +67,10 @@ import com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_U
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.launchReview
+import com.google.android.play.core.ktx.requestReview
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -101,6 +110,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     private lateinit var binding: ActivityHomeBinding
     private lateinit var updateManager: AppUpdateManager
     private lateinit var username: String
+    private lateinit var reviewManager: ReviewManager
     private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
     private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
 
@@ -112,6 +122,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         setupUserData()
 
         updateManager = AppUpdateManagerFactory.create(this)
+        reviewManager = ReviewManagerFactory.create(this)
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -127,6 +138,7 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         try {
             initShortcuts()
             verifyUpdates()
+            getReviews()
             viewModel.onSessionStarted()
             viewModel.account.observe(this, { Unit })
             checkServerAchievements()
@@ -137,6 +149,28 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
 //            }
         } catch (t: Throwable) {}
         moveToTask()
+    }
+
+    private fun getReviews() {
+        if (
+            remoteConfig.getBoolean("feature_flag_in_app_review") &&
+            preferences.isStudentFromUEFS() &&
+            !preferences.getBoolean("__user_in_app_review_once__", false)
+        ) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                lifecycleScope.launchWhenCreated {
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                        try {
+                            val request = reviewManager.requestReview()
+                            reviewManager.launchReview(this@HomeActivity, request)
+                        } catch (error: Throwable) {
+                            Timber.e(error, "on request review")
+                        }
+                        preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
+                    }
+                }
+            }, 2000)
+        }
     }
 
     private fun verifyUpdates() {
