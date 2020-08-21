@@ -130,8 +130,13 @@ object NotificationCreator {
         else
             context.getString(R.string.notification_absence_deleted, absence.description.toTitleCase())
 
+        val titleRes = if (created)
+            R.string.notification_absence_posted_title
+        else
+            R.string.notification_absence_removed_title
+
         val builder = notificationBuilder(context, channel)
-            .setContentTitle(context.getString(R.string.notification_absence_posted_title))
+            .setContentTitle(context.getString(titleRes))
             .setContentText(message)
             .setContentIntent(createOpenIntent(context))
             .setColor(ContextCompat.getColor(context, R.color.dis_07))

@@ -38,6 +38,9 @@ abstract class ClassAbsenceDao {
     @Insert(onConflict = IGNORE)
     abstract fun insert(absence: ClassAbsence)
 
+    @Insert(onConflict = IGNORE)
+    abstract suspend fun insert(absence: List<ClassAbsence>)
+
     @Update(onConflict = IGNORE)
     abstract suspend fun update(absence: ClassAbsence)
 

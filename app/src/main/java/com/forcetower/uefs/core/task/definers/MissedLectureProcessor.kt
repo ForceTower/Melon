@@ -7,6 +7,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.UTask
 import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.LectureMissed
+import timber.log.Timber
 
 class MissedLectureProcessor(
     private val context: Context,
@@ -19,51 +20,25 @@ class MissedLectureProcessor(
     private val notify: Boolean
 ) : UTask {
     override suspend fun execute() {
+        Timber.d("Why is this executing?")
         database.withTransaction {
             val group = database.classGroupDao().getGroupDirect(groupId) ?: return@withTransaction
             val classId = group.classId
-            var current = database.classAbsenceDao().getAbsenceFromClassDirect(classId)
             database.classAbsenceDao().resetClassAbsences(classId)
 
-
-            // N * (2*N)
-            absences.forEach { absence ->
-                val found = current.find {
-                    it.classId == classId && it.profileId == profileId && it.sequence == absence.lecture.ordinal && it.grouping == group.group
-                }
-
-                if (found != null) {
-                    current = current.filter { it.uid == found.uid }
-                    val updated = found.copy(
-                        description = absence.lecture.subject,
-                        date = absence.lecture.date
-                    )
-                    database.classAbsenceDao().update(updated)
-                } else {
-                    database.classAbsenceDao().insert(
-                        ClassAbsence(
-                            description = absence.lecture.subject,
-                            date = absence.lecture.date,
-                            notified = !notify,
-                            profileId = profileId,
-                            grouping = group.group,
-                            classId = classId,
-                            sequence = absence.lecture.ordinal
-                        )
-                    )
-                }
+            val mapped = absences.map { absence ->
+                ClassAbsence(
+                    description = absence.lecture.subject,
+                    date = absence.lecture.date,
+                    notified = !notify,
+                    profileId = profileId,
+                    grouping = group.group,
+                    classId = classId,
+                    sequence = absence.lecture.ordinal
+                )
             }
 
-            if (notify) {
-                val newAbsences = database.classAbsenceDao().getUnnotifiedDirect()
-                newAbsences.forEach {
-                    NotificationCreator.showAbsenceNotification(it, context, true)
-                }
-                current.forEach {
-                    NotificationCreator.showAbsenceNotification(it, context, false)
-                }
-            }
-
+            database.classAbsenceDao().insert(mapped)
             database.classAbsenceDao().markAllNotified()
         }
     }
