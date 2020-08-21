@@ -236,8 +236,17 @@ class SnowpiercerSyncRepository @Inject constructor(
         else
             currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
 
-        return ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
+        val execute = ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
             (currentDailyHour >= nextHour)
+
+        if (execute) {
+            preferences.edit()
+                .putInt("daily_discipline_count", actualDailyCount + 1)
+                .putInt("daily_discipline_day", today)
+                .putInt("daily_discipline_hour", currentDailyHour)
+                .apply()
+        }
+        return execute
     }
 
     private fun produceErrorMessage(outcome: Outcome.Error<*>) {

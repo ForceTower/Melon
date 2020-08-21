@@ -75,7 +75,6 @@
 
         <item name="iconColor">?attr/colorOnBackground</item>
         <item name="android:windowAnimationStyle">@style/WindowAnimationDefaultTransition</item>
-        <item name="viewInflaterClass">androidx.appcompat.app.AppCompatViewInflater</item>
     </style>
     
     <style name="UTheme.TransparentStatus" parent="UTheme.LightNav">
