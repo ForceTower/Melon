@@ -147,5 +147,5 @@ object AppModule {
     @Provides
     @Reusable
     @Named("webViewUA")
-    fun provideWebViewUserAgent(context: Context) = WebSettings.getDefaultUserAgent(context)
+    fun provideWebViewUserAgent(context: Context): String = WebSettings.getDefaultUserAgent(context)
 }
