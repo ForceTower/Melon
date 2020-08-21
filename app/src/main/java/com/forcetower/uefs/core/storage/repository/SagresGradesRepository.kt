@@ -53,6 +53,7 @@ class SagresGradesRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     private val client: OkHttpClient,
+    @Named("webViewUA") private val agent: String,
     @Named("flagSnowpiercerEnabled") private val snowpiercer: Boolean
 ) {
     @AnyThread
@@ -75,7 +76,7 @@ class SagresGradesRepository @Inject constructor(
         if (access == null || profile == null) {
             emit(NO_ACCESS)
         } else {
-            val orchestra = Orchestra.Builder().client(client).build()
+            val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
             orchestra.setAuthorization(Authorization(access.username, access.password))
             val outcome = orchestra.grades(profile.sagresId, semesterId)
             if (outcome is Outcome.Success) {

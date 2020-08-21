@@ -56,7 +56,8 @@ class MessagesRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     @Named(UMessage.COLLECTION) private val collection: CollectionReference,
-    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    @Named("webViewUA") private val agent: String
 ) {
     fun getMessages(): LiveData<PagedList<Message>> {
         return LivePagedListBuilder(database.messageDao().getAllMessagesPaged(), 20).build()
@@ -81,7 +82,7 @@ class MessagesRepository @Inject constructor(
         if (access == null || profile == null) {
             emit(false)
         } else {
-            val orchestra = Orchestra.Builder().client(client).build()
+            val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
             orchestra.setAuthorization(Authorization(access.username, access.password))
 
             val outcome = orchestra.messages(profile.sagresId)

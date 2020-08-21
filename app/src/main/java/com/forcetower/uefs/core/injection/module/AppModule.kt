@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.webkit.WebSettings
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
@@ -142,4 +143,9 @@ object AppModule {
     @Named("flagSnowpiercerEnabled")
     fun provideFlagSnowpiercer(preferences: SharedPreferences, remoteConfig: FirebaseRemoteConfig) =
         preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+
+    @Provides
+    @Reusable
+    @Named("webViewUA")
+    fun provideWebViewUserAgent(context: Context) = WebSettings.getDefaultUserAgent(context)
 }
