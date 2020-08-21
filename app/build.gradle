@@ -220,6 +220,7 @@ dependencies {
     implementation "com.android.billingclient:billing:$gp_billing_client"
     implementation "com.google.android.gms:play-services-ads:$gp_admob"
     implementation "com.google.android.play:core:$gp_core"
+    implementation "com.google.android.play:core-ktx:$gp_core_ktx"
 
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"

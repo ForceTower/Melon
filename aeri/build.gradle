@@ -111,4 +111,5 @@ dependencies {
 
     // Google Play
     implementation "com.google.android.play:core:$gp_core"
+    implementation "com.google.android.play:core-ktx:$gp_core_ktx"
 }
