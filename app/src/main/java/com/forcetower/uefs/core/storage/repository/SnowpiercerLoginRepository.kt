@@ -37,6 +37,7 @@ import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 
 class SnowpiercerLoginRepository @Inject constructor(
     private val client: OkHttpClient,
@@ -45,12 +46,13 @@ class SnowpiercerLoginRepository @Inject constructor(
     private val executors: AppExecutors,
     private val preferences: SharedPreferences,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    @Named("webViewUA") private val agent: String
 ) {
     val currentStep: MutableLiveData<LoginSagresRepository.Step> = MutableLiveData()
 
     fun connect(username: String, password: String, deleteDatabase: Boolean = true) = flow {
-        val orchestra = Orchestra.Builder().client(client).build()
+        val orchestra = Orchestra.Builder().userAgent(agent).client(client).build()
         LoginSagresRepository.resetSteps()
         if (deleteDatabase) {
             currentStep.postValue(LoginSagresRepository.createStep(R.string.step_delete_database))
