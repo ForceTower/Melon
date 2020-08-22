@@ -48,8 +48,8 @@ class MissedLectureProcessor(
 
             val mapped = absences.map { absence ->
                 ClassAbsence(
-                    description = absence.lecture.subject,
-                    date = absence.lecture.date,
+                    description = absence.lecture.subject ?: "Sem descrição",
+                    date = absence.lecture.date ?: "Sem data",
                     notified = !notify,
                     profileId = profileId,
                     grouping = group.group,
