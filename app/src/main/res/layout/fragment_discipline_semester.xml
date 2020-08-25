@@ -3,7 +3,7 @@
   ~ This file is part of the UNES Open Source Project.
   ~ UNES is licensed under the GNU GPLv3.
   ~
-  ~ Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -27,19 +27,83 @@
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
+
+        <variable
+            name="hasData"
+            type="Boolean" />
+
+        <variable
+            name="loading"
+            type="Boolean" />
     </data>
-    
-    <com.forcetower.core.widget.CustomSwipeRefreshLayout
-        android:id="@+id/swipe_refresh"
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/disciplines_recycler"
+        android:layout_height="match_parent">
+
+        <com.forcetower.core.widget.CustomSwipeRefreshLayout
+            android:id="@+id/swipe_refresh"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:listitem="@layout/item_discipline_collapsed"
-            app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager">
-        </androidx.recyclerview.widget.RecyclerView>
-    </com.forcetower.core.widget.CustomSwipeRefreshLayout>
+            app:goneUnless="@{hasData || loading}"
+            app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/disciplines_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:listitem="@layout/item_discipline_collapsed"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
+        </com.forcetower.core.widget.CustomSwipeRefreshLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            tools:visibility="gone"
+            app:goneIf="@{hasData || loading}"
+            android:paddingBottom="48dp">
+
+            <ImageView
+                android:id="@+id/icon"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:importantForAccessibility="no"
+                android:src="@drawable/ic_cloud_download_accent_30dp"
+                app:layout_constraintBottom_toTopOf="@+id/materialTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_chainStyle="packed" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/materialTextView"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="16dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/grades_not_downloaded_yet"
+                android:textAlignment="gravity"
+                android:textColor="?attr/colorOnBackground"
+                app:layout_constraintBottom_toTopOf="@+id/download_btn"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/icon" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/download_btn"
+                style="@style/UTheme.MaterialButton.Default"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:text="@string/download_grades"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/materialTextView" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
