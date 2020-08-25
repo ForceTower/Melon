@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.webkit.WebSettings
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
@@ -102,14 +103,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
             Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-                .addMigrations(
-                    M1TO2, M2TO3, M3TO4, M5TO6, M6TO7, M7TO8, M8TO9, M9TO10, M10TO11, M11TO12,
-                    M12TO13, M13TO14, M14TO15, M15TO16, M16TO17, M17TO18, M18TO19, M19TO20, M20TO21,
-                    M21TO22, M22TO23, M23TO24, M24TO25, M25TO26, M26TO27, M27TO28, M28TO29, M29TO30,
-                    M30TO31, M31TO32, M32TO33, M33TO34, M34TO35, M35TO36, M36TO37, M37TO38, M38TO39,
-                    M39TO40, M40TO41, M41TO42, M42TO43, M43TO44, M44TO45, M45TO47, M45TO46, M46TO47,
-                    M47TO48
-                )
+                .addMigrations()
                 .enableMultiInstanceInvalidation()
                 .fallbackToDestructiveMigrationOnDowngrade()
                 .build()
@@ -142,4 +136,9 @@ object AppModule {
     @Named("flagSnowpiercerEnabled")
     fun provideFlagSnowpiercer(preferences: SharedPreferences, remoteConfig: FirebaseRemoteConfig) =
         preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+
+    @Provides
+    @Reusable
+    @Named("webViewUA")
+    fun provideWebViewUserAgent(context: Context): String = WebSettings.getDefaultUserAgent(context)
 }

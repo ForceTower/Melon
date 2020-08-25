@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -63,6 +64,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
     @Inject
     lateinit var factory: UViewModelFactory
     private lateinit var viewModel: DisciplineViewModel
+    private lateinit var localDisciplineVM: DisciplineViewModel
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPerformance: DisciplinePerformanceAdapter
     private lateinit var swipeRefreshLayout: com.forcetower.core.widget.CustomSwipeRefreshLayout
@@ -70,6 +72,7 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel = provideActivityViewModel(factory)
+        localDisciplineVM = provideViewModel(factory)
         binding = FragmentDisciplineSemesterBinding.inflate(inflater, container, false).apply {
             viewModel = this@DisciplineSemesterFragment.viewModel
         }.also {
@@ -101,15 +104,23 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
             })
         }
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.updateGradesFromSemester(semesterSagresId)
+            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
         }
 
-        viewModel.refreshing.observe(viewLifecycleOwner, Observer { swipeRefreshLayout.isRefreshing = it })
+        binding.downloadBtn.setOnClickListener {
+            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
+        }
+
+        localDisciplineVM.refreshing.observe(viewLifecycleOwner, {
+            swipeRefreshLayout.isRefreshing = it
+            binding.loading = it
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.classes(semesterId).observe(viewLifecycleOwner, Observer {
+        viewModel.classes(semesterId).observe(viewLifecycleOwner, {
+            binding.hasData = it.isNotEmpty()
             populateInterface(it)
         })
     }

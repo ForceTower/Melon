@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,7 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
@@ -37,13 +38,19 @@ abstract class ClassAbsenceDao {
     @Insert(onConflict = IGNORE)
     abstract fun insert(absence: ClassAbsence)
 
+    @Insert(onConflict = IGNORE)
+    abstract suspend fun insert(absence: List<ClassAbsence>)
+
+    @Update(onConflict = IGNORE)
+    abstract suspend fun update(absence: ClassAbsence)
+
     @Query("UPDATE ClassAbsence SET notified = 1")
-    abstract fun markAllNotified()
+    abstract suspend fun markAllNotified()
 
     @Query("SELECT * FROM ClassAbsence WHERE notified = 0")
-    abstract fun getUnnotifiedDirect(): List<ClassAbsence>
+    abstract suspend fun getUnnotifiedDirect(): List<ClassAbsence>
 
-    @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId")
+    @Query("SELECT ca.* FROM ClassAbsence ca WHERE ca.class_id = :classId ORDER BY ca.sequence")
     abstract fun getMyAbsenceFromClass(classId: Long): LiveData<List<ClassAbsence>>
 
     @Query("SELECT COUNT(uid) FROM ClassAbsence WHERE class_id = :classId")
@@ -90,6 +97,6 @@ abstract class ClassAbsenceDao {
     @Query("SELECT * FROM Profile WHERE me = 1")
     protected abstract fun getMeProfile(): Profile
 
-    @Query("DELETE FROM ClassAbsence WHERE class_id = :uid")
-    protected abstract fun resetClassAbsences(uid: Long)
+    @Query("DELETE FROM ClassAbsence WHERE class_id = :classId")
+    abstract fun resetClassAbsences(classId: Long)
 }

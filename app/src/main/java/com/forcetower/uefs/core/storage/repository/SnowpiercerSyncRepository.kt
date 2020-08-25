@@ -1,3 +1,23 @@
+/*
+ * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
+ *
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
@@ -16,6 +36,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
+import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
@@ -30,16 +51,18 @@ import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class SnowpiercerSyncRepository @Inject constructor(
     client: OkHttpClient,
+    @Named("webViewUA") agent: String,
     private val context: Context,
     private val database: UDatabase,
     private val preferences: SharedPreferences
 ) {
-    private val orchestra = Orchestra.Builder().client(client).build()
+    private val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
 
     @WorkerThread
     suspend fun performSync(executor: String) {
@@ -119,14 +142,26 @@ class SnowpiercerSyncRepository @Inject constructor(
 
 
                 if (shouldUpdateDisciplines()) {
-                    disciplines.flatMap { it.classes }
-                        .map { clazz -> clazz.id to orchestra.lectures(clazz.id, 0, 0) }
+                    val classes = disciplines.flatMap { it.classes }
+
+                    classes.map { clazz -> clazz.id to orchestra.lectures(clazz.id, 0, 0) }
                         .forEach { pair ->
                             val (id, outcome) = pair
                             if (outcome is Outcome.Success) {
                                 val group = database.classGroupDao().getByElementalIdDirect(id)
                                 if (group != null) {
-                                    LectureProcessor(context, database, group.uid, outcome.value, true)
+                                    LectureProcessor(context, database, group.uid, outcome.value, true).execute()
+                                }
+                            }
+                        }
+
+                    classes.map { clazz -> clazz.id to orchestra.absences(person.id, clazz.id, 0, 0) }
+                        .forEach { pair ->
+                            val (id, outcome) = pair
+                            if (outcome is Outcome.Success) {
+                                val group = database.classGroupDao().getByElementalIdDirect(id)
+                                if (group != null) {
+                                    MissedLectureProcessor(context, database, localProfileId, group.uid, outcome.value, true).execute()
                                 }
                             }
                         }
@@ -221,8 +256,17 @@ class SnowpiercerSyncRepository @Inject constructor(
         else
             currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
 
-        return ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
+        val execute = ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
             (currentDailyHour >= nextHour)
+
+        if (execute) {
+            preferences.edit()
+                .putInt("daily_discipline_count", actualDailyCount + 1)
+                .putInt("daily_discipline_day", today)
+                .putInt("daily_discipline_hour", currentDailyHour)
+                .apply()
+        }
+        return execute
     }
 
     private fun produceErrorMessage(outcome: Outcome.Error<*>) {

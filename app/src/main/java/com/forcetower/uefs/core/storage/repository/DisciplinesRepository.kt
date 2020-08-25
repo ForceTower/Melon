@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -38,6 +38,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
+import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
@@ -49,6 +50,7 @@ import okhttp3.OkHttpClient
 import okhttp3.internal.wait
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -56,7 +58,8 @@ class DisciplinesRepository @Inject constructor(
     private val context: Context,
     private val client: OkHttpClient,
     private val database: UDatabase,
-    private val executors: AppExecutors
+    private val executors: AppExecutors,
+    @Named("webViewUA") private val agent: String
 ) {
     fun getParticipatingSemesters(): LiveData<List<Semester>> {
         return database.semesterDao().getParticipatingSemesters()
@@ -104,7 +107,11 @@ class DisciplinesRepository @Inject constructor(
             return@flow
         }
 
-        val orchestra = Orchestra.Builder().client(client).build()
+        val orchestra = Orchestra.Builder()
+            .userAgent(agent)
+            .client(client)
+            .build()
+
         orchestra.setAuthorization(Authorization(access.username, access.password))
 
         val sagresGroupId = database.classGroupDao().getGroupDirect(groupId)?.sagresId
@@ -114,6 +121,13 @@ class DisciplinesRepository @Inject constructor(
                 LectureProcessor(context, database, groupId, lectures.value, false).execute()
             } else if (lectures is Outcome.Error) {
                 Timber.e(lectures.error, "Error during lectures. Code ${lectures.code}")
+            }
+
+            val absences = orchestra.absences(profile.sagresId, sagresGroupId, 0, 0)
+            if (absences is Outcome.Success) {
+                MissedLectureProcessor(context, database, profile.uid, groupId, absences.value, false).execute()
+            } else if (absences is Outcome.Error) {
+                Timber.e(absences.error, "Error during absences. Code ${absences.code}")
             }
         }
         emit(false)
