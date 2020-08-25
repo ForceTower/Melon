@@ -40,7 +40,6 @@ class MissedLectureProcessor(
     private val notify: Boolean
 ) : UTask {
     override suspend fun execute() {
-        Timber.d("Why is this executing?")
         database.withTransaction {
             val group = database.classGroupDao().getGroupDirect(groupId) ?: return@withTransaction
             val classId = group.classId
