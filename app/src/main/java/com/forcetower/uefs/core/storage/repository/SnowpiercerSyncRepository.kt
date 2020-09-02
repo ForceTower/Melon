@@ -270,7 +270,7 @@ class SnowpiercerSyncRepository @Inject constructor(
     }
 
     private fun produceErrorMessage(outcome: Outcome.Error<*>) {
-        Timber.e("Failed executing with status ${outcome.code} and throwable message [${outcome.error.message}]")
+        Timber.e(outcome.error, "Failed executing with status ${outcome.code} and throwable message [${outcome.error.message}]")
     }
 
     suspend fun asyncSync() = withContext(Dispatchers.IO) {
