@@ -30,6 +30,8 @@ import androidx.annotation.Keep
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.dashboard.R
@@ -42,11 +44,14 @@ import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
 import timber.log.Timber
+import javax.inject.Inject
 
 @Keep
 class DashboardFragment : UFragment() {
+    @Inject lateinit var factory: ViewModelProvider.Factory
+
     private lateinit var binding: FragmentDashboardBinding
-    private val viewModel: DashboardViewModel by activityViewModels()
+    private val viewModel: DashboardViewModel by activityViewModels { factory }
     private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {

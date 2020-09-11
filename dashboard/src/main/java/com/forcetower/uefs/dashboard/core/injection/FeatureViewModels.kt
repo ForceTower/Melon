@@ -20,23 +20,24 @@
 
 package com.forcetower.uefs.dashboard.core.injection
 
-import android.content.Context
-import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
-import com.forcetower.uefs.dashboard.feature.DashboardFragment
-import dagger.BindsInstance
-import dagger.Component
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.core.injection.annotation.ViewModelKey
+import com.forcetower.uefs.dashboard.feature.DashboardViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.migration.DisableInstallInCheck
+import dagger.multibindings.IntoMap
 
-@Component(
-    modules = [FeatureViewModels::class],
-    dependencies = [DashboardModuleDependencies::class]
-)
-interface DashboardComponent {
-    @Component.Builder
-    interface Builder {
-        fun context(@BindsInstance context: Context): Builder
-        fun dependencies(dependencies: DashboardModuleDependencies): Builder
-        fun build(): DashboardComponent
-    }
+@Module
+@DisableInstallInCheck
+abstract class FeatureViewModels {
+    @Binds
+    @IntoMap
+    @ViewModelKey(DashboardViewModel::class)
+    abstract fun dashboard(viewModel: DashboardViewModel): ViewModel
 
-    fun inject(fragment: DashboardFragment)
+    @Binds
+    abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory
 }

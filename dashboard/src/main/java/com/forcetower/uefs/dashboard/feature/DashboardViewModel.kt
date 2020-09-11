@@ -35,8 +35,9 @@ import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
 import timber.log.Timber
 import java.util.Calendar
+import javax.inject.Inject
 
-class DashboardViewModel @ViewModelInject constructor(
+class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
     private val dataRepository: SagresDataRepository
 ) : ViewModel(), AffinityListener {

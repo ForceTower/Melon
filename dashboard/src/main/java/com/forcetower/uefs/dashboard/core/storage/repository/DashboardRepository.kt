@@ -29,11 +29,12 @@ import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
+import dagger.Reusable
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Singleton
 
-@Singleton
+@Reusable
 class DashboardRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase,
