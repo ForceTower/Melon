@@ -22,10 +22,13 @@ package com.forcetower.uefs.easter.twofoureight
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.WindowInsets
 import android.view.WindowManager
 import androidx.activity.viewModels
+import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.easter.twofoureight.tools.KeyListener
@@ -44,15 +47,7 @@ class Game2048Activity : UGameActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_game2048)
 
-        val window = window
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-        )
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-        )
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
