@@ -18,4 +18,25 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.event.core.ui
+package com.forcetower.uefs.aeri.core.injection.module
+
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.core.injection.annotation.ViewModelKey
+import com.forcetower.uefs.aeri.feature.AERIViewModel
+import dagger.Binds
+import dagger.Module
+import dagger.hilt.migration.DisableInstallInCheck
+import dagger.multibindings.IntoMap
+
+@Module
+@DisableInstallInCheck
+abstract class FeatureViewModels {
+    @Binds
+    @IntoMap
+    @ViewModelKey(AERIViewModel::class)
+    abstract fun aeri(viewModel: AERIViewModel): ViewModel
+    @Binds
+    abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory
+}

@@ -32,6 +32,7 @@ import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.core.utils.ViewUtils
@@ -47,12 +48,14 @@ import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
+import javax.inject.Inject
 
 class EventDetailsActivity : UActivity() {
+    @Inject lateinit var factory: ViewModelProvider.Factory
     private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
     lateinit var binding: ActivityEventDetailsBinding
 
-    private val viewModel by viewModels<EventDetailsViewModel>()
+    private val viewModel by viewModels<EventDetailsViewModel> { factory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         SplitCompat.installActivity(this)

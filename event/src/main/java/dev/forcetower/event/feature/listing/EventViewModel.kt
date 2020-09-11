@@ -28,10 +28,11 @@ import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 typealias SingleEventAction = com.forcetower.uefs.core.vm.Event<Event>
 
-class EventViewModel @ViewModelInject constructor(
+class EventViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel(), EventActions {
     private val _onEventClicked = MutableLiveData<SingleEventAction>()

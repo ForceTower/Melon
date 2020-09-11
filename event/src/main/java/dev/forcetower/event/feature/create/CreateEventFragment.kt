@@ -29,9 +29,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import androidx.annotation.Keep
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.extensions.isDarkTheme
@@ -62,10 +64,12 @@ import org.threeten.bp.ZoneId
 import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.util.Calendar
+import javax.inject.Inject
 
-@AndroidEntryPoint
+@Keep
 class CreateEventFragment : UFragment() {
-    private val viewModel: CreationViewModel by viewModels()
+    @Inject lateinit var factory: ViewModelProvider.Factory
+    private val viewModel: CreationViewModel by viewModels { factory }
     private lateinit var binding: FragmentCreateEventBinding
     private val args by navArgs<CreateEventFragmentArgs>()
 

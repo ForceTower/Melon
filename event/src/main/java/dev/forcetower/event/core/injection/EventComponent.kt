@@ -29,7 +29,10 @@ import dev.forcetower.event.feature.create.CreateEventFragment
 import dev.forcetower.event.feature.details.EventDetailsActivity
 import dev.forcetower.event.feature.listing.EventFragment
 
-@Component(dependencies = [EventModuleDependencies::class])
+@Component(
+    modules = [FeatureViewModels::class],
+    dependencies = [EventModuleDependencies::class]
+)
 interface EventComponent {
     @Component.Builder
     interface Builder {

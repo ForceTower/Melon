@@ -31,6 +31,7 @@ import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
@@ -41,11 +42,13 @@ import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
 import timber.log.Timber
+import javax.inject.Inject
 
 @Keep
 class AERINewsFragment : UFragment() {
+    @Inject lateinit var factory: ViewModelProvider.Factory
     private lateinit var binding: FragmentAeriNewsBinding
-    private val viewModel: AERIViewModel by activityViewModels()
+    private val viewModel: AERIViewModel by activityViewModels { factory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

@@ -31,8 +31,9 @@ import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
 import org.threeten.bp.ZonedDateTime
 import java.util.Calendar
+import javax.inject.Inject
 
-class CreationViewModel @ViewModelInject constructor(
+class CreationViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel() {
     private val utc: Calendar = Calendar.getInstance()
