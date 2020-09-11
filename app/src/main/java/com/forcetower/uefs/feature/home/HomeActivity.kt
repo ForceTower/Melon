@@ -83,6 +83,7 @@ class HomeActivity : UGameActivity() {
     @Inject lateinit var analytics: FirebaseAnalytics
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject lateinit var executors: AppExecutors
+    private lateinit var reviewManager: ReviewManager
 
     private val updateListener = InstallStateUpdatedListener { state -> onStateUpdateChanged(state) }
     private val viewModel: HomeViewModel by viewModels()

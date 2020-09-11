@@ -117,4 +117,7 @@ dependencies {
     api "com.squareup.retrofit2:retrofit:$retrofit"
     api "com.squareup.retrofit2:converter-gson:$retrofit"
     api "com.github.franmontiel:PersistentCookieJar:$cookie_jar"
+
+    api "com.google.dagger:dagger:$dagger"
+    kapt "com.google.dagger:dagger-compiler:$dagger"
 }

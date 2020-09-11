@@ -46,10 +46,9 @@ import kotlin.math.max
 @AndroidEntryPoint
 class SchedulePerformanceFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
-    @Inject lateinit var factory: UViewModelFactory
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
-    private val viewModel by activityViewModels<ScheduleViewModel> { factory }
-    private val profileViewModel by activityViewModels<ProfileViewModel> { factory }
+    private val viewModel by activityViewModels<ScheduleViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
 
     private lateinit var binding: FragmentSchedulePerformanceBinding
     private var showEmptyDays = false

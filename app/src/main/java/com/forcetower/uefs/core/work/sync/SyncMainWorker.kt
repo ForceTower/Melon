@@ -24,8 +24,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.*
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
@@ -35,18 +36,15 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
+
 class SyncMainWorker @WorkerInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters
-) : Worker(context, params) {
-    @Inject
-    lateinit var repository: SagresSyncRepository
-    @Inject
-    lateinit var snowpiercer: SnowpiercerSyncRepository
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject
-    lateinit var preferences: SharedPreferences
+) : CoroutineWorker(context, params) {
+    @Inject lateinit var repository: SagresSyncRepository
+    @Inject lateinit var snowpiercer: SnowpiercerSyncRepository
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject lateinit var preferences: SharedPreferences
 
     override suspend fun doWork(): Result {
         try {

@@ -26,6 +26,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -82,7 +83,7 @@ class DisciplineSemesterFragment : UFragment() {
         }
 
         binding.downloadBtn.setOnClickListener {
-            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
+            localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
         localDisciplineVM.refreshing.observe(viewLifecycleOwner, {
