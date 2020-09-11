@@ -42,8 +42,8 @@ import androidx.core.view.isEmpty
 import androidx.recyclerview.widget.RecyclerView
 import dev.forcetower.conference.R
 import dev.forcetower.conference.core.model.persistence.Session
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class ScheduleTimeHeadersDecoration(
     context: Context,

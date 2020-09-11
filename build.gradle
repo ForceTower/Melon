@@ -98,7 +98,6 @@ buildscript {
         card_slider = '0.3.1'
         date_time_picker = '4.2.3'
         floating_search = "2.1.1"
-        zoned_time_date = '1.2.4'
         rx_kotlin = "2.4.0"
 
         // Build Versions
@@ -109,6 +108,7 @@ buildscript {
         bundletool = "0.10.0"
         crashlytics = "2.1.1"
         hilt_dagger = '2.28.3-alpha'
+        coreDesugar = '1.0.10'
     }
 
     repositories {

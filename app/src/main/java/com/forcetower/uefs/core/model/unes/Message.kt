@@ -29,7 +29,7 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
-import org.threeten.bp.OffsetDateTime
+import java.time.OffsetDateTime
 import java.util.Locale
 import java.util.UUID
 

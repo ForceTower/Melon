@@ -34,9 +34,9 @@ import com.forcetower.uefs.core.model.siecomp.Session
 import com.forcetower.uefs.core.model.siecomp.SessionType
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.widget.HeaderGridDrawable
-import org.threeten.bp.Duration
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import java.time.Duration
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @BindingAdapter("headerImage")
 fun headerImage(imageView: ImageView, photoUrl: String?) {

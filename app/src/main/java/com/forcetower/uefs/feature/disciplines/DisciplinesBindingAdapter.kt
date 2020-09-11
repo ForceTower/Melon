@@ -31,9 +31,9 @@ import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.max
 
 @BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)

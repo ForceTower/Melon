@@ -119,6 +119,8 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
@@ -133,8 +135,6 @@ android {
         abortOnError true
     }
     dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event"]
-
-
 }
 
 play {
@@ -152,6 +152,7 @@ kotlinter {
 }
 
 dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreDesugar"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':bypass')
     implementation project(path: ':core')
@@ -236,7 +237,6 @@ dependencies {
     implementation "pub.devrel:easypermissions:$easy_permissions"
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
-    implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.0'
 }

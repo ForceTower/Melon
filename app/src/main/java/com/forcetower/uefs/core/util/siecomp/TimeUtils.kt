@@ -22,9 +22,9 @@ package com.forcetower.uefs.core.util.siecomp
 
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.siecomp.EventDay
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**

@@ -32,7 +32,7 @@ import com.forcetower.uefs.databinding.ItemEventSessionTagBinding
 import com.forcetower.uefs.feature.shared.inflater
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import com.forcetower.uefs.widget.UnscrollableFlexboxLayoutManager
-import org.threeten.bp.ZoneId
+import java.time.ZoneId
 
 class ScheduleDayAdapter(
     private val viewModel: SIECOMPEventViewModel,

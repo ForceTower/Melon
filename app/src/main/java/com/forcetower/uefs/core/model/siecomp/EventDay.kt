@@ -21,8 +21,8 @@
 package com.forcetower.uefs.core.model.siecomp
 
 import android.annotation.SuppressLint
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 private const val formatPattern = "d 'de' MMMM"

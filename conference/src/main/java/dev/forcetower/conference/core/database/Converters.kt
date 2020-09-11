@@ -21,7 +21,7 @@
 package dev.forcetower.conference.core.database
 
 import androidx.room.TypeConverter
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 object Converters {
 

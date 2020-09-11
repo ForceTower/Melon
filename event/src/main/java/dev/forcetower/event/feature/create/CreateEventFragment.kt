@@ -58,10 +58,10 @@ import dev.forcetower.event.core.binding.formattedDate
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentCreateEventBinding
 import dev.forcetower.event.feature.details.EventDetailsActivity
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
 

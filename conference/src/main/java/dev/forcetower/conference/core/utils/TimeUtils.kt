@@ -21,7 +21,7 @@
 package dev.forcetower.conference.core.utils
 
 import dev.forcetower.conference.core.model.persistence.ConferenceDay
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 object TimeUtils {

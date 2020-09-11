@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 @Entity
 data class ProfileStatement(
