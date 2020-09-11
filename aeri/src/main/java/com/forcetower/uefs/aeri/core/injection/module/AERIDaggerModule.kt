@@ -28,11 +28,10 @@ import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
 import com.forcetower.uefs.aeri.domain.AERIDataSourceFactory
 import dagger.Module
 import dagger.Provides
-import dagger.hilt.InstallIn
-import dagger.hilt.android.components.FragmentComponent
+import dagger.hilt.migration.DisableInstallInCheck
 
 @Module
-@InstallIn(FragmentComponent::class)
+@DisableInstallInCheck
 object AERIDaggerModule {
     @Provides
     fun provideDatabase(context: Context): AERIDatabase {
