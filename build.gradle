@@ -33,7 +33,7 @@ buildscript {
 
         // Android X
         app_compat = '1.2.0'
-        google_material = '1.2.0'
+        google_material = '1.2.1'
         constraint_layout = '2.0.1'
         annotation = "1.1.0"
         exif_interface = "1.1.0"
