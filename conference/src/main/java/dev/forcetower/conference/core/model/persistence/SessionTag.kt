@@ -25,14 +25,17 @@ import androidx.room.ForeignKey
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index(value = ["session", "tag"], unique = true),
-    Index(value = ["session"]),
-    Index(value = ["tag"])
-], foreignKeys = [
-    ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = ForeignKey.CASCADE),
-    ForeignKey(entity = Tag::class, parentColumns = ["id"], childColumns = ["tag"], onDelete = ForeignKey.CASCADE)
-])
+@Entity(
+    indices = [
+        Index(value = ["session", "tag"], unique = true),
+        Index(value = ["session"]),
+        Index(value = ["tag"])
+    ],
+    foreignKeys = [
+        ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = Tag::class, parentColumns = ["id"], childColumns = ["tag"], onDelete = ForeignKey.CASCADE)
+    ]
+)
 data class SessionTag(
     @PrimaryKey(autoGenerate = true)
     val id: Long,

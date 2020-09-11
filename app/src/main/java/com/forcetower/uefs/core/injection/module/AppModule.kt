@@ -25,19 +25,19 @@ import android.content.SharedPreferences
 import android.webkit.WebSettings
 import androidx.preference.PreferenceManager
 import androidx.room.Room
-import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
+import com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherResourceProvider
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.Module
 import dagger.Provides
+import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.components.ApplicationComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
-import dagger.Reusable
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -52,35 +52,35 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSharedPreferences(context: Context): SharedPreferences =
-            PreferenceManager.getDefaultSharedPreferences(context)
+        PreferenceManager.getDefaultSharedPreferences(context)
 
     @Provides
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
-            Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-                .addMigrations()
-                .enableMultiInstanceInvalidation()
-                .fallbackToDestructiveMigrationOnDowngrade()
-                .build()
+        Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
+            .addMigrations()
+            .enableMultiInstanceInvalidation()
+            .fallbackToDestructiveMigrationOnDowngrade()
+            .build()
 
     @Provides
     @Singleton
     fun provideApiDatabase(context: Context): APIDatabase =
-            Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
-                .fallbackToDestructiveMigration()
-                .build()
+        Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
     fun provideEventDatabase(context: Context): EventDatabase =
-            Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
-                    .fallbackToDestructiveMigration()
-                    .build()
+        Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
+            .fallbackToDestructiveMigration()
+            .build()
 
     @Provides
     @Singleton
     fun providePlayGames(context: Context): GooglePlayGamesInstance =
-            GooglePlayGamesInstance(context)
+        GooglePlayGamesInstance(context)
 
     @Provides
     @Singleton

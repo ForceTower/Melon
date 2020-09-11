@@ -81,11 +81,13 @@ class HomeBottomFragment : UFragment() {
     private fun editCourse() {
         if (!preferences.isStudentFromUEFS()) return
         val dialog = SelectCourseDialog()
-        dialog.setCallback(object : CourseSelectionCallback {
-            override fun onSelected(course: Course) {
-                viewModel.setSelectedCourse(course)
+        dialog.setCallback(
+            object : CourseSelectionCallback {
+                override fun onSelected(course: Course) {
+                    viewModel.setSelectedCourse(course)
+                }
             }
-        })
+        )
         dialog.show(childFragmentManager, "dialog_course")
     }
 
@@ -103,11 +105,14 @@ class HomeBottomFragment : UFragment() {
     private fun featureFlags() {
         val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
         val demandCommandFlag = remoteConfig.getBoolean("feature_flag_demand_commander")
-        viewModel.flags.observe(viewLifecycleOwner, Observer {
-            if (demandCommandFlag && (it?.demandOpen == true || demandFlag)) {
-                toggleItem(R.id.demand, true)
+        viewModel.flags.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (demandCommandFlag && (it?.demandOpen == true || demandFlag)) {
+                    toggleItem(R.id.demand, true)
+                }
             }
-        })
+        )
 
         val uefsStudent = preferences.isStudentFromUEFS()
 

@@ -77,12 +77,15 @@ class BigTrayService : LifecycleService() {
             running = true
             Timber.d("Start action!")
             startForeground(NOTIFICATION_BIG_TRAY, createNotification())
-            repository.beginWith(7000).observe(this, Observer {
-                if (trayData != it) {
-                    trayData = it
-                    startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+            repository.beginWith(7000).observe(
+                this,
+                Observer {
+                    if (trayData != it) {
+                        trayData = it
+                        startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                    }
                 }
-            })
+            )
         } else {
             Timber.d("Ignored new run attempt while it's already running")
         }

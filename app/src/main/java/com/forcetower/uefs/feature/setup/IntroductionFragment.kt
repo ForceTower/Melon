@@ -34,11 +34,11 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
-import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -69,9 +69,12 @@ class IntroductionFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        repository.getFrequencies().observe(viewLifecycleOwner, Observer {
-            viewModel.syncFrequencies = it
-        })
+        repository.getFrequencies().observe(
+            viewLifecycleOwner,
+            Observer {
+                viewModel.syncFrequencies = it
+            }
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -79,12 +82,14 @@ class IntroductionFragment : UFragment() {
         if (!uefsStudent) binding.textSelectCourse.visibility = View.INVISIBLE
         binding.textSelectCourseInternal.setOnClickListener {
             val dialog = SelectCourseDialog()
-            dialog.setCallback(object : CourseSelectionCallback {
-                override fun onSelected(course: Course) {
-                    viewModel.setSelectedCourse(course)
-                    binding.textSelectCourseInternal.setText(course.name)
+            dialog.setCallback(
+                object : CourseSelectionCallback {
+                    override fun onSelected(course: Course) {
+                        viewModel.setSelectedCourse(course)
+                        binding.textSelectCourseInternal.setText(course.name)
+                    }
                 }
-            })
+            )
             dialog.show(childFragmentManager, "dialog_course")
         }
 
@@ -134,12 +139,12 @@ class IntroductionFragment : UFragment() {
     private fun onImagePicked(uri: Uri) {
         viewModel.setSelectedImage(uri)
         GlideApp.with(requireContext())
-                .load(uri)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(binding.imageUserImage)
+            .load(uri)
+            .fallback(R.mipmap.ic_unes_large_image_512)
+            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .circleCrop()
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(binding.imageUserImage)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -152,17 +157,17 @@ class IntroductionFragment : UFragment() {
                     val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
                     val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
                     CropImage.activity(uri)
-                            .setFixAspectRatio(true)
-                            .setAspectRatio(1, 1)
-                            .setCropShape(CropImageView.CropShape.OVAL)
-                            .setBackgroundColor(bg)
-                            .setBorderLineColor(ac)
-                            .setBorderCornerColor(ac)
-                            .setActivityMenuIconColor(ac)
-                            .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
-                            .setActivityTitle(getString(R.string.cut_profile_image))
-                            .setGuidelines(CropImageView.Guidelines.OFF)
-                            .start(requireContext(), this)
+                        .setFixAspectRatio(true)
+                        .setAspectRatio(1, 1)
+                        .setCropShape(CropImageView.CropShape.OVAL)
+                        .setBackgroundColor(bg)
+                        .setBorderLineColor(ac)
+                        .setBorderCornerColor(ac)
+                        .setActivityMenuIconColor(ac)
+                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
+                        .setActivityTitle(getString(R.string.cut_profile_image))
+                        .setGuidelines(CropImageView.Guidelines.OFF)
+                        .start(requireContext(), this)
                 }
             }
             CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {

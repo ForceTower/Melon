@@ -29,7 +29,7 @@ private const val formatPattern = "d 'de' MMMM"
 
 @SuppressLint("ConstantLocale")
 val FORMATTER_MONTH_DAY: DateTimeFormatter =
-        DateTimeFormatter.ofPattern(formatPattern, Locale.getDefault())
+    DateTimeFormatter.ofPattern(formatPattern, Locale.getDefault())
 
 data class EventDay(
     val order: Int,

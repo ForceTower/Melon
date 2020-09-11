@@ -25,9 +25,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index(value = ["session_id"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["session_id"], unique = true)
+    ]
+)
 data class SessionStar(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,

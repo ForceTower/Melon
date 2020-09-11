@@ -73,10 +73,12 @@ class DisciplineSemesterFragment : UFragment() {
                 changeDuration = 160L
                 removeDuration = 120L
             }
-            setRecycledViewPool(RecyclerView.RecycledViewPool().apply {
-                setMaxRecycledViews(4, 7)
-                setMaxRecycledViews(8, 15)
-            })
+            setRecycledViewPool(
+                RecyclerView.RecycledViewPool().apply {
+                    setMaxRecycledViews(4, 7)
+                    setMaxRecycledViews(8, 15)
+                }
+            )
         }
         swipeRefreshLayout.setOnRefreshListener {
             localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
@@ -86,18 +88,24 @@ class DisciplineSemesterFragment : UFragment() {
             localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
-        localDisciplineVM.refreshing.observe(viewLifecycleOwner, {
-            swipeRefreshLayout.isRefreshing = it
-            binding.loading = it
-        })
+        localDisciplineVM.refreshing.observe(
+            viewLifecycleOwner,
+            {
+                swipeRefreshLayout.isRefreshing = it
+                binding.loading = it
+            }
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(viewLifecycleOwner, Observer {
-            populateInterface(it)
-            binding.hasData = it.isNotEmpty()
-        })
+        viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(
+            viewLifecycleOwner,
+            Observer {
+                populateInterface(it)
+                binding.hasData = it.isNotEmpty()
+            }
+        )
     }
 
     private fun populateInterface(classes: List<ClassFullWithGroup>) {

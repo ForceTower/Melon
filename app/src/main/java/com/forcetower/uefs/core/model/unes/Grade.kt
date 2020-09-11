@@ -26,7 +26,6 @@ import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
-import java.util.UUID
 
 /**
  * Notified Status
@@ -36,12 +35,15 @@ import java.util.UUID
  * 3 -> Grade posted
  * 4 -> Grade changed
  */
-@Entity(foreignKeys = [
-    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
-], indices = [
-    Index(value = ["class_id"]),
-    Index(value = ["name", "class_id", "grouping"], unique = true)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ],
+    indices = [
+        Index(value = ["class_id"]),
+        Index(value = ["name", "class_id", "grouping"], unique = true)
+    ]
+)
 data class Grade(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,
@@ -56,21 +58,23 @@ data class Grade(
 ) {
     fun hasGrade(): Boolean {
         val grade = this.grade
-        return (grade != null &&
+        return (
+            grade != null &&
                 grade.trim().isNotEmpty() &&
                 !grade.trim().equals("Não Divulgada", ignoreCase = true) &&
                 !grade.trim().equals("-", ignoreCase = true) &&
                 !grade.trim().equals("--", ignoreCase = true) &&
                 !grade.trim().equals("*", ignoreCase = true) &&
                 !grade.trim().equals("**", ignoreCase = true) &&
-                !grade.trim().equals("-1", ignoreCase = true))
+                !grade.trim().equals("-1", ignoreCase = true)
+            )
     }
 
     fun gradeDouble() = grade?.trim()
-            ?.replace(",", ".")
-            ?.replace("-", "")
-            ?.replace("*", "")
-            ?.toDoubleOrNull()
+        ?.replace(",", ".")
+        ?.replace("-", "")
+        ?.replace("*", "")
+        ?.toDoubleOrNull()
 
     override fun toString(): String = "${name}_${grade}_${date}_$notified"
 }

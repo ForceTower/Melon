@@ -21,11 +21,11 @@
 package com.forcetower.uefs.core.injection.module
 
 import com.forcetower.uefs.core.model.service.ClassStatsData
-import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.service.Feedback
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Profile
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.FirebaseFirestore

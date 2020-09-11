@@ -62,15 +62,18 @@ class RatingActivity : UActivity() {
             viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
         }
 
-        viewModel.nextQuestion.observe(this, EventObserver {
-            val position = binding.viewPager.currentItem
-            val size = currentData?.size ?: 0
-            if (position + 1 >= size) {
-                finish()
-            } else {
-                binding.viewPager.setCurrentItem(position + 1, true)
+        viewModel.nextQuestion.observe(
+            this,
+            EventObserver {
+                val position = binding.viewPager.currentItem
+                val size = currentData?.size ?: 0
+                if (position + 1 >= size) {
+                    finish()
+                } else {
+                    binding.viewPager.setCurrentItem(position + 1, true)
+                }
             }
-        })
+        )
     }
 
     private fun useResponse(resource: Resource<List<Question>>) {

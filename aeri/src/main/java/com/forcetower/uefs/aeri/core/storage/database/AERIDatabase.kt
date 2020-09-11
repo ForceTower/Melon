@@ -25,9 +25,13 @@ import androidx.room.RoomDatabase
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.dao.NewsDao
 
-@Database(entities = [
-    Announcement::class
-], version = 1, exportSchema = true)
+@Database(
+    entities = [
+        Announcement::class
+    ],
+    version = 1,
+    exportSchema = true
+)
 abstract class AERIDatabase : RoomDatabase() {
     abstract fun news(): NewsDao
 }

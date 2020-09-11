@@ -21,10 +21,10 @@
 package com.forcetower.uefs.aeri.core.injection
 
 import android.content.Context
-import com.forcetower.uefs.aeri.feature.AERINewsFragment
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.uefs.aeri.core.injection.module.AERIDaggerModule
 import com.forcetower.uefs.aeri.core.injection.module.FeatureViewModels
+import com.forcetower.uefs.aeri.feature.AERINewsFragment
 import com.forcetower.uefs.core.injection.dependencies.AERIModuleDependencies
 import dagger.BindsInstance
 import dagger.Component

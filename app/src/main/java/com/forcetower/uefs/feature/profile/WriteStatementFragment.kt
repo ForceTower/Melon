@@ -61,13 +61,19 @@ class WriteStatementFragment : UFragment() {
         binding.publish.setOnClickListener { onPublishStatement() }
         viewModel.sendingStatement.observe(viewLifecycleOwner, Observer { binding.sending = it })
         viewModel.messages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
-        viewModel.statementSentSignal.observe(viewLifecycleOwner, EventObserver {
-            parentFragmentManager.popBackStack()
-        })
+        viewModel.statementSentSignal.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                parentFragmentManager.popBackStack()
+            }
+        )
         binding.up.setOnClickListener { parentFragmentManager.popBackStack() }
-        viewModel.getMeProfile().observe(viewLifecycleOwner, Observer {
-            binding.student = it.data
-        })
+        viewModel.getMeProfile().observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.student = it.data
+            }
+        )
     }
 
     private fun updateLabelTypeOnCheck(checked: Boolean) {

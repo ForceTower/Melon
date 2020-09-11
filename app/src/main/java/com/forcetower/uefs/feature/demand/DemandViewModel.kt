@@ -85,10 +85,13 @@ class DemandViewModel @ViewModelInject constructor(
                 if (it.status == Status.SUCCESS) {
                     analytics.logEvent("demand_loaded_disciplines_success", null)
                 } else {
-                    analytics.logEvent("demand_loaded_disciplines_failed", bundleOf(
-                        "code" to it.code,
-                        "message" to (it.message ?: "nothing at all")
-                    ))
+                    analytics.logEvent(
+                        "demand_loaded_disciplines_failed",
+                        bundleOf(
+                            "code" to it.code,
+                            "message" to (it.message ?: "nothing at all")
+                        )
+                    )
                 }
                 _loading.value = false
             }

@@ -34,8 +34,8 @@ import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.forcetower.core.adapters.ImageLoadListener
-import com.forcetower.uefs.R
 import com.forcetower.core.utils.ColorUtils
+import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentProfileBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_USER_ID
@@ -68,17 +68,20 @@ class ProfileFragment : UFragment() {
         check(userId != 0L) { "Well.. That happened" }
         viewModel.setUserId(userId)
         viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
-        viewModel.profile.observe(viewLifecycleOwner, Observer {
-            it ?: return@Observer
-            if (it.imageUrl == null) {
-                activity?.startPostponedEnterTransition()
+        viewModel.profile.observe(
+            viewLifecycleOwner,
+            Observer {
+                it ?: return@Observer
+                if (it.imageUrl == null) {
+                    activity?.startPostponedEnterTransition()
+                }
+                if (it.me) {
+                    binding.writeStatement.hide()
+                } else {
+                    binding.writeStatement.show()
+                }
             }
-            if (it.me) {
-                binding.writeStatement.hide()
-            } else {
-                binding.writeStatement.show()
-            }
-        })
+        )
 
         val headLoadListener = object : ImageLoadListener {
             override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
@@ -107,16 +110,22 @@ class ProfileFragment : UFragment() {
                 doOnLayout {
                     addOnScrollListener(
                         PushUpScrollListener(
-                            binding.up, it, R.id.student_name, R.id.student_course
+                            binding.up,
+                            it,
+                            R.id.student_name,
+                            R.id.student_course
                         )
                     )
                 }
             }
         }
 
-        viewModel.statements.observe(viewLifecycleOwner, Observer { statements ->
-            adapter.statements = statements.sortedByDescending { it.createdAt }
-        })
+        viewModel.statements.observe(
+            viewLifecycleOwner,
+            Observer { statements ->
+                adapter.statements = statements.sortedByDescending { it.createdAt }
+            }
+        )
 
         binding.up.setOnClickListener {
             requireActivity().finishAfterTransition()

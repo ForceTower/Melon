@@ -76,19 +76,21 @@ class DisciplinesProcessor(
                         clazz.allocations.forEach { allocation ->
                             val time = allocation.time
                             if (time != null) {
-                                allocations.add(ClassLocation(
-                                    groupId = groupId,
-                                    campus = allocation.space?.campus,
-                                    modulo = allocation.space?.modulo,
-                                    room = allocation.space?.location,
-                                    day = (time.day + 1).toWeekDay(),
-                                    dayInt = time.day + 1,
-                                    startsAt = time.start.removeSeconds(),
-                                    endsAt = time.end.removeSeconds(),
-                                    startsAtInt = time.start.createTimeInt(),
-                                    endsAtInt = time.end.createTimeInt(),
-                                    profileId = localProfileId
-                                ))
+                                allocations.add(
+                                    ClassLocation(
+                                        groupId = groupId,
+                                        campus = allocation.space?.campus,
+                                        modulo = allocation.space?.modulo,
+                                        room = allocation.space?.location,
+                                        day = (time.day + 1).toWeekDay(),
+                                        dayInt = time.day + 1,
+                                        startsAt = time.start.removeSeconds(),
+                                        endsAt = time.end.removeSeconds(),
+                                        startsAtInt = time.start.createTimeInt(),
+                                        endsAtInt = time.end.createTimeInt(),
+                                        profileId = localProfileId
+                                    )
+                                )
                             }
                         }
                         LectureProcessor(context, database, groupId, clazz.lectures, true).execute()
@@ -114,5 +116,4 @@ class DisciplinesProcessor(
             }
         }
     }
-
 }

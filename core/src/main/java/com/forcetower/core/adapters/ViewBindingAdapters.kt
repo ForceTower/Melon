@@ -24,12 +24,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.view.Window
 import android.view.WindowInsets
-import android.view.WindowInsetsController
 import android.widget.TextView
 import androidx.core.view.ViewCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -151,19 +148,25 @@ data class InitialPadding(
 )
 
 private fun recordInitialPaddingForView(view: View) = InitialPadding(
-        view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+    view.paddingLeft,
+    view.paddingTop,
+    view.paddingRight,
+    view.paddingBottom
+)
 
 fun View.requestApplyInsetsWhenAttached() {
     if (isAttachedToWindow) {
         requestApplyInsets()
     } else {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                v.requestApplyInsets()
-            }
+        addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    v.requestApplyInsets()
+                }
 
-            override fun onViewDetachedFromWindow(v: View) = Unit
-        })
+                override fun onViewDetachedFromWindow(v: View) = Unit
+            }
+        )
     }
 }
 

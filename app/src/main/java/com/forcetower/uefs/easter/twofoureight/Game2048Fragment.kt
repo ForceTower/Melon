@@ -94,13 +94,15 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         val mScoreKeeper = ScoreKeeper(requireActivity())
 
         mScoreKeeper.setViews(binding.tvScore, binding.tvHighscore)
-        mScoreKeeper.setScoreListener(object : Game.ScoreListener {
-            override fun onNewScore(score: Long) {
-                if (score >= 50000) {
-                    unlockDarkTheme()
+        mScoreKeeper.setScoreListener(
+            object : Game.ScoreListener {
+                override fun onNewScore(score: Long) {
+                    if (score >= 50000) {
+                        unlockDarkTheme()
+                    }
                 }
             }
-        })
+        )
 
         mGame = Game()
         mGame.setup(binding.gameview)

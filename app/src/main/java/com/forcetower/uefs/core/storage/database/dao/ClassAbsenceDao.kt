@@ -64,8 +64,8 @@ abstract class ClassAbsenceDao {
         val profile = getMeProfile()
 
         classes.mapNotNull { getClass(it.disciplineCode, it.semester) }
-                .distinctBy { it.uid }
-                .forEach { resetClassAbsences(it.uid) }
+            .distinctBy { it.uid }
+            .forEach { resetClassAbsences(it.uid) }
 
         classes.forEach {
             try {
@@ -73,15 +73,17 @@ abstract class ClassAbsenceDao {
                 val clazz = getClass(it.disciplineCode, it.semester)
 
                 if (clazz != null) {
-                    insert(ClassAbsence(
-                        classId = clazz.uid,
-                        profileId = profile.uid,
-                        date = it.date,
-                        description = it.description,
-                        sequence = sequence,
-                        notified = false,
-                        grouping = it.group
-                    ))
+                    insert(
+                        ClassAbsence(
+                            classId = clazz.uid,
+                            profileId = profile.uid,
+                            date = it.date,
+                            description = it.description,
+                            sequence = sequence,
+                            notified = false,
+                            grouping = it.group
+                        )
+                    )
                 } else {
                     Timber.e("<abs_no_class> :: Class not found for ${it.disciplineCode}_${it.semester}")
                 }

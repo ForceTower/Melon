@@ -103,11 +103,14 @@ class AdventureFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        profileViewModel.getMeProfile().observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                profileViewModel.setProfileId(it.data?.id)
+        profileViewModel.getMeProfile().observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    profileViewModel.setProfileId(it.data?.id)
+                }
             }
-        })
+        )
 
         viewModel.run {
             achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
@@ -120,17 +123,20 @@ class AdventureFragment : UFragment() {
             openStartupDialog()
         }
 
-        activity?.mGamesInstance?.connectionStatus?.observe(viewLifecycleOwner, EventObserver {
-            when (it) {
-                GameConnectionStatus.DISCONNECTED -> openStartupDialog()
-                GameConnectionStatus.CONNECTED -> {
-                    val fragment = childFragmentManager.findFragmentByTag("adventure_sign_in")
-                    (fragment as? DialogFragment)?.dismiss()
-                    showSnack(getString(R.string.connected_to_play_games))
+        activity?.mGamesInstance?.connectionStatus?.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                when (it) {
+                    GameConnectionStatus.DISCONNECTED -> openStartupDialog()
+                    GameConnectionStatus.CONNECTED -> {
+                        val fragment = childFragmentManager.findFragmentByTag("adventure_sign_in")
+                        (fragment as? DialogFragment)?.dismiss()
+                        showSnack(getString(R.string.connected_to_play_games))
+                    }
+                    GameConnectionStatus.LOADING -> Unit
                 }
-                GameConnectionStatus.LOADING -> Unit
             }
-        })
+        )
     }
 
     override fun onPause() {

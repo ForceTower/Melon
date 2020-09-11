@@ -29,12 +29,12 @@ import androidx.work.WorkManager
 
 fun OneTimeWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
     WorkManager.getInstance(context).beginUniqueWork(
-            name,
-            if (replace)
-                ExistingWorkPolicy.REPLACE
-            else
-                ExistingWorkPolicy.KEEP,
-            this
+        name,
+        if (replace)
+            ExistingWorkPolicy.REPLACE
+        else
+            ExistingWorkPolicy.KEEP,
+        this
     ).enqueue()
 }
 
@@ -44,11 +44,11 @@ fun OneTimeWorkRequest.enqueue(context: Context) {
 
 fun PeriodicWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
-            name,
-            if (replace)
-                ExistingPeriodicWorkPolicy.REPLACE
-            else
-                ExistingPeriodicWorkPolicy.KEEP,
-            this
+        name,
+        if (replace)
+            ExistingPeriodicWorkPolicy.REPLACE
+        else
+            ExistingPeriodicWorkPolicy.KEEP,
+        this
     )
 }

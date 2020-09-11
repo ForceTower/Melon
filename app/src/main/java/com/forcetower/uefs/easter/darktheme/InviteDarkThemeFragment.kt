@@ -56,35 +56,41 @@ class InviteDarkThemeFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.currentCall.observe(viewLifecycleOwner, EventObserver {
-            when (it.status) {
-                Status.SUCCESS -> {
-                    binding.loadingPb.visibility = GONE
-                    showSnack(getString(R.string.dark_theme_invite_sent))
-                }
-                Status.ERROR -> {
-                    binding.loadingPb.visibility = GONE
-                    val messageRes = when (it.code) {
-                        404 -> R.string.dark_theme_user_not_found
-                        403 -> R.string.dark_theme_no_more_invites
-                        402 -> R.string.user_already_unlocked_dark_theme
-                        401 -> R.string.you_are_not_connected_to_the_unesverso
-                        else -> R.string.what_firebase_says_the_app_commits
+        viewModel.currentCall.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                when (it.status) {
+                    Status.SUCCESS -> {
+                        binding.loadingPb.visibility = GONE
+                        showSnack(getString(R.string.dark_theme_invite_sent))
                     }
-                    showSnack(getString(messageRes), Snackbar.LENGTH_LONG)
+                    Status.ERROR -> {
+                        binding.loadingPb.visibility = GONE
+                        val messageRes = when (it.code) {
+                            404 -> R.string.dark_theme_user_not_found
+                            403 -> R.string.dark_theme_no_more_invites
+                            402 -> R.string.user_already_unlocked_dark_theme
+                            401 -> R.string.you_are_not_connected_to_the_unesverso
+                            else -> R.string.what_firebase_says_the_app_commits
+                        }
+                        showSnack(getString(messageRes), Snackbar.LENGTH_LONG)
+                    }
+                    Status.LOADING -> Unit
                 }
-                Status.LOADING -> Unit
             }
-        })
+        )
 
-        viewModel.profile.observe(viewLifecycleOwner, Observer {
-            if (it == null) {
-                binding.textInvitesLeft.text = "0"
-            } else {
-                val invites = it.darkThemeInvites
-                binding.textInvitesLeft.text = "$invites"
+        viewModel.profile.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it == null) {
+                    binding.textInvitesLeft.text = "0"
+                } else {
+                    val invites = it.darkThemeInvites
+                    binding.textInvitesLeft.text = "$invites"
+                }
             }
-        })
+        )
     }
 
     private fun onSendRandom() {

@@ -21,7 +21,6 @@
 package dev.forcetower.event.feature.create
 
 import android.net.Uri
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

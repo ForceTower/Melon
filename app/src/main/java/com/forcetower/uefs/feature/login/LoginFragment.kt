@@ -101,8 +101,8 @@ class LoginFragment : UFragment() {
     private fun toAbout() {
         val bundle = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity())
         val extras = ActivityNavigator.Extras.Builder()
-                .setActivityOptions(bundle)
-                .build()
+            .setActivityOptions(bundle)
+            .build()
         findNavController().navigate(R.id.action_login_open_about, null, null, extras)
     }
 }

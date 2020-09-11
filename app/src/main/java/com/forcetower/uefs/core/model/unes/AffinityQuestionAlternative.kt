@@ -27,13 +27,16 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = AffinityQuestion::class, childColumns = ["question_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
-    ForeignKey(entity = SStudent::class, childColumns = ["student_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
-], indices = [
-    Index("student_id", unique = false),
-    Index("question_id", unique = false)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = AffinityQuestion::class, childColumns = ["question_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
+        ForeignKey(entity = SStudent::class, childColumns = ["student_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
+    ],
+    indices = [
+        Index("student_id", unique = false),
+        Index("question_id", unique = false)
+    ]
+)
 data class AffinityQuestionAlternative(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

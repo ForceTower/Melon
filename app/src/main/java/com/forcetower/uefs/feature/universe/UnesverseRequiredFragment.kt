@@ -61,15 +61,21 @@ class UnesverseRequiredFragment : UFragment() {
         binding.connecting = viewModel.isLoggingIn
         binding.lifecycleOwner = this
         viewModel.loggingIn.observe(viewLifecycleOwner, Observer { Unit })
-        viewModel.loginMessenger.observe(viewLifecycleOwner, EventObserver {
-            val message = getString(it)
-            showSnack(message)
-        })
-        viewModel.access.observe(viewLifecycleOwner, Observer {
-            if (it != null) {
-                findNavController().navigate(R.id.action_unesverse_required_to_presentation)
+        viewModel.loginMessenger.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val message = getString(it)
+                showSnack(message)
             }
-        })
+        )
+        viewModel.access.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it != null) {
+                    findNavController().navigate(R.id.action_unesverse_required_to_presentation)
+                }
+            }
+        )
     }
 
     private fun connect() {

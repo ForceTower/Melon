@@ -28,7 +28,6 @@ import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.HandlerThread
 import android.os.Looper
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -137,19 +136,22 @@ class HomeActivity : UGameActivity() {
             preferences.isStudentFromUEFS() &&
             !preferences.getBoolean("__user_in_app_review_once__", false)
         ) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                lifecycleScope.launchWhenCreated {
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                        try {
-                            val request = reviewManager.requestReview()
-                            reviewManager.launchReview(this@HomeActivity, request)
-                        } catch (error: Throwable) {
-                            Timber.e(error, "on request review")
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    lifecycleScope.launchWhenCreated {
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                            try {
+                                val request = reviewManager.requestReview()
+                                reviewManager.launchReview(this@HomeActivity, request)
+                            } catch (error: Throwable) {
+                                Timber.e(error, "on request review")
+                            }
+                            preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
                         }
-                        preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
                     }
-                }
-            }, 2000)
+                },
+                2000
+            )
         }
     }
 
@@ -256,14 +258,20 @@ class HomeActivity : UGameActivity() {
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
-        viewModel.scheduleHideCount.observe(this, {
-            Timber.d("Schedule hidden stuff: $it")
-            analytics.setUserProperty("using_schedule_hide", "${it > 0}")
-            analytics.setUserProperty("using_schedule_hide_cnt", "$it")
-        })
-        viewModel.onMoveToSchedule.observe(this, EventObserver {
-            binding.bottomNavigation.selectedItemId = R.id.schedule
-        })
+        viewModel.scheduleHideCount.observe(
+            this,
+            {
+                Timber.d("Schedule hidden stuff: $it")
+                analytics.setUserProperty("using_schedule_hide", "${it > 0}")
+                analytics.setUserProperty("using_schedule_hide_cnt", "$it")
+            }
+        )
+        viewModel.onMoveToSchedule.observe(
+            this,
+            EventObserver {
+                binding.bottomNavigation.selectedItemId = R.id.schedule
+            }
+        )
     }
 
     private fun onAccessUpdate(access: Access?) {
@@ -317,14 +325,17 @@ class HomeActivity : UGameActivity() {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements().observe(this, {
-            it.entries.forEach { achievement ->
-                if (achievement.value == -1)
-                    unlockAchievement(achievement.key)
-                else
-                    updateAchievementProgress(achievement.key, achievement.value)
+        adventureViewModel.checkAchievements().observe(
+            this,
+            {
+                it.entries.forEach { achievement ->
+                    if (achievement.value == -1)
+                        unlockAchievement(achievement.key)
+                    else
+                        updateAchievementProgress(achievement.key, achievement.value)
+                }
             }
-        })
+        )
         checkServerAchievements()
     }
 
@@ -333,17 +344,20 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun checkServerAchievements() {
-        adventureViewModel.checkServerAchievements().observe(this, { achievements ->
-            achievements.forEach { achievement ->
-                try {
-                    if (achievement.progress != null) {
-                        updateAchievementProgress(achievement.identifier, achievement.progress)
-                    } else {
-                        unlockAchievement(achievement.identifier)
-                    }
-                } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+        adventureViewModel.checkServerAchievements().observe(
+            this,
+            { achievements ->
+                achievements.forEach { achievement ->
+                    try {
+                        if (achievement.progress != null) {
+                            updateAchievementProgress(achievement.identifier, achievement.progress)
+                        } else {
+                            unlockAchievement(achievement.identifier)
+                        }
+                    } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+                }
             }
-        })
+        )
     }
 
     override fun onResume() {

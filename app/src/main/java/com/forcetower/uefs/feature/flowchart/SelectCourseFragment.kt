@@ -51,16 +51,22 @@ class SelectCourseFragment : UFragment() {
             adapter = coursesAdapter
         }
 
-        viewModel.getFlowcharts().observe(viewLifecycleOwner, Observer {
-            Timber.d("Resource data ${it.data}")
-            if (it.data != null) {
-                coursesAdapter.submitList(it.data)
+        viewModel.getFlowcharts().observe(
+            viewLifecycleOwner,
+            Observer {
+                Timber.d("Resource data ${it.data}")
+                if (it.data != null) {
+                    coursesAdapter.submitList(it.data)
+                }
             }
-        })
+        )
 
-        viewModel.onFlowchartSelect.observe(viewLifecycleOwner, EventObserver {
-            val direction = SelectCourseFragmentDirections.actionSelectToStart(it.courseId)
-            findNavController().navigate(direction)
-        })
+        viewModel.onFlowchartSelect.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val direction = SelectCourseFragmentDirections.actionSelectToStart(it.courseId)
+                findNavController().navigate(direction)
+            }
+        )
     }
 }

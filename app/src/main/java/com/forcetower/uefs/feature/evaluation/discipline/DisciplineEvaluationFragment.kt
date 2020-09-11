@@ -67,10 +67,13 @@ class DisciplineEvaluationFragment : UFragment() {
                 removeDuration = 100L
             }
         }
-        viewModel.teacherIntSelect.observe(viewLifecycleOwner, EventObserver {
-            val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id, null)
-            findNavController().navigate(directions)
-        })
+        viewModel.teacherIntSelect.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id, null)
+                findNavController().navigate(directions)
+            }
+        )
         binding.btnEvaluate.setOnClickListener {
             val directions = DisciplineEvaluationFragmentDirections.actionEvalDisciplineToRating(args.code, args.department)
             findNavController().navigate(directions)
@@ -88,22 +91,22 @@ class DisciplineEvaluationFragment : UFragment() {
             val teachers = data.teachers
             val evaluation = if (teachers != null) {
                 DisciplineEvaluation(
-                        data.name,
-                        data.departmentName ?: data.department,
-                        data.qtdStudents,
-                        teachers.groupBy { it.semesterSystemId }.entries.map { entry ->
-                            val key = entry.key
-                            val semester = entry.value
-                            val mean = semester.sumByDouble { it.mean } / semester.size
-                            val first = semester.first()
-                            SemesterMean(key, first.semester, mean)
-                        }.sortedBy { id * -1 },
-                        teachers.groupBy { it.teacherId }.entries.map { entry ->
-                            val appearances = entry.value
-                            val appear = appearances.maxByOrNull { it.semesterSystemId }!!
-                            val mean = appearances.sumByDouble { it.mean } / appearances.size
-                            TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
-                        }.sortedBy { it.name }
+                    data.name,
+                    data.departmentName ?: data.department,
+                    data.qtdStudents,
+                    teachers.groupBy { it.semesterSystemId }.entries.map { entry ->
+                        val key = entry.key
+                        val semester = entry.value
+                        val mean = semester.sumByDouble { it.mean } / semester.size
+                        val first = semester.first()
+                        SemesterMean(key, first.semester, mean)
+                    }.sortedBy { id * -1 },
+                    teachers.groupBy { it.teacherId }.entries.map { entry ->
+                        val appearances = entry.value
+                        val appear = appearances.maxByOrNull { it.semesterSystemId }!!
+                        val mean = appearances.sumByDouble { it.mean } / appearances.size
+                        TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
+                    }.sortedBy { it.name }
                 )
             } else {
                 DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())

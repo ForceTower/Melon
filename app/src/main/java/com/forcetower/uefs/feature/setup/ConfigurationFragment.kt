@@ -54,12 +54,14 @@ class ConfigurationFragment : UFragment() {
         binding.textSetupSync.setText(viewModel.getSelectedFrequency().name)
         binding.textSetupSync.setOnClickListener {
             val dialog = SelectSyncDialog()
-            dialog.setCallback(object : FrequencySelectionCallback {
-                override fun onSelected(frequency: SyncFrequency) {
-                    viewModel.setSelectedFrequency(frequency)
-                    binding.textSetupSync.setText(frequency.name)
+            dialog.setCallback(
+                object : FrequencySelectionCallback {
+                    override fun onSelected(frequency: SyncFrequency) {
+                        viewModel.setSelectedFrequency(frequency)
+                        binding.textSetupSync.setText(frequency.name)
+                    }
                 }
-            })
+            )
             dialog.show(childFragmentManager, "dialog_sync")
         }
 

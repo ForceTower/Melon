@@ -130,15 +130,18 @@ class SyncService : LifecycleService() {
         }
     }
 
-    private fun updateDataForService(): Boolean = handler.postDelayed({
-        Timber.d("Will update data")
-        updateData()
-        if (shouldRequestSyncUpdate) {
-            updateDataForService()
-        } else {
-            Timber.d("Request stopped...")
-        }
-    }, UPDATE_DATA_INTERVAL)
+    private fun updateDataForService(): Boolean = handler.postDelayed(
+        {
+            Timber.d("Will update data")
+            updateData()
+            if (shouldRequestSyncUpdate) {
+                updateDataForService()
+            } else {
+                Timber.d("Request stopped...")
+            }
+        },
+        UPDATE_DATA_INTERVAL
+    )
 
     private fun updateData() {
         serviceScope.launch {

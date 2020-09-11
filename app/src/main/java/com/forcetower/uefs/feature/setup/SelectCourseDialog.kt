@@ -51,11 +51,14 @@ class SelectCourseDialog : RoundedDialog() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.courses.observe(viewLifecycleOwner, Observer {
-            if (it.data != null && it.data.isNotEmpty()) {
-                populateCourses(it.data)
+        viewModel.courses.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it.data != null && it.data.isNotEmpty()) {
+                    populateCourses(it.data)
+                }
             }
-        })
+        )
     }
 
     private fun populateCourses(data: List<Course>) {

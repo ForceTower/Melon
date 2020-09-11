@@ -34,17 +34,20 @@ import com.bumptech.glide.request.RequestOptions
 import com.bumptech.glide.request.target.Target
 import com.forcetower.core.R
 
-@BindingAdapter(value = [
-    "imageUri",
-    "imageUrl",
-    "placeholder",
-    "clipCircle",
-    "listener",
-    "crossFade",
-    "overrideImageWidth",
-    "overrideImageHeight",
-    "dontTransform"
-], requireAll = false)
+@BindingAdapter(
+    value = [
+        "imageUri",
+        "imageUrl",
+        "placeholder",
+        "clipCircle",
+        "listener",
+        "crossFade",
+        "overrideImageWidth",
+        "overrideImageHeight",
+        "dontTransform"
+    ],
+    requireAll = false
+)
 fun imageUri(
     imageView: ImageView,
     imageUri: Uri? = null,
@@ -59,7 +62,8 @@ fun imageUri(
 ) {
     val url = imageUrl ?: imageUri
     val placeholderDrawable = placeholder ?: AppCompatResources.getDrawable(
-        imageView.context, R.mipmap.ic_unes_large_image_512
+        imageView.context,
+        R.mipmap.ic_unes_large_image_512
     )
 
     val circular = clipCircle ?: false
@@ -83,28 +87,30 @@ fun imageUri(
     if (dontTransform == true) request = request.dontTransform()
 
     if (listener != null) {
-        request = request.listener(object : RequestListener<Drawable> {
-            override fun onResourceReady(
-                resource: Drawable,
-                model: Any?,
-                target: Target<Drawable>?,
-                dataSource: DataSource?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoaded(resource)
-                return false
-            }
+        request = request.listener(
+            object : RequestListener<Drawable> {
+                override fun onResourceReady(
+                    resource: Drawable,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    dataSource: DataSource?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    listener.onImageLoaded(resource)
+                    return false
+                }
 
-            override fun onLoadFailed(
-                e: GlideException?,
-                model: Any?,
-                target: Target<Drawable>?,
-                isFirstResource: Boolean
-            ): Boolean {
-                listener.onImageLoadFailed()
-                return false
+                override fun onLoadFailed(
+                    e: GlideException?,
+                    model: Any?,
+                    target: Target<Drawable>?,
+                    isFirstResource: Boolean
+                ): Boolean {
+                    listener.onImageLoadFailed()
+                    return false
+                }
             }
-        })
+        )
     }
     request.into(imageView)
 }

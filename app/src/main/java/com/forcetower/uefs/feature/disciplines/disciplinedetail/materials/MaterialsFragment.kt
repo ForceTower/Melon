@@ -60,16 +60,19 @@ class MaterialsFragment : UFragment() {
             }
         }
 
-        viewModel.materials.observe(viewLifecycleOwner, Observer {
-            materialsAdapter.submitList(it)
-            if (it.isEmpty()) {
-                binding.layoutNoData.visibility = VISIBLE
-                binding.attachmentsRecycler.visibility = GONE
-            } else {
-                binding.layoutNoData.visibility = GONE
-                binding.attachmentsRecycler.visibility = VISIBLE
+        viewModel.materials.observe(
+            viewLifecycleOwner,
+            Observer {
+                materialsAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.layoutNoData.visibility = VISIBLE
+                    binding.attachmentsRecycler.visibility = GONE
+                } else {
+                    binding.layoutNoData.visibility = GONE
+                    binding.attachmentsRecycler.visibility = VISIBLE
+                }
             }
-        })
+        )
     }
 
     companion object {

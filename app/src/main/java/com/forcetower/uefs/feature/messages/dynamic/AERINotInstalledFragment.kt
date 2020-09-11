@@ -48,19 +48,25 @@ class AERINotInstalledFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        dynamicViewModel.downloadStatus.observe(viewLifecycleOwner, Observer {
-            binding.progressInstall.run {
-                progress = it.first.toInt()
-                max = it.second.toInt()
+        dynamicViewModel.downloadStatus.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.progressInstall.run {
+                    progress = it.first.toInt()
+                    max = it.second.toInt()
+                }
             }
-        })
+        )
     }
 
     private fun requestModuleInstall() {
         dynamicViewModel.requestAERIInstall()
-        dynamicViewModel.sessionStatusLive.observe(viewLifecycleOwner, Observer {
-            onStatusUpdate(it)
-        })
+        dynamicViewModel.sessionStatusLive.observe(
+            viewLifecycleOwner,
+            Observer {
+                onStatusUpdate(it)
+            }
+        )
     }
 
     private fun onStatusUpdate(@SplitInstallSessionStatus status: Int) {

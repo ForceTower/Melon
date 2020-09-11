@@ -25,9 +25,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(indices = [
-    Index(value = ["login"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["login"], unique = true)
+    ]
+)
 data class Contributor(
     @PrimaryKey
     var id: Long = 0,

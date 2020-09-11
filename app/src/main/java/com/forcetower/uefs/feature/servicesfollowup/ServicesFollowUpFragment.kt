@@ -28,9 +28,9 @@ import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.databinding.FragmentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.NamedFragmentAdapter
+import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -52,20 +52,26 @@ class ServicesFollowUpFragment : UFragment() {
         val pager = binding.pagerServices
         val tabs = binding.tabLayout
 
-        pager.adapter = NamedFragmentAdapter(childFragmentManager, listOf(
-            getString(R.string.service_requests_incomplete) to RequestedServicesFragment.newInstance("incomplete"),
-            getString(R.string.service_requests_completed) to RequestedServicesFragment.newInstance("complete"),
-            getString(R.string.service_requests_all) to RequestedServicesFragment.newInstance()
-        ))
+        pager.adapter = NamedFragmentAdapter(
+            childFragmentManager,
+            listOf(
+                getString(R.string.service_requests_incomplete) to RequestedServicesFragment.newInstance("incomplete"),
+                getString(R.string.service_requests_completed) to RequestedServicesFragment.newInstance("complete"),
+                getString(R.string.service_requests_all) to RequestedServicesFragment.newInstance()
+            )
+        )
         tabs.setupWithViewPager(pager)
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.pendingServices.observe(viewLifecycleOwner, EventObserver {
-            if (it.status == Status.ERROR) {
-                showSnack(getString(R.string.service_requests_load_failed))
+        viewModel.pendingServices.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                if (it.status == Status.ERROR) {
+                    showSnack(getString(R.string.service_requests_load_failed))
+                }
             }
-        })
+        )
     }
 }

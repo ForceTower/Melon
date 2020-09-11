@@ -24,9 +24,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index(value = ["type"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["type"], unique = true)
+    ]
+)
 data class SagresDocument(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

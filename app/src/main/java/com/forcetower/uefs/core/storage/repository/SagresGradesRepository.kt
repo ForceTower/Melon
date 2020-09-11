@@ -21,7 +21,6 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
@@ -35,9 +34,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome

@@ -28,8 +28,8 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.forcetower.uefs.R
 import com.forcetower.core.utils.ViewUtils
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
@@ -91,6 +91,7 @@ class ContributorsFragment : UFragment() {
                 .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
                 .addDefaultShareMenuItem()
                 .build(),
-            Uri.parse(string))
+            Uri.parse(string)
+        )
     }
 }

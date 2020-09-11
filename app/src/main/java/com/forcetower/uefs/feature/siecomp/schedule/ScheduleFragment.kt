@@ -62,13 +62,19 @@ class ScheduleFragment : UFragment() {
             executePendingBindings()
         }
 
-        viewModel.navigateToSessionAction.observe(viewLifecycleOwner, EventObserver {
-            openSessionDetails(it)
-        })
+        viewModel.navigateToSessionAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                openSessionDetails(it)
+            }
+        )
 
-        viewModel.snackbarMessenger.observe(viewLifecycleOwner, EventObserver {
-            showSnack(getString(it))
-        })
+        viewModel.snackbarMessenger.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                showSnack(getString(it))
+            }
+        )
 
         return binding.root
     }
@@ -83,23 +89,29 @@ class ScheduleFragment : UFragment() {
                 startActivity(Intent(requireContext(), SIECOMPEditorActivity::class.java))
             }
         }
-        viewModel.access.observe(viewLifecycleOwner, Observer {
-            binding.createSessionFloat.visibility = if (it != null) {
-                View.VISIBLE
-            } else {
-                View.GONE
+        viewModel.access.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.createSessionFloat.visibility = if (it != null) {
+                    View.VISIBLE
+                } else {
+                    View.GONE
+                }
             }
-        })
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.refreshSource.observe(viewLifecycleOwner, Observer {
-            when (it.status) {
-                Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
-                Status.LOADING, Status.SUCCESS -> {}
+        viewModel.refreshSource.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it.status) {
+                    Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
+                    Status.LOADING, Status.SUCCESS -> {}
+                }
             }
-        })
+        )
 
         if (!viewModel.sessionsLoaded) {
             viewModel.sessionsLoaded = true

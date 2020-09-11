@@ -67,8 +67,8 @@ class ScheduleItemHeaderDecoration(
 
     init {
         val attrs = context.obtainStyledAttributes(
-                R.style.Widget_Schedule_TimeHeaders,
-                R.styleable.TimeHeader
+            R.style.Widget_Schedule_TimeHeaders,
+            R.styleable.TimeHeader
         )
 
         paint = TextPaint(Paint.ANTI_ALIAS_FLAG).apply {
@@ -76,8 +76,8 @@ class ScheduleItemHeaderDecoration(
             textSize = attrs.getDimensionOrThrow(R.styleable.TimeHeader_hourTextSize)
             try {
                 typeface = ResourcesCompat.getFont(
-                        context,
-                        attrs.getResourceIdOrThrow(R.styleable.TimeHeader_android_fontFamily)
+                    context,
+                    attrs.getResourceIdOrThrow(R.styleable.TimeHeader_android_fontFamily)
                 )
             } catch (_: Exception) {
                 // ignore
@@ -92,9 +92,9 @@ class ScheduleItemHeaderDecoration(
     }
 
     private val timeSlots: Map<Int, StaticLayout> =
-            indexSessionHeaders(sessions, zoneId).map {
-                it.first to createHeader(it.second)
-            }.toMap()
+        indexSessionHeaders(sessions, zoneId).map {
+            it.first to createHeader(it.second)
+        }.toMap()
 
     override fun onDrawOver(c: Canvas, parent: RecyclerView, state: RecyclerView.State) {
         if (timeSlots.isEmpty() || parent.isEmpty()) return
@@ -106,7 +106,7 @@ class ScheduleItemHeaderDecoration(
             val view = parent.getChildAt(i)
             if (view == null) {
                 Timber.w(
-                        """View is null. Index: $i, childCount: ${parent.childCount},
+                    """View is null. Index: $i, childCount: ${parent.childCount},
                         |RecyclerView.State: $state""".trimMargin()
                 )
                 continue
@@ -117,8 +117,8 @@ class ScheduleItemHeaderDecoration(
                 timeSlots[position]?.let { layout ->
                     paint.alpha = (view.alpha * 255).toInt()
                     val top = (viewTop + paddingTop)
-                            .coerceAtLeast(paddingTop)
-                            .coerceAtMost(prevHeaderTop - layout.height)
+                        .coerceAtLeast(paddingTop)
+                        .coerceAtMost(prevHeaderTop - layout.height)
                     c.withTranslation(y = top.toFloat()) {
                         layout.draw(c)
                     }
@@ -176,8 +176,8 @@ class ScheduleItemHeaderDecoration(
 
 fun indexSessionHeaders(sessions: List<SessionWithData>, zoneId: ZoneId): List<Pair<Int, ZonedDateTime>> {
     return sessions
-            .mapIndexed { index, session ->
-                index to TimeUtils.zonedTime(session.session.startTime, zoneId)
-            }
-            .distinctBy { it.second.hour to it.second.minute }
+        .mapIndexed { index, session ->
+            index to TimeUtils.zonedTime(session.session.startTime, zoneId)
+        }
+        .distinctBy { it.second.hour to it.second.minute }
 }

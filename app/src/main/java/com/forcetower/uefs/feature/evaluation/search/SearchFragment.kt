@@ -56,17 +56,19 @@ class SearchFragment : UFragment() {
         return FragmentEvaluationSearchBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
-            omniText.addTextChangedListener(object : TextWatcher {
-                override fun afterTextChanged(edit: Editable?) {
-                    val text = edit?.toString() ?: ""
-                    if (text.length >= 3 || text.isEmpty()) {
-                        Timber.d("Querying $text")
-                        viewModel.query(text)
+            omniText.addTextChangedListener(
+                object : TextWatcher {
+                    override fun afterTextChanged(edit: Editable?) {
+                        val text = edit?.toString() ?: ""
+                        if (text.length >= 3 || text.isEmpty()) {
+                            Timber.d("Querying $text")
+                            viewModel.query(text)
+                        }
                     }
+                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
                 }
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-            })
+            )
             wildcardRecycler.adapter = adapter
             wildcardRecycler.itemAnimator?.run {
                 addDuration = 120L
@@ -80,12 +82,18 @@ class SearchFragment : UFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         viewModel.downloadDatabase().observe(viewLifecycleOwner, Observer { loadKnowledge(it) })
-        viewModel.query.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it)
-        })
-        viewModel.entitySelect.observe(viewLifecycleOwner, EventObserver {
-            onEvalEntitySelected(it)
-        })
+        viewModel.query.observe(
+            viewLifecycleOwner,
+            Observer {
+                adapter.submitList(it)
+            }
+        )
+        viewModel.entitySelect.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                onEvalEntitySelected(it)
+            }
+        )
     }
 
     private fun onEvalEntitySelected(entity: EvaluationEntity) {

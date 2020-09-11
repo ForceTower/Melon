@@ -26,13 +26,11 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
-import android.os.Build
 import android.text.TextPaint
 import android.util.DisplayMetrics
 import android.util.Property
 import android.util.TypedValue
 import android.view.View
-import android.view.WindowInsetsController
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
@@ -42,15 +40,17 @@ import com.forcetower.core.utils.ColorUtils.modifyAlpha
 
 object ViewUtils {
     val DRAWABLE_ALPHA: Property<Drawable, Int> =
-        AnimUtils.createIntProperty(object : AnimUtils.IntProp<Drawable>("alpha") {
-            override operator fun set(`object`: Drawable, value: Int) {
-                `object`.alpha = value
-            }
+        AnimUtils.createIntProperty(
+            object : AnimUtils.IntProp<Drawable>("alpha") {
+                override operator fun set(`object`: Drawable, value: Int) {
+                    `object`.alpha = value
+                }
 
-            override operator fun get(`object`: Drawable): Int {
-                return `object`.alpha
+                override operator fun get(`object`: Drawable): Int {
+                    return `object`.alpha
+                }
             }
-        })
+        )
 
     @JvmStatic
     fun getSingleLineTextSize(
@@ -142,7 +142,8 @@ object ViewUtils {
             }
         }
         return RippleDrawable(
-            ColorStateList.valueOf(rippleColor), null,
+            ColorStateList.valueOf(rippleColor),
+            null,
             if (bounded) ColorDrawable(Color.WHITE) else null
         )
     }

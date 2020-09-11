@@ -42,8 +42,9 @@ fun sessionDurationLocation(
     val localEndTime = TimeUtils.zonedTime(endTime, finalTimeZoneId)
 
     textView.text = textView.context.getString(
-            R.string.event_session_duration_location,
-            durationString(textView.context, Duration.between(startTime, endTime)), room
+        R.string.event_session_duration_location,
+        durationString(textView.context, Duration.between(startTime, endTime)),
+        room
     )
 
     textView.contentDescription = fullDateTime(localStartTime, localEndTime, textView, room)

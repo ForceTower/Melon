@@ -23,7 +23,6 @@ package com.forcetower.uefs.aeri.domain
 import com.forcetower.core.interfaces.DynamicDataSource
 import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
-import timber.log.Timber
 
 class AERIDataSource(
     private val repository: AERIRepository

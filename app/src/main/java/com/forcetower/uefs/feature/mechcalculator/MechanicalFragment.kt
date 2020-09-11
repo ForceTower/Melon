@@ -65,23 +65,29 @@ class MechanicalFragment : UFragment() {
             executePendingBindings()
         }
 
-        viewModel.mechanics.observe(viewLifecycleOwner, Observer {
-            if (it.isEmpty()) {
-                binding.textNoData.visibility = VISIBLE
-                binding.recyclerMech.visibility = GONE
-            } else {
-                binding.textNoData.visibility = GONE
-                binding.recyclerMech.visibility = VISIBLE
+        viewModel.mechanics.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it.isEmpty()) {
+                    binding.textNoData.visibility = VISIBLE
+                    binding.recyclerMech.visibility = GONE
+                } else {
+                    binding.textNoData.visibility = GONE
+                    binding.recyclerMech.visibility = VISIBLE
+                }
+                mechAdapter.submitList(it)
             }
-            mechAdapter.submitList(it)
-        })
+        )
 
-        viewModel.result.observe(viewLifecycleOwner, Observer {
-            it ?: return@Observer
-            if (it.mean.isNaN()) {
-                (activity as? UGameActivity)?.unlockAchievement(R.string.achievement_claramente_na_disney)
+        viewModel.result.observe(
+            viewLifecycleOwner,
+            Observer {
+                it ?: return@Observer
+                if (it.mean.isNaN()) {
+                    (activity as? UGameActivity)?.unlockAchievement(R.string.achievement_claramente_na_disney)
+                }
             }
-        })
+        )
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

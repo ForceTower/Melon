@@ -42,8 +42,8 @@ import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.UserSessionRepository
-import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
+import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event

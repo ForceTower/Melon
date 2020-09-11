@@ -67,18 +67,18 @@ class SyncLinkedWorker @WorkerInject constructor(
 
         fun createWorker(context: Context, @IntRange(from = 1, to = 9000) period: Int, replace: Boolean = true, count: Int = 0) {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             val data = workDataOf(PERIOD to period, COUNT to count)
 
             val request = OneTimeWorkRequestBuilder<SyncLinkedWorker>()
-                    .setInputData(data)
-                    .addTag(TAG)
-                    .setInitialDelay(period.toLong(), TimeUnit.MINUTES)
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setConstraints(constraints)
-                    .build()
+                .setInputData(data)
+                .addTag(TAG)
+                .setInitialDelay(period.toLong(), TimeUnit.MINUTES)
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .build()
 
             request.enqueueUnique(context, "${NAME}_$count", replace)
             if (replace) {

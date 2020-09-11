@@ -32,9 +32,11 @@ import java.util.Locale
  * 1 -> Created
  * 2 -> Updated
  */
-@Entity(indices = [
-    Index(value = ["service", "date"], name = "service_uniqueness", unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["service", "date"], name = "service_uniqueness", unique = true)
+    ]
+)
 data class ServiceRequest(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

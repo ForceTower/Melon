@@ -35,31 +35,31 @@ object TimeUtils {
     val SIECOMP_TIMEZONE: ZoneId = ZoneId.of(BuildConfig.SIECOMP_TIMEZONE)
 
     val EventDays = listOf(
-            EventDay(
-                    1,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_END)
-            ),
-            EventDay(
-                    2,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_END)
-            ),
-            EventDay(
-                    3,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_END)
-            ),
-            EventDay(
-                    4,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_END)
-            ),
-            EventDay(
-                    5,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_END)
-            )
+        EventDay(
+            1,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_END)
+        ),
+        EventDay(
+            2,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_END)
+        ),
+        EventDay(
+            3,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_END)
+        ),
+        EventDay(
+            4,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_END)
+        ),
+        EventDay(
+            5,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_END)
+        )
     )
 
     fun eventHasStarted(): Boolean {

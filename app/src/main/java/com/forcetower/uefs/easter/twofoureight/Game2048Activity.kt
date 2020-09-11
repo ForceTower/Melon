@@ -22,11 +22,8 @@ package com.forcetower.uefs.easter.twofoureight
 
 import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
-import android.view.WindowInsets
-import android.view.WindowManager
 import androidx.activity.viewModels
 import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R

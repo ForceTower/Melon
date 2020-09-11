@@ -56,10 +56,13 @@ class AdventureSignInDialog : RoundedDialog() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.start.observe(viewLifecycleOwner, EventObserver {
-            dismiss()
-            activity?.signIn()
-        })
+        viewModel.start.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                dismiss()
+                activity?.signIn()
+            }
+        )
         binding.btnCancel.setOnClickListener {
             dismiss()
             findNavController().popBackStack()

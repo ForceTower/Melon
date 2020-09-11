@@ -32,13 +32,11 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithDa
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.ScheduleRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 class ScheduleViewModel @ViewModelInject constructor(
     repository: ScheduleRepository,

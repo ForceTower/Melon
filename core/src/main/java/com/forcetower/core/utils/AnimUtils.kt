@@ -50,8 +50,10 @@ object AnimUtils {
     @JvmStatic
     fun getFastOutSlowInInterpolator(context: Context): Interpolator? {
         if (fastOutSlowIn == null) {
-            fastOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_slow_in)
+            fastOutSlowIn = AnimationUtils.loadInterpolator(
+                context,
+                android.R.interpolator.fast_out_slow_in
+            )
         }
         return fastOutSlowIn
     }
@@ -59,8 +61,10 @@ object AnimUtils {
     @JvmStatic
     fun getFastOutLinearInInterpolator(context: Context): Interpolator? {
         if (fastOutLinearIn == null) {
-            fastOutLinearIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.fast_out_linear_in)
+            fastOutLinearIn = AnimationUtils.loadInterpolator(
+                context,
+                android.R.interpolator.fast_out_linear_in
+            )
         }
         return fastOutLinearIn
     }
@@ -68,8 +72,10 @@ object AnimUtils {
     @JvmStatic
     fun getLinearOutSlowInInterpolator(context: Context): Interpolator? {
         if (linearOutSlowIn == null) {
-            linearOutSlowIn = AnimationUtils.loadInterpolator(context,
-                    android.R.interpolator.linear_out_slow_in)
+            linearOutSlowIn = AnimationUtils.loadInterpolator(
+                context,
+                android.R.interpolator.linear_out_slow_in
+            )
         }
         return linearOutSlowIn
     }
