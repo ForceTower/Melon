@@ -28,6 +28,7 @@ import android.view.Window
 import android.view.WindowInsets
 import android.view.WindowInsetsController
 import android.widget.TextView
+import androidx.core.view.ViewCompat
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
@@ -127,10 +128,11 @@ fun applySystemWindows(
     applyBottom: Boolean
 ) {
     view.doOnApplyWindowInsets { _, insets, padding ->
-        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
-        val top = if (applyTop) insets.systemWindowInsetTop else 0
-        val right = if (applyRight) insets.systemWindowInsetRight else 0
-        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+        val ins = insets.getInsets(WindowInsets.Type.systemBars())
+        val left = if (applyLeft) ins.left else 0
+        val top = if (applyTop) ins.top else 0
+        val right = if (applyRight) ins.right else 0
+        val bottom = if (applyBottom) ins.bottom else 0
 
         view.setPadding(
             padding.left + left,
@@ -165,9 +167,9 @@ fun View.requestApplyInsetsWhenAttached() {
     }
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
+fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Unit) {
     val initialPadding = recordInitialPaddingForView(this)
-    setOnApplyWindowInsetsListener { v, insets ->
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         f(v, insets, initialPadding)
         insets
     }
