@@ -45,7 +45,6 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class OnboardingFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
-    private val handler = Handler()
     private val viewModel: OnboardingViewModel by viewModels()
 
     private lateinit var binding: FragmentEventOnboardingBinding
