@@ -79,7 +79,7 @@ class DisciplineSemesterFragment : UFragment() {
             })
         }
         swipeRefreshLayout.setOnRefreshListener {
-            viewModel.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
+            localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
         binding.downloadBtn.setOnClickListener {
@@ -96,6 +96,7 @@ class DisciplineSemesterFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(viewLifecycleOwner, Observer {
             populateInterface(it)
+            binding.hasData = it.isNotEmpty()
         })
     }
 
