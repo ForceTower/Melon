@@ -27,28 +27,23 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import javax.inject.Inject
 
-class DocumentsFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+@AndroidEntryPoint
+class DocumentsFragment : UFragment() {
     private lateinit var binding: FragmentDocumentsBinding
-    private lateinit var viewModel: DocumentsViewModel
+    private val viewModel: DocumentsViewModel by activityViewModels()
     private lateinit var adapter: DocumentsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentDocumentsBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

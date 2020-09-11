@@ -22,22 +22,23 @@ package com.forcetower.uefs.core.work.demand
 
 import android.content.Context
 import androidx.annotation.WorkerThread
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class CreateDemandWorker(
-    context: Context,
-    params: WorkerParameters
+class CreateDemandWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: DemandRepository
@@ -46,7 +47,6 @@ class CreateDemandWorker(
 
     @WorkerThread
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
         repository.executeCreateDemand()
         return Result.success()
     }

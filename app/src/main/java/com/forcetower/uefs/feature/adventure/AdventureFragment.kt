@@ -31,20 +31,18 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.REQUEST_CHECK_SETTINGS
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAdventureBeginsBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.gms.common.api.ResolvableApiException
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationCallback
@@ -54,23 +52,20 @@ import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import javax.inject.Inject
 
-class AdventureFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
-    @Inject
-    lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class AdventureFragment : UFragment() {
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var firebaseStorage: FirebaseStorage
+    @Inject lateinit var preferences: SharedPreferences
 
-    private lateinit var viewModel: AdventureViewModel
-    private lateinit var profileViewModel: ProfileViewModel
+    private val viewModel: AdventureViewModel by activityViewModels()
+    private val profileViewModel: ProfileViewModel by viewModels()
     private var activity: UGameActivity? = null
     private lateinit var binding: FragmentAdventureBeginsBinding
 
@@ -89,8 +84,6 @@ class AdventureFragment : UFragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        profileViewModel = provideViewModel(factory)
         locationSettings()
         return FragmentAdventureBeginsBinding.inflate(inflater, container, false).also {
             binding = it

@@ -24,13 +24,21 @@ import android.content.Context
 import androidx.annotation.Keep
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
+import com.forcetower.uefs.core.injection.dependencies.AERIModuleDependencies
+import dagger.hilt.android.EntryPointAccessors
 
 @Keep
 class AERIDataSourceFactoryProvider : DynamicDataSourceFactoryProvider {
     override fun getFactory(context: Context): DynamicDataSourceFactory {
-        val component = (context.applicationContext as UApplication).component
-        return DaggerAERIComponent.builder().appComponent(component).build().factory()
+        return DaggerAERIComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    context.applicationContext,
+                    AERIModuleDependencies::class.java
+                )
+            ).build()
+            .factory()
     }
 }

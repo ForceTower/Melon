@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.injection.module
+package dev.forcetower.event.core.injection
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -26,15 +26,29 @@ import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.injection.annotation.ViewModelKey
 import dagger.Binds
 import dagger.Module
+import dagger.hilt.migration.DisableInstallInCheck
 import dagger.multibindings.IntoMap
-import dev.forcetower.conference.feature.schedule.ScheduleViewModel
+import dev.forcetower.event.feature.create.CreationViewModel
+import dev.forcetower.event.feature.details.EventDetailsViewModel
+import dev.forcetower.event.feature.listing.EventViewModel
 
 @Module
-abstract class ViewModelModule {
+@DisableInstallInCheck
+abstract class FeatureViewModels {
     @Binds
     @IntoMap
-    @ViewModelKey(ScheduleViewModel::class)
-    abstract fun bindAuthViewModel(vm: ScheduleViewModel): ViewModel
+    @ViewModelKey(EventViewModel::class)
+    abstract fun events(viewModel: EventViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(EventDetailsViewModel::class)
+    abstract fun details(viewModel: EventDetailsViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(CreationViewModel::class)
+    abstract fun create(viewModel: CreationViewModel): ViewModel
 
     @Binds
     abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory

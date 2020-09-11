@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.easter.darktheme
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -28,9 +29,8 @@ import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class DarkThemeViewModel @Inject constructor(
+class DarkThemeViewModel @ViewModelInject constructor(
     private val repository: DarkThemeRepository,
     private val accountRepository: AccountRepository
 ) : ViewModel() {

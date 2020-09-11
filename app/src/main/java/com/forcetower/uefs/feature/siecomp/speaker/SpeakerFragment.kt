@@ -30,29 +30,24 @@ import android.view.ViewGroup
 import androidx.core.app.NavUtils
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventSpeakerBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.siecomp.editor.CreateSpeakerFragment
 import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
 import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity.Companion.SPEAKER_ID
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SpeakerFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var speakerViewModel: SIECOMPSpeakerViewModel
+@AndroidEntryPoint
+class SpeakerFragment : UFragment() {
+    private val speakerViewModel: SIECOMPSpeakerViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        speakerViewModel = provideActivityViewModel(factory)
         speakerViewModel.setSpeakerId(requireNotNull(arguments).getLong(SPEAKER_ID))
         activity?.postponeEnterTransition(500L)
 

@@ -23,39 +23,33 @@ package com.forcetower.uefs.feature.demand
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityDemandBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class DemandActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class DemandActivity : UActivity() {
     @Inject
     lateinit var analytics: FirebaseAnalytics
 
     private lateinit var binding: ActivityDemandBinding
     private lateinit var currentFragment: NavigationFragment
-    private lateinit var viewModel: DemandViewModel
+    private val viewModel: DemandViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_demand)
-        viewModel = provideViewModel(factory)
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
@@ -68,8 +62,6 @@ class DemandActivity : UActivity(), HasAndroidInjector {
 
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
     }
-
-    override fun androidInjector() = fragmentInjector
 
     override fun onBackPressed() {
         if (!::currentFragment.isInitialized || !currentFragment.onBackPressed()) {

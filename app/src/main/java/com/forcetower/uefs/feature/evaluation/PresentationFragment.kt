@@ -27,13 +27,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.databinding.FragmentEvaluationPresentationBinding
 import com.forcetower.uefs.feature.information.InformationDialog
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class PresentationFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class PresentationFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
     private lateinit var binding: FragmentEvaluationPresentationBinding

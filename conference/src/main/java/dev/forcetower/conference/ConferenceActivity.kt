@@ -24,9 +24,10 @@ import android.os.Bundle
 import android.view.View
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependencies
 import com.forcetower.uefs.feature.shared.UActivity
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.conference.core.injection.DaggerConferenceComponent
 import dev.forcetower.conference.databinding.ActivityConferenceBinding
 
@@ -35,8 +36,18 @@ class ConferenceActivity : UActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val component = (applicationContext as UApplication).component
-        DaggerConferenceComponent.builder().appComponent(component).build().inject(this)
+
+        DaggerConferenceComponent.builder()
+            .context(this)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    ConferenceModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conference)
         WindowCompat.setDecorFitsSystemWindows(window, false)
     }

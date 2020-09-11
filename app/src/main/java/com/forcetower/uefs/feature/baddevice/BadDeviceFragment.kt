@@ -30,19 +30,19 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentBadDeviceBinding
 import com.forcetower.uefs.feature.settings.SettingsActivity
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class BadDeviceFragment : BottomSheetDialogFragment(), Injectable {
-    @Inject
-    lateinit var preferences: SharedPreferences
+@AndroidEntryPoint
+class BadDeviceFragment : BottomSheetDialogFragment() {
+    @Inject lateinit var preferences: SharedPreferences
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog

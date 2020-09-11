@@ -27,14 +27,10 @@ import com.forcetower.uefs.databinding.ActivityEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class EventScheduleActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class EventScheduleActivity : UActivity() {
     private lateinit var binding: ActivityEventScheduleBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -59,6 +55,4 @@ class EventScheduleActivity : UActivity(), HasAndroidInjector {
         snack.config()
         return snack
     }
-
-    override fun androidInjector() = fragmentInjector
 }

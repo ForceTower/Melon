@@ -31,30 +31,38 @@ import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.base.BaseViewModelFactory
+import androidx.lifecycle.ViewModelProvider
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
+import com.forcetower.uefs.core.injection.dependencies.AERIModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.hilt.android.EntryPointAccessors
 import timber.log.Timber
 import javax.inject.Inject
 
 @Keep
 class AERINewsFragment : UFragment() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
+    @Inject lateinit var factory: ViewModelProvider.Factory
     private lateinit var binding: FragmentAeriNewsBinding
     private val viewModel: AERIViewModel by activityViewModels { factory }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SplitCompat.install(context)
-        val component = (context.applicationContext as UApplication).component
-        DaggerAERIComponent.builder().appComponent(component).build().inject(this)
+        DaggerAERIComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    context.applicationContext,
+                    AERIModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

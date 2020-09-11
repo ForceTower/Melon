@@ -33,7 +33,7 @@ import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.storage.repository.MicroSyncRepository
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.service.NotificationCreator
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
@@ -42,6 +42,7 @@ import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class SyncService : LifecycleService() {
     @Inject
     lateinit var generalRepository: SagresSyncRepository
@@ -63,7 +64,6 @@ class SyncService : LifecycleService() {
     }
 
     override fun onCreate() {
-        AndroidInjection.inject(this)
         super.onCreate()
         Timber.d("Created service ;)")
         microRepository.access.observe(this, accessObserver)

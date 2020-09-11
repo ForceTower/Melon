@@ -20,27 +20,22 @@
 
 package dev.forcetower.conference.core.injection
 
-import com.forcetower.core.injection.annotation.FeatureScope
-import com.forcetower.uefs.core.injection.AppComponent
+import android.content.Context
+import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependencies
+import dagger.BindsInstance
 import dagger.Component
-import dagger.android.AndroidInjectionModule
-import dagger.android.support.AndroidSupportInjectionModule
 import dev.forcetower.conference.ConferenceActivity
-import dev.forcetower.conference.core.injection.module.ConferenceDaggerModule
-import dev.forcetower.conference.core.injection.module.ViewModelModule
 import dev.forcetower.conference.feature.schedule.ScheduleFragment
 
-@FeatureScope
-@Component(
-    modules = [
-        AndroidInjectionModule::class,
-        AndroidSupportInjectionModule::class,
-        ConferenceDaggerModule::class,
-        ViewModelModule::class
-    ],
-    dependencies = [AppComponent::class]
-)
+@Component(dependencies = [ConferenceModuleDependencies::class])
 interface ConferenceComponent {
+    @Component.Builder
+    interface Builder {
+        fun context(@BindsInstance context: Context): Builder
+        fun dependencies(dependencies: ConferenceModuleDependencies): Builder
+        fun build(): ConferenceComponent
+    }
+
     fun inject(activity: ConferenceActivity)
     fun inject(fragment: ScheduleFragment)
 }

@@ -28,6 +28,7 @@ import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.view.drawToBitmap
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -39,9 +40,8 @@ import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.toFile
-import javax.inject.Inject
 
-class MessagesViewModel @Inject constructor(
+class MessagesViewModel @ViewModelInject constructor(
     val repository: MessagesRepository
 ) : ViewModel(), MessagesActions {
     val messages by lazy { repository.getMessages() }

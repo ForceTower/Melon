@@ -29,18 +29,16 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class InitialFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class InitialFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private val viewModel: EvaluationViewModel by activityViewModels { factory }
+    private val viewModel: EvaluationViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return View(context)

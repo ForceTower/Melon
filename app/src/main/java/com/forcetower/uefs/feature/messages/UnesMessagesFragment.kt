@@ -24,30 +24,27 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentUnesMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class UnesMessagesFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var binding: FragmentUnesMessagesBinding
-    private lateinit var viewModel: MessagesViewModel
-
-    private lateinit var messagesAdapter: UnesMessageAdapter
-    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
-    private var initialized = false
-
+@AndroidEntryPoint
+class UnesMessagesFragment : UFragment() {
     init { displayName = "UNES" }
 
+    private lateinit var binding: FragmentUnesMessagesBinding
+
+    private val viewModel: MessagesViewModel by activityViewModels()
+    private lateinit var messagesAdapter: UnesMessageAdapter
+    private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
+
+    private var initialized = false
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentUnesMessagesBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

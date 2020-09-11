@@ -24,28 +24,23 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.vm.CourseViewModel
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectCourseBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SelectCourseDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: CourseViewModel
+@AndroidEntryPoint
+class SelectCourseDialog : RoundedDialog() {
+    private val viewModel: CourseViewModel by activityViewModels()
     private lateinit var binding: DialogSelectCourseBinding
     private var courses: Array<Course>? = null
     private var callback: CourseSelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         val hide = arguments?.getBoolean("hide_description") ?: false
-        viewModel = provideActivityViewModel(factory)
         return DialogSelectCourseBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener { dismiss() }

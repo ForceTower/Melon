@@ -25,30 +25,26 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.SyncFrequency
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupConfigurationBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import javax.inject.Inject
 
-class ConfigurationFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
+@AndroidEntryPoint
+class ConfigurationFragment : UFragment() {
+    @Inject lateinit var firebaseAuth: FirebaseAuth
 
     private lateinit var binding: FragmentSetupConfigurationBinding
-    private lateinit var viewModel: SetupViewModel
+    private val viewModel: SetupViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentSetupConfigurationBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

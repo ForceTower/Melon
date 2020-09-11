@@ -22,6 +22,8 @@ package com.forcetower.uefs.core.work.sync
 
 import android.content.Context
 import androidx.annotation.IntRange
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -30,23 +32,21 @@ import androidx.work.WorkManager
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SyncLinkedWorker(
-    context: Context,
-    params: WorkerParameters
+class SyncLinkedWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: SagresSyncRepository
 
     override fun doWork(): Result {
         try {
-            (applicationContext as UApplication).component.inject(this)
             repository.performSync("Linked")
         } catch (t: Throwable) {
             Timber.d("Worker ignored the error so it may continue")

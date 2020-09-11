@@ -26,32 +26,28 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class DisciplineEvaluationFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: EvaluationViewModel
+@AndroidEntryPoint
+class DisciplineEvaluationFragment : UFragment() {
+    private val viewModel: EvaluationViewModel by viewModels()
     private lateinit var binding: FragmentEvaluationDisciplineBinding
     private lateinit var elements: EvaluationElementsAdapter
     private val args: DisciplineEvaluationFragmentArgs by navArgs()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it

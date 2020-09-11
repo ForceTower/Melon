@@ -24,25 +24,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.core.model.service.SyncFrequency
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectSynchronizationBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SelectSyncDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class SelectSyncDialog : RoundedDialog() {
 
-    private lateinit var setupViewModel: SetupViewModel
+    private val setupViewModel: SetupViewModel by activityViewModels()
     private lateinit var binding: DialogSelectSynchronizationBinding
     private var data: Array<SyncFrequency>? = null
     private var callback: FrequencySelectionCallback? = null
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        setupViewModel = provideActivityViewModel(factory)
         return DialogSelectSynchronizationBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener { dismiss() }

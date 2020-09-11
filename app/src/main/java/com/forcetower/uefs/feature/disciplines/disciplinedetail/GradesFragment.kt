@@ -21,10 +21,11 @@
 package com.forcetower.uefs.feature.disciplines.disciplinedetail
 
 import androidx.core.os.bundleOf
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class GradesFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class GradesFragment : UFragment() {
     companion object {
         fun newInstance(classId: Long): GradesFragment {
             return GradesFragment().apply {

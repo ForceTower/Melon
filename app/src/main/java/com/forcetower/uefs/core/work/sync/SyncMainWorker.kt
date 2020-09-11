@@ -24,8 +24,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.preference.PreferenceManager
 import androidx.annotation.IntRange
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.*
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
@@ -36,22 +37,17 @@ import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class SyncMainWorker(
-    context: Context,
-    params: WorkerParameters
+class SyncMainWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : CoroutineWorker(context, params) {
-    @Inject
-    lateinit var repository: SagresSyncRepository
-    @Inject
-    lateinit var snowpiercer: SnowpiercerSyncRepository
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var repository: SagresSyncRepository
+    @Inject lateinit var snowpiercer: SnowpiercerSyncRepository
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject lateinit var preferences: SharedPreferences
 
     override suspend fun doWork(): Result {
         try {
-            (applicationContext as UApplication).component.inject(this)
             Timber.d("Main Worker started")
             if (preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")) {
                 snowpiercer.performSync("Snowpiercer")

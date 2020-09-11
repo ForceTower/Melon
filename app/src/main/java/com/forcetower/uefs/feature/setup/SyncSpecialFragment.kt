@@ -35,7 +35,6 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.fragment.findNavController
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
@@ -43,13 +42,14 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
 
-class SyncSpecialFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var analytics: FirebaseAnalytics
+@AndroidEntryPoint
+class SyncSpecialFragment : UFragment() {
+    @Inject lateinit var analytics: FirebaseAnalytics
 
     private lateinit var binding: FragmentSetupSpecialConfigBinding
 

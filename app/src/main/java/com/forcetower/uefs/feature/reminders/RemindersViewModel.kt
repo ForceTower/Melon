@@ -20,13 +20,13 @@
 
 package com.forcetower.uefs.feature.reminders
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.Reminder
 import com.forcetower.uefs.core.storage.repository.RemindersRepository
 import timber.log.Timber
-import javax.inject.Inject
 
-class RemindersViewModel @Inject constructor(
+class RemindersViewModel @ViewModelInject constructor(
     private val repository: RemindersRepository
 ) : ViewModel(), ReminderActions {
     val reminders by lazy { repository.getReminders() }

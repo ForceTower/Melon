@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.siecomp
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,9 +32,8 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.siecomp.common.SessionActions
-import javax.inject.Inject
 
-class SIECOMPEventViewModel @Inject constructor(
+class SIECOMPEventViewModel @ViewModelInject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel(), SessionActions {
     var sessionsLoaded: Boolean = false

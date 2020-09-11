@@ -24,25 +24,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartSelectCourseBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class SelectCourseFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: FlowchartViewModel
+@AndroidEntryPoint
+class SelectCourseFragment : UFragment() {
+    private val viewModel: FlowchartViewModel by viewModels()
     private lateinit var binding: FragmentFlowchartSelectCourseBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentFlowchartSelectCourseBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

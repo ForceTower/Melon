@@ -29,16 +29,17 @@ import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
-import com.forcetower.core.injection.Injectable
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class LoginFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class LoginFragment : UFragment() {
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject lateinit var preferences: SharedPreferences
     private lateinit var binding: FragmentLoginFormBinding

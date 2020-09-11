@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.siecomp.session
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -37,11 +38,10 @@ import org.threeten.bp.Duration
 import org.threeten.bp.Instant
 import org.threeten.bp.ZoneId
 import timber.log.Timber
-import javax.inject.Inject
 
 private const val TEN_SECONDS = 10_000L
 
-class SIECOMPSessionViewModel @Inject constructor(
+class SIECOMPSessionViewModel @ViewModelInject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel(), SpeakerActions {
     private val sessionId = MutableLiveData<Long?>()

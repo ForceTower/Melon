@@ -32,23 +32,21 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.viewModels
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventOnboardingBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.ViewPagerPager
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class OnboardingFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var preferences: SharedPreferences
-    private lateinit var viewModel: OnboardingViewModel
+@AndroidEntryPoint
+class OnboardingFragment : UFragment() {
+    @Inject lateinit var preferences: SharedPreferences
+    private val viewModel: OnboardingViewModel by viewModels()
+
     private lateinit var binding: FragmentEventOnboardingBinding
     private lateinit var pagerPager: ViewPagerPager
     private val handler = Handler(Looper.getMainLooper())
@@ -62,7 +60,6 @@ class OnboardingFragment : UFragment(), Injectable {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         binding = FragmentEventOnboardingBinding.inflate(inflater, container, false).apply {
             viewModel = this@OnboardingFragment.viewModel
             lifecycleOwner = this@OnboardingFragment

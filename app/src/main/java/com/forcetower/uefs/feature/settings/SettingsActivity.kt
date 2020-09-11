@@ -33,14 +33,10 @@ import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.databinding.ActivitySettingsBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class SettingsActivity : UActivity(), PreferenceFragmentCompat.OnPreferenceStartFragmentCallback {
     private lateinit var binding: ActivitySettingsBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,8 +86,6 @@ class SettingsActivity : UActivity(), HasAndroidInjector, PreferenceFragmentComp
             addToBackStack(null)
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 
     companion object {
         fun startIntent(context: Context): Intent {

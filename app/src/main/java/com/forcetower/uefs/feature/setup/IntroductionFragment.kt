@@ -29,46 +29,39 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class IntroductionFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
-    @Inject
-    lateinit var repository: SyncFrequencyRepository
-    @Inject
-    lateinit var preferences: SharedPreferences
+@AndroidEntryPoint
+class IntroductionFragment : UFragment() {
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var firebaseStorage: FirebaseStorage
+    @Inject lateinit var repository: SyncFrequencyRepository
+    @Inject lateinit var preferences: SharedPreferences
 
+    private val viewModel: SetupViewModel by activityViewModels()
     private lateinit var binding: FragmentSetupIntroductionBinding
-    private lateinit var viewModel: SetupViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

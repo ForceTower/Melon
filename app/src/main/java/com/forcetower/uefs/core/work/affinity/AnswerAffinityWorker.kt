@@ -21,6 +21,8 @@
 package com.forcetower.uefs.core.work.affinity
 
 import android.content.Context
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -28,22 +30,20 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.work.enqueue
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class AnswerAffinityWorker(
-    context: Context,
-    params: WorkerParameters
+class AnswerAffinityWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: AffinityQuestionRepository
 
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
         Timber.d("Answering affinity")
 
         val questionId = inputData.getLong("question_id", 0)

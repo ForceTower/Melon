@@ -23,36 +23,31 @@ package com.forcetower.uefs.feature.login
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.CourseViewModel
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityLoginBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class LoginActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class LoginActivity : UActivity() {
     @Inject
     lateinit var preferences: SharedPreferences
-
     private lateinit var binding: ActivityLoginBinding
+    private val coursesViewModel by viewModels<CourseViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
-        val coursesViewModel = provideViewModel<CourseViewModel>(factory)
+
         coursesViewModel.courses.observe(this, Observer {
             Timber.d("Courses Status: ${it.status}")
         })
@@ -69,6 +64,4 @@ class LoginActivity : UActivity(), HasAndroidInjector {
         snack.config()
         return snack
     }
-
-    override fun androidInjector() = fragmentInjector
 }

@@ -26,14 +26,10 @@ import android.os.Bundle
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class EventSessionDetailsActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class EventSessionDetailsActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_event_session_details)
@@ -45,8 +41,6 @@ class EventSessionDetailsActivity : UActivity(), HasAndroidInjector {
             }
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 
     companion object {
         private const val EXTRA_SESSION_ID = "SESSION_ID"

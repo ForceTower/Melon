@@ -25,24 +25,17 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.preference.PreferenceFragmentCompat
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class RootSettingsFragment : PreferenceFragmentCompat(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: SettingsViewModel
-
+@AndroidEntryPoint
+class RootSettingsFragment : PreferenceFragmentCompat() {
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         onPreferenceChange(shared, key)
     }
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_start, rootKey)
-        viewModel = provideActivityViewModel(factory)
     }
 
     private fun onPreferenceChange(preference: SharedPreferences, key: String) {

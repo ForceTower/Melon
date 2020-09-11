@@ -24,27 +24,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDemandOffersBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class DemandOffersFragment : UFragment(), Injectable, NavigationFragment {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: DemandViewModel
+@AndroidEntryPoint
+class DemandOffersFragment : UFragment(), NavigationFragment {
+    private val viewModel: DemandViewModel by activityViewModels()
     private lateinit var binding: FragmentDemandOffersBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         binding = FragmentDemandOffersBinding.inflate(inflater, container, false).apply {
             viewModel = this@DemandOffersFragment.viewModel
             lifecycleOwner = this@DemandOffersFragment

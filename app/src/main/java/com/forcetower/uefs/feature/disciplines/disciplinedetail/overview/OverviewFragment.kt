@@ -25,24 +25,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineOverviewBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity.Companion.CLASS_GROUP_ID
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class OverviewFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class OverviewFragment : UFragment() {
     private lateinit var binding: FragmentDisciplineOverviewBinding
-    private lateinit var viewModel: DisciplineViewModel
+    private val viewModel: DisciplineViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentDisciplineOverviewBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
