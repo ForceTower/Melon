@@ -24,8 +24,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.Window
 import android.view.WindowInsets
+import android.view.WindowInsetsController
 import android.widget.TextView
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
@@ -36,15 +40,6 @@ import com.forcetower.sagres.utils.WordUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-@BindingAdapter("layoutFullscreen")
-fun View.bindLayoutFullscreen(previousFullscreen: Boolean, fullscreen: Boolean) {
-    if (previousFullscreen != fullscreen && fullscreen) {
-        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-    }
-}
 
 @BindingAdapter("clipToCircle")
 fun clipToCircle(view: View, clip: Boolean) {
