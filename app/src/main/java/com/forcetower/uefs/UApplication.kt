@@ -34,7 +34,6 @@ import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.jakewharton.threetenabp.AndroidThreeTen
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -62,7 +61,6 @@ class UApplication : Application() {
         }
         super.onCreate()
         setupDayNightTheme(this)
-        AndroidThreeTen.init(this)
         defineWorker()
     }
 

@@ -36,8 +36,10 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentFlowchartDisciplineDetailsBinding
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
+@AndroidEntryPoint
 class DisciplineFragment : UFragment() {
     private val viewModel: FlowchartViewModel by viewModels()
     private val args: DisciplineFragmentArgs by navArgs()

@@ -21,7 +21,7 @@
 package com.forcetower.uefs.core.model.siecomp
 
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 data class ServerSession(
     @SerializedName(value = "id")

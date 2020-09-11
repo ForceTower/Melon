@@ -43,11 +43,11 @@ import okhttp3.Interceptor
 import okhttp3.OkHttpClient
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
-import org.threeten.bp.ZonedDateTime
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieHandler
 import java.net.CookieManager
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 

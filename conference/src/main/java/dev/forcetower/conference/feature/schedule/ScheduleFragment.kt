@@ -44,7 +44,7 @@ import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
 import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
 import dev.forcetower.conference.core.ui.widget.BubbleDecoration
 import dev.forcetower.conference.databinding.FragmentConferenceScheduleBinding
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
 
 class ScheduleFragment : UFragment() {

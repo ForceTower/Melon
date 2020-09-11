@@ -25,8 +25,8 @@ import android.text.Layout
 import android.text.StaticLayout
 import android.text.TextPaint
 import dev.forcetower.conference.core.model.persistence.Session
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.temporal.ChronoUnit
+import java.time.ZonedDateTime
+import java.time.temporal.ChronoUnit
 
 /**
  * Find the first session at each start time (rounded down to nearest minute) and return pairs of
