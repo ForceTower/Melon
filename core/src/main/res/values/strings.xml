@@ -33,7 +33,7 @@
     <string name="mtrl_grey">Cinza</string>
     <string name="mtrl_blue_grey">Cinza azulado</string>
 
-    <string name="mtrl_background_black">Preto</string>
+    <string name="mtrl_background_black">Amoled</string>
     <string name="mtrl_background_dark">Escuro</string>
 
     <string name="dynamic_feature_fail">Erro na função dinâmica</string>

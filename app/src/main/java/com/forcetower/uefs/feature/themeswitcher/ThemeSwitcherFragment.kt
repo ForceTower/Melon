@@ -206,11 +206,13 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment() {
 
             @ColorInt
             private fun convertToDisplay(@ColorInt color: Int): Int {
-                return if (color == Color.WHITE)
-                    Color.BLACK
-                else if (color == Color.BLACK)
-                    Color.WHITE
-                else color
+                val parsed = Color.parseColor("#1A1A1A")
+                return when (color) {
+                    Color.WHITE -> Color.BLACK
+                    Color.BLACK -> Color.WHITE
+                    parsed -> Color.parseColor("#b3ffffff")
+                    else -> color
+                }
             }
         }
     }
