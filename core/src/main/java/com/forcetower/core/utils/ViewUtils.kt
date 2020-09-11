@@ -32,6 +32,8 @@ import android.util.DisplayMetrics
 import android.util.Property
 import android.util.TypedValue
 import android.view.View
+import android.view.WindowInsetsController
+import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
@@ -83,20 +85,12 @@ object ViewUtils {
 
     @JvmStatic
     fun setLightStatusBar(view: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags: Int = view.systemUiVisibility
-            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
-            view.systemUiVisibility = flags
-        }
+        view.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
     }
 
     @JvmStatic
     fun setDarkStatusBar(view: View) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            var flags: Int = view.systemUiVisibility
-            flags = flags and (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR).inv()
-            view.systemUiVisibility = flags
-        }
+        view.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
     }
 
     fun createRipple(
