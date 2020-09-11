@@ -44,10 +44,10 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.google.android.gms.common.util.PlatformVersion
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 class ScheduleItemHeaderDecoration(

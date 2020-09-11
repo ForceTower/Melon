@@ -32,9 +32,9 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.storage.FirebaseStorage
-import org.threeten.bp.ZoneOffset
-import org.threeten.bp.ZonedDateTime
 import java.text.SimpleDateFormat
+import java.time.ZoneOffset
+import java.time.ZonedDateTime
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale

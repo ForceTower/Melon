@@ -34,10 +34,10 @@ import com.forcetower.uefs.feature.shared.SetIntervalLiveData
 import com.forcetower.uefs.feature.shared.extensions.map
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import com.forcetower.uefs.feature.siecomp.common.SpeakerActions
-import org.threeten.bp.Duration
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
 import timber.log.Timber
+import java.time.Duration
+import java.time.Instant
+import java.time.ZoneId
 
 private const val TEN_SECONDS = 10_000L
 

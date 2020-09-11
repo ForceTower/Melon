@@ -37,10 +37,10 @@ import dev.forcetower.event.core.work.CreateEventWorker
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
-import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
+import java.time.ZonedDateTime
 import java.util.UUID
 import javax.inject.Inject
 

@@ -28,7 +28,7 @@ import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
 

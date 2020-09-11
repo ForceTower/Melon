@@ -45,6 +45,8 @@ android {
     }
 
     compileOptions {
+        coreLibraryDesugaringEnabled true
+
         targetCompatibility JavaVersion.VERSION_1_8
         sourceCompatibility JavaVersion.VERSION_1_8
     }
@@ -64,6 +66,7 @@ android {
 }
 
 dependencies {
+    coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreDesugar"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(':app')
     implementation project(':core')
@@ -96,6 +99,4 @@ dependencies {
 
     // Google Play
     implementation "com.google.android.play:core:$gp_core"
-
-    implementation "com.jakewharton.threetenabp:threetenabp:$zoned_time_date"
 }
