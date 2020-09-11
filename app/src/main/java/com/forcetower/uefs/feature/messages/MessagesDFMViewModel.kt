@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.messages
 
 import android.app.Activity
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -37,9 +38,8 @@ import com.google.android.play.core.splitinstall.SplitInstallStateUpdatedListene
 import com.google.android.play.core.splitinstall.model.SplitInstallErrorCode
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import timber.log.Timber
-import javax.inject.Inject
 
-class MessagesDFMViewModel @Inject constructor(
+class MessagesDFMViewModel @ViewModelInject constructor(
     private val context: Context
 ) : ViewModel() {
     companion object {

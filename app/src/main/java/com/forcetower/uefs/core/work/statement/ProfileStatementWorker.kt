@@ -22,28 +22,28 @@ package com.forcetower.uefs.core.work.statement
 
 import android.content.Context
 import androidx.annotation.IntRange
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.work.enqueue
 import timber.log.Timber
 import javax.inject.Inject
 
-class ProfileStatementWorker(
-    context: Context,
-    params: WorkerParameters
+class ProfileStatementWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: ProfileRepository
 
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
         val statementId = inputData.getLong(STATEMENT, 0)
         return try {
             when (inputData.getInt(OPERATION, 0)) {

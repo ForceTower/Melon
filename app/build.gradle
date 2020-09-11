@@ -26,6 +26,7 @@ apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'com.google.firebase.crashlytics'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion compileSdk
@@ -54,9 +55,9 @@ android {
 
         javaCompileOptions {
             annotationProcessorOptions {
-                arguments = [
-                        "room.schemaLocation": "$projectDir/schemas".toString(),
-                        "room.incremental"   : "true"
+                arguments += [
+                    "room.schemaLocation": "$projectDir/schemas".toString(),
+                    "room.incremental"   : "true"
                 ]
             }
         }
@@ -192,11 +193,11 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
 
     // Dependency injection
-    implementation "com.google.dagger:dagger:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    implementation "com.google.dagger:hilt-android:$hilt_dagger"
+    implementation 'androidx.hilt:hilt-work:1.0.0-alpha02'
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_dagger"
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Firebase
     implementation "com.google.firebase:firebase-core:$firebase_core"

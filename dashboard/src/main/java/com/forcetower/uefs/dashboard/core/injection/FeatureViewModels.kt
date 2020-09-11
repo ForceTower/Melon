@@ -18,9 +18,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.injection.module
+package com.forcetower.uefs.dashboard.core.injection
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.base.BaseViewModelFactory
+import com.forcetower.core.injection.annotation.ViewModelKey
+import com.forcetower.uefs.dashboard.feature.DashboardViewModel
+import dagger.Binds
 import dagger.Module
+import dagger.hilt.migration.DisableInstallInCheck
+import dagger.multibindings.IntoMap
 
 @Module
-object ConferenceDaggerModule
+@DisableInstallInCheck
+abstract class FeatureViewModels {
+    @Binds
+    @IntoMap
+    @ViewModelKey(DashboardViewModel::class)
+    abstract fun dashboard(viewModel: DashboardViewModel): ViewModel
+
+    @Binds
+    abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory
+}

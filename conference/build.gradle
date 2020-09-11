@@ -23,6 +23,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'org.jmailen.kotlinter'
+apply plugin: 'dagger.hilt.android.plugin'
 
 android {
     compileSdkVersion 30
@@ -95,11 +96,10 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
 
     // Dependency injection
-    implementation "com.google.dagger:dagger:$dagger"
-    kapt "com.google.dagger:dagger-compiler:$dagger"
-    implementation "com.google.dagger:dagger-android:$dagger"
-    implementation "com.google.dagger:dagger-android-support:$dagger"
-    kapt "com.google.dagger:dagger-android-processor:$dagger"
+    implementation "com.google.dagger:hilt-android:$hilt_dagger"
+    kapt "com.google.dagger:hilt-android-compiler:$hilt_dagger"
+    implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
+    kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"

@@ -26,26 +26,22 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.snackbar.Snackbar
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class InviteDarkThemeFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: DarkThemeViewModel
-    lateinit var binding: FragmentInviteDarkThemeBinding
+@AndroidEntryPoint
+class InviteDarkThemeFragment : UFragment() {
+    private val viewModel: DarkThemeViewModel by activityViewModels()
+    private lateinit var binding: FragmentInviteDarkThemeBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentInviteDarkThemeBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

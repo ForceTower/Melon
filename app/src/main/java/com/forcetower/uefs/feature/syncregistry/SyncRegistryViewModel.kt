@@ -20,11 +20,11 @@
 
 package com.forcetower.uefs.feature.syncregistry
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.SyncRegistryRepository
-import javax.inject.Inject
 
-class SyncRegistryViewModel @Inject constructor(
+class SyncRegistryViewModel @ViewModelInject constructor(
     private val repository: SyncRegistryRepository
 ) : ViewModel() {
 

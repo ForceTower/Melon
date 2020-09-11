@@ -27,24 +27,20 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentMechCalculatorBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class MechanicalFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var binding: FragmentMechCalculatorBinding
-    lateinit var viewModel: MechanicalViewModel
+@AndroidEntryPoint
+class MechanicalFragment : UFragment() {
+    private val viewModel: MechanicalViewModel by activityViewModels()
+    private lateinit var binding: FragmentMechCalculatorBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentMechCalculatorBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

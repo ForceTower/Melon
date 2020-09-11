@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.dashboard.feature
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData

@@ -32,18 +32,19 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import dagger.hilt.android.AndroidEntryPoint
 import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import javax.inject.Inject
 
-class SyncSettingsFragment : PreferenceFragmentCompat(), Injectable {
+@AndroidEntryPoint
+class SyncSettingsFragment : PreferenceFragmentCompat() {
     @Inject
     lateinit var firebaseRepository: FirebaseAuthRepository
     @Inject
