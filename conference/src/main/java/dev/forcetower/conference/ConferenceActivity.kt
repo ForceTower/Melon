@@ -22,6 +22,7 @@ package dev.forcetower.conference
 
 import android.os.Bundle
 import android.view.View
+import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.feature.shared.UActivity
@@ -37,9 +38,7 @@ class ConferenceActivity : UActivity() {
         val component = (applicationContext as UApplication).component
         DaggerConferenceComponent.builder().appComponent(component).build().inject(this)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conference)
-        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     override fun showSnack(string: String, duration: Int) {

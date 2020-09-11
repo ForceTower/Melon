@@ -83,4 +83,8 @@
         <item name="android:statusBarColor">@android:color/transparent</item>
         <item name="android:windowLightStatusBar">false</item>
     </style>
+
+    <style name="UTheme.NoInsets.Base">
+        <item name="android:windowLightStatusBar">@bool/not_on_night_mode</item>
+    </style>
 </resources>

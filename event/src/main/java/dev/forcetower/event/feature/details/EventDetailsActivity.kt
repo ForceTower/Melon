@@ -28,6 +28,7 @@ import android.view.View
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
@@ -65,9 +66,7 @@ class EventDetailsActivity : UActivity() {
         postponeEnterTransition(500L)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_details)
-        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val id = intent.getLongExtra("eventId", 0L)
         if (id == 0L) {

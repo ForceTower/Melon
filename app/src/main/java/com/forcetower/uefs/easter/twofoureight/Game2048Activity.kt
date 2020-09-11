@@ -22,9 +22,12 @@ package com.forcetower.uefs.easter.twofoureight
 
 import android.content.Context
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.view.KeyEvent
+import android.view.WindowInsets
 import android.view.WindowManager
+import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.vm.UserSessionViewModel
@@ -55,15 +58,7 @@ class Game2048Activity : UGameActivity(), HasAndroidInjector {
 
         sessionViewModel = provideViewModel(factory)
 
-        val window = window
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION,
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION
-        )
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS,
-            WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-        )
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()

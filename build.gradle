@@ -29,7 +29,7 @@ buildscript {
         sagres = "1.6.0"
 
         // Kotlin Extensions
-        ktx = '1.3.1'
+        ktx = '1.5.0-alpha02'
 
         // Android X
         app_compat = '1.2.0'
