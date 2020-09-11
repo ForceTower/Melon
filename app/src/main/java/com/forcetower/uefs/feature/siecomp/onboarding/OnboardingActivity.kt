@@ -21,7 +21,6 @@
 package com.forcetower.uefs.feature.siecomp.onboarding
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity

@@ -67,37 +67,48 @@ class RemindersFragment : UFragment() {
             }
         }
 
-        binding.recyclerReminders.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val manager = binding.recyclerReminders.layoutManager as? LinearLayoutManager
-                if (manager != null) {
-                    if (manager.findFirstCompletelyVisibleItemPosition() != 0) {
-                        binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 4)
-                    } else {
-                        binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 0)
+        binding.recyclerReminders.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val manager = binding.recyclerReminders.layoutManager as? LinearLayoutManager
+                    if (manager != null) {
+                        if (manager.findFirstCompletelyVisibleItemPosition() != 0) {
+                            binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 4)
+                        } else {
+                            binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 0)
+                        }
                     }
                 }
             }
-        })
+        )
 
-        val helper = ItemTouchHelper(SwipeDeleteHandler(requireContext(), {
-            val holder = it as? ReminderHolder.ItemHolder
-            if (holder != null) {
-                val reminder = holder.binding.reminder
-                if (reminder != null) viewModel.deleteReminder(reminder)
-            }
-        }, ignored = listOf(ReminderHolder.CompletedHeaderHolder::class.java)))
+        val helper = ItemTouchHelper(
+            SwipeDeleteHandler(
+                requireContext(),
+                {
+                    val holder = it as? ReminderHolder.ItemHolder
+                    if (holder != null) {
+                        val reminder = holder.binding.reminder
+                        if (reminder != null) viewModel.deleteReminder(reminder)
+                    }
+                },
+                ignored = listOf(ReminderHolder.CompletedHeaderHolder::class.java)
+            )
+        )
         helper.attachToRecyclerView(binding.recyclerReminders)
 
-        viewModel.reminders.observe(viewLifecycleOwner, Observer {
-            reminderAdapter.currentReminders = it
-            if (it.isEmpty()) {
-                binding.recyclerReminders.visibility = View.GONE
-                binding.layoutNoData.visibility = View.VISIBLE
-            } else {
-                binding.recyclerReminders.visibility = View.VISIBLE
-                binding.layoutNoData.visibility = View.GONE
+        viewModel.reminders.observe(
+            viewLifecycleOwner,
+            Observer {
+                reminderAdapter.currentReminders = it
+                if (it.isEmpty()) {
+                    binding.recyclerReminders.visibility = View.GONE
+                    binding.layoutNoData.visibility = View.VISIBLE
+                } else {
+                    binding.recyclerReminders.visibility = View.VISIBLE
+                    binding.layoutNoData.visibility = View.GONE
+                }
             }
-        })
+        )
     }
 }

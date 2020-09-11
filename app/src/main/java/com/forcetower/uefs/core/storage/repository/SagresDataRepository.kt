@@ -49,8 +49,8 @@ class SagresDataRepository @Inject constructor(
         executor.diskIO().execute {
             firebaseAuth.signOut()
             preferences.edit()
-                    .remove("hourglass_status")
-                    .apply()
+                .remove("hourglass_status")
+                .apply()
             database.accessDao().deleteAll()
             database.accessTokenDao().deleteAll()
             database.accountDao().deleteAll()
@@ -74,7 +74,7 @@ class SagresDataRepository @Inject constructor(
             val classes = database.classDao().getAllDirect()
             val hours = classes.filter { it.clazz.finalScore != null }.sumBy { it.discipline.credits }
             val mean = classes.filter { it.clazz.finalScore != null }
-                    .sumByDouble { it.discipline.credits * it.clazz.finalScore!! }
+                .sumByDouble { it.discipline.credits * it.clazz.finalScore!! }
             if (hours > 0) {
                 val score = (mean / hours).round(1)
                 Timber.d("Score is $score")

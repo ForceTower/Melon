@@ -63,18 +63,21 @@ class LauncherActivity : AppCompatActivity() {
         //        finish()
         //        return
 
-        viewModel.direction.observe(this, EventObserver {
-            Timber.d("Once!")
-            // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-            if (!viewModel.started) {
-                when (it) {
-                    Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                    Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+        viewModel.direction.observe(
+            this,
+            EventObserver {
+                Timber.d("Once!")
+                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
+                if (!viewModel.started) {
+                    when (it) {
+                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+                    }
+                    viewModel.started = true
+                    finish()
                 }
-                viewModel.started = true
-                finish()
             }
-        })
+        )
     }
 
     private fun createNewVersionNotification() {

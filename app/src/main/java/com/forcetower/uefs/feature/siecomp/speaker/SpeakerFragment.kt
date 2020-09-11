@@ -55,11 +55,14 @@ class SpeakerFragment : UFragment() {
             lifecycleOwner = this@SpeakerFragment
         }
 
-        speakerViewModel.hasProfileImage.observe(viewLifecycleOwner, Observer {
-            if (!it) {
-                activity?.startPostponedEnterTransition()
+        speakerViewModel.hasProfileImage.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (!it) {
+                    activity?.startPostponedEnterTransition()
+                }
             }
-        })
+        )
 
         val headLoadListener = object : ImageLoadListener {
             override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
@@ -85,19 +88,25 @@ class SpeakerFragment : UFragment() {
             NavUtils.navigateUpFromSameTask(requireActivity())
         }
 
-        speakerViewModel.access.observe(viewLifecycleOwner, Observer {
-            binding.editFloat.visibility = if (it != null) {
-                VISIBLE
-            } else {
-                GONE
+        speakerViewModel.access.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.editFloat.visibility = if (it != null) {
+                    VISIBLE
+                } else {
+                    GONE
+                }
             }
-        })
+        )
 
         binding.editFloat.setOnClickListener {
             parentFragmentManager.inTransaction {
-                replace(R.id.speaker_container, CreateSpeakerFragment().apply {
-                    arguments = this@SpeakerFragment.arguments
-                })
+                replace(
+                    R.id.speaker_container,
+                    CreateSpeakerFragment().apply {
+                        arguments = this@SpeakerFragment.arguments
+                    }
+                )
                 addToBackStack(null)
             }
         }

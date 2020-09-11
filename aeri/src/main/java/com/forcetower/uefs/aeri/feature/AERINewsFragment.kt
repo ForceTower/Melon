@@ -99,14 +99,18 @@ class AERINewsFragment : UFragment() {
         }
 
         viewModel.announcements.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
-        viewModel.announcementClick.observe(viewLifecycleOwner, EventObserver {
-            CustomTabActivityHelper.openCustomTab(
-                requireActivity(),
-                CustomTabsIntent.Builder()
-                    .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary))
-                    .addDefaultShareMenuItem()
-                    .build(),
-                Uri.parse(it.link))
-        })
+        viewModel.announcementClick.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                CustomTabActivityHelper.openCustomTab(
+                    requireActivity(),
+                    CustomTabsIntent.Builder()
+                        .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                    Uri.parse(it.link)
+                )
+            }
+        )
     }
 }

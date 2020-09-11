@@ -31,7 +31,6 @@ import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.dashboard.R
@@ -82,26 +81,35 @@ class DashboardFragment : UFragment() {
             adapter = dashAdapter
         }
 
-        homeViewModel.inAppUpdateStatus.observe(viewLifecycleOwner, Observer {
-            dashAdapter.updatingApp = it == InstallStatus.DOWNLOADING
-        })
+        homeViewModel.inAppUpdateStatus.observe(
+            viewLifecycleOwner,
+            Observer {
+                dashAdapter.updatingApp = it == InstallStatus.DOWNLOADING
+            }
+        )
         viewModel.currentClass.observe(viewLifecycleOwner, Observer { dashAdapter.nextClass = it })
         viewModel.lastMessage.observe(viewLifecycleOwner, Observer { dashAdapter.lastMessage = it })
         viewModel.student.observe(viewLifecycleOwner, Observer { dashAdapter.student = it })
         viewModel.affinity.observe(viewLifecycleOwner, Observer { dashAdapter.affinityList = it })
-        viewModel.account.observe(viewLifecycleOwner, Observer {
-            dashAdapter.currentAccount = it
-        })
+        viewModel.account.observe(
+            viewLifecycleOwner,
+            Observer {
+                dashAdapter.currentAccount = it
+            }
+        )
         viewModel.onMoveToSchedule.observe(viewLifecycleOwner, EventObserver { homeViewModel.onMoveToSchedule() })
-        viewModel.profileClick.observe(viewLifecycleOwner, EventObserver {
-            val accountId = it.first
-            val profileId = it.second
-            val intent = ProfileActivity.startIntent(requireContext(), profileId, accountId)
+        viewModel.profileClick.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val accountId = it.first
+                val profileId = it.second
+                val intent = ProfileActivity.startIntent(requireContext(), profileId, accountId)
 
-            val shared = findStudentHeadshot(binding.recyclerElements)
-            val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, "student_headshot_transition")
-            startActivity(intent, option.toBundle())
-        })
+                val shared = findStudentHeadshot(binding.recyclerElements)
+                val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, "student_headshot_transition")
+                startActivity(intent, option.toBundle())
+            }
+        )
     }
 
     private fun findStudentHeadshot(entities: ViewGroup): View {

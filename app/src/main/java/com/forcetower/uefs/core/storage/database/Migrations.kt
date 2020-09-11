@@ -398,7 +398,6 @@ object M45TO47 : Migration(45, 47) {
     }
 }
 
-
 object M47TO48 : Migration(47, 48) {
     override fun migrate(database: SupportSQLiteDatabase) {
         database.execSQL("ALTER TABLE ClassGroup ADD COLUMN sagresId INTEGER DEFAULT NULL")

@@ -28,14 +28,17 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onUpdate = CASCADE, onDelete = CASCADE),
-    ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onUpdate = CASCADE, onDelete = CASCADE)
-], indices = [
-    Index(value = ["group_id", "day", "starts_at", "ends_at", "profile_id"], unique = true),
-    Index(value = ["profile_id"]),
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onUpdate = CASCADE, onDelete = CASCADE),
+        ForeignKey(entity = Profile::class, parentColumns = ["uid"], childColumns = ["profile_id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ],
+    indices = [
+        Index(value = ["group_id", "day", "starts_at", "ends_at", "profile_id"], unique = true),
+        Index(value = ["profile_id"]),
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class ClassLocation(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

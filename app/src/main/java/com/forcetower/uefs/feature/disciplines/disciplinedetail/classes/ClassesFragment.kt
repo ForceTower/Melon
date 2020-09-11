@@ -62,20 +62,26 @@ class ClassesFragment : UFragment() {
             addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         }
 
-        viewModel.classItems.observe(viewLifecycleOwner, Observer {
-            classesAdapter.submitList(it)
-            if (it.isEmpty()) {
-                binding.layoutNoData.visibility = View.VISIBLE
-                binding.classesRecycler.visibility = View.GONE
-            } else {
-                binding.layoutNoData.visibility = View.GONE
-                binding.classesRecycler.visibility = View.VISIBLE
+        viewModel.classItems.observe(
+            viewLifecycleOwner,
+            Observer {
+                classesAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.layoutNoData.visibility = View.VISIBLE
+                    binding.classesRecycler.visibility = View.GONE
+                } else {
+                    binding.layoutNoData.visibility = View.GONE
+                    binding.classesRecycler.visibility = View.VISIBLE
+                }
             }
-        })
+        )
 
-        viewModel.classItemClick.observe(viewLifecycleOwner, EventObserver {
-            onOpenClassItemSelector(it)
-        })
+        viewModel.classItemClick.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                onOpenClassItemSelector(it)
+            }
+        )
     }
 
     private fun onOpenClassItemSelector(item: ClassItem) {

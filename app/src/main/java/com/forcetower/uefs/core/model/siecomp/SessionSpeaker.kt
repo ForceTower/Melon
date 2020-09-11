@@ -28,15 +28,18 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
-    ForeignKey(entity = Speaker::class, parentColumns = ["uid"], childColumns = ["speaker_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
-], indices = [
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        ForeignKey(entity = Speaker::class, parentColumns = ["uid"], childColumns = ["speaker_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
+    ],
+    indices = [
         Index(value = ["session_id", "speaker_id"], unique = true),
         Index(value = ["session_id"]),
         Index(value = ["speaker_id"]),
         Index(value = ["uuid"], unique = true)
-])
+    ]
+)
 data class SessionSpeaker(
     @SerializedName(value = "id")
     @PrimaryKey(autoGenerate = true)

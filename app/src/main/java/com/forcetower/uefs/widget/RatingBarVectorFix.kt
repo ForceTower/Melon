@@ -36,7 +36,6 @@ import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-
 import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.appcompat.widget.AppCompatRatingBar
 
@@ -81,8 +80,10 @@ class RatingBarVectorFix @JvmOverloads constructor(
 
             for (i in 0 until layers) {
                 val id = drawable.getId(i)
-                outDrawables[i] = tileify(drawable.getDrawable(i),
-                        id == android.R.id.progress || id == android.R.id.secondaryProgress)
+                outDrawables[i] = tileify(
+                    drawable.getDrawable(i),
+                    id == android.R.id.progress || id == android.R.id.secondaryProgress
+                )
             }
             val newBg = LayerDrawable(outDrawables)
 
@@ -98,13 +99,19 @@ class RatingBarVectorFix @JvmOverloads constructor(
             }
 
             val shapeDrawable = ShapeDrawable(drawableShape)
-            val bitmapShader = BitmapShader(tileBitmap,
-                    Shader.TileMode.REPEAT, Shader.TileMode.CLAMP)
+            val bitmapShader = BitmapShader(
+                tileBitmap,
+                Shader.TileMode.REPEAT,
+                Shader.TileMode.CLAMP
+            )
             shapeDrawable.paint.shader = bitmapShader
             shapeDrawable.paint.colorFilter = drawable.paint.colorFilter
             return if (clip)
-                ClipDrawable(shapeDrawable, Gravity.START,
-                        ClipDrawable.HORIZONTAL)
+                ClipDrawable(
+                    shapeDrawable,
+                    Gravity.START,
+                    ClipDrawable.HORIZONTAL
+                )
             else
                 shapeDrawable
         } else {
@@ -129,7 +136,8 @@ class RatingBarVectorFix @JvmOverloads constructor(
             val width = mSampleTile!!.width * numStars
             setMeasuredDimension(
                 View.resolveSizeAndState(width, widthMeasureSpec, 0),
-                    measuredHeight)
+                measuredHeight
+            )
         }
     }
 }

@@ -21,10 +21,10 @@
 package com.forcetower.uefs.feature.login
 
 import android.os.Bundle
-import androidx.preference.PreferenceManager
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.preference.PreferenceManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.forcetower.uefs.databinding.DialogInstitutionSelectorBinding

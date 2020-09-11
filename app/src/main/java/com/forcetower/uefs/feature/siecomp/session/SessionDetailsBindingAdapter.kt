@@ -42,9 +42,9 @@ import org.threeten.bp.ZonedDateTime
 fun headerImage(imageView: ImageView, photoUrl: String?) {
     if (!photoUrl.isNullOrEmpty()) {
         Glide.with(imageView)
-                .load(photoUrl)
-                .apply(RequestOptions().placeholder(HeaderGridDrawable(imageView.context)))
-                .into(imageView)
+            .load(photoUrl)
+            .apply(RequestOptions().placeholder(HeaderGridDrawable(imageView.context)))
+            .into(imageView)
     } else {
         imageView.setImageDrawable(HeaderGridDrawable(imageView.context))
     }
@@ -66,7 +66,8 @@ fun eventHeaderAnim(lottieView: LottieAnimationView, session: Session?) {
 }
 
 @BindingAdapter(
-    value = ["sessionDetailStartTime", "sessionDetailEndTime", "timeZoneId"], requireAll = true
+    value = ["sessionDetailStartTime", "sessionDetailEndTime", "timeZoneId"],
+    requireAll = true
 )
 fun timeString(
     view: TextView,
@@ -92,7 +93,9 @@ fun sessionStartCountdown(view: TextView, timeUntilStart: Duration?) {
         view.visibility = VISIBLE
         val minutes = timeUntilStart.toMinutes()
         view.text = view.context.resources.getQuantityString(
-            R.plurals.session_starting_in, minutes.toInt(), minutes.toString()
+            R.plurals.session_starting_in,
+            minutes.toInt(),
+            minutes.toString()
         )
     }
 }

@@ -24,9 +24,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index(value = ["name"])
-])
+@Entity(
+    indices = [
+        Index(value = ["name"])
+    ]
+)
 data class EvaluationEntity(
     @PrimaryKey(autoGenerate = true)
     val id: Long,

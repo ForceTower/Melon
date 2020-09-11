@@ -43,24 +43,28 @@ abstract class FlowchartRequirementDao {
     fun getRecursiveRequirementsUI(disciplineId: Long, name: String): List<FlowchartRequirementUI> {
         try {
             return getRecursiveRequirementsWorker(disciplineId)
-                    .distinctBy { it.requiredDisciplineId }
-                    .map { FlowchartRequirementUI(
-                            it.id,
-                            name,
-                            it.shownName,
-                            it.disciplineId,
-                            it.requiredDisciplineId,
-                            it.coursePercentage,
-                            it.courseHours,
-                            -1,
-                            it.sequence,
-                            it.semesterName,
-                            it.completed
-                    ) }
-                    .sortedWith(Comparator { a, b ->
+                .distinctBy { it.requiredDisciplineId }
+                .map {
+                    FlowchartRequirementUI(
+                        it.id,
+                        name,
+                        it.shownName,
+                        it.disciplineId,
+                        it.requiredDisciplineId,
+                        it.coursePercentage,
+                        it.courseHours,
+                        -1,
+                        it.sequence,
+                        it.semesterName,
+                        it.completed
+                    )
+                }
+                .sortedWith(
+                    Comparator { a, b ->
                         val diff = compareValues(a.sequence, b.sequence)
                         if (diff != 0) diff else compareValues(a.shownName, b.shownName)
-                    })
+                    }
+                )
         } catch (t: Throwable) {
             Timber.e(t, "A stack overflow on requirements!")
         }
@@ -70,24 +74,28 @@ abstract class FlowchartRequirementDao {
     fun getRecursiveUnlockRequirementUI(disciplineId: Long, name: String): List<FlowchartRequirementUI> {
         try {
             return getRecursiveUnlockRequirementWorker(disciplineId)
-                    .distinctBy { it.disciplineId }
-                    .map { FlowchartRequirementUI(
-                            it.id,
-                            name,
-                            it.shownName,
-                            it.disciplineId,
-                            it.requiredDisciplineId,
-                            it.coursePercentage,
-                            it.courseHours,
-                            -2,
-                            it.sequence,
-                            it.semesterName,
-                            it.completed
-                    ) }
-                    .sortedWith(Comparator { a, b ->
+                .distinctBy { it.disciplineId }
+                .map {
+                    FlowchartRequirementUI(
+                        it.id,
+                        name,
+                        it.shownName,
+                        it.disciplineId,
+                        it.requiredDisciplineId,
+                        it.coursePercentage,
+                        it.courseHours,
+                        -2,
+                        it.sequence,
+                        it.semesterName,
+                        it.completed
+                    )
+                }
+                .sortedWith(
+                    Comparator { a, b ->
                         val diff = compareValues(a.sequence, b.sequence)
                         if (diff != 0) diff else compareValues(a.shownName, b.shownName)
-                    })
+                    }
+                )
         } catch (t: Throwable) {
             Timber.e(t, "A stack overflow on unlock!")
         }

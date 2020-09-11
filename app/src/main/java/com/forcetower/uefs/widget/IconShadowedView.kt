@@ -82,17 +82,23 @@ class IconShadowedView @JvmOverloads constructor(
     private val iconBounds = Rect()
     private val shadowBounds = RectF()
     private val shadowPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-        colorFilter = ColorMatrixColorFilter(ColorMatrix().apply {
-            setScale(SHADOW_SCALE_RGB, SHADOW_SCALE_RGB, SHADOW_SCALE_RGB, SHADOW_SCALE_ALPHA)
-        })
+        colorFilter = ColorMatrixColorFilter(
+            ColorMatrix().apply {
+                setScale(SHADOW_SCALE_RGB, SHADOW_SCALE_RGB, SHADOW_SCALE_RGB, SHADOW_SCALE_ALPHA)
+            }
+        )
     }
 
     init {
         val a = context.obtainStyledAttributes(attrs, R.styleable.IconShadowedView, defStyleAttr, defStyleRes)
-        constantShadowTranslationY = a.getDimension(R.styleable.IconShadowedView_constantShadowTranslationY,
-            constantShadowTranslationY)
-        variableShadowTranslationY = a.getDimension(R.styleable.IconShadowedView_variableShadowTranslationY,
-            variableShadowTranslationY)
+        constantShadowTranslationY = a.getDimension(
+            R.styleable.IconShadowedView_constantShadowTranslationY,
+            constantShadowTranslationY
+        )
+        variableShadowTranslationY = a.getDimension(
+            R.styleable.IconShadowedView_variableShadowTranslationY,
+            variableShadowTranslationY
+        )
         scaleDown = a.getFloat(R.styleable.IconShadowedView_scaleDown, scaleDown).coerceIn(0f, 1f)
         bigBlurRadius = a.getFloat(R.styleable.IconShadowedView_bigBlurRadius, bigBlurRadius)
             .coerceIn(0f, 25f)
@@ -139,13 +145,19 @@ class IconShadowedView @JvmOverloads constructor(
         if (icon == null || shadowBounds.width() == 0f) return
         if (bigBlurShadow == null) {
             bigBlurShadow = Bitmap.createBitmap(
-                shadowBounds.width().toInt(), shadowBounds.height().toInt(), ARGB_8888)
+                shadowBounds.width().toInt(),
+                shadowBounds.height().toInt(),
+                ARGB_8888
+            )
         } else {
             bigBlurShadow?.eraseColor(Color.TRANSPARENT)
         }
         if (smallBlurShadow == null) {
             smallBlurShadow = Bitmap.createBitmap(
-                shadowBounds.width().toInt(), shadowBounds.height().toInt(), ARGB_8888)
+                shadowBounds.width().toInt(),
+                shadowBounds.height().toInt(),
+                ARGB_8888
+            )
         } else {
             smallBlurShadow?.eraseColor(Color.TRANSPARENT)
         }

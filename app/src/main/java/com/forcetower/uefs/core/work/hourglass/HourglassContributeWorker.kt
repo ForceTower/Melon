@@ -55,14 +55,14 @@ class HourglassContributeWorker @WorkerInject constructor(
 
         fun createWorker(context: Context) {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             val request = OneTimeWorkRequestBuilder<HourglassContributeWorker>()
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setConstraints(constraints)
-                    .addTag(TAG)
-                    .build()
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
 
             request.enqueueUnique(context, NAME, true)
         }

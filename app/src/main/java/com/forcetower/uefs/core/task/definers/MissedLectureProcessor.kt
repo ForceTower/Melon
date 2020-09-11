@@ -25,9 +25,7 @@ import androidx.room.withTransaction
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.UTask
-import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.LectureMissed
-import timber.log.Timber
 
 class MissedLectureProcessor(
     private val context: Context,

@@ -76,12 +76,14 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         private const val HIDE_FRICTION = 0.1f
 
         @IntDef(
-            value = [STATE_DRAGGING,
+            value = [
+                STATE_DRAGGING,
                 STATE_SETTLING,
                 STATE_EXPANDED,
                 STATE_COLLAPSED,
                 STATE_HIDDEN,
-                STATE_HALF_EXPANDED]
+                STATE_HALF_EXPANDED
+            ]
         )
         @Retention(AnnotationRetention.SOURCE)
         annotation class State
@@ -262,7 +264,8 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
             value.data
         } else {
             a.getDimensionPixelSize(
-                R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight, PEEK_HEIGHT_AUTO
+                R.styleable.BottomSheetBehavior_Layout_behavior_peekHeight,
+                PEEK_HEIGHT_AUTO
             )
         }
         isHideable = a.getBoolean(R.styleable.BottomSheetBehavior_Layout_behavior_hideable, false)
@@ -364,7 +367,8 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
             STATE_HIDDEN -> ViewCompat.offsetTopAndBottom(child, parentHeight)
             STATE_COLLAPSED -> ViewCompat.offsetTopAndBottom(child, collapsedOffset)
             STATE_DRAGGING, STATE_SETTLING -> ViewCompat.offsetTopAndBottom(
-                child, savedTop - child.top
+                child,
+                savedTop - child.top
             )
         }
 
@@ -584,9 +588,15 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
     ): Boolean {
         return isDraggable &&
             target == nestedScrollingChildRef?.get() &&
-            (state != STATE_EXPANDED || super.onNestedPreFling(
-                coordinatorLayout, child, target, velocityX, velocityY
-            ))
+            (
+                state != STATE_EXPANDED || super.onNestedPreFling(
+                    coordinatorLayout,
+                    child,
+                    target,
+                    velocityX,
+                    velocityY
+                )
+                )
     }
 
     private fun clearNestedScroll() {

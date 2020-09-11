@@ -24,9 +24,9 @@ import android.util.TypedValue
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
-import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.feature.evaluation.discipline.SemesterMean
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase

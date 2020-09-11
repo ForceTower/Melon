@@ -146,10 +146,13 @@ class SigningInFragment : UFragment() {
         val position = (Math.random() * (messages.size - 1)).toInt()
         val message = messages[position]
         binding.textStatus.setText(message)
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                displayRandomText()
-        }, 3000)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    displayRandomText()
+            },
+            3000
+        )
     }
 
     private fun doLogin() {
@@ -173,7 +176,7 @@ class SigningInFragment : UFragment() {
     }
 
     private fun onStep(step: LoginSagresRepository.Step) {
-        binding.contentLoading.setProgressWithAnimation(step.step.toFloat()*100 / step.count)
+        binding.contentLoading.setProgressWithAnimation(step.step.toFloat() * 100 / step.count)
     }
 
     private fun onLoginProgress(callback: Callback) {
@@ -218,18 +221,21 @@ class SigningInFragment : UFragment() {
         viewModel.setConnected()
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
         val extras = ActivityNavigator.Extras.Builder()
-                .setActivityOptions(options)
-                .build()
+            .setActivityOptions(options)
+            .build()
 
         binding.textHelloUser.fadeOut()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                binding.textHelloUser.text = ""
-                findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
-                activity?.finishAfterTransition()
-            }
-        }, 1000)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding.textHelloUser.text = ""
+                    findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
+                    activity?.finishAfterTransition()
+                }
+            },
+            1000
+        )
     }
 
     private fun firebaseAuthListener() {

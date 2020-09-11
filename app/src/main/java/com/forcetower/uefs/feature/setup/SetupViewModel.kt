@@ -23,8 +23,8 @@ package com.forcetower.uefs.feature.setup
 import android.content.Context
 import android.net.Uri
 import androidx.hilt.lifecycle.ViewModelInject
-import androidx.preference.PreferenceManager
 import androidx.lifecycle.ViewModel
+import androidx.preference.PreferenceManager
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository

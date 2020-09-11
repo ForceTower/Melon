@@ -41,9 +41,9 @@ class SyncFrequencyRepository @Inject constructor(
             when {
                 snapshot != null -> {
                     val frequencies = snapshot.documents
-                            .map { it.toObject(SyncFrequency::class.java)!! }
-                            .sortedBy { it.value }
-                            .toMutableList()
+                        .map { it.toObject(SyncFrequency::class.java)!! }
+                        .sortedBy { it.value }
+                        .toMutableList()
                     if (frequencies.isEmpty()) { frequencies += SyncFrequency() }
                     result.postValue(frequencies)
                 }

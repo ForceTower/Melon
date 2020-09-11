@@ -47,10 +47,13 @@ class CreateSpeakerFragment : ImagePickerFragment() {
         val uuid = arguments?.getString(SPEAKER_UUID) ?: ""
         val id = arguments?.getLong(SPEAKER_ID)
         viewModel.setSpeakerId(id)
-        viewModel.speaker.observe(viewLifecycleOwner, Observer {
-            binding.speaker = it
-            binding.executePendingBindings()
-        })
+        viewModel.speaker.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.speaker = it
+                binding.executePendingBindings()
+            }
+        )
 
         binding.imageUserPicture.setOnClickListener {
             pickImage()

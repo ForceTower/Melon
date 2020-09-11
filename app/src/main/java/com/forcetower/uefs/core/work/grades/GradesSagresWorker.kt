@@ -63,17 +63,17 @@ class GradesSagresWorker @WorkerInject constructor(
 
         fun createWorker(context: Context, semesterId: Long) {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             val data = workDataOf(SEMESTER_ID to semesterId)
 
             val request = OneTimeWorkRequestBuilder<GradesSagresWorker>()
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .addTag(TAG)
-                    .build()
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setInputData(data)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
 
             request.enqueueUnique(context, NAME + semesterId, true)
         }

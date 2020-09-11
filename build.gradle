@@ -104,7 +104,7 @@ buildscript {
         // Build Versions
         android_gradle_plugin = '4.0.1'
         google_play_services = "4.3.3"
-        kotlinter = "2.4.1"
+        kotlinter = "3.0.2"
         play_publisher = "2.7.1"
         bundletool = "0.10.0"
         crashlytics = "2.1.1"

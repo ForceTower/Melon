@@ -58,17 +58,22 @@ class DemandOffersFragment : UFragment(), NavigationFragment {
                 changeDuration = 120L
                 removeDuration = 100L
             }
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    binding.incToolbar.appBar.elevation = if (recyclerView.canScrollVertically(-1)) getPixelsFromDp(requireContext(), 6) else 0f
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        binding.incToolbar.appBar.elevation = if (recyclerView.canScrollVertically(-1)) getPixelsFromDp(requireContext(), 6) else 0f
+                    }
                 }
-            })
+            )
         }
-        viewModel.offers.observe(viewLifecycleOwner, Observer {
-            val data = it.data
-            if (data != null) {
-                offersAdapter.currentList = data
+        viewModel.offers.observe(
+            viewLifecycleOwner,
+            Observer {
+                val data = it.data
+                if (data != null) {
+                    offersAdapter.currentList = data
+                }
             }
-        })
+        )
     }
 }

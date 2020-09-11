@@ -22,10 +22,10 @@ package com.forcetower.uefs
 
 import android.content.Context
 import android.content.ContextWrapper
-import androidx.preference.PreferenceManager
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.preference.PreferenceManager
 import com.forcetower.uefs.core.vm.Event
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount
@@ -58,8 +58,8 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
             signInClient = GoogleSignIn.getClient(
                 this,
                 GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                        // .requestEmail()
-                        .build()
+                    // .requestEmail()
+                    .build()
             )
         }
     }

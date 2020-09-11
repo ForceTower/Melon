@@ -93,11 +93,13 @@ class ScheduleFragment : UFragment() {
                 removeDuration = 120L
             }
 
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
-                    onScheduleScrolled()
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
+                        onScheduleScrolled()
+                    }
                 }
-            })
+            )
         }
 
         return binding.root
@@ -142,23 +144,27 @@ class ScheduleFragment : UFragment() {
             if (list.isNotEmpty()) {
                 addItemDecoration(
                     ScheduleTimeHeadersDecoration(
-                        context, list
+                        context,
+                        list
                     )
                 )
                 addItemDecoration(
                     DaySeparatorItemDecoration(
-                        context, indexed
+                        context,
+                        indexed
                     )
                 )
             }
         }
 
-        binding.dayIndicators.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                dayIndicatorItemDecoration.userScrolled = true
+        binding.dayIndicators.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    dayIndicatorItemDecoration.userScrolled = true
+                }
             }
-        })
+        )
 
         binding.executeBindingsAfter {
             isEmpty = list.isEmpty()

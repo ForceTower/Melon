@@ -69,26 +69,26 @@ class ThemeSwitcherResourceProvider {
         @JvmStatic
         @StyleableRes
         private val PRIMARY_THEME_OVERLAY_ATTRS = intArrayOf(
-                R.attr.colorPrimary,
-                R.attr.colorPrimaryDark,
-                R.attr.colorPrimaryLight,
-                R.attr.colorPrimaryAlpha
+            R.attr.colorPrimary,
+            R.attr.colorPrimaryDark,
+            R.attr.colorPrimaryLight,
+            R.attr.colorPrimaryAlpha
         )
 
         @JvmStatic
         @StyleableRes
         private val SECONDARY_THEME_OVERLAY_ATTRS = intArrayOf(
-                R.attr.colorAccent,
-                R.attr.colorSecondary
+            R.attr.colorAccent,
+            R.attr.colorSecondary
         )
 
         @JvmStatic
         @StyleableRes
         private val BACKGROUND_THEME_OVERLAY_ATTRS = intArrayOf(
-                R.attr.background,
-                R.attr.colorStatusBar,
-                R.attr.colorSurface,
-                android.R.attr.windowBackground
+            R.attr.background,
+            R.attr.colorStatusBar,
+            R.attr.colorSurface,
+            android.R.attr.windowBackground
         )
     }
 }

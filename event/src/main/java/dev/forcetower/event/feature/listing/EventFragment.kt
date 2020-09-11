@@ -37,7 +37,6 @@ import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
@@ -76,23 +75,29 @@ class EventFragment : UFragment() {
         super.onViewCreated(view, savedInstanceState)
         adapter = EventAdapter(viewModel)
         binding.recyclerEvents.adapter = adapter
-        viewModel.events.observe(viewLifecycleOwner, Observer {
-            adapter.submitList(it.sortedBy { value -> value.startDate })
-            binding.isEmpty = it.isEmpty()
-        })
-
-        viewModel.onEventClicked.observe(viewLifecycleOwner, EventObserver {
-            val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
-                putExtra("eventId", it.id)
+        viewModel.events.observe(
+            viewLifecycleOwner,
+            Observer {
+                adapter.submitList(it.sortedBy { value -> value.startDate })
+                binding.isEmpty = it.isEmpty()
             }
-            val container = findEventShot(binding.recyclerEvents, it.id)
-            val options = ActivityOptions.makeSceneTransitionAnimation(
-                requireActivity(),
-                Pair.create(container, getString(R.string.transition_event_image)),
-                Pair.create(container, getString(R.string.transition_detail_background))
-            )
-            startActivity(intent, options.toBundle())
-        })
+        )
+
+        viewModel.onEventClicked.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val intent = Intent(requireContext(), EventDetailsActivity::class.java).apply {
+                    putExtra("eventId", it.id)
+                }
+                val container = findEventShot(binding.recyclerEvents, it.id)
+                val options = ActivityOptions.makeSceneTransitionAnimation(
+                    requireActivity(),
+                    Pair.create(container, getString(R.string.transition_event_image)),
+                    Pair.create(container, getString(R.string.transition_detail_background))
+                )
+                startActivity(intent, options.toBundle())
+            }
+        )
 
         binding.btnCreateEvent.setOnClickListener {
             val directions = EventFragmentDirections.actionEventsToCreateEvent()

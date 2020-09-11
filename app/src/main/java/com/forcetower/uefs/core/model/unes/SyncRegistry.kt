@@ -25,10 +25,12 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true),
-    Index(value = ["start"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["start"], unique = true)
+    ]
+)
 data class SyncRegistry(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,

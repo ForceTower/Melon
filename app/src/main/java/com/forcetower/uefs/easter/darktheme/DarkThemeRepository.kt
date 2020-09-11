@@ -82,7 +82,7 @@ class DarkThemeRepository @Inject constructor(
 
     private fun create2048Precondition(): Precondition {
         val the2048score = context.getSharedPreferences(ScoreKeeper.PREFERENCES, Context.MODE_PRIVATE)
-                .getLong(ScoreKeeper.HIGH_SCORE, 0)
+            .getLong(ScoreKeeper.HIGH_SCORE, 0)
         Timber.d("2048 score: $the2048score")
         return Precondition(context.getString(R.string.precondition_1), context.getString(R.string.precondition_1_desc), the2048score >= 50000)
     }

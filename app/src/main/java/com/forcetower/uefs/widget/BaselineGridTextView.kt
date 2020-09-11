@@ -51,13 +51,21 @@ class BaselineGridTextView @JvmOverloads constructor(
 
     init {
         val a = context.obtainStyledAttributes(
-                attrs, R.styleable.BaselineGridTextView, defStyleAttr, 0)
+            attrs,
+            R.styleable.BaselineGridTextView,
+            defStyleAttr,
+            0
+        )
 
         if (a.hasValue(R.styleable.BaselineGridTextView_android_textAppearance)) {
-            val textAppearanceId = a.getResourceId(R.styleable.BaselineGridTextView_android_textAppearance,
-                    android.R.style.TextAppearance)
+            val textAppearanceId = a.getResourceId(
+                R.styleable.BaselineGridTextView_android_textAppearance,
+                android.R.style.TextAppearance
+            )
             val ta = context.obtainStyledAttributes(
-                    textAppearanceId, R.styleable.BaselineGridTextView)
+                textAppearanceId,
+                R.styleable.BaselineGridTextView
+            )
             parseTextAttrs(ta)
             ta.recycle()
         }
@@ -67,7 +75,10 @@ class BaselineGridTextView @JvmOverloads constructor(
         a.recycle()
 
         fourDp = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP, 4f, resources.displayMetrics)
+            TypedValue.COMPLEX_UNIT_DIP,
+            4f,
+            resources.displayMetrics
+        )
         computeLineHeight()
     }
 
@@ -123,7 +134,9 @@ class BaselineGridTextView @JvmOverloads constructor(
         }
         if (a.hasValue(R.styleable.BaselineGridTextView_lineHeightHint)) {
             lineHeightHint = a.getDimensionPixelSize(
-                    R.styleable.BaselineGridTextView_lineHeightHint, 0).toFloat()
+                R.styleable.BaselineGridTextView_lineHeightHint,
+                0
+            ).toFloat()
         }
         if (a.hasValue(R.styleable.BaselineGridTextView_android_fontFamily)) {
             fontResId = a.getResourceId(R.styleable.BaselineGridTextView_android_fontFamily, 0)
