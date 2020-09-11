@@ -26,6 +26,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -50,7 +51,7 @@ class OnboardingFragment : UFragment(), Injectable {
     private lateinit var viewModel: OnboardingViewModel
     private lateinit var binding: FragmentEventOnboardingBinding
     private lateinit var pagerPager: ViewPagerPager
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     private val advancePager: Runnable = object : Runnable {
         override fun run() {

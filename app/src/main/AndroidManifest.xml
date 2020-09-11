@@ -114,7 +114,9 @@
         <activity
             android:name=".feature.profile.ProfileActivity"
             android:theme="@style/UTheme.StudentProfile" />
-        <activity android:name=".easter.twofoureight.Game2048Activity" />
+        <activity
+            android:name=".easter.twofoureight.Game2048Activity"
+            android:theme="@style/UTheme.NoInsets.Base"/>
         <activity
             android:name=".feature.reminders.RemindersActivity"
             android:parentActivityName=".feature.home.HomeActivity"
