@@ -58,16 +58,19 @@ class AbsencesFragment : UFragment() {
             }
         }
 
-        viewModel.absences.observe(viewLifecycleOwner, Observer {
-            absenceAdapter.submitList(it)
-            if (it.isEmpty()) {
-                binding.layoutNoData.visibility = View.VISIBLE
-                binding.recyclerAbsences.visibility = View.GONE
-            } else {
-                binding.layoutNoData.visibility = View.GONE
-                binding.recyclerAbsences.visibility = View.VISIBLE
+        viewModel.absences.observe(
+            viewLifecycleOwner,
+            Observer {
+                absenceAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.layoutNoData.visibility = View.VISIBLE
+                    binding.recyclerAbsences.visibility = View.GONE
+                } else {
+                    binding.layoutNoData.visibility = View.GONE
+                    binding.recyclerAbsences.visibility = View.VISIBLE
+                }
             }
-        })
+        )
     }
 
     companion object {

@@ -38,13 +38,15 @@ import kotlin.math.max
 
 @BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
-    val sort = classes?.sortedWith(Comparator { one, two ->
-        when {
-            one.name.trim().equals("prova final", ignoreCase = true) -> 1
-            two.name.trim().equals("prova final", ignoreCase = true) -> -1
-            else -> one.name.compareTo(two.name)
+    val sort = classes?.sortedWith(
+        Comparator { one, two ->
+            when {
+                one.name.trim().equals("prova final", ignoreCase = true) -> 1
+                two.name.trim().equals("prova final", ignoreCase = true) -> -1
+                else -> one.name.compareTo(two.name)
+            }
         }
-    })
+    )
 
     val adapter: ClassGroupGradesAdapter
     if (recycler.adapter == null) {

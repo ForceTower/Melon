@@ -48,29 +48,35 @@ class FormActivity : UActivity() {
         adapter = FragmentAdapter(supportFragmentManager)
         binding.viewPager.adapter = adapter
 
-        viewModel.account.observe(this, Observer {
-            try {
-                viewModel.answer("entry.182173763", it?.grouping?.toString() ?: "0")
-            } catch (error: Throwable) {
-                Timber.e(error)
+        viewModel.account.observe(
+            this,
+            Observer {
+                try {
+                    viewModel.answer("entry.182173763", it?.grouping?.toString() ?: "0")
+                } catch (error: Throwable) {
+                    Timber.e(error)
+                }
             }
-        })
+        )
 
         val questions = createQuestions()
         currentData = questions
         createFragmentsList(questions)
 
-        viewModel.nextQuestion.observe(this, EventObserver {
-            val position = binding.viewPager.currentItem
-            val size = currentData.size
-            val nextPos = position + 1
-            if (nextPos >= size) {
-                viewModel.submitAnswers()
-                finish()
-            } else {
-                binding.viewPager.setCurrentItem(nextPos, true)
+        viewModel.nextQuestion.observe(
+            this,
+            EventObserver {
+                val position = binding.viewPager.currentItem
+                val size = currentData.size
+                val nextPos = position + 1
+                if (nextPos >= size) {
+                    viewModel.submitAnswers()
+                    finish()
+                } else {
+                    binding.viewPager.setCurrentItem(nextPos, true)
+                }
             }
-        })
+        )
     }
 
     private fun createQuestions(): List<Question> {

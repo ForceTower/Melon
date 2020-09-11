@@ -44,9 +44,12 @@ class SetupActivity : UActivity() {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_setup)
-        coursesViewModel.courses.observe(this, Observer {
-            Timber.d("Courses Status: ${it.status}")
-        })
+        coursesViewModel.courses.observe(
+            this,
+            Observer {
+                Timber.d("Courses Status: ${it.status}")
+            }
+        )
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.setup_nav_host).navigateUp()

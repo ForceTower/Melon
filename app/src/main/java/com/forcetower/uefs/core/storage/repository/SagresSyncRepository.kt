@@ -139,7 +139,8 @@ class SagresSyncRepository @Inject constructor(
                 }
                 Timber.d("Is on Wifi? $wifi. Network name: $network")
                 SyncRegistry(
-                    executor = executor, network = network,
+                    executor = executor,
+                    network = network,
                     networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal
                 )
             } else {
@@ -273,7 +274,7 @@ class SagresSyncRepository @Inject constructor(
 
         val shouldDisciplineSync =
             ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
-            (currentDailyHour >= nextHour)
+                (currentDailyHour >= nextHour)
 
         Timber.d("Discipline Sync Dump >> will sync now $shouldDisciplineSync")
         Timber.d("Dailies $dailyDisciplines")
@@ -314,7 +315,8 @@ class SagresSyncRepository @Inject constructor(
 
         if (uefsStudent) {
             if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.2", false) &&
-                    authRepository.getAccessTokenDirect() != null) {
+                authRepository.getAccessTokenDirect() != null
+            ) {
                 HourglassContributeWorker.createWorker(context)
                 preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.2", true).apply()
             }

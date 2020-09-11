@@ -43,10 +43,10 @@ class ProfileAdapter(
 ) : RecyclerView.Adapter<ProfileAdapter.ProfileHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
     var statements = emptyList<ProfileStatement>()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(stats = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(stats = value))
+        }
 
     init {
         differ.submitList(buildMergedList())

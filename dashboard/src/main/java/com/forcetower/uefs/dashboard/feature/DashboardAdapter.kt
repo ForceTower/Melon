@@ -47,30 +47,30 @@ class DashboardAdapter(
     private val lifecycleOwner: LifecycleOwner
 ) : RecyclerView.Adapter<DashboardAdapter.DashboardHolder>() {
     var nextClass: ClassLocationWithData? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(clazz = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(clazz = value))
+        }
 
     var lastMessage: Message? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(message = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(message = value))
+        }
 
     var student: SStudent? = null
 
     var updatingApp: Boolean = false
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(updating = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(updating = value))
+        }
 
     var affinityList: List<AffinityQuestionFull> = emptyList()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(affinity = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(affinity = value))
+        }
 
     var currentAccount: Account? = null
 

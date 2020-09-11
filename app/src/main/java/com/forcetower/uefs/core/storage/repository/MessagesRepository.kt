@@ -137,11 +137,13 @@ class MessagesRepository @Inject constructor(
             if (exception != null) {
                 Timber.e(exception)
             } else if (snapshot != null) {
-                val list = snapshot.documents.mapNotNull { it.toObject(UMessage::class.java)?.apply {
-                    id = it.id
-                    val replaced = message.replace("\\n", "\n")
-                    message = replaced
-                } }.filter { it.institution == null || it.institution == institution }
+                val list = snapshot.documents.mapNotNull {
+                    it.toObject(UMessage::class.java)?.apply {
+                        id = it.id
+                        val replaced = message.replace("\\n", "\n")
+                        message = replaced
+                    }
+                }.filter { it.institution == null || it.institution == institution }
                 result.postValue(list)
             }
         }

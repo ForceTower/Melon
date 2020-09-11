@@ -80,14 +80,14 @@ abstract class GradeDao {
             }
 
             val finalScore = it.finalScore
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
+                .replace(",", ".")
+                .replace("-", "")
+                .replace("*", "")
 
             val partialMean = it.partialMean
-                    .replace(",", ".")
-                    .replace("-", "")
-                    .replace("*", "")
+                .replace(",", ".")
+                .replace("-", "")
+                .replace("*", "")
             val partialScore = partialMean.toDoubleOrNull()
             val score = finalScore.toDoubleOrNull()
 
@@ -174,15 +174,17 @@ abstract class GradeDao {
             val grade = getNamedGradeDirect(clazz.uid, i.name, i.grouping)
             if (grade == null) {
                 val notified = if (i.hasGrade()) 3 else 1
-                insert(Grade(
-                    classId = clazz.uid,
-                    name = i.name,
-                    date = i.date,
-                    notified = if (notify) notified else 0,
-                    grade = i.grade,
-                    grouping = i.grouping,
-                    groupingName = i.groupingName
-                ))
+                insert(
+                    Grade(
+                        classId = clazz.uid,
+                        name = i.name,
+                        date = i.date,
+                        notified = if (notify) notified else 0,
+                        grade = i.grade,
+                        grouping = i.grouping,
+                        groupingName = i.groupingName
+                    )
+                )
             } else {
                 var shouldUpdate = true
                 if (grade.hasGrade() && i.hasGrade() && grade.grade != i.grade) {
@@ -222,15 +224,17 @@ abstract class GradeDao {
                 Timber.d("Current $current")
                 if (current == null) {
                     val notified = if (grade.hasGrade()) 3 else 1
-                    insert(Grade(
-                        classId = classId,
-                        name = "${grade.nameShort} - ${grade.name}",
-                        notified = if (notify) notified else 0,
-                        grade = grade.value?.toString(),
-                        grouping = evaluation.name.hashCode(),
-                        groupingName = evaluation.name ?: "Notas",
-                        date = grade.date
-                    ))
+                    insert(
+                        Grade(
+                            classId = classId,
+                            name = "${grade.nameShort} - ${grade.name}",
+                            notified = if (notify) notified else 0,
+                            grade = grade.value?.toString(),
+                            grouping = evaluation.name.hashCode(),
+                            groupingName = evaluation.name ?: "Notas",
+                            date = grade.date
+                        )
+                    )
                 } else {
                     var shouldUpdate = true
                     val score = grade.value?.toString() ?: ""
@@ -249,7 +253,6 @@ abstract class GradeDao {
                         shouldUpdate = false
                         Timber.d("No changes detected between ${current.name} ${current.grouping} and ${grade.name} ${evaluation.name.hashCode()}")
                     }
-
 
                     if (current.groupingName != evaluation.name) {
                         shouldUpdate = true

@@ -66,8 +66,8 @@ class AnswerAffinityWorker @WorkerInject constructor(
 
         fun createWorker(context: Context, questionId: Long, studentId: Long) {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             val data = workDataOf(
                 QUESTION_ID to questionId,
@@ -75,11 +75,11 @@ class AnswerAffinityWorker @WorkerInject constructor(
             )
 
             val request = OneTimeWorkRequestBuilder<AnswerAffinityWorker>()
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setInputData(data)
-                    .setConstraints(constraints)
-                    .addTag(TAG)
-                    .build()
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setInputData(data)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
 
             request.enqueue(context)
             Timber.d("Enqueue answer affinity")

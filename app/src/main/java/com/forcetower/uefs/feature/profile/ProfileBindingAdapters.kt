@@ -21,10 +21,10 @@
 package com.forcetower.uefs.feature.profile
 
 import android.view.View
-import androidx.preference.PreferenceManager
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import androidx.preference.PreferenceManager
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
 import com.forcetower.uefs.GlideApp
@@ -46,12 +46,12 @@ fun profileImage(iv: ImageView, url: String?) {
     if (url == null) return
 
     GlideApp.with(iv.context)
-            .load(url)
-            .fallback(R.mipmap.ic_unes_large_image_512)
-            .placeholder(R.mipmap.ic_unes_large_image_512)
-            .circleCrop()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(iv)
+        .load(url)
+        .fallback(R.mipmap.ic_unes_large_image_512)
+        .placeholder(R.mipmap.ic_unes_large_image_512)
+        .circleCrop()
+        .transition(DrawableTransitionOptions.withCrossFade())
+        .into(iv)
 }
 
 @BindingAdapter(requireAll = true, value = ["firebaseUser", "firebaseStorage"])
@@ -60,23 +60,23 @@ fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
         val reference = storage.getReference("users/${user.uid}/avatar.jpg")
         try {
             GlideApp.with(iv.context)
-                    .load(reference)
-                    .fallback(R.mipmap.ic_unes_large_image_512)
-                    .placeholder(R.mipmap.ic_unes_large_image_512)
-                    .signature(ObjectKey(System.currentTimeMillis() ushr 21))
-                    .circleCrop()
-                    .transition(DrawableTransitionOptions.withCrossFade())
-                    .into(iv)
+                .load(reference)
+                .fallback(R.mipmap.ic_unes_large_image_512)
+                .placeholder(R.mipmap.ic_unes_large_image_512)
+                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
+                .circleCrop()
+                .transition(DrawableTransitionOptions.withCrossFade())
+                .into(iv)
         } catch (ignored: Throwable) {
         }
     } else {
         GlideApp.with(iv.context)
-                .load(R.mipmap.ic_unes_large_image_512)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(iv)
+            .load(R.mipmap.ic_unes_large_image_512)
+            .fallback(R.mipmap.ic_unes_large_image_512)
+            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .circleCrop()
+            .transition(DrawableTransitionOptions.withCrossFade())
+            .into(iv)
     }
 }
 

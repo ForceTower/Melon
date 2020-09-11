@@ -53,15 +53,18 @@ class AERIMessageFragment : UFragment() {
             moveToAeriNews()
         } else {
             replaceFragment(AERINotInstalledFragment(), "aeri_not_installed")
-            dynamicFeatureViewModel.sessionState.observe(viewLifecycleOwner, EventObserver {
-                when (it.status()) {
-                    SplitInstallSessionStatus.INSTALLED -> moveToAeriNews()
-                    SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                        dynamicFeatureViewModel.requestUserConfirmation(it, requireActivity())
+            dynamicFeatureViewModel.sessionState.observe(
+                viewLifecycleOwner,
+                EventObserver {
+                    when (it.status()) {
+                        SplitInstallSessionStatus.INSTALLED -> moveToAeriNews()
+                        SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                            dynamicFeatureViewModel.requestUserConfirmation(it, requireActivity())
+                        }
+                        else -> Unit
                     }
-                    else -> Unit
                 }
-            })
+            )
         }
     }
 

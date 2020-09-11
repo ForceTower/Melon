@@ -46,15 +46,17 @@ class AboutActivity : UActivity() {
             binding = it
         }
 
-        binding.draggableFrame.addListener(object : ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
-            override fun onDragDismissed() {
-                if (binding.draggableFrame.translationY > 0) {
-                    window.returnTransition = TransitionInflater.from(this@AboutActivity)
+        binding.draggableFrame.addListener(
+            object : ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
+                override fun onDragDismissed() {
+                    if (binding.draggableFrame.translationY > 0) {
+                        window.returnTransition = TransitionInflater.from(this@AboutActivity)
                             .inflateTransition(R.transition.about_return_downward)
+                    }
+                    finishAfterTransition()
                 }
-                finishAfterTransition()
             }
-        })
+        )
 
         setupPager()
     }

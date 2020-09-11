@@ -77,10 +77,13 @@ class ScheduleDayFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getSessionsFromDayLocal(requireArguments().getInt(ARG_EVENT_DAY)).observe(viewLifecycleOwner, Observer {
-            it ?: return@Observer
-            populateInterface(it)
-        })
+        viewModel.getSessionsFromDayLocal(requireArguments().getInt(ARG_EVENT_DAY)).observe(
+            viewLifecycleOwner,
+            Observer {
+                it ?: return@Observer
+                populateInterface(it)
+            }
+        )
     }
 
     private fun populateInterface(data: List<SessionWithData>) {
@@ -91,7 +94,9 @@ class ScheduleDayFragment : UFragment() {
                 if (data.isNotEmpty()) {
                     addItemDecoration(
                         ScheduleItemHeaderDecoration(
-                            it.context, data, SIECOMP_TIMEZONE
+                            it.context,
+                            data,
+                            SIECOMP_TIMEZONE
                         )
                     )
                 }

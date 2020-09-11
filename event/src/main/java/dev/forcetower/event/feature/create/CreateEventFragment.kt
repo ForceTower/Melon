@@ -52,7 +52,6 @@ import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.binding.formattedDate
@@ -98,10 +97,13 @@ class CreateEventFragment : UFragment() {
 
         if (savedInstanceState == null) {
             if (args.eventId != 0L) {
-                viewModel.loadModel(args.eventId).observe(viewLifecycleOwner, Observer {
-                    it ?: return@Observer
-                    populateInterface(it)
-                })
+                viewModel.loadModel(args.eventId).observe(
+                    viewLifecycleOwner,
+                    Observer {
+                        it ?: return@Observer
+                        populateInterface(it)
+                    }
+                )
             }
         }
 
@@ -141,12 +143,14 @@ class CreateEventFragment : UFragment() {
         val dialog = SelectCourseDialog().apply {
             arguments = bundleOf("hide_description" to true)
         }
-        dialog.setCallback(object : CourseSelectionCallback {
-            override fun onSelected(course: Course) {
-                viewModel.selectedCourse = course
-                binding.inputCourse.setText(course.name)
+        dialog.setCallback(
+            object : CourseSelectionCallback {
+                override fun onSelected(course: Course) {
+                    viewModel.selectedCourse = course
+                    binding.inputCourse.setText(course.name)
+                }
             }
-        })
+        )
         dialog.show(childFragmentManager, "dialog_course")
     }
 
@@ -158,19 +162,22 @@ class CreateEventFragment : UFragment() {
 
         val color = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary)
 
-        val picker = DatePickerDialog.newInstance({ _, y, m, d ->
-            val next = Calendar.getInstance().apply {
-                set(Calendar.YEAR, y)
-                set(Calendar.MONTH, m)
-                set(Calendar.DAY_OF_MONTH, d)
-            }.timeInMillis
-            if (start) {
-                viewModel.start = next
-            } else {
-                viewModel.end = next
-            }
-            showTimePicker(input, start)
-        }, calendar)
+        val picker = DatePickerDialog.newInstance(
+            { _, y, m, d ->
+                val next = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, y)
+                    set(Calendar.MONTH, m)
+                    set(Calendar.DAY_OF_MONTH, d)
+                }.timeInMillis
+                if (start) {
+                    viewModel.start = next
+                } else {
+                    viewModel.end = next
+                }
+                showTimePicker(input, start)
+            },
+            calendar
+        )
         picker.version = DatePickerDialog.Version.VERSION_2
 
         picker.accentColor = color
@@ -189,21 +196,24 @@ class CreateEventFragment : UFragment() {
 
         val selection = (if (start) viewModel.start else viewModel.end)
         calendar.timeInMillis = selection
-        val picker = TimePickerDialog.newInstance({ _, h, m, s ->
-            val next = Calendar.getInstance().apply {
-                timeInMillis = selection
-                set(Calendar.HOUR_OF_DAY, h)
-                set(Calendar.MINUTE, m)
-                set(Calendar.SECOND, s)
-            }.timeInMillis
-            if (start) {
-                viewModel.start = next
-            } else {
-                viewModel.end = next
-            }
-            val zoned = ZonedDateTime.ofInstant(Instant.ofEpochMilli(next), ZoneId.systemDefault())
-            input.setText(zoned.toString())
-        }, true)
+        val picker = TimePickerDialog.newInstance(
+            { _, h, m, s ->
+                val next = Calendar.getInstance().apply {
+                    timeInMillis = selection
+                    set(Calendar.HOUR_OF_DAY, h)
+                    set(Calendar.MINUTE, m)
+                    set(Calendar.SECOND, s)
+                }.timeInMillis
+                if (start) {
+                    viewModel.start = next
+                } else {
+                    viewModel.end = next
+                }
+                val zoned = ZonedDateTime.ofInstant(Instant.ofEpochMilli(next), ZoneId.systemDefault())
+                input.setText(zoned.toString())
+            },
+            true
+        )
 
         picker.version = TimePickerDialog.Version.VERSION_2
 
@@ -335,10 +345,13 @@ class CreateEventFragment : UFragment() {
         }
 
         viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours, page)
-            .observe(viewLifecycleOwner, Observer {
-                viewModel.createdId = it
-                preview(it)
-            })
+            .observe(
+                viewLifecycleOwner,
+                Observer {
+                    viewModel.createdId = it
+                    preview(it)
+                }
+            )
     }
 
     private fun preview(id: Long) {

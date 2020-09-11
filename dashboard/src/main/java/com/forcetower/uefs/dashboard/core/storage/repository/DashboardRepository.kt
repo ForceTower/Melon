@@ -32,7 +32,6 @@ import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import dagger.Reusable
 import java.util.Calendar
 import javax.inject.Inject
-import javax.inject.Singleton
 
 @Reusable
 class DashboardRepository @Inject constructor(

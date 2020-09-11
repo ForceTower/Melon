@@ -290,8 +290,10 @@ class GameView : View {
                             mBitmapCell[index]!!.draw(canvas)
                         } else if (aCell.animationType == MERGE_ANIMATION) { // Merging Animation
                             val percentDone = aCell.percentageDone
-                            val textScaleSize = (1.0 + INITIAL_VELOCITY * percentDone +
-                                MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2).toFloat()
+                            val textScaleSize = (
+                                1.0 + INITIAL_VELOCITY * percentDone +
+                                    MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2
+                                ).toFloat()
                             mPaint.textSize = mTextSize * textScaleSize
 
                             val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
@@ -383,8 +385,12 @@ class GameView : View {
 
     fun spawnTile(tile: Tile) {
         mAnimationGrid.startAnimation(
-            tile.x, tile.y, SPAWN_ANIMATION,
-            SPAWN_ANIMATION_TIME, MOVE_ANIMATION_TIME, null
+            tile.x,
+            tile.y,
+            SPAWN_ANIMATION,
+            SPAWN_ANIMATION_TIME,
+            MOVE_ANIMATION_TIME,
+            null
         ) // Direction: -1 = EXPANDING
     }
 
@@ -398,8 +404,12 @@ class GameView : View {
 
     fun mergeTile(x: Int, y: Int) {
         mAnimationGrid.startAnimation(
-            x, y, MERGE_ANIMATION,
-            SPAWN_ANIMATION_TIME, MOVE_ANIMATION_TIME, null
+            x,
+            y,
+            MERGE_ANIMATION,
+            SPAWN_ANIMATION_TIME,
+            MOVE_ANIMATION_TIME,
+            null
         )
     }
 

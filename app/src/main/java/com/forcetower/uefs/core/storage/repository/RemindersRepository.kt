@@ -84,14 +84,17 @@ class RemindersRepository @Inject constructor(
             val data = mapOf("completed" to next)
             profileReference.document(user.uid).collection(Reminder.COLLECTION).document(reminder.id)
                 .set(data, SetOptions.merge())
-                .addOnCompleteListener(executors.networkIO(), OnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        Timber.d("Updated reminder")
-                    } else {
-                        Timber.d("Reminder was not updated")
-                        Timber.d("Exception message: ${task.exception?.message}")
+                .addOnCompleteListener(
+                    executors.networkIO(),
+                    OnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            Timber.d("Updated reminder")
+                        } else {
+                            Timber.d("Reminder was not updated")
+                            Timber.d("Exception message: ${task.exception?.message}")
+                        }
                     }
-                })
+                )
         } else {
             Timber.d("Not connected")
         }

@@ -84,7 +84,8 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
                         .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
                         .addDefaultShareMenuItem()
                         .build(),
-                    Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}"))
+                    Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}")
+                )
                 true
             }
         }

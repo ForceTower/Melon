@@ -29,15 +29,18 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = CASCADE, onUpdate = CASCADE),
-    ForeignKey(entity = Tag::class, parentColumns = ["uid"], childColumns = ["tag_id"], onUpdate = CASCADE, onDelete = CASCADE)
-], indices = [
-    Index(value = ["session_id", "tag_id"], unique = true),
-    Index(value = ["session_id"]),
-    Index(value = ["tag_id"]),
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = CASCADE, onUpdate = CASCADE),
+        ForeignKey(entity = Tag::class, parentColumns = ["uid"], childColumns = ["tag_id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ],
+    indices = [
+        Index(value = ["session_id", "tag_id"], unique = true),
+        Index(value = ["session_id"]),
+        Index(value = ["tag_id"]),
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class SessionTag(
     @SerializedName(value = "id")
     @PrimaryKey(autoGenerate = true)

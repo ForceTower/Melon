@@ -24,4 +24,4 @@ import android.content.Context
 import android.util.TypedValue
 
 fun getPixelsFromDp(context: Context, dp: Int): Float =
-        TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)
+    TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp.toFloat(), context.resources.displayMetrics)

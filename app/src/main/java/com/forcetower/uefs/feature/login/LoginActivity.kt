@@ -48,9 +48,12 @@ class LoginActivity : UActivity() {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
-        coursesViewModel.courses.observe(this, Observer {
-            Timber.d("Courses Status: ${it.status}")
-        })
+        coursesViewModel.courses.observe(
+            this,
+            Observer {
+                Timber.d("Courses Status: ${it.status}")
+            }
+        )
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.login_nav_host).navigateUp()

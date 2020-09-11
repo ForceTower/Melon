@@ -36,10 +36,10 @@ class EvaluationElementsAdapter(
     private val interactor: DisciplineInteractor
 ) : RecyclerView.Adapter<ElementHolder>() {
     var discipline: DisciplineEvaluation? = null
-    set(value) {
-        field = value
-        diff.submitList(buildList(value))
-    }
+        set(value) {
+            field = value
+            diff.submitList(buildList(value))
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ElementHolder {
         return when (viewType) {

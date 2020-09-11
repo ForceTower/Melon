@@ -24,7 +24,6 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
@@ -85,25 +84,35 @@ class EventDetailsActivity : UActivity() {
 
         binding.actions = viewModel
 
-        viewModel.loadModel(id).observe(this, Observer {
-            binding.event = it
-        })
+        viewModel.loadModel(id).observe(
+            this,
+            Observer {
+                binding.event = it
+            }
+        )
 
-        viewModel.onEventCreationSent.observe(this, EventObserver {
-            setResult(Activity.RESULT_OK)
-            finishAfterTransition()
-        })
+        viewModel.onEventCreationSent.observe(
+            this,
+            EventObserver {
+                setResult(Activity.RESULT_OK)
+                finishAfterTransition()
+            }
+        )
 
-        viewModel.onEventMoveToPage.observe(this, EventObserver {
-            it.registerPage ?: return@EventObserver
-            CustomTabActivityHelper.openCustomTab(
-                this,
-                CustomTabsIntent.Builder()
-                    .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
-                    .addDefaultShareMenuItem()
-                    .build(),
-                Uri.parse(it.registerPage))
-        })
+        viewModel.onEventMoveToPage.observe(
+            this,
+            EventObserver {
+                it.registerPage ?: return@EventObserver
+                CustomTabActivityHelper.openCustomTab(
+                    this,
+                    CustomTabsIntent.Builder()
+                        .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                    Uri.parse(it.registerPage)
+                )
+            }
+        )
 
         val headLoadListener = object : ImageLoadListener {
             override fun onImageLoaded(drawable: Drawable) {
@@ -155,13 +164,19 @@ class EventDetailsActivity : UActivity() {
     fun applyFullImagePalette(palette: Palette?) {
         // color the ripple on the image spacer (default is grey)
         binding.imageSpacer.background = ViewUtils.createRipple(
-            palette, 0.25f, 0.5f,
-            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+            palette,
+            0.25f,
+            0.5f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey),
+            true
         )
         // slightly more opaque ripple on the pinned image to compensate for the scrim
         binding.image.foreground = ViewUtils.createRipple(
-            palette, 0.3f, 0.6f,
-            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+            palette,
+            0.3f,
+            0.6f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey),
+            true
         )
     }
 

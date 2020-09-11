@@ -63,10 +63,13 @@ class TeacherFragment : UFragment() {
             viewModel.getTeacher(args.teacherId)
         }
         liveData.observe(viewLifecycleOwner, Observer { handleData(it) })
-        viewModel.disciplineSelect.observe(viewLifecycleOwner, EventObserver {
-            val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
-            findNavController().navigate(directions)
-        })
+        viewModel.disciplineSelect.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
+                findNavController().navigate(directions)
+            }
+        )
         binding.btnEvaluate.setOnClickListener {
             val directions = TeacherFragmentDirections.actionEvalTeacherToRating(args.teacherId)
             findNavController().navigate(directions)

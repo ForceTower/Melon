@@ -53,11 +53,14 @@ class RequestedServicesFragment : UFragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         val filter = arguments?.getString(FILTER_TYPE)
-        viewModel.getRequestedServices(filter).observe(viewLifecycleOwner, Observer {
-            binding.empty = it.isEmpty()
-            binding.executePendingBindings()
-            adapter.submitList(it)
-        })
+        viewModel.getRequestedServices(filter).observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.empty = it.isEmpty()
+                binding.executePendingBindings()
+                adapter.submitList(it)
+            }
+        )
     }
 
     companion object {

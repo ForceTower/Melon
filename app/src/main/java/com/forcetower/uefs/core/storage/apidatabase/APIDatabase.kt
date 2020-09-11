@@ -27,10 +27,14 @@ import com.forcetower.uefs.core.model.api.UTeacher
 import com.forcetower.uefs.core.storage.apidatabase.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.apidatabase.dao.TeacherDao
 
-@Database(entities = [
-    UDiscipline::class,
-    UTeacher::class
-], version = 1, exportSchema = true)
+@Database(
+    entities = [
+        UDiscipline::class,
+        UTeacher::class
+    ],
+    version = 1,
+    exportSchema = true
+)
 abstract class APIDatabase : RoomDatabase() {
     abstract fun disciplineDao(): DisciplineDao
     abstract fun teacherDao(): TeacherDao

@@ -27,28 +27,28 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.siecomp.Tag
-import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.feature.siecomp.schedule.TagsAdapter
 import timber.log.Timber
 
 @BindingAdapter("sessionTags")
 fun sessionTags(recyclerView: RecyclerView, sessionTags: List<Tag>?) {
     recyclerView.adapter = (recyclerView.adapter as? TagsAdapter ?: TagsAdapter())
-            .apply {
-                submitList(sessionTags ?: emptyList())
-            }
+        .apply {
+            submitList(sessionTags ?: emptyList())
+        }
 }
 
 @BindingAdapter("tagTint")
 fun tagTint(textView: TextView, color: Int) {
     // Tint the colored dot
     (textView.compoundDrawablesRelative[0]?.mutate() as? GradientDrawable)?.setColor(
-            tagTintOrDefault(
-                    color,
-                    textView.context
-            )
+        tagTintOrDefault(
+            color,
+            textView.context
+        )
     ) ?: Timber.d("Some of them are null")
 }
 

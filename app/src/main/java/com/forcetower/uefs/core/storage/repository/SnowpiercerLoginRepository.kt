@@ -22,35 +22,20 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.annotation.StringRes
 import androidx.lifecycle.MutableLiveData
-import androidx.room.withTransaction
-import com.forcetower.core.extensions.removeSeconds
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
-import com.forcetower.uefs.core.model.unes.Class
-import com.forcetower.uefs.core.model.unes.ClassGroup
-import com.forcetower.uefs.core.model.unes.ClassLocation
-import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.model.unes.Message
-import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
-import com.forcetower.uefs.feature.shared.extensions.createTimeInt
-import com.forcetower.uefs.feature.shared.extensions.toTitleCase
-import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
-import dev.forcetower.breaker.model.DisciplineData
-import dev.forcetower.breaker.model.MessagesDataPage
 import dev.forcetower.breaker.model.Person
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.flow.flow
@@ -90,21 +75,26 @@ class SnowpiercerLoginRepository @Inject constructor(
         if (login is Outcome.Error) {
             if (login.code == 401) {
                 emit(Callback.Builder(Status.INVALID_LOGIN).code(401).build())
-            }
-            else emit(produceErrorMessage(login))
+            } else emit(produceErrorMessage(login))
             return@flow
         }
 
         database.accessDao().insert(username, password)
 
         val person = (login as Outcome.Success).value
-        executors.others().execute { firebaseAuthRepository.loginToFirebase(SagresPerson(
-            person.id,
-            person.name,
-            person.name,
-            person.cpf,
-            person.email
-        ), Access(username = username, password = password), true) }
+        executors.others().execute {
+            firebaseAuthRepository.loginToFirebase(
+                SagresPerson(
+                    person.id,
+                    person.name,
+                    person.name,
+                    person.cpf,
+                    person.email
+                ),
+                Access(username = username, password = password),
+                true
+            )
+        }
 
         val localProfileId = defineUser(person)
 

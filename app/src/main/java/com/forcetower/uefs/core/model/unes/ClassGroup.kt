@@ -30,14 +30,17 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresDisciplineGroup
 import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onDelete = CASCADE, onUpdate = CASCADE),
-    ForeignKey(entity = Teacher::class, parentColumns = ["uid"], childColumns = ["teacher_id"], onDelete = SET_NULL, onUpdate = CASCADE)
-], indices = [
-    Index(value = ["class_id", "group"], unique = true),
-    Index(value = ["uuid"], unique = true),
-    Index(value = ["teacher_id"], unique = false)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onDelete = CASCADE, onUpdate = CASCADE),
+        ForeignKey(entity = Teacher::class, parentColumns = ["uid"], childColumns = ["teacher_id"], onDelete = SET_NULL, onUpdate = CASCADE)
+    ],
+    indices = [
+        Index(value = ["class_id", "group"], unique = true),
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["teacher_id"], unique = false)
+    ]
+)
 data class ClassGroup(
     @PrimaryKey(autoGenerate = true)
     var uid: Long = 0,

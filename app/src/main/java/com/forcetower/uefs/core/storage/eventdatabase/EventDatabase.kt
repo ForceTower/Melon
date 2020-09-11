@@ -31,18 +31,22 @@ import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.siecomp.Tag
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.eventdatabase.dao.AccessTokenDao
-import com.forcetower.uefs.core.util.Converters
 import com.forcetower.uefs.core.storage.eventdatabase.dao.EventDao
+import com.forcetower.uefs.core.util.Converters
 
-@Database(entities = [
-    AccessToken::class,
-    Session::class,
-    Tag::class,
-    Speaker::class,
-    SessionTag::class,
-    SessionSpeaker::class,
-    SessionStar::class
-], version = 5, exportSchema = true)
+@Database(
+    entities = [
+        AccessToken::class,
+        Session::class,
+        Tag::class,
+        Speaker::class,
+        SessionTag::class,
+        SessionSpeaker::class,
+        SessionStar::class
+    ],
+    version = 5,
+    exportSchema = true
+)
 @TypeConverters(value = [Converters::class])
 abstract class EventDatabase : RoomDatabase() {
     abstract fun eventDao(): EventDao

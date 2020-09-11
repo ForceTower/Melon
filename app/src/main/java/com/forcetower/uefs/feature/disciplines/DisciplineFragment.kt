@@ -32,7 +32,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
@@ -86,18 +85,27 @@ class DisciplineFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.semesters.observe(viewLifecycleOwner, {
-            val actualList = applySortOptions(it)
-            adapter.submitList(actualList)
-        })
+        viewModel.semesters.observe(
+            viewLifecycleOwner,
+            {
+                val actualList = applySortOptions(it)
+                adapter.submitList(actualList)
+            }
+        )
 
-        viewModel.navigateToDisciplineAction.observe(viewLifecycleOwner, EventObserver {
-            handleNavigateToDisciplineDetails(it)
-        })
+        viewModel.navigateToDisciplineAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                handleNavigateToDisciplineDetails(it)
+            }
+        )
 
-        viewModel.navigateToGroupAction.observe(viewLifecycleOwner, EventObserver {
-            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
-        })
+        viewModel.navigateToGroupAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
+            }
+        )
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
@@ -133,24 +141,27 @@ class DisciplineFragment : UFragment() {
     }
 
     private fun showAppliedChangesSnack() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
-                snack?.let { bar ->
-                    bar.duration = Snackbar.LENGTH_INDEFINITE
-                    bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
-                        preferences.edit()
-                            .putBoolean("stg_semester_deterministic_ordering", true)
-                            .putBoolean("suggested_reorder_semester_action_reversed", true)
-                            .apply()
-                        bar.dismiss()
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
+                    snack?.let { bar ->
+                        bar.duration = Snackbar.LENGTH_INDEFINITE
+                        bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
+                            preferences.edit()
+                                .putBoolean("stg_semester_deterministic_ordering", true)
+                                .putBoolean("suggested_reorder_semester_action_reversed", true)
+                                .apply()
+                            bar.dismiss()
+                        }
+                        bar.show()
                     }
-                    bar.show()
+                } else {
+                    Timber.d("Failed check of state")
                 }
-            } else {
-                Timber.d("Failed check of state")
-            }
-        }, 1000)
+            },
+            1000
+        )
     }
 
     private fun handleNavigateToDisciplineDetails(it: ClassFullWithGroup) {

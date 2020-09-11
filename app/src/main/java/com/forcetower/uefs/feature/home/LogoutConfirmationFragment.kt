@@ -30,8 +30,8 @@ import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentLogoutConfirmationBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 

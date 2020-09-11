@@ -62,23 +62,32 @@ class SessionDetailsFragment : UFragment() {
             doOnLayout {
                 addOnScrollListener(
                     PushUpScrollListener(
-                        binding.up, it, R.id.session_detail_title, R.id.detail_image
+                        binding.up,
+                        it,
+                        R.id.session_detail_title,
+                        R.id.detail_image
                     )
                 )
             }
         }
 
-        viewModel.speakers.observe(viewLifecycleOwner, Observer {
-            detailsAdapter.speakers = it ?: emptyList()
-        })
-
-        viewModel.navigateToSpeakerAction.observe(viewLifecycleOwner, EventObserver { speakerId ->
-            requireActivity().run {
-                val sharedElement = findSpeakerHeadshot(binding.sessionDetailRecyclerView, speakerId)
-                val option = ActivityOptions.makeSceneTransitionAnimation(this, sharedElement, getString(R.string.speaker_headshot_transition))
-                startActivity(EventSpeakerActivity.startIntent(this, speakerId), option.toBundle())
+        viewModel.speakers.observe(
+            viewLifecycleOwner,
+            Observer {
+                detailsAdapter.speakers = it ?: emptyList()
             }
-        })
+        )
+
+        viewModel.navigateToSpeakerAction.observe(
+            viewLifecycleOwner,
+            EventObserver { speakerId ->
+                requireActivity().run {
+                    val sharedElement = findSpeakerHeadshot(binding.sessionDetailRecyclerView, speakerId)
+                    val option = ActivityOptions.makeSceneTransitionAnimation(this, sharedElement, getString(R.string.speaker_headshot_transition))
+                    startActivity(EventSpeakerActivity.startIntent(this, speakerId), option.toBundle())
+                }
+            }
+        )
 
         return binding.root
     }

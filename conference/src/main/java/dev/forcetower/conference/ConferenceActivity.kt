@@ -21,7 +21,6 @@
 package dev.forcetower.conference
 
 import android.os.Bundle
-import android.view.View
 import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependencies

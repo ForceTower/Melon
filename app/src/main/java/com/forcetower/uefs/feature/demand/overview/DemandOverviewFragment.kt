@@ -68,15 +68,20 @@ class DemandOverviewFragment : UFragment() {
             setHasFixedSize(true)
         }
 
-        viewModel.selected.observe(viewLifecycleOwner, Observer {
-            if (it != null) offersAdapter.submitList(it)
-        })
-
-        behavior.addBottomSheetCallback(object : BottomSheetBehavior.BottomSheetCallback {
-            override fun onSlide(bottomSheet: View, slideOffset: Float) {
-                updateFilterHeadersAlpha(slideOffset)
+        viewModel.selected.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it != null) offersAdapter.submitList(it)
             }
-        })
+        )
+
+        behavior.addBottomSheetCallback(
+            object : BottomSheetBehavior.BottomSheetCallback {
+                override fun onSlide(bottomSheet: View, slideOffset: Float) {
+                    updateFilterHeadersAlpha(slideOffset)
+                }
+            }
+        )
 
         binding.collapseArrow.setOnClickListener {
             behavior.state = STATE_COLLAPSED

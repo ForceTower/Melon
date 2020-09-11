@@ -40,8 +40,8 @@ class EventScheduleActivity : UActivity() {
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
-                    .replace(R.id.fragment_container, ScheduleFragment())
-                    .commit()
+                .replace(R.id.fragment_container, ScheduleFragment())
+                .commit()
         }
     }
 

@@ -27,13 +27,16 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["disciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
-    ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["requiredDisciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
-], indices = [
-    Index(value = ["disciplineId"]),
-    Index(value = ["requiredDisciplineId"])
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["disciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
+        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["requiredDisciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
+    ],
+    indices = [
+        Index(value = ["disciplineId"]),
+        Index(value = ["requiredDisciplineId"])
+    ]
+)
 data class FlowchartRequirement(
     @PrimaryKey(autoGenerate = false)
     val id: Long,
