@@ -26,14 +26,10 @@ import android.os.Bundle
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class RemindersActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class RemindersActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_reminders)
@@ -42,8 +38,6 @@ class RemindersActivity : UActivity(), HasAndroidInjector {
             add(R.id.fragment_container, RemindersFragment())
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 
     companion object {
         fun startIntent(context: Context): Intent {

@@ -22,19 +22,18 @@ package com.forcetower.uefs.aeri.core.injection.module
 
 import android.content.Context
 import androidx.room.Room
-import com.forcetower.core.injection.annotation.FeatureScope
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
 import com.forcetower.uefs.aeri.domain.AERIDataSourceFactory
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.migration.DisableInstallInCheck
 
 @Module
+@DisableInstallInCheck
 object AERIDaggerModule {
-
     @Provides
-    @FeatureScope
     fun provideDatabase(context: Context): AERIDatabase {
         return Room.databaseBuilder(context, AERIDatabase::class.java, "aeri_data.db")
             .enableMultiInstanceInvalidation()
@@ -43,7 +42,6 @@ object AERIDaggerModule {
     }
 
     @Provides
-    @FeatureScope
     fun provideDataSource(repository: AERIRepository): DynamicDataSourceFactory {
         return AERIDataSourceFactory(repository)
     }

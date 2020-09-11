@@ -21,6 +21,8 @@
 package com.forcetower.uefs.core.work.grades
 
 import android.content.Context
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -28,33 +30,30 @@ import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class GradesSagresWorker(
-    context: Context,
-    params: WorkerParameters
+class GradesSagresWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
     @Inject
     lateinit var repository: SagresGradesRepository
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
-        return Result.success()
-//        val semesterId = inputData.getLong(SEMESTER_ID, 0)
-//        return try {
-//            val result = repository.getGrades(semesterId)
-//            when {
-//                result >= 0 -> Result.success()
-//                result >= -2 -> Result.failure()
-//                else -> Result.retry()
-//            }
-//        } catch (t: Throwable) {
-//            t.printStackTrace()
-//            Result.retry()
-//        }
+        val semesterId = inputData.getLong(SEMESTER_ID, 0)
+        return try {
+            val result = repository.getGrades(semesterId)
+            when {
+                result >= 0 -> Result.success()
+                result >= -2 -> Result.failure()
+                else -> Result.retry()
+            }
+        } catch (t: Throwable) {
+            t.printStackTrace()
+            Result.retry()
+        }
     }
 
     companion object {

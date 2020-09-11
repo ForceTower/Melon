@@ -38,24 +38,21 @@ import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.material.snackbar.Snackbar
 import com.judemanutd.autostarter.AutoStartPermissionHelper
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.Locale
-import javax.inject.Inject
 
-class AdvancedSettingsFragment : PreferenceFragmentCompat(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private val viewModel: SettingsViewModel by activityViewModels { factory }
+@AndroidEntryPoint
+class AdvancedSettingsFragment : PreferenceFragmentCompat() {
+    private val viewModel: SettingsViewModel by activityViewModels()
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         onPreferenceChange(shared, key)

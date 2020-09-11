@@ -25,54 +25,29 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineSemesterBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class DisciplineSemesterFragment : UFragment(), Injectable {
-    companion object {
-        const val SEMESTER_SAGRES_ID = "unes_sagres_id"
-        const val SEMESTER_DATABASE_ID = "unes_database_id"
-
-        fun newInstance(semester: Semester): DisciplineSemesterFragment {
-            val args = bundleOf(SEMESTER_SAGRES_ID to semester.sagresId, SEMESTER_DATABASE_ID to semester.uid)
-            return DisciplineSemesterFragment().apply { arguments = args }
-        }
-    }
-
-    private val semesterId: Long by lazy {
-        val args = arguments ?: throw IllegalStateException("Arguments are null")
-        args.getLong(SEMESTER_DATABASE_ID)
-    }
-
-    private val semesterSagresId: Long by lazy {
-        val args = arguments ?: throw IllegalStateException("Arguments are null")
-        args.getLong(SEMESTER_SAGRES_ID)
-    }
-
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: DisciplineViewModel
-    private lateinit var localDisciplineVM: DisciplineViewModel
+@AndroidEntryPoint
+class DisciplineSemesterFragment : UFragment() {
+    private val viewModel: DisciplineViewModel by activityViewModels()
+    private val localDisciplineVM: DisciplineViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPerformance: DisciplinePerformanceAdapter
     private lateinit var swipeRefreshLayout: com.forcetower.core.widget.CustomSwipeRefreshLayout
     private lateinit var binding: FragmentDisciplineSemesterBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        localDisciplineVM = provideViewModel(factory)
         binding = FragmentDisciplineSemesterBinding.inflate(inflater, container, false).apply {
             viewModel = this@DisciplineSemesterFragment.viewModel
         }.also {
@@ -104,11 +79,11 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
             })
         }
         swipeRefreshLayout.setOnRefreshListener {
-            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
+            localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
         binding.downloadBtn.setOnClickListener {
-            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
+            localDisciplineVM.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
         localDisciplineVM.refreshing.observe(viewLifecycleOwner, {
@@ -119,13 +94,23 @@ class DisciplineSemesterFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.classes(semesterId).observe(viewLifecycleOwner, {
-            binding.hasData = it.isNotEmpty()
+        viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(viewLifecycleOwner, Observer {
             populateInterface(it)
+            binding.hasData = it.isNotEmpty()
         })
     }
 
     private fun populateInterface(classes: List<ClassFullWithGroup>) {
         adapterPerformance.classes = classes
+    }
+
+    companion object {
+        const val SEMESTER_SAGRES_ID = "unes_sagres_id"
+        const val SEMESTER_DATABASE_ID = "unes_database_id"
+
+        fun newInstance(semester: Semester): DisciplineSemesterFragment {
+            val args = bundleOf(SEMESTER_SAGRES_ID to semester.sagresId, SEMESTER_DATABASE_ID to semester.uid)
+            return DisciplineSemesterFragment().apply { arguments = args }
+        }
     }
 }

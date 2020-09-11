@@ -26,14 +26,10 @@ import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class OnboardingActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class OnboardingActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_onboarding)
@@ -46,6 +42,4 @@ class OnboardingActivity : UActivity(), HasAndroidInjector {
             }
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 }

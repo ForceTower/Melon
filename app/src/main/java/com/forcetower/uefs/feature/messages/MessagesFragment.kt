@@ -34,51 +34,35 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.getLinks
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.messages.dynamic.AERIMessageFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class MessagesFragment : UFragment(), Injectable {
-    companion object {
-        const val EXTRA_MESSAGES_FLAG = "unes.messages.is_svc_message"
-
-        fun newInstance(unesService: Boolean): MessagesFragment {
-            return MessagesFragment().apply {
-                arguments = bundleOf(EXTRA_MESSAGES_FLAG to unesService)
-            }
-        }
-    }
-
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class MessagesFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
     @Inject
     lateinit var database: UDatabase
 
     private lateinit var binding: FragmentAllMessagesBinding
-    private lateinit var profileViewModel: ProfileViewModel
-    private val messagesViewModel: MessagesViewModel by activityViewModels { factory }
-    private lateinit var homeViewModel: HomeViewModel
+    private val profileViewModel: ProfileViewModel by activityViewModels()
+    private val messagesViewModel: MessagesViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        profileViewModel = provideActivityViewModel(factory)
-        homeViewModel = provideActivityViewModel(factory)
-
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
             lifecycleOwner = this@MessagesFragment
@@ -176,5 +160,15 @@ class MessagesFragment : UFragment(), Injectable {
         override fun getCount() = fragments.size
         override fun getItem(position: Int) = fragments[position]
         override fun getPageTitle(position: Int) = fragments[position].displayName
+    }
+
+    companion object {
+        const val EXTRA_MESSAGES_FLAG = "unes.messages.is_svc_message"
+
+        fun newInstance(unesService: Boolean): MessagesFragment {
+            return MessagesFragment().apply {
+                arguments = bundleOf(EXTRA_MESSAGES_FLAG to unesService)
+            }
+        }
     }
 }

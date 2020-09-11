@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.flowchart
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -33,9 +34,8 @@ import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.flowchart.home.SemesterInteractor
 import com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
-import javax.inject.Inject
 
-class FlowchartViewModel @Inject constructor(
+class FlowchartViewModel @ViewModelInject constructor(
     private val repository: FlowchartRepository
 ) : ViewModel(), FlowchartInteractor, SemesterInteractor, DisciplineInteractor {
     private val _courseId = MutableLiveData<Long>()

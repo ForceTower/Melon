@@ -28,34 +28,30 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
 import com.forcetower.uefs.feature.siecomp.editor.SIECOMPEditorActivity
 import com.forcetower.uefs.feature.siecomp.session.EventSessionDetailsActivity
 import com.google.android.material.tabs.TabLayout
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class ScheduleFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: SIECOMPEventViewModel
+@AndroidEntryPoint
+class ScheduleFragment : UFragment() {
+    private val viewModel: SIECOMPEventViewModel by activityViewModels()
     private lateinit var binding: FragmentEventScheduleBinding
     private lateinit var viewPager: ViewPager
     private lateinit var tabs: TabLayout
     private var count = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         FragmentEventScheduleBinding.inflate(inflater, container, false).also {
             binding = it
             tabs = binding.tabLayout

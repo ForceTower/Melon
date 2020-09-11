@@ -29,27 +29,26 @@ import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
-import com.forcetower.core.injection.Injectable
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSchedulePerformanceBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.max
 
-class SchedulePerformanceFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class SchedulePerformanceFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
-    @Inject lateinit var factory: UViewModelFactory
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
-    private val viewModel by activityViewModels<ScheduleViewModel> { factory }
-    private val profileViewModel by activityViewModels<ProfileViewModel> { factory }
+    private val viewModel by activityViewModels<ScheduleViewModel>()
+    private val profileViewModel by activityViewModels<ProfileViewModel>()
 
     private lateinit var binding: FragmentSchedulePerformanceBinding
     private var showEmptyDays = false

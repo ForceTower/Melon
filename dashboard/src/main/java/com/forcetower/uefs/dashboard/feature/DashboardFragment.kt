@@ -30,10 +30,10 @@ import androidx.annotation.Keep
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import com.forcetower.core.base.BaseViewModelFactory
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.core.injection.DaggerDashboardComponent
 import com.forcetower.uefs.dashboard.databinding.FragmentDashboardBinding
@@ -42,25 +42,31 @@ import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.hilt.android.EntryPointAccessors
 import timber.log.Timber
 import javax.inject.Inject
 
 @Keep
 class DashboardFragment : UFragment() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
-    @Inject
-    lateinit var appFactory: UViewModelFactory
+    @Inject lateinit var factory: ViewModelProvider.Factory
 
     private lateinit var binding: FragmentDashboardBinding
     private val viewModel: DashboardViewModel by activityViewModels { factory }
-    private val homeViewModel: HomeViewModel by activityViewModels { appFactory }
+    private val homeViewModel: HomeViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         SplitCompat.install(context)
-        val component = (context.applicationContext as UApplication).component
-        DaggerDashboardComponent.builder().appComponent(component).build().inject(this)
+        DaggerDashboardComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromActivity(
+                    requireActivity(),
+                    DashboardModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {

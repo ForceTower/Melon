@@ -25,33 +25,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ContentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class RequestedServicesFragment : UFragment(), Injectable {
-    companion object {
-        private const val FILTER_TYPE = "requested_services_filter"
-        fun newInstance(filter: String? = null): RequestedServicesFragment {
-            return RequestedServicesFragment().apply {
-                arguments = bundleOf(FILTER_TYPE to filter)
-            }
-        }
-    }
-
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: ServicesFollowUpViewModel
-    lateinit var binding: ContentServicesFollowupBinding
+@AndroidEntryPoint
+class RequestedServicesFragment : UFragment() {
+    private val viewModel: ServicesFollowUpViewModel by activityViewModels()
+    private lateinit var binding: ContentServicesFollowupBinding
 
     private val adapter by lazy { ServicesFollowUpAdapter() }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return ContentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -71,5 +58,14 @@ class RequestedServicesFragment : UFragment(), Injectable {
             binding.executePendingBindings()
             adapter.submitList(it)
         })
+    }
+
+    companion object {
+        private const val FILTER_TYPE = "requested_services_filter"
+        fun newInstance(filter: String? = null): RequestedServicesFragment {
+            return RequestedServicesFragment().apply {
+                arguments = bundleOf(FILTER_TYPE to filter)
+            }
+        }
     }
 }

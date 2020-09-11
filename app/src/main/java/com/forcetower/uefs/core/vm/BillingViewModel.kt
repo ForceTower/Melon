@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.vm
 
 import android.app.Activity
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -39,9 +40,8 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
 import com.forcetower.uefs.core.storage.repository.BillingRepository
 import timber.log.Timber
-import javax.inject.Inject
 
-class BillingViewModel @Inject constructor(
+class BillingViewModel @ViewModelInject constructor(
     context: Context,
     private val repository: BillingRepository
 ) : ViewModel(), PurchasesUpdatedListener, BillingClientStateListener {

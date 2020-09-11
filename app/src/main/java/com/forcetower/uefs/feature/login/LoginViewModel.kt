@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.login
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
@@ -31,11 +32,10 @@ import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerLoginRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
 import kotlinx.coroutines.Dispatchers
-import javax.inject.Inject
 
-class LoginViewModel @Inject constructor(
+class LoginViewModel @ViewModelInject constructor(
     private val repository: LoginSagresRepository,
-    private val snowpiercerLogin: SnowpiercerLoginRepository
+     private val snowpiercerLogin: SnowpiercerLoginRepository
 ) : ViewModel() {
     private var loginSrc: MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false

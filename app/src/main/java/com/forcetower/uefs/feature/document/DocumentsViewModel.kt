@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.document
 
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,9 +33,8 @@ import com.forcetower.uefs.core.storage.repository.DocumentsRepository
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import java.io.File
-import javax.inject.Inject
 
-class DocumentsViewModel @Inject constructor(
+class DocumentsViewModel @ViewModelInject constructor(
     private val repository: DocumentsRepository,
     private val context: Context
 ) : ViewModel(), DocumentActions {

@@ -32,10 +32,12 @@ import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.Reusable
 import dev.forcetower.oversee.Oversee
 import timber.log.Timber
 import javax.inject.Inject
 
+@Reusable
 class AERIRepository @Inject constructor(
     context: Context,
     private val database: AERIDatabase,

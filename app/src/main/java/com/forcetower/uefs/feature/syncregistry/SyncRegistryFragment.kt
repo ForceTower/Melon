@@ -24,27 +24,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSyncRegistryBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SyncRegistryFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+@AndroidEntryPoint
+class SyncRegistryFragment : UFragment() {
+    private val viewModel: SyncRegistryViewModel by viewModels()
     private lateinit var binding: FragmentSyncRegistryBinding
-    private lateinit var viewModel: SyncRegistryViewModel
     private lateinit var syncAdapter: SyncRegistryAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentSyncRegistryBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {

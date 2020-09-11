@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.evaluation.rating
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -27,9 +28,8 @@ import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class EvaluationRatingViewModel @Inject constructor(
+class EvaluationRatingViewModel @ViewModelInject constructor(
     private val evaluationRepository: EvaluationRepository
 ) : ViewModel() {
     private var teacher: Boolean = false

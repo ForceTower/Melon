@@ -30,14 +30,10 @@ import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class ProfileActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class ProfileActivity : UActivity() {
     private lateinit var binding: ActivityProfileBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -62,8 +58,6 @@ class ProfileActivity : UActivity(), HasAndroidInjector {
         snack.config()
         return snack
     }
-
-    override fun androidInjector() = fragmentInjector
 
     companion object {
         const val EXTRA_STUDENT_ID = "student_id"
