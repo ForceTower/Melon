@@ -21,7 +21,9 @@
 package com.forcetower.uefs.feature.flowchart
 
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
@@ -47,4 +49,17 @@ fun requirementText(tv: TextView, requirement: FlowchartRequirementUI?) {
 
     text ?: return
     tv.text = text
+}
+
+@BindingAdapter(value = ["disciplineFlowchartColorCompleted", "disciplineFlowchartColorParticipate"])
+fun disciplineFlowchartTextColor(tv: TextView, completed: Boolean?, participating: Boolean?) {
+    val complete = completed ?: false
+    val participate = participating ?: false
+    val ctx = tv.context
+    val color = when {
+        complete -> ViewUtils.attributeColorUtils(ctx, R.attr.colorPrimary)
+        participate -> ContextCompat.getColor(ctx, R.color.yellow)
+        else -> ContextCompat.getColor(ctx, R.color.red)
+    }
+    tv.setTextColor(color)
 }
