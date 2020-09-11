@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -30,14 +30,19 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.ScheduleRepository
+import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class ScheduleViewModel @ViewModelInject constructor(
     repository: ScheduleRepository,
-    private val sagresSyncRepository: SagresSyncRepository
+    private val sagresSyncRepository: SagresSyncRepository,
+    private val snowpiercerSyncRepository: SnowpiercerSyncRepository
 ) : ViewModel(), ScheduleActions {
 
     val hasSchedule = repository.hasSchedule()
@@ -65,8 +70,14 @@ class ScheduleViewModel @ViewModelInject constructor(
         context.startActivity(intent)
     }
 
-    fun doRefreshData(gToken: String?) {
-        sagresSyncRepository.asyncSync(gToken)
+    fun doRefreshData(gToken: String?, snowpiercer: Boolean) {
+        if (snowpiercer) {
+            viewModelScope.launch {
+                snowpiercerSyncRepository.asyncSync()
+            }
+        } else {
+            sagresSyncRepository.asyncSync(gToken)
+        }
     }
 
     override fun refreshData() {

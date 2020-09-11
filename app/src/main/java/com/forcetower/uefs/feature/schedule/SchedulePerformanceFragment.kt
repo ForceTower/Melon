@@ -38,6 +38,7 @@ import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.max
@@ -45,8 +46,10 @@ import kotlin.math.max
 @AndroidEntryPoint
 class SchedulePerformanceFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
-    private val viewModel by viewModels<ScheduleViewModel>()
-    private val profileViewModel by activityViewModels<ProfileViewModel>()
+    @Inject lateinit var factory: UViewModelFactory
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    private val viewModel by activityViewModels<ScheduleViewModel> { factory }
+    private val profileViewModel by activityViewModels<ProfileViewModel> { factory }
 
     private lateinit var binding: FragmentSchedulePerformanceBinding
     private var showEmptyDays = false
@@ -96,8 +99,9 @@ class SchedulePerformanceFragment : UFragment() {
 
     private fun onRefresh() {
         Timber.d("Refresh requested.... ${Constants.getParameter("REQUIRES_CAPTCHA")}")
-        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
-            viewModel.doRefreshData(null)
+        val snowpiercer = remoteConfig.getBoolean("feature_flag_use_snowpiercer") && preferences.isStudentFromUEFS()
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
+            viewModel.doRefreshData(null, snowpiercer)
             return
         }
 
@@ -105,7 +109,7 @@ class SchedulePerformanceFragment : UFragment() {
         fragment.setCallback(object : CaptchaResolverFragment.CaptchaResolvedCallback {
             override fun onCaptchaResolved(token: String) {
                 Timber.d("Token received $token")
-                viewModel.doRefreshData(token)
+                viewModel.doRefreshData(token, false)
             }
         })
 

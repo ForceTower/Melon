@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -42,7 +42,7 @@ abstract class ClassDao {
     abstract fun insert(classes: List<Class>)
 
     @Insert(onConflict = IGNORE)
-    abstract fun insert(clazz: Class)
+    abstract fun insert(clazz: Class): Long
 
     @Update
     abstract fun update(clazz: Class)
@@ -112,6 +112,19 @@ abstract class ClassDao {
             update(clazz)
         }
     }
+
+    open suspend fun insertNewWays(clazz: Class): Long {
+        val current = getClassDirectlyNew(clazz.semesterId, clazz.disciplineId)
+        return if (current != null) {
+            update(current.copy(finalScore = clazz.finalScore, missedClasses = clazz.missedClasses))
+            current.uid
+        } else {
+            insert(clazz)
+        }
+    }
+
+    @Query("SELECT * FROM Class WHERE semester_id = :semesterId AND discipline_id = :disciplineId")
+    abstract suspend fun getClassDirectlyNew(semesterId: Long, disciplineId: Long): Class?
 
     @Delete
     abstract fun delete(clazz: Class)

@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
+import dev.forcetower.breaker.model.Allocation
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
@@ -79,6 +80,20 @@ abstract class ClassLocationDao {
     @Query("SELECT COUNT(uid) FROM ClassLocation WHERE hidden_on_schedule = 1")
     abstract fun getHiddenClassesCount(): LiveData<Int>
 
+    @Transaction
+    open suspend fun putNewSchedule(allocations: List<ClassLocation>) {
+        if (allocations.isEmpty()) return
+
+        val profile = getMeProfile()
+        profile ?: return
+
+        val hidden = getHiddenLocations()
+        wipeScheduleProfile(profile.uid)
+
+        allocations.forEach { insert(it) }
+        hidden.forEach { setClassHiddenHidden(true, it.groupId, it.day, it.startsAt, it.endsAt, it.profileId) }
+    }
+
     @WorkerThread
     @Transaction
     open fun putSchedule(locations: List<SagresDisciplineClassLocation>, deterministic: Boolean) {
@@ -87,7 +102,7 @@ abstract class ClassLocationDao {
         val semester = if (deterministic) {
             selectCurrentSemesterDirect()
         } else {
-            selectAllSemestersDirect().min()
+            selectAllSemestersDirect().minOrNull()
         }
 
         val profile = getMeProfile()

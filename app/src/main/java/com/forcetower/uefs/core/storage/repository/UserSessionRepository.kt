@@ -1,3 +1,23 @@
+/*
+ * This file is part of the UNES Open Source Project.
+ * UNES is licensed under the GNU GPLv3.
+ *
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ */
+
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.annotation.AnyThread
@@ -67,8 +87,8 @@ class UserSessionRepository @Inject constructor(
 
         Timber.d("Session sync will be performed")
 
-        val start = sessions.map { it.started }.min() ?: 0
-        val end = sessions.map { it.started }.max() ?: 0
+        val start = sessions.map { it.started }.minOrNull() ?: 0
+        val end = sessions.map { it.started }.maxOrNull() ?: 0
         val dto = UserSessionDTO(start, end, sessions)
         try {
             val response = service.saveSessions(dto).execute()

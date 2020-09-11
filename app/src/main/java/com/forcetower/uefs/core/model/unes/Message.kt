@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -29,6 +29,9 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
+import org.threeten.bp.OffsetDateTime
+import org.threeten.bp.ZonedDateTime
+import org.threeten.bp.format.DateTimeFormatter
 import java.util.Locale
 import java.util.UUID
 
@@ -84,6 +87,21 @@ data class Message(
                 attachmentName = me.attachmentName,
                 attachmentLink = me.attachmentLink
             ).apply { disciplineResume = me.objective }
+
+        fun fromMessage(me: dev.forcetower.breaker.model.Message, notified: Boolean): Message {
+            val timestamp = OffsetDateTime.parse(me.timestamp).toInstant().toEpochMilli()
+            return Message(
+                content = me.content.replace("\\n", "\n"),
+                sagresId = me.id,
+                senderName = me.sender,
+                senderProfile = me.senderType,
+                timestamp = timestamp,
+                notified = notified,
+                html = false,
+                processingTime = System.currentTimeMillis(),
+                hashMessage = me.content.replace("\\n", "\n").toLowerCase(Locale.getDefault()).trim().hashCode().toLong()
+            )
+        }
     }
 }
 

@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,6 +40,7 @@ import timber.log.Timber
 @AndroidEntryPoint
 class DisciplineSemesterFragment : UFragment() {
     private val viewModel: DisciplineViewModel by activityViewModels()
+    private val localDisciplineVM: DisciplineViewModel by viewModels()
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapterPerformance: DisciplinePerformanceAdapter
     private lateinit var swipeRefreshLayout: com.forcetower.core.widget.CustomSwipeRefreshLayout
@@ -80,7 +81,14 @@ class DisciplineSemesterFragment : UFragment() {
             viewModel.updateGradesFromSemester(requireArguments().getLong(SEMESTER_SAGRES_ID))
         }
 
-        viewModel.refreshing.observe(viewLifecycleOwner, Observer { swipeRefreshLayout.isRefreshing = it })
+        binding.downloadBtn.setOnClickListener {
+            localDisciplineVM.updateGradesFromSemester(semesterSagresId)
+        }
+
+        localDisciplineVM.refreshing.observe(viewLifecycleOwner, {
+            swipeRefreshLayout.isRefreshing = it
+            binding.loading = it
+        })
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {

@@ -2,7 +2,7 @@
   ~ This file is part of the UNES Open Source Project.
   ~ UNES is licensed under the GNU GPLv3.
   ~
-  ~ Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
   ~
   ~ This program is free software: you can redistribute it and/or modify
   ~ it under the terms of the GNU General Public License as published by
@@ -169,6 +169,8 @@
     <string name="notification_grade_changed_title">A nota de uma avaliação mudou</string>
     <string name="notification_grade_date_change_title">A data de uma avaliação mudou</string>
     <string name="notification_grade_date_change">A data da avaliação %1$s da disciplina %2$s mudou</string>
+    <string name="notification_absence_posted">Foi registrada uma falta na aula %1$s</string>
+    <string name="notification_absence_deleted">Falta removida na aula %1$s</string>
     <string name="at_every_time_hours">A cada %1$d horas</string>
     <string name="at_every_time_hour">A cada 1 hora</string>
     <string name="sync_start_time_label">Horário de Início</string>
@@ -854,4 +856,15 @@
     <string name="channel_service_sync_foreground">Atualização de dados persistente</string>
     <string name="label_service_sync_foreground">Atualizações</string>
     <string name="label_service_sync_foreground_desc">O UNES está ativo</string>
+    <string name="grade_not_published">Não publicada</string>
+    <string name="grade_date_unknown">Sem data</string>
+    <string name="channel_group_absences">Faltas</string>
+    <string name="channel_absence_created">Falta postada</string>
+    <string name="channel_absence_removed">Falta removida</string>
+    <string name="notification_absence_posted_title">Falta publicada</string>
+    <string name="settings_ntf_absence">Faltas</string>
+    <string name="settings_ntf_absence_info">Notificar quando uma falta for registrada ou apagada</string>
+    <string name="notification_absence_removed_title">Falta removida</string>
+    <string name="grades_not_downloaded_yet">As notas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
+    <string name="download_grades">Baixar notas</string>
 </resources>

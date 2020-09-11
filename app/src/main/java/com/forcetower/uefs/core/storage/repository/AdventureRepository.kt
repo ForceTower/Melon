@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -249,7 +249,7 @@ class AdventureRepository @Inject constructor(
         }
 
         // Takes only the current semester
-        val current = semesters.maxBy { it.sagresId }
+        val current = semesters.maxByOrNull { it.sagresId }
         if (current != null) {
             var hours = 0
             val classes = database.classDao().getClassesWithGradesFromSemesterDirect(current.uid)

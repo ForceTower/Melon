@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -100,7 +100,10 @@ android {
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            minifyEnabled false
+            minifyEnabled true
+        }
+        debug {
+            applicationIdSuffix '.debug'
         }
     }
 
@@ -145,7 +148,7 @@ play {
 }
 
 kotlinter {
-    allowWildcardImports false
+
 }
 
 dependencies {
@@ -154,13 +157,14 @@ dependencies {
     implementation project(path: ':core')
 
     // Auto start
-    implementation 'com.github.judemanutd:autostarter:1.0.6'
+    implementation 'com.github.judemanutd:autostarter:1.0.8'
 
     // Juice scrapper
     implementation "com.github.forcetower:juice:$sagres"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    implementation "dev.forcetower.unes:snowpiercer:1.0.8"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
@@ -217,6 +221,7 @@ dependencies {
     implementation "com.android.billingclient:billing:$gp_billing_client"
     implementation "com.google.android.gms:play-services-ads:$gp_admob"
     implementation "com.google.android.play:core:$gp_core"
+    implementation "com.google.android.play:core-ktx:$gp_core_ktx"
 
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"

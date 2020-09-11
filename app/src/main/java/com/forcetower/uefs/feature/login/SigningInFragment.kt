@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -132,7 +132,7 @@ class SigningInFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.getLogin().observe(viewLifecycleOwner, Observer(this::onLoginProgress))
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
-        viewModel.getStep().observe(viewLifecycleOwner, Observer(this::onStep))
+        viewModel.getStep(args.snowpiercer).observe(viewLifecycleOwner, Observer(this::onStep))
         doLogin()
     }
 
@@ -156,12 +156,13 @@ class SigningInFragment : UFragment() {
         val username = args.username
         val password = args.password
         val captcha = args.captchaToken
+        val snowpiercer = args.snowpiercer
 
         if (username.isBlank() || password.isBlank()) {
             showSnack(getString(R.string.error_invalid_credentials))
             view?.findNavController()?.popBackStack()
         } else {
-            viewModel.login(username, password, captcha, true)
+            viewModel.login(username, password, captcha, snowpiercer, true)
             if (username.contains("@")) {
                 binding.textTips.setText(getString(R.string.enter_using_username_instead))
                 binding.textTips.fadeIn()

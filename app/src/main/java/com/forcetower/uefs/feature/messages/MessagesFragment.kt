@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -32,7 +32,10 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.forcetower.uefs.R
+import com.forcetower.core.injection.Injectable
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.getLinks
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
@@ -45,12 +48,15 @@ import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class MessagesFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
+    @Inject
+    lateinit var database: UDatabase
 
     private lateinit var binding: FragmentAllMessagesBinding
     private val profileViewModel: ProfileViewModel by activityViewModels()
@@ -86,6 +92,12 @@ class MessagesFragment : UFragment() {
         }
 
         binding.pagerMessage.adapter = SectionFragmentAdapter(childFragmentManager, fragments)
+        binding.textToolbarTitle.setOnLongClickListener {
+            lifecycleScope.launch {
+                database.messageDao().deleteAllSuspend()
+            }
+            true
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

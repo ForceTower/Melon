@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -23,8 +23,11 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.aggregation.ClassMaterialWithClass
 
@@ -51,4 +54,13 @@ abstract class ClassMaterialDao {
     @WorkerThread
     @Query("UPDATE ClassMaterial SET notified = 1")
     abstract fun markAllNotified()
+
+    @Query("SELECT * FROM ClassMaterial WHERE group_id = :groupId AND name = :name AND link = :link")
+    abstract suspend fun getMaterialsByIdentifiers(name: String, link: String, groupId: Long): ClassMaterial?
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insert(material: ClassMaterial): Long
+
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    abstract suspend fun update(material: ClassMaterial)
 }

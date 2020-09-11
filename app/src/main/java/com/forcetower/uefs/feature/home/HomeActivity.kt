@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -27,9 +27,13 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
+import android.os.Handler
+import android.os.HandlerThread
+import android.os.Looper
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.forcetower.sagres.SagresNavigator
@@ -39,7 +43,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
-import com.forcetower.uefs.architecture.service.sync.SyncService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
@@ -62,6 +65,10 @@ import com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_U
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.install.model.UpdateAvailability
+import com.google.android.play.core.ktx.launchReview
+import com.google.android.play.core.ktx.requestReview
+import com.google.android.play.core.review.ReviewManager
+import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -94,6 +101,7 @@ class HomeActivity : UGameActivity() {
         setupUserData()
 
         updateManager = AppUpdateManagerFactory.create(this)
+        reviewManager = ReviewManagerFactory.create(this)
 
         if (savedInstanceState == null) {
             onActivityStart()
@@ -109,16 +117,39 @@ class HomeActivity : UGameActivity() {
         try {
             initShortcuts()
             verifyUpdates()
+            getReviews()
             viewModel.onSessionStarted()
-            viewModel.account.observe(this, Observer { Unit })
+            viewModel.account.observe(this, { Unit })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
-            if (preferences.isStudentFromUEFS()) {
-                val intent = Intent(this, SyncService::class.java)
-                startService(intent)
-            }
+//            if (preferences.isStudentFromUEFS()) {
+//                val intent = Intent(this, SyncService::class.java)
+//                startService(intent)
+//            }
         } catch (t: Throwable) {}
         moveToTask()
+    }
+
+    private fun getReviews() {
+        if (
+            remoteConfig.getBoolean("feature_flag_in_app_review") &&
+            preferences.isStudentFromUEFS() &&
+            !preferences.getBoolean("__user_in_app_review_once__", false)
+        ) {
+            Handler(Looper.getMainLooper()).postDelayed({
+                lifecycleScope.launchWhenCreated {
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                        try {
+                            val request = reviewManager.requestReview()
+                            reviewManager.launchReview(this@HomeActivity, request)
+                        } catch (error: Throwable) {
+                            Timber.e(error, "on request review")
+                        }
+                        preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
+                    }
+                }
+            }, 2000)
+        }
     }
 
     private fun verifyUpdates() {
@@ -162,7 +193,7 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun verifyDarkTheme() {
-        viewModel.verifyDarkTheme().observe(this, Observer { Unit })
+        viewModel.verifyDarkTheme().observe(this, { Unit })
     }
 
     private fun moveToTask() {
@@ -213,10 +244,10 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun setupUserData() {
-        viewModel.access.observe(this, Observer { onAccessUpdate(it) })
+        viewModel.access.observe(this, { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this, Observer { Unit })
+        viewModel.sendToken().observe(this, { Unit })
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
@@ -224,7 +255,7 @@ class HomeActivity : UGameActivity() {
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
-        viewModel.scheduleHideCount.observe(this, Observer {
+        viewModel.scheduleHideCount.observe(this, {
             Timber.d("Schedule hidden stuff: $it")
             analytics.setUserProperty("using_schedule_hide", "${it > 0}")
             analytics.setUserProperty("using_schedule_hide_cnt", "$it")
@@ -285,7 +316,7 @@ class HomeActivity : UGameActivity() {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements().observe(this, Observer {
+        adventureViewModel.checkAchievements().observe(this, {
             it.entries.forEach { achievement ->
                 if (achievement.value == -1)
                     unlockAchievement(achievement.key)
@@ -297,11 +328,11 @@ class HomeActivity : UGameActivity() {
     }
 
     override fun checkNotConnectedAchievements() {
-        adventureViewModel.checkNotConnectedAchievements().observe(this, Observer { Unit })
+        adventureViewModel.checkNotConnectedAchievements().observe(this, { Unit })
     }
 
     private fun checkServerAchievements() {
-        adventureViewModel.checkServerAchievements().observe(this, Observer { achievements ->
+        adventureViewModel.checkServerAchievements().observe(this, { achievements ->
             achievements.forEach { achievement ->
                 try {
                     if (achievement.progress != null) {

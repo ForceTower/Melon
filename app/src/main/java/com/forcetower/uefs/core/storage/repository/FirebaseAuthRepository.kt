@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -79,7 +79,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptSignIn(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                .addOnCompleteListener(executors.others(), { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -99,7 +99,7 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptCreateAccount(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+                .addOnCompleteListener(executors.others(), { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {

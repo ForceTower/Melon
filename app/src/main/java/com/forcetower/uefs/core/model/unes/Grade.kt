@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -40,8 +40,7 @@ import java.util.UUID
     ForeignKey(entity = Class::class, parentColumns = ["uid"], childColumns = ["class_id"], onUpdate = CASCADE, onDelete = CASCADE)
 ], indices = [
     Index(value = ["class_id"]),
-    Index(value = ["name", "class_id", "grouping"], unique = true),
-    Index(value = ["uuid"], unique = true)
+    Index(value = ["name", "class_id", "grouping"], unique = true)
 ])
 data class Grade(
     @PrimaryKey(autoGenerate = true)
@@ -49,15 +48,16 @@ data class Grade(
     @ColumnInfo(name = "class_id")
     val classId: Long,
     val name: String,
-    var date: String,
-    var grade: String,
+    var date: String?,
+    var grade: String?,
     var grouping: Int,
     var groupingName: String,
-    var notified: Int = 0,
-    val uuid: String = UUID.randomUUID().toString()
+    var notified: Int = 0
 ) {
     fun hasGrade(): Boolean {
-        return (grade.trim().isNotEmpty() &&
+        val grade = this.grade
+        return (grade != null &&
+                grade.trim().isNotEmpty() &&
                 !grade.trim().equals("Não Divulgada", ignoreCase = true) &&
                 !grade.trim().equals("-", ignoreCase = true) &&
                 !grade.trim().equals("--", ignoreCase = true) &&
@@ -66,11 +66,11 @@ data class Grade(
                 !grade.trim().equals("-1", ignoreCase = true))
     }
 
-    fun gradeDouble() = grade.trim()
-            .replace(",", ".")
-            .replace("-", "")
-            .replace("*", "")
-            .toDoubleOrNull()
+    fun gradeDouble() = grade?.trim()
+            ?.replace(",", ".")
+            ?.replace("-", "")
+            ?.replace("*", "")
+            ?.toDoubleOrNull()
 
     override fun toString(): String = "${name}_${grade}_${date}_$notified"
 }

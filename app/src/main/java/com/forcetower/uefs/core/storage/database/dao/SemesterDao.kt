@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2019.  João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -74,7 +74,7 @@ abstract class SemesterDao {
     protected abstract fun updateName(sagresId: Long, name: String)
 
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
-    protected abstract fun getSemesterDirect(sagresId: Long): Semester?
+    abstract fun getSemesterDirect(sagresId: Long): Semester?
 
     @Insert(onConflict = IGNORE)
     protected abstract fun internalInsertIgnoring(semesters: List<Semester>)
