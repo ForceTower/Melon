@@ -38,6 +38,7 @@ jobs:
 
     - name: Publish Release App
       run: ./gradlew publishReleaseBundle
+      if: "!contains(github.event.head_commit.message, '[publish skip]')"
       env:
         UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
         UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
