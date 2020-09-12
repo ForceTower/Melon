@@ -32,16 +32,11 @@ import android.util.DisplayMetrics
 import android.util.Property
 import android.util.TypedValue
 import android.view.View
-import android.view.Window
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
 import androidx.core.os.BuildCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.ViewConfigurationCompat
-import androidx.core.view.WindowCompat
-import androidx.core.view.WindowInsetsCompat
 import androidx.palette.graphics.Palette
 import com.forcetower.core.utils.ColorUtils.modifyAlpha
 
