@@ -26,27 +26,22 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.viewModels
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.uefs.core.vm.UViewModelFactory
+import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.DialogCreateReminderBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.inflate
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
+import dagger.hilt.android.AndroidEntryPoint
 import java.util.Calendar
-import javax.inject.Inject
 
-class CreateReminderDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+@AndroidEntryPoint
+class CreateReminderDialog : RoundedDialog() {
+    private val viewModel: RemindersViewModel by viewModels()
     private lateinit var binding: DialogCreateReminderBinding
-    private lateinit var viewModel: RemindersViewModel
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         binding = inflater.inflate(R.layout.dialog_create_reminder)
         binding.apply {
             btnOk.setOnClickListener { createReminder() }
@@ -81,15 +76,18 @@ class CreateReminderDialog : RoundedDialog(), Injectable {
 
         val color = ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary)
 
-        val picker = DatePickerDialog.newInstance({ _, y, m, d ->
-            val next = Calendar.getInstance().apply {
-                set(Calendar.YEAR, y)
-                set(Calendar.MONTH, m)
-                set(Calendar.DAY_OF_MONTH, d)
-            }.timeInMillis
-            viewModel.currentDeadline = next
-            binding.btnDeadline.iconTint = ColorStateList.valueOf(color)
-        }, calendar)
+        val picker = DatePickerDialog.newInstance(
+            { _, y, m, d ->
+                val next = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, y)
+                    set(Calendar.MONTH, m)
+                    set(Calendar.DAY_OF_MONTH, d)
+                }.timeInMillis
+                viewModel.currentDeadline = next
+                binding.btnDeadline.iconTint = ColorStateList.valueOf(color)
+            },
+            calendar
+        )
         picker.version = DatePickerDialog.Version.VERSION_2
 
         picker.accentColor = color

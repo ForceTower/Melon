@@ -24,24 +24,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventEditorIndexBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class IndexFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: SIECOMPEventViewModel
+@AndroidEntryPoint
+class IndexFragment : UFragment() {
+    private val viewModel: SIECOMPEventViewModel by viewModels()
     private lateinit var binding: FragmentEventEditorIndexBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentEventEditorIndexBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

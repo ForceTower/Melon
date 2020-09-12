@@ -25,8 +25,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.injection.AppComponent
-import com.forcetower.uefs.core.injection.AppInjection
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.themeswitcher.ThemePreferencesManager
@@ -36,28 +34,15 @@ import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.google.android.play.core.splitcompat.SplitCompat
-import com.jakewharton.threetenabp.AndroidThreeTen
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
 
-/**
- * Representa o aplicativo por completo.
- *
- * Iniciar o aplicativo por qualquer meio irá iniciar os processos de injeção de dependençias
- */
-class UApplication : Application(), HasAndroidInjector {
-    @Inject
-    lateinit var androidInjector: DispatchingAndroidInjector<Any>
+@HiltAndroidApp
+class UApplication : Application() {
     @Inject
     lateinit var preferences: SharedPreferences
-
-    lateinit var component: AppComponent
-
-    @Volatile
-    private var injected = false
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -70,25 +55,15 @@ class UApplication : Application(), HasAndroidInjector {
         }
 
         if (BuildConfig.DEBUG) {
-            // Se em debug, print no logcat todas as informações
             Timber.plant(Timber.DebugTree())
         } else {
-            // Em release, enviar exceptions para o crashlytics
             Timber.plant(CrashlyticsTree())
         }
-        // Injeta as dependências. Este é o ponto inicial
-        injectApplicationIfNecessary()
         super.onCreate()
         setupDayNightTheme(this)
-        AndroidThreeTen.init(this)
-        // Redefine os trabalhos de sincronização
         defineWorker()
     }
 
-    /**
-     * Este método irá observar qual o tipo de sincronização selecionado e tentará cria apenas se ele
-     * tiver sido apagado
-     */
     private fun defineWorker() {
         val worker = preferences.getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
         val period = preferences.getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
@@ -96,35 +71,6 @@ class UApplication : Application(), HasAndroidInjector {
             0 -> SyncMainWorker.createWorker(this, period)
             1 -> Unit // SyncLinkedWorker.createWorker(period, false)
         }
-    }
-
-    /**
-     * Cria o componente do Dagger.
-     * Este processo pode ser simplicado se a classe extendesse de DaggerApplication
-     */
-    private fun createApplicationInjector() = AppInjection.create(this)
-
-    /**
-     * Injetar as dependencias!
-     */
-    private fun injectApplicationIfNecessary() {
-        if (!injected) {
-            synchronized(this) {
-                if (!injected) {
-                    component = createApplicationInjector()
-                    component.inject(this)
-                    check(injected) { "Attempt to inject the app has failed" }
-                }
-            }
-        }
-    }
-
-    /**
-     * Marca aplicação como injetada
-     */
-    @Inject
-    fun setInjected() {
-        injected = true
     }
 
     /**
@@ -149,8 +95,6 @@ class UApplication : Application(), HasAndroidInjector {
     fun configureNotifications() {
         NotificationHelper(this).createChannels()
     }
-
-    override fun androidInjector() = androidInjector
 
     companion object {
         fun setupDayNightTheme(context: Context) {

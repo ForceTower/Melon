@@ -122,17 +122,23 @@ class DemandRepository @Inject constructor(
             if (callback.status == Status.SUCCESS) {
                 analytics.logEvent("demand_user_completed_last_flow", null)
             } else {
-                analytics.logEvent("demand_user_failed_last_flow", bundleOf(
-                    "status" to callback.status.name
-                ))
+                analytics.logEvent(
+                    "demand_user_failed_last_flow",
+                    bundleOf(
+                        "status" to callback.status.name
+                    )
+                )
             }
 
             NotificationCreator.showSimpleNotification(context, title, content)
         } catch (t: Throwable) {
             NotificationCreator.showSimpleNotification(context, context.getString(R.string.demand_notification_title), "Uma exceção muito louca ocorreu: ${t.message}")
-            analytics.logEvent("demand_user_exception_at_worker", bundleOf(
-                "message" to t.message
-            ))
+            analytics.logEvent(
+                "demand_user_exception_at_worker",
+                bundleOf(
+                    "message" to t.message
+                )
+            )
             Timber.e(t)
         }
     }

@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.feedback
 
 import android.content.Context
 import androidx.annotation.MainThread
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,9 +30,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.FeedbackRepository
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class FeedbackViewModel @Inject constructor(
+class FeedbackViewModel @ViewModelInject constructor(
     private val repository: FeedbackRepository,
     private val context: Context
 ) : ViewModel() {

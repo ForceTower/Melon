@@ -24,14 +24,10 @@ import android.os.Bundle
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SIECOMPEditorActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class SIECOMPEditorActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_siecomp_editor)
@@ -42,6 +38,4 @@ class SIECOMPEditorActivity : UActivity(), HasAndroidInjector {
             }
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 }

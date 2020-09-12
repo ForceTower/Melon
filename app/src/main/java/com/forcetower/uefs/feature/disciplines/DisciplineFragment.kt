@@ -30,36 +30,33 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.makeSemester
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class DisciplineFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class DisciplineFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
 
-    private lateinit var viewModel: DisciplineViewModel
-    private lateinit var homeViewModel: HomeViewModel
+    private val viewModel: DisciplineViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: FragmentDisciplineBinding
 
     private lateinit var viewPager: ViewPager
@@ -69,8 +66,6 @@ class DisciplineFragment : UFragment(), Injectable {
     private var sortedSizeOnce: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
-        homeViewModel = provideActivityViewModel(factory)
         return FragmentDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
             viewPager = it.pagerSemester
@@ -90,18 +85,27 @@ class DisciplineFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.semesters.observe(viewLifecycleOwner, {
-            val actualList = applySortOptions(it)
-            adapter.submitList(actualList)
-        })
+        viewModel.semesters.observe(
+            viewLifecycleOwner,
+            {
+                val actualList = applySortOptions(it)
+                adapter.submitList(actualList)
+            }
+        )
 
-        viewModel.navigateToDisciplineAction.observe(viewLifecycleOwner, EventObserver {
-            handleNavigateToDisciplineDetails(it)
-        })
+        viewModel.navigateToDisciplineAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                handleNavigateToDisciplineDetails(it)
+            }
+        )
 
-        viewModel.navigateToGroupAction.observe(viewLifecycleOwner, EventObserver {
-            startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
-        })
+        viewModel.navigateToGroupAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
+            }
+        )
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
@@ -137,24 +141,27 @@ class DisciplineFragment : UFragment(), Injectable {
     }
 
     private fun showAppliedChangesSnack() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
-                snack?.let { bar ->
-                    bar.duration = Snackbar.LENGTH_INDEFINITE
-                    bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
-                        preferences.edit()
-                            .putBoolean("stg_semester_deterministic_ordering", true)
-                            .putBoolean("suggested_reorder_semester_action_reversed", true)
-                            .apply()
-                        bar.dismiss()
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    val snack = getSnack(getString(R.string.incorrect_semester_ordering_changes_applied))
+                    snack?.let { bar ->
+                        bar.duration = Snackbar.LENGTH_INDEFINITE
+                        bar.setAction(getString(R.string.incorrect_semester_ordering_undo_changes)) {
+                            preferences.edit()
+                                .putBoolean("stg_semester_deterministic_ordering", true)
+                                .putBoolean("suggested_reorder_semester_action_reversed", true)
+                                .apply()
+                            bar.dismiss()
+                        }
+                        bar.show()
                     }
-                    bar.show()
+                } else {
+                    Timber.d("Failed check of state")
                 }
-            } else {
-                Timber.d("Failed check of state")
-            }
-        }, 1000)
+            },
+            1000
+        )
     }
 
     private fun handleNavigateToDisciplineDetails(it: ClassFullWithGroup) {

@@ -36,7 +36,6 @@ import androidx.core.text.HtmlCompat
 import androidx.core.text.HtmlCompat.FROM_HTML_MODE_LEGACY
 import androidx.databinding.DataBindingUtil
 import androidx.preference.PreferenceManager
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.GameFragment2048Binding
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
@@ -49,6 +48,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.google.android.gms.ads.reward.RewardItem
 import com.google.android.gms.ads.reward.RewardedVideoAdListener
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
@@ -56,17 +56,16 @@ import kotlin.math.abs
 /**
  * Created by João Paulo on 02/06/2018.
  */
-class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, Injectable, RewardedVideoAdListener {
+@AndroidEntryPoint
+class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, RewardedVideoAdListener {
     override fun onRewardedVideoAdLeftApplication() = Unit
     override fun onRewardedVideoAdLoaded() = Unit
     override fun onRewardedVideoAdOpened() = Unit
     override fun onRewardedVideoCompleted() = Unit
     override fun onRewardedVideoStarted() = Unit
 
-    @Inject
-    lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var darkRepository: DarkThemeRepository
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var darkRepository: DarkThemeRepository
 
     private var downX: Float = 0.toFloat()
     private var downY: Float = 0.toFloat()
@@ -95,13 +94,15 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         val mScoreKeeper = ScoreKeeper(requireActivity())
 
         mScoreKeeper.setViews(binding.tvScore, binding.tvHighscore)
-        mScoreKeeper.setScoreListener(object : Game.ScoreListener {
-            override fun onNewScore(score: Long) {
-                if (score >= 50000) {
-                    unlockDarkTheme()
+        mScoreKeeper.setScoreListener(
+            object : Game.ScoreListener {
+                override fun onNewScore(score: Long) {
+                    if (score >= 50000) {
+                        unlockDarkTheme()
+                    }
                 }
             }
-        })
+        )
 
         mGame = Game()
         mGame.setup(binding.gameview)

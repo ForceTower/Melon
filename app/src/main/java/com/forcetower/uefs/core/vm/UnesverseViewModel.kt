@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.vm
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,9 +32,8 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
-import javax.inject.Inject
 
-class UnesverseViewModel @Inject constructor(
+class UnesverseViewModel @ViewModelInject constructor(
     private val auth: AuthRepository
 ) : ViewModel() {
     val access = auth.getAccessToken()

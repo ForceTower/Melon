@@ -36,20 +36,23 @@ import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import org.threeten.bp.ZonedDateTime
+import okhttp3.Response
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import java.net.CookieHandler
 import java.net.CookieManager
+import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import okhttp3.Response
-import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object NetworkModule {
 
     @Provides
@@ -59,7 +62,7 @@ object NetworkModule {
     @Provides
     @Singleton
     fun provideCookieJar(context: Context): PersistentCookieJar =
-            PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+        PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
 
     @Provides
     @Singleton
@@ -72,12 +75,14 @@ object NetworkModule {
             .readTimeout(1, TimeUnit.MINUTES)
             .writeTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
-            .addInterceptor(HttpLoggingInterceptor().apply {
-                level = if (BuildConfig.DEBUG)
-                    HttpLoggingInterceptor.Level.HEADERS
-                else
-                    HttpLoggingInterceptor.Level.NONE
-            })
+            .addInterceptor(
+                HttpLoggingInterceptor().apply {
+                    level = if (BuildConfig.DEBUG)
+                        HttpLoggingInterceptor.Level.HEADERS
+                    else
+                        HttpLoggingInterceptor.Level.NONE
+                }
+            )
             .build()
     }
 
@@ -89,7 +94,7 @@ object NetworkModule {
             val host = request.url.host
             return if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
                 val builder = request.headers.newBuilder()
-                        .add("Accept", "application/json")
+                    .add("Accept", "application/json")
 
                 val token = database.accessTokenDao().getAccessTokenDirect()
                 if (token?.token != null) {

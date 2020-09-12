@@ -54,9 +54,11 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
     private fun init() {
         rectF = RectF()
         val typedArray = context.theme.obtainStyledAttributes(
-                attrs,
-                R.styleable.CircleProgressBar,
-                0, 0)
+            attrs,
+            R.styleable.CircleProgressBar,
+            0,
+            0
+        )
 
         try {
             foregroundStrokeWidth = typedArray.getDimension(R.styleable.CircleProgressBar_foregroundThickness, foregroundStrokeWidth)

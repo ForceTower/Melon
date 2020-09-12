@@ -21,7 +21,7 @@
 package com.forcetower.uefs.core.model.siecomp
 
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
 data class ServerSession(
     @SerializedName(value = "id")
@@ -49,9 +49,9 @@ data class ServerSession(
     companion object {
         fun from(session: Session, tags: List<Tag>, speakers: List<Speaker>): ServerSession {
             return ServerSession(
-                    session.uid, session.day, session.startTime, session.endTime,
-                    session.title, session.room, session.resume, session.photoUrl,
-                    session.uuid, session.type, tags, speakers
+                session.uid, session.day, session.startTime, session.endTime,
+                session.title, session.room, session.resume, session.photoUrl,
+                session.uuid, session.type, tags, speakers
             )
         }
     }

@@ -38,18 +38,18 @@ import androidx.annotation.StyleableRes
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.widget.CompoundButtonCompat
 import com.forcetower.core.extensions.isDarkTheme
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
-    @Inject
-    lateinit var resourceProvider: ThemeSwitcherResourceProvider
+@AndroidEntryPoint
+class ThemeSwitcherFragment : BottomSheetDialogFragment() {
+    @Inject lateinit var resourceProvider: ThemeSwitcherResourceProvider
     private lateinit var binding: FragmentThemeSwitcherBinding
     private lateinit var themePreferencesManager: ThemePreferencesManager
 
@@ -206,11 +206,13 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment(), Injectable {
 
             @ColorInt
             private fun convertToDisplay(@ColorInt color: Int): Int {
-                return if (color == Color.WHITE)
-                    Color.BLACK
-                else if (color == Color.BLACK)
-                    Color.WHITE
-                else color
+                val parsed = Color.parseColor("#1A1A1A")
+                return when (color) {
+                    Color.WHITE -> Color.BLACK
+                    Color.BLACK -> Color.WHITE
+                    parsed -> Color.parseColor("#b3ffffff")
+                    else -> color
+                }
             }
         }
     }

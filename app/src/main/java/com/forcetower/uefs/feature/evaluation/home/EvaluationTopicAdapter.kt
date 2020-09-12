@@ -125,11 +125,11 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             }
             oldItem is TeacherWrapper && newItem is TeacherWrapper -> {
                 oldItem.groupId == newItem.groupId &&
-                        oldItem.teacher.teacherId == newItem.teacher.teacherId
+                    oldItem.teacher.teacherId == newItem.teacher.teacherId
             }
             oldItem is DisciplineWrapper && newItem is DisciplineWrapper -> {
                 oldItem.groupId == newItem.groupId &&
-                        oldItem.discipline.disciplineId == newItem.discipline.disciplineId
+                    oldItem.discipline.disciplineId == newItem.discipline.disciplineId
             }
             else -> false
         }

@@ -24,8 +24,8 @@ import android.app.Activity
 import android.content.Intent
 import android.net.Uri
 import androidx.core.content.ContextCompat
-import com.forcetower.uefs.R
 import com.forcetower.core.utils.ColorUtils
+import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.theartofdev.edmodo.cropper.CropImage

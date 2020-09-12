@@ -33,7 +33,8 @@ class CourseAdapter(
     private val interactor: FlowchartInteractor
 ) : ListAdapter<Flowchart, CourseAdapter.FlowchartHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = FlowchartHolder(
-        parent.inflate(R.layout.item_flowchart_course), interactor
+        parent.inflate(R.layout.item_flowchart_course),
+        interactor
     )
 
     override fun onBindViewHolder(holder: FlowchartHolder, position: Int) {

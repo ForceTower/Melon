@@ -52,8 +52,8 @@ class ScheduleRepository @Inject constructor(
         }
 
         val reference = collection.document(userId)
-                .collection("schedule")
-                .document(semester.sagresId.toString())
+            .collection("schedule")
+            .document(semester.sagresId.toString())
 
         val mapped = mapOf(
             "locations" to schedule

@@ -29,21 +29,17 @@ import android.webkit.WebView
 import androidx.annotation.Keep
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.forcetower.core.injection.Injectable
 import com.forcetower.sagres.Constants
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentTechNopeCaptchaBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class TechNopeCaptchaFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var binding: FragmentTechNopeCaptchaBinding
+@AndroidEntryPoint
+class TechNopeCaptchaFragment : UFragment() {
     private val args by navArgs<TechNopeCaptchaFragmentArgs>()
+    private lateinit var binding: FragmentTechNopeCaptchaBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentTechNopeCaptchaBinding.inflate(inflater, container, false).also {

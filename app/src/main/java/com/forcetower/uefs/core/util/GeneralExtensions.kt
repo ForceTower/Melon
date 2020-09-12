@@ -45,7 +45,7 @@ inline fun <reified T> String.fromJson(): T {
 
 fun Context.isConnectedToInternet(): Boolean {
     val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
-            as? ConnectivityManager ?: return false
+        as? ConnectivityManager ?: return false
 
     return manager.allNetworks.isNotEmpty()
 }

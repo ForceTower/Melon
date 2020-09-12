@@ -21,13 +21,13 @@
 package com.forcetower.uefs.feature.settings
 
 import android.content.Context
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
-import javax.inject.Inject
 
-class SettingsViewModel @Inject constructor(
+class SettingsViewModel @ViewModelInject constructor(
     private val repository: SettingsRepository,
     context: Context
 ) : ViewModel() {

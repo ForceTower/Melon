@@ -181,11 +181,13 @@ abstract class ClassGroupDao {
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND LOWER(d.code) = LOWER(:code) AND g.`group` = :group")
     abstract fun selectGroup(semester: String, code: String, group: String): LiveData<ClassGroup?>
 
-    @Query("SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
+    @Query(
+        "SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
             "c.discipline_id = d.uid AND " +
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
-            "LOWER(d.code) = LOWER(:code)")
+            "LOWER(d.code) = LOWER(:code)"
+    )
     protected abstract fun selectClassDirect(semester: String, code: String): Class?
 
     @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")

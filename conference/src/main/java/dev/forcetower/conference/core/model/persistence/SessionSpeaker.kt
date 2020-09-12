@@ -26,14 +26,17 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index(value = ["session", "speaker"], unique = true),
-    Index(value = ["session"]),
-    Index(value = ["speaker"])
-], foreignKeys = [
-    ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = CASCADE),
-    ForeignKey(entity = Speaker::class, parentColumns = ["id"], childColumns = ["speaker"], onDelete = CASCADE)
-])
+@Entity(
+    indices = [
+        Index(value = ["session", "speaker"], unique = true),
+        Index(value = ["session"]),
+        Index(value = ["speaker"])
+    ],
+    foreignKeys = [
+        ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = CASCADE),
+        ForeignKey(entity = Speaker::class, parentColumns = ["id"], childColumns = ["speaker"], onDelete = CASCADE)
+    ]
+)
 data class SessionSpeaker(
     @PrimaryKey(autoGenerate = true)
     val id: Long,

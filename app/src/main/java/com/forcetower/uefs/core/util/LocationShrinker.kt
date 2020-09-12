@@ -87,9 +87,12 @@ object LocationShrinker {
             }
             when {
                 originalClassesOnPeriod.size > 1 -> {
-                    val mutated = Element(currentTime, originalClassesOnPeriod[0].reference?.copy(
-                        endTime = originalClassesOnPeriod.last().reference!!.endTime
-                    ))
+                    val mutated = Element(
+                        currentTime,
+                        originalClassesOnPeriod[0].reference?.copy(
+                            endTime = originalClassesOnPeriod.last().reference!!.endTime
+                        )
+                    )
                     classesOnDayResult.add(mutated)
                 }
                 originalClassesOnPeriod.size == 1 -> {

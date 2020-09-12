@@ -29,10 +29,11 @@ import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.core.base.BaseViewModelFactory
-import com.forcetower.uefs.feature.shared.UDynamicFragment
+import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependencies
+import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.clearDecorations
 import com.forcetower.uefs.feature.shared.executeBindingsAfter
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.conference.core.injection.DaggerConferenceComponent
 import dev.forcetower.conference.core.model.domain.ConferenceDayIndexed
 import dev.forcetower.conference.core.model.domain.DayIndicator
@@ -43,25 +44,31 @@ import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
 import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
 import dev.forcetower.conference.core.ui.widget.BubbleDecoration
 import dev.forcetower.conference.databinding.FragmentConferenceScheduleBinding
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 import java.util.UUID
-import javax.inject.Inject
 
-class ScheduleFragment : UDynamicFragment() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
+class ScheduleFragment : UFragment() {
     private lateinit var binding: FragmentConferenceScheduleBinding
     private lateinit var dayAdapter: DayAdapter
     private lateinit var scheduleAdapter: ScheduleAdapter
     private lateinit var dayIndicatorItemDecoration: BubbleDecoration
-    private val viewModel by viewModels<ScheduleViewModel> { factory }
+    private val viewModel by viewModels<ScheduleViewModel>()
 
     private var cachedBubbleRange: IntRange? = null
     private lateinit var dayIndexed: ConferenceDayIndexed
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        DaggerConferenceComponent.builder().appComponent(component).build().inject(this)
+        DaggerConferenceComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    context.applicationContext,
+                    ConferenceModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -86,11 +93,13 @@ class ScheduleFragment : UDynamicFragment() {
                 removeDuration = 120L
             }
 
-            addOnScrollListener(object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
-                    onScheduleScrolled()
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
+                        onScheduleScrolled()
+                    }
                 }
-            })
+            )
         }
 
         return binding.root
@@ -135,23 +144,27 @@ class ScheduleFragment : UDynamicFragment() {
             if (list.isNotEmpty()) {
                 addItemDecoration(
                     ScheduleTimeHeadersDecoration(
-                        context, list
+                        context,
+                        list
                     )
                 )
                 addItemDecoration(
                     DaySeparatorItemDecoration(
-                        context, indexed
+                        context,
+                        indexed
                     )
                 )
             }
         }
 
-        binding.dayIndicators.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                super.onScrolled(recyclerView, dx, dy)
-                dayIndicatorItemDecoration.userScrolled = true
+        binding.dayIndicators.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    dayIndicatorItemDecoration.userScrolled = true
+                }
             }
-        })
+        )
 
         binding.executeBindingsAfter {
             isEmpty = list.isEmpty()

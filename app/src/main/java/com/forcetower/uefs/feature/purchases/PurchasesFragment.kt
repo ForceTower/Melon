@@ -29,31 +29,26 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
 import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class PurchasesFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var analytics: FirebaseAnalytics
+@AndroidEntryPoint
+class PurchasesFragment : UFragment() {
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var analytics: FirebaseAnalytics
 
-    private val viewModel: BillingViewModel by activityViewModels { factory }
+    private val viewModel: BillingViewModel by activityViewModels()
     private lateinit var binding: FragmentPurchasesBinding
     private lateinit var skuAdapter: SkuDetailsAdapter
 
-    private val list: MutableList<String> = mutableListOf()
     private val details: MutableList<SkuDetails> = mutableListOf()
 
     private var currentUsername: String? = null
@@ -82,15 +77,24 @@ class PurchasesFragment : UFragment(), Injectable {
         binding.recyclerSku.apply {
             adapter = skuAdapter
         }
-        viewModel.subscriptions.observe(viewLifecycleOwner, Observer {
-            processDetails(it)
-        })
-        viewModel.selectSku.observe(viewLifecycleOwner, EventObserver {
-            purchaseFlow(it)
-        })
-        viewModel.currentUsername.observe(viewLifecycleOwner, Observer {
-            currentUsername = it
-        })
+        viewModel.subscriptions.observe(
+            viewLifecycleOwner,
+            Observer {
+                processDetails(it)
+            }
+        )
+        viewModel.selectSku.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                purchaseFlow(it)
+            }
+        )
+        viewModel.currentUsername.observe(
+            viewLifecycleOwner,
+            Observer {
+                currentUsername = it
+            }
+        )
     }
 
     private fun processDetails(result: SkuDetailsResult) {

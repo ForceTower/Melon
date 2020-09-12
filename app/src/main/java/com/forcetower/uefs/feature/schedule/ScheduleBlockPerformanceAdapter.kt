@@ -42,10 +42,10 @@ class ScheduleBlockPerformanceAdapter(
 ) : RecyclerView.Adapter<ScheduleBlockPerformanceAdapter.ScheduleHolder>() {
     private val differ = AsyncListDiffer<ProcessedClassLocation>(this, ScheduleDiffCallback)
     var elements: Map<Int, List<ProcessedClassLocation>> = emptyMap()
-    set(value) {
-        field = value
-        differ.submitList(buildList(value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildList(value))
+        }
 
     private val disciplineColors = mutableMapOf<String, Int>()
     private val colors = context.resources.getIntArray(R.array.discipline_colors)

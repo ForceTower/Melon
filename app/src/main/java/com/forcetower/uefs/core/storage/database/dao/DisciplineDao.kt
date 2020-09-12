@@ -20,8 +20,12 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.uefs.core.model.unes.Discipline
 import timber.log.Timber
 

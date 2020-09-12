@@ -50,7 +50,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="96dp" />
+                app:layout_constraintGuide_begin="80dp" />
 
             <TextView
                 android:id="@+id/text_semester_name"
@@ -90,11 +90,19 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider_class"
                 tools:text="8 matérias" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/hours_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="guideline_start,text_disciplines"/>
+
             <TextView
                 android:id="@+id/text_hours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="6dp"
+                android:layout_marginStart="16dp"
                 android:textSize="14sp"
                 android:textAlignment="gravity"
                 android:gravity="center"
@@ -102,7 +110,7 @@
                 android:drawableStart="@drawable/ic_clock_surface_16dp"
                 android:drawablePadding="6dp"
                 android:textColor="?attr/colorOnSurface"
-                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintStart_toStartOf="@+id/hours_barrier"
                 app:layout_constraintTop_toBottomOf="@+id/divider_class"
                 tools:text="480 horas" />
         </androidx.constraintlayout.widget.ConstraintLayout>

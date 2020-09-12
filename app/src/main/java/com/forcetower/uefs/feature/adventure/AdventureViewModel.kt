@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.adventure
 
 import android.location.Location
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -28,9 +29,8 @@ import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.model.service.Achievement
 import com.forcetower.uefs.core.storage.repository.AdventureRepository
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class AdventureViewModel @Inject constructor(
+class AdventureViewModel @ViewModelInject constructor(
     private val repository: AdventureRepository
 ) : ViewModel(), AdventureInteractor {
     private val _locations = MutableLiveData<Boolean>()

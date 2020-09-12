@@ -24,7 +24,6 @@ import android.graphics.Canvas
 import android.graphics.Paint
 import android.text.Layout
 import android.text.style.LeadingMarginSpan
-
 import androidx.annotation.ColorInt
 
 /**

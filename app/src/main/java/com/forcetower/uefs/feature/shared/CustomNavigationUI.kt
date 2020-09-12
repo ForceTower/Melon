@@ -40,38 +40,39 @@ object CustomNavigationUI {
         bottomNavigationView.setOnNavigationItemSelectedListener { item -> customOnNavDestinationSelected(item, navController) }
         val weakReference = WeakReference(bottomNavigationView)
         navController.addOnDestinationChangedListener(
-                object : NavController.OnDestinationChangedListener {
-                    override fun onDestinationChanged(
-                        controller: NavController,
-                        destination: NavDestination,
-                        arguments: Bundle?
-                    ) {
-                        val view = weakReference.get()
-                        if (view == null) {
-                            navController.removeOnDestinationChangedListener(this)
-                            return
-                        }
-                        val menu = view.menu
-                        var h = 0
-                        val size = menu.size()
-                        while (h < size) {
-                            val item = menu.getItem(h)
-                            if (matchDestination(destination, item.itemId)) {
-                                item.isChecked = true
-                            }
-                            h++
-                        }
+            object : NavController.OnDestinationChangedListener {
+                override fun onDestinationChanged(
+                    controller: NavController,
+                    destination: NavDestination,
+                    arguments: Bundle?
+                ) {
+                    val view = weakReference.get()
+                    if (view == null) {
+                        navController.removeOnDestinationChangedListener(this)
+                        return
                     }
-                })
+                    val menu = view.menu
+                    var h = 0
+                    val size = menu.size()
+                    while (h < size) {
+                        val item = menu.getItem(h)
+                        if (matchDestination(destination, item.itemId)) {
+                            item.isChecked = true
+                        }
+                        h++
+                    }
+                }
+            }
+        )
     }
 
     private fun customOnNavDestinationSelected(item: MenuItem, navController: NavController): Boolean {
         val builder = NavOptions.Builder()
-                .setLaunchSingleTop(true)
-                .setEnterAnim(R.anim.open_scale_fast)
-                .setExitAnim(R.anim.close_scale_fast)
-                .setPopEnterAnim(R.anim.close_scale_fast)
-                .setPopExitAnim(R.anim.open_scale_fast)
+            .setLaunchSingleTop(true)
+            .setEnterAnim(R.anim.open_scale_fast)
+            .setExitAnim(R.anim.close_scale_fast)
+            .setPopEnterAnim(R.anim.close_scale_fast)
+            .setPopExitAnim(R.anim.open_scale_fast)
         if (item.order and Menu.CATEGORY_SECONDARY == 0) {
             builder.setPopUpTo(findStartDestination(navController.graph).id, false)
         }

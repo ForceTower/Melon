@@ -20,18 +20,18 @@
 
 package com.forcetower.uefs.feature.bigtray
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
-import javax.inject.Inject
 
-class BigTrayViewModel @Inject constructor(
+class BigTrayViewModel @ViewModelInject constructor(
     private val repository: BigTrayRepository
 ) : ViewModel() {
 
     var requesting: Boolean = false
-    set(value) {
-        repository.requesting = value
-        field = value
-    }
+        set(value) {
+            repository.requesting = value
+            field = value
+        }
 
     fun data() = repository.data
 }

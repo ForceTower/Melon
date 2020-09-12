@@ -25,25 +25,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartSemestersBinding
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class SemestersFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class SemestersFragment : UFragment() {
     private lateinit var binding: FragmentFlowchartSemestersBinding
-    private lateinit var viewModel: FlowchartViewModel
+    private val viewModel: FlowchartViewModel by viewModels()
     private lateinit var adapter: SemesterAdapter
 
     init {
@@ -51,7 +48,6 @@ class SemestersFragment : UFragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         adapter = SemesterAdapter(viewModel)
         viewModel.setCourse(arguments?.getLong("course_id") ?: 0)
         return FragmentFlowchartSemestersBinding.inflate(inflater, container, false).also {

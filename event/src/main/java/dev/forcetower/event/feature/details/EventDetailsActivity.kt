@@ -24,18 +24,18 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
-import android.view.View
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
+import androidx.core.view.WindowCompat
 import androidx.core.widget.NestedScrollView
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
-import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
@@ -43,15 +43,14 @@ import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.ActivityEventDetailsBinding
 import javax.inject.Inject
 
 class EventDetailsActivity : UActivity() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
-
+    @Inject lateinit var factory: ViewModelProvider.Factory
     private lateinit var chromeFader: ElasticDragDismissFrameLayout.SystemChromeFader
     lateinit var binding: ActivityEventDetailsBinding
 
@@ -59,15 +58,22 @@ class EventDetailsActivity : UActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         SplitCompat.installActivity(this)
-        val component = (applicationContext as UApplication).component
-        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+        DaggerEventComponent.builder()
+            .context(this)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    EventModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         super.onCreate(savedInstanceState)
         postponeEnterTransition(500L)
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_event_details)
-        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
 
         val id = intent.getLongExtra("eventId", 0L)
         if (id == 0L) {
@@ -78,25 +84,35 @@ class EventDetailsActivity : UActivity() {
 
         binding.actions = viewModel
 
-        viewModel.loadModel(id).observe(this, Observer {
-            binding.event = it
-        })
+        viewModel.loadModel(id).observe(
+            this,
+            Observer {
+                binding.event = it
+            }
+        )
 
-        viewModel.onEventCreationSent.observe(this, EventObserver {
-            setResult(Activity.RESULT_OK)
-            finishAfterTransition()
-        })
+        viewModel.onEventCreationSent.observe(
+            this,
+            EventObserver {
+                setResult(Activity.RESULT_OK)
+                finishAfterTransition()
+            }
+        )
 
-        viewModel.onEventMoveToPage.observe(this, EventObserver {
-            it.registerPage ?: return@EventObserver
-            CustomTabActivityHelper.openCustomTab(
-                this,
-                CustomTabsIntent.Builder()
-                    .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
-                    .addDefaultShareMenuItem()
-                    .build(),
-                Uri.parse(it.registerPage))
-        })
+        viewModel.onEventMoveToPage.observe(
+            this,
+            EventObserver {
+                it.registerPage ?: return@EventObserver
+                CustomTabActivityHelper.openCustomTab(
+                    this,
+                    CustomTabsIntent.Builder()
+                        .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
+                        .addDefaultShareMenuItem()
+                        .build(),
+                    Uri.parse(it.registerPage)
+                )
+            }
+        )
 
         val headLoadListener = object : ImageLoadListener {
             override fun onImageLoaded(drawable: Drawable) {
@@ -148,13 +164,19 @@ class EventDetailsActivity : UActivity() {
     fun applyFullImagePalette(palette: Palette?) {
         // color the ripple on the image spacer (default is grey)
         binding.imageSpacer.background = ViewUtils.createRipple(
-            palette, 0.25f, 0.5f,
-            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+            palette,
+            0.25f,
+            0.5f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey),
+            true
         )
         // slightly more opaque ripple on the pinned image to compensate for the scrim
         binding.image.foreground = ViewUtils.createRipple(
-            palette, 0.3f, 0.6f,
-            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey), true
+            palette,
+            0.3f,
+            0.6f,
+            ContextCompat.getColor(this, com.forcetower.uefs.R.color.mid_grey),
+            true
         )
     }
 

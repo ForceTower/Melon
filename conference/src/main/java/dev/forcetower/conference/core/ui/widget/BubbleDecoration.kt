@@ -174,11 +174,13 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
         } else {
             ValueAnimator.ofFloat(0f, 1f)
         }.apply {
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                    animator = null
+            addListener(
+                object : AnimatorListenerAdapter() {
+                    override fun onAnimationEnd(animation: Animator?) {
+                        animator = null
+                    }
                 }
-            })
+            )
             addUpdateListener {
                 progress = animatedValue as Float
                 parent.invalidateItemDecorations()

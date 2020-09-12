@@ -31,7 +31,7 @@ import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Profile
 import dev.forcetower.breaker.model.Person
 import timber.log.Timber
-import java.util.*
+import java.util.Locale
 
 @Dao
 abstract class ProfileDao {
@@ -76,12 +76,14 @@ abstract class ProfileDao {
             }
             return me.uid
         } else {
-            return insert(Profile(
-                name = name,
-                email = person.email,
-                sagresId = person.id,
-                me = true
-            ))
+            return insert(
+                Profile(
+                    name = name,
+                    email = person.email,
+                    sagresId = person.id,
+                    me = true
+                )
+            )
         }
     }
 

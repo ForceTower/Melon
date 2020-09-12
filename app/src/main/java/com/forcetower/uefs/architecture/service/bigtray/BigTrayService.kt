@@ -30,10 +30,11 @@ import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.feature.bigtray.BigTrayRepository
 import com.forcetower.uefs.service.NotificationCreator
-import dagger.android.AndroidInjection
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
+@AndroidEntryPoint
 class BigTrayService : LifecycleService() {
     companion object {
         private const val NOTIFICATION_BIG_TRAY = 187745
@@ -52,17 +53,12 @@ class BigTrayService : LifecycleService() {
     private var running = false
     private var trayData: BigTrayData? = null
 
-    override fun onCreate() {
-        super.onCreate()
-        AndroidInjection.inject(this)
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
-        when {
-            intent?.action == START_SERVICE_ACTION -> startComponent()
-            intent?.action == STOP_SERVICE_ACTION -> stopComponent()
+        when (intent?.action) {
+            START_SERVICE_ACTION -> startComponent()
+            STOP_SERVICE_ACTION -> stopComponent()
             else -> startComponent()
         }
 
@@ -81,12 +77,15 @@ class BigTrayService : LifecycleService() {
             running = true
             Timber.d("Start action!")
             startForeground(NOTIFICATION_BIG_TRAY, createNotification())
-            repository.beginWith(7000).observe(this, Observer {
-                if (trayData != it) {
-                    trayData = it
-                    startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+            repository.beginWith(7000).observe(
+                this,
+                Observer {
+                    if (trayData != it) {
+                        trayData = it
+                        startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                    }
                 }
-            })
+            )
         } else {
             Timber.d("Ignored new run attempt while it's already running")
         }

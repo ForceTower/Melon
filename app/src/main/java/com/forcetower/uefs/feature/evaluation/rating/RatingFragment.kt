@@ -21,5 +21,7 @@
 package com.forcetower.uefs.feature.evaluation.rating
 
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class RatingFragment : UFragment()

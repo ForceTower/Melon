@@ -96,9 +96,9 @@ class ThemePreferencesManager(private val context: Context) {
 
     private fun setThemeOverlayWithoutActivity(primary: Int, secondary: Int, background: Int) {
         val themesMap = arrayOf(
-                intArrayOf(R.id.theme_feature_primary_color, primary),
-                intArrayOf(R.id.theme_feature_secondary_color, secondary),
-                intArrayOf(R.id.theme_feature_background_color, background)
+            intArrayOf(R.id.theme_feature_primary_color, primary),
+            intArrayOf(R.id.theme_feature_secondary_color, secondary),
+            intArrayOf(R.id.theme_feature_background_color, background)
         )
         for (i in themesMap.indices) {
             if (themesMap[i][1] != 0)

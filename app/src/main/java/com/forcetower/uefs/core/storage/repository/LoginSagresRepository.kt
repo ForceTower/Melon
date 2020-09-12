@@ -133,11 +133,11 @@ class LoginSagresRepository @Inject constructor(
             } else {
                 SagresNavigator.instance.putCredentials(null)
                 data.value = Callback.Builder(l.status)
-                        .code(l.code)
-                        .message(l.message)
-                        .throwable(l.throwable)
-                        .document(l.document)
-                        .build()
+                    .code(l.code)
+                    .message(l.message)
+                    .throwable(l.throwable)
+                    .document(l.document)
+                    .build()
             }
         }
     }
@@ -169,11 +169,11 @@ class LoginSagresRepository @Inject constructor(
                 } else {
                     Timber.d("The status ${m.status}")
                     data.value = Callback.Builder(m.status)
-                            .code(m.code)
-                            .message(m.message)
-                            .throwable(m.throwable)
-                            .document(m.document)
-                            .build()
+                        .code(m.code)
+                        .message(m.message)
+                        .throwable(m.throwable)
+                        .document(m.document)
+                        .build()
                 }
             }
         }
@@ -207,11 +207,11 @@ class LoginSagresRepository @Inject constructor(
                     disciplinesExperimental(data)
             } else {
                 data.value = Callback.Builder(m.status)
-                        .code(m.code)
-                        .message(m.message)
-                        .throwable(m.throwable)
-                        .document(m.document)
-                        .build()
+                    .code(m.code)
+                    .message(m.message)
+                    .throwable(m.throwable)
+                    .document(m.document)
+                    .build()
             }
         }
     }
@@ -229,11 +229,11 @@ class LoginSagresRepository @Inject constructor(
                 disciplinesExperimental(data)
             } else {
                 data.value = Callback.Builder(s.status)
-                        .code(s.code)
-                        .message(s.message)
-                        .throwable(s.throwable)
-                        .document(s.document)
-                        .build()
+                    .code(s.code)
+                    .message(s.message)
+                    .throwable(s.throwable)
+                    .document(s.document)
+                    .build()
             }
         }
     }
@@ -285,11 +285,11 @@ class LoginSagresRepository @Inject constructor(
                 grades(data)
             } else {
                 data.value = Callback.Builder(s.status)
-                        .code(s.code)
-                        .message(s.message)
-                        .throwable(s.throwable)
-                        .document(s.document)
-                        .build()
+                    .code(s.code)
+                    .message(s.message)
+                    .throwable(s.throwable)
+                    .document(s.document)
+                    .build()
             }
         }
     }
@@ -356,21 +356,21 @@ class LoginSagresRepository @Inject constructor(
                 }
                 Status.LOADING -> {
                     data.value = Callback.Builder(s.status)
-                            .code(s.code)
-                            .message(s.message)
-                            .throwable(s.throwable)
-                            .document(s.document)
-                            .build()
+                        .code(s.code)
+                        .message(s.message)
+                        .throwable(s.throwable)
+                        .document(s.document)
+                        .build()
                 }
                 else -> {
                     Timber.d("ANOTHER ONE!")
                     executor.networkIO().execute { sessionRepository.onLogin() }
                     data.value = Callback.Builder(Status.COMPLETED)
-                            .code(s.code)
-                            .message(s.message)
-                            .throwable(s.throwable)
-                            .document(s.document)
-                            .build()
+                        .code(s.code)
+                        .message(s.message)
+                        .throwable(s.throwable)
+                        .document(s.document)
+                        .build()
                 }
             }
         }

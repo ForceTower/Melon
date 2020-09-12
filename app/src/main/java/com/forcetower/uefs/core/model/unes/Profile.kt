@@ -26,10 +26,12 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import java.util.UUID
 
-@Entity(indices = [
-    Index(value = ["sagres_id"], unique = true),
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["sagres_id"], unique = true),
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class Profile(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

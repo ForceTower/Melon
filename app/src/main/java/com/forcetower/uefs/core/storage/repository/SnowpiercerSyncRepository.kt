@@ -140,7 +140,6 @@ class SnowpiercerSyncRepository @Inject constructor(
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
                 DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId, true).execute()
 
-
                 if (shouldUpdateDisciplines()) {
                     val classes = disciplines.flatMap { it.classes }
 
@@ -166,7 +165,6 @@ class SnowpiercerSyncRepository @Inject constructor(
                             }
                         }
                 }
-
             }
 
             if (gradesOutcome is Outcome.Error) {
@@ -182,7 +180,6 @@ class SnowpiercerSyncRepository @Inject constructor(
         registry.message = "Completo"
         registry.end = System.currentTimeMillis()
         database.syncRegistryDao().update(registry)
-
     }
 
     private suspend fun defineUser(person: Person): Long {
@@ -221,8 +218,9 @@ class SnowpiercerSyncRepository @Inject constructor(
                 }
                 Timber.d("Is on Wifi? $wifi. Network name: $network")
                 SyncRegistry(
-                        executor = executor, network = network,
-                        networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal
+                    executor = executor,
+                    network = network,
+                    networkType = if (wifi) NetworkType.WIFI.ordinal else NetworkType.CELLULAR.ordinal
                 )
             } else {
                 SyncRegistry(executor = executor, network = "Invalid", networkType = NetworkType.OTHER.ordinal)
@@ -270,7 +268,7 @@ class SnowpiercerSyncRepository @Inject constructor(
     }
 
     private fun produceErrorMessage(outcome: Outcome.Error<*>) {
-        Timber.e("Failed executing with status ${outcome.code} and throwable message [${outcome.error.message}]")
+        Timber.e(outcome.error, "Failed executing with status ${outcome.code} and throwable message [${outcome.error.message}]")
     }
 
     suspend fun asyncSync() = withContext(Dispatchers.IO) {

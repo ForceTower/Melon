@@ -45,11 +45,13 @@ abstract class NewsDao {
             if (existent == null) {
                 Announcement(0, it.link, it.title, it.imageUrl, it.publishDate, false)
             } else {
-                update(existent.copy(
-                    title = it.title,
-                    imageUrl = it.imageUrl,
-                    publishDate = it.publishDate
-                ))
+                update(
+                    existent.copy(
+                        title = it.title,
+                        imageUrl = it.imageUrl,
+                        publishDate = it.publishDate
+                    )
+                )
                 null
             }
         }.forEach {

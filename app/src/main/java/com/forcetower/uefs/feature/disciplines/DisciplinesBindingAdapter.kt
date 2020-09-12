@@ -31,20 +31,22 @@ import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.format.DateTimeFormatter
 import timber.log.Timber
+import java.time.OffsetDateTime
+import java.time.format.DateTimeFormatter
 import kotlin.math.max
 
 @BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
-    val sort = classes?.sortedWith(Comparator { one, two ->
-        when {
-            one.name.trim().equals("prova final", ignoreCase = true) -> 1
-            two.name.trim().equals("prova final", ignoreCase = true) -> -1
-            else -> one.name.compareTo(two.name)
+    val sort = classes?.sortedWith(
+        Comparator { one, two ->
+            when {
+                one.name.trim().equals("prova final", ignoreCase = true) -> 1
+                two.name.trim().equals("prova final", ignoreCase = true) -> -1
+                else -> one.name.compareTo(two.name)
+            }
         }
-    })
+    )
 
     val adapter: ClassGroupGradesAdapter
     if (recycler.adapter == null) {

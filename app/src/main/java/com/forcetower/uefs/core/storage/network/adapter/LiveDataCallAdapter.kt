@@ -49,15 +49,17 @@ fun <T> Call<T>.asLiveData(): LiveData<ApiResponse<T>> {
         override fun onActive() {
             super.onActive()
             if (started.compareAndSet(false, true)) {
-                enqueue(object : Callback<T> {
-                    override fun onResponse(call: Call<T>, response: Response<T>) {
-                        postValue(ApiResponse.create(response))
-                    }
+                enqueue(
+                    object : Callback<T> {
+                        override fun onResponse(call: Call<T>, response: Response<T>) {
+                            postValue(ApiResponse.create(response))
+                        }
 
-                    override fun onFailure(call: Call<T>, throwable: Throwable) {
-                        postValue(ApiResponse.create(throwable))
+                        override fun onFailure(call: Call<T>, throwable: Throwable) {
+                            postValue(ApiResponse.create(throwable))
+                        }
                     }
-                })
+                )
             }
         }
     }

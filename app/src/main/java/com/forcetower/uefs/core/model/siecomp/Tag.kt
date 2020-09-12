@@ -26,9 +26,11 @@ import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 import java.util.UUID
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class Tag(
     @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)

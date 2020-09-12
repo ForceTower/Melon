@@ -21,30 +21,23 @@
 package com.forcetower.uefs.feature.forms
 
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityFormsBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class FormActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class FormActivity : UActivity() {
+    private val viewModel: FormsViewModel by viewModels()
     private lateinit var binding: ActivityFormsBinding
-    private lateinit var viewModel: FormsViewModel
     private lateinit var adapter: FragmentAdapter
     private lateinit var currentData: List<Question>
 
@@ -52,33 +45,38 @@ class FormActivity : UActivity(), HasAndroidInjector {
         ThemeOverlayUtils.applyThemeOverlays(this, intArrayOf(R.id.theme_feature_background_color))
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_forms)
-        viewModel = provideViewModel(factory)
         adapter = FragmentAdapter(supportFragmentManager)
         binding.viewPager.adapter = adapter
 
-        viewModel.account.observe(this, Observer {
-            try {
-                viewModel.answer("entry.182173763", it?.grouping?.toString() ?: "0")
-            } catch (error: Throwable) {
-                Timber.e(error)
+        viewModel.account.observe(
+            this,
+            Observer {
+                try {
+                    viewModel.answer("entry.182173763", it?.grouping?.toString() ?: "0")
+                } catch (error: Throwable) {
+                    Timber.e(error)
+                }
             }
-        })
+        )
 
         val questions = createQuestions()
         currentData = questions
         createFragmentsList(questions)
 
-        viewModel.nextQuestion.observe(this, EventObserver {
-            val position = binding.viewPager.currentItem
-            val size = currentData.size
-            val nextPos = position + 1
-            if (nextPos >= size) {
-                viewModel.submitAnswers()
-                finish()
-            } else {
-                binding.viewPager.setCurrentItem(nextPos, true)
+        viewModel.nextQuestion.observe(
+            this,
+            EventObserver {
+                val position = binding.viewPager.currentItem
+                val size = currentData.size
+                val nextPos = position + 1
+                if (nextPos >= size) {
+                    viewModel.submitAnswers()
+                    finish()
+                } else {
+                    binding.viewPager.setCurrentItem(nextPos, true)
+                }
             }
-        })
+        )
     }
 
     private fun createQuestions(): List<Question> {
@@ -116,6 +114,4 @@ class FormActivity : UActivity(), HasAndroidInjector {
         val fragments = data.map { InternalFormFragment.newInstance(it) }
         adapter.setItems(fragments)
     }
-
-    override fun androidInjector() = fragmentInjector
 }

@@ -26,9 +26,11 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresCalendar
 import java.util.UUID
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class CalendarItem(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

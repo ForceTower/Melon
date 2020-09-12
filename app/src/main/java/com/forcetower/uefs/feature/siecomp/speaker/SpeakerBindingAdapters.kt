@@ -64,36 +64,38 @@ fun speakerImage(
         imageView.setImageResource(placeholderId)
     } else {
         val imageLoad = Glide.with(imageView)
-                .load(speaker.image)
-                .apply(
-                        RequestOptions()
-                                .placeholder(placeholderId)
-                                .circleCrop()
-                )
+            .load(speaker.image)
+            .apply(
+                RequestOptions()
+                    .placeholder(placeholderId)
+                    .circleCrop()
+            )
 
         if (listener != null) {
-            imageLoad.listener(object : RequestListener<Drawable> {
-                override fun onResourceReady(
-                    resource: Drawable,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    dataSource: DataSource?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    listener.onImageLoaded(resource)
-                    return false
-                }
+            imageLoad.listener(
+                object : RequestListener<Drawable> {
+                    override fun onResourceReady(
+                        resource: Drawable,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        dataSource: DataSource?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        listener.onImageLoaded(resource)
+                        return false
+                    }
 
-                override fun onLoadFailed(
-                    e: GlideException?,
-                    model: Any?,
-                    target: Target<Drawable>?,
-                    isFirstResource: Boolean
-                ): Boolean {
-                    listener.onImageLoadFailed()
-                    return false
+                    override fun onLoadFailed(
+                        e: GlideException?,
+                        model: Any?,
+                        target: Target<Drawable>?,
+                        isFirstResource: Boolean
+                    ): Boolean {
+                        listener.onImageLoadFailed()
+                        return false
+                    }
                 }
-            })
+            )
         }
 
         imageLoad.into(imageView)
@@ -109,12 +111,12 @@ fun createSpeakerLinksView(
     linkedInUrl: String?
 ) {
     val links =
-            mapOf(
-                R.string.speaker_link_facebook to facebookUrl,
-                R.string.speaker_link_twitter to twitterUrl,
-                R.string.speaker_link_github to githubUrl,
-                R.string.speaker_link_linkedin to linkedInUrl
-            )
+        mapOf(
+            R.string.speaker_link_facebook to facebookUrl,
+            R.string.speaker_link_twitter to twitterUrl,
+            R.string.speaker_link_github to githubUrl,
+            R.string.speaker_link_linkedin to linkedInUrl
+        )
             .filterValues { !it.isNullOrEmpty() }
             .map { (labelRes, url) ->
                 val span = SpannableString(textView.context.getString(labelRes))

@@ -22,6 +22,7 @@ package com.forcetower.uefs.feature.demand
 
 import android.content.Context
 import androidx.core.os.bundleOf
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,9 +35,8 @@ import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.google.firebase.analytics.FirebaseAnalytics
 import timber.log.Timber
-import javax.inject.Inject
 
-class DemandViewModel @Inject constructor(
+class DemandViewModel @ViewModelInject constructor(
     private val repository: DemandRepository,
     private val context: Context,
     private val analytics: FirebaseAnalytics
@@ -85,10 +85,13 @@ class DemandViewModel @Inject constructor(
                 if (it.status == Status.SUCCESS) {
                     analytics.logEvent("demand_loaded_disciplines_success", null)
                 } else {
-                    analytics.logEvent("demand_loaded_disciplines_failed", bundleOf(
-                        "code" to it.code,
-                        "message" to (it.message ?: "nothing at all")
-                    ))
+                    analytics.logEvent(
+                        "demand_loaded_disciplines_failed",
+                        bundleOf(
+                            "code" to it.code,
+                            "message" to (it.message ?: "nothing at all")
+                        )
+                    )
                 }
                 _loading.value = false
             }

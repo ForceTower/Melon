@@ -29,49 +29,61 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import androidx.annotation.Keep
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
-import com.forcetower.core.base.BaseViewModelFactory
 import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.GlideApp
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.feature.setup.CourseSelectionCallback
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
-import com.forcetower.uefs.feature.shared.UDynamicFragment
+import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.textfield.TextInputEditText
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R
 import dev.forcetower.event.core.binding.formattedDate
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentCreateEventBinding
 import dev.forcetower.event.feature.details.EventDetailsActivity
-import org.threeten.bp.Instant
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.time.Instant
+import java.time.ZoneId
+import java.time.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
 
-class CreateEventFragment : UDynamicFragment() {
-    @Inject
-    lateinit var factory: BaseViewModelFactory
+@Keep
+class CreateEventFragment : UFragment() {
+    @Inject lateinit var factory: ViewModelProvider.Factory
     private val viewModel: CreationViewModel by viewModels { factory }
     private lateinit var binding: FragmentCreateEventBinding
     private val args by navArgs<CreateEventFragmentArgs>()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+        DaggerEventComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    context.applicationContext,
+                    EventModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -85,10 +97,13 @@ class CreateEventFragment : UDynamicFragment() {
 
         if (savedInstanceState == null) {
             if (args.eventId != 0L) {
-                viewModel.loadModel(args.eventId).observe(viewLifecycleOwner, Observer {
-                    it ?: return@Observer
-                    populateInterface(it)
-                })
+                viewModel.loadModel(args.eventId).observe(
+                    viewLifecycleOwner,
+                    Observer {
+                        it ?: return@Observer
+                        populateInterface(it)
+                    }
+                )
             }
         }
 
@@ -128,12 +143,14 @@ class CreateEventFragment : UDynamicFragment() {
         val dialog = SelectCourseDialog().apply {
             arguments = bundleOf("hide_description" to true)
         }
-        dialog.setCallback(object : CourseSelectionCallback {
-            override fun onSelected(course: Course) {
-                viewModel.selectedCourse = course
-                binding.inputCourse.setText(course.name)
+        dialog.setCallback(
+            object : CourseSelectionCallback {
+                override fun onSelected(course: Course) {
+                    viewModel.selectedCourse = course
+                    binding.inputCourse.setText(course.name)
+                }
             }
-        })
+        )
         dialog.show(childFragmentManager, "dialog_course")
     }
 
@@ -145,19 +162,22 @@ class CreateEventFragment : UDynamicFragment() {
 
         val color = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary)
 
-        val picker = DatePickerDialog.newInstance({ _, y, m, d ->
-            val next = Calendar.getInstance().apply {
-                set(Calendar.YEAR, y)
-                set(Calendar.MONTH, m)
-                set(Calendar.DAY_OF_MONTH, d)
-            }.timeInMillis
-            if (start) {
-                viewModel.start = next
-            } else {
-                viewModel.end = next
-            }
-            showTimePicker(input, start)
-        }, calendar)
+        val picker = DatePickerDialog.newInstance(
+            { _, y, m, d ->
+                val next = Calendar.getInstance().apply {
+                    set(Calendar.YEAR, y)
+                    set(Calendar.MONTH, m)
+                    set(Calendar.DAY_OF_MONTH, d)
+                }.timeInMillis
+                if (start) {
+                    viewModel.start = next
+                } else {
+                    viewModel.end = next
+                }
+                showTimePicker(input, start)
+            },
+            calendar
+        )
         picker.version = DatePickerDialog.Version.VERSION_2
 
         picker.accentColor = color
@@ -176,21 +196,24 @@ class CreateEventFragment : UDynamicFragment() {
 
         val selection = (if (start) viewModel.start else viewModel.end)
         calendar.timeInMillis = selection
-        val picker = TimePickerDialog.newInstance({ _, h, m, s ->
-            val next = Calendar.getInstance().apply {
-                timeInMillis = selection
-                set(Calendar.HOUR_OF_DAY, h)
-                set(Calendar.MINUTE, m)
-                set(Calendar.SECOND, s)
-            }.timeInMillis
-            if (start) {
-                viewModel.start = next
-            } else {
-                viewModel.end = next
-            }
-            val zoned = ZonedDateTime.ofInstant(Instant.ofEpochMilli(next), ZoneId.systemDefault())
-            input.setText(zoned.toString())
-        }, true)
+        val picker = TimePickerDialog.newInstance(
+            { _, h, m, s ->
+                val next = Calendar.getInstance().apply {
+                    timeInMillis = selection
+                    set(Calendar.HOUR_OF_DAY, h)
+                    set(Calendar.MINUTE, m)
+                    set(Calendar.SECOND, s)
+                }.timeInMillis
+                if (start) {
+                    viewModel.start = next
+                } else {
+                    viewModel.end = next
+                }
+                val zoned = ZonedDateTime.ofInstant(Instant.ofEpochMilli(next), ZoneId.systemDefault())
+                input.setText(zoned.toString())
+            },
+            true
+        )
 
         picker.version = TimePickerDialog.Version.VERSION_2
 
@@ -322,10 +345,13 @@ class CreateEventFragment : UDynamicFragment() {
         }
 
         viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours, page)
-            .observe(viewLifecycleOwner, Observer {
-                viewModel.createdId = it
-                preview(it)
-            })
+            .observe(
+                viewLifecycleOwner,
+                Observer {
+                    viewModel.createdId = it
+                    preview(it)
+                }
+            )
     }
 
     private fun preview(id: Long) {

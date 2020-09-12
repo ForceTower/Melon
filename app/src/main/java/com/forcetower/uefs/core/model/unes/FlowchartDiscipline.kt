@@ -26,13 +26,16 @@ import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = Discipline::class, childColumns = ["disciplineId"], parentColumns = ["uid"], onUpdate = CASCADE, onDelete = CASCADE),
-    ForeignKey(entity = FlowchartSemester::class, childColumns = ["semesterId"], parentColumns = ["id"], onUpdate = CASCADE, onDelete = CASCADE)
-], indices = [
-    Index(value = ["disciplineId"]),
-    Index(value = ["semesterId"])
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = Discipline::class, childColumns = ["disciplineId"], parentColumns = ["uid"], onUpdate = CASCADE, onDelete = CASCADE),
+        ForeignKey(entity = FlowchartSemester::class, childColumns = ["semesterId"], parentColumns = ["id"], onUpdate = CASCADE, onDelete = CASCADE)
+    ],
+    indices = [
+        Index(value = ["disciplineId"]),
+        Index(value = ["semesterId"])
+    ]
+)
 data class FlowchartDiscipline(
     @PrimaryKey(autoGenerate = false)
     val id: Long,

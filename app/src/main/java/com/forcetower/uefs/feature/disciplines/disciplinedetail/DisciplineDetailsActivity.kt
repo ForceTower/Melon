@@ -23,38 +23,29 @@ package com.forcetower.uefs.feature.disciplines.disciplinedetail
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.databinding.ActivityDisciplineDetailsBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var sessionViewModel: UserSessionViewModel
+@AndroidEntryPoint
+class DisciplineDetailsActivity : UGameActivity() {
+    private val sessionViewModel: UserSessionViewModel by viewModels()
+    private val viewModel: DisciplineViewModel by viewModels()
     private lateinit var binding: ActivityDisciplineDetailsBinding
-    private lateinit var viewModel: DisciplineViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_discipline_details)
-        viewModel = provideViewModel(factory)
-        sessionViewModel = provideViewModel(factory)
 
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
@@ -64,22 +55,25 @@ class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
             }
         }
 
-        viewModel.clazz.observe(this, Observer {
-            if (it != null) {
-                val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
-                if (teacher != null) {
-                    if (teacher == "__ANY__") {
-                        unlockAchievement(R.string.achievement_vale_das_sombras)
-                    } else {
-                        it.groups.forEach { group ->
-                            if (group.teacher != null && group.teacher == teacher) {
-                                unlockAchievement(R.string.achievement_vale_das_sombras)
+        viewModel.clazz.observe(
+            this,
+            Observer {
+                if (it != null) {
+                    val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
+                    if (teacher != null) {
+                        if (teacher == "__ANY__") {
+                            unlockAchievement(R.string.achievement_vale_das_sombras)
+                        } else {
+                            it.groups.forEach { group ->
+                                if (group.teacher != null && group.teacher == teacher) {
+                                    unlockAchievement(R.string.achievement_vale_das_sombras)
+                                }
                             }
                         }
                     }
                 }
             }
-        })
+        )
     }
 
     override fun showSnack(string: String, duration: Int) {
@@ -91,8 +85,6 @@ class DisciplineDetailsActivity : UGameActivity(), HasAndroidInjector {
         snack.config()
         return snack
     }
-
-    override fun androidInjector() = fragmentInjector
 
     override fun onUserInteraction() {
         super.onUserInteraction()

@@ -120,7 +120,7 @@
             "columnNames": [
               "uuid"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_Session_uuid` ON `${TABLE_NAME}` (`uuid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Session_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": []
@@ -179,7 +179,7 @@
             "columnNames": [
               "uuid"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_Tag_uuid` ON `${TABLE_NAME}` (`uuid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Tag_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": []
@@ -250,7 +250,7 @@
             "columnNames": [
               "uuid"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_Speaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Speaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": []
@@ -298,7 +298,7 @@
               "session_id",
               "tag_id"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_SessionTag_session_id_tag_id` ON `${TABLE_NAME}` (`session_id`, `tag_id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionTag_session_id_tag_id` ON `${TABLE_NAME}` (`session_id`, `tag_id`)"
           },
           {
             "name": "index_SessionTag_session_id",
@@ -306,7 +306,7 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_SessionTag_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionTag_session_id` ON `${TABLE_NAME}` (`session_id`)"
           },
           {
             "name": "index_SessionTag_tag_id",
@@ -314,7 +314,7 @@
             "columnNames": [
               "tag_id"
             ],
-            "createSql": "CREATE  INDEX `index_SessionTag_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionTag_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
           },
           {
             "name": "index_SessionTag_uuid",
@@ -322,7 +322,7 @@
             "columnNames": [
               "uuid"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_SessionTag_uuid` ON `${TABLE_NAME}` (`uuid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionTag_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": [
@@ -393,7 +393,7 @@
               "session_id",
               "speaker_id"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_SessionSpeaker_session_id_speaker_id` ON `${TABLE_NAME}` (`session_id`, `speaker_id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionSpeaker_session_id_speaker_id` ON `${TABLE_NAME}` (`session_id`, `speaker_id`)"
           },
           {
             "name": "index_SessionSpeaker_session_id",
@@ -401,7 +401,7 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE  INDEX `index_SessionSpeaker_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionSpeaker_session_id` ON `${TABLE_NAME}` (`session_id`)"
           },
           {
             "name": "index_SessionSpeaker_speaker_id",
@@ -409,7 +409,7 @@
             "columnNames": [
               "speaker_id"
             ],
-            "createSql": "CREATE  INDEX `index_SessionSpeaker_speaker_id` ON `${TABLE_NAME}` (`speaker_id`)"
+            "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionSpeaker_speaker_id` ON `${TABLE_NAME}` (`speaker_id`)"
           },
           {
             "name": "index_SessionSpeaker_uuid",
@@ -417,7 +417,7 @@
             "columnNames": [
               "uuid"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_SessionSpeaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionSpeaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
         "foreignKeys": [
@@ -475,7 +475,7 @@
             "columnNames": [
               "session_id"
             ],
-            "createSql": "CREATE UNIQUE INDEX `index_SessionStar_session_id` ON `${TABLE_NAME}` (`session_id`)"
+            "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionStar_session_id` ON `${TABLE_NAME}` (`session_id`)"
           }
         ],
         "foreignKeys": []

@@ -40,10 +40,10 @@ class DemandOffersAdapter(
     private val differ = AsyncListDiffer(this, DiffCallback)
 
     var currentList: List<SagresDemandOffer> = listOf()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(offers = currentList))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(offers = currentList))
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DemandHolder {
         return when (viewType) {

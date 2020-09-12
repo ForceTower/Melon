@@ -42,7 +42,6 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:transitionGroup="false"
-        app:layoutFullscreen="@{true}"
         app:dragDismissDistance="112dp"
         app:dragDismissScale="0.95">
 

@@ -26,31 +26,30 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.viewModels
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventOnboardingBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.ViewPagerPager
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.siecomp.schedule.EventScheduleActivity
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class OnboardingFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var preferences: SharedPreferences
-    private lateinit var viewModel: OnboardingViewModel
+@AndroidEntryPoint
+class OnboardingFragment : UFragment() {
+    @Inject lateinit var preferences: SharedPreferences
+    private val viewModel: OnboardingViewModel by viewModels()
+
     private lateinit var binding: FragmentEventOnboardingBinding
     private lateinit var pagerPager: ViewPagerPager
-    private val handler = Handler()
+    private val handler = Handler(Looper.getMainLooper())
 
     private val advancePager: Runnable = object : Runnable {
         override fun run() {
@@ -61,7 +60,6 @@ class OnboardingFragment : UFragment(), Injectable {
 
     @SuppressLint("ClickableViewAccessibility")
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         binding = FragmentEventOnboardingBinding.inflate(inflater, container, false).apply {
             viewModel = this@OnboardingFragment.viewModel
             lifecycleOwner = this@OnboardingFragment
@@ -74,13 +72,16 @@ class OnboardingFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.navigateToEventActivity.observe(viewLifecycleOwner, EventObserver {
-            requireActivity().run {
-                preferences.edit().putBoolean("siecomp_xxii_onboarding_completed_2", true).apply()
-                startActivity(Intent(this, EventScheduleActivity::class.java))
-                finish()
+        viewModel.navigateToEventActivity.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                requireActivity().run {
+                    preferences.edit().putBoolean("siecomp_xxii_onboarding_completed_2", true).apply()
+                    startActivity(Intent(this, EventScheduleActivity::class.java))
+                    finish()
+                }
             }
-        })
+        )
         return binding.root
     }
 

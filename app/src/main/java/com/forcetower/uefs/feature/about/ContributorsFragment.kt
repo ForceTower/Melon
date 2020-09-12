@@ -26,32 +26,28 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.core.utils.ViewUtils
+import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAboutContributorsBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class ContributorsFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: ContributorViewModel
+@AndroidEntryPoint
+class ContributorsFragment : UFragment() {
+    private val viewModel: ContributorViewModel by viewModels()
 
     private lateinit var binding: FragmentAboutContributorsBinding
     private val adapter: ContributorAdapter by lazy { ContributorAdapter(viewModel) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         FragmentAboutContributorsBinding.inflate(inflater, container, false).also {
             binding = it
         }
@@ -95,6 +91,7 @@ class ContributorsFragment : UFragment(), Injectable {
                 .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
                 .addDefaultShareMenuItem()
                 .build(),
-            Uri.parse(string))
+            Uri.parse(string)
+        )
     }
 }

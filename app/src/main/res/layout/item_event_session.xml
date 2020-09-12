@@ -34,7 +34,7 @@
 
         <variable
             name="zone"
-            type="org.threeten.bp.ZoneId"/>
+            type="java.time.ZoneId"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

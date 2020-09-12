@@ -28,7 +28,6 @@ import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
 import android.os.Handler
-import android.os.HandlerThread
 import android.os.Looper
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
@@ -46,7 +45,6 @@ import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
@@ -55,7 +53,6 @@ import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UGameActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.isNougatMR1
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.extensions.toShortcut
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
@@ -74,49 +71,31 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
-class HomeActivity : UGameActivity(), HasAndroidInjector {
-    companion object {
-        const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
-        const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
-        const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
-        const val EXTRA_GRADES_DIRECTION = "grades"
-        const val EXTRA_DEMAND_DIRECTION = "demand"
-        const val EXTRA_REQUEST_SERVICE_DIRECTION = "request_service"
-    }
-
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var vmFactory: UViewModelFactory
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-    @Inject
-    lateinit var preferences: SharedPreferences
-    @Inject
-    lateinit var analytics: FirebaseAnalytics
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject
-    lateinit var executors: AppExecutors
+@AndroidEntryPoint
+class HomeActivity : UGameActivity() {
+    @Inject lateinit var firebaseAuth: FirebaseAuth
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var analytics: FirebaseAnalytics
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+    @Inject lateinit var executors: AppExecutors
+    private lateinit var reviewManager: ReviewManager
 
     private val updateListener = InstallStateUpdatedListener { state -> onStateUpdateChanged(state) }
-    private lateinit var viewModel: HomeViewModel
-    private lateinit var adventureViewModel: AdventureViewModel
+    private val viewModel: HomeViewModel by viewModels()
+    private val adventureViewModel: AdventureViewModel by viewModels()
+    private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels()
+    private val disciplineViewModel: DisciplineViewModel by viewModels()
+
     private lateinit var binding: ActivityHomeBinding
     private lateinit var updateManager: AppUpdateManager
     private lateinit var username: String
-    private lateinit var reviewManager: ReviewManager
-    private val dynamicDFMViewModel: MessagesDFMViewModel by viewModels { vmFactory }
-    private val disciplineViewModel: DisciplineViewModel by viewModels { vmFactory }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setupViewModel()
         binding = DataBindingUtil.setContentView(this, R.layout.activity_home)
         setupBottomNav()
         setupUserData()
@@ -157,19 +136,22 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             preferences.isStudentFromUEFS() &&
             !preferences.getBoolean("__user_in_app_review_once__", false)
         ) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                lifecycleScope.launchWhenCreated {
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                        try {
-                            val request = reviewManager.requestReview()
-                            reviewManager.launchReview(this@HomeActivity, request)
-                        } catch (error: Throwable) {
-                            Timber.e(error, "on request review")
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    lifecycleScope.launchWhenCreated {
+                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                            try {
+                                val request = reviewManager.requestReview()
+                                reviewManager.launchReview(this@HomeActivity, request)
+                            } catch (error: Throwable) {
+                                Timber.e(error, "on request review")
+                            }
+                            preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
                         }
-                        preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
                     }
-                }
-            }, 2000)
+                },
+                2000
+            )
         }
     }
 
@@ -264,11 +246,6 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
     }
 
-    private fun setupViewModel() {
-        viewModel = provideViewModel(vmFactory)
-        adventureViewModel = provideViewModel(vmFactory)
-    }
-
     private fun setupUserData() {
         viewModel.access.observe(this, { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
@@ -281,14 +258,20 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
-        viewModel.scheduleHideCount.observe(this, {
-            Timber.d("Schedule hidden stuff: $it")
-            analytics.setUserProperty("using_schedule_hide", "${it > 0}")
-            analytics.setUserProperty("using_schedule_hide_cnt", "$it")
-        })
-        viewModel.onMoveToSchedule.observe(this, EventObserver {
-            binding.bottomNavigation.selectedItemId = R.id.schedule
-        })
+        viewModel.scheduleHideCount.observe(
+            this,
+            {
+                Timber.d("Schedule hidden stuff: $it")
+                analytics.setUserProperty("using_schedule_hide", "${it > 0}")
+                analytics.setUserProperty("using_schedule_hide_cnt", "$it")
+            }
+        )
+        viewModel.onMoveToSchedule.observe(
+            this,
+            EventObserver {
+                binding.bottomNavigation.selectedItemId = R.id.schedule
+            }
+        )
     }
 
     private fun onAccessUpdate(access: Access?) {
@@ -342,14 +325,17 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements().observe(this, {
-            it.entries.forEach { achievement ->
-                if (achievement.value == -1)
-                    unlockAchievement(achievement.key)
-                else
-                    updateAchievementProgress(achievement.key, achievement.value)
+        adventureViewModel.checkAchievements().observe(
+            this,
+            {
+                it.entries.forEach { achievement ->
+                    if (achievement.value == -1)
+                        unlockAchievement(achievement.key)
+                    else
+                        updateAchievementProgress(achievement.key, achievement.value)
+                }
             }
-        })
+        )
         checkServerAchievements()
     }
 
@@ -357,20 +343,21 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
         adventureViewModel.checkNotConnectedAchievements().observe(this, { Unit })
     }
 
-    override fun androidInjector() = fragmentInjector
-
     private fun checkServerAchievements() {
-        adventureViewModel.checkServerAchievements().observe(this, { achievements ->
-            achievements.forEach { achievement ->
-                try {
-                    if (achievement.progress != null) {
-                        updateAchievementProgress(achievement.identifier, achievement.progress)
-                    } else {
-                        unlockAchievement(achievement.identifier)
-                    }
-                } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+        adventureViewModel.checkServerAchievements().observe(
+            this,
+            { achievements ->
+                achievements.forEach { achievement ->
+                    try {
+                        if (achievement.progress != null) {
+                            updateAchievementProgress(achievement.identifier, achievement.progress)
+                        } else {
+                            unlockAchievement(achievement.identifier)
+                        }
+                    } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+                }
             }
-        })
+        )
     }
 
     override fun onResume() {
@@ -433,5 +420,14 @@ class HomeActivity : UGameActivity(), HasAndroidInjector {
     override fun onDestroy() {
         super.onDestroy()
         viewModel.onUserInteraction()
+    }
+
+    companion object {
+        const val EXTRA_FRAGMENT_DIRECTIONS = "extra_directions"
+        const val EXTRA_MESSAGES_SAGRES_DIRECTION = "messages.sagres"
+        const val EXTRA_BIGTRAY_DIRECTION = "home.bigtray"
+        const val EXTRA_GRADES_DIRECTION = "grades"
+        const val EXTRA_DEMAND_DIRECTION = "demand"
+        const val EXTRA_REQUEST_SERVICE_DIRECTION = "request_service"
     }
 }

@@ -29,14 +29,13 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
 import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
@@ -49,28 +48,23 @@ import com.forcetower.uefs.feature.evaluation.EvaluationActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.forcetower.uefs.feature.shared.inflate
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
 import com.forcetower.uefs.widget.DividerItemDecorator
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.firestore.CollectionReference
 import javax.inject.Inject
 import javax.inject.Named
 
-class DisciplineDetailsFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    @Named(Discipline.COLLECTION)
+class DisciplineDetailsFragment : UFragment() {
+    @Inject @Named(Discipline.COLLECTION)
     lateinit var firestore: CollectionReference
 
-    private lateinit var viewModel: DisciplineViewModel
+    private val viewModel: DisciplineViewModel by activityViewModels()
     private lateinit var binding: FragmentDisciplineDetailsBinding
     private lateinit var tabs: TabLayout
     private lateinit var viewPager: ViewPager
     private lateinit var adapter: DetailsAdapter
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         binding = FragmentDisciplineDetailsBinding.inflate(inflater, container, false).also {
             viewPager = it.viewPager
             tabs = it.tabs
@@ -102,9 +96,12 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
-        viewModel.navigateToTeacherAction.observe(viewLifecycleOwner, EventObserver {
-            startActivity(EvaluationActivity.startIntentForTeacher(requireContext(), it))
-        })
+        viewModel.navigateToTeacherAction.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                startActivity(EvaluationActivity.startIntentForTeacher(requireContext(), it))
+            }
+        )
         binding.apply {
             viewModel = this@DisciplineDetailsFragment.viewModel
             lifecycleOwner = this@DisciplineDetailsFragment
@@ -154,18 +151,16 @@ class DisciplineDetailsFragment : UFragment(), Injectable {
         }
 
         override fun onBindViewHolder(holder: ItemHolder, position: Int) {
-            if (::viewModel.isInitialized) {
-                when (holder) {
-                    is ItemHolder.HoursHolder -> holder.binding.apply {
-                        viewModel = this@DisciplineDetailsFragment.viewModel
-                        lifecycleOwner = this@DisciplineDetailsFragment
-                        executePendingBindings()
-                    }
-                    is ItemHolder.MissedHolder -> holder.binding.apply {
-                        viewModel = this@DisciplineDetailsFragment.viewModel
-                        lifecycleOwner = this@DisciplineDetailsFragment
-                        executePendingBindings()
-                    }
+            when (holder) {
+                is ItemHolder.HoursHolder -> holder.binding.apply {
+                    viewModel = this@DisciplineDetailsFragment.viewModel
+                    lifecycleOwner = this@DisciplineDetailsFragment
+                    executePendingBindings()
+                }
+                is ItemHolder.MissedHolder -> holder.binding.apply {
+                    viewModel = this@DisciplineDetailsFragment.viewModel
+                    lifecycleOwner = this@DisciplineDetailsFragment
+                    executePendingBindings()
                 }
             }
         }

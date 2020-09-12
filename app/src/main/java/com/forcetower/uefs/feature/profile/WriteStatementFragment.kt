@@ -28,23 +28,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentWriteStatementBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-class WriteStatementFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class WriteStatementFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
 
     private lateinit var binding: FragmentWriteStatementBinding
-    private val viewModel: ProfileViewModel by viewModels { factory }
+    private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
@@ -63,13 +61,19 @@ class WriteStatementFragment : UFragment(), Injectable {
         binding.publish.setOnClickListener { onPublishStatement() }
         viewModel.sendingStatement.observe(viewLifecycleOwner, Observer { binding.sending = it })
         viewModel.messages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
-        viewModel.statementSentSignal.observe(viewLifecycleOwner, EventObserver {
-            parentFragmentManager.popBackStack()
-        })
+        viewModel.statementSentSignal.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                parentFragmentManager.popBackStack()
+            }
+        )
         binding.up.setOnClickListener { parentFragmentManager.popBackStack() }
-        viewModel.getMeProfile().observe(viewLifecycleOwner, Observer {
-            binding.student = it.data
-        })
+        viewModel.getMeProfile().observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.student = it.data
+            }
+        )
     }
 
     private fun updateLabelTypeOnCheck(checked: Boolean) {

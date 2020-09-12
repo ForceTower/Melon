@@ -21,21 +21,24 @@
 package com.forcetower.uefs.feature.schedule
 
 import android.view.View
-import androidx.lifecycle.*
+import androidx.hilt.lifecycle.ViewModelInject
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.ScheduleRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
-class ScheduleViewModel @Inject constructor(
+class ScheduleViewModel @ViewModelInject constructor(
     repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository,
     private val snowpiercerSyncRepository: SnowpiercerSyncRepository

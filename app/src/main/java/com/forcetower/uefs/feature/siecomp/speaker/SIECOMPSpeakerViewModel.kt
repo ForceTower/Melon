@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.siecomp.speaker
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -29,9 +30,8 @@ import com.forcetower.uefs.core.storage.repository.SIECOMPRepository
 import com.forcetower.uefs.feature.shared.extensions.map
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import timber.log.Timber
-import javax.inject.Inject
 
-class SIECOMPSpeakerViewModel @Inject constructor(
+class SIECOMPSpeakerViewModel @ViewModelInject constructor(
     private val repository: SIECOMPRepository
 ) : ViewModel() {
     var uriString: String? = null

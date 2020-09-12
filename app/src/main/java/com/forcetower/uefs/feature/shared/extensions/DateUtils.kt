@@ -52,7 +52,7 @@ fun getTimeStampedDate(view: TextView, time: Long) {
         }
         else -> {
             val hours = TimeUnit.HOURS.convert(diff, TimeUnit.MILLISECONDS)
-            val minutes = TimeUnit.MINUTES.convert(diff - (hours*oneHor), TimeUnit.MILLISECONDS)
+            val minutes = TimeUnit.MINUTES.convert(diff - (hours * oneHor), TimeUnit.MILLISECONDS)
             val str = hours.toString() + "h " + minutes + "min"
             context.getString(R.string.message_received_date_ago_format, str)
         }

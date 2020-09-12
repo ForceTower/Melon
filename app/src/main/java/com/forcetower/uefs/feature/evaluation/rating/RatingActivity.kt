@@ -23,6 +23,7 @@ package com.forcetower.uefs.feature.evaluation.rating
 import android.os.Bundle
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
@@ -30,22 +31,15 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.ActivityEvaluationRatingBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class RatingActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    private lateinit var viewModel: EvaluationRatingViewModel
+@AndroidEntryPoint
+class RatingActivity : UActivity() {
+    private val viewModel: EvaluationRatingViewModel by viewModels()
     private lateinit var binding: ActivityEvaluationRatingBinding
     private lateinit var adapter: FragmentAdapter
     private val args by navArgs<RatingActivityArgs>()
@@ -55,7 +49,6 @@ class RatingActivity : UActivity(), HasAndroidInjector {
         ThemeOverlayUtils.applyThemeOverlays(this, intArrayOf(R.id.theme_feature_background_color))
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation_rating)
-        viewModel = provideViewModel(factory)
         adapter = FragmentAdapter(supportFragmentManager)
         binding.viewPager.adapter = adapter
 
@@ -69,15 +62,18 @@ class RatingActivity : UActivity(), HasAndroidInjector {
             viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
         }
 
-        viewModel.nextQuestion.observe(this, EventObserver {
-            val position = binding.viewPager.currentItem
-            val size = currentData?.size ?: 0
-            if (position + 1 >= size) {
-                finish()
-            } else {
-                binding.viewPager.setCurrentItem(position + 1, true)
+        viewModel.nextQuestion.observe(
+            this,
+            EventObserver {
+                val position = binding.viewPager.currentItem
+                val size = currentData?.size ?: 0
+                if (position + 1 >= size) {
+                    finish()
+                } else {
+                    binding.viewPager.setCurrentItem(position + 1, true)
+                }
             }
-        })
+        )
     }
 
     private fun useResponse(resource: Resource<List<Question>>) {
@@ -100,5 +96,4 @@ class RatingActivity : UActivity(), HasAndroidInjector {
     }
 
     override fun shouldApplyThemeOverlay() = false
-    override fun androidInjector() = fragmentInjector
 }

@@ -53,18 +53,18 @@ class FeedbackRepository @Inject constructor(
         executors.diskIO().execute {
             val userId = firebaseAuth.currentUser?.uid
             val access = database.accessDao().getAccessDirect()
-                    ?: Access(username = "random", password = "user")
+                ?: Access(username = "random", password = "user")
             val profile = database.profileDao().selectMeDirect()
             val feedback = Feedback(
-                    text = text,
-                    username = access.username,
-                    course = profile?.course,
-                    email = profile?.email,
-                    hash = access.toString().toBase64(),
-                    firebaseId = userId,
-                    manufacturer = Build.MANUFACTURER,
-                    deviceModel = Build.MODEL,
-                    android = Build.VERSION.SDK_INT
+                text = text,
+                username = access.username,
+                course = profile?.course,
+                email = profile?.email,
+                hash = access.toString().toBase64(),
+                firebaseId = userId,
+                manufacturer = Build.MANUFACTURER,
+                deviceModel = Build.MODEL,
+                android = Build.VERSION.SDK_INT
             )
             var token: String? = null
             try {

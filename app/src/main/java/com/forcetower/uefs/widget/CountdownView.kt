@@ -29,9 +29,9 @@ import androidx.core.view.postDelayed
 import com.airbnb.lottie.LottieAnimationView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import org.threeten.bp.Duration
-import org.threeten.bp.ZonedDateTime
 import timber.log.Timber
+import java.time.Duration
+import java.time.ZonedDateTime
 import kotlin.properties.ObservableProperty
 import kotlin.reflect.KProperty
 

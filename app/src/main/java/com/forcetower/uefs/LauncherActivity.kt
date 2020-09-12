@@ -23,18 +23,16 @@ package com.forcetower.uefs
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import com.forcetower.uefs.core.vm.Destination
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.LaunchViewModel
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -43,11 +41,8 @@ import javax.inject.Inject
  * - Login -> caso o usuário não esteja conectado [Não existe usuário + senha no aplicativo]
  * - Home  -> caso o usuário esteja conectado
  */
-class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class LauncherActivity : AppCompatActivity() {
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject
@@ -55,7 +50,7 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: LaunchViewModel = provideViewModel(factory)
+        val viewModel: LaunchViewModel by viewModels()
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
@@ -68,18 +63,21 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
         //        finish()
         //        return
 
-        viewModel.direction.observe(this, EventObserver {
-            Timber.d("Once!")
-            // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-            if (!viewModel.started) {
-                when (it) {
-                    Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                    Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+        viewModel.direction.observe(
+            this,
+            EventObserver {
+                Timber.d("Once!")
+                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
+                if (!viewModel.started) {
+                    when (it) {
+                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+                    }
+                    viewModel.started = true
+                    finish()
                 }
-                viewModel.started = true
-                finish()
             }
-        })
+        )
     }
 
     private fun createNewVersionNotification() {
@@ -93,6 +91,4 @@ class LauncherActivity : AppCompatActivity(), HasAndroidInjector {
             preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
         }
     }
-
-    override fun androidInjector() = fragmentInjector
 }
