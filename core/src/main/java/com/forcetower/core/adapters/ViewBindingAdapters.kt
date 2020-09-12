@@ -125,7 +125,7 @@ fun applySystemWindows(
     applyBottom: Boolean
 ) {
     view.doOnApplyWindowInsets { _, insets, padding ->
-        val ins = insets.getInsets(WindowInsets.Type.systemBars())
+        val ins = insets.getInsets(WindowInsetsCompat.Type.systemBars())
         val left = if (applyLeft) ins.left else 0
         val top = if (applyTop) ins.top else 0
         val right = if (applyRight) ins.right else 0
