@@ -26,15 +26,22 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.RippleDrawable
+import android.os.Build
 import android.text.TextPaint
 import android.util.DisplayMetrics
 import android.util.Property
 import android.util.TypedValue
 import android.view.View
+import android.view.Window
 import android.view.WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
 import androidx.annotation.AttrRes
 import androidx.annotation.ColorInt
 import androidx.annotation.FloatRange
+import androidx.core.os.BuildCompat
+import androidx.core.view.ViewCompat
+import androidx.core.view.ViewConfigurationCompat
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.palette.graphics.Palette
 import com.forcetower.core.utils.ColorUtils.modifyAlpha
 
@@ -83,14 +90,28 @@ object ViewUtils {
         return color
     }
 
+    @Suppress("DEPRECATION")
     @JvmStatic
     fun setLightStatusBar(view: View) {
-        view.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
+        if (BuildCompat.isAtLeastR()) {
+            view.windowInsetsController?.setSystemBarsAppearance(APPEARANCE_LIGHT_STATUS_BARS, APPEARANCE_LIGHT_STATUS_BARS)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var flags: Int = view.systemUiVisibility
+            flags = flags or View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+            view.systemUiVisibility = flags
+        }
     }
 
+    @Suppress("DEPRECATION")
     @JvmStatic
     fun setDarkStatusBar(view: View) {
-        view.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+        if (BuildCompat.isAtLeastR()) {
+            view.windowInsetsController?.setSystemBarsAppearance(0, APPEARANCE_LIGHT_STATUS_BARS)
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            var flags: Int = view.systemUiVisibility
+            flags = flags and (View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR).inv()
+            view.systemUiVisibility = flags
+        }
     }
 
     fun createRipple(
