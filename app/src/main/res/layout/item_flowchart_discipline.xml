@@ -50,22 +50,23 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="56dp" />
+                app:layout_constraintGuide_begin="48dp" />
 
             <androidx.constraintlayout.widget.Guideline
                 android:id="@+id/guideline_department"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                app:layout_constraintGuide_begin="120dp" />
+                app:layout_constraintGuide_begin="112dp" />
 
             <TextView
                 android:id="@+id/text_class_name"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:textColor="?attr/colorPrimary"
                 android:text="@{WordUtils.toTitleCase(discipline.name)}"
                 android:textSize="16sp"
+                app:disciplineFlowchartColorCompleted="@{discipline.completed}"
+                app:disciplineFlowchartColorParticipate="@{discipline.participating}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -93,25 +94,41 @@
                 app:layout_constraintTop_toBottomOf="@+id/divider_class"
                 tools:text="TEC517" />
 
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/hours_barrier"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="guideline_start,text_discipline_code"/>
+
             <TextView
                 android:id="@+id/text_discipline_hours"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 android:text="@{@string/flowchart_discipline_hours_amount(discipline.credits)}"
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
-                app:layout_constraintStart_toStartOf="@+id/guideline_start"
+                app:layout_constraintStart_toStartOf="@+id/hours_barrier"
                 tools:text="60 horas" />
+
+            <androidx.constraintlayout.widget.Barrier
+                android:id="@+id/barrier_department"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:barrierDirection="end"
+                app:constraint_referenced_ids="text_discipline_hours,guideline_department" />
 
             <TextView
                 android:id="@+id/text_discipline_department"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
                 app:departmentStrip="@{discipline.department}"
                 android:textSize="14sp"
                 android:textColor="?attr/colorOnSurfaceLight"
-                app:layout_constraintStart_toStartOf="@+id/guideline_department"
+                app:layout_constraintStart_toStartOf="@+id/barrier_department"
                 app:layout_constraintBaseline_toBaselineOf="@+id/text_discipline_code"
                 tools:text="Tecnologia" />
 

@@ -21,11 +21,12 @@
 package dev.forcetower.conference
 
 import android.os.Bundle
-import android.view.View
+import androidx.core.view.WindowCompat
 import androidx.databinding.DataBindingUtil
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependencies
 import com.forcetower.uefs.feature.shared.UActivity
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.conference.core.injection.DaggerConferenceComponent
 import dev.forcetower.conference.databinding.ActivityConferenceBinding
 
@@ -34,12 +35,20 @@ class ConferenceActivity : UActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val component = (applicationContext as UApplication).component
-        DaggerConferenceComponent.builder().appComponent(component).build().inject(this)
+
+        DaggerConferenceComponent.builder()
+            .context(this)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    ConferenceModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conference)
-        binding.root.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-                View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-                View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+        WindowCompat.setDecorFitsSystemWindows(window, false)
     }
 
     override fun showSnack(string: String, duration: Int) {

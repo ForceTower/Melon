@@ -25,22 +25,18 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogAdventureSignInBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class AdventureSignInDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: AdventureViewModel
+@AndroidEntryPoint
+class AdventureSignInDialog : RoundedDialog() {
+    private val viewModel: AdventureViewModel by activityViewModels()
     private lateinit var binding: DialogAdventureSignInBinding
     private var activity: UGameActivity? = null
 
@@ -51,7 +47,6 @@ class AdventureSignInDialog : RoundedDialog(), Injectable {
     }
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return DialogAdventureSignInBinding.inflate(inflater, container, false).apply {
             interactor = viewModel
             lifecycleOwner = this@AdventureSignInDialog
@@ -61,10 +56,13 @@ class AdventureSignInDialog : RoundedDialog(), Injectable {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.start.observe(viewLifecycleOwner, EventObserver {
-            dismiss()
-            activity?.signIn()
-        })
+        viewModel.start.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                dismiss()
+                activity?.signIn()
+            }
+        )
         binding.btnCancel.setOnClickListener {
             dismiss()
             findNavController().popBackStack()

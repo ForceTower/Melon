@@ -25,9 +25,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(indices = [
-    Index(value = ["name"])
-])
+@Entity(
+    indices = [
+        Index(value = ["name"])
+    ]
+)
 data class SStudent(
     @PrimaryKey(autoGenerate = false)
     @SerializedName("student_id")

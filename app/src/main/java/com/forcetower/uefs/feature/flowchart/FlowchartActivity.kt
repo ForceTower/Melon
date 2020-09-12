@@ -29,13 +29,10 @@ import com.forcetower.uefs.databinding.ActivityFlowchartBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class FlowchartActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
+@AndroidEntryPoint
+class FlowchartActivity : UActivity() {
     private lateinit var binding: ActivityFlowchartBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,6 +51,4 @@ class FlowchartActivity : UActivity(), HasAndroidInjector {
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.flowchart_nav_host).navigateUp()
-
-    override fun androidInjector() = fragmentInjector
 }

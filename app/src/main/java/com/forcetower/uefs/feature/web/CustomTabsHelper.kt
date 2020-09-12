@@ -90,8 +90,9 @@ object CustomTabsHelper {
         } else if (packagesSupportingCustomTabs.size == 1) {
             sPackageNameToUse = packagesSupportingCustomTabs[0]
         } else if (!TextUtils.isEmpty(defaultViewHandlerPackageName) &&
-                !hasSpecializedHandlerIntents(context, activityIntent) &&
-                packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)) {
+            !hasSpecializedHandlerIntents(context, activityIntent) &&
+            packagesSupportingCustomTabs.contains(defaultViewHandlerPackageName)
+        ) {
             sPackageNameToUse = defaultViewHandlerPackageName
         } else if (packagesSupportingCustomTabs.contains(STABLE_PACKAGE)) {
             sPackageNameToUse = STABLE_PACKAGE
@@ -114,8 +115,9 @@ object CustomTabsHelper {
         try {
             val pm = context.packageManager
             val handlers = pm.queryIntentActivities(
-                    intent,
-                    PackageManager.GET_RESOLVED_FILTER)
+                intent,
+                PackageManager.GET_RESOLVED_FILTER
+            )
             if (handlers.size == 0) {
                 return false
             }

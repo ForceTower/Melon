@@ -32,14 +32,10 @@ import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
 import com.forcetower.uefs.widget.ElasticDragDismissFrameLayout
-import dagger.android.DispatchingAndroidInjector
-import dagger.android.HasAndroidInjector
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class AboutActivity : UActivity(), HasAndroidInjector {
-    @Inject
-    lateinit var fragmentInjector: DispatchingAndroidInjector<Any>
-
+@AndroidEntryPoint
+class AboutActivity : UActivity() {
     private lateinit var binding: ActivityAboutBinding
     private val adapter: FragmentAdapter by lazy { FragmentAdapter(supportFragmentManager) }
 
@@ -50,15 +46,17 @@ class AboutActivity : UActivity(), HasAndroidInjector {
             binding = it
         }
 
-        binding.draggableFrame.addListener(object : ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
-            override fun onDragDismissed() {
-                if (binding.draggableFrame.translationY > 0) {
-                    window.returnTransition = TransitionInflater.from(this@AboutActivity)
+        binding.draggableFrame.addListener(
+            object : ElasticDragDismissFrameLayout.ElasticDragDismissCallback() {
+                override fun onDragDismissed() {
+                    if (binding.draggableFrame.translationY > 0) {
+                        window.returnTransition = TransitionInflater.from(this@AboutActivity)
                             .inflateTransition(R.transition.about_return_downward)
+                    }
+                    finishAfterTransition()
                 }
-                finishAfterTransition()
             }
-        })
+        )
 
         setupPager()
     }
@@ -71,8 +69,6 @@ class AboutActivity : UActivity(), HasAndroidInjector {
         binding.viewPager.adapter = adapter
         binding.indicator.setViewPager(binding.viewPager)
     }
-
-    override fun androidInjector() = fragmentInjector
 
     override fun shouldApplyThemeOverlay() = false
 

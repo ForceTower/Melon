@@ -27,16 +27,19 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
-import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.google.firebase.remoteconfig.FirebaseRemoteConfigSettings
+import com.google.firebase.storage.FirebaseStorage
 import dagger.Module
 import dagger.Provides
 import dagger.Reusable
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import timber.log.Timber
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object FirebaseCoreModule {
     @Provides
     @Singleton
@@ -59,9 +62,9 @@ object FirebaseCoreModule {
     fun provideRemoteConfig(): FirebaseRemoteConfig {
         val config = FirebaseRemoteConfig.getInstance()
         val settings = FirebaseRemoteConfigSettings.Builder()
-                .setMinimumFetchIntervalInSeconds(REMOTE_CONFIG_REFRESH)
-                .setFetchTimeoutInSeconds(REMOTE_CONFIG_REFRESH)
-                .build()
+            .setMinimumFetchIntervalInSeconds(REMOTE_CONFIG_REFRESH)
+            .setFetchTimeoutInSeconds(REMOTE_CONFIG_REFRESH)
+            .build()
 
         config.setConfigSettingsAsync(settings)
         config.setDefaultsAsync(R.xml.remote_config_defaults)

@@ -31,15 +31,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import dagger.hilt.android.AndroidEntryPoint
 
-class AboutMeFragment : UFragment(), Injectable {
+@AndroidEntryPoint
+class AboutMeFragment : UFragment() {
     private lateinit var binding: FragmentAboutMeBinding
     private val markdown: Bypass by lazy { Bypass(requireContext(), Bypass.Options()) }
 

@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.servicesfollowup
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -30,9 +31,8 @@ import com.forcetower.uefs.core.storage.repository.ServicesFollowUpRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
-import javax.inject.Inject
 
-class ServicesFollowUpViewModel @Inject constructor(
+class ServicesFollowUpViewModel @ViewModelInject constructor(
     private val repository: ServicesFollowUpRepository
 ) : ViewModel() {
 

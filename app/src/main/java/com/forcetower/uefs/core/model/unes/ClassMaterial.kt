@@ -31,18 +31,21 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMaterialLink
 import java.util.UUID
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = CASCADE, onUpdate = CASCADE),
-    ForeignKey(entity = ClassItem::class, parentColumns = ["uid"], childColumns = ["class_item_id"], onDelete = SET_NULL, onUpdate = CASCADE)
-], indices = [
-    Index(value = ["name"], unique = false),
-    Index(value = ["link"], unique = false),
-    Index(value = ["group_id"], unique = false),
-    Index(value = ["class_item_id"], unique = false),
-    Index(value = ["uuid"], unique = true),
-    Index(value = ["is_new"], unique = false),
-    Index(value = ["name", "link", "group_id"], unique = true)
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = CASCADE, onUpdate = CASCADE),
+        ForeignKey(entity = ClassItem::class, parentColumns = ["uid"], childColumns = ["class_item_id"], onDelete = SET_NULL, onUpdate = CASCADE)
+    ],
+    indices = [
+        Index(value = ["name"], unique = false),
+        Index(value = ["link"], unique = false),
+        Index(value = ["group_id"], unique = false),
+        Index(value = ["class_item_id"], unique = false),
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["is_new"], unique = false),
+        Index(value = ["name", "link", "group_id"], unique = true)
+    ]
+)
 data class ClassMaterial(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

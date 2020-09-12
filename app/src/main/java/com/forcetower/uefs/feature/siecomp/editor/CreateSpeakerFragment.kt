@@ -25,23 +25,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.siecomp.Speaker
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentEventEdtCrtSpeakerBinding
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.siecomp.speaker.SIECOMPSpeakerViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class CreateSpeakerFragment : ImagePickerFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class CreateSpeakerFragment : ImagePickerFragment() {
+    private val viewModel: SIECOMPSpeakerViewModel by viewModels()
     private lateinit var binding: FragmentEventEdtCrtSpeakerBinding
-    private lateinit var viewModel: SIECOMPSpeakerViewModel
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentEventEdtCrtSpeakerBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -51,10 +47,13 @@ class CreateSpeakerFragment : ImagePickerFragment(), Injectable {
         val uuid = arguments?.getString(SPEAKER_UUID) ?: ""
         val id = arguments?.getLong(SPEAKER_ID)
         viewModel.setSpeakerId(id)
-        viewModel.speaker.observe(viewLifecycleOwner, Observer {
-            binding.speaker = it
-            binding.executePendingBindings()
-        })
+        viewModel.speaker.observe(
+            viewLifecycleOwner,
+            Observer {
+                binding.speaker = it
+                binding.executePendingBindings()
+            }
+        )
 
         binding.imageUserPicture.setOnClickListener {
             pickImage()

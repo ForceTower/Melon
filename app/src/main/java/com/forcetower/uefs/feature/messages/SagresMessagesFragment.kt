@@ -25,21 +25,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSagresMessagesBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class SagresMessagesFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var vmFactory: UViewModelFactory
-
+@AndroidEntryPoint
+class SagresMessagesFragment : UFragment() {
     init { displayName = "Sagres" }
 
     private lateinit var binding: FragmentSagresMessagesBinding
-    private val viewModel: MessagesViewModel by activityViewModels { vmFactory }
+    private val viewModel: MessagesViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentSagresMessagesBinding.inflate(inflater, container, false).also {

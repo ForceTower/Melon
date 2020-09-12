@@ -27,10 +27,13 @@ import com.forcetower.uefs.core.effects.purchases.ScoreIncreaseEffect
 import com.forcetower.uefs.core.effects.purchases.SubscriptionEffect
 import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ApplicationComponent
 import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
+@InstallIn(ApplicationComponent::class)
 object PurchaseModule {
     @Named("scoreIncreaseEffect")
     @Provides

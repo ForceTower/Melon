@@ -24,9 +24,11 @@ import androidx.room.Entity
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(indices = [
-    Index("link", unique = true)
-])
+@Entity(
+    indices = [
+        Index("link", unique = true)
+    ]
+)
 data class Announcement(
     @PrimaryKey(autoGenerate = true)
     val id: Int,

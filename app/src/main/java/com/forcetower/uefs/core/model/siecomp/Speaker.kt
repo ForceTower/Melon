@@ -25,9 +25,11 @@ import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class Speaker(
     @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)

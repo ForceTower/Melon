@@ -230,7 +230,7 @@ object NotificationCreator {
         val message = context.getString(R.string.access_invalidated_notification_message)
 
         val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, title, message, null)
-                .setColor(ContextCompat.getColor(context, R.color.red))
+            .setColor(ContextCompat.getColor(context, R.color.red))
         showNotification(context, message.hashCode().toLong(), builder)
     }
 
@@ -287,18 +287,18 @@ object NotificationCreator {
 
     fun disciplineDetailsLoadNotification(context: Context): NotificationCompat.Builder {
         return notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_COMMON_LOW_ID, false)
-                .setOngoing(true)
-                .setContentTitle(context.getString(R.string.downloading_discipline_details))
-                .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
-                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .setOngoing(true)
+            .setContentTitle(context.getString(R.string.downloading_discipline_details))
+            .setPriority(NotificationManagerCompat.IMPORTANCE_LOW)
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
     }
 
     fun showDemandOpenNotification(context: Context) {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
-                .setContentTitle(context.getString(R.string.demand_open_title))
-                .setContentText(context.getString(R.string.demand_open_text))
-                .setColor(ContextCompat.getColor(context, R.color.teal))
-                .setContentIntent(createDemandIntent(context))
+            .setContentTitle(context.getString(R.string.demand_open_title))
+            .setContentText(context.getString(R.string.demand_open_text))
+            .setColor(ContextCompat.getColor(context, R.color.teal))
+            .setContentIntent(createDemandIntent(context))
 
         addOptions(context, builder)
         showNotification(context, 7690, builder)
@@ -306,10 +306,10 @@ object NotificationCreator {
 
     fun createCompletedDisciplineLoadNotification(context: Context) {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
-                .setContentTitle(context.getString(R.string.discipline_load_all_completed))
-                .setContentText(context.getString(R.string.discipline_load_all_completed_info))
-                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
-                // .setContentIntent(createHourglassIntent(context))
+            .setContentTitle(context.getString(R.string.discipline_load_all_completed))
+            .setContentText(context.getString(R.string.discipline_load_all_completed_info))
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+        // .setContentIntent(createHourglassIntent(context))
 
         addOptions(context, builder)
         showNotification(context, 7569, builder)
@@ -317,9 +317,9 @@ object NotificationCreator {
 
     fun createFailedWarningNotification(context: Context, title: String, message: String) {
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_WARNINGS_ID, true)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setColor(ContextCompat.getColor(context, R.color.blue_accent))
+            .setContentTitle(title)
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.blue_accent))
 
         addOptions(context, builder)
         showNotification(context, 7570, builder)
@@ -341,10 +341,10 @@ object NotificationCreator {
         }
 
         val builder = notificationBuilder(context, channel)
-                .setContentTitle(title)
-                .setContentText(message)
-                .setColor(ContextCompat.getColor(context, R.color.teal))
-                .setContentIntent(createDirectionsIntent(context, HomeActivity.EXTRA_REQUEST_SERVICE_DIRECTION))
+            .setContentTitle(title)
+            .setContentText(message)
+            .setColor(ContextCompat.getColor(context, R.color.teal))
+            .setContentIntent(createDirectionsIntent(context, HomeActivity.EXTRA_REQUEST_SERVICE_DIRECTION))
 
         addOptions(context, builder)
         showNotification(context, service.uid + message.hashCode(), builder)
@@ -356,11 +356,11 @@ object NotificationCreator {
         val title = it.material.name
         val content = context.getString(R.string.material_posted_ntf_content, title, discipline)
         val builder = notificationBuilder(context, NotificationHelper.CHANNEL_DISCIPLINE_MATERIAL_POSTED)
-                .setContentTitle(context.getString(R.string.material_posted_ntf_title))
-                .setContentText(content)
-                .setStyle(createBigText(content))
-                .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
-                .setContentIntent(createDisciplineDetailsIntent(context, it.group.group))
+            .setContentTitle(context.getString(R.string.material_posted_ntf_title))
+            .setContentText(content)
+            .setStyle(createBigText(content))
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
+            .setContentIntent(createDisciplineDetailsIntent(context, it.group.group))
 
         addOptions(context, builder)
         showNotification(context, it.material.uid, builder)
@@ -458,9 +458,9 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(ctx)
-                .addParentStack(HomeActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun createDemandIntent(ctx: Context): PendingIntent {
@@ -469,9 +469,9 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(ctx)
-                .addParentStack(HomeActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     private fun createDisciplineDetailsIntent(context: Context, classGroup: ClassGroup?): PendingIntent? {
@@ -483,9 +483,9 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(context)
-                .addParentStack(DisciplineDetailsActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .addParentStack(DisciplineDetailsActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
 //    private fun createHourglassIntent(ctx: Context): PendingIntent {
@@ -512,9 +512,9 @@ object NotificationCreator {
         }
 
         return TaskStackBuilder.create(ctx)
-                .addParentStack(HomeActivity::class.java)
-                .addNextIntent(intent)
-                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .addParentStack(HomeActivity::class.java)
+            .addNextIntent(intent)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
     fun shouldShowNotification(value: String, context: Context, default: Boolean = true): Boolean {

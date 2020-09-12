@@ -20,13 +20,13 @@
 
 package com.forcetower.uefs.feature.calendar
 
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.storage.repository.AcademicCalendarRepository
-import javax.inject.Inject
 
-class AcademicCalendarViewModel @Inject constructor(
+class AcademicCalendarViewModel @ViewModelInject constructor(
     private val repository: AcademicCalendarRepository
 ) : ViewModel() {
 

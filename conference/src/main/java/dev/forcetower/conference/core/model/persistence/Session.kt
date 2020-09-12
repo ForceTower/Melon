@@ -25,11 +25,13 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.Ignore
 import androidx.room.PrimaryKey
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
-@Entity(foreignKeys = [
-    ForeignKey(entity = ConferenceDay::class, parentColumns = ["id"], childColumns = ["dayId"])
-])
+@Entity(
+    foreignKeys = [
+        ForeignKey(entity = ConferenceDay::class, parentColumns = ["id"], childColumns = ["dayId"])
+    ]
+)
 data class Session(
     @PrimaryKey(autoGenerate = false)
     val id: String,

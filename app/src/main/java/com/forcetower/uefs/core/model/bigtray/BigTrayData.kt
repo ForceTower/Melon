@@ -117,11 +117,15 @@ fun BigTrayData.percentage(): Float {
         val amount = quota.toFloat()
         val type = getNextMealType()
 
-        return clamp(amount / when (type) {
-            BigTrayData.LUNCH -> 1450
-            BigTrayData.DINNER -> 490
-            else -> 320
-        }, 0f, 1f) * 100
+        return clamp(
+            amount / when (type) {
+                BigTrayData.LUNCH -> 1450
+                BigTrayData.DINNER -> 490
+                else -> 320
+            },
+            0f,
+            1f
+        ) * 100
     } catch (e: Exception) {
         Timber.d(e.message)
     }

@@ -21,12 +21,12 @@
 package com.forcetower.uefs.feature.disciplines
 
 import android.view.View
+import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
@@ -43,12 +43,10 @@ import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesActions
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 import javax.inject.Named
 
-class DisciplineViewModel @Inject constructor(
+class DisciplineViewModel @ViewModelInject constructor(
     private val repository: DisciplinesRepository,
     private val grades: SagresGradesRepository,
     private val detailsRepository: DisciplineDetailsRepository,

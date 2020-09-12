@@ -89,11 +89,13 @@ class StaggeredDistanceSlide : Visibility {
         view.translationY = startTranslationY
         val ancestralClipping = TransitionUtils.setAncestralClipping(view, false)
         val transition = ObjectAnimator.ofFloat(view, View.TRANSLATION_Y, endTranslationY)
-        transition.addListener(object : AnimatorListenerAdapter() {
-            override fun onAnimationEnd(animation: Animator) {
-                TransitionUtils.restoreAncestralClipping(view, ancestralClipping.toMutableList())
+        transition.addListener(
+            object : AnimatorListenerAdapter() {
+                override fun onAnimationEnd(animation: Animator) {
+                    TransitionUtils.restoreAncestralClipping(view, ancestralClipping.toMutableList())
+                }
             }
-        })
+        )
         return transition
     }
 

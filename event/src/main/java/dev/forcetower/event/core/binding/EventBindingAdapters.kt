@@ -24,8 +24,8 @@ import android.view.View
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import dev.forcetower.event.R
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 @BindingAdapter("formattedDate")

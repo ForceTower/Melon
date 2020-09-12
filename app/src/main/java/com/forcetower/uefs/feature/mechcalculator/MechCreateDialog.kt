@@ -24,23 +24,19 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogCreateMechValueBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class MechCreateDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: MechanicalViewModel
-    lateinit var binding: DialogCreateMechValueBinding
+@AndroidEntryPoint
+class MechCreateDialog : RoundedDialog() {
+    private val viewModel: MechanicalViewModel by activityViewModels()
+    private lateinit var binding: DialogCreateMechValueBinding
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return DialogCreateMechValueBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

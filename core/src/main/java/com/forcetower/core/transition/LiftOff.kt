@@ -67,8 +67,10 @@ class LiftOff(context: Context, attrs: AttributeSet?) : Transition(context, attr
         endValues: TransitionValues
     ): Animator {
         return ObjectAnimator.ofFloat(
-            endValues.view, View.TRANSLATION_Z,
-            initialElevation, finalElevation
+            endValues.view,
+            View.TRANSLATION_Z,
+            initialElevation,
+            finalElevation
         )
     }
 

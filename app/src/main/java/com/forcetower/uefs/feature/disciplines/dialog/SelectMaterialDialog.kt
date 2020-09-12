@@ -24,20 +24,17 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectClassMaterialBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class SelectMaterialDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: DisciplineViewModel
+@AndroidEntryPoint
+class SelectMaterialDialog : RoundedDialog() {
+    private val viewModel: DisciplineViewModel by activityViewModels()
     private lateinit var binding: DialogSelectClassMaterialBinding
     private lateinit var adapter: SelectMaterialAdapter
 
@@ -46,7 +43,6 @@ class SelectMaterialDialog : RoundedDialog(), Injectable {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewModel = provideActivityViewModel(factory)
         adapter = SelectMaterialAdapter(viewModel)
         return DialogSelectClassMaterialBinding.inflate(inflater, container, false).also {
             binding = it
@@ -58,9 +54,12 @@ class SelectMaterialDialog : RoundedDialog(), Injectable {
         super.onViewCreated(view, savedInstanceState)
         val classId = requireNotNull(arguments).getLong("class_id")
         Timber.d("Class id selected: $classId")
-        viewModel.getMaterialsFromClassItem(classId).observe(viewLifecycleOwner, Observer {
-            Timber.d("The list size: ${it.size}")
-            adapter.submitList(it)
-        })
+        viewModel.getMaterialsFromClassItem(classId).observe(
+            viewLifecycleOwner,
+            Observer {
+                Timber.d("The list size: ${it.size}")
+                adapter.submitList(it)
+            }
+        )
     }
 }
