@@ -21,14 +21,14 @@
 package com.forcetower.uefs.feature.home
 
 import android.content.ActivityNotFoundException
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.databinding.DialogInvalidInstallBinding
-import android.content.Intent
-import android.net.Uri
+import com.forcetower.uefs.feature.shared.RoundedDialog
 
 class InvalidInstallDialog : RoundedDialog() {
     private lateinit var binding: DialogInvalidInstallBinding

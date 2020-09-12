@@ -27,23 +27,33 @@ import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
-import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.work.enqueueUnique
+import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.core.repository.EventRepository
 import timber.log.Timber
 import javax.inject.Inject
 
 class CreateEventWorker(
-    context: Context,
+    private val context: Context,
     params: WorkerParameters
 ) : CoroutineWorker(context, params) {
     @Inject
     lateinit var repository: EventRepository
 
     override suspend fun doWork(): Result {
-        val component = (applicationContext as UApplication).component
-        DaggerEventComponent.builder().appComponent(component).build().inject(this)
+        DaggerEventComponent.builder()
+            .context(context)
+            .dependencies(
+                EntryPointAccessors.fromApplication(
+                    applicationContext,
+                    EventModuleDependencies::class.java
+                )
+            )
+            .build()
+            .inject(this)
+
         val eventId = inputData.getLong(EVENT_ID, 0)
         if (eventId == 0L) return Result.failure()
 

@@ -25,9 +25,9 @@ import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import org.threeten.bp.Duration
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
+import java.time.Duration
+import java.time.ZoneId
+import java.time.ZonedDateTime
 
 @BindingAdapter(value = ["sessionStart", "sessionEnd", "sessionRoom", "timeZoneId"], requireAll = true)
 fun sessionDurationLocation(
@@ -42,8 +42,9 @@ fun sessionDurationLocation(
     val localEndTime = TimeUtils.zonedTime(endTime, finalTimeZoneId)
 
     textView.text = textView.context.getString(
-            R.string.event_session_duration_location,
-            durationString(textView.context, Duration.between(startTime, endTime)), room
+        R.string.event_session_duration_location,
+        durationString(textView.context, Duration.between(startTime, endTime)),
+        room
     )
 
     textView.contentDescription = fullDateTime(localStartTime, localEndTime, textView, room)

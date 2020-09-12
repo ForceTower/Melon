@@ -43,22 +43,22 @@ class OverviewAdapter(
     private val viewModel: DisciplineViewModel
 ) : RecyclerView.Adapter<OverviewHolder>() {
     var currentClazz: ClassFullWithGroup? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(clazz = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(clazz = value))
+        }
 
     var currentGroup: ClassGroup? = null
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(group = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(group = value))
+        }
 
     var currentSchedule = listOf<ClassLocation>()
-    set(value) {
-        field = value
-        differ.submitList(buildMergedList(schedule = value))
-    }
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(schedule = value))
+        }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): OverviewHolder {
         val inflater = parent.inflater()

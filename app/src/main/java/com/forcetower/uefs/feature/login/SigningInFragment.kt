@@ -32,6 +32,7 @@ import android.widget.TextView
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.Observer
 import androidx.navigation.ActivityNavigator
@@ -41,32 +42,29 @@ import androidx.navigation.fragment.navArgs
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.util.fromJson
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.nio.charset.Charset
 import javax.inject.Inject
 
-class SigningInFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class SigningInFragment : UFragment() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
     @Inject
     lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentSigningInBinding
-    private lateinit var viewModel: LoginViewModel
+    private val viewModel: LoginViewModel by viewModels()
     private lateinit var messages: Array<String>
 
     private val args by navArgs<SigningInFragmentArgs>()
@@ -132,7 +130,6 @@ class SigningInFragment : UFragment(), Injectable {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = provideViewModel(factory)
         viewModel.getLogin().observe(viewLifecycleOwner, Observer(this::onLoginProgress))
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
         viewModel.getStep(args.snowpiercer).observe(viewLifecycleOwner, Observer(this::onStep))
@@ -149,10 +146,13 @@ class SigningInFragment : UFragment(), Injectable {
         val position = (Math.random() * (messages.size - 1)).toInt()
         val message = messages[position]
         binding.textStatus.setText(message)
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                displayRandomText()
-        }, 3000)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    displayRandomText()
+            },
+            3000
+        )
     }
 
     private fun doLogin() {
@@ -176,7 +176,7 @@ class SigningInFragment : UFragment(), Injectable {
     }
 
     private fun onStep(step: LoginSagresRepository.Step) {
-        binding.contentLoading.setProgressWithAnimation(step.step.toFloat()*100 / step.count)
+        binding.contentLoading.setProgressWithAnimation(step.step.toFloat() * 100 / step.count)
     }
 
     private fun onLoginProgress(callback: Callback) {
@@ -221,18 +221,21 @@ class SigningInFragment : UFragment(), Injectable {
         viewModel.setConnected()
         val options = ActivityOptionsCompat.makeSceneTransitionAnimation(requireActivity(), binding.imageCenter, getString(R.string.user_image_transition))
         val extras = ActivityNavigator.Extras.Builder()
-                .setActivityOptions(options)
-                .build()
+            .setActivityOptions(options)
+            .build()
 
         binding.textHelloUser.fadeOut()
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                binding.textHelloUser.text = ""
-                findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
-                activity?.finishAfterTransition()
-            }
-        }, 1000)
+        Handler(Looper.getMainLooper()).postDelayed(
+            {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    binding.textHelloUser.text = ""
+                    findNavController().navigate(R.id.action_login_to_setup, null, null, extras)
+                    activity?.finishAfterTransition()
+                }
+            },
+            1000
+        )
     }
 
     private fun firebaseAuthListener() {

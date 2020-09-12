@@ -32,15 +32,18 @@ import dev.forcetower.conference.core.model.persistence.SessionTag
 import dev.forcetower.conference.core.model.persistence.Speaker
 import dev.forcetower.conference.core.model.persistence.Tag
 
-@Database(entities = [
-    Conference::class,
-    ConferenceDay::class,
-    Session::class,
-    Speaker::class,
-    Tag::class,
-    SessionSpeaker::class,
-    SessionTag::class
-], version = 1)
+@Database(
+    entities = [
+        Conference::class,
+        ConferenceDay::class,
+        Session::class,
+        Speaker::class,
+        Tag::class,
+        SessionSpeaker::class,
+        SessionTag::class
+    ],
+    version = 1
+)
 @TypeConverters(value = [Converters::class])
 abstract class ConferenceDB : RoomDatabase() {
     abstract fun sessions(): SessionDao

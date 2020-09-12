@@ -47,18 +47,22 @@ abstract class ClassDao {
     @Update
     abstract fun update(clazz: Class)
 
-    @Query("SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
+    @Query(
+        "SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
             "c.discipline_id = d.uid AND " +
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
-            "LOWER(d.code) = LOWER(:code)")
+            "LOWER(d.code) = LOWER(:code)"
+    )
     abstract fun getClassDirect(semester: String, code: String): Class?
 
-    @Query("SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
+    @Query(
+        "SELECT c.* FROM Class c, Semester s, Discipline d WHERE " +
             "c.discipline_id = d.uid AND " +
             "c.semester_id = s.uid AND " +
             "s.codename = :semester AND " +
-            "LOWER(d.code) = LOWER(:code)")
+            "LOWER(d.code) = LOWER(:code)"
+    )
     abstract fun getClass(semester: String, code: String): LiveData<Class?>
 
     @Transaction

@@ -26,11 +26,13 @@ import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
-import org.threeten.bp.ZonedDateTime
+import java.time.ZonedDateTime
 
-@Entity(indices = [
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class Session(
     @SerializedName(value = "uid", alternate = ["id"])
     @PrimaryKey(autoGenerate = true)

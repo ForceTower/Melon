@@ -27,25 +27,21 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentAeriMessagesBinding
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class AERIMessageFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
+@AndroidEntryPoint
+class AERIMessageFragment : UFragment() {
     init {
         displayName = "AERI"
     }
 
-    private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels { factory }
+    private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return FragmentAeriMessagesBinding.inflate(inflater, container, false).root
@@ -57,15 +53,18 @@ class AERIMessageFragment : UFragment(), Injectable {
             moveToAeriNews()
         } else {
             replaceFragment(AERINotInstalledFragment(), "aeri_not_installed")
-            dynamicFeatureViewModel.sessionState.observe(viewLifecycleOwner, EventObserver {
-                when (it.status()) {
-                    SplitInstallSessionStatus.INSTALLED -> moveToAeriNews()
-                    SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
-                        dynamicFeatureViewModel.requestUserConfirmation(it, requireActivity())
+            dynamicFeatureViewModel.sessionState.observe(
+                viewLifecycleOwner,
+                EventObserver {
+                    when (it.status()) {
+                        SplitInstallSessionStatus.INSTALLED -> moveToAeriNews()
+                        SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
+                            dynamicFeatureViewModel.requestUserConfirmation(it, requireActivity())
+                        }
+                        else -> Unit
                     }
-                    else -> Unit
                 }
-            })
+            )
         }
     }
 

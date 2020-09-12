@@ -27,23 +27,16 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.navigation.fragment.navArgs
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentFlowchartBinding
-import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class FlowchartFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
+@AndroidEntryPoint
+class FlowchartFragment : UFragment() {
     private lateinit var binding: FragmentFlowchartBinding
-    private lateinit var viewModel: FlowchartViewModel
     private val args by navArgs<FlowchartFragmentArgs>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentFlowchartBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

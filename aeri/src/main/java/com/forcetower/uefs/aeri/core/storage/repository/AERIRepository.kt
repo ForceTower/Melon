@@ -26,16 +26,18 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
-import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.google.android.play.core.splitcompat.SplitCompat
+import dagger.Reusable
 import dev.forcetower.oversee.Oversee
 import timber.log.Timber
 import javax.inject.Inject
 
+@Reusable
 class AERIRepository @Inject constructor(
     context: Context,
     private val database: AERIDatabase,

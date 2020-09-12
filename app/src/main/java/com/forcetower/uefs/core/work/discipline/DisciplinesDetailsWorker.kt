@@ -22,29 +22,28 @@ package com.forcetower.uefs.core.work.discipline
 
 import android.content.Context
 import androidx.annotation.WorkerThread
+import androidx.hilt.Assisted
+import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
-import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
-class DisciplinesDetailsWorker(
-    context: Context,
-    params: WorkerParameters
+class DisciplinesDetailsWorker @WorkerInject constructor(
+    @Assisted context: Context,
+    @Assisted params: WorkerParameters
 ) : Worker(context, params) {
-
     @Inject
     lateinit var repository: DisciplineDetailsRepository
 
     @WorkerThread
     override fun doWork(): Result {
-        (applicationContext as UApplication).component.inject(this)
         return try {
             repository.experimentalDisciplines(partialLoad = true, notify = false)
             Result.success()
@@ -59,14 +58,14 @@ class DisciplinesDetailsWorker(
 
         fun createWorker(context: Context) {
             val constraints = Constraints.Builder()
-                    .setRequiredNetworkType(NetworkType.CONNECTED)
-                    .build()
+                .setRequiredNetworkType(NetworkType.CONNECTED)
+                .build()
 
             val request = OneTimeWorkRequestBuilder<DisciplinesDetailsWorker>()
-                    .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
-                    .setConstraints(constraints)
-                    .addTag(TAG)
-                    .build()
+                .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, 1, TimeUnit.MINUTES)
+                .setConstraints(constraints)
+                .addTag(TAG)
+                .build()
 
             request.enqueueUnique(context, NAME, true)
         }

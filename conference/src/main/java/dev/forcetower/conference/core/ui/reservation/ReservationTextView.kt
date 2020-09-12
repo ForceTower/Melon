@@ -23,6 +23,7 @@ package dev.forcetower.conference.core.ui.reservation
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatTextView
+import androidx.core.content.ContextCompat
 import dev.forcetower.conference.R
 
 class ReservationTextView @JvmOverloads constructor(
@@ -41,7 +42,7 @@ class ReservationTextView @JvmOverloads constructor(
 
     init {
         setText(ReservationViewState.RESERVABLE.text)
-        val drawable = context.getDrawable(R.drawable.asld_reservation)
+        val drawable = ContextCompat.getDrawable(context, R.drawable.asld_reservation)
         setCompoundDrawablesRelativeWithIntrinsicBounds(drawable, null, null, null)
     }
 

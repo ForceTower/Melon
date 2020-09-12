@@ -26,23 +26,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.viewModels
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentSendFeedbackBinding
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
-import javax.inject.Inject
 
-class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    lateinit var viewModel: FeedbackViewModel
-    lateinit var binding: FragmentSendFeedbackBinding
+@AndroidEntryPoint
+class SendFeedbackFragment : BottomSheetDialogFragment() {
+    private val viewModel: FeedbackViewModel by viewModels()
+    private lateinit var binding: FragmentSendFeedbackBinding
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val sheetDialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
@@ -61,7 +58,6 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentSendFeedbackBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -72,18 +68,24 @@ class SendFeedbackFragment : BottomSheetDialogFragment(), Injectable {
             interactor = viewModel
             lifecycleOwner = this@SendFeedbackFragment
         }
-        viewModel.textError.observe(viewLifecycleOwner, EventObserver {
-            if (it == null) {
-                binding.textFeedback.error = ""
-            } else {
-                binding.textFeedback.error = it
+        viewModel.textError.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                if (it == null) {
+                    binding.textFeedback.error = ""
+                } else {
+                    binding.textFeedback.error = it
+                }
             }
-        })
+        )
 
-        viewModel.sendFeedback.observe(viewLifecycleOwner, EventObserver {
-            if (it) {
-                dismiss()
+        viewModel.sendFeedback.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                if (it) {
+                    dismiss()
+                }
             }
-        })
+        )
     }
 }

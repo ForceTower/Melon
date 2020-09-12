@@ -29,17 +29,17 @@ import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
-import org.threeten.bp.OffsetDateTime
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.OffsetDateTime
 import java.util.Locale
 import java.util.UUID
 
-@Entity(indices = [
-    Index(value = ["hash_message"], unique = true),
-    Index(value = ["sagres_id"], unique = true),
-    Index(value = ["uuid"], unique = true)
-])
+@Entity(
+    indices = [
+        Index(value = ["hash_message"], unique = true),
+        Index(value = ["sagres_id"], unique = true),
+        Index(value = ["uuid"], unique = true)
+    ]
+)
 data class Message(
     @PrimaryKey(autoGenerate = true)
     val uid: Long = 0,

@@ -79,7 +79,9 @@ class FirebaseAuthRepository @Inject constructor(
     private fun attemptSignIn(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Login")
         firebaseAuth.signInWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), { task ->
+            .addOnCompleteListener(
+                executors.others(),
+                { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -93,13 +95,16 @@ class FirebaseAuthRepository @Inject constructor(
                         Timber.d("Exception: ${task.exception}")
                         attemptCreateAccount(email, password, access, person)
                     }
-                })
+                }
+            )
     }
 
     private fun attemptCreateAccount(email: String, password: String, access: Access, person: SagresPerson) {
         Timber.d("Attempt Create account")
         firebaseAuth.createUserWithEmailAndPassword(email, password)
-                .addOnCompleteListener(executors.others(), { task ->
+            .addOnCompleteListener(
+                executors.others(),
+                { task ->
                     if (task.isSuccessful) {
                         val user = firebaseAuth.currentUser
                         if (user == null) {
@@ -112,21 +117,22 @@ class FirebaseAuthRepository @Inject constructor(
                         Timber.d("Failed to Create account...")
                         Timber.d("Exception: ${task.exception}")
                     }
-                })
+                }
+            )
     }
 
     private fun connected(access: Access, person: SagresPerson, uid: String) {
         Timber.d("Creating student profile for ${person.name?.trim()} UID: $uid")
 
         val data = mutableMapOf(
-                "name" to WordUtils.toTitleCase(person.name?.trim()),
-                "username" to access.username,
-                "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
-                "cpf" to person.getCpf()?.trim(),
-                "sagresId" to person.id,
-                "imageUrl" to "/users/$uid/avatar.jpg",
-                "manufacturer" to android.os.Build.MANUFACTURER,
-                "model" to android.os.Build.MODEL
+            "name" to WordUtils.toTitleCase(person.name?.trim()),
+            "username" to access.username,
+            "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
+            "cpf" to person.getCpf()?.trim(),
+            "sagresId" to person.id,
+            "imageUrl" to "/users/$uid/avatar.jpg",
+            "manufacturer" to android.os.Build.MANUFACTURER,
+            "model" to android.os.Build.MODEL
         )
 
         val idTask = FirebaseInstanceId.getInstance().instanceId
@@ -140,30 +146,36 @@ class FirebaseAuthRepository @Inject constructor(
         }
 
         userCollection.document(uid).set(data, SetOptions.merge())
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+            .addOnCompleteListener(
+                executors.others(),
+                OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Timber.d("User data set!")
                     } else {
                         Timber.d("Failed to set data...")
                         Timber.d("Exception: ${task.exception}")
                     }
-                })
+                }
+            )
     }
 
     fun updateCourse(course: Course, user: FirebaseUser) {
         val data = mapOf(
-                "courseId" to course.id,
-                "course" to course.name
+            "courseId" to course.id,
+            "course" to course.name
         )
         userCollection.document(user.uid).set(data, SetOptions.merge())
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+            .addOnCompleteListener(
+                executors.others(),
+                OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Timber.d("User course data set!")
                     } else {
                         Timber.d("Failed to set course data...")
                         Timber.d("Exception: ${task.exception}")
                     }
-                })
+                }
+            )
     }
 
     fun updateFrequency(value: Int) {
@@ -172,14 +184,17 @@ class FirebaseAuthRepository @Inject constructor(
 
         val data = mapOf("syncFrequency" to value)
         userCollection.document(user.uid).set(data, SetOptions.merge())
-                .addOnCompleteListener(executors.others(), OnCompleteListener { task ->
+            .addOnCompleteListener(
+                executors.others(),
+                OnCompleteListener { task ->
                     if (task.isSuccessful) {
                         Timber.d("Completed setting frequency")
                     } else {
                         Timber.d("Failed to set frequency")
                         Timber.d("Exception: ${task.exception}")
                     }
-                })
+                }
+            )
     }
 
     fun reconnect(): Boolean {

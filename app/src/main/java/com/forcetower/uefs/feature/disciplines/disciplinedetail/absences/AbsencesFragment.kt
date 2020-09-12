@@ -25,25 +25,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentDisciplineAbsencesBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class AbsencesFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: DisciplineViewModel
+@AndroidEntryPoint
+class AbsencesFragment : UFragment() {
+    private val viewModel: DisciplineViewModel by activityViewModels()
     private lateinit var binding: FragmentDisciplineAbsencesBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         return FragmentDisciplineAbsencesBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -62,16 +58,19 @@ class AbsencesFragment : UFragment(), Injectable {
             }
         }
 
-        viewModel.absences.observe(viewLifecycleOwner, Observer {
-            absenceAdapter.submitList(it)
-            if (it.isEmpty()) {
-                binding.layoutNoData.visibility = View.VISIBLE
-                binding.recyclerAbsences.visibility = View.GONE
-            } else {
-                binding.layoutNoData.visibility = View.GONE
-                binding.recyclerAbsences.visibility = View.VISIBLE
+        viewModel.absences.observe(
+            viewLifecycleOwner,
+            Observer {
+                absenceAdapter.submitList(it)
+                if (it.isEmpty()) {
+                    binding.layoutNoData.visibility = View.VISIBLE
+                    binding.recyclerAbsences.visibility = View.GONE
+                } else {
+                    binding.layoutNoData.visibility = View.GONE
+                    binding.recyclerAbsences.visibility = View.VISIBLE
+                }
             }
-        })
+        )
     }
 
     companion object {

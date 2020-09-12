@@ -73,7 +73,7 @@ class CardSnapHelper : LinearSnapHelper() {
         val vectorProvider = layoutManager as RecyclerView.SmoothScroller.ScrollVectorProvider?
 
         val vectorForEnd = vectorProvider!!.computeScrollVectorForPosition(itemCount - 1)
-                ?: return RecyclerView.NO_POSITION
+            ?: return RecyclerView.NO_POSITION
 
         val distance = calculateScrollDistance(velocityX, velocityY)[0]
         var deltaJump: Int

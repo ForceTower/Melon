@@ -24,26 +24,22 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.forcetower.core.injection.Injectable
+import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.fromJson
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
-import com.forcetower.uefs.feature.shared.extensions.provideActivityViewModel
+import dagger.hilt.android.AndroidEntryPoint
 import java.lang.IllegalStateException
-import javax.inject.Inject
 
-class SelectGroupDialog : RoundedDialog(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-    private lateinit var viewModel: DisciplineViewModel
+@AndroidEntryPoint
+class SelectGroupDialog : RoundedDialog() {
+    private val viewModel: DisciplineViewModel by activityViewModels()
     private lateinit var binding: DialogSelectDisciplineGroupBinding
     private lateinit var value: ClassFullWithGroup
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideActivityViewModel(factory)
         value = requireNotNull(arguments).getString("groups")?.fromJson() ?: throw IllegalStateException("Argument groups was not defined")
         return DialogSelectDisciplineGroupBinding.inflate(inflater, container, false).also {
             binding = it

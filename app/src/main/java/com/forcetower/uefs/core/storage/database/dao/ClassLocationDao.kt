@@ -39,7 +39,6 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
 import com.forcetower.uefs.feature.shared.extensions.fromWeekDay
-import dev.forcetower.breaker.model.Allocation
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 

@@ -176,13 +176,15 @@ class Scroller
     }
 
     private fun computeDeceleration(friction: Float): Float {
-        return (SensorManager.GRAVITY_EARTH // g (m/s^2)
+        return (
+            SensorManager.GRAVITY_EARTH // g (m/s^2)
 
                 * 39.37f * // inch/meter
 
                 mPpi // pixels per inch
 
-                * friction)
+                * friction
+            )
     }
 
     /**
@@ -404,7 +406,7 @@ class Scroller
      */
     fun isScrollingInDirection(xvel: Float, yvel: Float): Boolean {
         return !isFinished && sign(xvel) == sign((mFinalX - startX).toFloat()) &&
-                sign(yvel) == sign((mFinalY - startY).toFloat())
+            sign(yvel) == sign((mFinalY - startY).toFloat())
     }
 
     companion object {

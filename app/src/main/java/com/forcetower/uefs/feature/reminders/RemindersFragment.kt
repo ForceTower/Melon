@@ -24,29 +24,24 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.core.injection.Injectable
-import com.forcetower.uefs.core.vm.UViewModelFactory
 import com.forcetower.uefs.databinding.FragmentRemindersBinding
 import com.forcetower.uefs.feature.shared.SwipeDeleteHandler
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.forcetower.uefs.feature.shared.extensions.provideViewModel
-import javax.inject.Inject
+import dagger.hilt.android.AndroidEntryPoint
 
-class RemindersFragment : UFragment(), Injectable {
-    @Inject
-    lateinit var factory: UViewModelFactory
-
-    private lateinit var viewModel: RemindersViewModel
+@AndroidEntryPoint
+class RemindersFragment : UFragment() {
+    private val viewModel: RemindersViewModel by viewModels()
     private lateinit var binding: FragmentRemindersBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel = provideViewModel(factory)
         return FragmentRemindersBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -72,37 +67,48 @@ class RemindersFragment : UFragment(), Injectable {
             }
         }
 
-        binding.recyclerReminders.addOnScrollListener(object : RecyclerView.OnScrollListener() {
-            override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                val manager = binding.recyclerReminders.layoutManager as? LinearLayoutManager
-                if (manager != null) {
-                    if (manager.findFirstCompletelyVisibleItemPosition() != 0) {
-                        binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 4)
-                    } else {
-                        binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 0)
+        binding.recyclerReminders.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    val manager = binding.recyclerReminders.layoutManager as? LinearLayoutManager
+                    if (manager != null) {
+                        if (manager.findFirstCompletelyVisibleItemPosition() != 0) {
+                            binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 4)
+                        } else {
+                            binding.incToolbar.appBar.elevation = getPixelsFromDp(requireContext(), 0)
+                        }
                     }
                 }
             }
-        })
+        )
 
-        val helper = ItemTouchHelper(SwipeDeleteHandler(requireContext(), {
-            val holder = it as? ReminderHolder.ItemHolder
-            if (holder != null) {
-                val reminder = holder.binding.reminder
-                if (reminder != null) viewModel.deleteReminder(reminder)
-            }
-        }, ignored = listOf(ReminderHolder.CompletedHeaderHolder::class.java)))
+        val helper = ItemTouchHelper(
+            SwipeDeleteHandler(
+                requireContext(),
+                {
+                    val holder = it as? ReminderHolder.ItemHolder
+                    if (holder != null) {
+                        val reminder = holder.binding.reminder
+                        if (reminder != null) viewModel.deleteReminder(reminder)
+                    }
+                },
+                ignored = listOf(ReminderHolder.CompletedHeaderHolder::class.java)
+            )
+        )
         helper.attachToRecyclerView(binding.recyclerReminders)
 
-        viewModel.reminders.observe(viewLifecycleOwner, Observer {
-            reminderAdapter.currentReminders = it
-            if (it.isEmpty()) {
-                binding.recyclerReminders.visibility = View.GONE
-                binding.layoutNoData.visibility = View.VISIBLE
-            } else {
-                binding.recyclerReminders.visibility = View.VISIBLE
-                binding.layoutNoData.visibility = View.GONE
+        viewModel.reminders.observe(
+            viewLifecycleOwner,
+            Observer {
+                reminderAdapter.currentReminders = it
+                if (it.isEmpty()) {
+                    binding.recyclerReminders.visibility = View.GONE
+                    binding.layoutNoData.visibility = View.VISIBLE
+                } else {
+                    binding.recyclerReminders.visibility = View.VISIBLE
+                    binding.layoutNoData.visibility = View.GONE
+                }
             }
-        })
+        )
     }
 }

@@ -24,8 +24,9 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
-import android.view.WindowInsets
 import android.widget.TextView
+import androidx.core.view.ViewCompat
+import androidx.core.view.WindowInsetsCompat
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
@@ -36,15 +37,6 @@ import com.forcetower.sagres.utils.WordUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
-
-@BindingAdapter("layoutFullscreen")
-fun View.bindLayoutFullscreen(previousFullscreen: Boolean, fullscreen: Boolean) {
-    if (previousFullscreen != fullscreen && fullscreen) {
-        systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_STABLE or
-            View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
-            View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
-    }
-}
 
 @BindingAdapter("clipToCircle")
 fun clipToCircle(view: View, clip: Boolean) {
@@ -132,10 +124,11 @@ fun applySystemWindows(
     applyBottom: Boolean
 ) {
     view.doOnApplyWindowInsets { _, insets, padding ->
-        val left = if (applyLeft) insets.systemWindowInsetLeft else 0
-        val top = if (applyTop) insets.systemWindowInsetTop else 0
-        val right = if (applyRight) insets.systemWindowInsetRight else 0
-        val bottom = if (applyBottom) insets.systemWindowInsetBottom else 0
+        val ins = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val left = if (applyLeft) ins.left else 0
+        val top = if (applyTop) ins.top else 0
+        val right = if (applyRight) ins.right else 0
+        val bottom = if (applyBottom) ins.bottom else 0
 
         view.setPadding(
             padding.left + left,
@@ -154,25 +147,31 @@ data class InitialPadding(
 )
 
 private fun recordInitialPaddingForView(view: View) = InitialPadding(
-        view.paddingLeft, view.paddingTop, view.paddingRight, view.paddingBottom)
+    view.paddingLeft,
+    view.paddingTop,
+    view.paddingRight,
+    view.paddingBottom
+)
 
 fun View.requestApplyInsetsWhenAttached() {
     if (isAttachedToWindow) {
         requestApplyInsets()
     } else {
-        addOnAttachStateChangeListener(object : View.OnAttachStateChangeListener {
-            override fun onViewAttachedToWindow(v: View) {
-                v.requestApplyInsets()
-            }
+        addOnAttachStateChangeListener(
+            object : View.OnAttachStateChangeListener {
+                override fun onViewAttachedToWindow(v: View) {
+                    v.requestApplyInsets()
+                }
 
-            override fun onViewDetachedFromWindow(v: View) = Unit
-        })
+                override fun onViewDetachedFromWindow(v: View) = Unit
+            }
+        )
     }
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsets, InitialPadding) -> Unit) {
+fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Unit) {
     val initialPadding = recordInitialPaddingForView(this)
-    setOnApplyWindowInsetsListener { v, insets ->
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         f(v, insets, initialPadding)
         insets
     }

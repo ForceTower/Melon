@@ -22,9 +22,9 @@ package com.forcetower.uefs.core.util.siecomp
 
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.model.siecomp.EventDay
-import org.threeten.bp.ZoneId
-import org.threeten.bp.ZonedDateTime
-import org.threeten.bp.format.DateTimeFormatter
+import java.time.ZoneId
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Locale
 
 /**
@@ -35,31 +35,31 @@ object TimeUtils {
     val SIECOMP_TIMEZONE: ZoneId = ZoneId.of(BuildConfig.SIECOMP_TIMEZONE)
 
     val EventDays = listOf(
-            EventDay(
-                    1,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_END)
-            ),
-            EventDay(
-                    2,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_END)
-            ),
-            EventDay(
-                    3,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_END)
-            ),
-            EventDay(
-                    4,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_END)
-            ),
-            EventDay(
-                    5,
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_START),
-                    ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_END)
-            )
+        EventDay(
+            1,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY1_END)
+        ),
+        EventDay(
+            2,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY2_END)
+        ),
+        EventDay(
+            3,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY3_END)
+        ),
+        EventDay(
+            4,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY4_END)
+        ),
+        EventDay(
+            5,
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_START),
+            ZonedDateTime.parse(BuildConfig.SIECOMP_DAY5_END)
+        )
     )
 
     fun eventHasStarted(): Boolean {
