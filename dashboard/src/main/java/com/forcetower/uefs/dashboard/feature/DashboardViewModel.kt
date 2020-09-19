@@ -35,6 +35,7 @@ import com.forcetower.uefs.feature.shared.TimeLiveData
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
+import kotlin.coroutines.suspendCoroutine
 
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
@@ -91,6 +92,9 @@ class DashboardViewModel @Inject constructor(
 
     fun onShowAllClasses() {
         _onMoveToSchedule.value = Event(Unit)
+    }
+
+    suspend fun interesting(): Int = suspendCoroutine { continuation ->
     }
 
     override fun onSelect(questionId: Long, student: SStudent) {
