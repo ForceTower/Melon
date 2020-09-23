@@ -24,12 +24,12 @@ buildscript {
         minSdk = 21
         targetSdk = 30
         compileSdk = 30
-        toolsVersion = '30.0.1'
+        toolsVersion = '30.0.2'
 
         sagres = "1.6.0"
 
         // Kotlin Extensions
-        ktx = '1.5.0-alpha02'
+        ktx = '1.5.0-alpha03'
 
         // Android X
         app_compat = '1.2.0'
