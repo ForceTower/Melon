@@ -221,7 +221,13 @@ object NotificationCreator {
 
     fun showServiceMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
         val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, description, image)
-        builder.setContentIntent(createUNESMessagesIntent(context))
+        builder.setContentIntent(createUNESMessagesIntent(context, 1))
+        showNotification(context, id, builder)
+    }
+
+    fun showAERIMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, description, image)
+        builder.setContentIntent(createUNESMessagesIntent(context, 2))
         showNotification(context, id, builder)
     }
 
@@ -440,10 +446,10 @@ object NotificationCreator {
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun createUNESMessagesIntent(ctx: Context): PendingIntent {
+    private fun createUNESMessagesIntent(ctx: Context, fragmentIndex: Int): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
-            putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, true)
+            putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, fragmentIndex)
         }
 
         return TaskStackBuilder.create(ctx)
