@@ -100,10 +100,10 @@ class MessagesFragment : UFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val unes = arguments?.getBoolean(EXTRA_MESSAGES_FLAG, false) ?: false
-        val open = savedInstanceState?.getBoolean(EXTRA_MESSAGES_FLAG, true) ?: true
-        if (unes && open) {
-            binding.pagerMessage.setCurrentItem(1, true)
+        val index = arguments?.getInt(EXTRA_MESSAGES_FLAG, 0) ?: 0
+        val open = savedInstanceState?.getBoolean(EXTRA_OPEN_MESSAGES_FLAG, true) ?: true
+        if (index > 0 && open) {
+            binding.pagerMessage.setCurrentItem(index, true)
         }
     }
 
@@ -152,7 +152,7 @@ class MessagesFragment : UFragment() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean(EXTRA_MESSAGES_FLAG, false)
+        outState.putBoolean(EXTRA_OPEN_MESSAGES_FLAG, false)
         super.onSaveInstanceState(outState)
     }
 
@@ -164,10 +164,11 @@ class MessagesFragment : UFragment() {
 
     companion object {
         const val EXTRA_MESSAGES_FLAG = "unes.messages.is_svc_message"
+        const val EXTRA_OPEN_MESSAGES_FLAG = "unes.messages.opened_notification"
 
-        fun newInstance(unesService: Boolean): MessagesFragment {
+        fun newInstance(fragmentIndex: Int): MessagesFragment {
             return MessagesFragment().apply {
-                arguments = bundleOf(EXTRA_MESSAGES_FLAG to unesService)
+                arguments = bundleOf(EXTRA_MESSAGES_FLAG to fragmentIndex)
             }
         }
     }

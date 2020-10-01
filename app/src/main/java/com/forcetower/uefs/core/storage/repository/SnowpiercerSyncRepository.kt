@@ -197,7 +197,7 @@ class SnowpiercerSyncRepository @Inject constructor(
         aeri?.create()?.run {
             update()
             getNotifyMessages().forEach {
-                NotificationCreator.showSimpleNotification(context, it.title, it.content)
+                NotificationCreator.showAERIMessageNotification(context, it.content.hashCode().toLong(), it.title, it.content, it.imageUrl)
             }
         }
     }
