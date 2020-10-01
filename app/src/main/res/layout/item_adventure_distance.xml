@@ -56,7 +56,7 @@
             android:layout_marginEnd="16dp"
             android:gravity="end"
             android:textColor="?attr/colorAccent"
-            android:text="@{@string/ach_distance_amount_format(distance.distance)}"
+            android:text="@{distance.distance == Float.NaN ? @string/ach_undefined_distance : @string/ach_distance_amount_format(distance.distance)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
