@@ -82,7 +82,7 @@ class AdventureViewModel @ViewModelInject constructor(
         return repository.justCheckAchievements()
     }
 
-    fun onReceiveLocation(location: Location): List<AchDistance> {
+    fun onReceiveLocation(location: Location?): List<AchDistance> {
         return repository.matchesAnyAchievement(location)
     }
 }

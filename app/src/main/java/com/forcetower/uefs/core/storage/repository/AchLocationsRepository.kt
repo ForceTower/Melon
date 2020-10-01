@@ -32,7 +32,7 @@ class AchLocationsRepository @Inject constructor(
     private val preferences: SharedPreferences
 ) {
 
-    fun onReceiveLocation(location: Location): List<AchDistance> {
+    fun onReceiveLocation(location: Location?): List<AchDistance> {
         val result = mutableListOf<AchDistance>()
         result += matchesBigTray(location)
         result += matchesLibrary(location)
@@ -44,7 +44,8 @@ class AchLocationsRepository @Inject constructor(
         return result
     }
 
-    private fun matchesBigTray(location: Location): AchDistance {
+    private fun matchesBigTray(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Bandejao", Float.NaN)
         val place = Location("").apply {
             latitude = -12.201868
             longitude = -38.96974
@@ -58,7 +59,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Bandejao", distance)
     }
 
-    private fun matchesLibrary(location: Location): AchDistance {
+    private fun matchesLibrary(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Biblioteca", Float.NaN)
         val place = Location("").apply {
             latitude = -12.202193
             longitude = -38.972065
@@ -72,7 +74,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Biblioteca", distance)
     }
 
-    private fun matchesZoologyMuseum(location: Location): AchDistance {
+    private fun matchesZoologyMuseum(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Serpentário", Float.NaN)
         val place = Location("").apply {
             latitude = -12.196325
             longitude = -38.970038
@@ -86,7 +89,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Serpentário", distance)
     }
 
-    private fun matchesHogwarts(location: Location): AchDistance {
+    private fun matchesHogwarts(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Hogwarts", Float.NaN)
         val place = Location("").apply {
             latitude = -12.198144
             longitude = -38.971951
@@ -100,7 +104,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Hogwarts", distance)
     }
 
-    private fun matchesMod1(location: Location): AchDistance {
+    private fun matchesMod1(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Módulo 1", Float.NaN)
         val place = Location("").apply {
             latitude = -12.199827
             longitude = -38.969190
@@ -114,7 +119,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Módulo 1", distance)
     }
 
-    private fun matchesMod7(location: Location): AchDistance {
+    private fun matchesMod7(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Módulo 7", Float.NaN)
         val place = Location("").apply {
             latitude = -12.201418
             longitude = -38.975059
@@ -128,7 +134,8 @@ class AchLocationsRepository @Inject constructor(
         return AchDistance(null, "Módulo 7", distance)
     }
 
-    private fun matchesManagement(location: Location): AchDistance {
+    private fun matchesManagement(location: Location?): AchDistance {
+        location ?: return AchDistance(null, "Reitoria", Float.NaN)
         val place = Location("").apply {
             latitude = -12.202269
             longitude = -38.971030
