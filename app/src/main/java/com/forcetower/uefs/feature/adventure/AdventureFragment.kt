@@ -33,7 +33,6 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
@@ -105,7 +104,7 @@ class AdventureFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         profileViewModel.getMeProfile().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it != null) {
                     profileViewModel.setProfileId(it.data?.id)
                 }
@@ -115,7 +114,7 @@ class AdventureFragment : UFragment() {
         viewModel.run {
             achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
             start.observe(viewLifecycleOwner, EventObserver { activity?.signIn() })
-            locations.observe(viewLifecycleOwner, Observer { requestLocations(it) })
+            locations.observe(viewLifecycleOwner, { requestLocations(it) })
             leave.observe(viewLifecycleOwner, EventObserver { activity?.signOut() })
         }
 
@@ -179,6 +178,8 @@ class AdventureFragment : UFragment() {
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
+
+        onReceiveLocation(null)
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest!!)
         val client = LocationServices.getSettingsClient(requireContext())
@@ -245,7 +246,7 @@ class AdventureFragment : UFragment() {
         }
     }
 
-    private fun onReceiveLocation(location: Location) {
+    private fun onReceiveLocation(location: Location?) {
         val value = viewModel.onReceiveLocation(location)
         distanceAdapter.submitList(value)
         value.mapNotNull { it.id }.forEach {
