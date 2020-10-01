@@ -57,8 +57,8 @@ buildscript {
         // Firebase
         firebase_core = '17.5.0'
         firebase_auth = '19.4.0'
-        firebase_messaging = '20.2.4'
-        firebase_firestore = '21.6.0'
+        firebase_messaging = '20.3.0'
+        firebase_firestore = '21.7.0'
         firebase_storage = '19.2.0'
         firebase_remote_config = '19.2.0'
         firebase_functions = '19.1.0'
@@ -80,7 +80,7 @@ buildscript {
         gp_core_ktx = '1.8.1'
         gp_auth = '18.1.0'
         gp_games = '20.0.1'
-        gp_location = "17.0.0"
+        gp_location = "17.1.0"
         gp_billing_client = '3.0.0'
         gp_admob = '19.4.0'
 
