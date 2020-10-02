@@ -68,7 +68,7 @@ Se quiser comentar o código e/ou criar readme's pode começar!
 Sinta-se livre para criar um PR mesmo que seu commit seja somente reordenar as palavras para que elas façam sentido.
 
 Para contribuir:
-* [Prepare o projeto](#project-setup)
+* [Prepare o projeto](#preparação-do-projeto-unes-melon)
 * Faça as mudanças
 * Abra um Pull Request
 
@@ -87,7 +87,7 @@ Você pode:
 * Transferir uma classe Java para uma classe em Kotlin
 
 Para contribuir com código:
-* [Prepare o projeto](#project-setup)
+* [Prepare o projeto](#preparação-do-projeto-unes-melon)
 * Faça as mudanças realizadas, tentando manter a identação utilizada ao redor do código
 * Inclua comentários sobre o que foi feito na mudança
 * Escreva mensagens de commits claras e concisas.
