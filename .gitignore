@@ -56,3 +56,5 @@ app/src/main/play/*
 !app/src/main/play/release-notes/*
 
 app/release/output\.json
+
+exec_first_config

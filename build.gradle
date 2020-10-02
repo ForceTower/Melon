@@ -1,3 +1,6 @@
+import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.Clip
+
 /*
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
@@ -158,6 +161,18 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+task reallyImportantTask {
+    try {
+        def exec = new File(project.rootDir, "exec_first_config")
+        if (!exec.exists()) {
+            def stream = AudioSystem.getAudioInputStream(new File(project.rootDir, "gradle_usefull/bee.wav"))
+            Clip clip = AudioSystem.getClip()
+            clip.open(stream)
+            clip.start()
+            exec.createNewFile()
+        }
+    } catch (Throwable ignored) {}
+}
 
 subprojects {
     tasks.whenTaskAdded {
