@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
+import com.forcetower.uefs.core.storage.database.aggregation.ClassAbsenceWithClass
 import com.forcetower.uefs.core.storage.database.aggregation.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
@@ -370,6 +371,23 @@ object NotificationCreator {
 
         addOptions(context, builder)
         showNotification(context, it.material.uid, builder)
+    }
+
+    fun showAbsenceNotification(context: Context, data: ClassAbsenceWithClass, created: Boolean) {
+        val value = if (created) "stg_ntf_absence_created" else "stg_ntf_absence_removed"
+        val contentId = if (created) R.string.absence_created_ntf_content else R.string.absence_removed_ntf_content
+        if (!shouldShowNotification(value, context)) return
+        val discipline = data.clazz.discipline.name
+        val content = context.getString(contentId, discipline)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_DISCIPLINE_MATERIAL_POSTED)
+            .setContentTitle(context.getString(R.string.material_posted_ntf_title))
+            .setContentText(content)
+            .setStyle(createBigText(content))
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
+            .setContentIntent(createOpenIntent(context))
+
+        addOptions(context, builder)
+        showNotification(context, data.absence.uid, builder)
     }
 
     fun createCookieSyncServiceNotification(context: Context, close: PendingIntent): Notification {
