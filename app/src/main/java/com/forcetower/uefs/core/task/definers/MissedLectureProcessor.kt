@@ -41,6 +41,8 @@ class MissedLectureProcessor(
         database.withTransaction {
             val group = database.classGroupDao().getGroupDirect(groupId) ?: return@withTransaction
             val classId = group.classId
+
+            val before = database.classAbsenceDao().getDirectWithDetails(classId)
             database.classAbsenceDao().resetClassAbsences(classId)
 
             val mapped = absences.map { absence ->
@@ -56,6 +58,25 @@ class MissedLectureProcessor(
             }
 
             database.classAbsenceDao().insert(mapped)
+
+            val after = database.classAbsenceDao().getDirectWithDetails(classId)
+
+            // before: [A, B, C, D]
+            // after:  [B, C, D, E]
+
+            // new:    [E]
+            val new = after.filter { a -> before.any { !it.isSame(a) } }
+            // removed [A]
+            val removed = before.filter { b -> after.any { !it.isSame(b) } }
+
+            new.forEach {
+                // TODO Show notification
+            }
+
+            removed.forEach {
+                // TODO Show notification
+            }
+
             database.classAbsenceDao().markAllNotified()
         }
     }
