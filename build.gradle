@@ -161,18 +161,18 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
-task reallyImportantTask {
-    try {
-        def exec = new File(project.rootDir, "exec_first_config")
-        if (!exec.exists()) {
-            def stream = AudioSystem.getAudioInputStream(new File(project.rootDir, "gradle_usefull/bee.wav"))
-            Clip clip = AudioSystem.getClip()
-            clip.open(stream)
-            clip.start()
-            exec.createNewFile()
-        }
-    } catch (Throwable ignored) {}
-}
+//task reallyImportantTask {
+//    try {
+//        def exec = new File(project.rootDir, "exec_first_config")
+//        if (!exec.exists()) {
+//            def stream = AudioSystem.getAudioInputStream(new File(project.rootDir, "gradle_usefull/bee.wav"))
+//            Clip clip = AudioSystem.getClip()
+//            clip.open(stream)
+//            clip.start()
+//            exec.createNewFile()
+//        }
+//    } catch (Throwable ignored) {}
+//}
 
 subprojects {
     tasks.whenTaskAdded {
