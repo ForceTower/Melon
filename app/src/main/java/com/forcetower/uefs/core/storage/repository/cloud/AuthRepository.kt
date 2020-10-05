@@ -20,12 +20,10 @@
 
 package com.forcetower.uefs.core.storage.repository.cloud
 
-import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.annotations.USLoginMethod
 import com.forcetower.uefs.core.model.unes.Access
@@ -37,6 +35,9 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import retrofit2.Response
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -45,8 +46,7 @@ import javax.inject.Singleton
 class AuthRepository @Inject constructor(
     private val executors: AppExecutors,
     private val database: UDatabase,
-    private val service: UService,
-    private val preferences: SharedPreferences
+    private val service: UService
 ) {
     @MainThread
     fun login(
@@ -68,22 +68,26 @@ class AuthRepository @Inject constructor(
         }.asLiveData()
     }
 
-    @MainThread
-    fun autoLogin(): LiveData<Resource<AccessToken?>> {
-        val result = MediatorLiveData<Resource<AccessToken?>>()
-        val accessSrc = database.accessDao().getAccess()
-        result.addSource(accessSrc) {
-            result.removeSource(accessSrc)
-            if (it != null) {
-                val loginSrc = login(it.username, it.password, LOGIN_METHOD_UNES)
-                result.addSource(loginSrc) { res ->
-                    result.value = res
-                }
-            } else {
-                result.value = Resource.error("Invalid access", null)
+    suspend fun loginToService(reconnect: Boolean = true): AccessToken? = withContext(Dispatchers.IO) {
+        val currentToken = database.accessTokenDao().getAccessTokenDirectSuspend()
+        if (currentToken != null && !reconnect) return@withContext currentToken
+
+        val access = database.accessDao().getAccessDirectSuspend() ?: return@withContext currentToken
+        val username = access.username
+        val password = access.password
+        try {
+            val one = service.loginSuspend(username, password)
+            database.accessTokenDao().insertSuspend(one)
+            database.accessTokenDao().getAccessTokenDirectSuspend()
+        } catch (error: Throwable) {
+            try {
+                val two = service.loginWithSagresSuspend(username, password)
+                database.accessTokenDao().insertSuspend(two)
+                database.accessTokenDao().getAccessTokenDirectSuspend()
+            } catch (error2: Throwable) {
+                currentToken
             }
         }
-        return result
     }
 
     @AnyThread
@@ -150,20 +154,31 @@ class AuthRepository @Inject constructor(
             Timber.d("Sign in using ${username.trim()} and $password")
             val response = service.login(username.trim(), password).execute()
             if (response.isSuccessful) {
-                val token = response.body()
-                if (token != null) {
-                    database.accessTokenDao().insert(token)
-                    return token
-                } else {
-                    Timber.e("Token response is null")
-                }
+                return continueWithResponse(response)
             } else {
-                Timber.e("Failed with code: ${response.code()}")
+                val response2 = service.loginWithSagres(username, password).execute()
+                if (response2.isSuccessful) {
+                    return continueWithResponse(response2)
+                } else {
+                    Timber.e("Failed with code: ${response.code()}")
+                }
             }
         } catch (t: Throwable) {
             Timber.e(t, "failed to connect to api")
         }
         return null
+    }
+
+    @WorkerThread
+    private fun continueWithResponse(response: Response<AccessToken>): AccessToken? {
+        val token = response.body()
+        return if (token != null) {
+            database.accessTokenDao().insert(token)
+            token
+        } else {
+            Timber.e("Token response is null")
+            null
+        }
     }
 
     fun getAccessToken() = database.accessTokenDao().getAccessToken()
