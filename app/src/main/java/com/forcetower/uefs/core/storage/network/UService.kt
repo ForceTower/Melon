@@ -83,6 +83,27 @@ interface UService {
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
     ): Call<AccessToken>
 
+    @POST("oauth/token")
+    @FormUrlEncoded
+    suspend fun loginWithSagresSuspend(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("grant_type") grant: String = "sagres",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
+    ): AccessToken
+
+    @POST("oauth/token")
+    @FormUrlEncoded
+    suspend fun loginSuspend(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("grant_type") grant: String = "password",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
+    ): AccessToken
+
     @POST("account/credentials")
     fun setupAccount(@Body access: Access): Call<UResponse<Void>>
 
