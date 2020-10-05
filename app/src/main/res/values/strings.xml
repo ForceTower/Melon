@@ -456,6 +456,7 @@
     <string name="grade_format" translatable="false">%1$.1f</string>
     <string name="ach_distance_title_format">Distância até %1$s</string>
     <string name="ach_distance_amount_format" translatable="false">%1$.1f m</string>
+    <string name="ach_undefined_distance" translatable="false">...</string>
     <string name="not_connected_to_the_adventure">Você não está conectado, por favor deixe a aventura e volte!</string>
     <string name="achievements_client_invalid_reconnect">O cliente da aventura é nulo, deixe a aventura e tente novamente</string>
     <string name="cant_open_achievements_invalid_intent">O google play não quer abrir as conquistas, deixe a aventura e tente novamente</string>
@@ -867,4 +868,6 @@
     <string name="notification_absence_removed_title">Falta removida</string>
     <string name="grades_not_downloaded_yet">As notas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
     <string name="download_grades">Baixar notas</string>
+    <string name="absence_removed_ntf_content">Falta na disciplina %1$s foi removida</string>
+    <string name="absence_created_ntf_content">Falta na disciplina %1$s registrada</string>
 </resources>
