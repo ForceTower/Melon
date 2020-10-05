@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="greetings_dashboard">Hola, %1$s</string>
+    <string name="next_class">Siguiente clase</string>
+    <string name="see_all_classes">Ver todas las clases</string>
+    <string name="dash_schedule_separator">%1$s ~ %2$s</string>
+    <string name="dash_schedule_disc_starts_in">Comienza en %1$s minutos</string>
+    <string name="dash_updating_app">La aplicación está siendo actualizada</string>
+    <string name="dash_updating_app_info">Puedes seguir utilizando la aplicación normalmente mientras se está actualizando. Cuando termine, aparecerá un mensaje</string>
+    <string name="dash_sched_its_over_for_today">Eso es todo amigos</string>
+    <string name="dash_sched_no_more_classes_today">¡Ya no tienes más clases por hoy! ¡Genial!</string>
+    <string name="affinity_choose_someone_else">Elige a alguien mas</string>
+    <string name="dash_schedule_disc_started_in">Comenzó hace %1$s minutos</string>
+    <string name="dash_schedule_your_current_class">Deberías estar en...</string>
+    <string name="dash_schedule_disc_started_just_now">Acaba de empezar</string>
+</resources>

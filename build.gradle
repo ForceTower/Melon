@@ -1,3 +1,6 @@
+import javax.sound.sampled.AudioSystem
+import javax.sound.sampled.Clip
+
 /*
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
@@ -24,12 +27,12 @@ buildscript {
         minSdk = 21
         targetSdk = 30
         compileSdk = 30
-        toolsVersion = '30.0.1'
+        toolsVersion = '30.0.2'
 
         sagres = "1.6.0"
 
         // Kotlin Extensions
-        ktx = '1.5.0-alpha02'
+        ktx = '1.5.0-alpha03'
 
         // Android X
         app_compat = '1.2.0'
@@ -52,13 +55,13 @@ buildscript {
         work_manager = '2.4.0'
 
         // Dependency Injection
-        dagger = '2.28.3'
+        dagger = '2.29.1'
 
         // Firebase
         firebase_core = '17.5.0'
-        firebase_auth = '19.3.2'
-        firebase_messaging = '20.2.4'
-        firebase_firestore = '21.6.0'
+        firebase_auth = '19.4.0'
+        firebase_messaging = '20.3.0'
+        firebase_firestore = '21.7.0'
         firebase_storage = '19.2.0'
         firebase_remote_config = '19.2.0'
         firebase_functions = '19.1.0'
@@ -72,7 +75,7 @@ buildscript {
 
         // Image
         glide = '4.11.0'
-        lottie = '3.4.1'
+        lottie = '3.4.2'
         image_cropper = "2.8.0"
 
         // Google Services
@@ -80,12 +83,12 @@ buildscript {
         gp_core_ktx = '1.8.1'
         gp_auth = '18.1.0'
         gp_games = '20.0.1'
-        gp_location = "17.0.0"
+        gp_location = "17.1.0"
         gp_billing_client = '3.0.0'
-        gp_admob = '19.3.0'
+        gp_admob = '19.4.0'
 
         // Networking
-        okhttp = '4.8.1'
+        okhttp = '4.9.0'
         retrofit = '2.9.0'
         cookie_jar = "v1.0.1"
 
@@ -107,7 +110,7 @@ buildscript {
         play_publisher = "2.7.1"
         bundletool = "0.10.0"
         crashlytics = "2.1.1"
-        hilt_dagger = '2.28.3-alpha'
+        hilt_dagger = '2.29.1-alpha'
         coreDesugar = '1.0.10'
     }
 
@@ -158,6 +161,18 @@ task clean(type: Delete) {
     delete rootProject.buildDir
 }
 
+//task reallyImportantTask {
+//    try {
+//        def exec = new File(project.rootDir, "exec_first_config")
+//        if (!exec.exists()) {
+//            def stream = AudioSystem.getAudioInputStream(new File(project.rootDir, "gradle_usefull/bee.wav"))
+//            Clip clip = AudioSystem.getClip()
+//            clip.open(stream)
+//            clip.start()
+//            exec.createNewFile()
+//        }
+//    } catch (Throwable ignored) {}
+//}
 
 subprojects {
     tasks.whenTaskAdded {

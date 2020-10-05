@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  ~ This file is part of the UNES Open Source Project.
+  ~ UNES is licensed under the GNU GPLv3.
+  ~
+  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
+  -->
+
+<resources>
+    <string name="evaluation_welcome">Bienvenido de nuevo, %1$s</string>
+    <string name="mtrl_red">Rojo</string>
+    <string name="mtrl_pink">Rosa</string>
+    <string name="mtrl_purple">Morado</string>
+    <string name="mtrl_indigo">Índigo</string>
+    <string name="mtrl_blue">Azul</string>
+    <string name="mtrl_green">Verde</string>
+    <string name="mtrl_yellow">Amarillo</string>
+    <string name="mtrl_orange">Naranja</string>
+    <string name="mtrl_brown">Marrón</string>
+    <string name="mtrl_grey">Gris</string>
+    <string name="mtrl_blue_grey">Gris azulado</string>
+    <string name="mtrl_background_black">Amoled</string>
+    <string name="mtrl_background_dark">Oscuro</string>
+
+    <string name="dynamic_feature_fail">Error de función dinámica</string>
+    <string name="dynamic_feature_error_description">Parece que a su dispositivo no le gusta cuando las cosas se añaden dinámicamente...</string>
+
+    <!-- Generated Colors -->
+
+    <string name="generated_material_red">Rojo</string>
+    <string name="generated_material_pink">Rosa</string>
+    <string name="generated_material_purple">Morado</string>
+    <string name="generated_material_deep_purple">Morado oscuro</string>
+    <string name="generated_material_indigo">Índigo</string>
+    <string name="generated_material_blue">Azul</string>
+    <string name="generated_material_light_blue">Azul claro</string>
+    <string name="generated_material_cyan">Cian</string>
+    <string name="generated_material_teal">Teal</string>
+    <string name="generated_material_green">Verde</string>
+    <string name="generated_material_light_green">Verde claro</string>
+    <string name="generated_material_lime">Lima</string>
+    <string name="generated_material_yellow">Amarillo</string>
+    <string name="generated_material_amber">Ámbar</string>
+    <string name="generated_material_orange">Naranja</string>
+    <string name="generated_material_deep_orange">Naranja oscuro</string>
+    <string name="generated_material_brown">Marrón</string>
+    <string name="generated_material_gray">Gris</string>
+    <string name="generated_material_blue_gray">Gris azulado</string>
+
+    <!-- End of generated colors -->
+</resources>

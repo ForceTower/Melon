@@ -39,6 +39,7 @@ import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.ServiceRequest
+import com.forcetower.uefs.core.storage.database.aggregation.ClassAbsenceWithClass
 import com.forcetower.uefs.core.storage.database.aggregation.ClassMaterialWithClass
 import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import com.forcetower.uefs.core.util.VersionUtils
@@ -221,7 +222,13 @@ object NotificationCreator {
 
     fun showServiceMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
         val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, description, image)
-        builder.setContentIntent(createUNESMessagesIntent(context))
+        builder.setContentIntent(createUNESMessagesIntent(context, 1))
+        showNotification(context, id, builder)
+    }
+
+    fun showAERIMessageNotification(context: Context, id: Long, title: String, description: String, image: String?) {
+        val builder = showDefaultImageNotification(context, NotificationHelper.CHANNEL_GENERAL_REMOTE_ID, title, description, image)
+        builder.setContentIntent(createUNESMessagesIntent(context, 2))
         showNotification(context, id, builder)
     }
 
@@ -366,6 +373,23 @@ object NotificationCreator {
         showNotification(context, it.material.uid, builder)
     }
 
+    fun showAbsenceNotification(context: Context, data: ClassAbsenceWithClass, created: Boolean) {
+        val value = if (created) "stg_ntf_absence_created" else "stg_ntf_absence_removed"
+        val contentId = if (created) R.string.absence_created_ntf_content else R.string.absence_removed_ntf_content
+        if (!shouldShowNotification(value, context)) return
+        val discipline = data.clazz.discipline.name
+        val content = context.getString(contentId, discipline)
+        val builder = notificationBuilder(context, NotificationHelper.CHANNEL_DISCIPLINE_MATERIAL_POSTED)
+            .setContentTitle(context.getString(R.string.material_posted_ntf_title))
+            .setContentText(content)
+            .setStyle(createBigText(content))
+            .setColor(ContextCompat.getColor(context, R.color.yellow_pr_dark))
+            .setContentIntent(createOpenIntent(context))
+
+        addOptions(context, builder)
+        showNotification(context, data.absence.uid, builder)
+    }
+
     fun createCookieSyncServiceNotification(context: Context, close: PendingIntent): Notification {
         return notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_SYNC_SERVICE_FOREGROUND, false)
             .setContentTitle(context.getString(R.string.label_service_sync_foreground))
@@ -440,10 +464,10 @@ object NotificationCreator {
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
     }
 
-    private fun createUNESMessagesIntent(ctx: Context): PendingIntent {
+    private fun createUNESMessagesIntent(ctx: Context, fragmentIndex: Int): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
-            putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, true)
+            putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, fragmentIndex)
         }
 
         return TaskStackBuilder.create(ctx)

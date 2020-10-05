@@ -33,11 +33,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.REQUEST_CHECK_SETTINGS
+import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAdventureBeginsBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -77,6 +77,8 @@ class AdventureFragment : UFragment() {
     private var showedLocationMessage: Boolean = false
     private var requestingLocationUpdates = false
 
+    private var currentList: List<AchDistance>? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as? UGameActivity
@@ -105,7 +107,7 @@ class AdventureFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         profileViewModel.getMeProfile().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it != null) {
                     profileViewModel.setProfileId(it.data?.id)
                 }
@@ -115,7 +117,7 @@ class AdventureFragment : UFragment() {
         viewModel.run {
             achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
             start.observe(viewLifecycleOwner, EventObserver { activity?.signIn() })
-            locations.observe(viewLifecycleOwner, Observer { requestLocations(it) })
+            locations.observe(viewLifecycleOwner, { requestLocations(it) })
             leave.observe(viewLifecycleOwner, EventObserver { activity?.signOut() })
         }
 
@@ -178,6 +180,10 @@ class AdventureFragment : UFragment() {
             interval = 7000
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
+        }
+
+        if (currentList == null) {
+            onReceiveLocation(null)
         }
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest!!)
@@ -245,8 +251,9 @@ class AdventureFragment : UFragment() {
         }
     }
 
-    private fun onReceiveLocation(location: Location) {
+    private fun onReceiveLocation(location: Location?) {
         val value = viewModel.onReceiveLocation(location)
+        currentList = value
         distanceAdapter.submitList(value)
         value.mapNotNull { it.id }.forEach {
             activity?.unlockAchievement(it)

@@ -74,7 +74,7 @@ class AdventureRepository @Inject constructor(
     }
 
     @AnyThread
-    fun matchesAnyAchievement(location: Location): List<AchDistance> {
+    fun matchesAnyAchievement(location: Location?): List<AchDistance> {
         return locations.onReceiveLocation(location)
     }
 

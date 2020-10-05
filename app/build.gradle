@@ -197,7 +197,7 @@ dependencies {
     implementation "com.google.dagger:hilt-android:$hilt_dagger"
     implementation 'androidx.hilt:hilt-work:1.0.0-alpha02'
     implementation 'androidx.hilt:hilt-lifecycle-viewmodel:1.0.0-alpha02'
-    kapt "com.google.dagger:hilt-android-compiler:$hilt_dagger"
+    kapt "com.google.dagger:hilt-compiler:$hilt_dagger"
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Firebase
@@ -245,7 +245,7 @@ task buildNotes {
     doFirst {
         try {
             def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
-            if (branch == "master") {
+            if (branch == "main") {
                 def lastTag = "git describe --abbrev=0".execute([], project.rootDir).text.trim()
                 def tagMessage = "git tag -l --format=%(contents) ${lastTag}".execute([], project.rootDir).text.trim()
                 def production = new File(project.rootDir, "app/src/main/play/release-notes/pt-BR/production.txt")

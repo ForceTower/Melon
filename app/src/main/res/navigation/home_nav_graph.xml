@@ -28,7 +28,8 @@
     <fragment
         android:id="@+id/dashboard"
         android:name="com.forcetower.uefs.dashboard.feature.DashboardFragment"
-        android:label="Dashboard" />
+        android:label="Dashboard"
+        tools:layout="@layout/fragment_dashboard"/>
 
     <fragment
         android:id="@+id/schedule"
