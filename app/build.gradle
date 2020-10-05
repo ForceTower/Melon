@@ -245,7 +245,7 @@ task buildNotes {
     doFirst {
         try {
             def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
-            if (branch == "master") {
+            if (branch == "main") {
                 def lastTag = "git describe --abbrev=0".execute([], project.rootDir).text.trim()
                 def tagMessage = "git tag -l --format=%(contents) ${lastTag}".execute([], project.rootDir).text.trim()
                 def production = new File(project.rootDir, "app/src/main/play/release-notes/pt-BR/production.txt")
