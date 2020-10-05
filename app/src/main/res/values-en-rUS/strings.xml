@@ -724,15 +724,15 @@
     <string name="purchase_subscription_started">Subscription started!</string>
     <string name="grade_not_published">Not published</string>
     <string name="grade_date_unknown">Unknown date</string>
-    <string name="channel_group_absences">Abscences</string>
-    <string name="channel_absence_created">"Abscence marked "</string>
-    <string name="channel_absence_removed">Abscence removed</string>
-    <string name="notification_absence_posted_title">Abscence posted</string>
-    <string name="settings_ntf_absence_info">Notify me when an abscence is marked or removed</string>
-    <string name="notification_absence_removed_title">Abscence removed</string>
-    <string name="settings_ntf_absence">"Abscences "</string>
+    <string name="channel_group_absences">Absences</string>
+    <string name="channel_absence_created">"Absence marked "</string>
+    <string name="channel_absence_removed">Absence removed</string>
+    <string name="notification_absence_posted_title">Absence posted</string>
+    <string name="settings_ntf_absence_info">Notify me when an absence is marked or removed</string>
+    <string name="notification_absence_removed_title">Absence removed</string>
+    <string name="settings_ntf_absence">"Absences "</string>
     <string name="download_grades">Download grades</string>
-    <string name="absence_removed_ntf_content">Abscence removed in course %1$s</string>
-    <string name="absence_created_ntf_content">Abscence registered in course %1$s</string>
+    <string name="absence_removed_ntf_content">Absence removed in course %1$s</string>
+    <string name="absence_created_ntf_content">Absence registered in course %1$s</string>
     <string name="grades_not_downloaded_yet">Grades from this period wasn\'t downloaded yet</string>
 </resources>
