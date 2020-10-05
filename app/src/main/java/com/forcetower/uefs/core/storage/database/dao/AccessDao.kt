@@ -53,6 +53,9 @@ abstract class AccessDao {
     @Query("SELECT * FROM Access LIMIT 1")
     abstract fun getAccessDirect(): Access?
 
+    @Query("SELECT * FROM Access LIMIT 1")
+    abstract suspend fun getAccessDirectSuspend(): Access?
+
     @Query("UPDATE Access SET valid = :valid")
     abstract fun setAccessValidation(valid: Boolean)
 

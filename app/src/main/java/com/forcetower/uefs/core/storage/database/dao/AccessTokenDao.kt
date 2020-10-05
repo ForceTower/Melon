@@ -35,6 +35,11 @@ abstract class AccessTokenDao {
         deleteAll()
         internalInsert(access)
     }
+    @Transaction
+    open suspend fun insertSuspend(access: AccessToken) {
+        deleteAll()
+        internalInsert(access)
+    }
 
     @Insert(onConflict = REPLACE)
     protected abstract fun internalInsert(access: AccessToken)
@@ -44,6 +49,9 @@ abstract class AccessTokenDao {
 
     @Query("SELECT * FROM AccessToken LIMIT 1")
     abstract fun getAccessTokenDirect(): AccessToken?
+
+    @Query("SELECT * FROM AccessToken LIMIT 1")
+    abstract suspend fun getAccessTokenDirectSuspend(): AccessToken?
 
     @Query("DELETE FROM AccessToken")
     abstract fun deleteAll()
