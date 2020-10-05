@@ -37,6 +37,7 @@ import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.REQUEST_CHECK_SETTINGS
+import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAdventureBeginsBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -75,6 +76,8 @@ class AdventureFragment : UFragment() {
     private var mLocationRequest: LocationRequest? = null
     private var showedLocationMessage: Boolean = false
     private var requestingLocationUpdates = false
+
+    private var currentList: List<AchDistance>? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -179,7 +182,9 @@ class AdventureFragment : UFragment() {
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
         }
 
-        onReceiveLocation(null)
+        if (currentList == null) {
+            onReceiveLocation(null)
+        }
 
         val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest!!)
         val client = LocationServices.getSettingsClient(requireContext())
@@ -248,6 +253,7 @@ class AdventureFragment : UFragment() {
 
     private fun onReceiveLocation(location: Location?) {
         val value = viewModel.onReceiveLocation(location)
+        currentList = value
         distanceAdapter.submitList(value)
         value.mapNotNull { it.id }.forEach {
             activity?.unlockAchievement(it)
