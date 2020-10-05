@@ -261,7 +261,7 @@
     <string name="dark_theme_no_more_invites">El servidor dijo que no tiene invitaciones. El servidor nunca se equivoca.</string>
     <string name="dark_theme_send_instructions">Dime el nombre de usuario SAGRES de la persona que recibirá el regalo. Esta persona necesita estar conectada al UNESverso</string>
     <string name="dark_theme_send_label">¿A quién deseas darle un regalo?</string>
-    <string name="dark_theme_send_warning">Si escribes el nombre incorrecto de la persona o si la persona ya tiene el tema oscuro, tu invitación puede ser consumida de todas formas :). También, puede pasar que la persona no recibe el regalo porque no está conectada :)string>
+    <string name="dark_theme_send_warning">Si escribes el nombre incorrecto de la persona o si la persona ya tiene el tema oscuro, tu invitación puede ser consumida de todas formas :). También, puede pasar que la persona no recibe el regalo porque no está conectada :)</string>
     <string name="dark_theme_user_not_found">Este usuario no fue encotnrado en el UNESverso</string>
     <string name="dark_theme_username_is_empty">El nombre no debe estar vacío</string>
     <string name="demand_category_label">Categoría:</string>
@@ -350,7 +350,7 @@
     <string name="evaluation_completed_description">¡Gracias por evaluar! Tus respuestas ayudarán a otras personas en el futuro</string>
     <string name="evaluation_completed_label">¡Evaluación completa!</string>
     <string name="evaluation_create_knowledge_database">Creando una base de datos de conocimiento</string>
-    <string name="evaluation_create_knowledge_warning">Esto puede tardar un rato. Si dejas esta pantalla, puede reiniciarse :)string>
+    <string name="evaluation_create_knowledge_warning">Esto puede tardar un rato. Si dejas esta pantalla, puede reiniciarse :)</string>
     <string name="evaluation_discipline_mean_count">con %1$d votos</string>
     <string name="evaluation_failed_to_load">Error al cargar los datos</string>
     <string name="evaluation_fails">fallas</string>
