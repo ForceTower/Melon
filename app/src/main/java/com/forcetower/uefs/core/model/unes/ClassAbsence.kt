@@ -57,4 +57,10 @@ data class ClassAbsence(
     override fun toString(): String {
         return "[sequence: $sequence]"
     }
+
+    fun isSame(other: ClassAbsence) =
+        other.classId == classId &&
+            other.profileId == profileId &&
+            other.sequence == sequence &&
+            other.grouping == grouping
 }

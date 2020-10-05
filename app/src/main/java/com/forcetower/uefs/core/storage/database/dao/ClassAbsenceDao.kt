@@ -31,6 +31,7 @@ import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.Profile
+import com.forcetower.uefs.core.storage.database.aggregation.ClassAbsenceWithClass
 import timber.log.Timber
 
 @Dao
@@ -101,4 +102,8 @@ abstract class ClassAbsenceDao {
 
     @Query("DELETE FROM ClassAbsence WHERE class_id = :classId")
     abstract fun resetClassAbsences(classId: Long)
+
+    @Transaction
+    @Query("SELECT * FROM ClassAbsence WHERE class_id = :classId")
+    abstract fun getDirectWithDetails(classId: Long): List<ClassAbsenceWithClass>
 }

@@ -3,7 +3,7 @@ name: Android Publisher CI
 on:
   push:
     branches:
-      - master
+      - main
       - development
 
 jobs:
