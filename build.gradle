@@ -32,12 +32,12 @@ buildscript {
         sagres = "1.6.0"
 
         // Kotlin Extensions
-        ktx = '1.5.0-alpha03'
+        ktx = '1.5.0-alpha04'
 
         // Android X
         app_compat = '1.2.0'
         google_material = '1.2.1'
-        constraint_layout = '2.0.1'
+        constraint_layout = '2.0.2'
         annotation = "1.1.0"
         exif_interface = "1.1.0"
         pallete = "1.0.0"
@@ -58,15 +58,15 @@ buildscript {
         dagger = '2.29.1'
 
         // Firebase
-        firebase_core = '17.5.0'
+        firebase_core = '17.5.1'
         firebase_auth = '19.4.0'
         firebase_messaging = '20.3.0'
-        firebase_firestore = '21.7.0'
+        firebase_firestore = '21.7.1'
         firebase_storage = '19.2.0'
         firebase_remote_config = '19.2.0'
         firebase_functions = '19.1.0'
         in_app_messaging = "19.0.1"
-        firebase_crashlytics = '17.2.1'
+        firebase_crashlytics = '17.2.2'
         firebase_ui_storage = "4.3.1"
 
         // Logs
@@ -75,16 +75,16 @@ buildscript {
 
         // Image
         glide = '4.11.0'
-        lottie = '3.4.2'
+        lottie = '3.4.4'
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = '1.8.0'
+        gp_core = '1.8.2'
         gp_core_ktx = '1.8.1'
         gp_auth = '18.1.0'
         gp_games = '20.0.1'
         gp_location = "17.1.0"
-        gp_billing_client = '3.0.0'
+        gp_billing_client = '3.0.1'
         gp_admob = '19.4.0'
 
         // Networking
@@ -109,7 +109,7 @@ buildscript {
         kotlinter = "3.0.2"
         play_publisher = "2.7.1"
         bundletool = "0.10.0"
-        crashlytics = "2.1.1"
+        crashlytics = "2.3.0"
         hilt_dagger = '2.29.1-alpha'
         coreDesugar = '1.0.10'
     }
