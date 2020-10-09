@@ -44,6 +44,9 @@
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <item name="colorControlHighlight">@color/controlHighlight</item>
+        <item name="android:colorControlHighlight">@color/controlHighlight</item>
+
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>
         <item name="colorPrimaryAlpha">@color/colorPrimaryAlpha</item>
