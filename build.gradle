@@ -104,7 +104,7 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '4.0.1'
+        android_gradle_plugin = '4.0.2'
         google_play_services = "4.3.3"
         kotlinter = "3.0.2"
         play_publisher = "2.7.1"
@@ -178,6 +178,10 @@ subprojects {
     tasks.whenTaskAdded {
         if (name == 'preBuild') {
             mustRunAfter 'lintKotlin'
+        }
+
+        if (name == 'generateEditForComDotForcetowerDotUefs') {
+            mustRunAfter ':app:bundleRelease'
         }
     }
 }
