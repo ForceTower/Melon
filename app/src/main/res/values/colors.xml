@@ -164,4 +164,5 @@
     <color name="transparent">#00000000</color>
 
     <color name="home_bottom_color_divider">#EEEEEE</color>
+    <color name="controlHighlight">#1f000000</color>
 </resources>
