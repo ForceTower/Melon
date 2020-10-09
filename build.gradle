@@ -154,6 +154,11 @@ allprojects {
             options.compilerArgs << "-Xmaxerrs" << "10000"
             options.compilerArgs << "-Xmaxwarns" << "10000"
         }
+
+        def generate = tasks.findByName('generateEditForComDotForcetowerDotUefs')
+        if (generate != null) {
+            generate.mustRunAfter(':app:bundleRelease')
+        }
     }
 }
 
@@ -178,10 +183,6 @@ subprojects {
     tasks.whenTaskAdded {
         if (name == 'preBuild') {
             mustRunAfter 'lintKotlin'
-        }
-
-        if (name == 'generateEditForComDotForcetowerDotUefs') {
-            mustRunAfter ':app:bundleRelease'
         }
     }
 }
