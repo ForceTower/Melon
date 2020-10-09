@@ -101,9 +101,11 @@ android {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
+            manifestPlaceholders = [crashlyticsEnabled: true]
         }
         debug {
             applicationIdSuffix '.debug'
+            manifestPlaceholders = [crashlyticsEnabled: false]
         }
     }
 
@@ -210,7 +212,7 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
     implementation "com.google.firebase:firebase-config:$firebase_remote_config"
     implementation "com.google.firebase:firebase-functions:$firebase_functions"
-    implementation "com.google.firebase:firebase-crashlytics:$firebase_crashlytics"
+    implementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_crashlytics"
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"
