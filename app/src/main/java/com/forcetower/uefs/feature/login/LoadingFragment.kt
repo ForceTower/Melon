@@ -78,7 +78,7 @@ class LoadingFragment : UFragment() {
                         .setCancelable(false)
                         .create()
                         .show()
-                    
+
                     Timber.e(error, "Failed inflating initial layout")
                 }
                 else -> throw error
