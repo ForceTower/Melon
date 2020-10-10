@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.login
 
 import `in`.uncod.android.bypass.Bypass
+import android.app.ActivityManager
 import android.content.Intent
 import android.os.Bundle
 import android.text.Layout
@@ -31,8 +32,9 @@ import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AlertDialog
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
@@ -52,20 +54,37 @@ class LoadingFragment : UFragment() {
     private lateinit var markdown: Bypass
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentLoadingBinding.inflate(inflater, container, false).also {
-            binding = it
-            binding.btnFirstSteps.setOnClickListener {
-                findNavController().navigate(R.id.action_login_loading_to_login_form)
-            }
-            markdown = Bypass(requireContext(), Bypass.Options())
-            setupTermsText()
-        }.root
+        try {
+            return FragmentLoadingBinding.inflate(inflater, container, false).also {
+                binding = it
+                binding.btnFirstSteps.setOnClickListener {
+                    findNavController().navigate(R.id.action_login_loading_to_login_form)
+                }
+                markdown = Bypass(requireContext(), Bypass.Options())
+                setupTermsText()
+            }.root
+        } catch (error: UnsupportedOperationException) {
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.start_up_failed)
+                .setMessage(R.string.start_up_failed_description)
+                .setPositiveButton(R.string.start_up_failed_positive_btn) { dialog, _ ->
+                    ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
+                    dialog.dismiss()
+                }
+                .setCancelable(false)
+                .create()
+                .show()
+
+            Timber.e(error, "Failed inflating initial layout")
+            return null
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        viewModel.getAccess().observe(viewLifecycleOwner, Observer { onReceiveToken(it) })
+        if (::binding.isInitialized)
+            viewModel.getAccess().observe(viewLifecycleOwner, { onReceiveToken(it) })
     }
 
     private fun onReceiveToken(access: Access?) {
