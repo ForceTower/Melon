@@ -870,4 +870,7 @@
     <string name="download_grades">Baixar notas</string>
     <string name="absence_removed_ntf_content">Falta na disciplina %1$s foi removida</string>
     <string name="absence_created_ntf_content">Falta na disciplina %1$s registrada</string>
+    <string name="start_up_failed">Erro de inicialização</string>
+    <string name="start_up_failed_description">Erro ao iniciar o aplicativo. Por favor limpe os dados do aplicativo para continuar. Reinstalar o aplicativo provavelmente não irá funcionar.</string>
+    <string name="start_up_failed_positive_btn">Certo!</string>
 </resources>
