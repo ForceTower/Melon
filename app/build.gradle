@@ -29,13 +29,13 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion compileSdkInteger
-    buildToolsVersion toolsVersion
+    compileSdkVersion 30
+    buildToolsVersion "30.0.2"
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
-        minSdkVersion minSdk
-        targetSdkVersion targetSdk
+        minSdkVersion 21
+        targetSdkVersion 30
         def (code, name) = buildVersion()
         versionCode code
         versionName name

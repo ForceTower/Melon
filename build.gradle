@@ -21,11 +21,6 @@
 buildscript {
     ext.kotlin_version = '1.4.10'
     ext {
-        minSdk = 21
-        targetSdk = 30
-        compileSdkInteger = 30
-        toolsVersion = '30.0.2'
-
         sagres = "1.6.0"
 
         // Kotlin Extensions
