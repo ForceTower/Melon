@@ -29,7 +29,6 @@ import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
 import android.text.style.AlignmentSpan
-import android.view.InflateException
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -65,24 +64,18 @@ class LoadingFragment : UFragment() {
                 setupTermsText()
             }.root
         } catch (error: Exception) {
-            when (error) {
-                is UnsupportedOperationException,
-                is InflateException -> {
-                    AlertDialog.Builder(requireContext())
-                        .setTitle(R.string.start_up_failed)
-                        .setMessage(R.string.start_up_failed_description)
-                        .setPositiveButton(R.string.start_up_failed_positive_btn) { dialog, _ ->
-                            ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
-                            dialog.dismiss()
-                        }
-                        .setCancelable(false)
-                        .create()
-                        .show()
-
-                    Timber.e(error, "Failed inflating initial layout")
+            AlertDialog.Builder(requireContext())
+                .setTitle(R.string.start_up_failed)
+                .setMessage(R.string.start_up_failed_description)
+                .setPositiveButton(R.string.start_up_failed_positive_btn) { dialog, _ ->
+                    ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
+                    dialog.dismiss()
                 }
-                else -> throw error
-            }
+                .setCancelable(false)
+                .create()
+                .show()
+
+            Timber.e(error, "Failed inflating initial layout")
             return null
         }
     }
