@@ -28,6 +28,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
@@ -51,6 +52,8 @@ import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
+import kotlinx.coroutines.launch
+import javax.inject.Named
 
 class HomeViewModel @ViewModelInject constructor(
     private val loginSagresRepository: LoginSagresRepository,
@@ -63,7 +66,9 @@ class HomeViewModel @ViewModelInject constructor(
     private val sessionRepository: UserSessionRepository,
     private val accountRepository: AccountRepository,
     private val affinityRepository: AffinityQuestionRepository,
-    private val userCookieSessionRepository: CookieSessionRepository
+    private val userCookieSessionRepository: CookieSessionRepository,
+    @Named("flagSnowpiercerEnabled")
+    private val snowpiercerEnabled: Boolean
 ) : ViewModel() {
     private var selectImageUri: Uri? = null
 
@@ -117,15 +122,26 @@ class HomeViewModel @ViewModelInject constructor(
     }
 
     fun verifyDarkTheme() = darkThemeRepository.getPreconditions()
+
     fun lightWeightCalcScore() = dataRepository.lightweightCalcScore()
+
     fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
+
     fun attemptNewPasswordLogin(password: String) {
-        val source = dataRepository.attemptLoginWithNewPassword(password)
-        _passwordChangeProcess.addSource(source) {
-            if (it.status == Status.SUCCESS) {
-                _passwordChangeProcess.removeSource(source)
+        if (!snowpiercerEnabled) {
+            val source = dataRepository.attemptLoginWithNewPassword(password)
+            _passwordChangeProcess.addSource(source) {
+                if (it.status == Status.SUCCESS) {
+                    _passwordChangeProcess.removeSource(source)
+                }
+                _passwordChangeProcess.value = Event(it)
             }
-            _passwordChangeProcess.value = Event(it)
+        } else {
+            viewModelScope.launch {
+                _passwordChangeProcess.value = Event(Resource.loading(null))
+                val result = dataRepository.loginWithNewPasswordSuspend(password)
+                _passwordChangeProcess.value = Event(Resource.success(result))
+            }
         }
     }
 

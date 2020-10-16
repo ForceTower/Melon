@@ -41,10 +41,10 @@ import dagger.hilt.android.components.ApplicationComponent
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
-import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import timber.log.Timber
 import java.net.CookieHandler
 import java.net.CookieManager
 import java.time.ZonedDateTime
@@ -76,7 +76,9 @@ object NetworkModule {
             .writeTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
             .addInterceptor(
-                HttpLoggingInterceptor().apply {
+                HttpLoggingInterceptor {
+                    Timber.tag("ok-http").d(it)
+                }.apply {
                     level = if (BuildConfig.DEBUG)
                         HttpLoggingInterceptor.Level.HEADERS
                     else
@@ -88,27 +90,25 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideInterceptor(database: UDatabase) = object : Interceptor {
-        override fun intercept(chain: Interceptor.Chain): Response {
-            val request = chain.request()
-            val host = request.url.host
-            return if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
-                val builder = request.headers.newBuilder()
-                    .add("Accept", "application/json")
+    fun provideInterceptor(database: UDatabase) = Interceptor { chain ->
+        val request = chain.request()
+        val host = request.url.host
+        if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+            val builder = request.headers.newBuilder()
+                .add("Accept", "application/json")
 
-                val token = database.accessTokenDao().getAccessTokenDirect()
-                if (token?.token != null) {
-                    builder.add("Authorization", token.type + " " + token.token)
-                }
-
-                val newHeaders = builder.build()
-                val renewed = request.newBuilder().headers(newHeaders).build()
-
-                chain.proceed(renewed)
-            } else {
-                val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
-                chain.proceed(nRequest)
+            val token = database.accessTokenDao().getAccessTokenDirect()
+            if (token?.token != null) {
+                builder.add("Authorization", token.type + " " + token.token)
             }
+
+            val newHeaders = builder.build()
+            val renewed = request.newBuilder().headers(newHeaders).build()
+
+            chain.proceed(renewed)
+        } else {
+            val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
+            chain.proceed(nRequest)
         }
     }
 

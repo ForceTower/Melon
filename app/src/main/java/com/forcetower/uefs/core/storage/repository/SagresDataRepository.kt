@@ -32,8 +32,14 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.round
 import com.google.firebase.auth.FirebaseAuth
+import dev.forcetower.breaker.Orchestra
+import dev.forcetower.breaker.model.Authorization
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -41,7 +47,9 @@ class SagresDataRepository @Inject constructor(
     private val database: UDatabase,
     private val executor: AppExecutors,
     private val firebaseAuth: FirebaseAuth,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val client: OkHttpClient,
+    @Named("webViewUA") private val agent: String
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
@@ -118,6 +126,27 @@ class SagresDataRepository @Inject constructor(
             }
         }
         return result
+    }
+
+    suspend fun loginWithNewPasswordSuspend(password: String): Boolean = withContext(Dispatchers.IO) {
+        val access = database.accessDao().getAccessDirectSuspend() ?: return@withContext false
+        val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
+        orchestra.setAuthorization(Authorization(access.username, password))
+        try {
+            val outcome = orchestra.login()
+
+            if (outcome.isSuccess) {
+                database.accessDao().run {
+                    setAccessValidationSuspend(true)
+                    updateAccessPasswordSuspend(password)
+                }
+            }
+
+            outcome.isSuccess
+        } catch (error: Throwable) {
+            Timber.e(error, "Error during password change")
+            false
+        }
     }
 
     fun getScheduleHideCount(): LiveData<Int> {

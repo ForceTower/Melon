@@ -43,7 +43,7 @@ class SharedPrefsCachePersistence(
         init {
             val typeToken = object : TypeToken<MutableMap<String, SagresCredential>>() {}.type
             val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
-            map = gson.fromJson<MutableMap<String, SagresCredential>>(mapping, typeToken)
+            map = gson.fromJson(mapping, typeToken)
         }
 
         override fun save(id: String, value: SagresCredential): Boolean {
@@ -61,7 +61,7 @@ class SharedPrefsCachePersistence(
         init {
             val typeToken = object : TypeToken<MutableMap<String, SagresClass>>() {}.type
             val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
-            map = gson.fromJson<MutableMap<String, SagresClass>>(mapping, typeToken)
+            map = gson.fromJson(mapping, typeToken)
         }
 
         override fun save(id: String, value: SagresClass): Boolean {
@@ -83,7 +83,7 @@ class SharedPrefsCachePersistence(
         init {
             val typeToken = object : TypeToken<MutableMap<String, SagresPerson>>() {}.type
             val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
-            map = gson.fromJson<MutableMap<String, SagresPerson>>(mapping, typeToken)
+            map = gson.fromJson(mapping, typeToken)
         }
 
         override fun save(id: String, value: SagresPerson): Boolean {
@@ -105,7 +105,7 @@ class SharedPrefsCachePersistence(
         init {
             val typeToken = object : TypeToken<MutableMap<String, SagresMessageScope>>() {}.type
             val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
-            map = gson.fromJson<MutableMap<String, SagresMessageScope>>(mapping, typeToken)
+            map = gson.fromJson(mapping, typeToken)
         }
 
         override fun save(id: String, value: SagresMessageScope): Boolean {
@@ -127,7 +127,7 @@ class SharedPrefsCachePersistence(
         init {
             val typeToken = object : TypeToken<MutableMap<String, SagresDisciplineResumed>>() {}.type
             val mapping = preferences.getString("cache_temp_mapping_$key", null) ?: "{}"
-            map = gson.fromJson<MutableMap<String, SagresDisciplineResumed>>(mapping, typeToken)
+            map = gson.fromJson(mapping, typeToken)
         }
 
         override fun save(id: String, value: SagresDisciplineResumed): Boolean {
