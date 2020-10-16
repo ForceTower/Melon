@@ -63,7 +63,7 @@ class LoadingFragment : UFragment() {
                 markdown = Bypass(requireContext(), Bypass.Options())
                 setupTermsText()
             }.root
-        } catch (error: UnsupportedOperationException) {
+        } catch (error: Exception) {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.start_up_failed)
                 .setMessage(R.string.start_up_failed_description)
