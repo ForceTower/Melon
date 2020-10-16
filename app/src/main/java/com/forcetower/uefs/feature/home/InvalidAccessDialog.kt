@@ -33,15 +33,9 @@ import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.DialogInvalidAccessBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
-import javax.inject.Named
 
 @AndroidEntryPoint
 class InvalidAccessDialog : RoundedDialog() {
-    @Inject
-    @Named("flagSnowpiercerEnabled")
-    var snowpiercerEnabled: Boolean = false
-
     private lateinit var binding: DialogInvalidAccessBinding
     private val viewModel: HomeViewModel by activityViewModels()
 
