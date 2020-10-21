@@ -43,7 +43,7 @@ buildscript {
         room = '2.2.5'
         lifecycle = '2.2.0'
         paging = '2.1.2'
-        navigation = '2.3.0'
+        navigation = '2.3.1'
         work_manager = '2.4.0'
 
         // Dependency Injection
@@ -77,7 +77,7 @@ buildscript {
         gp_games = '20.0.1'
         gp_location = "17.1.0"
         gp_billing_client = '3.0.1'
-        gp_admob = '19.4.0'
+        gp_admob = '19.5.0'
 
         // Networking
         okhttp = '4.9.0'
