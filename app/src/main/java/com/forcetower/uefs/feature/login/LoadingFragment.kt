@@ -88,10 +88,13 @@ class LoadingFragment : UFragment() {
                 .show()
         } catch (error: Throwable) {
             Toast.makeText(requireContext(), R.string.start_up_failed_description, Toast.LENGTH_LONG).show()
-            Handler(Looper.getMainLooper()).postDelayed({
-                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                    ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
-            }, 3000)
+            Handler(Looper.getMainLooper()).postDelayed(
+                {
+                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                        ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
+                },
+                3000
+            )
         }
     }
 
