@@ -24,6 +24,8 @@ import `in`.uncod.android.bypass.Bypass
 import android.app.ActivityManager
 import android.content.Intent
 import android.os.Bundle
+import android.os.Handler
+import android.os.Looper
 import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
@@ -32,9 +34,11 @@ import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
@@ -64,6 +68,14 @@ class LoadingFragment : UFragment() {
                 setupTermsText()
             }.root
         } catch (error: Exception) {
+            showInitializationError()
+            Timber.e(error, "Failed inflating initial layout")
+            return null
+        }
+    }
+
+    private fun showInitializationError() {
+        try {
             AlertDialog.Builder(requireContext())
                 .setTitle(R.string.start_up_failed)
                 .setMessage(R.string.start_up_failed_description)
@@ -74,9 +86,12 @@ class LoadingFragment : UFragment() {
                 .setCancelable(false)
                 .create()
                 .show()
-
-            Timber.e(error, "Failed inflating initial layout")
-            return null
+        } catch (error: Throwable) {
+            Toast.makeText(requireContext(), R.string.start_up_failed_description, Toast.LENGTH_LONG).show()
+            Handler(Looper.getMainLooper()).postDelayed({
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
+            }, 3000)
         }
     }
 
