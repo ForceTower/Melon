@@ -31,9 +31,9 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.ui.NavigationUI
+import androidx.navigation.ui.onNavDestinationSelected
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.GlideApp
@@ -95,7 +95,7 @@ class HomeBottomFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.databaseAccount.observe(viewLifecycleOwner, Observer { handleAccount(it) })
+        viewModel.databaseAccount.observe(viewLifecycleOwner, { handleAccount(it) })
     }
 
     private fun handleAccount(account: Account?) {
@@ -105,14 +105,11 @@ class HomeBottomFragment : UFragment() {
     private fun featureFlags() {
         val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
         val demandCommandFlag = remoteConfig.getBoolean("feature_flag_demand_commander")
-        viewModel.flags.observe(
-            viewLifecycleOwner,
-            Observer {
-                if (demandCommandFlag && (it?.demandOpen == true || demandFlag)) {
-                    toggleItem(R.id.demand, true)
-                }
+        viewModel.flags.observe(viewLifecycleOwner) {
+            if (demandCommandFlag && (it?.demandOpen == true || demandFlag)) {
+                toggleItem(R.id.demand, true)
             }
-        )
+        }
 
         val uefsStudent = preferences.isStudentFromUEFS()
 
@@ -168,7 +165,19 @@ class HomeBottomFragment : UFragment() {
                     fragment.show(childFragmentManager, "feedback_modal")
                     true
                 }
-                else -> NavigationUI.onNavDestinationSelected(item, findNavController())
+                else -> {
+                    // Current navigation lib has a bug https://issuetracker.google.com/issues/171364502
+                    // NavigationUI.onNavDestinationSelected(item, findNavController())
+
+                    // TODO Remove this a workaround when next version is released
+                    val controller = findNavController()
+                    if (controller.currentDestination?.parent?.findNode(item.itemId) is ActivityNavigator.Destination) {
+                        controller.navigate(item.itemId)
+                        true
+                    } else {
+                        item.onNavDestinationSelected(controller) || super.onOptionsItemSelected(item)
+                    }
+                }
             }
         }
     }

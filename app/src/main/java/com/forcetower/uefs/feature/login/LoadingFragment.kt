@@ -58,8 +58,8 @@ class LoadingFragment : UFragment() {
     private lateinit var markdown: Bypass
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        try {
-            return FragmentLoadingBinding.inflate(inflater, container, false).also {
+        return try {
+            FragmentLoadingBinding.inflate(inflater, container, false).also {
                 binding = it
                 binding.btnFirstSteps.setOnClickListener {
                     findNavController().navigate(R.id.action_login_loading_to_login_form)
@@ -70,7 +70,7 @@ class LoadingFragment : UFragment() {
         } catch (error: Exception) {
             showInitializationError()
             Timber.e(error, "Failed inflating initial layout")
-            return null
+            null
         }
     }
 
