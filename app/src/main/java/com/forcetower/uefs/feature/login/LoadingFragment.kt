@@ -37,6 +37,7 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.os.postDelayed
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
@@ -88,13 +89,10 @@ class LoadingFragment : UFragment() {
                 .show()
         } catch (error: Throwable) {
             Toast.makeText(requireContext(), R.string.start_up_failed_description, Toast.LENGTH_LONG).show()
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
-                        ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
-                },
-                3000
-            )
+            Handler(Looper.getMainLooper()).postDelayed(3000) {
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                    ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
+            }
         }
     }
 
