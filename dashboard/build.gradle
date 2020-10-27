@@ -76,7 +76,6 @@ dependencies {
     implementation "androidx.appcompat:appcompat:$app_compat"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
 
     // Dependency injection
