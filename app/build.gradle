@@ -176,21 +176,20 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.palette:palette:$pallete"
+    implementation "androidx.palette:palette-ktx:$pallete"
     implementation "androidx.browser:browser:$browser"
-    implementation "androidx.preference:preference:$preference"
+    implementation "androidx.preference:preference-ktx:$preference"
     implementation "com.google.android:flexbox:$flexbox"
-    implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     // Architecture
     implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
+    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
 
     // Paging
-    implementation "androidx.paging:paging-runtime:$paging"
+    implementation "androidx.paging:paging-runtime-ktx:$paging"
 
     // Room
     kapt "androidx.room:room-compiler:$room"
@@ -203,16 +202,16 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Firebase
-    implementation "com.google.firebase:firebase-core:$firebase_core"
-    implementation "com.google.firebase:firebase-auth:$firebase_auth"
-    implementation "com.google.firebase:firebase-messaging:$firebase_messaging"
-    implementation "com.google.firebase:firebase-firestore:$firebase_firestore"
-    implementation "com.google.firebase:firebase-firestore-ktx:$firebase_firestore"
-    implementation "com.google.firebase:firebase-storage:$firebase_storage"
+    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation "com.google.firebase:firebase-core"
+    implementation "com.google.firebase:firebase-auth"
+    implementation "com.google.firebase:firebase-messaging"
+    implementation "com.google.firebase:firebase-firestore-ktx"
+    implementation "com.google.firebase:firebase-storage"
+    implementation "com.google.firebase:firebase-config"
+    implementation "com.google.firebase:firebase-functions"
+    implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
-    implementation "com.google.firebase:firebase-config:$firebase_remote_config"
-    implementation "com.google.firebase:firebase-functions:$firebase_functions"
-    implementation "com.google.firebase:firebase-crashlytics-ktx:$firebase_crashlytics"
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"
