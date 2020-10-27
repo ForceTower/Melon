@@ -36,6 +36,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.os.postDelayed
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
@@ -48,11 +49,16 @@ import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
+import com.forcetower.uefs.service.NotificationCreator
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoadingFragment : UFragment() {
+    @Inject
+    lateinit var analytics: FirebaseAnalytics
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoadingBinding
     private lateinit var markdown: Bypass
@@ -87,7 +93,12 @@ class LoadingFragment : UFragment() {
                 .create()
                 .show()
         } catch (error: Throwable) {
-            Handler(Looper.getMainLooper()).postDelayed(1000) {
+            try {
+                NotificationCreator.showSimpleNotification(requireContext(), getString(R.string.start_up_failed_resumed), getString(R.string.start_up_failed_resumed_desc))
+                analytics.logEvent("start_up_failed", bundleOf("error_type" to "text_init_error"))
+            } catch (_: Throwable) {}
+            
+            Handler(Looper.getMainLooper()).postDelayed(3000) {
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                     ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
             }
