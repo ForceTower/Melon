@@ -97,7 +97,7 @@ class LoadingFragment : UFragment() {
                 NotificationCreator.showSimpleNotification(requireContext(), getString(R.string.start_up_failed_resumed), getString(R.string.start_up_failed_resumed_desc))
                 analytics.logEvent("start_up_failed", bundleOf("error_type" to "text_init_error"))
             } catch (_: Throwable) {}
-            
+
             Handler(Looper.getMainLooper()).postDelayed(3000) {
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
                     ContextCompat.getSystemService(requireContext(), ActivityManager::class.java)?.clearApplicationUserData()
