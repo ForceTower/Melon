@@ -87,7 +87,7 @@ class MessagesRepository @Inject constructor(
 
             val outcome = orchestra.messages(profile.sagresId)
             if (outcome is Outcome.Success) {
-                MessagesProcessor(outcome.value, database, context, true)
+                MessagesProcessor(outcome.value, database, context, true).execute()
                 emit(true)
             } else {
                 emit(false)
