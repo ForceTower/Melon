@@ -83,11 +83,10 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.palette:palette:$pallete"
+    implementation "androidx.palette:palette-ktx:$pallete"
     implementation "androidx.browser:browser:$browser"
-    implementation "androidx.preference:preference:$preference"
+    implementation "androidx.preference:preference-ktx:$preference"
     implementation "com.google.android:flexbox:$flexbox"
-    implementation "androidx.fragment:fragment:$fragment"
     implementation "androidx.fragment:fragment-ktx:$fragment"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
@@ -95,7 +94,7 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
 
     // Paging
-    implementation "androidx.paging:paging-runtime:$paging"
+    implementation "androidx.paging:paging-runtime-ktx:$paging"
 
     // Dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_dagger"

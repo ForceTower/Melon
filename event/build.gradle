@@ -78,10 +78,9 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:$swipe_refresh"
     implementation "androidx.constraintlayout:constraintlayout:$constraint_layout"
     implementation "com.google.android.material:material:$google_material"
-    implementation "androidx.palette:palette:$pallete"
+    implementation "androidx.palette:palette-ktx:$pallete"
     implementation "androidx.browser:browser:$browser"
-    implementation "androidx.preference:preference:$preference"
-    implementation "androidx.fragment:fragment:$fragment"
+    implementation "androidx.preference:preference-ktx:$preference"
     implementation "androidx.fragment:fragment-ktx:$fragment"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
