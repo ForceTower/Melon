@@ -83,7 +83,11 @@ android {
             if (keyPass == null)
                 keyPass = "android"
 
-            storeFile rootProject.file("sign.jks")
+            def signFile = rootProject.file("sign.jks")
+            if (!signFile.exists())
+                signFile = rootProject.file("debug.keystore")
+
+            storeFile signFile
             storePassword password
             keyAlias alias
             keyPassword keyPass
