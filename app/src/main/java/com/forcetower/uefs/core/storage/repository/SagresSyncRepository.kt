@@ -61,7 +61,6 @@ import com.forcetower.uefs.core.model.unes.ServiceRequest
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.model.unes.notify
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.util.LocationShrinker
@@ -89,7 +88,6 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
-    private val syncService: APIService,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
@@ -204,7 +202,7 @@ class SagresSyncRepository @Inject constructor(
             defineMessages(SagresMessageParser.getMessages(homeDoc))
         }
 
-        val person = me(score, homeDoc, access)
+        val person = me(score, access)
         Timber.d("The person from me is ${person?.name} ${person?.isMocked}")
         if (person == null) {
             registry.completed = true
@@ -404,14 +402,17 @@ class SagresSyncRepository @Inject constructor(
 
     private fun onInvalidLogin() {
         val access = database.accessDao().getAccessDirect()
-        if (access != null && access.valid) {
-//            This is disabled... for now
-//            database.accessDao().setAccessValidation(false)
-//            NotificationCreator.showInvalidAccessNotification(context)
+        if (
+            access != null &&
+            access.valid &&
+            com.forcetower.sagres.Constants.getParameter("REQUIRES_CAPTCHA") != "true"
+        ) {
+            database.accessDao().setAccessValidation(false)
+            NotificationCreator.showInvalidAccessNotification(context)
         }
     }
 
-    private fun me(score: Double, document: Document?, access: Access): SagresPerson? {
+    private fun me(score: Double, access: Access): SagresPerson? {
         val username = access.username
         if (username.contains("@")) {
             return continueWithHtml(username, score)
