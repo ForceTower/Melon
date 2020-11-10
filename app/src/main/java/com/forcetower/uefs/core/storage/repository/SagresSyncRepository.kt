@@ -49,6 +49,7 @@ import com.forcetower.sagres.parsers.SagresScheduleParser
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Discipline
@@ -76,6 +77,7 @@ import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
+import java.util.Locale
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -167,26 +169,13 @@ class SagresSyncRepository @Inject constructor(
         registry.uid = uid
         SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
 
-//        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
-//            try {
-//                val call = syncService.getUpdate()
-//                val response = call.execute()
-//                if (response.isSuccessful) {
-//                    val body = response.body()
-//                    if (body != null && !body.manager) {
-//                        registry.completed = true
-//                        registry.error = -4
-//                        registry.success = false
-//                        registry.message = "Atualização negada"
-//                        registry.end = System.currentTimeMillis()
-//                        database.syncRegistryDao().update(registry)
-//                        return
-//                    }
-//                }
-//            } catch (t: Throwable) {
-//                Timber.e(t, "An error just happened... It will complete anyways")
-//            }
-//        }
+        // Internal checks for canceling auto sync
+        // this was useful to avoid unes from ddos'ing the website.
+        // they said unes was doing it anyways, so here is a deleted useless piece of code
+        // you welcome
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
+            Timber.d("There was a time where this would cause sync to be aborted if server.. But i don't care anymore")
+        }
 
         try {
             findAndMatch()
@@ -425,7 +414,7 @@ class SagresSyncRepository @Inject constructor(
     private fun me(score: Double, document: Document?, access: Access): SagresPerson? {
         val username = access.username
         if (username.contains("@")) {
-            return continueWithHtml(document, username, score)
+            return continueWithHtml(username, score)
         } else {
             val me = SagresNavigator.instance.me()
             Timber.d("Me response: ${me.status}")
@@ -441,7 +430,7 @@ class SagresSyncRepository @Inject constructor(
                     }
                 }
                 Status.RESPONSE_FAILED, Status.NETWORK_ERROR -> {
-                    return continueWithHtml(document, username, score)
+                    return continueWithHtml(username, score)
                 }
                 else -> produceErrorMessage(me)
             }
@@ -449,7 +438,7 @@ class SagresSyncRepository @Inject constructor(
         return null
     }
 
-    private fun continueWithHtml(document: Document?, username: String, score: Double): SagresPerson? {
+    private fun continueWithHtml(username: String, score: Double): SagresPerson? {
         val start = SagresNavigator.instance.startPage().document ?: return null
         val name = SagresBasicParser.getName(start) ?: username
         val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username).apply { isMocked = true }
