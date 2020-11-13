@@ -21,15 +21,15 @@
 buildscript {
     ext.kotlin_version = '1.4.10'
     ext {
-        sagres = "1.6.0"
+        sagres = "1.6.1"
 
         // Kotlin Extensions
-        ktx = '1.5.0-alpha04'
+        ktx = '1.5.0-alpha05'
 
         // Android X
         app_compat = '1.2.0'
         google_material = '1.2.1'
-        constraint_layout = '2.0.2'
+        constraint_layout = '2.0.4'
         annotation = "1.1.0"
         exif_interface = "1.1.0"
         pallete = "1.0.0"
@@ -67,14 +67,14 @@ buildscript {
 
         // Image
         glide = '4.11.0'
-        lottie = '3.4.4'
+        lottie = '3.5.0'
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = '1.8.2'
+        gp_core = '1.8.3'
         gp_core_ktx = '1.8.1'
-        gp_auth = '18.1.0'
-        gp_games = '20.0.1'
+        gp_auth = '19.0.0'
+        gp_games = '21.0.0'
         gp_location = "17.1.0"
         gp_billing_client = '3.0.1'
         gp_admob = '19.5.0'
@@ -96,14 +96,14 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '4.1.0'
+        android_gradle_plugin = '4.1.1'
         google_play_services = "4.3.4"
         kotlinter = "3.0.2"
         play_publisher = "3.0.0"
         bundletool = "0.10.0"
         crashlytics = "2.3.0"
         hilt_dagger = '2.29.1-alpha'
-        coreDesugar = '1.0.10'
+        coreDesugar = '1.1.0'
     }
 
     repositories {
