@@ -21,6 +21,7 @@
 ext {
     buildVersion = {
         try {
+//            def tag_count = Integer.parseInt('git tag | wc -l'.execute([], project.rootDir).text.trim())
             def commit_count = Integer.parseInt('git rev-list --count HEAD'.execute([], project.rootDir).text.trim())
             def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
             def last_tag = 'git describe --abbrev=0'.execute([], project.rootDir).text.trim()
