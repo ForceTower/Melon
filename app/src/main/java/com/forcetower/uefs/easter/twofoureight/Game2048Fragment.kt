@@ -46,8 +46,6 @@ import com.forcetower.uefs.easter.twofoureight.view.Game
 import com.forcetower.uefs.easter.twofoureight.view.Tile
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
-import com.google.android.gms.ads.reward.RewardItem
-import com.google.android.gms.ads.reward.RewardedVideoAdListener
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
@@ -57,12 +55,7 @@ import kotlin.math.abs
  * Created by João Paulo on 02/06/2018.
  */
 @AndroidEntryPoint
-class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener, RewardedVideoAdListener {
-    override fun onRewardedVideoAdLeftApplication() = Unit
-    override fun onRewardedVideoAdLoaded() = Unit
-    override fun onRewardedVideoAdOpened() = Unit
-    override fun onRewardedVideoCompleted() = Unit
-    override fun onRewardedVideoStarted() = Unit
+class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener {
 
     @Inject lateinit var preferences: SharedPreferences
     @Inject lateinit var darkRepository: DarkThemeRepository
@@ -71,7 +64,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     private var downY: Float = 0.toFloat()
     private var upX: Float = 0.toFloat()
     private var upY: Float = 0.toFloat()
-    private var backs: Int = 0
 
     private lateinit var mGame: Game
     private lateinit var binding: GameFragment2048Binding
@@ -126,16 +118,11 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         }
 
         binding.ibUndo.setOnClickListener {
-            if (mGame.score > 100000 && backs <= 0) {
-                onRewarded()
+            mGame.revertUndoState()
+            if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
+                binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
             } else {
-                mGame.revertUndoState()
-                backs -= 1
-                if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
-                    binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
-                } else {
-                    binding.tvTitle.text = HtmlCompat.fromHtml("2048", FROM_HTML_MODE_LEGACY)
-                }
+                binding.tvTitle.text = HtmlCompat.fromHtml("2048", FROM_HTML_MODE_LEGACY)
             }
         }
 
@@ -143,12 +130,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             Toast.makeText(activity, getString(R.string.start_new_game), Toast.LENGTH_SHORT).show()
             true
         }
-    }
-
-    private fun onRewarded() {
-        backs += 10
-        mGame.revertUndoState()
-        backs -= 1
     }
 
     private fun unlockDarkTheme() {
@@ -170,10 +151,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
         }
         super.onResume()
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent): Boolean {
@@ -357,21 +334,6 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
             }
         }
         return false
-    }
-
-    override fun onRewarded(item: RewardItem?) {
-        item ?: return
-        if (item.type === "back") {
-            backs += item.amount
-            showSnack(getString(R.string.rewarded_with_back_2048))
-        }
-    }
-
-    override fun onRewardedVideoAdClosed() {
-    }
-
-    override fun onRewardedVideoAdFailedToLoad(reason: Int) {
-        showSnack(getString(R.string.rewarded_failed))
     }
 
     companion object {
