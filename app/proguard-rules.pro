@@ -32,6 +32,11 @@
     void addAttribute(...);
 }
 
+## About Libraries
+-keepclasseswithmembers class **.R$* {
+    public static final int define_*;
+}
+
 ## Models
 -keep class com.forcetower.uefs.core.model.** { *; }
 -keep class dev.forcetower.breaker.model.** { *; }
@@ -50,5 +55,4 @@
 
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
-
--repackageclasses forcetower
+-dontwarn java.lang.instrument.ClassFileTransformer
