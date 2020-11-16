@@ -148,7 +148,6 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 R.id.open_source -> {
-                    throw Exception("This is a crash!")
                     LibsBuilder()
                         .withEdgeToEdge(true)
                         .withAboutIconShown(true)
