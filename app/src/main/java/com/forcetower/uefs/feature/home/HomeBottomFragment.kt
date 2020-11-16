@@ -148,8 +148,9 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 R.id.open_source -> {
+                    throw Exception("This is a crash!")
                     LibsBuilder()
-                        .withActivityStyle(Libs.ActivityStyle.DARK)
+                        .withEdgeToEdge(true)
                         .withAboutIconShown(true)
                         .withAboutVersionShown(true)
                         .withAboutDescription(getString(R.string.about_description))
