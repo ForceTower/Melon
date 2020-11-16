@@ -27,6 +27,7 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
     compileSdkVersion 30
@@ -83,9 +84,9 @@ android {
             if (keyPass == null)
                 keyPass = "android"
 
-            def signFile = rootProject.file("sign.jks")
-            if (!signFile.exists())
-                signFile = rootProject.file("debug.keystore")
+//            def signFile = rootProject.file("sign.jks")
+//            if (!signFile.exists())
+                def signFile = rootProject.file("debug.keystore")
 
             storeFile signFile
             storePassword password
@@ -234,11 +235,14 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
     implementation "com.airbnb.android:lottie:$lottie"
 
+    // About Libraries
+    implementation "com.mikepenz:aboutlibraries-core:$about_libraries"
+    implementation "com.mikepenz:aboutlibraries:$about_libraries"
+
     // Others
     implementation "com.google.code.gson:gson:$gson"
     implementation "org.jsoup:jsoup:$jsoup"
     implementation "com.github.PhilJay:MPAndroidChart:$chart_view"
-    implementation "com.mikepenz:aboutlibraries:$about_libraries"
     implementation "pub.devrel:easypermissions:$easy_permissions"
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
