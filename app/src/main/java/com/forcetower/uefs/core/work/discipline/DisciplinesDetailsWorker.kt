@@ -33,15 +33,12 @@ import androidx.work.WorkerParameters
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class DisciplinesDetailsWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: DisciplineDetailsRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: DisciplineDetailsRepository
-
     @WorkerThread
     override fun doWork(): Result {
         return try {
