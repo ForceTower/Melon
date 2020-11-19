@@ -34,15 +34,12 @@ import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionReposit
 import com.forcetower.uefs.core.work.enqueue
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class AnswerAffinityWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: AffinityQuestionRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: AffinityQuestionRepository
-
     override fun doWork(): Result {
         Timber.d("Answering affinity")
 
