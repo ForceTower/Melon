@@ -32,19 +32,13 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.work.enqueueUnique
-import com.google.firebase.analytics.FirebaseAnalytics
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class CreateDemandWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: DemandRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: DemandRepository
-    @Inject
-    lateinit var analytics: FirebaseAnalytics
-
     @WorkerThread
     override fun doWork(): Result {
         repository.executeCreateDemand()
