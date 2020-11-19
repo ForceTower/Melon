@@ -33,14 +33,12 @@ import androidx.work.workDataOf
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class GradesSagresWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: SagresGradesRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: SagresGradesRepository
     override fun doWork(): Result {
         val semesterId = inputData.getLong(SEMESTER_ID, 0)
         return try {

@@ -36,14 +36,12 @@ import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
 
 class SyncLinkedWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: SagresSyncRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: SagresSyncRepository
 
     override fun doWork(): Result {
         try {
