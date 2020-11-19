@@ -23,6 +23,8 @@ package com.forcetower.uefs
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.hilt.work.HiltWorkerFactory
+import androidx.work.Configuration
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
@@ -40,9 +42,9 @@ import timber.log.Timber
 import javax.inject.Inject
 
 @HiltAndroidApp
-class UApplication : Application() {
-    @Inject
-    lateinit var preferences: SharedPreferences
+class UApplication : Application(), Configuration.Provider {
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var workerFactory: HiltWorkerFactory
 
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
@@ -95,6 +97,11 @@ class UApplication : Application() {
     fun configureNotifications() {
         NotificationHelper(this).createChannels()
     }
+
+    override fun getWorkManagerConfiguration() =
+        Configuration.Builder()
+            .setWorkerFactory(workerFactory)
+            .build()
 
     companion object {
         fun setupDayNightTheme(context: Context) {
