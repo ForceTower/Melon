@@ -20,6 +20,7 @@
   -->
 
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.forcetower.uefs">
 
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -167,6 +168,12 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
+
+        <provider
+            android:name="androidx.work.impl.WorkManagerInitializer"
+            android:authorities="${applicationId}.workmanager-init"
+            tools:node="remove"
+            android:exported="false" />
 
         <receiver
             android:name=".architecture.receiver.OnUpgradeReceiver"

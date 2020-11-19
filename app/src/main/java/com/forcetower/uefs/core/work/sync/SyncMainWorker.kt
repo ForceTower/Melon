@@ -21,7 +21,6 @@
 package com.forcetower.uefs.core.work.sync
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.annotation.IntRange
 import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
@@ -36,33 +35,29 @@ import androidx.work.WorkerParameters
 import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.enqueueUnique
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
-import javax.inject.Inject
+import javax.inject.Named
 
 class SyncMainWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: SagresSyncRepository,
+    private val snowpiercer: SnowpiercerSyncRepository,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
 ) : CoroutineWorker(context, params) {
-    @Inject lateinit var repository: SagresSyncRepository
-    @Inject lateinit var snowpiercer: SnowpiercerSyncRepository
-    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject lateinit var preferences: SharedPreferences
-
     override suspend fun doWork(): Result {
         try {
             Timber.d("Main Worker started")
-            if (preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")) {
+            if (snowpiercerEnabled) {
                 snowpiercer.performSync("Snowpiercer")
             } else {
                 repository.performSync("Principal")
             }
             Timber.d("Main Worker completed")
         } catch (t: Throwable) {
-            Timber.d("Worker ignored the error so it may continue")
+            Timber.d(t, "Worker ignored the error so it may continue")
         }
         return Result.success()
     }

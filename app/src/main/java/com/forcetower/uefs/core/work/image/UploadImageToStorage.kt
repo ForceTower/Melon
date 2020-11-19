@@ -45,18 +45,14 @@ import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.UUID
-import javax.inject.Inject
 
 class UploadImageToStorage @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val client: OkHttpClient,
+    private val database: UDatabase,
+    private val service: UService
 ) : Worker(context, params) {
-    @Inject
-    lateinit var client: OkHttpClient
-    @Inject
-    lateinit var database: UDatabase
-    @Inject
-    lateinit var service: UService
 
     @SuppressLint("WrongThread")
     @WorkerThread

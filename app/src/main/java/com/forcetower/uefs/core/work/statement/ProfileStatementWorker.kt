@@ -34,15 +34,12 @@ import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.work.enqueue
 import timber.log.Timber
-import javax.inject.Inject
 
 class ProfileStatementWorker @WorkerInject constructor(
     @Assisted context: Context,
-    @Assisted params: WorkerParameters
+    @Assisted params: WorkerParameters,
+    private val repository: ProfileRepository
 ) : Worker(context, params) {
-    @Inject
-    lateinit var repository: ProfileRepository
-
     override fun doWork(): Result {
         val statementId = inputData.getLong(STATEMENT, 0)
         return try {
