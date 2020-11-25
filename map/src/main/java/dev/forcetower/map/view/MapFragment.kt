@@ -85,6 +85,7 @@ class MapFragment : UFragment() {
     override fun onStart() {
         super.onStart()
         mapView.onStart()
+        showSnack("Esta é uma função high octane. Tudo aqui está em testes. Boa sorte")
     }
 
     override fun onStop() {

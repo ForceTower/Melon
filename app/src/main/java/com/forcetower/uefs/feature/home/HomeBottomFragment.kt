@@ -124,6 +124,9 @@ class HomeBottomFragment : UFragment() {
         val themeSwitcher = remoteConfig.getBoolean("feature_flag_theme_switcher")
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
+        val campusMap = remoteConfig.getBoolean("feature_flag_campus_map")
+        toggleItem(R.id.campus_map, campusMap)
+
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.events, uefsStudent)
         toggleItem(R.id.flowchart, uefsStudent)
