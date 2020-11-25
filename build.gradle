@@ -47,7 +47,7 @@ buildscript {
         work_manager = '2.4.0'
 
         // Dependency Injection
-        dagger = '2.29.1'
+        dagger = '2.30.1'
 
         // Firebase
         firebase_core = '17.5.1'
@@ -102,7 +102,7 @@ buildscript {
         play_publisher = "3.0.0"
         bundletool = "0.10.0"
         crashlytics = "2.3.0"
-        hilt_dagger = '2.29.1-alpha'
+        hilt_dagger = '2.30.1-alpha'
         coreDesugar = '1.1.1'
     }
 
