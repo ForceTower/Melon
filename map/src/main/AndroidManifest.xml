@@ -34,6 +34,10 @@
     </dist:module>
 
     <application tools:ignore="AllowBackup,MissingApplicationIcon">
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="@string/google_maps_key" />
+
         <activity android:name=".MapActivity"
             android:theme="@style/UTheme.NoInsets.Base">
             <intent-filter>

@@ -43,7 +43,8 @@ jobs:
         UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
         UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
         UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
-    
+        UNES_MAPS_KEY: ${{ secrets.UNES_MAPS_KEY }}
+
     - name: Upload result for job
       uses: actions/upload-artifact@v1
       if: "!contains(github.event.head_commit.message, '[publish skip]')"

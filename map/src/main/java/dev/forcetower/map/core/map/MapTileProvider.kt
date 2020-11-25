@@ -18,23 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.map
+package dev.forcetower.map.core.map
 
-import android.os.Bundle
-import androidx.core.view.WindowCompat
-import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dev.forcetower.map.view.MapFragment
+import com.google.android.gms.maps.model.UrlTileProvider
+import java.net.URL
 
-class MapActivity : UActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+class MapTileProvider(tileSize: Int = BASE_TILE_SIZE) : UrlTileProvider(tileSize, tileSize) {
+    override fun getTileUrl(x: Int, y: Int, zoom: Int): URL {
+        return URL(BASE_URL.format(zoom, x, y))
+    }
 
-        setContentView(R.layout.activity_map)
-
-        supportFragmentManager.inTransaction {
-            replace(R.id.fragment_map, MapFragment())
-        }
+    companion object {
+        private const val BASE_TILE_SIZE = 256
+        private const val BASE_URL = "https://storage.googleapis.com/unes_map_titles/tiles/%d/%d/%d.png"
     }
 }
