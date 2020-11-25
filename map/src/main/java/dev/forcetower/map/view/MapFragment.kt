@@ -24,18 +24,90 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.viewModels
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.MapStyleOptions
+import com.google.android.gms.maps.model.TileOverlayOptions
+import dev.forcetower.map.R
+import dev.forcetower.map.core.map.MapTileProvider
 import dev.forcetower.map.databinding.FragmentMapBinding
-import timber.log.Timber
 
 class MapFragment : UFragment() {
+    private val viewModel by viewModels<MapViewModel>()
     private lateinit var binding: FragmentMapBinding
+    private lateinit var mapView: MapView
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        Timber.d("Created stuff")
-        return FragmentMapBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.root
+    private var mapViewBundle: Bundle? = null
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            mapViewBundle = savedInstanceState.getBundle(MAP_VIEW_BUNDLE_KEY)
+        }
     }
 
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view = FragmentMapBinding.inflate(inflater, container, false).also {
+            binding = it
+        }.apply {
+            lifecycleOwner = viewLifecycleOwner
+            actions = viewModel
+        }.root
+
+        mapView = binding.map.apply {
+            onCreate(mapViewBundle)
+        }
+
+        mapView.getMapAsync { map ->
+            map.addTileOverlay(
+                TileOverlayOptions()
+                    .tileProvider(MapTileProvider())
+                    .visible(true)
+            )
+            map.setMapStyle(MapStyleOptions.loadRawResourceStyle(requireContext(), R.raw.map_style))
+        }
+
+        return view
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY) ?: Bundle().apply { putBundle(MAP_VIEW_BUNDLE_KEY, this) }
+        mapView.onSaveInstanceState(mapViewBundle)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        mapView.onResume()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        mapView.onStart()
+    }
+
+    override fun onStop() {
+        super.onStop()
+        mapView.onStop()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        mapView.onPause()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        mapView.onDestroy()
+    }
+
+    override fun onLowMemory() {
+        super.onLowMemory()
+        mapView.onLowMemory()
+    }
+
+    companion object {
+        private const val MAP_VIEW_BUNDLE_KEY = "MapViewBundleKey"
+    }
 }

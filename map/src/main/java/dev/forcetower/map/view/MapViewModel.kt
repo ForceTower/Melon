@@ -18,23 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.map
+package dev.forcetower.map.view
 
-import android.os.Bundle
-import androidx.core.view.WindowCompat
-import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dev.forcetower.map.view.MapFragment
+import androidx.lifecycle.ViewModel
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.LatLngBounds
 
-class MapActivity : UActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
+class MapViewModel : ViewModel(), MapActions {
+    override val campusLocationBounds = LatLngBounds(UEFS_MAP_VIEWPORT_BOUND_SW, UEFS_MAP_VIEWPORT_BOUND_NE)
 
-        setContentView(R.layout.activity_map)
-
-        supportFragmentManager.inTransaction {
-            replace(R.id.fragment_map, MapFragment())
-        }
+    companion object {
+        private val UEFS_MAP_VIEWPORT_BOUND_NE = LatLng(-12.195484, -38.964935)
+        private val UEFS_MAP_VIEWPORT_BOUND_SW = LatLng(-12.205645, -38.976297)
     }
 }

@@ -21,14 +21,31 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="actions"
+            type="dev.forcetower.map.view.MapActions" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <com.google.android.gms.maps.MapView
-            android:id="@+id/map_view"
+            android:id="@+id/map"
             android:layout_width="0dp"
             android:layout_height="0dp"
+            app:uiCompass="false"
+            app:uiZoomControls="false"
+            app:cameraBearing="0"
+            app:cameraTilt="0"
+            app:cameraZoom="17"
+            app:cameraTargetLat="-12.2008533"
+            app:cameraTargetLng="-38.9710440"
+            app:mapMaxZoom="@{19}"
+            app:mapMinZoom="@{16}"
+            app:isIndoorEnabled="@{false}"
+            app:isMapToolbarEnabled="@{false}"
+            app:mapViewport="@{actions.campusLocationBounds}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"

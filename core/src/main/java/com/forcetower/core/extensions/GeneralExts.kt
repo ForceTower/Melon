@@ -18,23 +18,12 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.map
+package com.forcetower.core.extensions
 
-import android.os.Bundle
-import androidx.core.view.WindowCompat
-import com.forcetower.uefs.feature.shared.UActivity
-import com.forcetower.uefs.feature.shared.extensions.inTransaction
-import dev.forcetower.map.view.MapFragment
+import android.content.res.Resources
+import androidx.annotation.DimenRes
+import androidx.core.content.res.ResourcesCompat
 
-class MapActivity : UActivity() {
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        setContentView(R.layout.activity_map)
-
-        supportFragmentManager.inTransaction {
-            replace(R.id.fragment_map, MapFragment())
-        }
-    }
+fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
+    return ResourcesCompat.getFloat(this, resId)
 }
