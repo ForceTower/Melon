@@ -21,7 +21,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'dagger.hilt.android.plugin'
