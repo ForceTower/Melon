@@ -94,6 +94,7 @@ dependencies {
 
     api "androidx.navigation:navigation-ui-ktx:$navigation"
     api "androidx.navigation:navigation-fragment-ktx:$navigation"
+    api "androidx.navigation:navigation-dynamic-features-fragment:$navigation"
 
     // Work manager
     api "androidx.work:work-runtime:$work_manager"
