@@ -150,6 +150,13 @@
         android:label="CaptchaResolver"
         tools:layout="@layout/fragment_tech_nope_captcha"/>
 
+    <fragment
+        app:moduleName="map"
+        android:id="@+id/campus_map"
+        android:name="dev.forcetower.map.view.MapFragment"
+        android:label="Campus Map"
+        tools:layout="@layout/fragment_map"/>
+
     <activity
         android:id="@+id/demand"
         android:name="com.forcetower.uefs.feature.demand.DemandActivity"
