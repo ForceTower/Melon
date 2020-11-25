@@ -25,10 +25,15 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.forcetower.uefs.core.vm.Destination
+import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.LaunchViewModel
+import com.forcetower.uefs.feature.home.HomeActivity
+import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -49,30 +54,21 @@ class LauncherActivity : AppCompatActivity() {
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
-        val intent = Intent(Intent.ACTION_VIEW).setClassName(
+        viewModel.direction.observe(
             this,
-            "dev.forcetower.map.MapActivity"
+            EventObserver {
+                Timber.d("Once!")
+                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
+                if (!viewModel.started) {
+                    when (it) {
+                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+                    }
+                    viewModel.started = true
+                    finish()
+                }
+            }
         )
-
-        startActivity(intent)
-        finish()
-        return
-
-//        viewModel.direction.observe(
-//            this,
-//            EventObserver {
-//                Timber.d("Once!")
-//                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-//                if (!viewModel.started) {
-//                    when (it) {
-//                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-//                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
-//                    }
-//                    viewModel.started = true
-//                    finish()
-//                }
-//            }
-//        )
     }
 
     private fun createNewVersionNotification() {
