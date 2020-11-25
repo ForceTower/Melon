@@ -104,7 +104,7 @@ android {
     buildTypes {
         def mapsKey = System.getenv("UNES_MAPS_KEY")
         if (mapsKey == null) {
-            mapsKey = "YOUR_KEY_HERE"
+            mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
         }
         release {
             signingConfig signingConfigs.release
@@ -116,7 +116,7 @@ android {
         debug {
             applicationIdSuffix '.debug'
             manifestPlaceholders = [crashlyticsEnabled: false]
-            resValue("string", "google_maps_key", "YOUR_KEY_HERE")
+            resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }
 
