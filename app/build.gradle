@@ -102,15 +102,21 @@ android {
     }
 
     buildTypes {
+        def mapsKey = System.getenv("UNES_MAPS_KEY")
+        if (mapsKey == null) {
+            mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
+        }
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
             manifestPlaceholders = [crashlyticsEnabled: true]
+            resValue("string", "google_maps_key", mapsKey)
         }
         debug {
             applicationIdSuffix '.debug'
             manifestPlaceholders = [crashlyticsEnabled: false]
+            resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }
 
@@ -141,7 +147,7 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event"]
+    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map']
 }
 
 play {
