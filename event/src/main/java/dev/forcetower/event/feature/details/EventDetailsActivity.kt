@@ -25,6 +25,7 @@ import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import androidx.activity.viewModels
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.core.content.ContextCompat
 import androidx.core.view.WindowCompat
@@ -106,8 +107,13 @@ class EventDetailsActivity : UActivity() {
                 CustomTabActivityHelper.openCustomTab(
                     this,
                     CustomTabsIntent.Builder()
-                        .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
-                        .addDefaultShareMenuItem()
+                        .setDefaultColorSchemeParams(
+                            CustomTabColorSchemeParams
+                                .Builder()
+                                .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
+                                .build()
+                        )
+                        .setShareState(CustomTabsIntent.SHARE_STATE_ON)
                         .build(),
                     Uri.parse(it.registerPage)
                 )

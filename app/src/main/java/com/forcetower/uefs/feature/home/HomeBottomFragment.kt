@@ -31,8 +31,8 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.core.utils.ColorUtils
@@ -168,17 +168,7 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 else -> {
-                    // Current navigation lib has a bug https://issuetracker.google.com/issues/171364502
-                    // NavigationUI.onNavDestinationSelected(item, findNavController())
-
-                    // TODO Remove this a workaround when next version is released
-                    val controller = findNavController()
-                    if (controller.currentDestination?.parent?.findNode(item.itemId) is ActivityNavigator.Destination) {
-                        controller.navigate(item.itemId)
-                        true
-                    } else {
-                        item.onNavDestinationSelected(controller) || super.onOptionsItemSelected(item)
-                    }
+                    NavigationUI.onNavDestinationSelected(item, findNavController())
                 }
             }
         }
