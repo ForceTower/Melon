@@ -25,6 +25,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -88,8 +89,13 @@ class ContributorsFragment : UFragment() {
         CustomTabActivityHelper.openCustomTab(
             requireActivity(),
             CustomTabsIntent.Builder()
-                .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
-                .addDefaultShareMenuItem()
+                .setDefaultColorSchemeParams(
+                    CustomTabColorSchemeParams
+                        .Builder()
+                        .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
+                        .build()
+                )
+                .setShareState(CustomTabsIntent.SHARE_STATE_ON)
                 .build(),
             Uri.parse(string)
         )
