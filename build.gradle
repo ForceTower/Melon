@@ -40,7 +40,7 @@ buildscript {
         swipe_refresh = '1.1.0'
 
         // Architecture
-        room = '2.2.5'
+        room = '2.2.6'
         lifecycle = '2.2.0'
         paging = '2.1.2'
         navigation = '2.3.2'
