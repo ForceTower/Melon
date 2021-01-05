@@ -99,7 +99,7 @@ buildscript {
         android_gradle_plugin = '4.1.1'
         google_play_services = "4.3.4"
         kotlinter = "3.0.2"
-        play_publisher = "3.0.0"
+        play_publisher = "3.1.0"
         bundletool = "0.10.0"
         crashlytics = "2.3.0"
         hilt_dagger = '2.30.1-alpha'
@@ -146,11 +146,6 @@ allprojects {
         tasks.withType(JavaCompile) {
             options.compilerArgs << "-Xmaxerrs" << "10000"
             options.compilerArgs << "-Xmaxwarns" << "10000"
-        }
-
-        def generate = tasks.findByName('generateEditForComDotForcetowerDotUefs')
-        if (generate != null) {
-            generate.mustRunAfter(':app:bundleRelease')
         }
     }
 }
