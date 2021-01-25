@@ -24,7 +24,7 @@ buildscript {
         sagres = "1.6.2"
 
         // Kotlin Extensions
-        ktx = '1.5.0-alpha05'
+        ktx = '1.5.0-beta01'
 
         // Android X
         app_compat = '1.2.0'
@@ -47,7 +47,7 @@ buildscript {
         work_manager = '2.4.0'
 
         // Dependency Injection
-        dagger = '2.30.1'
+        dagger = '2.31.2'
 
         // Firebase
         firebase_core = '17.5.1'
@@ -67,7 +67,7 @@ buildscript {
 
         // Image
         glide = '4.11.0'
-        lottie = '3.5.0'
+        lottie = '3.6.0'
         image_cropper = "2.8.0"
 
         // Google Services
@@ -77,7 +77,7 @@ buildscript {
         gp_games = '21.0.0'
         gp_location = "17.1.0"
         gp_billing_client = '3.0.2'
-        gp_admob = '19.6.0'
+        gp_admob = '19.7.0'
 
         // Networking
         okhttp = '4.9.0'
@@ -96,13 +96,13 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '4.1.1'
+        android_gradle_plugin = '4.1.2'
         google_play_services = "4.3.4"
-        kotlinter = "3.0.2"
+        kotlinter = "3.3.0"
         play_publisher = "3.1.0"
         bundletool = "0.10.0"
         crashlytics = "2.3.0"
-        hilt_dagger = '2.30.1-alpha'
+        hilt_dagger = '2.31.2-alpha'
         coreDesugar = '1.1.1'
     }
 
