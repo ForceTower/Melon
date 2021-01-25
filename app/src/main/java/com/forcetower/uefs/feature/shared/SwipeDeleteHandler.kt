@@ -21,14 +21,12 @@
 package com.forcetower.uefs.feature.shared
 
 import android.content.Context
-import android.graphics.BlendMode
-import android.graphics.BlendModeColorFilter
 import android.graphics.Canvas
 import android.graphics.Color
-import android.graphics.PorterDuff
 import android.graphics.drawable.ColorDrawable
-import android.os.Build
 import androidx.core.content.ContextCompat
+import androidx.core.graphics.BlendModeColorFilterCompat
+import androidx.core.graphics.BlendModeCompat
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
@@ -41,12 +39,7 @@ class SwipeDeleteHandler(
 ) : ItemTouchHelper.SimpleCallback(0, direction) {
     private val background = ColorDrawable(Color.WHITE)
     private val xMark = ContextCompat.getDrawable(context, R.drawable.ic_delete_black_24dp)?.apply {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            colorFilter = BlendModeColorFilter(Color.BLACK, BlendMode.SRC_ATOP)
-        } else {
-            @Suppress("DEPRECATION")
-            setColorFilter(Color.BLACK, PorterDuff.Mode.SRC_ATOP)
-        }
+        colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(Color.BLACK, BlendModeCompat.SRC_ATOP)
     }
     private val xMarkMargin = context.resources.getDimension(R.dimen.delete_margin).toInt()
 
@@ -57,8 +50,8 @@ class SwipeDeleteHandler(
     }
 
     override fun getSwipeDirs(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder): Int {
-        return when {
-            viewHolder::class.java in ignored -> 0
+        return when (viewHolder::class.java) {
+            in ignored -> 0
             else -> super.getSwipeDirs(recyclerView, viewHolder)
         }
     }
