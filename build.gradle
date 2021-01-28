@@ -21,7 +21,7 @@
 buildscript {
     ext.kotlin_version = '1.4.21'
     ext {
-        sagres = "1.6.3"
+        sagres = "1.6.4"
 
         // Kotlin Extensions
         ktx = '1.5.0-beta01'
@@ -44,7 +44,7 @@ buildscript {
         lifecycle = '2.2.0'
         paging = '2.1.2'
         navigation = '2.3.2'
-        work_manager = '2.4.0'
+        work_manager = '2.5.0'
 
         // Dependency Injection
         dagger = '2.31.2'
