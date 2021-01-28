@@ -39,7 +39,6 @@ import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.shared.extensions.toBooleanOrNull
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.iid.FirebaseInstanceId
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
 import timber.log.Timber
@@ -334,8 +333,8 @@ class FirebaseMessageRepository @Inject constructor(
     }
 
     private fun sendNewToken() {
-        val task = FirebaseInstanceId.getInstance().instanceId
+        val task = FirebaseMessaging.getInstance().token
         val value = Tasks.await(task)
-        onNewToken(value.token)
+        onNewToken(value)
     }
 }

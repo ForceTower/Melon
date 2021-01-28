@@ -24,7 +24,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.google.android.gms.tasks.Tasks
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -38,10 +38,10 @@ class UpgradeRepository @Inject constructor(
     fun onUpgrade() {
         executors.networkIO().execute {
             database.accessTokenDao().getAccessTokenDirect() ?: return@execute
-            val task = FirebaseInstanceId.getInstance().instanceId
+            val task = FirebaseMessaging.getInstance().token
             try {
                 val result = Tasks.await(task)
-                val value = result?.token ?: return@execute
+                val value = result ?: return@execute
                 service.sendToken(mapOf("token" to value)).execute()
             } catch (e: Throwable) {
                 Timber.e(e, "Well... Failed...")

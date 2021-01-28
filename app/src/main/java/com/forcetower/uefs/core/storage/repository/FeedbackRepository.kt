@@ -32,7 +32,7 @@ import com.forcetower.uefs.feature.shared.extensions.toBase64
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -68,7 +68,7 @@ class FeedbackRepository @Inject constructor(
             )
             var token: String? = null
             try {
-                token = Tasks.await(FirebaseInstanceId.getInstance().instanceId).token
+                token = Tasks.await(FirebaseMessaging.getInstance().token)
             } catch (throwable: Throwable) {
                 Timber.e(throwable)
             }
