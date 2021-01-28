@@ -34,6 +34,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
@@ -106,6 +107,10 @@ class DisciplineFragment : UFragment() {
                 startActivity(DisciplineDetailsActivity.startIntent(requireContext(), it.classId, it.uid))
             }
         )
+
+        binding.textToolbarTitle.setOnClickListener {
+            (requireContext().applicationContext as UApplication).disciplineToolbarDevClickCount++
+        }
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
