@@ -32,12 +32,13 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -81,8 +82,13 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
                 CustomTabActivityHelper.openCustomTab(
                     requireActivity(),
                     CustomTabsIntent.Builder()
-                        .setToolbarColor(ContextCompat.getColor(requireContext(), R.color.blue_accent))
-                        .addDefaultShareMenuItem()
+                        .setDefaultColorSchemeParams(
+                            CustomTabColorSchemeParams
+                                .Builder()
+                                .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
+                                .build()
+                        )
+                        .setShareState(CustomTabsIntent.SHARE_STATE_ON)
                         .build(),
                     Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}")
                 )

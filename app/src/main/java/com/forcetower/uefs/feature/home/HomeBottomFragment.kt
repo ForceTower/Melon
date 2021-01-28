@@ -31,8 +31,8 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.onNavDestinationSelected
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.core.utils.ColorUtils
@@ -50,7 +50,6 @@ import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
@@ -125,6 +124,9 @@ class HomeBottomFragment : UFragment() {
         val themeSwitcher = remoteConfig.getBoolean("feature_flag_theme_switcher")
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
+        val campusMap = remoteConfig.getBoolean("feature_flag_campus_map") && uefsStudent
+        toggleItem(R.id.campus_map, campusMap)
+
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.events, uefsStudent)
         toggleItem(R.id.flowchart, uefsStudent)
@@ -149,7 +151,7 @@ class HomeBottomFragment : UFragment() {
                 }
                 R.id.open_source -> {
                     LibsBuilder()
-                        .withActivityStyle(Libs.ActivityStyle.DARK)
+                        .withEdgeToEdge(true)
                         .withAboutIconShown(true)
                         .withAboutVersionShown(true)
                         .withAboutDescription(getString(R.string.about_description))
@@ -166,17 +168,7 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 else -> {
-                    // Current navigation lib has a bug https://issuetracker.google.com/issues/171364502
-                    // NavigationUI.onNavDestinationSelected(item, findNavController())
-
-                    // TODO Remove this a workaround when next version is released
-                    val controller = findNavController()
-                    if (controller.currentDestination?.parent?.findNode(item.itemId) is ActivityNavigator.Destination) {
-                        controller.navigate(item.itemId)
-                        true
-                    } else {
-                        item.onNavDestinationSelected(controller) || super.onOptionsItemSelected(item)
-                    }
+                    NavigationUI.onNavDestinationSelected(item, findNavController())
                 }
             }
         }

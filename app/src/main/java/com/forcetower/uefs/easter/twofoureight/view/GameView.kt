@@ -92,33 +92,33 @@ class GameView : View {
 
             updateGrid(GameGrid(4, 4))
             // Getting assets
-            mBackgroundRectangle = context.getDrawable(R.drawable.background_rectangle)
-            mCellRectangle[0] = context.getDrawable(R.drawable.cell_rectangle)
-            mCellRectangle[1] = context.getDrawable(R.drawable.cell_rectangle_2)
-            mCellRectangle[2] = context.getDrawable(R.drawable.cell_rectangle_4)
-            mCellRectangle[3] = context.getDrawable(R.drawable.cell_rectangle_8)
-            mCellRectangle[4] = context.getDrawable(R.drawable.cell_rectangle_16)
-            mCellRectangle[5] = context.getDrawable(R.drawable.cell_rectangle_32)
-            mCellRectangle[6] = context.getDrawable(R.drawable.cell_rectangle_64)
-            mCellRectangle[7] = context.getDrawable(R.drawable.cell_rectangle_128)
-            mCellRectangle[8] = context.getDrawable(R.drawable.cell_rectangle_256)
-            mCellRectangle[9] = context.getDrawable(R.drawable.cell_rectangle_512)
-            mCellRectangle[10] = context.getDrawable(R.drawable.cell_rectangle_1024)
-            mCellRectangle[11] = context.getDrawable(R.drawable.cell_rectangle_2048)
-            mCellRectangle[12] = context.getDrawable(R.drawable.cell_rectangle_4096)
-            mCellRectangle[13] = context.getDrawable(R.drawable.cell_rectangle_8192)
-            mCellRectangle[14] = context.getDrawable(R.drawable.cell_rectangle_16384)
-            mCellRectangle[15] = context.getDrawable(R.drawable.cell_rectangle_32768)
-            mCellRectangle[16] = context.getDrawable(R.drawable.cell_rectangle_65536)
-            mCellRectangle[17] = context.getDrawable(R.drawable.cell_rectangle_131072)
-            mCellRectangle[18] = context.getDrawable(R.drawable.cell_rectangle_262144)
-            mCellRectangle[19] = context.getDrawable(R.drawable.cell_rectangle_524288)
+            mBackgroundRectangle = ContextCompat.getDrawable(context, R.drawable.background_rectangle)
+            mCellRectangle[0] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle)
+            mCellRectangle[1] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_2)
+            mCellRectangle[2] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_4)
+            mCellRectangle[3] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_8)
+            mCellRectangle[4] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_16)
+            mCellRectangle[5] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_32)
+            mCellRectangle[6] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_64)
+            mCellRectangle[7] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_128)
+            mCellRectangle[8] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_256)
+            mCellRectangle[9] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_512)
+            mCellRectangle[10] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_1024)
+            mCellRectangle[11] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_2048)
+            mCellRectangle[12] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_4096)
+            mCellRectangle[13] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_8192)
+            mCellRectangle[14] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_16384)
+            mCellRectangle[15] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_32768)
+            mCellRectangle[16] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_65536)
+            mCellRectangle[17] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_131072)
+            mCellRectangle[18] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_262144)
+            mCellRectangle[19] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_524288)
             for (xx in 20 until mCellRectangle.size) {
-                mCellRectangle[xx] = context.getDrawable(R.drawable.cell_rectangle_524288)
+                mCellRectangle[xx] = ContextCompat.getDrawable(context, R.drawable.cell_rectangle_524288)
             }
 
-            mLightUpRectangle = context.getDrawable(R.drawable.light_up_rectangle)
-            mFadeRectangle = context.getDrawable(R.drawable.fade_rectangle)
+            mLightUpRectangle = ContextCompat.getDrawable(context, R.drawable.light_up_rectangle)
+            mFadeRectangle = ContextCompat.getDrawable(context, R.drawable.fade_rectangle)
             mPaint.isAntiAlias = true
         } catch (e: Exception) {
             Timber.e("Failed loading assets")
@@ -275,51 +275,55 @@ class GameView : View {
                             continue
                         }
 
-                        if (aCell.animationType == SPAWN_ANIMATION) { // Spawning animation
-                            val percentDone = aCell.percentageDone
-                            val textScaleSize = percentDone.toFloat()
-                            mPaint.textSize = mTextSize * textScaleSize
+                        when (aCell.animationType) {
+                            SPAWN_ANIMATION -> { // Spawning animation
+                                val percentDone = aCell.percentageDone
+                                val textScaleSize = percentDone.toFloat()
+                                mPaint.textSize = mTextSize * textScaleSize
 
-                            val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
-                            mBitmapCell[index]!!.setBounds(
-                                (sX + cellScaleSize).toInt(),
-                                (sY + cellScaleSize).toInt(),
-                                (eX - cellScaleSize).toInt(),
-                                (eY - cellScaleSize).toInt()
-                            )
-                            mBitmapCell[index]!!.draw(canvas)
-                        } else if (aCell.animationType == MERGE_ANIMATION) { // Merging Animation
-                            val percentDone = aCell.percentageDone
-                            val textScaleSize = (
-                                1.0 + INITIAL_VELOCITY * percentDone +
-                                    MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2
-                                ).toFloat()
-                            mPaint.textSize = mTextSize * textScaleSize
-
-                            val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
-                            mBitmapCell[index]!!.setBounds(
-                                (sX + cellScaleSize).toInt(),
-                                (sY + cellScaleSize).toInt(),
-                                (eX - cellScaleSize).toInt(),
-                                (eY - cellScaleSize).toInt()
-                            )
-                            mBitmapCell[index]!!.draw(canvas)
-                        } else if (aCell.animationType == MOVE_ANIMATION) { // Moving animation
-                            val percentDone = aCell.percentageDone
-                            var tempIndex = index
-                            if (aArray.size >= 2) {
-                                tempIndex -= 1
+                                val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
+                                mBitmapCell[index]!!.setBounds(
+                                    (sX + cellScaleSize).toInt(),
+                                    (sY + cellScaleSize).toInt(),
+                                    (eX - cellScaleSize).toInt(),
+                                    (eY - cellScaleSize).toInt()
+                                )
+                                mBitmapCell[index]!!.draw(canvas)
                             }
-                            val previousX = aCell.extras!![0]
-                            val previousY = aCell.extras[1]
-                            val currentX = currentTile.x
-                            val currentY = currentTile.y
-                            val dX =
-                                ((currentX - previousX).toDouble() * (mCellSize + mGridWidth).toDouble() * (percentDone - 1) * 1.0).toInt()
-                            val dY =
-                                ((currentY - previousY).toDouble() * (mCellSize + mGridWidth).toDouble() * (percentDone - 1) * 1.0).toInt()
-                            mBitmapCell[tempIndex]!!.setBounds(sX + dX, sY + dY, eX + dX, eY + dY)
-                            mBitmapCell[tempIndex]!!.draw(canvas)
+                            MERGE_ANIMATION -> { // Merging Animation
+                                val percentDone = aCell.percentageDone
+                                val textScaleSize = (
+                                    1.0 + INITIAL_VELOCITY * percentDone +
+                                        MERGING_ACCELERATION.toDouble() * percentDone * percentDone / 2
+                                    ).toFloat()
+                                mPaint.textSize = mTextSize * textScaleSize
+
+                                val cellScaleSize = mCellSize / 2 * (1 - textScaleSize)
+                                mBitmapCell[index]!!.setBounds(
+                                    (sX + cellScaleSize).toInt(),
+                                    (sY + cellScaleSize).toInt(),
+                                    (eX - cellScaleSize).toInt(),
+                                    (eY - cellScaleSize).toInt()
+                                )
+                                mBitmapCell[index]!!.draw(canvas)
+                            }
+                            MOVE_ANIMATION -> { // Moving animation
+                                val percentDone = aCell.percentageDone
+                                var tempIndex = index
+                                if (aArray.size >= 2) {
+                                    tempIndex -= 1
+                                }
+                                val previousX = aCell.extras!![0]
+                                val previousY = aCell.extras[1]
+                                val currentX = currentTile.x
+                                val currentY = currentTile.y
+                                val dX =
+                                    ((currentX - previousX).toDouble() * (mCellSize + mGridWidth).toDouble() * (percentDone - 1) * 1.0).toInt()
+                                val dY =
+                                    ((currentY - previousY).toDouble() * (mCellSize + mGridWidth).toDouble() * (percentDone - 1) * 1.0).toInt()
+                                mBitmapCell[tempIndex]!!.setBounds(sX + dX, sY + dY, eX + dX, eY + dY)
+                                mBitmapCell[tempIndex]!!.draw(canvas)
+                            }
                         }
                         animated = true
                     }
