@@ -74,8 +74,8 @@ class LoadingFragment : UFragment() {
                 setupTermsText()
             }.root
         } catch (error: Exception) {
-            showInitializationError()
             Timber.e(error, "Failed inflating initial layout")
+            showInitializationError()
             null
         }
     }
