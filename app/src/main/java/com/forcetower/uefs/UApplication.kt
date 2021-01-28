@@ -45,6 +45,9 @@ class UApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferences: SharedPreferences
     @Inject lateinit var workerFactory: HiltWorkerFactory
 
+    var disciplineToolbarDevClickCount = 0
+    var messageToolbarDevClickCount = 0
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         SplitCompat.install(this)
