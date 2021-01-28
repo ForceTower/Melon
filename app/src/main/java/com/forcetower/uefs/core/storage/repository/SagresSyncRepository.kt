@@ -71,7 +71,7 @@ import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.crashlytics.FirebaseCrashlytics
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -314,9 +314,9 @@ class SagresSyncRepository @Inject constructor(
             if (day != today) {
                 adventureRepository.performCheckAchievements(HashMap())
 
-                val task = FirebaseInstanceId.getInstance().instanceId
+                val task = FirebaseMessaging.getInstance().token
                 val value = Tasks.await(task)
-                onNewToken(value.token)
+                onNewToken(value)
 
                 preferences.edit().putInt("sync_daily_update", today).apply()
             }
