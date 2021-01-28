@@ -119,7 +119,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
 
         binding.ibUndo.setOnClickListener {
             mGame.revertUndoState()
-            if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
+            if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENDLESS_WON) {
                 binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
             } else {
                 binding.tvTitle.text = HtmlCompat.fromHtml("2048", FROM_HTML_MODE_LEGACY)
@@ -147,7 +147,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
 
     override fun onResume() {
         load()
-        if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENLESS_WON) {
+        if (mGame.gameState === Game.State.ENDLESS || mGame.gameState === Game.State.ENDLESS_WON) {
             binding.tvTitle.text = HtmlCompat.fromHtml("&infin;", FROM_HTML_MODE_LEGACY)
         }
         super.onResume()
@@ -177,7 +177,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
 
     override fun onGameStateChanged(state: Game.State?) {
         Timber.d("Game state changed to: %s", state!!)
-        if (state == Game.State.WON || state == Game.State.ENLESS_WON) {
+        if (state == Game.State.WON || state == Game.State.ENDLESS_WON) {
             binding.tvEndgameOverlay.visibility = VISIBLE
             binding.tvEndgameOverlay.setText(R.string.you_win)
 

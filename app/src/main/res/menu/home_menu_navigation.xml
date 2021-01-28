@@ -41,6 +41,12 @@
                     android:icon="@drawable/ic_gift_card_black_24dp"/>
 
                 <item
+                    android:id="@+id/campus_map"
+                    android:title="@string/campus_map"
+                    android:menuCategory="secondary"
+                    android:icon="@drawable/ic_baseline_map_24"/>
+
+                <item
                     android:id="@+id/evaluation"
                     android:title="@string/label_evaluation"
                     android:menuCategory="secondary"

@@ -34,7 +34,6 @@ import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
-import com.google.android.play.core.missingsplits.MissingSplitsManagerFactory
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
@@ -52,10 +51,6 @@ class UApplication : Application(), Configuration.Provider {
     }
 
     override fun onCreate() {
-        if (MissingSplitsManagerFactory.create(this).disableAppIfMissingRequiredSplits()) {
-            return
-        }
-
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
