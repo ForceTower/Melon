@@ -119,7 +119,7 @@ class HomeActivity : UGameActivity() {
             verifyUpdates()
             getReviews()
             viewModel.onSessionStarted()
-            viewModel.account.observe(this, { Unit })
+            viewModel.account.observe(this, { })
             checkServerAchievements()
             viewModel.getAffinityQuestions()
 //            if (preferences.isStudentFromUEFS()) {
@@ -187,16 +187,11 @@ class HomeActivity : UGameActivity() {
 
     override fun onStart() {
         super.onStart()
-        verifyDarkTheme()
         lightWeightCalcScore()
     }
 
     private fun lightWeightCalcScore() {
         viewModel.lightWeightCalcScore()
-    }
-
-    private fun verifyDarkTheme() {
-        viewModel.verifyDarkTheme().observe(this, { Unit })
     }
 
     private fun moveToTask() {
@@ -250,7 +245,7 @@ class HomeActivity : UGameActivity() {
         viewModel.access.observe(this, { onAccessUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this, { Unit })
+        viewModel.sendToken().observe(this, {})
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
@@ -325,39 +320,33 @@ class HomeActivity : UGameActivity() {
     }
 
     override fun checkAchievements(email: String?) {
-        adventureViewModel.checkAchievements().observe(
-            this,
-            {
-                it.entries.forEach { achievement ->
-                    if (achievement.value == -1)
-                        unlockAchievement(achievement.key)
-                    else
-                        updateAchievementProgress(achievement.key, achievement.value)
-                }
+        adventureViewModel.checkAchievements().observe(this) {
+            it.entries.forEach { achievement ->
+                if (achievement.value == -1)
+                    unlockAchievement(achievement.key)
+                else
+                    updateAchievementProgress(achievement.key, achievement.value)
             }
-        )
+        }
         checkServerAchievements()
     }
 
     override fun checkNotConnectedAchievements() {
-        adventureViewModel.checkNotConnectedAchievements().observe(this, { Unit })
+        adventureViewModel.checkNotConnectedAchievements().observe(this, {})
     }
 
     private fun checkServerAchievements() {
-        adventureViewModel.checkServerAchievements().observe(
-            this,
-            { achievements ->
-                achievements.forEach { achievement ->
-                    try {
-                        if (achievement.progress != null) {
-                            updateAchievementProgress(achievement.identifier, achievement.progress)
-                        } else {
-                            unlockAchievement(achievement.identifier)
-                        }
-                    } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
-                }
+        adventureViewModel.checkServerAchievements().observe(this) { achievements ->
+            achievements.forEach { achievement ->
+                try {
+                    if (achievement.progress != null) {
+                        updateAchievementProgress(achievement.identifier, achievement.progress)
+                    } else {
+                        unlockAchievement(achievement.identifier)
+                    }
+                } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
             }
-        )
+        }
     }
 
     override fun onResume() {

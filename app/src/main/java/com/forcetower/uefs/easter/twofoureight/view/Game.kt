@@ -49,19 +49,19 @@ class Game {
     private var mGameStateListener: GameStateListener? = null
 
     private val isGameWon: Boolean
-        get() = gameState == State.WON || gameState == State.ENLESS_WON
+        get() = gameState == State.WON || gameState == State.ENDLESS_WON
 
     val isGameOnGoing: Boolean
-        get() = gameState != State.WON && gameState != State.LOST && gameState != State.ENLESS_WON
+        get() = gameState != State.WON && gameState != State.LOST && gameState != State.ENDLESS_WON
 
     val isEndlessMode: Boolean
-        get() = gameState == State.ENDLESS || gameState == State.ENLESS_WON
+        get() = gameState == State.ENDLESS || gameState == State.ENDLESS_WON
 
     private val isMovePossible: Boolean
         get() = gameGrid!!.isCellsAvailable || tileMatchesAvailable()
 
     enum class State {
-        NORMAL, WON, LOST, ENDLESS, ENLESS_WON
+        NORMAL, WON, LOST, ENDLESS, ENDLESS_WON
     }
 
     interface ScoreListener {
@@ -229,7 +229,7 @@ class Game {
                         // The mighty 2048 tile
                         if (merged.value >= winValue() && !isGameWon) {
                             when (gameState) {
-                                State.ENDLESS -> updateGameState(State.ENLESS_WON)
+                                State.ENDLESS -> updateGameState(State.ENDLESS_WON)
                                 State.NORMAL -> updateGameState(State.WON)
                                 else -> throw RuntimeException("Can't move into win state")
                             }

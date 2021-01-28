@@ -21,7 +21,7 @@
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
@@ -94,6 +94,7 @@ dependencies {
 
     api "androidx.navigation:navigation-ui-ktx:$navigation"
     api "androidx.navigation:navigation-fragment-ktx:$navigation"
+    api "androidx.navigation:navigation-dynamic-features-fragment:$navigation"
 
     // Work manager
     api "androidx.work:work-runtime:$work_manager"

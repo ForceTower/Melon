@@ -54,15 +54,6 @@ class LauncherActivity : AppCompatActivity() {
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
-        //         val intent = Intent(Intent.ACTION_VIEW).setClassName(
-        //            this,
-        //            "dev.forcetower.conference.ConferenceActivity"
-        //        )
-        //
-        //        startActivity(intent)
-        //        finish()
-        //        return
-
         viewModel.direction.observe(
             this,
             EventObserver {

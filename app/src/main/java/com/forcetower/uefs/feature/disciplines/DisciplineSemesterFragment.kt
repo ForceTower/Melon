@@ -27,7 +27,6 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -47,7 +46,7 @@ class DisciplineSemesterFragment : UFragment() {
     private lateinit var swipeRefreshLayout: com.forcetower.core.widget.CustomSwipeRefreshLayout
     private lateinit var binding: FragmentDisciplineSemesterBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDisciplineSemesterBinding.inflate(inflater, container, false).apply {
             viewModel = this@DisciplineSemesterFragment.viewModel
         }.also {
@@ -101,7 +100,7 @@ class DisciplineSemesterFragment : UFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 populateInterface(it)
                 binding.hasData = it.isNotEmpty()
             }

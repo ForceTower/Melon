@@ -21,12 +21,13 @@
 apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
-apply plugin: 'kotlin-android-extensions'
+apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'dagger.hilt.android.plugin'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
     compileSdkVersion 30
@@ -101,15 +102,21 @@ android {
     }
 
     buildTypes {
+        def mapsKey = System.getenv("UNES_MAPS_KEY")
+        if (mapsKey == null) {
+            mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
+        }
         release {
             signingConfig signingConfigs.release
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             minifyEnabled true
             manifestPlaceholders = [crashlyticsEnabled: true]
+            resValue("string", "google_maps_key", mapsKey)
         }
         debug {
             applicationIdSuffix '.debug'
             manifestPlaceholders = [crashlyticsEnabled: false]
+            resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }
 
@@ -140,7 +147,7 @@ android {
         disable 'InvalidPackage'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event"]
+    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map']
 }
 
 play {
@@ -234,11 +241,14 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
     implementation "com.airbnb.android:lottie:$lottie"
 
+    // About Libraries
+    implementation "com.mikepenz:aboutlibraries-core:$about_libraries"
+    implementation "com.mikepenz:aboutlibraries:$about_libraries"
+
     // Others
     implementation "com.google.code.gson:gson:$gson"
     implementation "org.jsoup:jsoup:$jsoup"
     implementation "com.github.PhilJay:MPAndroidChart:$chart_view"
-    implementation "com.mikepenz:aboutlibraries:$about_libraries"
     implementation "pub.devrel:easypermissions:$easy_permissions"
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"

@@ -25,7 +25,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import androidx.lifecycle.LifecycleService
-import androidx.lifecycle.Observer
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.DOWNLOADING
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.GRADES
@@ -44,7 +43,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class DisciplineDetailsLoaderService : LifecycleService() {
-
     companion object {
         private const val NOTIFICATION_DISCIPLINE_DETAILS_LOADER = 20546
         const val EXTRA_SHOW_CONTRIBUTING_NOTIFICATION = "show_contributing_notification"
@@ -66,10 +64,6 @@ class DisciplineDetailsLoaderService : LifecycleService() {
     private var running = false
     private var contributing = false
 
-    override fun onCreate() {
-        super.onCreate()
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         super.onStartCommand(intent, flags, startId)
 
@@ -84,7 +78,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         if (!running) {
             running = true
             Timber.d("Started Discipline Load")
-            repository.loadDisciplineDetails(partialLoad = contributing, discover = false).observe(this, Observer { onDataUpdate(it) })
+            repository.loadDisciplineDetails(partialLoad = contributing, discover = false).observe(this, { onDataUpdate(it) })
         }
     }
 

@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-import android.media.MediaPlayer
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -40,7 +39,7 @@ class MechanicalFragment : UFragment() {
     private val viewModel: MechanicalViewModel by activityViewModels()
     private lateinit var binding: FragmentMechCalculatorBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentMechCalculatorBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -88,15 +87,5 @@ class MechanicalFragment : UFragment() {
                 }
             }
         )
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (!viewModel.playedMusic) {
-            viewModel.playedMusic = true
-            val player = MediaPlayer.create(requireContext(), R.raw.final_countdown)
-            player.setVolume(0.15f, 0.15f)
-            player.start()
-        }
     }
 }
