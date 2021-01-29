@@ -20,7 +20,8 @@
   -->
 
 <androidx.preference.PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <PreferenceCategory
         android:title="@string/settings_adv_cat_execution"
         app:iconSpaceReserved="false"
@@ -62,7 +63,20 @@
             android:key="stg_advanced_aeri_tab"
             android:defaultValue="true"
             android:title="@string/settings_adv_dynamic_feature_aeri"
+            app:icon="@drawable/ic_outline_dynamic_feed_24"
             android:summary="@string/settings_adv_dynamic_feature_aeri_info"/>
+    </PreferenceCategory>
 
+    <PreferenceCategory
+        android:key="stg_cat_dev_tools"
+        android:title="Dev tools"
+        android:summary="Ferramentas de dev que ninguem se importa"
+        tools:isPreferenceVisible="true"
+        app:iconSpaceReserved="false">
+        <Preference
+            android:key="stg_crash_app"
+            app:icon="@drawable/ic_outline_app_blocking_24"
+            android:title="Crashar o aplicativo"
+            android:summary="Um bom IllegalStateException, novo em folha" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>

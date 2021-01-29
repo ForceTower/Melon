@@ -31,7 +31,7 @@ apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
@@ -178,7 +178,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "dev.forcetower.unes:snowpiercer:1.0.8"
+    implementation "dev.forcetower.unes:snowpiercer:1.0.11"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
@@ -213,7 +213,7 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:25.12.0')
+    implementation platform('com.google.firebase:firebase-bom:26.3.0')
     implementation "com.google.firebase:firebase-core"
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-messaging"

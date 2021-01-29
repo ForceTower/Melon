@@ -21,7 +21,7 @@
 
 <resources>
     <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
-        <!-- fuck Xiaomi and MIUI 12 forced dark mode -->
+        <!-- Xiaomi and MIUI 12 forced dark mode -->
         <item name="android:forceDarkAllowed">false</item>
 
         <item name="colorPrimary">@color/colorPrimary</item>
@@ -31,6 +31,9 @@
 
         <item name="colorControlHighlight">@color/controlHighlight</item>
         <item name="android:colorControlHighlight">@color/controlHighlight</item>
+        <item name="android:textColorHighlight">@color/controlHighlight</item>
+
+        <item name="android:textAppearance">@style/TextAppearanceBase</item>
 
         <item name="background">@color/background</item>
         <item name="android:windowBackground">@color/background</item>

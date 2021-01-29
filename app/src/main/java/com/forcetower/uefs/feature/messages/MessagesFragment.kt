@@ -34,6 +34,7 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.getLinks
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -96,6 +97,9 @@ class MessagesFragment : UFragment() {
                 database.messageDao().deleteAllSuspend()
             }
             true
+        }
+        binding.textToolbarTitle.setOnClickListener {
+            (requireContext().applicationContext as UApplication).messageToolbarDevClickCount++
         }
     }
 

@@ -43,6 +43,11 @@ object ThemeOverlayUtils {
     }
 
     @JvmStatic
+    fun clearThemeOverlays() {
+        themeOverlays.clear()
+    }
+
+    @JvmStatic
     fun getThemeOverlay(@IdRes id: Int): Int {
         return themeOverlays[id]
     }

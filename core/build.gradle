@@ -26,7 +26,7 @@ apply plugin: 'org.jmailen.kotlinter'
 
 android {
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
 
     defaultConfig {
@@ -37,13 +37,6 @@ android {
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
         consumerProguardFiles 'consumer-rules.pro'
-    }
-
-    buildTypes {
-        release {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-        }
     }
 
     buildFeatures {
@@ -97,7 +90,6 @@ dependencies {
     api "androidx.navigation:navigation-dynamic-features-fragment:$navigation"
 
     // Work manager
-    api "androidx.work:work-runtime:$work_manager"
     api "androidx.work:work-runtime-ktx:$work_manager"
     api "androidx.work:work-gcm:$work_manager"
 

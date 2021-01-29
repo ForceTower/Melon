@@ -45,6 +45,9 @@ class UApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferences: SharedPreferences
     @Inject lateinit var workerFactory: HiltWorkerFactory
 
+    var disciplineToolbarDevClickCount = 0
+    var messageToolbarDevClickCount = 0
+
     override fun attachBaseContext(base: Context?) {
         super.attachBaseContext(base)
         SplitCompat.install(this)
@@ -57,7 +60,11 @@ class UApplication : Application(), Configuration.Provider {
             Timber.plant(CrashlyticsTree())
         }
         super.onCreate()
-        setupDayNightTheme(this)
+        val resetTheme = preferences.getBoolean("should_reset_theme_attrs", true)
+        if (resetTheme) {
+            preferences.edit().putBoolean("should_reset_theme_attrs", false).apply()
+        }
+        setupDayNightTheme(this, resetTheme)
         defineWorker()
     }
 
@@ -99,9 +106,12 @@ class UApplication : Application(), Configuration.Provider {
             .build()
 
     companion object {
-        fun setupDayNightTheme(context: Context) {
+        // Resetting the theme at every theme change is not a good solution
+        // Find out a migration path for theme overlays to use in the future
+        fun setupDayNightTheme(context: Context, resetTheme: Boolean = false) {
             ThemePreferencesManager(context).run {
                 applyTheme()
+                if (resetTheme) deleteSavedTheme()
                 retrieveOverlay()
             }
         }
