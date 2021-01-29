@@ -36,10 +36,12 @@ import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
+import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
+import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
@@ -93,6 +95,17 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
                     Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}")
                 )
                 true
+            }
+        }
+
+        findPreference<PreferenceCategory>("stg_cat_dev_tools")?.let {
+            val app = (requireContext().applicationContext as UApplication)
+            it.isVisible = app.disciplineToolbarDevClickCount == 15 && app.messageToolbarDevClickCount == 15
+        }
+
+        findPreference<Preference>("stg_crash_app")?.let {
+            it.setOnPreferenceClickListener {
+                throw IllegalStateException("Crash request delivered :D")
             }
         }
     }

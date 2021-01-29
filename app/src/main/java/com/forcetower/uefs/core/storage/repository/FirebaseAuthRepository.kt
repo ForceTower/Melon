@@ -35,7 +35,7 @@ import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.FirebaseMessaging
 import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
@@ -135,12 +135,11 @@ class FirebaseAuthRepository @Inject constructor(
             "model" to android.os.Build.MODEL
         )
 
-        val idTask = FirebaseInstanceId.getInstance().instanceId
+        val idTask = FirebaseMessaging.getInstance().token
         try {
             val result = Tasks.await(idTask)
-            val token = result.token
-            preferences.edit().putString("current_firebase_token", token).apply()
-            data["firebaseToken"] = token
+            preferences.edit().putString("current_firebase_token", result).apply()
+            data["firebaseToken"] = result
         } catch (t: Throwable) {
             Timber.e(t)
         }
