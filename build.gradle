@@ -43,7 +43,7 @@ buildscript {
         room = '2.2.6'
         lifecycle = '2.2.0'
         paging = '2.1.2'
-        navigation = '2.3.2'
+        navigation = '2.3.3'
         work_manager = '2.5.0'
 
         // Dependency Injection
