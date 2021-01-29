@@ -39,6 +39,10 @@ class ThemePreferencesManager(private val context: Context) {
         AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 
+    fun deleteSavedTheme() {
+        saveColors(0, 0, 0)
+    }
+
     fun retrieveOverlay() {
         setThemeOverlayWithoutActivity(primaryColor, secondaryColor, backgroundColor)
     }
