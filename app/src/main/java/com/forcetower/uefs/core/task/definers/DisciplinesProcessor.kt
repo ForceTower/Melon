@@ -46,7 +46,13 @@ class DisciplinesProcessor(
 ) : UTask {
     override suspend fun execute() {
         database.withTransaction {
-            val currentSemester = database.semesterDao().getSemestersDirect().maxByOrNull { it.sagresId }
+            val allSemesters = database.semesterDao().getSemestersDirect()
+            val currentSemester = if (allSemesters.all { it.start != null }) {
+                allSemesters.maxByOrNull { it.start!! }
+            } else {
+                allSemesters.maxByOrNull { it.sagresId }
+            }
+
             val allocations = mutableListOf<ClassLocation>()
             disciplines.forEach {
                 val resume = if (it.program.isNullOrBlank()) null else it.program

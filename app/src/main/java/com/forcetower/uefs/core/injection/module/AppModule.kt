@@ -87,7 +87,6 @@ object AppModule {
     fun provideThemeSwitcherResourceProvider() = ThemeSwitcherResourceProvider()
 
     @Provides
-    @Reusable
     @Named("flagSnowpiercerEnabled")
     fun provideFlagSnowpiercer(preferences: SharedPreferences, remoteConfig: FirebaseRemoteConfig) =
         preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
