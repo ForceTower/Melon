@@ -119,5 +119,10 @@ class AERINewsFragment : UFragment() {
                 )
             }
         )
+
+        if (savedInstanceState == null) {
+            val initialFetch = arguments?.getBoolean("initial_fetch") ?: false
+            if (initialFetch) viewModel.onRefresh()
+        }
     }
 }

@@ -33,9 +33,9 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
-import androidx.navigation.ui.onNavDestinationSelected
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.core.utils.ColorUtils
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Account
@@ -64,7 +64,7 @@ class HomeBottomFragment : UFragment() {
     private lateinit var binding: HomeBottomBinding
     private val viewModel: HomeViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return HomeBottomBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -124,7 +124,7 @@ class HomeBottomFragment : UFragment() {
         val themeSwitcher = remoteConfig.getBoolean("feature_flag_theme_switcher")
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
-        val campusMap = remoteConfig.getBoolean("feature_flag_campus_map") && uefsStudent
+        val campusMap = (remoteConfig.getBoolean("feature_flag_campus_map") || BuildConfig.VERSION_NAME.contains("-beta")) && uefsStudent
         toggleItem(R.id.campus_map, campusMap)
 
         toggleItem(R.id.adventure, uefsStudent)

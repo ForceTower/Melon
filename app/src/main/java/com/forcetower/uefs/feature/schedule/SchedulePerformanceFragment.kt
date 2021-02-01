@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -71,13 +70,12 @@ class SchedulePerformanceFragment : UFragment() {
         binding.recyclerSchedule.adapter = adapter
         binding.recyclerScheduleLine.adapter = adapterLine
 
-        viewModel.hasSchedule.observe(viewLifecycleOwner, Observer { binding.empty = !it })
+        viewModel.hasSchedule.observe(viewLifecycleOwner, { binding.empty = !it })
         viewModel.schedule.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 manager.spanCount = max(it.keys.size, if (showEmptyDays) 6 else 0)
                 adapter.elements = it
-
                 adapterLine.elements = it
             }
         )
@@ -94,7 +92,7 @@ class SchedulePerformanceFragment : UFragment() {
         } else {
             profileViewModel.commonProfile.observe(
                 viewLifecycleOwner,
-                Observer {
+                {
                     val course = it?.course ?: 1L
                     if (course == 1L && preferences.isStudentFromUEFS()) {
                         binding.btnConferenceSchedule.visibility = View.VISIBLE

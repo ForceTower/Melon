@@ -24,6 +24,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.R
@@ -43,21 +44,21 @@ class AERIMessageFragment : UFragment() {
 
     private val dynamicFeatureViewModel: MessagesDFMViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentAeriMessagesBinding.inflate(inflater, container, false).root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (dynamicFeatureViewModel.isAeriInstalled()) {
-            moveToAeriNews()
+            moveToAeriNews(false)
         } else {
             replaceFragment(AERINotInstalledFragment(), "aeri_not_installed")
             dynamicFeatureViewModel.sessionState.observe(
                 viewLifecycleOwner,
                 EventObserver {
                     when (it.status()) {
-                        SplitInstallSessionStatus.INSTALLED -> moveToAeriNews()
+                        SplitInstallSessionStatus.INSTALLED -> moveToAeriNews(true)
                         SplitInstallSessionStatus.REQUIRES_USER_CONFIRMATION -> {
                             dynamicFeatureViewModel.requestUserConfirmation(it, requireActivity())
                         }
@@ -68,8 +69,10 @@ class AERIMessageFragment : UFragment() {
         }
     }
 
-    private fun moveToAeriNews() {
-        val fragment = dynamicFeatureViewModel.aeriReflectInstance()
+    private fun moveToAeriNews(initialFetch: Boolean = false) {
+        val fragment = dynamicFeatureViewModel.aeriReflectInstance().apply {
+            arguments = bundleOf("initial_fetch" to initialFetch)
+        }
         replaceFragment(fragment, "aeri_news")
     }
 

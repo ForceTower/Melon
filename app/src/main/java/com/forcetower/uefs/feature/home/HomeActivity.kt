@@ -30,6 +30,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.activity.viewModels
+import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
@@ -211,7 +212,9 @@ class HomeActivity : UGameActivity() {
         }
 
         direction ?: return
-        findNavController(R.id.home_nav_host).navigate(direction, intent.extras)
+        binding.root.doOnLayout {
+            findNavController(R.id.home_nav_host).navigate(direction, intent.extras)
+        }
     }
 
     private fun initShortcuts() {
@@ -238,7 +241,9 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun setupBottomNav() {
-        NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
+        binding.root.doOnLayout {
+            NavigationUI.setupWithNavController(binding.bottomNavigation, findNavController(R.id.home_nav_host))
+        }
     }
 
     private fun setupUserData() {
