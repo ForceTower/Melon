@@ -24,6 +24,8 @@ import androidx.room.withTransaction
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.UTask
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 
 class SemestersProcessor(
     private val database: UDatabase,
@@ -31,10 +33,12 @@ class SemestersProcessor(
 ) : UTask {
     override suspend fun execute() {
         database.withTransaction {
-            semesters.forEach {
-                val semester = Semester(sagresId = it.id, name = it.code, codename = it.description)
-                database.semesterDao().insertIgnoring(semester)
+            val data = semesters.map {
+                val start = ZonedDateTime.parse(it.start, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                val end = ZonedDateTime.parse(it.end, DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+                Semester(sagresId = it.id, name = it.code, codename = it.description, start = start.toEpochSecond() * 1000, end = end.toEpochSecond() * 1000)
             }
+            database.semesterDao().insertIgnoring(data)
         }
     }
 }
