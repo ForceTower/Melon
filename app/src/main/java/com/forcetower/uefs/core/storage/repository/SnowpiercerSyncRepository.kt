@@ -49,6 +49,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
@@ -121,9 +123,10 @@ class SnowpiercerSyncRepository @Inject constructor(
         val semestersOutcome = orchestra.semesters(person.id)
         val currentSemester = (semestersOutcome as? Outcome.Success)?.let { success ->
             val semesters = success.value
+            // if this all works, migrate date parsing into the Snowpiercer
             SemestersProcessor(database, semesters).execute()
 
-            val current = semesters.maxByOrNull { it.id }
+            val current = semesters.maxByOrNull { ZonedDateTime.parse(it.start, DateTimeFormatter.ISO_OFFSET_DATE_TIME) }
             current
         }
 

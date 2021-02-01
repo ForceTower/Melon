@@ -178,7 +178,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
-    implementation "dev.forcetower.unes:snowpiercer:1.0.11"
+    implementation "dev.forcetower.unes:snowpiercer:1.1.0"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"

@@ -37,6 +37,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDisciplineBinding
@@ -47,14 +48,15 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.makeSemester
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class DisciplineFragment : UFragment() {
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
 
     private val viewModel: DisciplineViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
@@ -114,9 +116,14 @@ class DisciplineFragment : UFragment() {
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {
+        val snowpiercer = preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+        if (snowpiercer && semesters.all { it.start != null }) {
+            return semesters.sortedByDescending { it.start }
+        }
+
         val ordering = preferences.getBoolean("stg_semester_deterministic_ordering", true)
-        val diffSort = semesters.sorted()
         val size = semesters.size
+        val diffSort = semesters.sorted()
 
         if (ordering && sortedSizeOnce != size) {
             val actionTaken = preferences.getBoolean("suggested_reorder_semester_action_taken", false)
