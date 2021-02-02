@@ -65,7 +65,7 @@ class MessagesViewModel @ViewModelInject constructor(
         get() = _snackMessage
 
     fun onRefresh() {
-//        pushedTimes++
+        pushedTimes++
 //        if (pushedTimes == 3) {
 //            _snackMessage.value = Event(R.string.download_all_messages)
 //        }
