@@ -128,7 +128,7 @@ class DisciplinesProcessor(
         fun expandLocations(locations: List<ClassLocation>): List<ClassLocation> {
             val starts = locations.groupBy { it.startsAtInt }.mapValues { it.value.first().startsAt }
             val ends = locations.groupBy { it.endsAtInt }.mapValues { it.value.first().endsAt }
-            val allMapped = (starts + ends)
+            val allMapped = starts + ends
             val allTimes = allMapped.keys.toList().sorted()
 
             Timber.d("All Mapped: $allMapped")
@@ -153,7 +153,7 @@ class DisciplinesProcessor(
                     index++
                     start = end
                     // this wont index out of bounds since the "location.endsAtInt != end"
-                    // will be reached once we reach the end of the array
+                    // will be fulfilled once we reach the end of the array
                     end = allTimes[index]
                 }
 
