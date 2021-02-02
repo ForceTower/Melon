@@ -35,6 +35,7 @@ import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.DisciplineData
 import timber.log.Timber
+import java.util.UUID
 
 class DisciplinesProcessor(
     private val context: Context,
@@ -105,7 +106,7 @@ class DisciplinesProcessor(
                 database.gradesDao().putGradesNewWay(classId, it.evaluations, notify)
             }
 
-            database.classLocationDao().putNewSchedule(allocations)
+            database.classLocationDao().putNewSchedule(expandLocations(allocations))
 
             database.gradesDao().run {
                 val posted = getPostedGradesDirect()
@@ -119,6 +120,53 @@ class DisciplinesProcessor(
                 create.forEach { NotificationCreator.showSagresCreateGradesNotification(it, context) }
                 change.forEach { NotificationCreator.showSagresChangeGradesNotification(it, context) }
                 date.forEach { NotificationCreator.showSagresDateGradesNotification(it, context) }
+            }
+        }
+    }
+
+    companion object {
+        fun expandLocations(locations: List<ClassLocation>): List<ClassLocation> {
+            val starts = locations.groupBy { it.startsAtInt }.mapValues { it.value.first().startsAt }
+            val ends = locations.groupBy { it.endsAtInt }.mapValues { it.value.first().endsAt }
+            val allMapped = (starts + ends)
+            val allTimes = allMapped.keys.toList().sorted()
+
+            Timber.d("All Mapped: $allMapped")
+            Timber.d("All times $allTimes")
+
+            return locations.flatMap { location ->
+                val result = mutableListOf<ClassLocation>()
+                var start = location.startsAtInt
+                var index = allTimes.indexOf(start) + 1
+                var end = allTimes[index]
+
+                Timber.d("About to expand $location")
+
+                while (location.endsAtInt != end) {
+                    result += location.copy(
+                        startsAt = allMapped.getValue(start),
+                        startsAtInt = start,
+                        endsAt = allMapped.getValue(end),
+                        endsAtInt = end,
+                        uuid = UUID.randomUUID().toString()
+                    )
+                    index++
+                    start = end
+                    // this wont index out of bounds since the "location.endsAtInt != end"
+                    // will be reached once we reach the end of the array
+                    end = allTimes[index]
+                }
+
+                result += location.copy(
+                    startsAt = allMapped.getValue(start),
+                    startsAtInt = start,
+                    endsAt = allMapped.getValue(end),
+                    endsAtInt = end,
+                    uuid = UUID.randomUUID().toString()
+                )
+
+                Timber.d("Expanded into: $result")
+                result
             }
         }
     }
