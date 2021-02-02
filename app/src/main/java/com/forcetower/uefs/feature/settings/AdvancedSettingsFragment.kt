@@ -32,14 +32,18 @@ import android.os.Build
 import android.os.Bundle
 import android.os.PowerManager
 import android.provider.Settings
+import android.widget.Toast
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
+import androidx.core.app.ShareCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
 import com.forcetower.core.utils.ViewUtils
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.util.VersionUtils
@@ -51,6 +55,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
+import java.io.File
 import java.util.Locale
 
 @AndroidEntryPoint
@@ -100,13 +105,47 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
 
         findPreference<PreferenceCategory>("stg_cat_dev_tools")?.let {
             val app = (requireContext().applicationContext as UApplication)
-            it.isVisible = app.disciplineToolbarDevClickCount == 15 && app.messageToolbarDevClickCount == 15
+            it.isVisible = app.disciplineToolbarDevClickCount == 15 && app.messageToolbarDevClickCount == 15 || BuildConfig.DEBUG
         }
 
         findPreference<Preference>("stg_crash_app")?.let {
             it.setOnPreferenceClickListener {
                 throw IllegalStateException("Crash request delivered :D")
             }
+        }
+
+        findPreference<Preference>("stg_share_main_database")?.let {
+            it.setOnPreferenceClickListener {
+                obtainMainDatabase()
+                true
+            }
+        }
+    }
+
+    private fun obtainMainDatabase() {
+        val file = requireContext().getDatabasePath("unespiercer.db")
+        val targetFolder = File(requireContext().getExternalFilesDir(null), "databases")
+        if (!targetFolder.exists()) targetFolder.mkdirs()
+
+        val target = File(targetFolder, "${System.currentTimeMillis()}.db")
+        target.createNewFile()
+
+        // this block will freeze the app
+        file.copyTo(target, overwrite = true)
+
+        val uri = FileProvider.getUriForFile(requireContext().applicationContext, BuildConfig.APPLICATION_ID + ".fileprovider", target)
+        val intent = ShareCompat.IntentBuilder(requireContext())
+            .setType("application/vnd.sqlite3")
+            .setStream(uri)
+            .setChooserTitle(getString(R.string.share_file))
+            .createChooserIntent()
+            .addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+
+        try {
+            startActivity(intent)
+        } catch (e: ActivityNotFoundException) {
+            Timber.e(e, "Main Database share error")
+            Toast.makeText(requireContext(), "Erro ao enviar arquivo, mas ele está na pasta", Toast.LENGTH_SHORT).show()
         }
     }
 
