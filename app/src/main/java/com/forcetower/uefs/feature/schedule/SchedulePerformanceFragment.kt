@@ -76,9 +76,11 @@ class SchedulePerformanceFragment : UFragment() {
             {
                 manager.spanCount = max(it.keys.size, if (showEmptyDays) 6 else 0)
                 adapter.elements = it
-                adapterLine.elements = it
             }
         )
+        viewModel.scheduleLine.observe(viewLifecycleOwner) {
+            adapterLine.elements = it
+        }
 
         viewModel.onRefresh.observe(
             viewLifecycleOwner,

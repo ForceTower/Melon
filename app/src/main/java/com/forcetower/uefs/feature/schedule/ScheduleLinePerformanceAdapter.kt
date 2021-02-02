@@ -28,30 +28,17 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.ui.ProcessedClassLocation
 import com.forcetower.uefs.databinding.ItemScheduleLineClassBinding
 import com.forcetower.uefs.databinding.ItemScheduleLineDayPerformanceBinding
-import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
 import com.forcetower.uefs.feature.shared.inflate
 
 class ScheduleLinePerformanceAdapter(
     private val actions: ScheduleActions
 ) : RecyclerView.Adapter<ScheduleLinePerformanceAdapter.ScheduleHolder>() {
-    private val differ = AsyncListDiffer<ProcessedClassLocation>(this, ScheduleDiffCallback)
-    var elements: Map<Int, List<ProcessedClassLocation>> = emptyMap()
+    private val differ = AsyncListDiffer(this, ScheduleDiffCallback)
+    var elements: List<ProcessedClassLocation> = emptyList()
         set(value) {
             field = value
-            differ.submitList(buildList(value))
+            differ.submitList(value)
         }
-
-    // Can be moved to a worker thread
-    private fun buildList(value: Map<Int, List<ProcessedClassLocation>>): List<ProcessedClassLocation> {
-        return value.filter { it.key != -1 }
-            .mapValues { entry ->
-                // Call should not be simplified since the list needs to be of supertype ProcessedClassLocation.
-                @Suppress("SimplifiableCall")
-                entry.value.filter { it is ProcessedClassLocation.ElementSpace }.toMutableList().apply {
-                    add(0, ProcessedClassLocation.DaySpace(entry.key.toLongWeekDay(), entry.key))
-                }
-            }.entries.sortedBy { it.key }.flatMap { it.value }
-    }
 
     sealed class ScheduleHolder(view: View) : RecyclerView.ViewHolder(view) {
         class DayHolder(val binding: ItemScheduleLineDayPerformanceBinding) : ScheduleHolder(binding.root)
