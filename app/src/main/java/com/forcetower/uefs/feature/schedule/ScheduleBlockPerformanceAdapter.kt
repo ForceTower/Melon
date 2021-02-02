@@ -40,7 +40,7 @@ class ScheduleBlockPerformanceAdapter(
     private val showEmptyDays: Boolean,
     context: Context
 ) : RecyclerView.Adapter<ScheduleBlockPerformanceAdapter.ScheduleHolder>() {
-    private val differ = AsyncListDiffer<ProcessedClassLocation>(this, ScheduleDiffCallback)
+    private val differ = AsyncListDiffer(this, ScheduleDiffCallback)
     var elements: Map<Int, List<ProcessedClassLocation>> = emptyMap()
         set(value) {
             field = value

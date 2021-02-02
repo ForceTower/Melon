@@ -20,6 +20,8 @@
 
 package com.forcetower.uefs.feature.schedule
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.view.View
 import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
@@ -27,6 +29,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.forcetower.uefs.core.model.ui.ProcessedClassLocation
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
@@ -35,17 +38,24 @@ import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
+import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 
 class ScheduleViewModel @ViewModelInject constructor(
     repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository,
-    private val snowpiercerSyncRepository: SnowpiercerSyncRepository
+    private val snowpiercerSyncRepository: SnowpiercerSyncRepository,
+    private val preferences: SharedPreferences,
+    private val context: Context
 ) : ViewModel(), ScheduleActions {
 
     val hasSchedule = repository.hasSchedule()
-    val schedule = repository.getProcessedSchedule().asLiveData(Dispatchers.IO)
+    private val innerScheduleMaster = repository.getProcessedSchedule()
+
+    val schedule = innerScheduleMaster.asLiveData(Dispatchers.IO)
+    val scheduleLine = innerScheduleMaster.map { buildScheduleLine(it) }.asLiveData(Dispatchers.IO)
 
     private val _onRefresh = MutableLiveData<Event<Unit>>()
     val onRefresh: LiveData<Event<Unit>> = _onRefresh
@@ -81,5 +91,16 @@ class ScheduleViewModel @ViewModelInject constructor(
 
     override fun refreshData() {
         _onRefresh.value = Event(Unit)
+    }
+
+    private fun buildScheduleLine(value: Map<Int, List<ProcessedClassLocation>>): List<ProcessedClassLocation> {
+        return value.filter { it.key != -1 }
+            .mapValues { entry ->
+                // Call should not be simplified since the list needs to be of supertype ProcessedClassLocation.
+                @Suppress("SimplifiableCall")
+                entry.value.filter { it is ProcessedClassLocation.ElementSpace }.toMutableList().apply {
+                    add(0, ProcessedClassLocation.DaySpace(entry.key.toLongWeekDay(), entry.key))
+                }
+            }.entries.sortedBy { it.key }.flatMap { it.value }
     }
 }

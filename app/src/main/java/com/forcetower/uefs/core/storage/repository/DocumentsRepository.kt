@@ -59,10 +59,13 @@ class DocumentsRepository @Inject constructor(
 
             val enroll = File(folder, Document.ENROLLMENT.value).exists()
             database.documentDao().updateDownloaded(enroll, Document.ENROLLMENT.value)
+            database.documentDao().updateDownloading(false, Document.ENROLLMENT.value)
             val flow = File(folder, Document.FLOWCHART.value).exists()
             database.documentDao().updateDownloaded(flow, Document.FLOWCHART.value)
+            database.documentDao().updateDownloading(false, Document.FLOWCHART.value)
             val hist = File(folder, Document.HISTORY.value).exists()
             database.documentDao().updateDownloaded(hist, Document.HISTORY.value)
+            database.documentDao().updateDownloading(false, Document.HISTORY.value)
         }
     }
 
@@ -91,6 +94,7 @@ class DocumentsRepository @Inject constructor(
 
             if (login.status == Status.INVALID_LOGIN) {
                 Timber.d("Login failed. Login status is: ${login.status}")
+                database.documentDao().updateDownloading(false, document.value)
                 data.postValue(Resource.error("Login Failed", 800, Exception("Login Failed")))
             } else {
                 val response = when (document) {
@@ -114,6 +118,7 @@ class DocumentsRepository @Inject constructor(
                 if (response.status == Status.SUCCESS) {
                     data.postValue(Resource.success(value))
                 } else {
+                    database.documentDao().updateDownloading(false, document.value)
                     data.postValue(Resource.error(response.message ?: "Generic error", response.code, null))
                 }
             }

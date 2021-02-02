@@ -877,4 +877,5 @@
     <string name="start_up_failed_resumed_desc">Você precisa limpar os dados do aplicativo para continuar</string>
     <string name="title_map">Map</string>
     <string name="campus_map">Mapa do Campus</string>
+    <string name="share_file">Compartilhar arquivo</string>
 </resources>
