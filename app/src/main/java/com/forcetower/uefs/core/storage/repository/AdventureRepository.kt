@@ -36,10 +36,8 @@ import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
 import com.google.firebase.auth.FirebaseAuth
-import timber.log.Timber
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -129,9 +127,6 @@ class AdventureRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         val score = profile?.score ?: profile?.calcScore ?: -1.0
 
-        var accumulatedMean = 0.0
-        var accumulatedHours = 0
-
         if (semesters.size > 5 && score >= 7)
             data[R.string.achievement_sobrevivente] = -1
 
@@ -140,7 +135,12 @@ class AdventureRepository @Inject constructor(
         if (semesters.size > 1) {
             data[R.string.achievement_pseudoveterano] = -1
 
-            val sorted = semesters.sortedBy { it.sagresId }.subList(0, semesters.size - 1)
+            val sorted = if (semesters.all { it.start != null }) {
+                semesters.sortedBy { it.start }
+            } else {
+                semesters.sortedBy { it.sagresId }
+            }.subList(0, semesters.size - 1)
+
             var noFinalCount = 0
             var introduction = 0
 
@@ -168,11 +168,6 @@ class AdventureRepository @Inject constructor(
                 classes.forEach { clazz ->
                     val points = clazz.clazz.finalScore ?: 0.0
                     val credits = clazz.discipline.credits
-
-                    if (points >= 0) {
-                        accumulatedMean += points * credits
-                        accumulatedHours += credits
-                    }
 
                     if (points < 7 && points >= 0) final = true
                     if (points == 10.0) data[R.string.achievement_mdia_10] = -1
@@ -249,18 +244,18 @@ class AdventureRepository @Inject constructor(
         }
 
         // Takes only the current semester
-        val current = semesters.maxByOrNull { it.sagresId }
+        val current = if (semesters.all { it.start != null }) {
+            semesters.maxByOrNull { it.start!! }
+        } else {
+            semesters.maxByOrNull { it.sagresId }
+        }
+
         if (current != null) {
             var hours = 0
             val classes = database.classDao().getClassesWithGradesFromSemesterDirect(current.uid)
             classes.forEach { clazz ->
                 val points = clazz.clazz.finalScore ?: -1.0
                 val credits = clazz.discipline.credits
-
-                if (points >= 0) {
-                    accumulatedMean += points * credits
-                    accumulatedHours += credits
-                }
 
                 hours += credits
 
@@ -291,12 +286,6 @@ class AdventureRepository @Inject constructor(
 
             if (hours >= 480) data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
             else if (hours <= 275) data[R.string.achievement_engatinhando] = -1
-        }
-
-        if (accumulatedHours != 0) {
-            val calcScore = (accumulatedMean / accumulatedHours).round(1)
-            Timber.d("Score calculated is: $calcScore")
-            database.profileDao().updateCalculatedScore(calcScore)
         }
     }
 
