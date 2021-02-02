@@ -85,7 +85,7 @@ class MessagesRepository @Inject constructor(
             val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
             orchestra.setAuthorization(Authorization(access.username, access.password))
 
-            val outcome = orchestra.messages(profile.sagresId)
+            val outcome = orchestra.messages(profile.sagresId, amount = if (fetchAll) 0 else 10)
             if (outcome is Outcome.Success) {
                 MessagesProcessor(outcome.value, database, context, true).execute()
                 emit(true)
