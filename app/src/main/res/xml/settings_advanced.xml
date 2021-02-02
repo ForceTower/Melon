@@ -78,5 +78,10 @@
             app:icon="@drawable/ic_outline_app_blocking_24"
             android:title="Crashar o aplicativo"
             android:summary="Um bom IllegalStateException, novo em folha" />
+        <Preference
+            android:key="stg_share_main_database"
+            app:icon="@drawable/ic_outline_data_usage_24"
+            android:title="Compartilhar o banco interno"
+            android:summary="Isso enviará literalmente todas as suas informações do portal conhecidas pelo app, com senha e tudo, tenha cuidado" />
     </PreferenceCategory>
 </androidx.preference.PreferenceScreen>
