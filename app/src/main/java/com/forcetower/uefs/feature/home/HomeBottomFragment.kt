@@ -31,6 +31,9 @@ import android.view.ViewGroup
 import androidx.annotation.IdRes
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Observer
+import androidx.navigation.dynamicfeatures.DynamicExtras
+import androidx.navigation.dynamicfeatures.DynamicInstallMonitor
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
@@ -49,11 +52,14 @@ import com.forcetower.uefs.feature.setup.CourseSelectionCallback
 import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
+import com.google.android.play.core.splitinstall.SplitInstallSessionState
+import com.google.android.play.core.splitinstall.model.SplitInstallSessionStatus
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.mikepenz.aboutlibraries.LibsBuilder
 import com.theartofdev.edmodo.cropper.CropImage
 import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
@@ -63,6 +69,7 @@ class HomeBottomFragment : UFragment() {
 
     private lateinit var binding: HomeBottomBinding
     private val viewModel: HomeViewModel by activityViewModels()
+    private val installMonitor = DynamicInstallMonitor()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return HomeBottomBinding.inflate(inflater, container, false).also {
@@ -165,6 +172,39 @@ class HomeBottomFragment : UFragment() {
                 R.id.bug_report -> {
                     val fragment = SendFeedbackFragment()
                     fragment.show(childFragmentManager, "feedback_modal")
+                    true
+                }
+                R.id.campus_map -> {
+                    val navController = findNavController()
+                    navController.navigate(
+                        R.id.campus_map,
+                        null,
+                        null,
+                        DynamicExtras(installMonitor)
+                    )
+
+                    if (installMonitor.isInstallRequired) {
+                        installMonitor.status.observe(
+                            viewLifecycleOwner,
+                            object : Observer<SplitInstallSessionState> {
+                                override fun onChanged(sessionState: SplitInstallSessionState) {
+                                    if (sessionState.status() == SplitInstallSessionStatus.INSTALLED) {
+                                        Timber.d("Installed")
+                                        navController.navigate(
+                                            R.id.campus_map,
+                                            null,
+                                            null,
+                                            null
+                                        )
+                                    }
+
+                                    if (sessionState.hasTerminalStatus()) {
+                                        installMonitor.status.removeObserver(this)
+                                    }
+                                }
+                            }
+                        )
+                    }
                     true
                 }
                 else -> {
