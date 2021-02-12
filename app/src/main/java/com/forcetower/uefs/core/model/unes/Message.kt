@@ -91,7 +91,7 @@ data class Message(
         fun fromMessage(me: dev.forcetower.breaker.model.Message, notified: Boolean): Message {
             val timestamp = OffsetDateTime.parse(me.timestamp).toInstant().toEpochMilli()
             return Message(
-                content = me.content.replace("\\n", "\n"),
+                content = me.content.replace("\\n", "\n").replace("\\r", "\r"),
                 sagresId = me.id,
                 senderName = me.sender,
                 senderProfile = me.senderType,
