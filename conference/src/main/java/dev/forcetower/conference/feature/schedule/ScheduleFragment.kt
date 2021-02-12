@@ -71,7 +71,7 @@ class ScheduleFragment : UFragment() {
             .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         dayAdapter = DayAdapter(viewModel, this)
         scheduleAdapter = ScheduleAdapter(viewModel, this)
 
@@ -79,7 +79,7 @@ class ScheduleFragment : UFragment() {
             binding = it
             binding.dayIndicators.adapter = dayAdapter
             binding.recyclerSchedule.adapter = scheduleAdapter
-        }.root
+        }
 
         dayIndicatorItemDecoration = BubbleDecoration(binding.root.context)
         binding.dayIndicators.addItemDecoration(dayIndicatorItemDecoration)
