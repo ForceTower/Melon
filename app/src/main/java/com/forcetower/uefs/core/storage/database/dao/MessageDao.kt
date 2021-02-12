@@ -67,6 +67,10 @@ abstract class MessageDao {
                     updateDateString(message.sagresId, message.dateString)
                 }
 
+                if (!message.html) {
+                    updateContent(message.sagresId, message.content)
+                }
+
                 if (direct.html && !message.html) {
                     Timber.d("Is this really happening?")
                     updateTimestamp(direct.sagresId, message.timestamp)
@@ -145,6 +149,9 @@ abstract class MessageDao {
 
     @Query("UPDATE Message SET timestamp = :timestamp WHERE sagres_id = :sagresId")
     protected abstract fun updateTimestamp(sagresId: Long, timestamp: Long)
+
+    @Query("UPDATE Message SET content = :content WHERE sagres_id = :sagresId")
+    protected abstract fun updateContent(sagresId: Long, content: String)
 
     @Insert(onConflict = IGNORE)
     protected abstract fun insertIgnore(messages: List<Message>)
