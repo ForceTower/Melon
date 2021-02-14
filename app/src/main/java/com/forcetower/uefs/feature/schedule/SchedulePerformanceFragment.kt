@@ -74,7 +74,8 @@ class SchedulePerformanceFragment : UFragment() {
         viewModel.schedule.observe(
             viewLifecycleOwner,
             {
-                manager.spanCount = max(it.keys.size, if (showEmptyDays) 6 else 0)
+                val gridMax = if (it.keys.contains(7)) 7 else 6
+                manager.spanCount = max(it.keys.size, if (showEmptyDays) gridMax else 0)
                 adapter.elements = it
             }
         )
