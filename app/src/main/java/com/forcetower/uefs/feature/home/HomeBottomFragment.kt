@@ -69,7 +69,6 @@ class HomeBottomFragment : UFragment() {
 
     private lateinit var binding: HomeBottomBinding
     private val viewModel: HomeViewModel by activityViewModels()
-    private val installMonitor = DynamicInstallMonitor()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return HomeBottomBinding.inflate(inflater, container, false).also {
@@ -175,6 +174,7 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 R.id.campus_map -> {
+                    val installMonitor = DynamicInstallMonitor()
                     val navController = findNavController()
                     navController.navigate(
                         R.id.campus_map,
