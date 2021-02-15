@@ -74,38 +74,38 @@ class MapFragment : UFragment() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         val mapViewBundle = outState.getBundle(MAP_VIEW_BUNDLE_KEY) ?: Bundle().apply { putBundle(MAP_VIEW_BUNDLE_KEY, this) }
-        mapView.onSaveInstanceState(mapViewBundle)
+        if (::mapView.isInitialized) mapView.onSaveInstanceState(mapViewBundle)
     }
 
     override fun onResume() {
         super.onResume()
-        mapView.onResume()
+        if (::mapView.isInitialized) mapView.onResume()
     }
 
     override fun onStart() {
         super.onStart()
-        mapView.onStart()
+        if (::mapView.isInitialized) mapView.onStart()
         showSnack("Esta é uma função high octane. Tudo aqui está em testes. Boa sorte")
     }
 
     override fun onStop() {
         super.onStop()
-        mapView.onStop()
+        if (::mapView.isInitialized) mapView.onStop()
     }
 
     override fun onPause() {
         super.onPause()
-        mapView.onPause()
+        if (::mapView.isInitialized) mapView.onPause()
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        mapView.onDestroy()
+        if (::mapView.isInitialized) mapView.onDestroy()
     }
 
     override fun onLowMemory() {
         super.onLowMemory()
-        mapView.onLowMemory()
+        if (::mapView.isInitialized) mapView.onLowMemory()
     }
 
     companion object {
