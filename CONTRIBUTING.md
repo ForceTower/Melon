@@ -42,7 +42,7 @@ Então você quer contribuir com o UNES? Que demais! O UNES GitHub Pull Requests
 Eu tento manter o projeto sempre o mais atualizado possível, então todas as dependências serão atualizadas constantemente inclusive o projeto sempre deve ser aberto na versão do Android Studio mais atual possível.
 
 A partir de agora vamos demorar um tempo (ou não):
- 1. [Instale o Android Studio 4.0 ou superior](https://developer.android.com/studio/preview) e configure os passos iniciais (se você ainda não possui ele instalado). No tempo que estou escrevendo isso, o Android Studio 3.5 está em beta, estou utilizando esta versão pois ela é bem menos bugada que o 3.3 e é mais rápida.
+ 1. [Instale a versão mais recente do Android Studio](https://developer.android.com/studio) e configure os passos iniciais (se você ainda não possui ele instalado).
  2. [Faça um Fork do UNES](https://guides.github.com/activities/forking/#fork), opcional, você pode fazer um clone do projeto diretamente e configurar o repositorio git depois
  3. [Faça um clone do seu fork](https://help.github.com/articles/cloning-a-repository/)
  4. [Abra o projeto no Android Studio](https://github.com/dogriffiths/HeadFirstAndroid/wiki/How-to-open-a-project-in-Android-Studio)
