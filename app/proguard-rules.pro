@@ -1,4 +1,5 @@
--keepattributes SourceFile,LineNumberTable
+-keepattributes LineNumberTable
+-renamesourcefileattribute SourceFile
 -repackageclasses unes
 
 # ------------------------ Timber ------------------------------
@@ -12,6 +13,7 @@
 
 # Work around android fragment artifact bug
 -keep class androidx.navigation.fragment.NavHostFragment { *; }
+-keep class androidx.navigation.dynamicfeatures.fragment.DynamicNavHostFragment { *; }
 
 # Dynamic Features Reflection Calls
 -keep class * extends androidx.databinding.DataBinderMapper { *; }
