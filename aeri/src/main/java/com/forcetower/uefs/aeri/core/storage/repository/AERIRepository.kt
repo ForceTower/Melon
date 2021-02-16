@@ -54,7 +54,7 @@ class AERIRepository @Inject constructor(
         }
     }
 
-    fun refreshNewsAsync() = liveData {
+    fun refreshNewsAsync() = liveData(Dispatchers.IO) {
         refreshNews()
         database.news().markAllNotified()
         emit(true)
