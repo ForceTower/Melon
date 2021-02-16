@@ -145,6 +145,7 @@ android {
     lintOptions {
         disable 'MissingTranslation'
         disable 'InvalidPackage'
+        disable 'NullSafeMutableLiveData'
         abortOnError true
     }
     dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map']
