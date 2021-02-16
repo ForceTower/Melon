@@ -33,6 +33,8 @@ import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.Reusable
 import dev.forcetower.oversee.Oversee
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -59,7 +61,7 @@ class AERIRepository @Inject constructor(
     }
 
     @WorkerThread
-    suspend fun refreshNews() {
+    suspend fun refreshNews() = withContext(Dispatchers.IO) {
         Oversee.initialize()
         val news = Oversee.instance.getAERINews().reversed()
         database.news().insert(news)
@@ -74,9 +76,9 @@ class AERIRepository @Inject constructor(
         return 0
     }
 
-    suspend fun getNotifyMessages(): List<NotifyMessage> {
+    suspend fun getNotifyMessages(): List<NotifyMessage> = withContext(Dispatchers.IO) {
         val notify = database.news().getNewAnnouncements()
         database.news().markAllNotified()
-        return notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }
+        notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }
     }
 }
