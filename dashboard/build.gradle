@@ -91,7 +91,6 @@ dependencies {
     kapt "androidx.room:room-compiler:$room"
 
     // Architecture
-    implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
 
     // Image

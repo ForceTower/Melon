@@ -26,10 +26,10 @@ import androidx.hilt.Assisted
 import androidx.hilt.work.WorkerInject
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
 import androidx.work.WorkManager
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
@@ -41,9 +41,9 @@ class SyncLinkedWorker @WorkerInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: SagresSyncRepository
-) : Worker(context, params) {
+) : CoroutineWorker(context, params) {
 
-    override fun doWork(): Result {
+    override suspend fun doWork(): Result {
         try {
             repository.performSync("Linked")
         } catch (t: Throwable) {

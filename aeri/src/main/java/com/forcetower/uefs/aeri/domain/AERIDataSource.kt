@@ -28,11 +28,11 @@ class AERIDataSource(
     private val repository: AERIRepository
 ) : DynamicDataSource {
 
-    override fun update(): Int {
+    override suspend fun update(): Int {
         return repository.update()
     }
 
-    override fun getNotifyMessages(): List<NotifyMessage> {
+    override suspend fun getNotifyMessages(): List<NotifyMessage> {
         return repository.getNotifyMessages()
     }
 }
