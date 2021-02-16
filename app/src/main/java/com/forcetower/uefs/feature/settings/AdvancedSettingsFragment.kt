@@ -46,21 +46,26 @@ import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.material.snackbar.Snackbar
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.io.File
 import java.util.Locale
+import javax.inject.Inject
 
 @AndroidEntryPoint
 class AdvancedSettingsFragment : PreferenceFragmentCompat() {
     private val viewModel: SettingsViewModel by activityViewModels()
+    @Inject
+    lateinit var remoteConfig: FirebaseRemoteConfig
 
     private val listener = SharedPreferences.OnSharedPreferenceChangeListener { shared, key ->
         onPreferenceChange(shared, key)
@@ -72,6 +77,10 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
 
         if (!getSharedPreferences().isStudentFromUEFS()) {
             findPreference<SwitchPreference>("stg_advanced_aeri_tab")?.isVisible = false
+            findPreference<SwitchPreference>("stg_advanced_map_tab")?.isVisible = false
+        } else {
+            val mapOption = remoteConfig.getBoolean("feature_flag_campus_map") || BuildConfig.VERSION_NAME.contains("-beta")
+            findPreference<SwitchPreference>("stg_advanced_map_tab")?.isVisible = mapOption
         }
 
         findPreference<Preference>("stg_advanced_auto_start")?.let {
@@ -186,6 +195,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
     private fun onPreferenceChange(preference: SharedPreferences, key: String) {
         when (key) {
             "stg_advanced_aeri_tab" -> aeriTabs(preference.getBoolean(key, true))
+            "stg_advanced_maps_install" -> mapsInstall(preference.getBoolean(key, true))
             "stg_advanced_ignore_doze" -> dozeDefault(preference.getBoolean(key, false))
         }
     }
@@ -193,6 +203,12 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
     private fun aeriTabs(enabled: Boolean) {
         if (!enabled) {
             viewModel.uninstallModuleIfExists(MessagesDFMViewModel.AERI_MODULE)
+        }
+    }
+
+    private fun mapsInstall(enabled: Boolean) {
+        if (!enabled) {
+            viewModel.uninstallModuleIfExists(Constants.DynamicFeatures.MAPS)
         }
     }
 
