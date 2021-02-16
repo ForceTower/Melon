@@ -1,4 +1,5 @@
 -keepattributes SourceFile,LineNumberTable
+-repackageclasses unes
 
 # ------------------------ Timber ------------------------------
 # This removes all the logging using timber.d and timber.v
