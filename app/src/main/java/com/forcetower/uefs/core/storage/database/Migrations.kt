@@ -403,3 +403,18 @@ object M47TO48 : Migration(47, 48) {
         database.execSQL("ALTER TABLE ClassGroup ADD COLUMN sagresId INTEGER DEFAULT NULL")
     }
 }
+
+object M50TO51 : Migration(50, 51) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        val cursor = database.query("SELECT uid, content FROM Message")
+
+        val uidIndex = cursor.getColumnIndex("uid")
+        val contentIndex = cursor.getColumnIndex("content")
+
+        while (cursor.moveToNext()) {
+            val uid = cursor.getLong(uidIndex)
+            val content = cursor.getString(contentIndex).replace("\\r", "\r")
+            database.execSQL("UPDATE Message SET content = '$content' WHERE uid = $uid")
+        }
+    }
+}
