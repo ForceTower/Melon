@@ -73,6 +73,10 @@ class DashboardAdapter(
         }
 
     var currentAccount: Account? = null
+        set(value) {
+            field = value
+            differ.submitList(buildMergedList(account = value))
+        }
 
     private val differ = AsyncListDiffer(this, DiffCallback)
 
@@ -113,6 +117,11 @@ class DashboardAdapter(
                     listener = viewModel
                 }
             }
+            is DashboardHolder.HeaderHolder -> {
+                if (currentAccount == null) {
+                    holder.binding.rootView.visibility = View.GONE
+                }
+            }
         }
     }
 
@@ -131,9 +140,14 @@ class DashboardAdapter(
         clazz: ClassLocationWithData? = nextClass,
         message: Message? = lastMessage,
         updating: Boolean = updatingApp,
-        affinity: List<AffinityQuestionFull> = affinityList
+        affinity: List<AffinityQuestionFull> = affinityList,
+        account: Account? = currentAccount
     ): List<Any> {
-        return mutableListOf<Any>(Header).apply {
+        return mutableListOf<Any>().apply {
+            if (account != null) {
+                add(Header)
+            }
+
             if (updating) {
                 add(UpdatingApp)
             }
@@ -149,7 +163,7 @@ class DashboardAdapter(
 
     sealed class DashboardHolder(view: View) : RecyclerView.ViewHolder(view) {
         class HeaderHolder(
-            binding: ItemDashHeaderBinding,
+            val binding: ItemDashHeaderBinding,
             viewModel: DashboardViewModel,
             lifecycleOwner: LifecycleOwner
         ) : DashboardHolder(binding.root) {
