@@ -85,7 +85,9 @@ class ScheduleViewModel @ViewModelInject constructor(
                 snowpiercerSyncRepository.asyncSync()
             }
         } else {
-            sagresSyncRepository.asyncSync(gToken)
+            viewModelScope.launch {
+                sagresSyncRepository.asyncSync(gToken)
+            }
         }
     }
 
