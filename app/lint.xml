@@ -24,4 +24,9 @@
         <ignore path="*/io.grpc/grpc-core/*"/>
     </issue>
     <issue id="DiffUtilEquals" severity="ignore"/>
+    
+    <issue id="NullSafeMutableLiveData">
+        <ignore path="com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterKt" />
+        <ignore path="com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapter" />
+    </issue>
 </lint>

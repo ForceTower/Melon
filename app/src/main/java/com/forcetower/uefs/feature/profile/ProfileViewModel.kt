@@ -75,10 +75,8 @@ class ProfileViewModel @ViewModelInject constructor(
         val source = repository.loadStatements(profileId, userId)
         _statements.addSource(source) {
             Timber.d("Resource status ${it.status}")
-            val data = it.data
-            if (data != null) {
-                _statements.value = data
-            }
+            val data = it.data ?: emptyList()
+            _statements.value = data
         }
     }
 
