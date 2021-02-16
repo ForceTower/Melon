@@ -54,6 +54,7 @@ class FirebaseActionsService : FirebaseMessagingService() {
 
     override fun onDestroy() {
         super.onDestroy()
+        Timber.d("Service onDestroy called. Coroutines will be canceled")
         job.cancel("Service destroyed")
     }
 }

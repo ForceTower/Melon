@@ -58,6 +58,7 @@
     <string name="error_connection_failed">Erro de conexão</string>
     <string name="error_network_error">Falha de conexão</string>
     <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
+    <string name="error_unexpected_response_joke">Parece que o Portal ta fora do ar de novo. Normal...</string>
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
     <string name="default_firebase_notification_channel_id" translatable="false">com.forcetower.uefs.GENERAL.REMOTE</string>
