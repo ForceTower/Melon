@@ -37,7 +37,7 @@ jobs:
       if: "!contains(github.event.head_commit.message, '[lint skip]')"
 
     - name: Publish Release App
-      run: ./gradlew publishReleaseBundle
+      run: ./gradlew publishReleaseBundle uploadCrashlyticsMappingFileRelease
       if: "!contains(github.event.head_commit.message, '[publish skip]')"
       env:
         UNES_KEYSTORE_ALIAS: ${{ secrets.UNES_KEYSTORE_ALIAS }}
