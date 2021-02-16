@@ -20,15 +20,10 @@
 package com.forcetower.uefs.feature.themeswitcher
 
 import androidx.annotation.ArrayRes
-import androidx.annotation.AttrRes
 import androidx.annotation.StyleableRes
 import com.forcetower.uefs.R
 
 class ThemeSwitcherResourceProvider {
-    @get:AttrRes
-    val primaryColor: Int
-        get() = R.attr.colorPrimary
-
     @get:ArrayRes
     val primaryColors: Int
         get() = R.array.material_primary_palettes

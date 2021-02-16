@@ -61,13 +61,7 @@ class UApplication : Application(), Configuration.Provider {
         }
         super.onCreate()
 
-        // Reset the theme at every material design change/internal app change is some memes
-        // this is now a Priority
-        val resetTheme = preferences.getBoolean("should_reset_theme_attrs_1", true)
-        if (resetTheme) {
-            preferences.edit().putBoolean("should_reset_theme_attrs_1", false).apply()
-        }
-        setupDayNightTheme(this, resetTheme)
+        setupDayNightTheme(this)
         defineWorker()
     }
 

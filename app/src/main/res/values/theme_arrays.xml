@@ -19,6 +19,10 @@
   ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
   -->
 
+<!--
+  ~ Themes should always be added at the end of the array.
+  ~ This is necessary since the theme changing is position based.
+ -->
 <resources>
     <array name="material_primary_palettes">
         <item>@style/ThemeOverlay.PrimaryPalette.Red</item>
