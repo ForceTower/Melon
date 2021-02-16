@@ -277,8 +277,11 @@ task buildNotes {
 }
 
 afterEvaluate {
-    tasks.named("publishReleaseBundle").configure {
-        dependsOn("buildNotes")
+    def publish = tasks.findByName("publishReleaseBundle")
+    if (publish != null) {
+        publish.configure {
+            dependsOn("buildNotes")
+        }
     }
 }
 
