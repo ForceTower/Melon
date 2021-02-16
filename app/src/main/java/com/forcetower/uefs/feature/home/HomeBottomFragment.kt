@@ -125,7 +125,8 @@ class HomeBottomFragment : UFragment() {
         toggleItem(R.id.theme_switcher, themeSwitcher)
 
         val campusMap = (remoteConfig.getBoolean("feature_flag_campus_map") || BuildConfig.VERSION_NAME.contains("-beta")) && uefsStudent
-        toggleItem(R.id.campus_map, campusMap)
+        val campusPreference = preferences.getBoolean("stg_advanced_maps_install", true)
+        toggleItem(R.id.campus_map, campusMap && campusPreference)
 
         toggleItem(R.id.adventure, uefsStudent)
         toggleItem(R.id.events, uefsStudent)
