@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
+import com.forcetower.uefs.core.storage.database.M50TO51
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -58,7 +59,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
         Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-            .addMigrations()
+            .addMigrations(M50TO51)
             .enableMultiInstanceInvalidation()
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()

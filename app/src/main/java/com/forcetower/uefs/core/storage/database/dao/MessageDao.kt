@@ -67,10 +67,6 @@ abstract class MessageDao {
                     updateDateString(message.sagresId, message.dateString)
                 }
 
-                if (!message.html) {
-                    updateContent(message.sagresId, message.content)
-                }
-
                 if (direct.html && !message.html) {
                     Timber.d("Is this really happening?")
                     updateTimestamp(direct.sagresId, message.timestamp)
