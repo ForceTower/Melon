@@ -26,7 +26,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.net.wifi.WifiManager
 import android.telephony.TelephonyManager
-import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
 import com.forcetower.core.getDynamicDataSourceFactory
@@ -73,6 +72,10 @@ import com.google.android.gms.tasks.Tasks
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.withContext
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import java.util.Calendar
@@ -92,9 +95,9 @@ class SagresSyncRepository @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
 ) {
+    private val mutex = Mutex()
 
-    @WorkerThread
-    private fun findAndMatch() {
+    private suspend fun findAndMatch() {
         val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider")
         aeri?.create()?.run {
             update()
@@ -105,14 +108,16 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun performSync(executor: String, gToken: String? = null) {
+    suspend fun performSync(executor: String, gToken: String? = null) = withContext(Dispatchers.IO) {
         val registry = createRegistry(executor)
         val access = database.accessDao().getAccessDirect()
         access ?: Timber.d("Access is null, sync will not continue")
         if (access != null) {
             FirebaseCrashlytics.getInstance().setUserId(access.username)
             // Only one sync may be active at a time
-            synchronized(S_LOCK) { execute(access, registry, executor, gToken) }
+            mutex.withLock {
+                execute(access, registry, executor, gToken)
+            }
         } else {
             registry.completed = true
             registry.error = -1
@@ -160,7 +165,7 @@ class SagresSyncRepository @Inject constructor(
     }
 
     @WorkerThread
-    private fun execute(access: Access, registry: SyncRegistry, executor: String, gToken: String?) {
+    private suspend fun execute(access: Access, registry: SyncRegistry, executor: String, gToken: String?) {
         val uid = database.syncRegistryDao().insert(registry)
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
@@ -708,11 +713,8 @@ class SagresSyncRepository @Inject constructor(
         Timber.e("Failed executing with status ${callback.status} and throwable message [${callback.throwable?.message}]")
     }
 
-    @MainThread
-    fun asyncSync(gToken: String?) {
-        executors.networkIO().execute {
-            performSync("Manual", gToken)
-        }
+    suspend fun asyncSync(gToken: String?) {
+        performSync("Manual", gToken)
     }
 
     companion object {

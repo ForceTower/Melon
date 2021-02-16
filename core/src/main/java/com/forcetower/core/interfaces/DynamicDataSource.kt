@@ -20,7 +20,6 @@
 
 package com.forcetower.core.interfaces
 
-import androidx.annotation.WorkerThread
 import com.forcetower.core.interfaces.notification.NotifyMessage
 
 interface DynamicDataSource {
@@ -32,9 +31,7 @@ interface DynamicDataSource {
      * 1..Integer.MAX -> Success, but something funny happened
      * Integer.MIN..-1 -> Failed, and something funny might have happened
      */
-    @WorkerThread
-    fun update(): Int
+    suspend fun update(): Int
 
-    @WorkerThread
-    fun getNotifyMessages(): List<NotifyMessage>
+    suspend fun getNotifyMessages(): List<NotifyMessage>
 }
