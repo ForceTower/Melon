@@ -28,7 +28,6 @@ import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.view.drawToBitmap
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -42,10 +41,13 @@ import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.task.usecase.message.FetchAllMessagesSnowpiercerUseCase
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.toFile
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 import javax.inject.Named
 
-class MessagesViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MessagesViewModel @Inject constructor(
     private val repository: MessagesRepository,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     private val fetchAllMessagesSnowpiercerUseCase: FetchAllMessagesSnowpiercerUseCase

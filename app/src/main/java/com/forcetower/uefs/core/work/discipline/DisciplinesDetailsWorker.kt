@@ -22,8 +22,7 @@ package com.forcetower.uefs.core.work.discipline
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -32,9 +31,12 @@ import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.work.enqueueUnique
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 
-class DisciplinesDetailsWorker @WorkerInject constructor(
+@HiltWorker
+class DisciplinesDetailsWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: DisciplineDetailsRepository

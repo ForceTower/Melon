@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.core.vm
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,9 +30,12 @@ import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class UnesverseViewModel @ViewModelInject constructor(
+@HiltViewModel
+class UnesverseViewModel @Inject constructor(
     private val auth: AuthRepository
 ) : ViewModel() {
     val access = auth.getAccessToken()

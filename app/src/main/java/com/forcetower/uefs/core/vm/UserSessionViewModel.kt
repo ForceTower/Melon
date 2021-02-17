@@ -20,11 +20,13 @@
 
 package com.forcetower.uefs.core.vm
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.UserSessionRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class UserSessionViewModel @ViewModelInject constructor(
+@HiltViewModel
+class UserSessionViewModel @Inject constructor(
     private val sessionRepository: UserSessionRepository
 ) : ViewModel() {
     fun onSessionStarted() {

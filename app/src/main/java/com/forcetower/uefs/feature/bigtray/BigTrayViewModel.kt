@@ -20,10 +20,12 @@
 
 package com.forcetower.uefs.feature.bigtray
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class BigTrayViewModel @ViewModelInject constructor(
+@HiltViewModel
+class BigTrayViewModel @Inject constructor(
     private val repository: BigTrayRepository
 ) : ViewModel() {
 

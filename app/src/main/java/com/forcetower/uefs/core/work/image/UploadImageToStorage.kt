@@ -28,8 +28,7 @@ import android.media.ThumbnailUtils
 import android.net.Uri
 import android.util.Base64
 import androidx.annotation.WorkerThread
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -40,13 +39,16 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.ImgurUploader
 import com.forcetower.uefs.core.work.enqueue
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.UUID
 
-class UploadImageToStorage @WorkerInject constructor(
+@HiltWorker
+class UploadImageToStorage @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val client: OkHttpClient,
