@@ -86,8 +86,8 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
     @JavascriptInterface
     fun reCaptchaCallback(token: String) {
         Timber.d("reCaptcha token $token")
-        callback.onCaptchaResolved(token)
         dismiss()
+        callback.onCaptchaResolved(token)
     }
 
     fun setCallback(callback: CaptchaResolvedCallback) {
