@@ -41,6 +41,6 @@ object Constants {
 
     object DynamicFeatures {
         const val AERI = "aeri"
-        const val MAPS = "maps"
+        const val MAPS = "map"
     }
 }
