@@ -49,6 +49,11 @@ abstract class MessageDao {
                     }
                 }
 
+                // mark message as edited?
+                if (!message.html && message.content.isNotBlank()) {
+                    updateContent(message.sagresId, message.content)
+                }
+
                 if (message.discipline != null) {
                     updateDisciplineName(message.sagresId, message.discipline)
                 }

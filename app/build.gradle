@@ -213,7 +213,7 @@ dependencies {
     kapt 'androidx.hilt:hilt-compiler:1.0.0-alpha02'
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.3.0')
+    implementation platform('com.google.firebase:firebase-bom:26.5.0')
     implementation "com.google.firebase:firebase-core"
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-messaging"
