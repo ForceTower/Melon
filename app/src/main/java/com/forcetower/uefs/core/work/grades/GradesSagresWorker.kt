@@ -21,8 +21,7 @@
 package com.forcetower.uefs.core.work.grades
 
 import android.content.Context
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -32,9 +31,12 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.work.enqueueUnique
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import java.util.concurrent.TimeUnit
 
-class GradesSagresWorker @WorkerInject constructor(
+@HiltWorker
+class GradesSagresWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: SagresGradesRepository
