@@ -50,9 +50,11 @@ abstract class MessageDao {
                 }
 
                 if (message.discipline != null) {
-                    if (direct.discipline.isNullOrBlank()) {
-                        updateDisciplineName(message.sagresId, message.discipline)
-                    }
+                    updateDisciplineName(message.sagresId, message.discipline)
+                }
+
+                if (message.codeDiscipline != null) {
+                    updateDisciplineCode(direct.sagresId, message.codeDiscipline)
                 }
 
                 if (message.attachmentLink != null) {
@@ -77,8 +79,6 @@ abstract class MessageDao {
                         updateSenderName(direct.sagresId, message.senderName)
                     if (message.discipline != null)
                         updateDisciplineName(direct.sagresId, message.discipline)
-                    if (message.codeDiscipline != null)
-                        updateDisciplineCode(direct.sagresId, message.codeDiscipline)
                 }
             }
             val resume = message.disciplineResume?.trim()
