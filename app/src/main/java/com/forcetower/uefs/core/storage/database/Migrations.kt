@@ -411,10 +411,14 @@ object M50TO51 : Migration(50, 51) {
         val uidIndex = cursor.getColumnIndex("uid")
         val contentIndex = cursor.getColumnIndex("content")
 
+        val statement = database.compileStatement("UPDATE Message SET content = ? WHERE uid = ?")
+
         while (cursor.moveToNext()) {
             val uid = cursor.getLong(uidIndex)
             val content = cursor.getString(contentIndex).replace("\\r", "\r")
-            database.execSQL("UPDATE Message SET content = '$content' WHERE uid = $uid")
+            statement.bindString(1, content)
+            statement.bindLong(2, uid)
+            statement.executeUpdateDelete()
         }
     }
 }
