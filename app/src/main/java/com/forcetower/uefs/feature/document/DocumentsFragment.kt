@@ -31,10 +31,13 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
+import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
 
 @AndroidEntryPoint
@@ -62,6 +65,20 @@ class DocumentsFragment : UFragment() {
         viewModel.documents.observe(viewLifecycleOwner, Observer { adapter.documents = it ?: emptyList() })
         viewModel.openDocumentAction.observe(viewLifecycleOwner, EventObserver { openDocument(it) })
         viewModel.snackMessages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
+        viewModel.onRequestDownload.observe(viewLifecycleOwner, EventObserver { requestCaptchaForDocument(it) })
+    }
+
+    private fun requestCaptchaForDocument(document: SagresDocument) {
+        val fragment = CaptchaResolverFragment()
+        fragment.setCallback(
+            object : CaptchaResolverFragment.CaptchaResolvedCallback {
+                override fun onCaptchaResolved(token: String) {
+                    Timber.d("Token received $token")
+                    viewModel.onDownload(document, token)
+                }
+            }
+        )
+        fragment.show(childFragmentManager, "captcha_resolver")
     }
 
     private fun openDocument(document: File) {

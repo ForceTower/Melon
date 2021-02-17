@@ -24,6 +24,6 @@ import com.forcetower.uefs.core.model.unes.SagresDocument
 
 interface DocumentActions {
     fun onOpen(document: SagresDocument)
-    fun onDownload(document: SagresDocument)
+    fun onDownload(document: SagresDocument, gtoken: String?)
     fun onDelete(document: SagresDocument)
 }
