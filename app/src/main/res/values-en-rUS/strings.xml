@@ -295,7 +295,7 @@
     <string name="discipline_summary_label">Summary</string>
     <string name="document_not_found">The document is not available on SAGRES</string>
     <string name="donation_service_response_error">Error processing donations</string>
-    <string name="download_all_messages">UNES will download all the messages ever sent to you</string>
+    <string name="download_all_messages">UNES will download many of the messages ever sent to you</string>
     <string name="download_from_play_store">Go to PlayStore!</string>
     <string name="downloading_discipline_details">Downloading disciplines</string>
     <string name="enter_using_username_instead">Log in using the username instead of email</string>
