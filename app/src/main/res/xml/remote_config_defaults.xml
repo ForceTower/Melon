@@ -112,4 +112,8 @@
         <key>feature_flag_campus_map</key>
         <value>true</value>
     </entry>
+    <entry>
+        <key>feature_flag_documents</key>
+        <value>true</value>
+    </entry>
 </defaultsMap>
