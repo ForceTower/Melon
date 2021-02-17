@@ -112,6 +112,9 @@ class HomeBottomFragment : UFragment() {
 
         val uefsStudent = preferences.isStudentFromUEFS()
 
+        val documentsFlag = remoteConfig.getBoolean("feature_flag_documents")
+        toggleItem(R.id.documents, documentsFlag)
+
         val storeFlag = remoteConfig.getBoolean("feature_flag_store")
         toggleItem(R.id.purchases, storeFlag)
 
