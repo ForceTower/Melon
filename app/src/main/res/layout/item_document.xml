@@ -43,7 +43,7 @@
         android:layout_marginVertical="@dimen/spacing_small"
         tools:elevation="6dp"
         android:stateListAnimator="@animator/default_card_raise"
-        android:onClick="@{() -> document.downloaded ? listener.onOpen(document) : listener.onDownload(document)}">
+        android:onClick="@{() -> document.downloaded ? listener.onOpen(document) : listener.onDownload(document, (String)null)}">
         
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
@@ -98,7 +98,7 @@
                 android:text="@string/download_document"
                 android:textSize="13sp"
                 android:letterSpacing="0"
-                android:onClick="@{() -> listener.onDownload(document)}"
+                android:onClick="@{() -> listener.onDownload(document, (String)null)}"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/btn_see"
