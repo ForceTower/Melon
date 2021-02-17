@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.setup
 
 import android.content.Context
 import android.net.Uri
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import com.forcetower.uefs.core.model.service.SyncFrequency
@@ -33,8 +32,11 @@ import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.google.firebase.auth.FirebaseUser
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SetupViewModel @ViewModelInject constructor(
+@HiltViewModel
+class SetupViewModel @Inject constructor(
     private val firebaseAuthRepository: FirebaseAuthRepository,
     private val context: Context,
     private val profileRepository: ProfileRepository

@@ -20,10 +20,12 @@
 
 package com.forcetower.uefs.feature.mechcalculator
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class MechanicalViewModel @ViewModelInject constructor(
+@HiltViewModel
+class MechanicalViewModel @Inject constructor(
     private val repository: MechCalcRepository
 ) : ViewModel() {
     val mechanics = repository.mechanics

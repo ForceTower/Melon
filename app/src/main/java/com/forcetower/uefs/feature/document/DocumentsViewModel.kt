@@ -21,7 +21,6 @@
 package com.forcetower.uefs.feature.document
 
 import android.content.Context
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -32,9 +31,12 @@ import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.storage.repository.DocumentsRepository
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
 import java.io.File
+import javax.inject.Inject
 
-class DocumentsViewModel @ViewModelInject constructor(
+@HiltViewModel
+class DocumentsViewModel @Inject constructor(
     private val repository: DocumentsRepository,
     private val context: Context
 ) : ViewModel(), DocumentActions {

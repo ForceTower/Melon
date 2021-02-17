@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.profile
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -31,9 +30,12 @@ import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
+import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
-class ProfileViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
 ) : ViewModel(), ProfileInteractor {
     val commonProfile = repository.getCommonProfile()

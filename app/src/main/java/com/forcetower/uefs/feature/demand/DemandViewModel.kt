@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.demand
 
 import android.content.Context
 import androidx.core.os.bundleOf
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -34,9 +33,12 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.vm.Event
 import com.google.firebase.analytics.FirebaseAnalytics
+import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
+import javax.inject.Inject
 
-class DemandViewModel @ViewModelInject constructor(
+@HiltViewModel
+class DemandViewModel @Inject constructor(
     private val repository: DemandRepository,
     private val context: Context,
     private val analytics: FirebaseAnalytics
