@@ -187,7 +187,7 @@ class SigningInFragment : UFragment() {
             Status.INVALID_LOGIN -> snackAndBack(getString(R.string.error_invalid_credentials))
             Status.APPROVING -> Timber.d("Status: Approving")
             Status.NETWORK_ERROR -> snackAndBack(getString(R.string.error_network_error))
-            Status.RESPONSE_FAILED -> snackAndBack(getString(R.string.error_unexpected_response))
+            Status.RESPONSE_FAILED -> snackAndBack(getString(R.string.error_unexpected_response_joke))
             Status.SUCCESS -> completeLogin()
             Status.APPROVAL_ERROR -> snackAndBack(getString(R.string.error_network_error))
             Status.GRADES_FAILED -> completeLogin()

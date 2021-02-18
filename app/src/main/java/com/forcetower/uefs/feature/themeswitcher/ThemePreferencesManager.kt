@@ -24,10 +24,13 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.util.SparseIntArray
 import androidx.annotation.IdRes
+import androidx.annotation.StyleRes
 import androidx.appcompat.app.AppCompatDelegate
 import com.forcetower.uefs.R
+import timber.log.Timber
 
 class ThemePreferencesManager(private val context: Context) {
+    private val provider = ThemeSwitcherResourceProvider()
 
     fun saveAndApplyTheme(@IdRes id: Int) {
         val nightMode = convertToNightMode(id)
@@ -51,26 +54,17 @@ class ThemePreferencesManager(private val context: Context) {
     val currentThemeId: Int
         get() = convertToThemeId(nightMode)
 
-    val themeIds: IntArray
-        get() {
-            val themeIds = IntArray(THEME_NIGHT_MODE_MAP.size())
-            for (i in 0 until THEME_NIGHT_MODE_MAP.size()) {
-                themeIds[i] = THEME_NIGHT_MODE_MAP.keyAt(i)
-            }
-            return themeIds
-        }
-
     private val nightMode: Int
         get() = sharedPreferences.getInt(KEY_NIGHT_MODE, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
 
     private val primaryColor: Int
-        get() = sharedPreferences.getInt(KEY_PRIMARY_COLOR, 0)
+        get() = resourceFromIndex(provider.primaryColors, sharedPreferences.getInt(KEY_PRIMARY_COLOR, -1))
 
     private val secondaryColor: Int
-        get() = sharedPreferences.getInt(KEY_SECONDARY_COLOR, 0)
+        get() = resourceFromIndex(provider.secondaryColors, sharedPreferences.getInt(KEY_SECONDARY_COLOR, -1))
 
     private val backgroundColor: Int
-        get() = sharedPreferences.getInt(KEY_BACKGROUND_COLOR, 0)
+        get() = resourceFromIndex(provider.backgroundColors, sharedPreferences.getInt(KEY_BACKGROUND_COLOR, -1))
 
     private fun saveNightMode(nightMode: Int) {
         sharedPreferences.edit().putInt(KEY_NIGHT_MODE, nightMode).apply()
@@ -125,19 +119,65 @@ class ThemePreferencesManager(private val context: Context) {
     }
 
     private fun saveColors(primary: Int, secondary: Int, background: Int) {
+        val positional = convertThemeToPositionalData(ThemeStyleData(primary, secondary, background))
         sharedPreferences.edit()
-            .putInt(KEY_PRIMARY_COLOR, primary)
-            .putInt(KEY_SECONDARY_COLOR, secondary)
-            .putInt(KEY_BACKGROUND_COLOR, background)
+            .putInt(KEY_PRIMARY_COLOR, positional.primary)
+            .putInt(KEY_SECONDARY_COLOR, positional.secondary)
+            .putInt(KEY_BACKGROUND_COLOR, positional.background)
             .apply()
     }
 
+    private fun convertThemeToPositionalData(data: ThemeStyleData): ThemePositionData {
+        val primaryPosition = indexOfResource(provider.primaryColors, data.primary)
+        val secondaryPosition = indexOfResource(provider.secondaryColors, data.secondary)
+        val backgroundPosition = indexOfResource(provider.backgroundColors, data.background)
+        return ThemePositionData(primaryPosition, secondaryPosition, backgroundPosition)
+    }
+
+    private fun convertPositionToThemeData(data: ThemePositionData): ThemeStyleData {
+        val primary = resourceFromIndex(provider.primaryColors, data.primary)
+        val secondary = resourceFromIndex(provider.secondaryColors, data.secondary)
+        val background = resourceFromIndex(provider.backgroundColors, data.background)
+        return ThemeStyleData(primary, secondary, background)
+    }
+
+    private fun indexOfResource(arrayId: Int, elementId: Int): Int {
+        if (elementId == 0) return -1
+        val resources = context.resources
+        val typed = resources.obtainTypedArray(arrayId)
+        var pos = 0
+        var found = false
+        while (pos < typed.length()) {
+            if (typed.getResourceId(pos, 0) == elementId) {
+                found = true
+                break
+            }
+            pos++
+        }
+        typed.recycle()
+        return if (found) pos else -1
+    }
+
+    private fun resourceFromIndex(arrayId: Int, position: Int): Int {
+        if (position == -1) return 0
+        val resources = context.resources
+        val typed = resources.obtainTypedArray(arrayId)
+        return try {
+            typed.getResourceId(position, 0)
+        } catch (error: Throwable) {
+            Timber.d(error, "Error retrieving theme...")
+            0
+        } finally {
+            typed.recycle()
+        }
+    }
+
     companion object {
-        private const val PREFERENCES_NAME = "night_mode_preferences"
+        private const val PREFERENCES_NAME = "theme_mode_preferences"
         private const val KEY_NIGHT_MODE = "night_mode"
-        private const val KEY_PRIMARY_COLOR = "primary_color"
-        private const val KEY_SECONDARY_COLOR = "secondary_color"
-        private const val KEY_BACKGROUND_COLOR = "background_color"
+        private const val KEY_PRIMARY_COLOR = "_themed_primary_color"
+        private const val KEY_SECONDARY_COLOR = "_themed_secondary_color"
+        private const val KEY_BACKGROUND_COLOR = "_themed_background_color"
         private val THEME_NIGHT_MODE_MAP = SparseIntArray()
 
         init {
@@ -146,4 +186,16 @@ class ThemePreferencesManager(private val context: Context) {
             THEME_NIGHT_MODE_MAP.append(R.id.theme_default, AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
         }
     }
+
+    private data class ThemeStyleData(
+        @StyleRes val primary: Int,
+        @StyleRes val secondary: Int,
+        @StyleRes val background: Int
+    )
+
+    private data class ThemePositionData(
+        val primary: Int,
+        val secondary: Int,
+        val background: Int
+    )
 }

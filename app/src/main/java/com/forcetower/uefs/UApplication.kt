@@ -60,11 +60,8 @@ class UApplication : Application(), Configuration.Provider {
             Timber.plant(CrashlyticsTree())
         }
         super.onCreate()
-        val resetTheme = preferences.getBoolean("should_reset_theme_attrs", true)
-        if (resetTheme) {
-            preferences.edit().putBoolean("should_reset_theme_attrs", false).apply()
-        }
-        setupDayNightTheme(this, resetTheme)
+
+        setupDayNightTheme(this)
         defineWorker()
     }
 

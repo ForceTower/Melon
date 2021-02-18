@@ -40,12 +40,13 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
     private var progress = 0f
     private var min: Int = 0
     private var max: Int = 100
+    private var factor = 0.3f
 
     private val startAngle = -90
     private var color = Color.DKGRAY
-    private var rectF: RectF? = null
-    private var backgroundPaint: Paint? = null
-    private var foregroundPaint: Paint? = null
+    private lateinit var rectF: RectF
+    private lateinit var backgroundPaint: Paint
+    private lateinit var foregroundPaint: Paint
 
     init {
         init()
@@ -67,12 +68,13 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
             color = typedArray.getInt(R.styleable.CircleProgressBar_progressbarColor, color)
             min = typedArray.getInt(R.styleable.CircleProgressBar_min, min)
             max = typedArray.getInt(R.styleable.CircleProgressBar_max, max)
+            factor = typedArray.getFloat(R.styleable.CircleProgressBar_backgroundAlpha, factor)
         } finally {
             typedArray.recycle()
         }
 
         backgroundPaint = Paint(Paint.ANTI_ALIAS_FLAG).apply {
-            color = adjustAlpha(this@CircleProgressBar.color, 0.3f)
+            color = adjustAlpha(this@CircleProgressBar.color, factor)
             style = Paint.Style.STROKE
             strokeWidth = this@CircleProgressBar.backgroundStrokeWidth
         }
@@ -99,15 +101,15 @@ class CircleProgressBar(ctx: Context, private val attrs: AttributeSet) : View(ct
 
         setMeasuredDimension(min, min)
         val fl = foregroundStrokeWidth / 2
-        rectF!!.set(fl, fl, min - fl, min - fl)
+        rectF.set(fl, fl, min - fl, min - fl)
     }
 
     override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
 
-        canvas.drawOval(rectF!!, backgroundPaint!!)
+        canvas.drawOval(rectF, backgroundPaint)
         val angle = 360 * progress / max
-        canvas.drawArc(rectF!!, startAngle.toFloat(), angle, false, foregroundPaint!!)
+        canvas.drawArc(rectF, startAngle.toFloat(), angle, false, foregroundPaint)
     }
 
     @Keep

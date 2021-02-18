@@ -49,10 +49,17 @@ abstract class MessageDao {
                     }
                 }
 
+                // mark message as edited?
+                if (!message.html && message.content.isNotBlank()) {
+                    updateContent(message.sagresId, message.content)
+                }
+
                 if (message.discipline != null) {
-                    if (direct.discipline.isNullOrBlank()) {
-                        updateDisciplineName(message.sagresId, message.discipline)
-                    }
+                    updateDisciplineName(message.sagresId, message.discipline)
+                }
+
+                if (message.codeDiscipline != null) {
+                    updateDisciplineCode(direct.sagresId, message.codeDiscipline)
                 }
 
                 if (message.attachmentLink != null) {
@@ -67,10 +74,6 @@ abstract class MessageDao {
                     updateDateString(message.sagresId, message.dateString)
                 }
 
-                if (!message.html) {
-                    updateContent(message.sagresId, message.content)
-                }
-
                 if (direct.html && !message.html) {
                     Timber.d("Is this really happening?")
                     updateTimestamp(direct.sagresId, message.timestamp)
@@ -81,8 +84,6 @@ abstract class MessageDao {
                         updateSenderName(direct.sagresId, message.senderName)
                     if (message.discipline != null)
                         updateDisciplineName(direct.sagresId, message.discipline)
-                    if (message.codeDiscipline != null)
-                        updateDisciplineCode(direct.sagresId, message.codeDiscipline)
                 }
             }
             val resume = message.disciplineResume?.trim()

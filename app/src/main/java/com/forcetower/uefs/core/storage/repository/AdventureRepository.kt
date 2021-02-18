@@ -60,7 +60,8 @@ class AdventureRepository @Inject constructor(
             try {
                 val response = service.getServerAchievements().execute()
                 if (response.isSuccessful) {
-                    data.postValue(response.body()!!.data)
+                    val value = response.body()?.data ?: emptyList()
+                    data.postValue(value)
                 } else {
                     data.postValue(emptyList())
                 }

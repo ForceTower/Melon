@@ -22,8 +22,7 @@ package com.forcetower.uefs.core.work.statement
 
 import android.content.Context
 import androidx.annotation.IntRange
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.work.Constraints
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
@@ -33,9 +32,12 @@ import androidx.work.workDataOf
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.work.enqueue
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import timber.log.Timber
 
-class ProfileStatementWorker @WorkerInject constructor(
+@HiltWorker
+class ProfileStatementWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: ProfileRepository
