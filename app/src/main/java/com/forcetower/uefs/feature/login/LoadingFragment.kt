@@ -68,7 +68,7 @@ class LoadingFragment : UFragment() {
             FragmentLoadingBinding.inflate(inflater, container, false).also {
                 binding = it
                 binding.btnFirstSteps.setOnClickListener {
-                    findNavController().navigate(R.id.action_login_loading_to_login_form)
+                    onMoveToNextScreen()
                 }
                 markdown = Bypass(requireContext(), Bypass.Options())
                 setupTermsText()
@@ -78,6 +78,19 @@ class LoadingFragment : UFragment() {
             showInitializationError()
             null
         }
+    }
+
+    private fun onMoveToNextScreen() {
+        try {
+            findNavController().navigate(R.id.action_login_loading_to_login_form)
+        } catch (error: IllegalArgumentException) {
+            showSnack(getString(R.string.why_are_you_so_clicky))
+        }
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getAccess().observe(viewLifecycleOwner, { onReceiveToken(it) })
     }
 
     private fun showInitializationError() {
@@ -108,13 +121,6 @@ class LoadingFragment : UFragment() {
                 }
             }
         }
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        if (::binding.isInitialized)
-            viewModel.getAccess().observe(viewLifecycleOwner, { onReceiveToken(it) })
     }
 
     private fun onReceiveToken(access: Access?) {

@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.evaluation
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
@@ -40,8 +39,11 @@ import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
 import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
 import com.forcetower.uefs.feature.evaluation.home.HomeInteractor
 import com.forcetower.uefs.feature.evaluation.search.EntitySelector
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class EvaluationViewModel @ViewModelInject constructor(
+@HiltViewModel
+class EvaluationViewModel @Inject constructor(
     private val authRepository: AuthRepository,
     private val accountRepository: AccountRepository,
     private val evaluationRepository: EvaluationRepository

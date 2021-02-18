@@ -65,6 +65,13 @@
             android:title="@string/settings_adv_dynamic_feature_aeri"
             app:icon="@drawable/ic_outline_dynamic_feed_24"
             android:summary="@string/settings_adv_dynamic_feature_aeri_info"/>
+
+        <SwitchPreference
+            android:key="stg_advanced_maps_install"
+            android:defaultValue="true"
+            android:title="@string/settings_adv_dynamic_feature_maps"
+            app:icon="@drawable/ic_accent_map_24"
+            android:summary="@string/settings_adv_dynamic_feature_maps_info"/>
     </PreferenceCategory>
 
     <PreferenceCategory

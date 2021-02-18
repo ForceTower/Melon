@@ -20,15 +20,17 @@
 
 package com.forcetower.uefs.feature.about
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.repository.ContributorRepository
 import com.forcetower.uefs.core.vm.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class ContributorViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ContributorViewModel @Inject constructor(
     private val repository: ContributorRepository
 ) : ViewModel(), ContributorActions {
     val contributors by lazy { repository.loadContributors() }

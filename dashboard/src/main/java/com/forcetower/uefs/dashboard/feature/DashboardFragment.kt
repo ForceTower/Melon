@@ -76,9 +76,15 @@ class DashboardFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val dashAdapter = DashboardAdapter(viewModel, this)
+        val dashAdapter = DashboardAdapter(viewModel, viewLifecycleOwner)
         binding.recyclerElements.run {
             adapter = dashAdapter
+            itemAnimator?.run {
+                addDuration = 0L
+                changeDuration = 0L
+                moveDuration = 0L
+                removeDuration = 0L
+            }
         }
 
         homeViewModel.inAppUpdateStatus.observe(

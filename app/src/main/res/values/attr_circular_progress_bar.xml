@@ -27,5 +27,6 @@
         <attr name="progressbarColor" format="color" />
         <attr name="foregroundThickness" format="dimension" />
         <attr name="backgroundThickness" format="dimension" />
+        <attr name="backgroundAlpha" format="float" />
     </declare-styleable>
 </resources>

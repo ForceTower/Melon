@@ -38,4 +38,9 @@ object Constants {
     const val SERVICE_CLIENT_ID = "1"
     const val SERVICE_CLIENT_SECRET = "bCP23X90J5anU0H3uxzWg0RwE6BxEo0HDkqr0PZg"
     const val SERVICE_CLIENT_INSTITUTION = "uefs"
+
+    object DynamicFeatures {
+        const val AERI = "aeri"
+        const val MAPS = "map"
+    }
 }

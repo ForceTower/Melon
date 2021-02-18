@@ -28,21 +28,29 @@ import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.view.drawToBitmap
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
+import com.forcetower.uefs.core.task.usecase.message.FetchAllMessagesSnowpiercerUseCase
 import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.toFile
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
+import javax.inject.Named
 
-class MessagesViewModel @ViewModelInject constructor(
-    val repository: MessagesRepository
+@HiltViewModel
+class MessagesViewModel @Inject constructor(
+    private val repository: MessagesRepository,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    private val fetchAllMessagesSnowpiercerUseCase: FetchAllMessagesSnowpiercerUseCase
 ) : ViewModel(), MessagesActions {
     val messages by lazy { repository.getMessages() }
     val unesMessages by lazy { repository.getUnesMessages() }
@@ -66,15 +74,22 @@ class MessagesViewModel @ViewModelInject constructor(
 
     fun onRefresh() {
         pushedTimes++
-//        if (pushedTimes == 3) {
-//            _snackMessage.value = Event(R.string.download_all_messages)
-//        }
 
-        val fetchMessages = repository.fetchMessages(pushedTimes == 3)
-        _refreshing.value = true
-        _refreshing.addSource(fetchMessages) {
-            _refreshing.removeSource(fetchMessages)
-            _refreshing.value = false
+        if (pushedTimes == 3 && snowpiercerEnabled) {
+            _snackMessage.value = Event(R.string.download_all_messages)
+            viewModelScope.launch {
+                _refreshing.value = true
+                fetchAllMessagesSnowpiercerUseCase(Unit)
+                _refreshing.value = false
+                pushedTimes = 0
+            }
+        } else {
+            val fetchMessages = repository.fetchMessages(pushedTimes == 3)
+            _refreshing.value = true
+            _refreshing.addSource(fetchMessages) {
+                _refreshing.removeSource(fetchMessages)
+                _refreshing.value = false
+            }
         }
     }
 

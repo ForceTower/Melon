@@ -35,7 +35,7 @@
         android:id="@+id/schedule"
         android:name="com.forcetower.uefs.feature.schedule.SchedulePerformanceFragment"
         android:label="ScheduleFragment"
-        tools:layout="@layout/fragment_schedule"/>
+        tools:layout="@layout/fragment_schedule_performance"/>
 
     <fragment
         android:id="@+id/messages"

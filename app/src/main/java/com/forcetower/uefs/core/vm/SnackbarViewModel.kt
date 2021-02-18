@@ -20,12 +20,14 @@
 
 package com.forcetower.uefs.core.vm
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class SnackbarViewModel @ViewModelInject constructor() : ViewModel() {
+@HiltViewModel
+class SnackbarViewModel @Inject constructor() : ViewModel() {
     private val _snackbar = MutableLiveData<Event<String>>()
     val snackbarMessage: LiveData<Event<String>>
         get() = _snackbar

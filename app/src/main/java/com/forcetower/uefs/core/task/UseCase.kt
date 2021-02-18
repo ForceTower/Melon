@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2021. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,27 +18,26 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.feature.schedule
+package com.forcetower.uefs.core.task
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
-import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.forcetower.conference.core.model.persistence.Session
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.withContext
+import timber.log.Timber
 
-@HiltViewModel
-class ScheduleViewModel @Inject constructor() : ViewModel(), ScheduleActions {
-    // TODO Implement logic
-    val isLoading: LiveData<Boolean> = MutableLiveData()
-    val refreshing: LiveData<Boolean> = MutableLiveData()
-
-    fun onSwipeRefresh() {
+abstract class UseCase<in P, R>(private val coroutineDispatcher: CoroutineDispatcher) {
+    suspend operator fun invoke(parameters: P): UCaseResult<R> {
+        return try {
+            withContext(coroutineDispatcher) {
+                execute(parameters).let {
+                    UCaseResult.Success(it)
+                }
+            }
+        } catch (e: Exception) {
+            Timber.d(e)
+            UCaseResult.Error(e)
+        }
     }
 
-    override fun onOpenSession(session: Session) {
-    }
-
-    override fun onStarClick(session: Session) {
-    }
+    @Throws(RuntimeException::class)
+    protected abstract suspend fun execute(parameters: P): R
 }

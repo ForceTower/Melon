@@ -102,7 +102,7 @@ class SnowpiercerSyncRepository @Inject constructor(
         if (login is Outcome.Error) {
             if (login.code == 401) onAccessInvalided()
             else produceErrorMessage(login)
-            // The first requisition failed... stop here
+            // The first request failed... stop here
             return
         }
 
@@ -194,14 +194,13 @@ class SnowpiercerSyncRepository @Inject constructor(
         NotificationCreator.showInvalidAccessNotification(context)
     }
 
-    @WorkerThread
-    private fun findAndMatch() {
-        val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider")
-        aeri?.create()?.run {
-            update()
-            getNotifyMessages().forEach {
-                NotificationCreator.showAERIMessageNotification(context, it.content.hashCode().toLong(), it.title, it.content, it.imageUrl)
-            }
+    private suspend fun findAndMatch() {
+        val aeri = getDynamicDataSourceFactory(context, "com.forcetower.uefs.aeri.domain.AERIDataSourceFactoryProvider") ?: return
+        val source = aeri.create()
+        source.update()
+        val messages = source.getNotifyMessages()
+        messages.forEach {
+            NotificationCreator.showAERIMessageNotification(context, it.content.hashCode().toLong(), it.title, it.content, it.imageUrl)
         }
     }
 

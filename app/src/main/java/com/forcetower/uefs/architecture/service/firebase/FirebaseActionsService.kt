@@ -24,6 +24,11 @@ import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -32,13 +37,24 @@ class FirebaseActionsService : FirebaseMessagingService() {
     @Inject
     lateinit var repository: FirebaseMessageRepository
 
+    private val job = SupervisorJob()
+    private val coroutineScope = CoroutineScope(job + Dispatchers.IO)
+
     override fun onMessageReceived(message: RemoteMessage) {
         Timber.d("Message received: $message")
-        repository.onMessageReceived(message)
+        coroutineScope.launch {
+            repository.onMessageReceived(message)
+        }
     }
 
     override fun onNewToken(token: String) {
         Timber.d("On Token received: $token")
         repository.onNewToken(token)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        Timber.d("Service onDestroy called. Coroutines will be canceled")
+        job.cancel("Service destroyed")
     }
 }

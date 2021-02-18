@@ -21,8 +21,7 @@
 package com.forcetower.uefs.core.work.affinity
 
 import android.content.Context
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
 import androidx.work.NetworkType
@@ -32,10 +31,13 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.work.enqueue
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
-class AnswerAffinityWorker @WorkerInject constructor(
+@HiltWorker
+class AnswerAffinityWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: AffinityQuestionRepository

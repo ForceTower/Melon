@@ -20,11 +20,13 @@
 
 package com.forcetower.uefs.core.vm
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.storage.repository.CourseRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class CourseViewModel @ViewModelInject constructor(
+@HiltViewModel
+class CourseViewModel @Inject constructor(
     private val repository: CourseRepository
 ) : ViewModel() {
     val courses by lazy { repository.getCourses() }

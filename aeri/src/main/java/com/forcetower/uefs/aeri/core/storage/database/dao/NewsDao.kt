@@ -66,11 +66,11 @@ abstract class NewsDao {
     abstract fun getAnnouncementsPaged(): DataSource.Factory<Int, Announcement>
 
     @Query("SELECT * FROM Announcement WHERE notified = 0")
-    abstract fun getNewAnnouncements(): List<Announcement>
+    abstract suspend fun getNewAnnouncements(): List<Announcement>
 
     @Query("UPDATE Announcement SET notified = 1")
-    abstract fun markAllNotified()
+    abstract suspend fun markAllNotified()
 
     @Query("DELETE FROM Announcement")
-    abstract fun deleteAll()
+    abstract suspend fun deleteAll()
 }

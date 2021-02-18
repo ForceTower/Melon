@@ -23,25 +23,25 @@ package com.forcetower.uefs.aeri.core.storage.repository
 import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.forcetower.core.interfaces.notification.NotifyMessage
-import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.Reusable
 import dev.forcetower.oversee.Oversee
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable
 class AERIRepository @Inject constructor(
     context: Context,
-    private val database: AERIDatabase,
-    private val executors: AppExecutors
+    private val database: AERIDatabase
 ) {
     private val notificationTitle: String
     init {
@@ -54,18 +54,14 @@ class AERIRepository @Inject constructor(
         }
     }
 
-    fun refreshNewsAsync(): LiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        executors.networkIO().execute {
-            refreshNews()
-            database.news().markAllNotified()
-            result.postValue(true)
-        }
-        return result
+    fun refreshNewsAsync() = liveData(Dispatchers.IO) {
+        refreshNews()
+        database.news().markAllNotified()
+        emit(true)
     }
 
     @WorkerThread
-    fun refreshNews() {
+    suspend fun refreshNews() = withContext(Dispatchers.IO) {
         Oversee.initialize()
         val news = Oversee.instance.getAERINews().reversed()
         database.news().insert(news)
@@ -75,16 +71,14 @@ class AERIRepository @Inject constructor(
         return LivePagedListBuilder(database.news().getAnnouncementsPaged(), 20).build()
     }
 
-    @WorkerThread
-    fun update(): Int {
+    suspend fun update(): Int {
         refreshNews()
         return 0
     }
 
-    @WorkerThread
-    fun getNotifyMessages(): List<NotifyMessage> {
+    suspend fun getNotifyMessages(): List<NotifyMessage> = withContext(Dispatchers.IO) {
         val notify = database.news().getNewAnnouncements()
         database.news().markAllNotified()
-        return notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }
+        notify.map { NotifyMessage(notificationTitle, it.title, it.imageUrl, it.link) }
     }
 }

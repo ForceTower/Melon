@@ -58,6 +58,7 @@
     <string name="error_connection_failed">Erro de conexão</string>
     <string name="error_network_error">Falha de conexão</string>
     <string name="error_unexpected_response">O Sagres não respondeu corretamente</string>
+    <string name="error_unexpected_response_joke">Parece que o Portal ta fora do ar de novo. Normal...</string>
     <string name="login_connected">Conectado</string>
     <string name="login_hello_user">Olá %1$s</string>
     <string name="default_firebase_notification_channel_id" translatable="false">com.forcetower.uefs.GENERAL.REMOTE</string>
@@ -369,7 +370,7 @@
     <string name="step_discipline_details_initial">Em suas marcas!</string>
     <string name="label_your_calculated_score">Score calculado é %1$.1f</string>
     <string name="label_score_undefined">Não achei seu score</string>
-    <string name="download_all_messages">O UNES irá baixar todas as mensagens já enviadas para você</string>
+    <string name="download_all_messages">O UNES irá baixar várias as mensagens já enviadas para você</string>
     <string name="demand_open_title">Demanda Web</string>
     <string name="demand_open_text">A demanda web foi aberta. Faça a sua pelo UNES!</string>
     <string name="channel_common_hig">Avisos principais</string>
@@ -878,4 +879,7 @@
     <string name="title_map">Map</string>
     <string name="campus_map">Mapa do Campus</string>
     <string name="share_file">Compartilhar arquivo</string>
+    <string name="why_are_you_so_clicky">Por que você clica tanto?</string>
+    <string name="settings_adv_dynamic_feature_maps">Mapa do campus</string>
+    <string name="settings_adv_dynamic_feature_maps_info">Controla se a função do mapa deve ser instalada/desinstalada</string>
 </resources>

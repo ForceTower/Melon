@@ -17,7 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 package com.forcetower.uefs.core.storage.network.adapter
 
 import androidx.lifecycle.LiveData
@@ -52,11 +51,13 @@ fun <T> Call<T>.asLiveData(): LiveData<ApiResponse<T>> {
                 enqueue(
                     object : Callback<T> {
                         override fun onResponse(call: Call<T>, response: Response<T>) {
-                            postValue(ApiResponse.create(response))
+                            val value = ApiResponse.create(response)
+                            postValue(value)
                         }
 
                         override fun onFailure(call: Call<T>, throwable: Throwable) {
-                            postValue(ApiResponse.create(throwable))
+                            val value = ApiResponse.create<T>(throwable)
+                            postValue(value)
                         }
                     }
                 )
