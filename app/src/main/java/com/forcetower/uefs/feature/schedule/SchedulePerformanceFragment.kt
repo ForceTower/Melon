@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.recyclerview.widget.GridLayoutManager
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
@@ -63,7 +62,7 @@ class SchedulePerformanceFragment : UFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         showEmptyDays = preferences.getBoolean("stg_show_empty_day_schedule", false)
-        val manager = GridLayoutManager(requireContext(), 6)
+        val manager = WrappedGridLayoutManager(requireContext(), 6, showEmptyDays)
         val adapter = ScheduleBlockPerformanceAdapter(viewModel, showEmptyDays, requireContext())
         val adapterLine = ScheduleLinePerformanceAdapter(viewModel)
         binding.recyclerSchedule.layoutManager = manager
