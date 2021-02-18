@@ -25,10 +25,8 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
@@ -72,25 +70,20 @@ class DocumentsRepository @Inject constructor(
     fun getDocuments() = database.documentDao().getDocuments()
 
     @AnyThread
-    fun downloadDocument(document: Document): LiveData<Resource<SagresDocument>> {
+    fun downloadDocument(document: Document, gtoken: String?): LiveData<Resource<SagresDocument>> {
         val data = MutableLiveData<Resource<SagresDocument>>()
-        executor.networkIO().execute { download(data, document) }
+        executor.networkIO().execute { download(data, document, gtoken) }
         return data
     }
 
     @WorkerThread
-    private fun download(data: MutableLiveData<Resource<SagresDocument>>, document: Document) {
+    private fun download(data: MutableLiveData<Resource<SagresDocument>>, document: Document, gtoken: String?) {
         val access = database.accessDao().getAccessDirect()
         if (access == null) {
             data.postValue(Resource.error("Access is null", 700, Exception("No Access")))
         } else {
             database.documentDao().updateDownloading(true, document.value)
-            val login = if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
-                SagresNavigator.instance.login(access.username, access.password)
-            } else {
-                // TODO Change this
-                LoginCallback(Status.INVALID_LOGIN)
-            }
+            val login = SagresNavigator.instance.login(access.username, access.password, gtoken)
 
             if (login.status == Status.INVALID_LOGIN) {
                 Timber.d("Login failed. Login status is: ${login.status}")

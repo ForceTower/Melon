@@ -27,6 +27,7 @@ import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
+import com.forcetower.uefs.core.storage.database.M50TO51
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -38,6 +39,7 @@ import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import timber.log.Timber
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -58,7 +60,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
         Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-            .addMigrations()
+            .addMigrations(M50TO51)
             .enableMultiInstanceInvalidation()
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()
@@ -94,5 +96,13 @@ object AppModule {
     @Provides
     @Reusable
     @Named("webViewUA")
-    fun provideWebViewUserAgent(context: Context): String = WebSettings.getDefaultUserAgent(context)
+    fun provideWebViewUserAgent(context: Context): String {
+        return try {
+            WebSettings.getDefaultUserAgent(context)
+        } catch (error: Throwable) {
+            Timber.w("Failed to obtain device UserAgent")
+            Timber.w("UserAgent error ${error.message}")
+            "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/84.0.4147.125 Mobile Safari/537.36"
+        }
+    }
 }

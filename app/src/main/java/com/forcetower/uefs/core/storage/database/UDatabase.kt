@@ -134,7 +134,7 @@ import com.forcetower.uefs.core.util.Converters
         AffinityQuestionAlternative::class,
         Event::class
     ],
-    version = 50,
+    version = 51,
     exportSchema = true
 )
 @TypeConverters(value = [Converters::class])

@@ -20,13 +20,15 @@
 
 package com.forcetower.uefs.feature.siecomp.onboarding
 
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.vm.Event
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 
-class OnboardingViewModel @ViewModelInject constructor() : ViewModel() {
+@HiltViewModel
+class OnboardingViewModel @Inject constructor() : ViewModel() {
     private val _navigateToEventActivity = MutableLiveData<Event<Unit>>()
     val navigateToEventActivity: LiveData<Event<Unit>> = _navigateToEventActivity
 

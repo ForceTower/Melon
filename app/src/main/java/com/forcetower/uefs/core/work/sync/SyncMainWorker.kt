@@ -22,8 +22,7 @@ package com.forcetower.uefs.core.work.sync
 
 import android.content.Context
 import androidx.annotation.IntRange
-import androidx.hilt.Assisted
-import androidx.hilt.work.WorkerInject
+import androidx.hilt.work.HiltWorker
 import androidx.preference.PreferenceManager
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
@@ -36,11 +35,14 @@ import com.forcetower.uefs.core.constants.PreferenceConstants
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedInject
 import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 
-class SyncMainWorker @WorkerInject constructor(
+@HiltWorker
+class SyncMainWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: SagresSyncRepository,

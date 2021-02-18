@@ -56,7 +56,7 @@ class FirebaseMessageRepository @Inject constructor(
     private val firebaseMessaging: FirebaseMessaging,
     private val executors: AppExecutors
 ) {
-    fun onMessageReceived(message: RemoteMessage) {
+    suspend fun onMessageReceived(message: RemoteMessage) {
         val data = message.data
         when {
             data.keys.isNotEmpty() -> onDataMessageReceived(data)
@@ -65,14 +65,14 @@ class FirebaseMessageRepository @Inject constructor(
         }
     }
 
-    private fun onDataMessageReceived(data: Map<String, String>) {
+    private suspend fun onDataMessageReceived(data: Map<String, String>) {
         Timber.d("Data message received")
         when (data["identifier"]) {
             "event" -> eventNotification(data)
             "teacher" -> teacherNotification(data)
             "remote_database" -> promoteDatabase(data)
             "service" -> serviceNotificationExtractor(data)
-            "synchronize" -> universalSync(data)
+            "synchronize" -> universalSync()
             "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
             "hourglass_initiator" -> hourglassRunner()
@@ -194,7 +194,7 @@ class FirebaseMessageRepository @Inject constructor(
         preferences.edit().putBoolean("${unique}__firebase", completed).apply()
     }
 
-    private fun universalSync(@Suppress("UNUSED_PARAMETER") data: Map<String, String>) {
+    private suspend fun universalSync() {
         syncRepository.performSync("Universal")
     }
 

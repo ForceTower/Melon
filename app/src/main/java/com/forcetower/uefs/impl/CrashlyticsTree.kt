@@ -31,12 +31,16 @@ class CrashlyticsTree : Timber.Tree() {
             return
         }
 
-        crashlytics.setCustomKey(CRASHLYTICS_KEY_PRIORITY, priority)
-        if (tag != null) crashlytics.setCustomKey(CRASHLYTICS_KEY_TAG, tag)
-        crashlytics.setCustomKey(CRASHLYTICS_KEY_MESSAGE, message)
+        if (priority == Log.WARN) {
+            crashlytics.log("$tag: $message")
+        } else {
+            crashlytics.setCustomKey(CRASHLYTICS_KEY_PRIORITY, priority)
+            if (tag != null) crashlytics.setCustomKey(CRASHLYTICS_KEY_TAG, tag)
+            crashlytics.setCustomKey(CRASHLYTICS_KEY_MESSAGE, message)
 
-        val error = t ?: Exception(message)
-        crashlytics.recordException(error)
+            val error = t ?: Exception(message)
+            crashlytics.recordException(error)
+        }
     }
 
     companion object {

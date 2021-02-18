@@ -23,7 +23,6 @@ package com.forcetower.uefs.feature.schedule
 import android.content.Context
 import android.content.SharedPreferences
 import android.view.View
-import androidx.hilt.lifecycle.ViewModelInject
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -39,11 +38,14 @@ import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class ScheduleViewModel @ViewModelInject constructor(
+@HiltViewModel
+class ScheduleViewModel @Inject constructor(
     repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository,
     private val snowpiercerSyncRepository: SnowpiercerSyncRepository,
@@ -85,7 +87,9 @@ class ScheduleViewModel @ViewModelInject constructor(
                 snowpiercerSyncRepository.asyncSync()
             }
         } else {
-            sagresSyncRepository.asyncSync(gToken)
+            viewModelScope.launch {
+                sagresSyncRepository.asyncSync(gToken)
+            }
         }
     }
 

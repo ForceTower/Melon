@@ -80,8 +80,8 @@ dependencies {
     api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
     api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
     api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
-    api "androidx.lifecycle:lifecycle-extensions:$lifecycle"
     api "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    api "androidx.lifecycle:lifecycle-service:$lifecycle"
 
     implementation "com.jakewharton.timber:timber:$timber"
 
