@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import dev.forcetower.breaker.model.ClassEvaluation
 import timber.log.Timber
+import java.time.ZonedDateTime
 
 @Dao
 abstract class GradeDao {
@@ -217,7 +218,32 @@ abstract class GradeDao {
     @Transaction
     open suspend fun putGradesNewWay(classId: Long, evaluations: List<ClassEvaluation>, notify: Boolean = true) {
         evaluations.forEach { evaluation ->
-            evaluation.grades.forEach { grade ->
+            val grades = evaluation.grades
+            val named = grades.groupBy { it.name }
+            val remapped = named.entries.map { entry ->
+                if (entry.value.size == 1) {
+                    entry.value[0]
+                } else {
+                    // Some disciplines still shows more than one practice.
+                    // this could be removed iof we show all with the same name to the user,
+                    // but that would trigger notifications to classes we don't need.
+                    // There are 4 solutions:
+                    // - remove date changes notifications, and show everything
+                    // - remove date changes notifications, show only one grade, but date might be incorrect
+                    // - show everything
+                    // - show only one, but date might be incorrect
+                    // for now, UNES will use option 4, prioritizing earlier dates (better study for early test)
+                    entry.value.minByOrNull {
+                        when {
+                            it.value != null -> Int.MIN_VALUE
+                            it.date != null -> ZonedDateTime.parse(it.date!!).toEpochSecond().toInt()
+                            else -> Int.MAX_VALUE
+                        }
+                    }!!
+                }
+            }
+
+            remapped.forEach { grade ->
                 Timber.d("Attempt to insert ${evaluation.name} ${grade.name} ${grade.value}")
                 val current = getNamedGradeDirect(classId, "${grade.nameShort} - ${grade.name}", evaluation.name.hashCode())
                 Timber.d("Attempt to override ${current?.name} ${current?.groupingName} ${current?.grade}")
