@@ -33,6 +33,9 @@ ext {
             if (branch == "development") {
                 adder = 20000
                 postfix = "beta"
+            } else if (branch.startsWith("feature/")) {
+                adder = 20000
+                postfix = branch.replace("feature/", "")
             }
 
             (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
