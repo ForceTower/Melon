@@ -208,7 +208,6 @@ dependencies {
     // Dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_dagger"
     implementation "androidx.hilt:hilt-work:$hilt_androidx"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_androidx"
     kapt "com.google.dagger:hilt-compiler:$hilt_dagger"
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
