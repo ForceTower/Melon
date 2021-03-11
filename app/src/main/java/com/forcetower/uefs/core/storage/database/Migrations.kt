@@ -422,3 +422,11 @@ object M50TO51 : Migration(50, 51) {
         }
     }
 }
+
+object M51TO52 : Migration(51, 52) {
+    override fun migrate(database: SupportSQLiteDatabase) {
+        database.execSQL("ALTER TABLE ClassGroup ADD COLUMN teacherEmail TEXT")
+        database.execSQL("ALTER TABLE Teacher ADD COLUMN email TEXT")
+        database.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Teacher_sagresId` ON `Teacher` (`sagresId`)")
+    }
+}
