@@ -27,13 +27,15 @@ import java.util.UUID
 
 @Entity(
     indices = [
-        Index(value = ["uuid"], unique = true)
+        Index(value = ["uuid"], unique = true),
+        Index(value = ["sagresId"], unique = true)
     ]
 )
 data class Teacher(
     @PrimaryKey(autoGenerate = true)
     val uid: Long,
     val name: String,
+    val email: String? = null,
     val sagresId: Long? = null,
     val department: String? = null,
     val uuid: String = UUID.randomUUID().toString()
