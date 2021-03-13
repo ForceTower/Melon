@@ -24,7 +24,7 @@ buildscript {
         sagres = "1.6.5"
 
         // Kotlin Extensions
-        ktx = '1.5.0-beta02'
+        ktx = '1.5.0-beta03'
 
         // Android X
         app_compat = '1.2.0'
@@ -36,19 +36,19 @@ buildscript {
         flexbox = "1.1.0"
         browser = '1.3.0'
         preference = '1.1.1'
-        fragment = '1.3.0'
+        fragment = '1.3.1'
         swipe_refresh = '1.1.0'
 
         // Architecture
         room = '2.2.6'
         lifecycle = '2.3.0'
         paging = '2.1.2'
-        navigation = '2.3.3'
+        navigation = '2.3.4'
         work_manager = '2.5.0'
 
         // Dependency Injection
         dagger = '2.33'
-        hilt_androidx = '1.0.0-alpha03'
+        hilt_androidx = '1.0.0-beta01'
 
         // Firebase
         firebase_core = '17.5.1'
@@ -71,12 +71,12 @@ buildscript {
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = '1.9.1'
+        gp_core = '1.10.0'
         gp_core_ktx = '1.8.1'
         gp_auth = '19.0.0'
         gp_games = '21.0.0'
         gp_location = '18.0.0'
-        gp_billing_client = '3.0.2'
+        gp_billing_client = '3.0.3'
         gp_admob = '19.7.0'
 
         // Networking
@@ -117,7 +117,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:$android_gradle_plugin"
+        classpath "com.android.tools.build:gradle:${android_gradle_plugin}"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$google_play_services"
         classpath "com.github.triplet.gradle:play-publisher:$play_publisher"
