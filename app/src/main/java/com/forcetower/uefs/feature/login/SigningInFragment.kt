@@ -74,7 +74,7 @@ class SigningInFragment : UFragment() {
         firebaseAuth = FirebaseAuth.getInstance()
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSigningInBinding.inflate(inflater, container, false).also {
             binding = it
             prepareSwitcher()
@@ -130,7 +130,7 @@ class SigningInFragment : UFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel.getLogin().observe(viewLifecycleOwner, Observer(this::onLoginProgress))
+        viewModel.getLogin().observe(viewLifecycleOwner, { onLoginProgress(it) })
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
         viewModel.getStep(args.snowpiercer).observe(viewLifecycleOwner, Observer(this::onStep))
         doLogin()
@@ -255,6 +255,6 @@ class SigningInFragment : UFragment() {
         binding.textHelloUser.text = ""
         binding.textHelloUser.fadeOut()
         binding.textTips.fadeOut()
-        view?.findNavController()?.popBackStack(R.id.login_form, false)
+        findNavController().popBackStack(R.id.login_form, false)
     }
 }

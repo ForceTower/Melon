@@ -34,6 +34,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -44,7 +45,7 @@ class LoginFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
     private lateinit var binding: FragmentLoginFormBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentLoginFormBinding.inflate(inflater, container, false).also {
             binding = it
             binding.btnInstitution.setOnClickListener {
@@ -84,6 +85,7 @@ class LoginFragment : UFragment() {
         if (error) return
 
         val snowpiercer = preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+        FirebaseCrashlytics.getInstance().setCustomKey("snowpiercer_user", snowpiercer)
         val info = bundleOf(
             "username" to username,
             "password" to password,

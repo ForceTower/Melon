@@ -63,10 +63,13 @@ abstract class EvaluationEntitiesDao {
     protected abstract fun clear()
 
     open fun query(query: String): DataSource.Factory<Int, EvaluationEntity> {
-        val realQuery = "%${query.toLowerCase(Locale.getDefault()).unaccent()}%"
         return if (query.isBlank()) {
             doQueryEmpty()
         } else {
+            val realQuery = query.toLowerCase(Locale.getDefault())
+                .unaccent()
+                .split(" ")
+                .joinToString("%", "%", "%")
             doQuery(realQuery)
         }
     }

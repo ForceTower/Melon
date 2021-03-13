@@ -74,7 +74,10 @@ class TechNopeCaptchaFragment : UFragment() {
         val directions = TechNopeCaptchaFragmentDirections.actionLoginTechNopeToLoginSigningIn(args.username, args.password, false).apply {
             captchaToken = token
         }
-        findNavController().navigate(directions)
+
+        requireActivity().runOnUiThread {
+            findNavController().navigate(directions)
+        }
     }
 
     companion object {

@@ -45,6 +45,7 @@ fun List<ClassStatsData>.transformToNewStyle(): List<DisciplineData> {
                 first.semester,
                 first.semesterName,
                 first.teacher,
+                first.teacherEmail,
                 first.grade,
                 first.partialScore,
                 values
@@ -76,6 +77,8 @@ data class DisciplineData(
     val semesterName: String,
     @SerializedName("teacher")
     val teacherName: String,
+    @SerializedName("teacherEmail")
+    val teacherEmail: String?,
     @SerializedName("grade")
     val finalGrade: Double?,
     @SerializedName("partial_score")

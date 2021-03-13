@@ -24,29 +24,30 @@ import androidx.room.ColumnInfo
 import com.google.gson.annotations.SerializedName
 
 data class ClassStatsData(
-    var code: String,
+    val code: String,
     @ColumnInfo(name = "discipline")
     @SerializedName("discipline_name")
-    var disciplineName: String,
+    val disciplineName: String,
     @SerializedName("credits")
     @ColumnInfo(name = "credits")
-    var disciplineCredits: Int,
-    var semester: Int,
+    val disciplineCredits: Int,
+    val semester: Int,
     @ColumnInfo(name = "semester_name")
     @SerializedName("semester_name")
-    var semesterName: String,
-    var teacher: String,
-    var grade: Double?,
+    val semesterName: String,
+    val teacher: String,
+    val teacherEmail: String?,
+    val grade: Double?,
     @SerializedName("partial_score")
-    var partialScore: Double?,
-    var group: String,
-    var identifier: Int,
+    val partialScore: Double?,
+    val group: String,
+    val identifier: Int,
     @ColumnInfo(name = "eval_grade")
-    var evaluationGrade: String?,
+    val evaluationGrade: String?,
     @ColumnInfo(name = "eval_name")
-    var evaluationName: String?,
+    val evaluationName: String?,
     @ColumnInfo(name = "eval_date")
-    var evaluationDate: String?
+    val evaluationDate: String?
 ) {
     companion object {
         const val STATS_CONTRIBUTION = "stats_contribution"

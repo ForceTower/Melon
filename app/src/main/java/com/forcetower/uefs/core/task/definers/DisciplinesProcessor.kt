@@ -27,6 +27,7 @@ import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.UTask
 import com.forcetower.uefs.feature.shared.extensions.createTimeInt
@@ -34,6 +35,7 @@ import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.DisciplineData
+import dev.forcetower.breaker.model.Person
 import timber.log.Timber
 import java.util.UUID
 
@@ -70,13 +72,16 @@ class DisciplinesProcessor(
 
                 val classId = database.classDao().insertNewWays(bound)
                 it.classes.forEach { clazz ->
+                    val teacherId = insertTeacher(clazz.teacher, it.department)
                     val group = ClassGroup(
                         classId = classId,
                         credits = clazz.hours,
                         draft = false,
                         group = clazz.groupName,
                         teacher = clazz.teacher?.name?.toTitleCase(),
-                        sagresId = clazz.id
+                        sagresId = clazz.id,
+                        teacherId = teacherId,
+                        teacherEmail = clazz.teacher?.email
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
                     if (currentSemester?.uid == semesterId) {
@@ -122,6 +127,19 @@ class DisciplinesProcessor(
                 date.forEach { NotificationCreator.showSagresDateGradesNotification(it, context) }
             }
         }
+    }
+
+    private suspend fun insertTeacher(teacher: Person?, department: String?): Long? {
+        teacher ?: return null
+        val value = Teacher(
+            0,
+            teacher.name,
+            teacher.email,
+            teacher.id,
+            department
+        )
+
+        return database.teacherDao().insertOrUpdate(value)
     }
 
     companion object {
