@@ -99,7 +99,6 @@ dependencies {
     // Dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_dagger"
     kapt "com.google.dagger:hilt-compiler:$hilt_dagger"
-    implementation "androidx.hilt:hilt-lifecycle-viewmodel:$hilt_androidx"
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     implementation "com.jakewharton.timber:timber:$timber"

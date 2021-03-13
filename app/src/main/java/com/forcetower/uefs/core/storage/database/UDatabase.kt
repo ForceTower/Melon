@@ -91,6 +91,7 @@ import com.forcetower.uefs.core.storage.database.dao.SemesterDao
 import com.forcetower.uefs.core.storage.database.dao.ServiceRequestDao
 import com.forcetower.uefs.core.storage.database.dao.StudentServiceDao
 import com.forcetower.uefs.core.storage.database.dao.SyncRegistryDao
+import com.forcetower.uefs.core.storage.database.dao.TeacherDao
 import com.forcetower.uefs.core.storage.database.dao.TeacherServiceDao
 import com.forcetower.uefs.core.storage.database.dao.UserSessionDao
 import com.forcetower.uefs.core.util.Converters
@@ -134,7 +135,7 @@ import com.forcetower.uefs.core.util.Converters
         AffinityQuestionAlternative::class,
         Event::class
     ],
-    version = 51,
+    version = 52,
     exportSchema = true
 )
 @TypeConverters(value = [Converters::class])
@@ -147,6 +148,7 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun calendarDao(): CalendarDao
     abstract fun disciplineDao(): DisciplineDao
     abstract fun classDao(): ClassDao
+    abstract fun teacherDao(): TeacherDao
     abstract fun classGroupDao(): ClassGroupDao
     abstract fun classAbsenceDao(): ClassAbsenceDao
     abstract fun classLocationDao(): ClassLocationDao

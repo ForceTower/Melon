@@ -32,7 +32,7 @@ import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 fun departmentStrip(tv: TextView, department: String?) {
     department ?: return
     val replaceOne = department.replace("departamento de ", "", ignoreCase = true)
-    val replaceTwo = replaceOne.replace("dept. de ", "", ignoreCase = true)
+    val replaceTwo = replaceOne.replace(Regex("(?i)dept\\.\\s+de\\s+(?-i)"), "")
     tv.text = replaceTwo
 }
 
