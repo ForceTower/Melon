@@ -23,8 +23,10 @@ package com.forcetower.uefs.architecture.widget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
+import android.content.Intent
 import android.widget.RemoteViews
 import com.forcetower.uefs.R
+import com.forcetower.uefs.service.NotificationCreator
 
 class HomeClassWidgetSecondary : AppWidgetProvider() {
 
@@ -33,8 +35,15 @@ class HomeClassWidgetSecondary : AppWidgetProvider() {
 
         val views = RemoteViews(context.packageName, R.layout.widget_class_home_secondary)
 
+        NotificationCreator.showSimpleNotification(context, "A widget update", "The widget has been updated")
+
         appWidgetIds.forEach {
             appWidgetManager.updateAppWidget(it, views)
         }
+    }
+
+    override fun onReceive(context: Context, intent: Intent) {
+        super.onReceive(context, intent)
+        NotificationCreator.showSimpleNotification(context, "A widget receive", "The widget has received a intent")
     }
 }
