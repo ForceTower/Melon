@@ -61,6 +61,13 @@ class HomeClassWidgetSecondary : AppWidgetProvider() {
                     setTextViewText(R.id.location, location)
                     setTextViewText(R.id.time, "${current.location.startsAt} ~ ${current.location.endsAt}")
                 }
+            } else {
+                views.apply {
+                    setTextViewText(R.id.discipline, context.getString(R.string.widget_no_more_class_discipline))
+                    setTextViewText(R.id.teacher, context.getString(R.string.widget_no_more_class_teacher))
+                    setTextViewText(R.id.location, context.getString(R.string.widget_no_more_class_location))
+                    setTextViewText(R.id.time, context.getString(R.string.widget_no_more_class_time))
+                }
             }
             appWidgetIds.forEach {
                 appWidgetManager.updateAppWidget(it, views)
