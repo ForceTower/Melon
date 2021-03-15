@@ -27,6 +27,7 @@ import android.widget.RemoteViews
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
+import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -41,6 +42,11 @@ class HomeClassWidgetSecondary : AppWidgetProvider() {
 
     private val job = SupervisorJob()
     private val widgetScope = CoroutineScope(Dispatchers.Main + job)
+
+    override fun onEnabled(context: Context) {
+        super.onEnabled(context)
+        FirebaseAnalytics.getInstance(context).setUserProperty("enabled_widget_type", "secondary")
+    }
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
