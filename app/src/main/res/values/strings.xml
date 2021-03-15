@@ -886,4 +886,8 @@
     <string name="widget_unknown_location">Desconhecido</string>
     <string name="widget_schedule_time">Horário</string>
     <string name="widget_schedule_location">Local</string>
+    <string name="widget_no_more_class_discipline">Por hoje acabou</string>
+    <string name="widget_no_more_class_teacher">-</string>
+    <string name="widget_no_more_class_location">Onde você quiser</string>
+    <string name="widget_no_more_class_time">-</string>
 </resources>
