@@ -62,6 +62,10 @@ abstract class ClassLocationDao {
     @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND (((cl.endsAtInt - cl.startsAtInt) / 2) + cl.startsAtInt) > :currentTimeInt ORDER BY startsAtInt LIMIT 1")
     abstract fun getCurrentClass(dayInt: Int, currentTimeInt: Int): LiveData<ClassLocationWithData?>
 
+    @Transaction
+    @Query("SELECT cl.* FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0 AND cl.dayInt = :dayInt AND cl.startsAtInt >= :currentTimeInt ORDER BY startsAtInt LIMIT 1")
+    abstract suspend fun getCurrentClassDirect(dayInt: Int, currentTimeInt: Int): ClassLocationWithData?
+
     @Query("SELECT cl.* FROM ClassLocation cl")
     abstract fun getCurrentScheduleDirect(): List<ClassLocation>
 

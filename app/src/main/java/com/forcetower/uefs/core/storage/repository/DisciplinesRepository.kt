@@ -37,6 +37,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
 import dev.forcetower.breaker.Orchestra
@@ -45,6 +46,7 @@ import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
@@ -91,6 +93,13 @@ class DisciplinesRepository @Inject constructor(
 
     fun getLocationsFromClass(classId: Long): LiveData<List<ClassLocation>> {
         return database.classLocationDao().getLocationsOfClass(classId)
+    }
+
+    suspend fun getCurrentClass(): ClassLocationWithData? {
+        val calendar = Calendar.getInstance()
+        val dayInt = calendar.get(Calendar.DAY_OF_WEEK)
+        val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+        return database.classLocationDao().getCurrentClassDirect(dayInt, currentTimeInt)
     }
 
     fun loadClassDetailsSnowflake(groupId: Long) = flow {

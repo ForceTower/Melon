@@ -23,27 +23,53 @@ package com.forcetower.uefs.architecture.widget
 import android.appwidget.AppWidgetManager
 import android.appwidget.AppWidgetProvider
 import android.content.Context
-import android.content.Intent
 import android.widget.RemoteViews
 import com.forcetower.uefs.R
-import com.forcetower.uefs.service.NotificationCreator
+import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.feature.shared.extensions.toTitleCase
+import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class HomeClassWidgetSecondary : AppWidgetProvider() {
+    @Inject lateinit var repository: DisciplinesRepository
+
+    private val job = SupervisorJob()
+    private val widgetScope = CoroutineScope(Dispatchers.Main + job)
 
     override fun onUpdate(context: Context, appWidgetManager: AppWidgetManager, appWidgetIds: IntArray) {
         super.onUpdate(context, appWidgetManager, appWidgetIds)
 
         val views = RemoteViews(context.packageName, R.layout.widget_class_home_secondary)
 
-        NotificationCreator.showSimpleNotification(context, "A widget update", "The widget has been updated")
-
-        appWidgetIds.forEach {
-            appWidgetManager.updateAppWidget(it, views)
+        widgetScope.launch {
+            val current = repository.getCurrentClass()
+            if (current != null) {
+                val location = if (current.location.modulo == null && current.location.room == null) {
+                    context.getString(R.string.widget_unknown_location)
+                } else {
+                    listOfNotNull(current.location.modulo, current.location.room).joinToString(" - ")
+                }
+                views.apply {
+                    setTextViewText(R.id.discipline, current.groupData.classData.discipline.name.toTitleCase())
+                    setTextViewText(R.id.teacher, current.groupData.group.teacher ?: context.getString(R.string.widget_unknown_teacher))
+                    setTextViewText(R.id.location, location)
+                    setTextViewText(R.id.time, "${current.location.startsAt} ~ ${current.location.endsAt}")
+                }
+            }
+            appWidgetIds.forEach {
+                appWidgetManager.updateAppWidget(it, views)
+            }
         }
     }
 
-    override fun onReceive(context: Context, intent: Intent) {
-        super.onReceive(context, intent)
-        NotificationCreator.showSimpleNotification(context, "A widget receive", "The widget has received a intent")
+    override fun onDisabled(context: Context?) {
+        super.onDisabled(context)
+        job.cancel("All widgets disabled")
     }
 }
