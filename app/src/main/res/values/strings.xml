@@ -882,4 +882,8 @@
     <string name="why_are_you_so_clicky">Por que você clica tanto?</string>
     <string name="settings_adv_dynamic_feature_maps">Mapa do campus</string>
     <string name="settings_adv_dynamic_feature_maps_info">Controla se a função do mapa deve ser instalada/desinstalada</string>
+    <string name="widget_unknown_teacher">Docente Desconhecido</string>
+    <string name="widget_unknown_location">Desconhecido</string>
+    <string name="widget_schedule_time">Horário</string>
+    <string name="widget_schedule_location">Local</string>
 </resources>
