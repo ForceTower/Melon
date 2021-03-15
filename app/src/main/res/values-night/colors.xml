@@ -33,6 +33,8 @@
     <color name="statusBarColor">#1A1A1A</color>
     <color name="navBarColor">#000</color>
 
+    <color name="schedule_divider">#1EFFFFFF</color>
+
     <color name="home_bottom_color_divider">#202020</color>
     <color name="controlHighlight">#33ffffff</color>
 </resources>
