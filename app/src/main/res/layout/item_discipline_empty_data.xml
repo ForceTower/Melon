@@ -21,6 +21,15 @@
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="semester"
+            type="com.forcetower.uefs.core.model.unes.Semester" />
+
+        <variable
+            name="actions"
+            type="com.forcetower.uefs.feature.disciplines.DisciplinesSemestersActions" />
+    </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -62,6 +71,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:text="@string/download_grades"
+            android:onClick="@{() -> actions.downloadDisciplines(semester)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

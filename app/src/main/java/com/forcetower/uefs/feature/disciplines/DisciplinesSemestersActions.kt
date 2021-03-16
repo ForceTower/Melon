@@ -30,4 +30,5 @@ interface DisciplinesSemestersActions {
     fun loadAllDisciplines(view: View): Boolean
     fun onSwipeRefresh()
     fun scrollToStartOfSemester(semester: Semester)
+    fun downloadDisciplines(semester: Semester)
 }

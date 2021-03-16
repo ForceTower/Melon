@@ -49,7 +49,7 @@ class DisciplinePerformanceAdapter(
             R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
             R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_empty_data -> DisciplineHolder.EmptySemester(parent.inflate(viewType))
+            R.layout.item_discipline_empty_data -> DisciplineHolder.EmptySemester(parent.inflate(viewType), viewModel)
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
@@ -88,6 +88,13 @@ class DisciplinePerformanceAdapter(
                     val element = item as DisciplineHelperData.GroupingName
                     clazzGroup = element.clazz
                     groupingName = element.name
+                    executePendingBindings()
+                }
+            }
+            is DisciplineHolder.EmptySemester -> {
+                holder.binding.apply {
+                    val element = item as DisciplineHelperData.EmptySemester
+                    semester = element.semester
                     executePendingBindings()
                 }
             }
@@ -149,8 +156,13 @@ class DisciplinePerformanceAdapter(
         ) : DisciplineHolder(binding.root)
 
         class EmptySemester(
-            val binding: ItemDisciplineEmptyDataBinding
-        ) : DisciplineHolder(binding.root)
+            val binding: ItemDisciplineEmptyDataBinding,
+            val actions: DisciplinesSemestersActions
+        ) : DisciplineHolder(binding.root) {
+            init {
+                binding.actions = actions
+            }
+        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<DisciplineHelperData>() {
@@ -162,6 +174,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is DisciplineHelperData.Score && newItem is DisciplineHelperData.Score -> newItem.grade.uid == oldItem.grade.uid
                 oldItem is DisciplineHelperData.Divider && newItem is DisciplineHelperData.Divider -> true
                 oldItem is DisciplineHelperData.GroupingName && newItem is DisciplineHelperData.GroupingName -> newItem.name == oldItem.name
+                oldItem is DisciplineHelperData.EmptySemester && newItem is DisciplineHelperData.EmptySemester -> oldItem.semester.uid == newItem.semester.uid
                 else -> false
             }
         }
@@ -173,6 +186,7 @@ class DisciplinePerformanceAdapter(
                 oldItem is DisciplineHelperData.Mean && newItem is DisciplineHelperData.Mean -> newItem.clazz == oldItem.clazz
                 oldItem is DisciplineHelperData.Score && newItem is DisciplineHelperData.Score -> newItem.grade == oldItem.grade
                 oldItem is DisciplineHelperData.GroupingName && newItem is DisciplineHelperData.GroupingName -> newItem.name == oldItem.name
+                oldItem is DisciplineHelperData.EmptySemester && newItem is DisciplineHelperData.EmptySemester -> oldItem.semester == newItem.semester
                 else -> true
             }
         }
