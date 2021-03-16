@@ -44,7 +44,6 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.databinding.FragmentDisciplineOldBinding
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
