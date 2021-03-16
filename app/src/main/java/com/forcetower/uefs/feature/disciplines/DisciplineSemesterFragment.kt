@@ -108,7 +108,7 @@ class DisciplineSemesterFragment : UFragment() {
     }
 
     private fun populateInterface(classes: List<ClassFullWithGroup>) {
-        adapterPerformance.classes = classes
+//        adapterPerformance.classes = classes
     }
 
     companion object {

@@ -27,12 +27,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
@@ -43,6 +45,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesA
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.map
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -53,12 +56,24 @@ class DisciplineViewModel @Inject constructor(
     private val grades: SagresGradesRepository,
     private val detailsRepository: DisciplineDetailsRepository,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
-) : ViewModel(), DisciplineActions, MaterialActions, ClassesActions {
+) : ViewModel(), DisciplinesSemestersActions, DisciplineActions, MaterialActions, ClassesActions {
 
-    val semesters by lazy { repository.getParticipatingSemesters() }
+    private lateinit var indexer: DisciplinesIndexed
+    val disciplines by lazy {
+        repository.getAllDisciplinesData().map {
+            indexer = it.indexer
+            it
+        }.asLiveData(Dispatchers.IO)
+    }
+    override val loadingSemestersData = MutableLiveData(false)
+
+    private val _scrollToEvent = MutableLiveData<Event<DisciplineScrollEvent>>()
+    val scrollToEvent: LiveData<Event<DisciplineScrollEvent>> = _scrollToEvent
+
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
     private val classGroupId = MutableLiveData<Long?>()
+
     private val classId = MutableLiveData<Long?>()
 
     private val _classFull = MediatorLiveData<ClassFullWithGroup?>()
@@ -255,10 +270,18 @@ class DisciplineViewModel @Inject constructor(
         return true
     }
 
-    fun loadAllDisciplines(view: View): Boolean {
+    override fun loadAllDisciplines(view: View): Boolean {
         val ctx = view.context
         DisciplineDetailsLoaderService.startService(ctx, true)
         return true
+    }
+
+    override fun onSwipeRefresh() {
+    }
+
+    override fun scrollToStartOfSemester(semester: Semester) {
+        val index = indexer.positionForSemester(semester)
+        _scrollToEvent.value = Event(DisciplineScrollEvent(index, true))
     }
 
     fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>> {

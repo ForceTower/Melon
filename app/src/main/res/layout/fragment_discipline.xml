@@ -26,7 +26,7 @@
     <data>
         <variable
             name="actions"
-            type="com.forcetower.uefs.feature.disciplines.DisciplinesActions"/>
+            type="com.forcetower.uefs.feature.disciplines.DisciplinesSemestersActions"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -81,9 +81,13 @@
             android:layout_height="match_parent"
             app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
             app:onRefreshListener="@{() -> actions.onSwipeRefresh()}"
-            app:refreshing="@{actions.refreshing}"
+            app:refreshing="@{actions.loadingSemestersData}"
             app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
-
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/disciplines_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
