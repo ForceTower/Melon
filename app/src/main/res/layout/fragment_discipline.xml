@@ -25,15 +25,8 @@
 
     <data>
         <variable
-            name="viewModel"
-            type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
-            name="firebaseStorage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
+            name="actions"
+            type="com.forcetower.uefs.feature.disciplines.DisciplinesActions"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout
@@ -66,30 +59,31 @@
                     android:text="@string/label_grades_disciplines_short"
                     android:textColor="?attr/colorOnBackground"
                     android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
-                    android:onLongClick="@{view -> viewModel.loadAllDisciplines(view)}"/>
+                    android:onLongClick="@{view -> actions.loadAllDisciplines(view)}"/>
             </FrameLayout>
 
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="?actionBarSize"
-                style="@style/Widget.MaterialComponents.TabLayout.Colored"
-                app:tabContentStart="36dp"
-                app:tabGravity="fill"
-                app:tabIndicatorFullWidth="false"
-                app:tabMode="scrollable"
-                app:tabTextColor="?attr/colorPrimary"
-                app:tabIndicatorColor="?attr/colorPrimary"
-                app:tabTextAppearance="@style/TextAppearanceTabLayout"
-                app:tabIndicator="@drawable/tab_indicator"
-                android:background="?attr/background"/>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/semester_indicators"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:paddingHorizontal="16dp"
+                android:orientation="horizontal"
+                android:clipToPadding="false"
+                app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                app:paddingEndSystemWindowInsets="@{true}"
+                app:paddingStartSystemWindowInsets="@{true}"
+                tools:itemCount="3"
+                tools:listitem="@layout/item_disciplines_semester_indicator"/>
         </com.google.android.material.appbar.AppBarLayout>
         
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/pager_semester"
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:onRefreshListener="@{() -> actions.onSwipeRefresh()}"
+            app:refreshing="@{actions.refreshing}"
+            app:swipeRefreshColors="@{@intArray/swipe_refresh_colors}">
 
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
