@@ -470,6 +470,15 @@
         <item name="android:maxHeight">24dp</item>
     </style>
 
+    <style name="Widget.UTheme.SemestersDisciplineSeparatorItemDecoration">
+        <item name="android:width">300dp</item>
+        <item name="android:height">72dp</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">18sp</item>
+        <item name="verticalBias">0.67</item>
+    </style>
+
     <style name="UTheme.LightNav.Conference" />
     <style name="UTheme.LightNav.Conference.Impl" />
 </resources>

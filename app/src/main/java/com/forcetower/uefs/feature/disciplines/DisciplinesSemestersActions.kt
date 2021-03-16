@@ -22,10 +22,12 @@ package com.forcetower.uefs.feature.disciplines
 
 import android.view.View
 import androidx.lifecycle.LiveData
+import com.forcetower.uefs.core.model.unes.Semester
 
-interface DisciplinesActions {
-    val refreshing: LiveData<Boolean>
+interface DisciplinesSemestersActions {
+    val loadingSemestersData: LiveData<Boolean>
 
     fun loadAllDisciplines(view: View): Boolean
     fun onSwipeRefresh()
+    fun scrollToStartOfSemester(semester: Semester)
 }

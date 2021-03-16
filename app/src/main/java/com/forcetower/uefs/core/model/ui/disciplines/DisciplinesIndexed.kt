@@ -21,7 +21,7 @@
 package com.forcetower.uefs.core.model.ui.disciplines
 
 import com.forcetower.uefs.core.model.unes.Semester
-import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import timber.log.Timber
 
 class DisciplinesIndexed(
     mapping: Map<Semester, Int>
@@ -29,9 +29,9 @@ class DisciplinesIndexed(
     // ensure map is ordered
     init {
         var previous = -1
-        mapping.forEach { (_, position) ->
+        mapping.forEach { (key, position) ->
             if (position <= previous) {
-                throw IllegalArgumentException("Index values must be >= 0 and in ascending order")
+                throw IllegalArgumentException("Index values must be >= 0 and in ascending order but $key violates that")
             }
             previous = position
         }
@@ -58,12 +58,17 @@ class DisciplinesIndexed(
     }
 
     companion object {
-        fun from(groups: List<ClassFullWithGroup>): DisciplinesIndexed {
-            // TODO Apply correct sorting option
-            val semesters = groups.map { it.semester }.distinct().sortedBy { it.start }
+        fun from(
+            semesters: List<Semester>,
+            groups: List<DisciplineHelperData>
+        ): DisciplinesIndexed {
             val mapping = semesters.associateWith { semester ->
-                groups.indexOfFirst { it.semester.uid == semester.uid }
+                groups.indexOfFirst {
+                    (it is DisciplineHelperData.Header && it.clazz.semester.uid == semester.uid) ||
+                        (it is DisciplineHelperData.EmptySemester && it.semester.uid == semester.uid)
+                }
             }
+            Timber.d("Mapping created with $mapping")
             return DisciplinesIndexed(mapping)
         }
     }

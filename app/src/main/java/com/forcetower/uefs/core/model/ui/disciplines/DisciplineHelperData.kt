@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.model.ui.disciplines
 
 import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 
 sealed class DisciplineHelperData {
@@ -29,5 +30,6 @@ sealed class DisciplineHelperData {
     class Final(val clazz: ClassFullWithGroup) : DisciplineHelperData()
     class Mean(val clazz: ClassFullWithGroup) : DisciplineHelperData()
     class GroupingName(val clazz: ClassFullWithGroup, val name: String) : DisciplineHelperData()
-    class Divider(val clazz: ClassFullWithGroup) : DisciplineHelperData()
+    class EmptySemester(val semester: Semester) : DisciplineHelperData()
+    object Divider : DisciplineHelperData()
 }

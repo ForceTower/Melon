@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -43,6 +44,7 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
+import dagger.Reusable
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
@@ -54,26 +56,77 @@ import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Singleton
 
-@Singleton
+@Reusable
 class DisciplinesRepository @Inject constructor(
     private val context: Context,
     private val client: OkHttpClient,
     private val database: UDatabase,
     private val executors: AppExecutors,
-    @Named("webViewUA") private val agent: String
+    @Named("webViewUA") private val agent: String,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    private val preferences: SharedPreferences
 ) {
-    fun getDisciplines(): Flow<DisciplinesDataUI> {
-        return database.classDao().getClassesWithGradesFromAllSemesters().map {
-            val elements = transformClassesIntoUiElements(it)
-            val indexes = DisciplinesIndexed.from(elements)
-            DisciplinesDataUI(elements, indexes)
+    fun getAllDisciplinesData(): Flow<DisciplinesDataUI> {
+        return database.classDao().getClassesWithGradesFromAllSemesters().map { classes ->
+            val databaseSemesters = database.semesterDao().getParticipatingSemestersDirect()
+            val classesSemester = classes.map { it.semester }.distinct()
+            val semesters = (databaseSemesters + classesSemester).distinct().apply {
+                if (snowpiercerEnabled && all { it.start != null }) {
+                    sortedByDescending { it.start }
+                } else if (preferences.getBoolean("stg_semester_deterministic_ordering", true)) {
+                    sortedByDescending { it.sagresId }
+                } else {
+                    sorted()
+                }
+            }
+            val elements = transformClassesIntoUiElements(semesters, classes)
+            val indexes = DisciplinesIndexed.from(semesters, elements)
+            DisciplinesDataUI(elements, indexes, semesters)
         }
     }
 
-    private fun transformClassesIntoUiElements(classes: List<ClassFullWithGroup>): List<DisciplineHelperData> {
+    private fun transformClassesIntoUiElements(
+        semesters: List<Semester>,
+        classes: List<ClassFullWithGroup>
+    ): List<DisciplineHelperData> {
+        val completedMap = classes
+            .groupBy { it.semester }
+            .mapValues { entry ->
+                val disciplines = entry.value
+                val result = mutableListOf<DisciplineHelperData>()
+                disciplines.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
+                    if (index != 0)
+                        result += DisciplineHelperData.Divider
 
+                    result += DisciplineHelperData.Header(clazz)
+
+                    val groupings = clazz.grades.groupBy { it.grouping }
+                    if (groupings.keys.size <= 1) {
+                        clazz.grades.sortedBy { it.name }.forEach { grade ->
+                            result += DisciplineHelperData.Score(clazz, grade)
+                        }
+                    } else {
+                        groupings.entries.sortedBy { it.key }.forEach { (_, value) ->
+                            if (value.isNotEmpty()) {
+                                val sample = value[0]
+                                result += DisciplineHelperData.GroupingName(clazz, sample.groupingName)
+                                value.sortedBy { it.name }.forEach { grade ->
+                                    result += DisciplineHelperData.Score(clazz, grade)
+                                }
+                            }
+                        }
+                    }
+
+                    if (clazz.clazz.isInFinal()) {
+                        result += DisciplineHelperData.Final(clazz)
+                    }
+                    result += DisciplineHelperData.Mean(clazz)
+                }
+                result
+            }
+
+        return semesters.map { completedMap[it] ?: listOf(DisciplineHelperData.EmptySemester(it)) }.flatten()
     }
 
     fun getParticipatingSemesters(): LiveData<List<Semester>> {

@@ -23,6 +23,10 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
+            name="actions"
+            type="com.forcetower.uefs.feature.disciplines.DisciplinesSemestersActions" />
+
+        <variable
             name="element"
             type="com.forcetower.uefs.core.model.ui.disciplines.CheckableSemester" />
     </data>
@@ -39,6 +43,7 @@
         android:textAppearance="?textAppearanceBody1"
         android:textColor="@color/discipline_semester_indicator_text"
         android:text="@{element.semester.name}"
+        android:onClick="@{() -> actions.scrollToStartOfSemester(element.semester)}"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
         tools:checked="false"

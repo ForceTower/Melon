@@ -20,9 +20,10 @@
 
 package com.forcetower.uefs.core.model.ui.disciplines
 
-import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.model.unes.Semester
 
 data class DisciplinesDataUI(
-    val data: List<ClassFullWithGroup>,
-    val indexer: DisciplinesIndexed
+    val data: List<DisciplineHelperData>,
+    val indexer: DisciplinesIndexed,
+    val semesters: List<Semester>
 )
