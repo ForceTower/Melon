@@ -457,7 +457,7 @@
     <string name="label_purchases">Donations and Items</string>
     <string name="label_schedule_not_found_details">The information was not found at the Student Portal.\nDon\'t worry, as soon as they become available again, UNES will save it.</string>
     <string name="label_score_undefined">I didn\'t find your score</string>
-    <string name="label_select_discipline_group_info">Select a group from discipline %1$s</string>
+    <string name="label_select_discipline_group_info_old">Select a group from discipline %1$s</string>
     <string name="label_services_follow_up">Service request</string>
     <string name="label_your_calculated_score">Calculated score: %1$.1f</string>
     <string name="lets_go">Let\'s go!</string>
@@ -539,7 +539,7 @@
     <string name="ru_quota_exceeded">The quotas are over</string>
     <string name="sagres_functions">Extras</string>
     <string name="select_a_link">Select a link</string>
-    <string name="select_discipline_group_label">Select a group</string>
+    <string name="select_discipline_group_label_old">Select a group</string>
     <string name="send">Send</string>
     <string name="send_email">Send e-mail</string>
     <string name="send_to_random">Send random</string>

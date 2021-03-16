@@ -28,12 +28,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
-import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusMeanBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusNameResumedBinding
-import com.forcetower.uefs.databinding.ItemGradeBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerOldBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsOldBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameOldBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusMeanOldBinding
+import com.forcetower.uefs.databinding.ItemDisciplineStatusNameResumedOldBinding
+import com.forcetower.uefs.databinding.ItemGradeOldBinding
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.inflate
 
@@ -82,12 +82,12 @@ class DisciplinePerformanceAdapter(
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisciplineHolder {
         return when (viewType) {
-            R.layout.item_discipline_status_name_resumed -> DisciplineHolder.HeaderHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_grade -> DisciplineHolder.GradeHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_status_finals -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
-            R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_name_resumed_old -> DisciplineHolder.HeaderHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_grade_old -> DisciplineHolder.GradeHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_finals_old -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_mean_old -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_divider_old -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
+            R.layout.item_discipline_status_grouping_name_old -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
@@ -136,54 +136,54 @@ class DisciplinePerformanceAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (val item = differ.currentList[position]) {
-            is Header -> R.layout.item_discipline_status_name_resumed
-            is Score -> R.layout.item_grade
-            is Final -> R.layout.item_discipline_status_finals
-            is Mean -> R.layout.item_discipline_status_mean
-            is Divider -> R.layout.item_discipline_status_divider
-            is GroupingName -> R.layout.item_discipline_status_grouping_name
+            is Header -> R.layout.item_discipline_status_name_resumed_old
+            is Score -> R.layout.item_grade_old
+            is Final -> R.layout.item_discipline_status_finals_old
+            is Mean -> R.layout.item_discipline_status_mean_old
+            is Divider -> R.layout.item_discipline_status_divider_old
+            is GroupingName -> R.layout.item_discipline_status_grouping_name_old
             else -> throw IllegalStateException("No view type defined for $item")
         }
     }
 
     sealed class DisciplineHolder(view: View) : RecyclerView.ViewHolder(view) {
         class GroupingHolder(
-            val binding: ItemDisciplineStatusGroupingNameBinding,
+            val binding: ItemDisciplineStatusGroupingNameOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
         class MeanHolder(
-            val binding: ItemDisciplineStatusMeanBinding,
+            val binding: ItemDisciplineStatusMeanOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
         class FinalsHolder(
-            val binding: ItemDisciplineStatusFinalsBinding,
+            val binding: ItemDisciplineStatusFinalsOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
         class GradeHolder(
-            val binding: ItemGradeBinding,
+            val binding: ItemGradeOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
         class HeaderHolder(
-            val binding: ItemDisciplineStatusNameResumedBinding,
+            val binding: ItemDisciplineStatusNameResumedOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
             init { binding.listener = listener }
         }
 
         class DividerHolder(
-            val binding: ItemDisciplineStatusDividerBinding
+            val binding: ItemDisciplineStatusDividerOldBinding
         ) : DisciplineHolder(binding.root)
     }
 

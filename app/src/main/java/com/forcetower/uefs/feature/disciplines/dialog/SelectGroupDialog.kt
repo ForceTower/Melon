@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.fromJson
-import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
+import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupOldBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,12 +36,12 @@ import java.lang.IllegalStateException
 @AndroidEntryPoint
 class SelectGroupDialog : RoundedDialog() {
     private val viewModel: DisciplineViewModel by activityViewModels()
-    private lateinit var binding: DialogSelectDisciplineGroupBinding
+    private lateinit var binding: DialogSelectDisciplineGroupOldBinding
     private lateinit var value: ClassFullWithGroup
 
     override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         value = requireNotNull(arguments).getString("groups")?.fromJson() ?: throw IllegalStateException("Argument groups was not defined")
-        return DialogSelectDisciplineGroupBinding.inflate(inflater, container, false).also {
+        return DialogSelectDisciplineGroupOldBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
             clazzGroups = value

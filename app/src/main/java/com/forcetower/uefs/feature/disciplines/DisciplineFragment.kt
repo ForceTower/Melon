@@ -40,7 +40,7 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.databinding.FragmentDisciplineBinding
+import com.forcetower.uefs.databinding.FragmentDisciplineOldBinding
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
@@ -60,7 +60,7 @@ class DisciplineFragment : UFragment() {
 
     private val viewModel: DisciplineViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private lateinit var binding: FragmentDisciplineBinding
+    private lateinit var binding: FragmentDisciplineOldBinding
 
     private lateinit var viewPager: ViewPager
     private lateinit var tabs: TabLayout
@@ -69,7 +69,7 @@ class DisciplineFragment : UFragment() {
     private var sortedSizeOnce: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentDisciplineBinding.inflate(inflater, container, false).also {
+        return FragmentDisciplineOldBinding.inflate(inflater, container, false).also {
             binding = it
             viewPager = it.pagerSemester
             tabs = it.tabLayout

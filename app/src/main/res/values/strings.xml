@@ -322,8 +322,8 @@
     <string name="big_tray_connection_error">Erro de conexão</string>
     <string name="ru_quota_exceeded">As cotas acabaram</string>
     <string name="ru_close_notification">Fechar</string>
-    <string name="select_discipline_group_label">Selecione uma turma</string>
-    <string name="label_select_discipline_group_info">Seleciona uma das turmas disponíveis da disciplina %1$s</string>
+    <string name="select_discipline_group_label_old">Selecione uma turma</string>
+    <string name="label_select_discipline_group_info_old">Selecione uma das turmas disponíveis da disciplina %1$s</string>
     <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da universidade e na rede interna</string>
     <string name="settings_proxy_invalid">O proxy especificado é inválido. O proxy deve seguir o padrão IP:porta</string>
     <string name="settings_proxy_changed">O proxy foi modificado, feche o aplicativo para a configuração ser aplicada</string>
