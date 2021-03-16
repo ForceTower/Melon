@@ -324,6 +324,11 @@
         <item name="autoSizeMaxTextSize">34sp</item>
     </style>
 
+    <style name="Widget.UTheme.BubbleIndicatorDecoration">
+        <item name="android:color">?attr/colorPrimary</item>
+        <item name="insetVertical">8dp</item>
+    </style>
+
     <style name="Widget.Schedule.HeaderGrid">
         <item name="android:color">@color/surfaceEspecial</item>
         <item name="gridSize">8dp</item>

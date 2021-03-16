@@ -42,7 +42,7 @@ import dev.forcetower.conference.core.model.persistence.ConferenceDay
 import dev.forcetower.conference.core.model.persistence.Session
 import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
 import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
-import dev.forcetower.conference.core.ui.widget.BubbleDecoration
+import com.forcetower.uefs.widget.BubbleDecoration
 import dev.forcetower.conference.databinding.FragmentConferenceScheduleBinding
 import java.time.ZonedDateTime
 import java.util.UUID

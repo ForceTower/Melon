@@ -45,7 +45,7 @@ fun clipToCircle(view: View, clip: Boolean) {
 }
 
 @BindingAdapter("swipeRefreshColors")
-fun setSwipeRefreshColors(swipeRefreshLayout: CustomSwipeRefreshLayout, colorResIds: IntArray) {
+fun setSwipeRefreshColors(swipeRefreshLayout: SwipeRefreshLayout, colorResIds: IntArray) {
     swipeRefreshLayout.setColorSchemeColors(*colorResIds)
 }
 
@@ -75,7 +75,7 @@ fun swipeRefreshing(refreshLayout: CustomSwipeRefreshLayout, refreshing: Boolean
 }
 
 @BindingAdapter("onSwipeRefresh")
-fun onSwipeRefresh(view: CustomSwipeRefreshLayout, function: SwipeRefreshLayout.OnRefreshListener) {
+fun onSwipeRefresh(view: SwipeRefreshLayout, function: SwipeRefreshLayout.OnRefreshListener) {
     view.setOnRefreshListener(function)
 }
 
