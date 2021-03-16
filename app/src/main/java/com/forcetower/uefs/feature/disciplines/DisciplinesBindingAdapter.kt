@@ -26,10 +26,12 @@ import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Grade
+import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
+import com.forcetower.uefs.feature.shared.extensions.makeSemester
 import com.forcetower.uefs.widget.CircleProgressBar
 import timber.log.Timber
 import java.time.OffsetDateTime
@@ -201,4 +203,10 @@ fun absenceDescription(tv: TextView, description: String?) {
 fun disciplineStartEndGenerator(tv: TextView, startsAt: String?, endsAt: String?) {
     val context = tv.context
     tv.text = context.getString(R.string.discipline_start_end_format, startsAt, endsAt)
+}
+
+@BindingAdapter("semesterName")
+fun TextView.semesterName(semester: Semester?) {
+    semester ?: return
+    text = semester.codename.makeSemester()
 }
