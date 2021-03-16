@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2021. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,16 +18,16 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.disciplines
+package dev.forcetower.disciplines.feature
 
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.ui.disciplines.CheckableSemester
-import com.forcetower.uefs.databinding.ItemDisciplinesSemesterIndicatorBinding
 import com.forcetower.uefs.feature.shared.inflate
+import dev.forcetower.disciplines.R
+import dev.forcetower.disciplines.databinding.ItemDisciplinesSemesterIndicatorBinding
 
 class DisciplineSemesterAdapter(
     private val actions: DisciplinesSemestersActions
