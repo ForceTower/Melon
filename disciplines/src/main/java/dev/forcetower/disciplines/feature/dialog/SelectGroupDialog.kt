@@ -30,11 +30,11 @@ import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.dependencies.DisciplineModuleDependencies
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.fromJson
-import com.forcetower.uefs.databinding.DialogSelectDisciplineGroupBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.disciplines.core.injection.DaggerDisciplineComponent
+import dev.forcetower.disciplines.databinding.DialogSelectDisciplineGroupBinding
 import dev.forcetower.disciplines.feature.DisciplinesViewModel
 import java.lang.IllegalStateException
 import javax.inject.Inject

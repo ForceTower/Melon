@@ -146,7 +146,7 @@
                 app:disciplineGroupsGrades="@{clazzGroup.grades}"
                 android:nestedScrollingEnabled="false"
                 tools:itemCount="3"
-                tools:listitem="@layout/item_grade" />
+                tools:listitem="@layout/item_grade_old" />
 
             <TextView
                 android:id="@+id/text_label_final"
