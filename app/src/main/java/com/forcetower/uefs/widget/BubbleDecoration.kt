@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2021. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.conference.core.ui.widget
+package com.forcetower.uefs.widget
 
 import android.animation.Animator
 import android.animation.AnimatorListenerAdapter
@@ -30,7 +30,7 @@ import android.graphics.RectF
 import androidx.core.view.forEach
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.core.utils.AnimUtils.lerp
-import dev.forcetower.conference.R
+import com.forcetower.uefs.R
 import kotlin.math.max
 import kotlin.math.min
 
@@ -61,12 +61,12 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
     init {
         val attrs = context.obtainStyledAttributes(
-            R.style.Widget_UTheme_DayIndicatorDecoration,
-            R.styleable.DayIndicatorDecoration
+            R.style.Widget_UTheme_BubbleIndicatorDecoration,
+            R.styleable.BubbleIndicatorDecoration
         )
-        paint.color = attrs.getColor(R.styleable.DayIndicatorDecoration_android_color, 0)
-        insetHorizontal = attrs.getDimension(R.styleable.DayIndicatorDecoration_insetHorizontal, 0f)
-        insetVertical = attrs.getDimension(R.styleable.DayIndicatorDecoration_insetVertical, 0f)
+        paint.color = attrs.getColor(R.styleable.BubbleIndicatorDecoration_android_color, 0)
+        insetHorizontal = attrs.getDimension(R.styleable.BubbleIndicatorDecoration_insetHorizontal, 0f)
+        insetVertical = attrs.getDimension(R.styleable.BubbleIndicatorDecoration_insetVertical, 0f)
         attrs.recycle()
     }
 

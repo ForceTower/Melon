@@ -148,7 +148,7 @@ android {
         disable 'NullSafeMutableLiveData'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map']
+    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map', ':disciplines']
 }
 
 play {

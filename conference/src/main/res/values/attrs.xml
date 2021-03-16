@@ -43,12 +43,6 @@
         <attr name="state_reservation_pending" />
     </declare-styleable>
 
-    <declare-styleable name="DayIndicatorDecoration">
-        <attr name="android:color" />
-        <attr name="insetHorizontal" format="dimension" />
-        <attr name="insetVertical" format="dimension" />
-    </declare-styleable>
-
     <declare-styleable name="TimeHeader">
         <attr name="android:width" />
         <attr name="android:padding" />
