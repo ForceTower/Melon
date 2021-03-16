@@ -222,13 +222,21 @@ class FirebaseMessageRepository @Inject constructor(
 
     private fun serviceNotification(data: Map<String, String>) {
         val title = data["title"]
-        val message = data["message"]
+        val message = data["message"]?.replace("\\n", "\n")
         val image = data["image"]
         val institution = data["institution"]
+        val course = data["course"]?.toLongOrNull()
 
         if (title == null || message == null) {
             Timber.e("Bad notification created. It was ignored")
             return
+        }
+
+        if (course != null) {
+            val profile = database.profileDao().selectMeDirect()
+            if (profile != null && profile.course != course) {
+                return
+            }
         }
 
         if (institution == null || institution == SagresNavigator.instance.getSelectedInstitution()) {
