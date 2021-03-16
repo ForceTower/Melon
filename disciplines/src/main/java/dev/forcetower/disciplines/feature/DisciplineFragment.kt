@@ -91,6 +91,7 @@ class DisciplineFragment : UFragment() {
             binding = it
         }.apply {
             lifecycleOwner = viewLifecycleOwner
+            actions = viewModel
         }.root
 
         semesterIndicatorItemDecoration = BubbleDecoration(requireContext())
@@ -188,14 +189,6 @@ class DisciplineFragment : UFragment() {
                         }
                     }
                 }
-            }
-        )
-
-        viewModel.refreshing.observe(
-            viewLifecycleOwner,
-            {
-                Timber.d("Refreshing state changed to $it")
-                binding.swipeRefresh.isRefreshing = it
             }
         )
 

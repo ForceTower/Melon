@@ -26,6 +26,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Semester
@@ -34,7 +35,9 @@ import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -66,6 +69,12 @@ class DisciplinesViewModel @Inject constructor(
 
     override fun onSwipeRefresh() {
         Timber.d("Requested to download all disciplines")
+        viewModelScope.launch {
+            _refreshing.value = true
+            // TODO Decide what to do here...
+            delay(1000L)
+            _refreshing.value = false
+        }
     }
 
     override fun scrollToStartOfSemester(semester: Semester) {
