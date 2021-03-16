@@ -28,11 +28,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
-import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
-import androidx.viewpager.widget.ViewPager
+import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
@@ -45,9 +43,8 @@ import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
-import com.forcetower.uefs.feature.shared.extensions.makeSemester
+import com.forcetower.uefs.widget.BubbleDecoration
 import com.google.android.material.snackbar.Snackbar
-import com.google.android.material.tabs.TabLayout
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -60,41 +57,40 @@ class DisciplineFragment : UFragment() {
 
     private val viewModel: DisciplineViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
-    private lateinit var binding: FragmentDisciplineBinding
 
-    private lateinit var viewPager: ViewPager
-    private lateinit var tabs: TabLayout
-    private lateinit var adapter: SemesterAdapter
+    private lateinit var semesterIndicatorItemDecoration: BubbleDecoration
+    private lateinit var binding: FragmentDisciplineBinding
 
     private var sortedSizeOnce: Int = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return FragmentDisciplineBinding.inflate(inflater, container, false).also {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        val view =  FragmentDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
-            viewPager = it.pagerSemester
-            tabs = it.tabLayout
         }.apply {
-            lifecycleOwner = this@DisciplineFragment
-            viewModel = this@DisciplineFragment.viewModel
+            lifecycleOwner = viewLifecycleOwner
         }.root
+
+        semesterIndicatorItemDecoration = BubbleDecoration(binding.root.context)
+        binding.semesterIndicators.addItemDecoration(semesterIndicatorItemDecoration)
+
+        binding.semesterIndicators.addOnScrollListener(
+            object : RecyclerView.OnScrollListener() {
+                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                    super.onScrolled(recyclerView, dx, dy)
+                    semesterIndicatorItemDecoration.userScrolled = true
+                }
+            }
+        )
+
+        return view
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SemesterAdapter(childFragmentManager)
-        viewPager.adapter = adapter
-        tabs.setupWithViewPager(viewPager)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.semesters.observe(
-            viewLifecycleOwner,
-            {
-                val actualList = applySortOptions(it)
-                adapter.submitList(actualList)
-            }
-        )
+        viewModel.semesters.observe(viewLifecycleOwner, {
+
+        })
 
         viewModel.navigateToDisciplineAction.observe(
             viewLifecycleOwner,
@@ -189,19 +185,5 @@ class DisciplineFragment : UFragment() {
             arguments = bundleOf("groups" to it.toJson())
         }
         dialog.show(childFragmentManager, "select_discipline_group")
-    }
-
-    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val semesters: MutableList<Semester> = ArrayList()
-
-        fun submitList(list: List<Semester>) {
-            semesters.clear()
-            semesters.addAll(list)
-            notifyDataSetChanged()
-        }
-
-        override fun getCount() = semesters.size
-        override fun getItem(position: Int) = DisciplineSemesterFragment.newInstance(semesters[position])
-        override fun getPageTitle(position: Int) = semesters[position].codename.makeSemester()
     }
 }

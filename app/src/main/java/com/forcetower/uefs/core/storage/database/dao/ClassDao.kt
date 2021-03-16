@@ -34,6 +34,7 @@ import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassWithDiscipline
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 
 @Dao
@@ -75,6 +76,10 @@ abstract class ClassDao {
     @Transaction
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId AND c.schedule_only = 0")
     abstract fun getClassesWithGradesFromSemester(semesterId: Long): LiveData<List<ClassFullWithGroup>>
+
+    @Transaction
+    @Query("SELECT c.* FROM Class c WHERE c.schedule_only = 0")
+    abstract fun getClassesWithGradesFromAllSemesters(): Flow<List<ClassFullWithGroup>>
 
     @Transaction
     @Query("SELECT c.* FROM Class c WHERE c.semester_id = :semesterId AND c.schedule_only = 0")
