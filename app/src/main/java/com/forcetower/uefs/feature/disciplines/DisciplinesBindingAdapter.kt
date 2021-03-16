@@ -204,9 +204,3 @@ fun disciplineStartEndGenerator(tv: TextView, startsAt: String?, endsAt: String?
     val context = tv.context
     tv.text = context.getString(R.string.discipline_start_end_format, startsAt, endsAt)
 }
-
-@BindingAdapter("semesterName")
-fun TextView.semesterName(semester: Semester?) {
-    semester ?: return
-    text = semester.codename.makeSemester()
-}

@@ -18,17 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.disciplines
+package com.forcetower.uefs.core.injection.dependencies
 
-import android.view.View
-import androidx.lifecycle.LiveData
-import com.forcetower.uefs.core.model.unes.Semester
+import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
+import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
+import dagger.hilt.EntryPoint
+import dagger.hilt.InstallIn
+import dagger.hilt.android.components.ActivityComponent
 
-interface DisciplinesSemestersActions {
-    val loadingSemestersData: LiveData<Boolean>
-
-    fun loadAllDisciplines(view: View): Boolean
-    fun onSwipeRefresh()
-    fun scrollToStartOfSemester(semester: Semester)
-    fun downloadDisciplines(semester: Semester)
+@EntryPoint
+@InstallIn(ActivityComponent::class)
+interface DisciplineModuleDependencies {
+    fun gradesRepository(): SagresGradesRepository
+    fun disciplinesRepository(): DisciplinesRepository
 }
