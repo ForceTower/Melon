@@ -20,7 +20,8 @@
   -->
 
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
     <data>
         <variable
             name="actions"
@@ -42,7 +43,7 @@
         android:textAlignment="center"
         android:textAppearance="?textAppearanceBody1"
         android:textColor="@color/discipline_semester_indicator_text"
-        android:text="@{element.semester.name}"
+        app:semesterName="@{element.semester}"
         android:onClick="@{() -> actions.scrollToStartOfSemester(element.semester)}"
         android:paddingLeft="@dimen/spacing_normal"
         android:paddingRight="@dimen/spacing_normal"
