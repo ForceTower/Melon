@@ -33,6 +33,7 @@ import com.forcetower.uefs.core.injection.dependencies.ConferenceModuleDependenc
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.clearDecorations
 import com.forcetower.uefs.feature.shared.executeBindingsAfter
+import com.forcetower.uefs.widget.BubbleDecoration
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.conference.core.injection.DaggerConferenceComponent
 import dev.forcetower.conference.core.model.domain.ConferenceDayIndexed
@@ -42,7 +43,6 @@ import dev.forcetower.conference.core.model.persistence.ConferenceDay
 import dev.forcetower.conference.core.model.persistence.Session
 import dev.forcetower.conference.core.ui.schedule.DaySeparatorItemDecoration
 import dev.forcetower.conference.core.ui.schedule.ScheduleTimeHeadersDecoration
-import com.forcetower.uefs.widget.BubbleDecoration
 import dev.forcetower.conference.databinding.FragmentConferenceScheduleBinding
 import java.time.ZonedDateTime
 import java.util.UUID

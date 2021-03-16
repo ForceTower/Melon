@@ -24,36 +24,31 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
-import com.forcetower.uefs.databinding.ItemDisciplineCollapsedBinding
-import com.forcetower.uefs.feature.shared.inflater
+import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.ui.disciplines.CheckableSemester
+import com.forcetower.uefs.databinding.ItemDisciplinesSemesterIndicatorBinding
+import com.forcetower.uefs.feature.shared.inflate
 
 class DisciplineSemesterAdapter(
-    private val viewModel: DisciplineViewModel
-) : ListAdapter<ClassFullWithGroup, ClassHolder>(ClassDiff) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ClassHolder {
-        val binding = ItemDisciplineCollapsedBinding.inflate(parent.inflater(), parent, false)
-        return ClassHolder(binding)
+    private val actions: DisciplinesSemestersActions
+) : ListAdapter<CheckableSemester, DisciplineSemesterAdapter.SemesterHolder>(SemesterDiff) {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SemesterHolder {
+        return SemesterHolder(parent.inflate(R.layout.item_disciplines_semester_indicator))
     }
 
-    override fun onBindViewHolder(holder: ClassHolder, position: Int) {
+    override fun onBindViewHolder(holder: SemesterHolder, position: Int) {
         holder.binding.apply {
-            clazzGroup = getItem(position)
-            listener = viewModel
+            element = getItem(position)
             executePendingBindings()
         }
     }
 
-    override fun getItemViewType(position: Int) = DISCIPLINE
-
-    companion object {
-        private const val DISCIPLINE = 4
+    inner class SemesterHolder(val binding: ItemDisciplinesSemesterIndicatorBinding) : RecyclerView.ViewHolder(binding.root) {
+        init { binding.actions = actions }
     }
-}
 
-class ClassHolder(val binding: ItemDisciplineCollapsedBinding) : RecyclerView.ViewHolder(binding.root)
-
-private object ClassDiff : DiffUtil.ItemCallback<ClassFullWithGroup>() {
-    override fun areItemsTheSame(oldItem: ClassFullWithGroup, newItem: ClassFullWithGroup) = oldItem.clazz.uid == newItem.clazz.uid && oldItem.discipline.uid == newItem.discipline.uid
-    override fun areContentsTheSame(oldItem: ClassFullWithGroup, newItem: ClassFullWithGroup) = oldItem == newItem
+    private object SemesterDiff : DiffUtil.ItemCallback<CheckableSemester>() {
+        override fun areItemsTheSame(oldItem: CheckableSemester, newItem: CheckableSemester) = oldItem == newItem
+        override fun areContentsTheSame(oldItem: CheckableSemester, newItem: CheckableSemester) = oldItem.areUiContentsTheSame(newItem)
+    }
 }

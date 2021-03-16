@@ -28,11 +28,18 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
+import androidx.core.view.postDelayed
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.DefaultItemAnimator
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.forcetower.core.layout.JumpSmoothScroller
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
+import com.forcetower.uefs.core.model.ui.disciplines.CheckableSemester
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesDataUI
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -43,6 +50,7 @@ import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.shared.clearDecorations
 import com.forcetower.uefs.widget.BubbleDecoration
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -61,10 +69,15 @@ class DisciplineFragment : UFragment() {
     private lateinit var semesterIndicatorItemDecoration: BubbleDecoration
     private lateinit var binding: FragmentDisciplineBinding
 
+    private lateinit var semesterAdapter: DisciplineSemesterAdapter
+    private lateinit var disciplineAdapter: DisciplinePerformanceAdapter
+    private lateinit var disciplinesIndexed: DisciplinesIndexed
+    private var cachedBubbleRange: IntRange? = null
+
     private var sortedSizeOnce: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
-        val view =  FragmentDisciplineBinding.inflate(inflater, container, false).also {
+        val view = FragmentDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
             lifecycleOwner = viewLifecycleOwner
@@ -73,24 +86,100 @@ class DisciplineFragment : UFragment() {
         semesterIndicatorItemDecoration = BubbleDecoration(binding.root.context)
         binding.semesterIndicators.addItemDecoration(semesterIndicatorItemDecoration)
 
-        binding.semesterIndicators.addOnScrollListener(
-            object : RecyclerView.OnScrollListener() {
-                override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-                    super.onScrolled(recyclerView, dx, dy)
-                    semesterIndicatorItemDecoration.userScrolled = true
-                }
+        disciplineAdapter = DisciplinePerformanceAdapter(viewModel)
+        semesterAdapter = DisciplineSemesterAdapter(viewModel)
+
+        binding.disciplinesRecycler.apply {
+            adapter = disciplineAdapter
+            (itemAnimator as DefaultItemAnimator).run {
+                supportsChangeAnimations = false
+                addDuration = 160L
+                moveDuration = 160L
+                changeDuration = 160L
+                removeDuration = 120L
             }
-        )
+
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recycler: RecyclerView, dx: Int, dy: Int) {
+                        onDisciplinesScrolled()
+                    }
+                }
+            )
+        }
+
+        binding.semesterIndicators.apply {
+            adapter = semesterAdapter
+            (itemAnimator as DefaultItemAnimator).run {
+                supportsChangeAnimations = false
+                addDuration = 0L
+                moveDuration = 0L
+                changeDuration = 0L
+                removeDuration = 0L
+            }
+            addOnScrollListener(
+                object : RecyclerView.OnScrollListener() {
+                    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+                        super.onScrolled(recyclerView, dx, dy)
+                        semesterIndicatorItemDecoration.userScrolled = true
+                    }
+                }
+            )
+        }
 
         return view
+    }
+
+    private fun onDisciplinesScrolled() {
+        val manager = (binding.disciplinesRecycler.layoutManager) as LinearLayoutManager
+        val first = manager.findFirstVisibleItemPosition()
+        val last = manager.findLastVisibleItemPosition()
+        if (first < 0 || last < 0) {
+            return
+        }
+
+        val firstSemester = disciplinesIndexed.semesterForPosition(first) ?: return
+        val lastSemester = disciplinesIndexed.semesterForPosition(last) ?: return
+        val highlightRange = disciplinesIndexed.semesters.indexOf(firstSemester)..disciplinesIndexed.semesters.indexOf(lastSemester)
+        if (highlightRange != cachedBubbleRange) {
+            cachedBubbleRange = highlightRange
+            buildSemesterIndicators(disciplinesIndexed.semesters)
+            binding.semesterIndicators.postDelayed(500) {
+//                scrollAdapterToPosition(firstSemester)
+            }
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        viewModel.semesters.observe(viewLifecycleOwner, {
+        viewModel.disciplines.observe(
+            viewLifecycleOwner,
+            {
+                Timber.d("Discipline Data sized ${it.data.size}")
+                onUiUpdate(it)
+            }
+        )
 
-        })
+        viewModel.scrollToEvent.observe(
+            viewLifecycleOwner,
+            EventObserver { scrollEvent ->
+                if (scrollEvent.targetPosition != -1) {
+                    binding.disciplinesRecycler.run {
+                        post {
+                            val lm = layoutManager as LinearLayoutManager
+                            if (scrollEvent.smoothScroll) {
+                                val scroller = JumpSmoothScroller(requireContext())
+                                scroller.targetPosition = scrollEvent.targetPosition
+                                lm.startSmoothScroll(scroller)
+                            } else {
+                                lm.scrollToPositionWithOffset(scrollEvent.targetPosition, 0)
+                            }
+                        }
+                    }
+                }
+            }
+        )
 
         viewModel.navigateToDisciplineAction.observe(
             viewLifecycleOwner,
@@ -109,6 +198,41 @@ class DisciplineFragment : UFragment() {
         binding.textToolbarTitle.setOnClickListener {
             (requireContext().applicationContext as UApplication).disciplineToolbarDevClickCount++
         }
+    }
+
+    private fun onUiUpdate(values: DisciplinesDataUI) {
+        disciplineAdapter.submitList(values.data)
+
+        val indexed = values.indexer
+        disciplinesIndexed = indexed
+
+        cachedBubbleRange = null
+
+        if (indexed.semesters.isEmpty()) {
+            cachedBubbleRange = -1..-1
+            buildSemesterIndicators(indexed.semesters)
+        }
+
+        binding.disciplinesRecycler.run {
+            clearDecorations()
+            if (values.data.isNotEmpty()) {
+                addItemDecoration(
+                    SemestersDisciplineSeparatorItemDecoration(
+                        context,
+                        indexed
+                    )
+                )
+            }
+        }
+    }
+
+    private fun buildSemesterIndicators(semesters: List<Semester>) {
+        val bubbleRange = cachedBubbleRange ?: return
+        val mapped = semesters.mapIndexed { index, semester ->
+            CheckableSemester(semester, index in bubbleRange)
+        }
+        semesterAdapter.submitList(mapped)
+        semesterIndicatorItemDecoration.bubbleRange = bubbleRange
     }
 
     private fun applySortOptions(semesters: List<Semester>): List<Semester> {

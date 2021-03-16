@@ -22,12 +22,12 @@ package com.forcetower.uefs.feature.disciplines
 
 import android.view.View
 import android.view.ViewGroup
-import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
+import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Grade
-import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplineHelperData
+import com.forcetower.uefs.databinding.ItemDisciplineEmptyDataBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
@@ -39,46 +39,7 @@ import com.forcetower.uefs.feature.shared.inflate
 
 class DisciplinePerformanceAdapter(
     private val viewModel: DisciplineViewModel
-) : RecyclerView.Adapter<DisciplinePerformanceAdapter.DisciplineHolder>() {
-    private val differ = AsyncListDiffer(this, DiffCallback)
-    var classes: List<ClassFullWithGroup> = emptyList()
-        set(value) {
-            field = value
-            differ.submitList(buildMergedList(classes))
-        }
-
-    private fun buildMergedList(classes: List<ClassFullWithGroup>): List<Any> {
-        val list = mutableListOf<Any>()
-        classes.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
-            if (index != 0)
-                list += Divider
-
-            list += Header(clazz)
-
-            val groupings = clazz.grades.groupBy { it.grouping }
-            if (groupings.keys.size <= 1) {
-                clazz.grades.sortedBy { it.name }.forEach { grade ->
-                    list += Score(clazz, grade)
-                }
-            } else {
-                groupings.entries.sortedBy { it.key }.forEach { (_, value) ->
-                    if (value.isNotEmpty()) {
-                        val sample = value[0]
-                        list += GroupingName(clazz, sample.groupingName)
-                        value.sortedBy { it.name }.forEach { grade ->
-                            list += Score(clazz, grade)
-                        }
-                    }
-                }
-            }
-
-            if (clazz.clazz.isInFinal()) {
-                list += Final(clazz)
-            }
-            list += Mean(clazz)
-        }
-        return list
-    }
+) : ListAdapter<DisciplineHelperData, DisciplinePerformanceAdapter.DisciplineHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisciplineHolder {
         return when (viewType) {
@@ -88,16 +49,17 @@ class DisciplinePerformanceAdapter(
             R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
             R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
             R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_empty_data -> DisciplineHolder.EmptySemester(parent.inflate(viewType))
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
 
     override fun onBindViewHolder(holder: DisciplineHolder, position: Int) {
-        val item = differ.currentList[position]
+        val item = getItem(position)
         when (holder) {
             is DisciplineHolder.GradeHolder -> {
                 holder.binding.apply {
-                    val element = item as Score
+                    val element = item as DisciplineHelperData.Score
                     clazzGroup = element.clazz
                     grade = element.grade
                     executePendingBindings()
@@ -105,43 +67,43 @@ class DisciplinePerformanceAdapter(
             }
             is DisciplineHolder.HeaderHolder -> {
                 holder.binding.apply {
-                    clazzGroup = (item as Header).clazz
+                    clazzGroup = (item as DisciplineHelperData.Header).clazz
                     executePendingBindings()
                 }
             }
             is DisciplineHolder.FinalsHolder -> {
                 holder.binding.apply {
-                    clazzGroup = (item as Final).clazz
+                    clazzGroup = (item as DisciplineHelperData.Final).clazz
                     executePendingBindings()
                 }
             }
             is DisciplineHolder.MeanHolder -> {
                 holder.binding.apply {
-                    clazzGroup = (item as Mean).clazz
+                    clazzGroup = (item as DisciplineHelperData.Mean).clazz
                     executePendingBindings()
                 }
             }
             is DisciplineHolder.GroupingHolder -> {
                 holder.binding.apply {
-                    val element = item as GroupingName
+                    val element = item as DisciplineHelperData.GroupingName
                     clazzGroup = element.clazz
                     groupingName = element.name
                     executePendingBindings()
                 }
             }
+            else -> Unit
         }
     }
 
-    override fun getItemCount() = differ.currentList.size
-
     override fun getItemViewType(position: Int): Int {
-        return when (val item = differ.currentList[position]) {
-            is Header -> R.layout.item_discipline_status_name_resumed
-            is Score -> R.layout.item_grade
-            is Final -> R.layout.item_discipline_status_finals
-            is Mean -> R.layout.item_discipline_status_mean
-            is Divider -> R.layout.item_discipline_status_divider
-            is GroupingName -> R.layout.item_discipline_status_grouping_name
+        return when (val item = getItem(position)) {
+            is DisciplineHelperData.Header -> R.layout.item_discipline_status_name_resumed
+            is DisciplineHelperData.Score -> R.layout.item_grade
+            is DisciplineHelperData.Final -> R.layout.item_discipline_status_finals
+            is DisciplineHelperData.Mean -> R.layout.item_discipline_status_mean
+            is DisciplineHelperData.Divider -> R.layout.item_discipline_status_divider
+            is DisciplineHelperData.GroupingName -> R.layout.item_discipline_status_grouping_name
+            is DisciplineHelperData.EmptySemester -> R.layout.item_discipline_empty_data
             else -> throw IllegalStateException("No view type defined for $item")
         }
     }
@@ -185,37 +147,34 @@ class DisciplinePerformanceAdapter(
         class DividerHolder(
             val binding: ItemDisciplineStatusDividerBinding
         ) : DisciplineHolder(binding.root)
+
+        class EmptySemester(
+            val binding: ItemDisciplineEmptyDataBinding
+        ) : DisciplineHolder(binding.root)
     }
 
-    private object DiffCallback : DiffUtil.ItemCallback<Any>() {
-        override fun areItemsTheSame(oldItem: Any, newItem: Any): Boolean {
+    private object DiffCallback : DiffUtil.ItemCallback<DisciplineHelperData>() {
+        override fun areItemsTheSame(oldItem: DisciplineHelperData, newItem: DisciplineHelperData): Boolean {
             return when {
-                oldItem is Header && newItem is Header -> newItem.clazz.discipline.uid == oldItem.clazz.discipline.uid
-                oldItem is Final && newItem is Final -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
-                oldItem is Mean && newItem is Mean -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
-                oldItem is Score && newItem is Score -> newItem.grade.uid == oldItem.grade.uid
-                oldItem is Divider && newItem is Divider -> true
-                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
+                oldItem is DisciplineHelperData.Header && newItem is DisciplineHelperData.Header -> newItem.clazz.discipline.uid == oldItem.clazz.discipline.uid
+                oldItem is DisciplineHelperData.Final && newItem is DisciplineHelperData.Final -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
+                oldItem is DisciplineHelperData.Mean && newItem is DisciplineHelperData.Mean -> newItem.clazz.clazz.uid == oldItem.clazz.clazz.uid
+                oldItem is DisciplineHelperData.Score && newItem is DisciplineHelperData.Score -> newItem.grade.uid == oldItem.grade.uid
+                oldItem is DisciplineHelperData.Divider && newItem is DisciplineHelperData.Divider -> true
+                oldItem is DisciplineHelperData.GroupingName && newItem is DisciplineHelperData.GroupingName -> newItem.name == oldItem.name
                 else -> false
             }
         }
 
-        override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
+        override fun areContentsTheSame(oldItem: DisciplineHelperData, newItem: DisciplineHelperData): Boolean {
             return when {
-                oldItem is Header && newItem is Header -> newItem.clazz.discipline == oldItem.clazz.discipline
-                oldItem is Final && newItem is Final -> newItem.clazz == oldItem.clazz
-                oldItem is Mean && newItem is Mean -> newItem.clazz == oldItem.clazz
-                oldItem is Score && newItem is Score -> newItem.grade == oldItem.grade
-                oldItem is GroupingName && newItem is GroupingName -> newItem.name == oldItem.name
+                oldItem is DisciplineHelperData.Header && newItem is DisciplineHelperData.Header -> newItem.clazz.discipline == oldItem.clazz.discipline
+                oldItem is DisciplineHelperData.Final && newItem is DisciplineHelperData.Final -> newItem.clazz == oldItem.clazz
+                oldItem is DisciplineHelperData.Mean && newItem is DisciplineHelperData.Mean -> newItem.clazz == oldItem.clazz
+                oldItem is DisciplineHelperData.Score && newItem is DisciplineHelperData.Score -> newItem.grade == oldItem.grade
+                oldItem is DisciplineHelperData.GroupingName && newItem is DisciplineHelperData.GroupingName -> newItem.name == oldItem.name
                 else -> true
             }
         }
     }
-
-    private data class Header(val clazz: ClassFullWithGroup)
-    private data class Score(val clazz: ClassFullWithGroup, val grade: Grade)
-    private data class Final(val clazz: ClassFullWithGroup)
-    private data class Mean(val clazz: ClassFullWithGroup)
-    private data class GroupingName(val clazz: ClassFullWithGroup, val name: String)
-    private object Divider
 }
