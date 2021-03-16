@@ -33,8 +33,6 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
 import com.forcetower.uefs.core.vm.Event
-import com.forcetower.uefs.feature.common.DisciplineActions
-import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
@@ -103,5 +101,4 @@ class DisciplinesViewModel @Inject constructor(
     override fun groupSelected(clazz: ClassGroup) {
         _navigateToGroupAction.value = Event(clazz)
     }
-
 }

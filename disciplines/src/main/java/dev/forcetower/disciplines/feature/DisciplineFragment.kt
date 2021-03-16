@@ -36,7 +36,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.core.layout.JumpSmoothScroller
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
-import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
 import com.forcetower.uefs.core.injection.dependencies.DisciplineModuleDependencies
 import com.forcetower.uefs.core.model.ui.disciplines.CheckableSemester
 import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesDataUI
@@ -45,17 +44,16 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
 import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.clearDecorations
 import com.forcetower.uefs.widget.BubbleDecoration
 import com.google.android.play.core.splitcompat.SplitCompat
-import dagger.hilt.android.AndroidEntryPoint
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.disciplines.core.injection.DaggerDisciplineComponent
 import dev.forcetower.disciplines.databinding.FragmentDisciplineBinding
+import dev.forcetower.disciplines.feature.dialog.SelectGroupDialog
 import timber.log.Timber
 import javax.inject.Inject
 

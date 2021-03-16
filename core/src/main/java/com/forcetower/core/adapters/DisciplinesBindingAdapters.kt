@@ -30,4 +30,3 @@ fun departmentStrip(tv: TextView, department: String?) {
     val replaceTwo = replaceOne.replace(Regex("(?i)dept\\.\\s+de\\s+(?-i)"), "")
     tv.text = replaceTwo
 }
-
