@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2021. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,38 +18,37 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.disciplines
+package dev.forcetower.disciplines.feature
 
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.ui.disciplines.DisciplineHelperData
-import com.forcetower.uefs.databinding.ItemDisciplineEmptyDataBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusDividerBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusFinalsBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusGroupingNameBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusMeanBinding
-import com.forcetower.uefs.databinding.ItemDisciplineStatusNameResumedBinding
-import com.forcetower.uefs.databinding.ItemGradeBinding
-import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.shared.inflate
+import dev.forcetower.disciplines.R
+import dev.forcetower.disciplines.databinding.ItemDisciplineEmptyDataBinding
+import dev.forcetower.disciplines.databinding.ItemDisciplineStatusDividerBinding
+import dev.forcetower.disciplines.databinding.ItemDisciplineStatusFinalsBinding
+import dev.forcetower.disciplines.databinding.ItemDisciplineStatusGroupingNameBinding
+import dev.forcetower.disciplines.databinding.ItemDisciplineStatusMeanBinding
+import dev.forcetower.disciplines.databinding.ItemDisciplineStatusNameResumedBinding
+import dev.forcetower.disciplines.databinding.ItemGradeBinding
 
 class DisciplinePerformanceAdapter(
-    private val viewModel: DisciplineViewModel
+    private val actions: DisciplinesSemestersActions
 ) : ListAdapter<DisciplineHelperData, DisciplinePerformanceAdapter.DisciplineHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DisciplineHolder {
         return when (viewType) {
-            R.layout.item_discipline_status_name_resumed -> DisciplineHolder.HeaderHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_grade -> DisciplineHolder.GradeHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_status_finals -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_name_resumed -> DisciplineHolder.HeaderHolder(parent.inflate(viewType), actions)
+            R.layout.item_grade -> DisciplineHolder.GradeHolder(parent.inflate(viewType), actions)
+            R.layout.item_discipline_status_finals -> DisciplineHolder.FinalsHolder(parent.inflate(viewType), actions)
+            R.layout.item_discipline_status_mean -> DisciplineHolder.MeanHolder(parent.inflate(viewType), actions)
             R.layout.item_discipline_status_divider -> DisciplineHolder.DividerHolder(parent.inflate(viewType))
-            R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), viewModel)
-            R.layout.item_discipline_empty_data -> DisciplineHolder.EmptySemester(parent.inflate(viewType), viewModel)
+            R.layout.item_discipline_status_grouping_name -> DisciplineHolder.GroupingHolder(parent.inflate(viewType), actions)
+            R.layout.item_discipline_empty_data -> DisciplineHolder.EmptySemester(parent.inflate(viewType), actions)
             else -> throw IllegalStateException("No view defined for $viewType")
         }
     }
@@ -118,50 +117,48 @@ class DisciplinePerformanceAdapter(
     sealed class DisciplineHolder(view: View) : RecyclerView.ViewHolder(view) {
         class GroupingHolder(
             val binding: ItemDisciplineStatusGroupingNameBinding,
-            listener: DisciplineActions
+            listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init { binding.actions = listener }
         }
 
         class MeanHolder(
             val binding: ItemDisciplineStatusMeanBinding,
-            listener: DisciplineActions
+            listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init { binding.actions = listener }
         }
 
         class FinalsHolder(
             val binding: ItemDisciplineStatusFinalsBinding,
-            listener: DisciplineActions
+            listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init { binding.actions = listener }
         }
 
         class GradeHolder(
             val binding: ItemGradeBinding,
-            listener: DisciplineActions
+            listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init { binding.actions = listener }
         }
 
         class HeaderHolder(
             val binding: ItemDisciplineStatusNameResumedBinding,
-            listener: DisciplineActions
+            listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init { binding.actions = listener }
         }
 
         class DividerHolder(
-            val binding: ItemDisciplineStatusDividerBinding
+            binding: ItemDisciplineStatusDividerBinding
         ) : DisciplineHolder(binding.root)
 
         class EmptySemester(
             val binding: ItemDisciplineEmptyDataBinding,
-            val actions: DisciplinesSemestersActions
+            actions: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init {
-                binding.actions = actions
-            }
+            init { binding.actions = actions }
         }
     }
 

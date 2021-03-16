@@ -25,7 +25,7 @@
     <data>
         <variable
             name="actions"
-            type="com.forcetower.uefs.feature.disciplines.DisciplinesSemestersActions" />
+            type="dev.forcetower.disciplines.feature.DisciplinesSemestersActions" />
 
         <variable
             name="element"

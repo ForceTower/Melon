@@ -28,7 +28,7 @@
 
         <variable
             name="actions"
-            type="com.forcetower.uefs.feature.disciplines.DisciplinesSemestersActions" />
+            type="dev.forcetower.disciplines.feature.DisciplinesSemestersActions" />
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

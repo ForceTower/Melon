@@ -56,7 +56,7 @@ class DisciplineViewModel @Inject constructor(
     private val grades: SagresGradesRepository,
     private val detailsRepository: DisciplineDetailsRepository,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
-) : ViewModel(), DisciplinesSemestersActions, DisciplineActions, MaterialActions, ClassesActions {
+) : ViewModel(), DisciplineActions, MaterialActions, ClassesActions {
     fun classes(semesterId: Long) = repository.getClassesWithGradesFromSemester(semesterId)
 
     private val classGroupId = MutableLiveData<Long?>()
@@ -118,19 +118,6 @@ class DisciplineViewModel @Inject constructor(
     private val _classItemClick = MutableLiveData<Event<ClassItem>>()
     val classItemClick: LiveData<Event<ClassItem>>
         get() = _classItemClick
-
-    // MOVE THIS OUT
-    private lateinit var indexer: DisciplinesIndexed
-    val disciplines by lazy {
-        repository.getAllDisciplinesData().map {
-            indexer = it.indexer
-            it
-        }.asLiveData(Dispatchers.IO)
-    }
-    override val loadingSemestersData = refreshing
-
-    private val _scrollToEvent = MutableLiveData<Event<DisciplineScrollEvent>>()
-    val scrollToEvent: LiveData<Event<DisciplineScrollEvent>> = _scrollToEvent
 
     init {
         _classFull.addSource(classId) {
@@ -270,24 +257,10 @@ class DisciplineViewModel @Inject constructor(
         return true
     }
 
-    override fun loadAllDisciplines(view: View): Boolean {
+    fun loadAllDisciplines(view: View): Boolean {
         val ctx = view.context
         DisciplineDetailsLoaderService.startService(ctx, true)
         return true
-    }
-
-    override fun onSwipeRefresh() {
-        Timber.d("Requested to download all disciplines")
-    }
-
-    override fun scrollToStartOfSemester(semester: Semester) {
-        val index = indexer.positionForSemester(semester)
-        _scrollToEvent.value = Event(DisciplineScrollEvent(index, true))
-    }
-
-    override fun downloadDisciplines(semester: Semester) {
-        Timber.d("Request to download all disciplines...")
-        updateGradesFromSemester(semester.sagresId)
     }
 
     fun getMaterialsFromClassItem(classItemId: Long): LiveData<List<ClassMaterial>> {
