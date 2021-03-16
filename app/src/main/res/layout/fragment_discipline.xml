@@ -84,7 +84,7 @@
                 app:tabIndicator="@drawable/tab_indicator"
                 android:background="?attr/background"/>
         </com.google.android.material.appbar.AppBarLayout>
-        
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/pager_semester"
             android:layout_width="match_parent"
