@@ -867,8 +867,8 @@
     <string name="settings_ntf_absence">Faltas</string>
     <string name="settings_ntf_absence_info">Notificar quando uma falta for registrada ou apagada</string>
     <string name="notification_absence_removed_title">Falta removida</string>
-    <string name="grades_not_downloaded_yet">As notas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
-    <string name="download_grades">Baixar notas</string>
+    <string name="grades_not_downloaded_yet">As disciplinas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
+    <string name="download_grades">Baixar disciplinas</string>
     <string name="absence_removed_ntf_content">Falta na disciplina %1$s foi removida</string>
     <string name="absence_created_ntf_content">Falta na disciplina %1$s registrada</string>
     <string name="start_up_failed">Erro de inicialização</string>
