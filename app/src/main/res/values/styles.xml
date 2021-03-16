@@ -324,6 +324,11 @@
         <item name="autoSizeMaxTextSize">34sp</item>
     </style>
 
+    <style name="Widget.UTheme.BubbleIndicatorDecoration">
+        <item name="android:color">?attr/colorPrimary</item>
+        <item name="insetVertical">8dp</item>
+    </style>
+
     <style name="Widget.Schedule.HeaderGrid">
         <item name="android:color">@color/surfaceEspecial</item>
         <item name="gridSize">8dp</item>
@@ -463,6 +468,15 @@
         <item name="android:progressDrawable">@drawable/profile_sexy_full</item>
         <item name="android:minHeight">24dp</item>
         <item name="android:maxHeight">24dp</item>
+    </style>
+
+    <style name="Widget.UTheme.SemestersDisciplineSeparatorItemDecoration">
+        <item name="android:width">300dp</item>
+        <item name="android:height">72dp</item>
+        <item name="android:fontFamily">@font/product_sans_regular</item>
+        <item name="android:textColor">?attr/colorOnBackground</item>
+        <item name="android:textSize">18sp</item>
+        <item name="verticalBias">0.67</item>
     </style>
 
     <style name="UTheme.LightNav.Conference" />
