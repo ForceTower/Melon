@@ -25,6 +25,7 @@ import com.forcetower.uefs.core.injection.dependencies.DisciplineModuleDependenc
 import dagger.BindsInstance
 import dagger.Component
 import dev.forcetower.disciplines.feature.DisciplineFragment
+import dev.forcetower.disciplines.feature.dialog.SelectGroupDialog
 
 @Component(
     modules = [FeatureViewModels::class],
@@ -39,4 +40,5 @@ interface DisciplineComponent {
     }
 
     fun inject(fragment: DisciplineFragment)
+    fun inject(dialog: SelectGroupDialog)
 }

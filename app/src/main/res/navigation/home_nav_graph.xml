@@ -51,7 +51,7 @@
 
     <fragment
         android:id="@+id/grades_disciplines"
-        android:name="dev.forcetower.disciplines.feature.DisciplineFragment"
+        android:name="com.forcetower.uefs.feature.disciplines.DisciplineFragment"
         android:label="DisciplineFragment"
         tools:layout="@layout/fragment_discipline" />
     
