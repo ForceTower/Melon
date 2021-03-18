@@ -71,7 +71,7 @@ class DisciplinesRepository @Inject constructor(
         return database.classDao().getClassesWithGradesFromAllSemesters().map { classes ->
             val databaseSemesters = database.semesterDao().getParticipatingSemestersDirect()
             val classesSemester = classes.map { it.semester }.distinct()
-            val semesters = (databaseSemesters + classesSemester).distinct().apply {
+            val semesters = (databaseSemesters + classesSemester).distinct().run {
                 if (snowpiercerEnabled && all { it.start != null }) {
                     sortedByDescending { it.start }
                 } else if (preferences.getBoolean("stg_semester_deterministic_ordering", true)) {
