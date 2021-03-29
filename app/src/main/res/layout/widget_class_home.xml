@@ -113,6 +113,7 @@
                     android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="80dp"
                     android:fontFamily="@font/product_sans_regular"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"/>
@@ -129,6 +130,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
                     android:text="@string/widget_schedule_location"
+                    android:minWidth="80dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:textSize="12sp" />
