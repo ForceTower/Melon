@@ -21,7 +21,6 @@
 
 <FrameLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/widget_card">
@@ -66,10 +65,10 @@
                 android:layout_weight="1"
                 android:orientation="vertical">
                 <TextView
+                    android:id="@+id/discipline"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
-                    android:text="Introdução à Ciência Cognitiva"
                     android:textStyle="bold"
                     android:textColor="#FFFFFF"
                     android:fontFamily="@font/product_sans_regular"
@@ -77,11 +76,11 @@
                     android:textSize="16sp"/>
 
                 <TextView
+                    android:id="@+id/teacher"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="8dp"
                     android:layout_marginTop="4dp"
-                    android:text="Gabriela Ribeiro Peixoto Rezende Pinto"
                     android:textColor="#ffffff"
                     android:fontFamily="@font/product_sans_regular"
                     android:maxLines="1"
@@ -105,16 +104,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="Horário"
+                    android:text="@string/widget_schedule_time"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/time"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:minWidth="80dp"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="13:30 ~ 17:30"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"/>
             </LinearLayout>
@@ -129,16 +129,17 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="Local"
+                    android:text="@string/widget_schedule_location"
+                    android:minWidth="80dp"
                     android:textColor="#FFFFFF"
                     android:textStyle="bold"
                     android:textSize="12sp" />
 
                 <TextView
+                    android:id="@+id/location"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/product_sans_regular"
-                    android:text="Mod 5 - PAT52"
                     android:textColor="#FFFFFF"
                     android:textSize="13sp"/>
             </LinearLayout>

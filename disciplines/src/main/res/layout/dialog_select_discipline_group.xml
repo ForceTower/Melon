@@ -54,7 +54,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_common"
-            tools:text="@string/label_select_discipline_group_info"
             android:text="@{@string/label_select_discipline_group_info(clazzGroups.discipline.name)}"
             android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"

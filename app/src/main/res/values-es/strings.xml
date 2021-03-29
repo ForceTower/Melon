@@ -457,7 +457,7 @@
     <string name="label_purchases">Donaciones y elementos</string>
     <string name="label_schedule_not_found_details">La información no fue encontrada en el portal de estudiantes.\nNo te preocupes, tan pronto como estén disponibles de nuevo, UNES la guardará.</string>
     <string name="label_score_undefined">No se encontró tu calificación</string>
-    <string name="label_select_discipline_group_info">Selecciona un grupo de la especialidad %1$s</string>
+    <string name="label_select_discipline_group_info_old">Selecciona un grupo de la especialidad %1$s</string>
     <string name="label_services_follow_up">Petición de servicio</string>
     <string name="label_your_calculated_score">Calificación calculada: %1$.1f</string>
     <string name="lets_go">¡Vamos!</string>
@@ -539,7 +539,7 @@
     <string name="ru_quota_exceeded">Las cuotas han sido superadas</string>
     <string name="sagres_functions">Extras</string>
     <string name="select_a_link">Selecciona un link</string>
-    <string name="select_discipline_group_label">Selecciona un grupo</string>
+    <string name="select_discipline_group_label_old">Selecciona un grupo</string>
     <string name="send">Enviar</string>
     <string name="send_email">Enviar correo electrónico</string>
     <string name="send_to_random">Enviar aleatorio</string>

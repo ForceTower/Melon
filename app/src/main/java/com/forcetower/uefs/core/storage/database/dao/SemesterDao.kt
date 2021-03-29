@@ -85,6 +85,9 @@ abstract class SemesterDao {
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
     abstract fun getParticipatingSemesters(): LiveData<List<Semester>>
 
+    @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
+    abstract suspend fun getParticipatingSemestersDirect(): List<Semester>
+
     @Query("DELETE FROM Semester")
     abstract fun deleteAll()
 

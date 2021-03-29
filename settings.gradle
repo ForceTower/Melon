@@ -17,5 +17,6 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+include ':disciplines'
 include ':app', ':bypass', ':aeri', ':core', ':dashboard', ':conference', ':event', ':map'
 project(':bypass').projectDir = new File(rootDir, 'third_party/bypass')
