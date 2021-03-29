@@ -70,6 +70,7 @@
                         android:id="@+id/time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minWidth="80dp"
                         android:fontFamily="@font/product_sans_regular"
                         android:textColor="@color/onBackground"
                         android:textSize="14sp"/>
@@ -94,6 +95,7 @@
                         android:id="@+id/location"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:minWidth="80dp"
                         android:fontFamily="@font/product_sans_regular"
                         android:textColor="@color/onBackground"
                         android:textSize="14sp"/>
