@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
+import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -28,6 +29,9 @@ import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplineHelperData
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesDataUI
+import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassItem
@@ -37,26 +41,94 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
+import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
+import dagger.Reusable
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.map
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
-import javax.inject.Singleton
 
-@Singleton
+@Reusable
 class DisciplinesRepository @Inject constructor(
     private val context: Context,
     private val client: OkHttpClient,
     private val database: UDatabase,
     private val executors: AppExecutors,
-    @Named("webViewUA") private val agent: String
+    @Named("webViewUA") private val agent: String,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    private val preferences: SharedPreferences
 ) {
+    fun getAllDisciplinesData(): Flow<DisciplinesDataUI> {
+        return database.classDao().getClassesWithGradesFromAllSemesters().map { classes ->
+            val databaseSemesters = database.semesterDao().getParticipatingSemestersDirect()
+            val classesSemester = classes.map { it.semester }.distinct()
+            val semesters = (databaseSemesters + classesSemester).distinct().run {
+                if (snowpiercerEnabled && all { it.start != null }) {
+                    sortedByDescending { it.start }
+                } else if (preferences.getBoolean("stg_semester_deterministic_ordering", true)) {
+                    sortedByDescending { it.sagresId }
+                } else {
+                    sorted()
+                }
+            }
+            val elements = transformClassesIntoUiElements(semesters, classes)
+            val indexes = DisciplinesIndexed.from(semesters, elements)
+            DisciplinesDataUI(elements, indexes, semesters)
+        }
+    }
+
+    private fun transformClassesIntoUiElements(
+        semesters: List<Semester>,
+        classes: List<ClassFullWithGroup>
+    ): List<DisciplineHelperData> {
+        val completedMap = classes
+            .groupBy { it.semester }
+            .mapValues { entry ->
+                val disciplines = entry.value
+                val result = mutableListOf<DisciplineHelperData>()
+                disciplines.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
+                    if (index != 0)
+                        result += DisciplineHelperData.Divider
+
+                    result += DisciplineHelperData.Header(clazz)
+
+                    val groupings = clazz.grades.groupBy { it.grouping }
+                    if (groupings.keys.size <= 1) {
+                        clazz.grades.sortedBy { it.name }.forEach { grade ->
+                            result += DisciplineHelperData.Score(clazz, grade)
+                        }
+                    } else {
+                        groupings.entries.sortedBy { it.key }.forEach { (_, value) ->
+                            if (value.isNotEmpty()) {
+                                val sample = value[0]
+                                result += DisciplineHelperData.GroupingName(clazz, sample.groupingName)
+                                value.sortedBy { it.name }.forEach { grade ->
+                                    result += DisciplineHelperData.Score(clazz, grade)
+                                }
+                            }
+                        }
+                    }
+
+                    if (clazz.clazz.isInFinal()) {
+                        result += DisciplineHelperData.Final(clazz)
+                    }
+                    result += DisciplineHelperData.Mean(clazz)
+                }
+                result
+            }
+
+        return semesters.map { completedMap[it] ?: listOf(DisciplineHelperData.EmptySemester(it)) }.flatten()
+    }
+
     fun getParticipatingSemesters(): LiveData<List<Semester>> {
         return database.semesterDao().getParticipatingSemesters()
     }
@@ -91,6 +163,13 @@ class DisciplinesRepository @Inject constructor(
 
     fun getLocationsFromClass(classId: Long): LiveData<List<ClassLocation>> {
         return database.classLocationDao().getLocationsOfClass(classId)
+    }
+
+    suspend fun getCurrentClass(): ClassLocationWithData? {
+        val calendar = Calendar.getInstance()
+        val dayInt = calendar.get(Calendar.DAY_OF_WEEK)
+        val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
+        return database.classLocationDao().getCurrentClassDirect(dayInt, currentTimeInt)
     }
 
     fun loadClassDetailsSnowflake(groupId: Long) = flow {

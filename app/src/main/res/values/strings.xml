@@ -322,8 +322,8 @@
     <string name="big_tray_connection_error">Erro de conexão</string>
     <string name="ru_quota_exceeded">As cotas acabaram</string>
     <string name="ru_close_notification">Fechar</string>
-    <string name="select_discipline_group_label">Selecione uma turma</string>
-    <string name="label_select_discipline_group_info">Seleciona uma das turmas disponíveis da disciplina %1$s</string>
+    <string name="select_discipline_group_label_old">Selecione uma turma</string>
+    <string name="label_select_discipline_group_info_old">Selecione uma das turmas disponíveis da disciplina %1$s</string>
     <string name="permission_location_sync_text">O UNES precisa de acesso à localização para identificar se você está nas dependências da universidade e na rede interna</string>
     <string name="settings_proxy_invalid">O proxy especificado é inválido. O proxy deve seguir o padrão IP:porta</string>
     <string name="settings_proxy_changed">O proxy foi modificado, feche o aplicativo para a configuração ser aplicada</string>
@@ -867,8 +867,8 @@
     <string name="settings_ntf_absence">Faltas</string>
     <string name="settings_ntf_absence_info">Notificar quando uma falta for registrada ou apagada</string>
     <string name="notification_absence_removed_title">Falta removida</string>
-    <string name="grades_not_downloaded_yet">As notas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
-    <string name="download_grades">Baixar notas</string>
+    <string name="grades_not_downloaded_yet">As disciplinas deste semestre ainda não foram baixadas.\nIsso tem impacto direto no score calculado.</string>
+    <string name="download_grades">Baixar disciplinas</string>
     <string name="absence_removed_ntf_content">Falta na disciplina %1$s foi removida</string>
     <string name="absence_created_ntf_content">Falta na disciplina %1$s registrada</string>
     <string name="start_up_failed">Erro de inicialização</string>
@@ -882,4 +882,14 @@
     <string name="why_are_you_so_clicky">Por que você clica tanto?</string>
     <string name="settings_adv_dynamic_feature_maps">Mapa do campus</string>
     <string name="settings_adv_dynamic_feature_maps_info">Controla se a função do mapa deve ser instalada/desinstalada</string>
+    <string name="widget_unknown_teacher">Docente Desconhecido</string>
+    <string name="widget_unknown_location">Desconhecido</string>
+    <string name="widget_schedule_time">Horário</string>
+    <string name="widget_schedule_location">Local</string>
+    <string name="widget_no_more_class_discipline">Por hoje acabou</string>
+    <string name="widget_no_more_class_teacher">-</string>
+    <string name="widget_no_more_class_location">Onde você quiser</string>
+    <string name="widget_no_more_class_time">-</string>
+    <string name="semester_discipline_separator">Semestre %1$s</string>
+    <string name="title_disciplines">Disciplinas</string>
 </resources>

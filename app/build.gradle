@@ -148,7 +148,7 @@ android {
         disable 'NullSafeMutableLiveData'
         abortOnError true
     }
-    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map']
+    dynamicFeatures = [":aeri", ":dashboard", ":conference", ":event", ':map', ':disciplines']
 }
 
 play {
@@ -212,7 +212,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:26.5.0')
+    implementation platform('com.google.firebase:firebase-bom:26.7.0')
     implementation "com.google.firebase:firebase-core"
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-messaging"
