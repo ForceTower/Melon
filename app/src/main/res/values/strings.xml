@@ -892,4 +892,5 @@
     <string name="widget_no_more_class_time">-</string>
     <string name="semester_discipline_separator">Semestre %1$s</string>
     <string name="title_disciplines">Disciplinas</string>
+    <string name="settings_ignore_doze_failed">Não é possível chegar às configurações</string>
 </resources>

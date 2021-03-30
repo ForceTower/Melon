@@ -54,7 +54,7 @@ class SyncSpecialFragment : UFragment() {
 
     private lateinit var binding: FragmentSetupSpecialConfigBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSetupSpecialConfigBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -111,12 +111,18 @@ class SyncSpecialFragment : UFragment() {
                         startActivity(intent)
                     } catch (throwable: ActivityNotFoundException) {
                         Timber.e(throwable, "Xiaomi without a power keeper")
+                        showSnack(getString(R.string.settings_ignore_doze_failed))
                     }
                 } else {
                     val intent = Intent(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS).apply {
-                        data = Uri.parse("package:${context?.packageName}")
+                        data = Uri.parse("package:${requireContext().packageName}")
                     }
-                    startActivity(intent)
+                    try {
+                        startActivity(intent)
+                    } catch (error: ActivityNotFoundException) {
+                        Timber.e(error, "This device doesn't support ignore optimizations")
+                        showSnack(getString(R.string.settings_ignore_doze_failed))
+                    }
                 }
             }
         } else {
