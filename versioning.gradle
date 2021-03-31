@@ -26,8 +26,9 @@ ext {
             def branch = 'git rev-parse --abbrev-ref HEAD'.execute([], project.rootDir).text.trim()
             def last_tag_commit = "git rev-list --tags --max-count=1".execute([], project.rootDir).text.trim()
             def last_tag = "git describe --tags ${last_tag_commit}".execute([], project.rootDir).text.trim()
+            def last_commit = "git rev-parse HEAD".execute([], project.rootDir).text.trim().substring(0, 7)
 
-            def (major, minor, patch, desc) = last_tag.toLowerCase().replaceAll('-', '.').tokenize('.')
+            def (major, minor, patch) = last_tag.toLowerCase().replaceAll('-', '.').tokenize('.')
 
             def postfix = "main"
             def adder = 10000
@@ -39,12 +40,9 @@ ext {
                 postfix = branch.replace("feature/", "")
             }
 
-            (major, minor, patch) = [major, minor, patch].collect { it.toInteger() }
+            (major, minor, patch) = [major, minor, patch.replaceAll("[^0-9]", "")].collect { it.toInteger() }
 
-            def name = "${major}.${minor}.${patch}.${commit_count}.rev-${postfix}"
-            if (desc != null) {
-                name = "${name} [${desc}]"
-            }
+            def name = "${major}.${minor}.${patch}.${commit_count}.rev-${postfix} [${last_commit}]"
             def code = (21 * 100000) + commit_count + adder
             return [code, name]
         } catch (Exception ignored) {
