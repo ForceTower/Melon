@@ -90,10 +90,7 @@ class DisciplineDetailsFragment : UFragment() {
         }
 
         viewModel.materialClick.observe(viewLifecycleOwner, EventObserver { requireContext().openURL(it.link) })
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
         viewModel.navigateToTeacherAction.observe(

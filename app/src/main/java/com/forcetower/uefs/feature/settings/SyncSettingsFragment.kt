@@ -25,8 +25,8 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
@@ -58,11 +58,11 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_synchronization, rootKey)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         repository.getFrequencies().observe(
             viewLifecycleOwner,
-            Observer { frequencies ->
+            { frequencies ->
                 val entries = frequencies.map { it.name }
                 val values = frequencies.map { it.value.toString() }
                 configureFrequencies(entries, values)

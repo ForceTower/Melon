@@ -25,7 +25,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.databinding.DialogSelectCourseBinding
@@ -39,7 +38,7 @@ class SelectCourseDialog : RoundedDialog() {
     private var courses: Array<Course>? = null
     private var callback: CourseSelectionCallback? = null
 
-    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         val hide = arguments?.getBoolean("hide_description") ?: false
         return DialogSelectCourseBinding.inflate(inflater, container, false).also {
             binding = it
@@ -49,11 +48,11 @@ class SelectCourseDialog : RoundedDialog() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.courses.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it.data != null && it.data.isNotEmpty()) {
                     populateCourses(it.data)
                 }
