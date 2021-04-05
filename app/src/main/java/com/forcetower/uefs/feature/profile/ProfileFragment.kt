@@ -62,7 +62,7 @@ class ProfileFragment : UFragment() {
     private lateinit var binding: FragmentProfileBinding
     private lateinit var adapter: ProfileAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.postponeEnterTransition(500L)
         val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
         check(userId != 0L) { "Well.. That happened" }

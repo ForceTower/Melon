@@ -44,7 +44,7 @@ class TeacherFragment : UFragment() {
     private val viewModel: EvaluationViewModel by viewModels()
     private val args: TeacherFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         adapter = TeacherAdapter(viewModel)
         return FragmentEvaluateTeacherBinding.inflate(inflater, container, false).apply {
             btnEvaluate.hide()
@@ -54,8 +54,8 @@ class TeacherFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val teacherName = args.teacherName
         val liveData = if (teacherName != null) {
             viewModel.getTeacher(teacherName)

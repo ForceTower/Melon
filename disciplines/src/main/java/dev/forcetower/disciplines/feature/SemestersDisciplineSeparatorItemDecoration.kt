@@ -144,6 +144,7 @@ class SemestersDisciplineSeparatorItemDecoration(
                     setIncludePad(includepad)
                 }.build()
             } else {
+                @Suppress("DEPRECATION")
                 StaticLayout(source, paint, width, alignment, spacingmult, spacingadd, includepad)
             }
         }

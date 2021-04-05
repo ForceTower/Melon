@@ -34,7 +34,7 @@ import timber.log.Timber
 class InstitutionSelectDialog : RoundedDialog() {
     private lateinit var binding: DialogInstitutionSelectorBinding
 
-    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return DialogInstitutionSelectorBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnOk.setOnClickListener {
@@ -47,8 +47,8 @@ class InstitutionSelectDialog : RoundedDialog() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         populateInstitutions()
     }
 

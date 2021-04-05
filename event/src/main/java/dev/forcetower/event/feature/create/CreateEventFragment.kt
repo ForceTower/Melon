@@ -86,7 +86,7 @@ class CreateEventFragment : UFragment() {
             .inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentCreateEventBinding.inflate(inflater, container, false).also {
             binding = it
         }.root

@@ -38,7 +38,7 @@ class ServicesFollowUpFragment : UFragment() {
     private val viewModel: ServicesFollowUpViewModel by activityViewModels()
     private lateinit var binding: FragmentServicesFollowupBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -61,10 +61,7 @@ class ServicesFollowUpFragment : UFragment() {
             )
         )
         tabs.setupWithViewPager(pager)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.pendingServices.observe(
             viewLifecycleOwner,
             EventObserver {

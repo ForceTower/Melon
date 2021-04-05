@@ -63,7 +63,7 @@ class MessagesFragment : UFragment() {
     private val messagesViewModel: MessagesViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
             lifecycleOwner = this@MessagesFragment
@@ -109,10 +109,7 @@ class MessagesFragment : UFragment() {
         if (index > 0 && open) {
             binding.pagerMessage.setCurrentItem(index, true)
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(viewLifecycleOwner, EventObserver { openLink(it) })
         messagesViewModel.snackMessage.observe(viewLifecycleOwner, EventObserver { showSnack(getString(it), Snackbar.LENGTH_LONG) })
     }

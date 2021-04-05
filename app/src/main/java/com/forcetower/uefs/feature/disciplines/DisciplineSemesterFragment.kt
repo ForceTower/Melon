@@ -95,10 +95,7 @@ class DisciplineSemesterFragment : UFragment() {
                 binding.loading = it
             }
         )
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.classes(requireArguments().getLong(SEMESTER_DATABASE_ID)).observe(
             viewLifecycleOwner,
             {
