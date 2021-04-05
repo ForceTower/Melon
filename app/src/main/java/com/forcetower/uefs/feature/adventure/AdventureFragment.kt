@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import android.os.Bundle
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
@@ -72,8 +73,8 @@ class AdventureFragment : UFragment() {
     private val distanceAdapter by lazy { DistanceAdapter() }
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var locationCallback: LocationCallback? = null
-    private var mLocationRequest: LocationRequest? = null
+    private lateinit var locationCallback: LocationCallback
+    private lateinit var mLocationRequest: LocationRequest
     private var showedLocationMessage: Boolean = false
     private var requestingLocationUpdates = false
 
@@ -85,7 +86,7 @@ class AdventureFragment : UFragment() {
         activity ?: Timber.e("Adventure Fragment must be attached to a UGameActivity for it to work")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         locationSettings()
         return FragmentAdventureBeginsBinding.inflate(inflater, container, false).also {
             binding = it
@@ -101,10 +102,7 @@ class AdventureFragment : UFragment() {
         binding.adventureAchievements.distanceRecycler.run {
             adapter = distanceAdapter
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         profileViewModel.getMeProfile().observe(
             viewLifecycleOwner,
             {
@@ -176,7 +174,7 @@ class AdventureFragment : UFragment() {
 
     private fun startLocationsUpdate() {
         mLocationRequest = LocationRequest.create()
-        mLocationRequest?.run {
+        mLocationRequest.run {
             interval = 7000
             fastestInterval = 5000
             priority = LocationRequest.PRIORITY_HIGH_ACCURACY
@@ -186,7 +184,7 @@ class AdventureFragment : UFragment() {
             onReceiveLocation(null)
         }
 
-        val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest!!)
+        val builder = LocationSettingsRequest.Builder().addLocationRequest(mLocationRequest)
         val client = LocationServices.getSettingsClient(requireContext())
         val task = client.checkLocationSettings(builder.build())
 
@@ -217,8 +215,8 @@ class AdventureFragment : UFragment() {
 
     private fun startUpdates() {
         try {
-            if (mLocationRequest == null) startLocationsUpdate()
-            fusedLocationClient.requestLocationUpdates(mLocationRequest, locationCallback, null)
+            if (!::mLocationRequest.isInitialized) startLocationsUpdate()
+            fusedLocationClient.requestLocationUpdates(mLocationRequest, locationCallback, Looper.getMainLooper())
             binding.adventureAchievements.distanceRecycler.visibility = VISIBLE
         } catch (e: SecurityException) {
             Timber.d("Method could not be called")

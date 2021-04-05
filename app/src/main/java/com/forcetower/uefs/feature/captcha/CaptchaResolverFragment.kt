@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.captcha
 
+import android.annotation.SuppressLint
 import android.app.Dialog
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -57,14 +58,15 @@ class CaptchaResolverFragment : BottomSheetDialogFragment() {
         return sheetDialog
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentTechNopeCaptchaBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.webView.apply {
             loadDataWithBaseURL(Constants.getParameter("CAPTCHA_BASE"), data, "text/html; charset=utf-8", "UTF-8", null)
             settings.apply {

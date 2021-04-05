@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.UFragment
@@ -40,16 +39,16 @@ class InitialFragment : UFragment() {
     lateinit var preferences: SharedPreferences
     private val viewModel: EvaluationViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return View(context)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val onboarding = preferences.getBoolean("evaluation_presentation_shown", false)
         viewModel.getToken().observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 Timber.d("Token received: $it")
                 if (it == null) {
                     findNavController().navigate(R.id.action_initial_to_unesverse_required)

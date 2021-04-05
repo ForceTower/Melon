@@ -84,10 +84,7 @@ class DisciplineFragment : UFragment() {
         adapter = SemesterAdapter(childFragmentManager)
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.semesters.observe(
             viewLifecycleOwner,
             {

@@ -31,7 +31,6 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
@@ -51,7 +50,7 @@ class SearchFragment : UFragment() {
     private lateinit var binding: FragmentEvaluationSearchBinding
     private lateinit var adapter: EvaluationEntityAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         adapter = EvaluationEntityAdapter(viewModel)
         return FragmentEvaluationSearchBinding.inflate(inflater, container, false).also {
             binding = it
@@ -79,12 +78,12 @@ class SearchFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.downloadDatabase().observe(viewLifecycleOwner, Observer { loadKnowledge(it) })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.downloadDatabase().observe(viewLifecycleOwner, { loadKnowledge(it) })
         viewModel.query.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 adapter.submitList(it)
             }
         )

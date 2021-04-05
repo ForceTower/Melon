@@ -27,7 +27,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
@@ -47,7 +46,7 @@ class DisciplineEvaluationFragment : UFragment() {
     private lateinit var elements: EvaluationElementsAdapter
     private val args: DisciplineEvaluationFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
@@ -55,9 +54,9 @@ class DisciplineEvaluationFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, Observer { handleData(it) })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, { handleData(it) })
         binding.itemsRecycler.apply {
             adapter = elements
             itemAnimator?.run {
