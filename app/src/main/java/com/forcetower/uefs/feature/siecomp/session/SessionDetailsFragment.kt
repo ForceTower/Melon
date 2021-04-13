@@ -30,8 +30,8 @@ import androidx.core.view.doOnLayout
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEventSessionDetailsBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.siecomp.speaker.EventSpeakerActivity

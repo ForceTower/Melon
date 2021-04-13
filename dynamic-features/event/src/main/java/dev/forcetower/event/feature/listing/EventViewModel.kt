@@ -29,7 +29,7 @@ import dev.forcetower.event.core.repository.EventRepository
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-typealias SingleEventAction = com.forcetower.uefs.core.vm.Event<Event>
+typealias SingleEventAction = com.forcetower.core.lifecycle.Event<Event>
 
 class EventViewModel @Inject constructor(
     private val repository: EventRepository

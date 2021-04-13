@@ -22,8 +22,8 @@ package com.forcetower.uefs.core.vm
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -49,26 +49,3 @@ class LaunchViewModel @Inject constructor(
 }
 
 enum class Destination { LOGIN_ACTIVITY, HOME_ACTIVITY }
-
-// --------------------------------------------------------------------------
-open class Event<out T>(private val content: T) {
-    private var hasBeenHandled = false
-
-    fun getIfNotHandled(): T? {
-        return if (hasBeenHandled) {
-            null
-        } else {
-            hasBeenHandled = true
-            content
-        }
-    }
-
-    fun peek(): T = content
-}
-class EventObserver<T>(private val onEventUnhandled: (T) -> Unit) : Observer<Event<T>> {
-    override fun onChanged(event: Event<T>?) {
-        event?.getIfNotHandled()?.let { value ->
-            onEventUnhandled(value)
-        }
-    }
-}

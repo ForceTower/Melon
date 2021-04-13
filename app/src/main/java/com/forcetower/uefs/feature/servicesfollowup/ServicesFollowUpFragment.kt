@@ -25,9 +25,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.NamedFragmentAdapter
 import com.forcetower.uefs.feature.shared.UFragment

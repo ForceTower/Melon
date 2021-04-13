@@ -24,11 +24,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.siecomp.Session
 import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.model.siecomp.Tag
 import com.forcetower.uefs.core.storage.repository.SIECOMPRepository
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.SetIntervalLiveData
 import com.forcetower.uefs.feature.shared.extensions.map
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew

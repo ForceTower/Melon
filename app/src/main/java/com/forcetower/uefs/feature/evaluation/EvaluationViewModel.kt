@@ -25,6 +25,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.paging.PagedList
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
@@ -34,7 +35,6 @@ import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.TextTransformUtils
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
 import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
 import com.forcetower.uefs.feature.evaluation.home.HomeInteractor

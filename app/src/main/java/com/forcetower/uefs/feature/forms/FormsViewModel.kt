@@ -23,8 +23,8 @@ package com.forcetower.uefs.feature.forms
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.storage.repository.FormsRepository
-import com.forcetower.uefs.core.vm.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
 import javax.inject.Inject
