@@ -25,11 +25,11 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.map
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
 import timber.log.Timber

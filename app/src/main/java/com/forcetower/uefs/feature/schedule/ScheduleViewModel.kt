@@ -28,13 +28,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.ui.ProcessedClassLocation
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.storage.repository.ScheduleRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay

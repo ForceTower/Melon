@@ -27,7 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.viewModels
-import com.forcetower.uefs.core.vm.EventObserver
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.databinding.FragmentSendFeedbackBinding
 import com.google.android.material.R
 import com.google.android.material.bottomsheet.BottomSheetBehavior

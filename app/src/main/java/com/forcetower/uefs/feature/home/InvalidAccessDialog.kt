@@ -27,9 +27,9 @@ import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.DialogInvalidAccessBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import dagger.hilt.android.AndroidEntryPoint

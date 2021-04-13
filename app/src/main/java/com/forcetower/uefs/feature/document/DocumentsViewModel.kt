@@ -25,13 +25,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.storage.repository.DocumentsRepository
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File

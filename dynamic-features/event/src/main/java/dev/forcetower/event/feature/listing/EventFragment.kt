@@ -34,8 +34,8 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.R

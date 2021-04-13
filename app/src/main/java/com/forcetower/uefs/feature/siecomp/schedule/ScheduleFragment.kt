@@ -30,10 +30,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel

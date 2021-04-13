@@ -27,13 +27,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
-import com.forcetower.uefs.core.vm.Event
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map

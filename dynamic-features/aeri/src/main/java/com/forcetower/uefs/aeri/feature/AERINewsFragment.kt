@@ -33,12 +33,12 @@ import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.aeri.core.injection.DaggerAERIComponent
 import com.forcetower.uefs.aeri.databinding.FragmentAeriNewsBinding
 import com.forcetower.uefs.core.injection.dependencies.AERIModuleDependencies
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.play.core.splitcompat.SplitCompat

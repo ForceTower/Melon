@@ -29,10 +29,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment

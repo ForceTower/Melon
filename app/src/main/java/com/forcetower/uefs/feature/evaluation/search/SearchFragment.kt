@@ -32,11 +32,11 @@ import android.view.ViewGroup
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.profile.ProfileActivity

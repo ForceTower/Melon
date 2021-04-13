@@ -24,10 +24,10 @@ import android.location.Location
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.model.service.Achievement
 import com.forcetower.uefs.core.storage.repository.AdventureRepository
-import com.forcetower.uefs.core.vm.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

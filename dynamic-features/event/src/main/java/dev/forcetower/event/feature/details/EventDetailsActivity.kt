@@ -35,9 +35,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.palette.graphics.Palette
 import com.forcetower.core.adapters.ImageLoadListener
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.getBitmap
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition

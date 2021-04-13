@@ -35,11 +35,11 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_CHECK_SETTINGS
 import com.forcetower.uefs.core.model.service.AchDistance
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAdventureBeginsBinding
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment

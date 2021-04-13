@@ -28,10 +28,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.SagresDocument
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.shared.UFragment
