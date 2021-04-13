@@ -27,8 +27,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UnesverseViewModel
 import com.forcetower.uefs.databinding.FragmentUniverseRequiredBinding
 import com.forcetower.uefs.feature.information.InformationDialog

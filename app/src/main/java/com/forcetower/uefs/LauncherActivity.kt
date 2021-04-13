@@ -25,15 +25,14 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.vm.Destination
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.LaunchViewModel
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 /**
@@ -48,17 +47,16 @@ class LauncherActivity : AppCompatActivity() {
     @Inject
     lateinit var preferences: SharedPreferences
 
+    private val viewModel by viewModels<LaunchViewModel>()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: LaunchViewModel by viewModels()
         if (savedInstanceState != null) return
         createNewVersionNotification()
 
         viewModel.direction.observe(
             this,
             EventObserver {
-                Timber.d("Once!")
-                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
                 if (!viewModel.started) {
                     when (it) {
                         Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))

@@ -31,8 +31,8 @@ import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.injection.dependencies.DashboardModuleDependencies
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.dashboard.R
 import com.forcetower.uefs.dashboard.core.injection.DaggerDashboardComponent
 import com.forcetower.uefs.dashboard.databinding.FragmentDashboardBinding

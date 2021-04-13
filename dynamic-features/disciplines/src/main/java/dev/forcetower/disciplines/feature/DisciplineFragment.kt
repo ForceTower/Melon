@@ -34,6 +34,7 @@ import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.core.layout.JumpSmoothScroller
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.injection.dependencies.DisciplineModuleDependencies
@@ -43,7 +44,6 @@ import com.forcetower.uefs.core.model.ui.disciplines.DisciplinesIndexed
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.toJson
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.shared.UFragment

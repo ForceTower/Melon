@@ -25,9 +25,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_INSTALL_AERI_MODULE
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.splitinstall.SplitInstallException
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory

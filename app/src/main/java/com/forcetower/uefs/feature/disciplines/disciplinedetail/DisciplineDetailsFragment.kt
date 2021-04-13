@@ -33,9 +33,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
 import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
