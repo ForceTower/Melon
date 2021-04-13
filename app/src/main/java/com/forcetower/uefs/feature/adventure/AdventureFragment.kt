@@ -31,12 +31,12 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
-import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.REQUEST_CHECK_SETTINGS
 import com.forcetower.uefs.core.model.service.AchDistance
 import com.forcetower.uefs.core.vm.EventObserver
@@ -54,7 +54,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AfterPermissionGranted
 import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import javax.inject.Inject
@@ -79,6 +78,11 @@ class AdventureFragment : UFragment() {
     private var requestingLocationUpdates = false
 
     private var currentList: List<AchDistance>? = null
+
+    private val requestPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
+        val allGranted = result.entries.all { it.value }
+        if (allGranted) startRequesting()
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -162,13 +166,12 @@ class AdventureFragment : UFragment() {
         }
     }
 
-    @AfterPermissionGranted(RC_LOCATION_PERMISSION)
     private fun startRequesting() {
         val perms = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
         if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
             startLocationsUpdate()
         } else {
-            EasyPermissions.requestPermissions(this, getString(R.string.permission_location_adventure), RC_LOCATION_PERMISSION, *perms)
+            requestPermissions.launch(perms)
         }
     }
 
@@ -256,10 +259,5 @@ class AdventureFragment : UFragment() {
         value.mapNotNull { it.id }.forEach {
             activity?.unlockAchievement(it)
         }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
