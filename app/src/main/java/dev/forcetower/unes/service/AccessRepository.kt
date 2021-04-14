@@ -18,29 +18,17 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.task
+package dev.forcetower.unes.service
 
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import timber.log.Timber
+import com.forcetower.uefs.core.storage.database.UDatabase
+import javax.inject.Inject
+import javax.inject.Singleton
 
-abstract class UseCase<in P, R>(
-    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+@Singleton
+class AccessRepository @Inject constructor(
+    private val database: UDatabase
 ) {
-    suspend operator fun invoke(parameters: P): UCaseResult<R> {
-        return try {
-            withContext(coroutineDispatcher) {
-                execute(parameters).let {
-                    UCaseResult.Success(it)
-                }
-            }
-        } catch (e: Exception) {
-            Timber.d(e)
-            UCaseResult.Error(e)
-        }
+    suspend fun getAccessCount(): Int {
+        return database.accessDao().getAccessCount()
     }
-
-    @Throws(RuntimeException::class)
-    protected abstract suspend fun execute(parameters: P): R
 }
