@@ -33,7 +33,7 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SelectCourseDialog : RoundedDialog() {
-    private val viewModel: CourseViewModel by activityViewModels()
+    private val viewModel by activityViewModels<CourseViewModel>()
     private lateinit var binding: DialogSelectCourseBinding
     private var courses: Array<Course>? = null
     private var callback: CourseSelectionCallback? = null
@@ -50,11 +50,11 @@ class SelectCourseDialog : RoundedDialog() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.courses.observe(
+        viewModel.getCourses().observe(
             viewLifecycleOwner,
             {
-                if (it.data != null && it.data.isNotEmpty()) {
-                    populateCourses(it.data)
+                if (it.isNotEmpty()) {
+                    populateCourses(it)
                 }
             }
         )

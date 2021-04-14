@@ -100,7 +100,7 @@ class LaunchViewModelTest {
 
         val versionCode = BuildConfig.VERSION_CODE + 1L
         every { remoteConfig.getLong("version_current") } returns versionCode
-        every { preferences.getBoolean("version_ntf_key_${versionCode}", false) } returns false
+        every { preferences.getBoolean("version_ntf_key_$versionCode", false) } returns false
 
         val viewModel = LaunchViewModel(mockk(), notifyCase)
         viewModel.checkNewAppVersion()
@@ -119,7 +119,7 @@ class LaunchViewModelTest {
 
         val versionCode = BuildConfig.VERSION_CODE + 1L
         every { remoteConfig.getLong("version_current") } returns versionCode
-        every { preferences.getBoolean("version_ntf_key_${versionCode}", false) } returns true
+        every { preferences.getBoolean("version_ntf_key_$versionCode", false) } returns true
 
         val viewModel = LaunchViewModel(mockk(), notifyCase)
         viewModel.checkNewAppVersion()

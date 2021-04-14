@@ -49,8 +49,6 @@ open class Event<out T>(private val content: T) {
     override fun hashCode(): Int {
         return content?.hashCode() ?: 0
     }
-
-
 }
 class EventObserver<T>(private val onEventUnhandled: (T) -> Unit) : Observer<Event<T>> {
     override fun onChanged(event: Event<T>?) {
