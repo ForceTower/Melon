@@ -18,18 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.unes.usecases.auth
+package dev.forcetower.unes.usecases.courses
 
+import com.forcetower.uefs.core.storage.repository.CourseRepository
 import com.forcetower.uefs.core.task.UseCase
 import dagger.Reusable
-import dev.forcetower.unes.service.AccessRepository
 import javax.inject.Inject
 
 @Reusable
-class HasEnrolledAccessUseCase @Inject constructor(
-    private val repository: AccessRepository
-) : UseCase<Unit, Boolean>() {
-    override suspend fun execute(parameters: Unit): Boolean {
-        return repository.getAccessCount() > 0
+class DownloadCoursesUseCase @Inject constructor(
+    private val repository: CourseRepository
+) : UseCase<Unit, Unit>() {
+    override suspend fun execute(parameters: Unit) {
+        repository.downloadCourses()
     }
 }

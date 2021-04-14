@@ -144,7 +144,7 @@ interface UService {
     fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 
     @GET("courses")
-    fun getCourses(): Call<List<Course>>
+    suspend fun getCourses(): List<Course>
 
     @GET("synchronization")
     fun getUpdate(): Call<UNESUpdate>

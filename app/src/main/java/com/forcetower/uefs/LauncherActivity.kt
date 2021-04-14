@@ -44,12 +44,15 @@ class LauncherActivity : AppCompatActivity() {
 
         viewModel.checkNewAppVersion()
         viewModel.findStarterDirection()
-        viewModel.direction.observe(this, EventObserver { destination ->
-            when (destination) {
-                LaunchViewModel.Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                LaunchViewModel.Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+        viewModel.direction.observe(
+            this,
+            EventObserver { destination ->
+                when (destination) {
+                    LaunchViewModel.Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                    LaunchViewModel.Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
+                }
+                finish()
             }
-            finish()
-        })
+        )
     }
 }

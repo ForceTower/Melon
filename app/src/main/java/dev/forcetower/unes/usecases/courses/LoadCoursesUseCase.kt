@@ -2,7 +2,7 @@
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
  *
- * Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
+ * Copyright (c) 2021. João Paulo Sena <joaopaulo761@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -18,30 +18,21 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.core.storage.database.dao
+package dev.forcetower.unes.usecases.courses
 
-import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
-import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.storage.repository.CourseRepository
+import com.forcetower.uefs.core.task.FlowUseCase
+import com.forcetower.uefs.core.task.UCaseResult
+import dagger.Reusable
 import kotlinx.coroutines.flow.Flow
+import javax.inject.Inject
 
-@Dao
-interface CourseDao {
-    @Insert(onConflict = REPLACE)
-    suspend fun insert(courses: List<Course>)
-
-    @Query("SELECT * FROM Course ORDER BY name")
-    fun selectAll(): Flow<List<Course>>
-
-    @Query("SELECT * FROM Course ORDER BY name")
-    suspend fun selectAllDirect(): List<Course>
-
-    @Query("SELECT COUNT(id) FROM Course")
-    suspend fun count(): Int
-
-    @Query("SELECT * FROM Course WHERE id = :course")
-    fun getCourse(course: Long): LiveData<Course?>
+@Reusable
+class LoadCoursesUseCase @Inject constructor(
+    private val repository: CourseRepository
+) : FlowUseCase<Unit, List<Course>>() {
+    override fun execute(parameters: Unit): Flow<UCaseResult<List<Course>>> {
+        return repository.getCourses()
+    }
 }

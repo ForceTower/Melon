@@ -18,18 +18,23 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package dev.forcetower.unes.usecases.auth
+package com.forcetower.uefs.core.task
 
-import com.forcetower.uefs.core.task.UseCase
-import dagger.Reusable
-import dev.forcetower.unes.service.AccessRepository
-import javax.inject.Inject
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.flowOn
 
-@Reusable
-class HasEnrolledAccessUseCase @Inject constructor(
-    private val repository: AccessRepository
-) : UseCase<Unit, Boolean>() {
-    override suspend fun execute(parameters: Unit): Boolean {
-        return repository.getAccessCount() > 0
+abstract class FlowUseCase<in P, R>(
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
+    operator fun invoke(parameters: P): Flow<UCaseResult<R>> {
+        return execute(parameters)
+            .catch { e -> emit(UCaseResult.Error(Exception(e))) }
+            .flowOn(coroutineDispatcher)
     }
+
+    @Throws(RuntimeException::class)
+    protected abstract fun execute(parameters: P): Flow<UCaseResult<R>>
 }
