@@ -21,7 +21,7 @@
 package com.forcetower.uefs
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
@@ -37,7 +37,7 @@ class LaunchViewModel @Inject constructor(
     private val hasEnrolledAccess: HasEnrolledAccessUseCase,
     private val notifyNewVersion: NotifyNewVersionUseCase
 ) : ViewModel() {
-    private val _direction = MediatorLiveData<Event<Destination>>()
+    private val _direction = MutableLiveData<Event<Destination>>()
     val direction: LiveData<Event<Destination>> = _direction
 
     fun findStarterDirection() {

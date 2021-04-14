@@ -77,7 +77,7 @@ class LaunchViewModelTest {
     }
 
     @Test
-    fun `move to home when there a enrolled access`() {
+    fun `move to home when there is a enrolled access`() {
         val enrolledUseCase = mockk<HasEnrolledAccessUseCase>()
         val eventsLiveDataObserver = mockk<EventObserver<LaunchViewModel.Destination>>(relaxed = true)
 
