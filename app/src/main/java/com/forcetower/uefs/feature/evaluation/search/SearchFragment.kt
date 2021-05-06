@@ -30,7 +30,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.view.forEach
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
@@ -42,6 +44,8 @@ import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -55,19 +59,13 @@ class SearchFragment : UFragment() {
         return FragmentEvaluationSearchBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
-            omniText.addTextChangedListener(
-                object : TextWatcher {
-                    override fun afterTextChanged(edit: Editable?) {
-                        val text = edit?.toString() ?: ""
-                        if (text.length >= 3 || text.isEmpty()) {
-                            Timber.d("Querying $text")
-                            viewModel.query(text)
-                        }
-                    }
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            omniText.doAfterTextChanged {
+                val query = it.toString()
+                if (query != viewModel.query) {
+                    viewModel.query = query
+                    adapter.refresh()
                 }
-            )
+            }
             wildcardRecycler.adapter = adapter
             wildcardRecycler.itemAnimator?.run {
                 addDuration = 120L
@@ -81,18 +79,18 @@ class SearchFragment : UFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.downloadDatabase().observe(viewLifecycleOwner, { loadKnowledge(it) })
-        viewModel.query.observe(
-            viewLifecycleOwner,
-            {
-                adapter.submitList(it)
-            }
-        )
         viewModel.entitySelect.observe(
             viewLifecycleOwner,
             EventObserver {
                 onEvalEntitySelected(it)
             }
         )
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.searchSource.collectLatest {
+                adapter.submitData(it)
+            }
+        }
     }
 
     private fun onEvalEntitySelected(entity: EvaluationEntity) {

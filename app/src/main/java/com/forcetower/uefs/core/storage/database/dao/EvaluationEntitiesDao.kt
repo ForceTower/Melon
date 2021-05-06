@@ -21,6 +21,7 @@
 package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -62,7 +63,7 @@ abstract class EvaluationEntitiesDao {
     @Query("DELETE FROM EvaluationEntity")
     protected abstract fun clear()
 
-    open fun query(query: String): DataSource.Factory<Int, EvaluationEntity> {
+    open fun query(query: String): PagingSource<Int, EvaluationEntity> {
         return if (query.isBlank()) {
             doQueryEmpty()
         } else {
@@ -75,8 +76,8 @@ abstract class EvaluationEntitiesDao {
     }
 
     @Query("SELECT * FROM EvaluationEntity WHERE LOWER(searchable) LIKE :query ORDER BY name")
-    abstract fun doQuery(query: String): DataSource.Factory<Int, EvaluationEntity>
+    abstract fun doQuery(query: String): PagingSource<Int, EvaluationEntity>
 
     @Query("SELECT * FROM EvaluationEntity WHERE 0")
-    abstract fun doQueryEmpty(): DataSource.Factory<Int, EvaluationEntity>
+    abstract fun doQueryEmpty(): PagingSource<Int, EvaluationEntity>
 }
