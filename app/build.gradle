@@ -238,7 +238,6 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$gp_auth"
     implementation "com.google.android.gms:play-services-location:$gp_location"
     implementation "com.android.billingclient:billing:$gp_billing_client"
-    implementation "com.google.android.gms:play-services-ads:$gp_admob"
     implementation "com.google.android.play:core:$gp_core"
     implementation "com.google.android.play:core-ktx:$gp_core_ktx"
 
