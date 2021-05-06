@@ -24,7 +24,7 @@ buildscript {
         sagres = "1.6.5"
 
         // Kotlin Extensions
-        ktx = '1.5.0-rc01'
+        ktx = '1.5.0-rc02'
 
         // Android X
         app_compat = '1.2.0'
@@ -36,19 +36,19 @@ buildscript {
         flexbox = "1.1.0"
         browser = '1.3.0'
         preference = '1.1.1'
-        fragment = '1.3.2'
+        fragment = '1.3.3'
         swipe_refresh = '1.1.0'
 
         // Architecture
-        room = '2.2.6'
+        room = '2.3.0'
         lifecycle = '2.3.1'
         paging = '2.1.2'
-        navigation = '2.3.4'
+        navigation = '2.3.5'
         work_manager = '2.5.0'
 
         // Dependency Injection
-        dagger = '2.33'
-        hilt_androidx = '1.0.0-beta01'
+        dagger = '2.35.1'
+        hilt_androidx = '1.0.0'
 
         // Firebase
         firebase_core = '17.5.1'
@@ -96,19 +96,18 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '4.1.3'
+        android_gradle_plugin = '4.2.0'
         google_play_services = "4.3.4"
-        kotlinter = "3.3.0"
-        play_publisher = "3.2.0"
+        kotlinter = "3.4.4"
+        play_publisher = "3.4.0-agp4.2"
         bundletool = "0.10.0"
         crashlytics = "2.4.1"
-        hilt_dagger = '2.33-beta'
+        hilt_dagger = '2.35.1'
         coreDesugar = '1.1.5'
     }
 
     repositories {
         google()
-        jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.fabric.io/public" }
         maven { url "https://plugins.gradle.org/m2/" }
@@ -134,7 +133,6 @@ buildscript {
 allprojects {
     repositories {
         google()
-        jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.fabric.io/public" }
         maven { url "https://plugins.gradle.org/m2/" }
