@@ -24,7 +24,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import androidx.paging.PagedList
+import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
@@ -50,21 +52,25 @@ class EvaluationViewModel @Inject constructor(
 ) : ViewModel(), HomeInteractor, EntitySelector, DisciplineInteractor {
     private var _trending: LiveData<Resource<List<EvaluationHomeTopic>>>? = null
 
+    var query = ""
+        set(value) {
+            field = TextTransformUtils.transform(value)
+        }
+
+    val searchSource = evaluationRepository.queryEntities { query }.cachedIn(viewModelScope)
+
     private val _disciplineSelect = MutableLiveData<Event<EvaluationDiscipline>>()
+
     val disciplineSelect: LiveData<Event<EvaluationDiscipline>>
         get() = _disciplineSelect
-
     private val _teacherSelect = MutableLiveData<Event<EvaluationTeacher>>()
+
     val teacherSelect: LiveData<Event<EvaluationTeacher>>
         get() = _teacherSelect
-
     private var _discipline: LiveData<Resource<EvaluationDiscipline>>? = null
     private var _teacher: LiveData<Resource<EvaluationTeacher>>? = null
-    private var _knowledge: LiveData<Resource<Boolean>>? = null
 
-    private val _query = MediatorLiveData<PagedList<EvaluationEntity>>()
-    val query: LiveData<PagedList<EvaluationEntity>>
-        get() = _query
+    private var _knowledge: LiveData<Resource<Boolean>>? = null
 
     private val _teacherIntSelect = MutableLiveData<Event<TeacherInt>>()
     val teacherIntSelect: LiveData<Event<TeacherInt>>
@@ -73,8 +79,6 @@ class EvaluationViewModel @Inject constructor(
     private val _entitySelected = MutableLiveData<Event<EvaluationEntity>>()
     val entitySelect: LiveData<Event<EvaluationEntity>>
         get() = _entitySelected
-
-    private var currentSource: LiveData<PagedList<EvaluationEntity>>? = null
 
     fun getToken() = authRepository.getAccessToken()
     fun getAccount() = accountRepository.getAccount()
@@ -127,18 +131,5 @@ class EvaluationViewModel @Inject constructor(
             _knowledge = evaluationRepository.downloadKnowledgeDatabase()
         }
         return _knowledge!!
-    }
-
-    fun query(text: String) {
-        val source = currentSource
-        if (source != null) {
-            _query.removeSource(source)
-        }
-        val transformedText = TextTransformUtils.transform(text)
-        val newSource = evaluationRepository.queryEntities(transformedText)
-        currentSource = newSource
-        _query.addSource(newSource) {
-            _query.value = it
-        }
     }
 }

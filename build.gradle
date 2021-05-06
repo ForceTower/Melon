@@ -42,7 +42,7 @@ buildscript {
         // Architecture
         room = '2.3.0'
         lifecycle = '2.3.1'
-        paging = '2.1.2'
+        paging = '3.0.0'
         navigation = '2.3.5'
         work_manager = '2.5.0'
 
