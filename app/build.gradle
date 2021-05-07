@@ -153,6 +153,10 @@ android {
         ":dynamic-features:map",
         ":dynamic-features:disciplines"
     ]
+
+    testOptions {
+        unitTests.returnDefaultValues = true
+    }
 }
 
 play {
