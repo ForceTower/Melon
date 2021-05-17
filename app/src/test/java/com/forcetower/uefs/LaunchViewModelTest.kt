@@ -93,25 +93,6 @@ class LaunchViewModelTest {
     }
 
     @Test
-    fun `verifies new version on app`() {
-        val preferences = mockk<SharedPreferences>()
-        val remoteConfig = mockk<FirebaseRemoteConfig>()
-        val notifyCase = NotifyNewVersionUseCase(mockk(), remoteConfig, preferences)
-
-        val versionCode = BuildConfig.VERSION_CODE + 1L
-        every { remoteConfig.getLong("version_current") } returns versionCode
-        every { preferences.getBoolean("version_ntf_key_$versionCode", false) } returns false
-
-        val viewModel = LaunchViewModel(mockk(), notifyCase)
-        viewModel.checkNewAppVersion()
-
-        verify {
-            // called to fetch version notes
-            remoteConfig.getString("version_notes")
-        }
-    }
-
-    @Test
     fun `don't show notification if already shown new version on app`() {
         val preferences = mockk<SharedPreferences>()
         val remoteConfig = mockk<FirebaseRemoteConfig>()
