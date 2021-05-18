@@ -45,15 +45,12 @@ jobs:
         UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
         UNES_MAPS_KEY: ${{ secrets.UNES_MAPS_KEY }}
 
-    - name: Save Lint Results
-      run: ./scripts/save_lint_results.sh
-
-    - name: Upload Lint Results
-      uses: actions/upload-artifact@v2
-      if: "!contains(github.event.head_commit.message, '[lint skip]')"
-      with:
-        name: lint_results
-        path: ci_results/lint/
+    - name: Upload Check Results
+        uses: actions/upload-artifact@v2
+        if: succeeded() || failed()
+        with:
+          name: check_results
+          path: **/build/reports/
 
     - name: Upload result for job
       uses: actions/upload-artifact@v2
