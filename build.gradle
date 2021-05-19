@@ -19,12 +19,12 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4.32'
+    ext.kotlin_version = '1.5.0'
     ext {
         sagres = "1.6.5"
 
         // Kotlin Extensions
-        ktx = '1.5.0-rc02'
+        ktx = '1.5.0'
 
         // Android X
         app_compat = '1.2.0'
