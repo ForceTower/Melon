@@ -46,11 +46,11 @@ jobs:
         UNES_MAPS_KEY: ${{ secrets.UNES_MAPS_KEY }}
 
     - name: Upload Check Results
-        uses: actions/upload-artifact@v2
-        if: succeeded() || failed()
-        with:
-          name: check_results
-          path: **/build/reports/
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: check_results
+        path: ./**/build/reports/
 
     - name: Upload result for job
       uses: actions/upload-artifact@v2
