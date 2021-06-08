@@ -182,12 +182,12 @@ dependencies {
     // Auto start
     implementation 'com.github.judemanutd:autostarter:1.0.8'
 
-    // Juice scrapper
-    implementation "com.github.forcetower:juice:$sagres"
+    // Portal scrapper
+    implementation "dev.forcetower.unes:juice:$juice"
+    implementation "dev.forcetower.unes:snowpiercer:$snowpiercer"
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation "dev.forcetower.unes:snowpiercer:1.1.3"
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"

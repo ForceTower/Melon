@@ -24,7 +24,7 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.sagres.utils.WordUtils
+import com.forcetower.core.utils.WordUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 
