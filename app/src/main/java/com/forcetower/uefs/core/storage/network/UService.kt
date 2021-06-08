@@ -233,11 +233,11 @@ interface UService {
     // ---------- Toss a coin -----------
     @FormUrlEncoded
     @POST("cookie/save")
-    fun prepareSession(@Field("cookies") cookies: String): Call<UResponse<Void>>
+    suspend fun prepareSession(@Field("cookies") cookies: String): UResponse<Void>
 
     @GET("cookie/retrieve")
-    fun getSession(): Call<UResponse<String>>
+    suspend fun getSession(): UResponse<String>
 
     @GET("cookie/invalidate")
-    fun invalidateSession(): Call<UResponse<Void>>
+    suspend fun invalidateSession(): UResponse<Void>
 }

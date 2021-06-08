@@ -57,6 +57,7 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toLiveData
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
+import kotlinx.coroutines.runBlocking
 import org.jsoup.nodes.Document
 import timber.log.Timber
 import javax.inject.Inject
@@ -126,7 +127,10 @@ class LoginSagresRepository @Inject constructor(
                     database.accessDao().insert(username, password)
                     if (preferences.isStudentFromUEFS()) {
                         authRepository.syncLogin(username, password)
-                        sessionRepository.onLogin()
+                        // TODO Remove this SHAMELESS call
+                        runBlocking {
+                            sessionRepository.findAndSaveCookies()
+                        }
                     }
                 }
                 me(data, score, Access(username = username, password = password), l.document!!)
@@ -364,7 +368,12 @@ class LoginSagresRepository @Inject constructor(
                 }
                 else -> {
                     Timber.d("ANOTHER ONE!")
-                    executor.networkIO().execute { sessionRepository.onLogin() }
+                    executor.networkIO().execute {
+                        // TODO Remove this other shameless call
+                        runBlocking {
+                            sessionRepository.findAndSaveCookies()
+                        }
+                    }
                     data.value = Callback.Builder(Status.COMPLETED)
                         .code(s.code)
                         .message(s.message)

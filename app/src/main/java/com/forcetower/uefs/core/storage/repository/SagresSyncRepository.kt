@@ -184,6 +184,8 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
+
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
@@ -267,16 +269,6 @@ class SagresSyncRepository @Inject constructor(
         val shouldDisciplineSync =
             ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
                 (currentDailyHour >= nextHour)
-
-        Timber.d("Discipline Sync Dump >> will sync now $shouldDisciplineSync")
-        Timber.d("Dailies $dailyDisciplines")
-        Timber.d("Current daily $currentDaily")
-        Timber.d("Current Day discipline $currentDayDiscipline")
-        Timber.d("Last daily hour $lastDailyHour")
-        Timber.d("Is this a new daily? $isNewDaily")
-        Timber.d("Current hour $currentDailyHour")
-        Timber.d("Actual daily count $actualDailyCount")
-        Timber.d("Next daily hour $nextHour")
 
         if (shouldDisciplineSync) {
             if (!disciplinesExperimental()) result += 1 shl 6

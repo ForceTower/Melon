@@ -27,32 +27,42 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.network.UService
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CookieSessionRepository @Inject constructor(
-    private val executors: AppExecutors,
     private val service: UService
 ) {
-    @WorkerThread
-    fun onLogin() {
+    suspend fun findAndSaveCookies() {
         try {
             val cookies = CookieManager.getInstance().getCookie("http://academico2.uefs.br/")
             Timber.d("Cookies that will be sent: $cookies")
-            service.prepareSession(cookies).execute()
+            val response = service.prepareSession(cookies)
+            Timber.d("Will we eat cookie? TOGETHER? ${response.success}")
         } catch (error: Throwable) {
             Timber.e(error, "This user wont update. Omega lul")
         }
     }
 
-    fun getGoodCookies() {
-        executors.networkIO().execute {
-            getGoodCookiesSync()
+    suspend fun getGoodCookies() {
+        try {
+            val cookies = service.getSession().data
+            if (cookies == null) {
+                Timber.e("The cookie that is good no one wants to give!")
+            } else {
+                SagresNavigator.instance.setCookiesOnClient(cookies)
+            }
+        } catch (error: Throwable) {
+            Timber.e(error, "This user is actually service or internet ducked him")
         }
     }
 
-    private fun getGoodCookiesSync() {
+    suspend fun invalidateCookies() {
         try {
-            val cookies = service.getSession().execute().body()?.data
-            cookies?.let { SagresNavigator.instance.setCookiesOnClient(it) }
-        } catch (error: Throwable) {}
+            val response = service.invalidateSession()
+            Timber.d("Did we forgot about you? ${response.success}")
+        } catch (error: Throwable) {
+            Timber.e(error, "Nothing actually happened. Right?")
+        }
     }
 }
