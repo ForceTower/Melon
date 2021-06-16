@@ -61,14 +61,14 @@ buildscript {
         firebase_functions = '19.1.0'
         in_app_messaging = "19.0.1"
         firebase_crashlytics = '17.2.2'
-        firebase_ui_storage = "4.3.1"
+        firebase_ui_storage = "7.1.1"
 
         // Logs
         timber = "4.7.1"
 
         // Image
         glide = '4.12.0'
-        lottie = '3.6.1'
+        lottie = '3.7.0'
         image_cropper = "2.8.0"
 
         // Google Services
