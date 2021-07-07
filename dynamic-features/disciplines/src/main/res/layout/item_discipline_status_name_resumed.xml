@@ -30,7 +30,7 @@
         <variable
             name="clazzGroup"
             type="com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup"/>
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

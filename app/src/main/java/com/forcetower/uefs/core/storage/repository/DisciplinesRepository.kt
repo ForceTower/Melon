@@ -24,7 +24,6 @@ import android.content.Context
 import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
@@ -44,6 +43,7 @@ import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithData
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.task.definers.LectureProcessor
 import com.forcetower.uefs.core.task.definers.MissedLectureProcessor
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import dagger.Reusable
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
@@ -63,6 +63,7 @@ class DisciplinesRepository @Inject constructor(
     private val client: OkHttpClient,
     private val database: UDatabase,
     private val executors: AppExecutors,
+    private val cookieSessionRepository: CookieSessionRepository,
     @Named("webViewUA") private val agent: String,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     private val preferences: SharedPreferences
@@ -209,38 +210,36 @@ class DisciplinesRepository @Inject constructor(
     }
 
     @AnyThread
-    fun loadClassDetails(groupId: Long): LiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        result.postValue(true)
-        executors.networkIO().execute {
-            Timber.d("Group id for load is $groupId")
-            val access = database.accessDao().getAccessDirect()
-            val value = database.classGroupDao().getWithRelationsDirect(groupId)
-            if (value == null || access == null) {
-                Timber.d("Class Group with ID: $groupId was not found")
-                result.postValue(false)
-            } else {
-                val clazz = value.classData
-                val semester = clazz.semester.name
-                val code = clazz.discipline.code
-                val group = value.group.group
+    fun loadClassDetails(groupId: Long) = flow {
+        emit(true)
+        Timber.d("Group id for load is $groupId")
+        val access = database.accessDao().getAccessDirect()
+        val value = database.classGroupDao().getWithRelationsDirect(groupId)
+        if (value == null || access == null) {
+            Timber.d("Class Group with ID: $groupId was not found")
+            emit(false)
+        } else {
+            val clazz = value.classData
+            val semester = clazz.semester.name
+            val code = clazz.discipline.code
+            val group = value.group.group
 
-                Timber.d("Code: $code. Semester: $semester. Group: $group")
+            Timber.d("Code: $code. Semester: $semester. Group: $group")
 
-                if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
-                    SagresNavigator.instance.login(access.username, access.password)
-                }
-                val callback = SagresNavigator.instance.disciplinesExperimental(semester, code, group)
-                if (callback.status == Status.COMPLETED) {
-                    val groups = callback.getGroups()
-                    database.classGroupDao().defineGroups(groups)
-                } else {
-                    Timber.d("Load group has failed along the way")
-                }
-                result.postValue(false)
+            if (preferences.isStudentFromUEFS()) {
+                cookieSessionRepository.injectGoodCookiesOnClient()
+            } else if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+                SagresNavigator.instance.login(access.username, access.password)
             }
+            val callback = SagresNavigator.instance.disciplinesExperimental(semester, code, group)
+            if (callback.status == Status.COMPLETED) {
+                val groups = callback.getGroups()
+                database.classGroupDao().defineGroups(groups)
+            } else {
+                Timber.d("Load group has failed along the way")
+            }
+            emit(false)
         }
-        return result
     }
 
     @AnyThread

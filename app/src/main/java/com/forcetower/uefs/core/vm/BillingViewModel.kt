@@ -191,7 +191,7 @@ class BillingViewModel @Inject constructor(
             if (response.responseCode == BillingClient.BillingResponseCode.OK) {
                 _snack.postValue(Event(R.string.purchase_you_bought_a_consumable_item))
             } else {
-                Timber.e("Failed to consume ${purchase.sku}")
+                Timber.e("Failed to consume ${purchase.skus}")
             }
         }
     }

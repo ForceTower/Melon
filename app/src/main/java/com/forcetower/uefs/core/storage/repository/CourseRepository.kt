@@ -56,6 +56,7 @@ class CourseRepository @Inject constructor(
             val stream = context.assets.open("courses.json")
             val size = stream.available()
             val buffer = ByteArray(size)
+            // this is a "blocking" call :^)
             stream.read(buffer)
             stream.close()
             val json = String(buffer, Charset.forName("UTF-8"))
@@ -92,4 +93,11 @@ class CourseRepository @Inject constructor(
             emitAll(source)
         }
     }
+}
+
+val omni = Gson()
+
+inline fun <reified T> fromJson(src: String, gson: Gson = omni): T {
+    val type = object : TypeToken<T>() { }.type
+    return gson.fromJson(src, type)
 }

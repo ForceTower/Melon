@@ -91,6 +91,7 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val cookieSessionRepository: CookieSessionRepository,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
@@ -176,13 +177,22 @@ class SagresSyncRepository @Inject constructor(
         // this was useful to avoid unes from ddos'ing the website.
         // they said unes was doing it anyways, so here is a deleted useless piece of code
         // you welcome
-        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.lowercase(Locale.getDefault()))) {
             Timber.d("There was a time where this would cause sync to be aborted if server.. But i don't care anymore")
         }
 
         try {
             findAndMatch()
         } catch (t: Throwable) { }
+
+        if (preferences.isStudentFromUEFS()) {
+            val injected = cookieSessionRepository.injectGoodCookiesOnClient()
+            if (!injected) {
+                // TODO Must actually disconnect user OMEGALUL
+                Timber.i("The cookie that is good no one wants to give!")
+                NotificationCreator.showSimpleNotification(context, "Vish...", "O seu login foi pro espaço, entra de novo")
+            }
+        }
 
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
@@ -267,16 +277,6 @@ class SagresSyncRepository @Inject constructor(
         val shouldDisciplineSync =
             ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
                 (currentDailyHour >= nextHour)
-
-        Timber.d("Discipline Sync Dump >> will sync now $shouldDisciplineSync")
-        Timber.d("Dailies $dailyDisciplines")
-        Timber.d("Current daily $currentDaily")
-        Timber.d("Current Day discipline $currentDayDiscipline")
-        Timber.d("Last daily hour $lastDailyHour")
-        Timber.d("Is this a new daily? $isNewDaily")
-        Timber.d("Current hour $currentDailyHour")
-        Timber.d("Actual daily count $actualDailyCount")
-        Timber.d("Next daily hour $nextHour")
 
         if (shouldDisciplineSync) {
             if (!disciplinesExperimental()) result += 1 shl 6

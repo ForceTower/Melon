@@ -29,7 +29,7 @@
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor" />
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
     </data>
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"

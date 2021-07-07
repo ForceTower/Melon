@@ -30,7 +30,7 @@
         <variable
             name="student"
             type="com.forcetower.uefs.core.model.unes.SStudent" />
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

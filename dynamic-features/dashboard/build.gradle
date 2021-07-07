@@ -62,9 +62,6 @@ dependencies {
     implementation project(':app')
     implementation project(':core')
 
-    // TODO Remove this dependency
-    implementation "com.github.forcetower:juice:$sagres"
-
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
     implementation "androidx.annotation:annotation:$annotation"

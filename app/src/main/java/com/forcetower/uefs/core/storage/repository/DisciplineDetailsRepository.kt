@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.repository
 
+import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.annotation.WorkerThread
@@ -38,7 +39,9 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import kotlinx.coroutines.runBlocking
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +51,8 @@ class DisciplineDetailsRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
     private val gradesRepository: SagresGradesRepository,
+    private val cookieSessionRepository: CookieSessionRepository,
+    private val preferences: SharedPreferences,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig
 ) {
@@ -84,7 +89,12 @@ class DisciplineDetailsRepository @Inject constructor(
             @WorkerThread
             override fun loadGrades() {
                 val semesters = database.semesterDao().getSemestersDirect()
-                semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
+                semesters.forEach {
+                    // TODO this is just nasty
+                    runBlocking {
+                        gradesRepository.getGrades(it.sagresId, false)
+                    }
+                }
             }
         }.asLiveData()
     }
@@ -139,7 +149,7 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun loadDisciplineDetailsSync(partialLoad: Boolean = true, notify: Boolean = false) {
+    suspend fun loadDisciplineDetailsSync(partialLoad: Boolean = true, notify: Boolean = false) {
         experimentalDisciplines(partialLoad, notify)
         val semesters = database.semesterDao().getSemestersDirect()
         semesters.forEach { gradesRepository.getGrades(it.sagresId, false) }
@@ -147,10 +157,12 @@ class DisciplineDetailsRepository @Inject constructor(
     }
 
     @WorkerThread
-    fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
+    suspend fun experimentalDisciplines(partialLoad: Boolean = false, notify: Boolean = true) {
         val access = database.accessDao().getAccessDirect()
         if (access != null) {
-            if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+            if (preferences.isStudentFromUEFS()) {
+                cookieSessionRepository.injectGoodCookiesOnClient()
+            } else if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
                 SagresNavigator.instance.login(access.username, access.password)
             }
             val experimental = SagresNavigator.instance.disciplinesExperimental(

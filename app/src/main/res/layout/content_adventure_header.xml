@@ -27,7 +27,7 @@
         <variable
             name="profile"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

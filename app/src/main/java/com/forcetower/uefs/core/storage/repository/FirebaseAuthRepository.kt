@@ -22,8 +22,8 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.forcetower.core.utils.WordUtils
 import com.forcetower.sagres.database.model.SagresPerson
-import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access

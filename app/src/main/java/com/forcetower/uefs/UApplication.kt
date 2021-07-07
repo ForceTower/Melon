@@ -27,6 +27,7 @@ import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import com.forcetower.uefs.feature.themeswitcher.ThemePreferencesManager
@@ -78,10 +79,11 @@ class UApplication : Application(), Configuration.Provider {
      * Inicializa o objeto de conexão com o Sagres
      */
     @Inject
-    fun configureSagresNavigator(client: OkHttpClient) {
+    fun configureSagresNavigator(client: OkHttpClient, cachingCookie: CachedCookiePersistor) {
         val selected = preferences.getString(Constants.SELECTED_INSTITUTION_KEY, "UEFS") ?: "UEFS"
         SagresNavigator.initialize(
             PrefsCookiePersistor(this),
+            cachingCookie,
             selected,
             AndroidBase64Encoder(),
             SharedPrefsCachePersistence(preferences),

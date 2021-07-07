@@ -26,8 +26,8 @@ import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import androidx.room.Transaction
+import com.forcetower.core.utils.WordUtils
 import com.forcetower.sagres.database.model.SagresPerson
-import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.core.model.unes.Profile
 import dev.forcetower.breaker.model.Person
 import timber.log.Timber

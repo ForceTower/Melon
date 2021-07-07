@@ -33,7 +33,7 @@
         <variable
             name="account"
             type="androidx.lifecycle.LiveData&lt;com.forcetower.uefs.core.model.unes.Account&gt;" />
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
     </data>
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"

@@ -21,12 +21,12 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
-import androidx.annotation.AnyThread
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
-import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,7 +34,6 @@ import javax.inject.Singleton
 @Singleton
 class SettingsRepository @Inject constructor(
     private val preferences: SharedPreferences,
-    private val executors: AppExecutors,
     private val database: UDatabase,
     private val gradesRepository: SagresGradesRepository,
     private val adventureRepository: AdventureRepository
@@ -56,19 +55,16 @@ class SettingsRepository @Inject constructor(
         return result
     }
 
-    @AnyThread
-    fun requestAllGradesAndCalculateScore() {
-        executors.networkIO().execute {
-            var loginNeeded = true
-            val semesters = database.semesterDao().getSemestersDirect()
-            semesters.forEach {
-                val result = gradesRepository.getGrades(it.sagresId, loginNeeded)
-                loginNeeded = false
-                if (result != 0) {
-                    Timber.d("Failed to run on semester ${it.sagresId} - ${it.codename}: $result")
-                }
+    suspend fun requestAllGradesAndCalculateScore() = withContext(Dispatchers.IO) {
+        var loginNeeded = true
+        val semesters = database.semesterDao().getSemestersDirect()
+        semesters.forEach {
+            val result = gradesRepository.getGrades(it.sagresId, loginNeeded)
+            loginNeeded = false
+            if (result != 0) {
+                Timber.d("Failed to run on semester ${it.sagresId} - ${it.codename}: $result")
             }
-            adventureRepository.performCheckAchievements(HashMap())
         }
+        adventureRepository.performCheckAchievements(HashMap())
     }
 }

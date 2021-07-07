@@ -91,7 +91,7 @@
                 android:layout_marginEnd="16dp"
                 android:layout_marginBottom="16dp"
                 android:contentDescription="@string/back_button"
-                android:tint="@android:color/white"
+                app:tint="@android:color/white"
                 android:src="@drawable/ic_arrow_back_black_24dp"
                 android:background="@drawable/mid_grey_ripple"
                 tools:tint="?attr/colorOnSurface"/>

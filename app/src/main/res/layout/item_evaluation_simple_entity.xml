@@ -25,7 +25,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <import type="com.forcetower.sagres.utils.WordUtils"/>
+        <import type="com.forcetower.core.utils.WordUtils"/>
         <variable
             name="entity"
             type="com.forcetower.uefs.core.model.unes.EvaluationEntity" />

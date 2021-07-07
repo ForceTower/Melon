@@ -31,9 +31,9 @@ import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
 import com.forcetower.core.R
+import com.forcetower.core.utils.WordUtils
 import com.forcetower.core.widget.CircularOutlineProvider
 import com.forcetower.core.widget.CustomSwipeRefreshLayout
-import com.forcetower.sagres.utils.WordUtils
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
