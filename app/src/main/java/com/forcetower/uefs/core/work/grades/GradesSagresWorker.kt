@@ -24,9 +24,9 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
@@ -40,8 +40,8 @@ class GradesSagresWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: SagresGradesRepository
-) : Worker(context, params) {
-    override fun doWork(): Result {
+) : CoroutineWorker(context, params) {
+    override suspend fun doWork(): Result {
         val semesterId = inputData.getLong(SEMESTER_ID, 0)
         return try {
             val result = repository.getGrades(semesterId)

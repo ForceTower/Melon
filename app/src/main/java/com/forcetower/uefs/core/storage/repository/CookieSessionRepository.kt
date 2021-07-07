@@ -20,39 +20,87 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import android.webkit.CookieManager
-import androidx.annotation.WorkerThread
+import android.content.Context
 import com.forcetower.sagres.SagresNavigator
-import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.service.SavedCookie
+import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.service.NotificationCreator
+import okhttp3.Cookie
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class CookieSessionRepository @Inject constructor(
-    private val executors: AppExecutors,
-    private val service: UService
+    private val cookiesPersistence: CachedCookiePersistor,
+    private val service: UService,
+    private val context: Context
 ) {
-    @WorkerThread
-    fun onLogin() {
+    suspend fun findAndSaveCookies() {
         try {
-            val cookies = CookieManager.getInstance().getCookie("http://academico2.uefs.br/")
-            Timber.d("Cookies that will be sent: $cookies")
-            service.prepareSession(cookies).execute()
+            val cached = cookiesPersistence.loadAll()
+            val filtered = cached.filter { it.name == "ASP.NET_SessionId" || it.name == ".PORTALAUTH" }
+
+            Timber.d("What cached has returned: $filtered")
+            // there MUST be 2 parts
+            if (filtered.size < 2) {
+                NotificationCreator.showSimpleNotification(context, "Então...", "Essa sessão é completamente inutil")
+                Timber.d("Session contains a invalid amount of required elements")
+            } else {
+                val (one, two) = filtered
+                val prepared = bakeCookie(one, two)
+                Timber.d("Cookies that will be sent: $prepared")
+                val response = service.prepareSession(prepared)
+                Timber.d("Will we eat cookies? TOGETHER? ${response.success}")
+            }
         } catch (error: Throwable) {
-            Timber.e(error, "This user wont update. Omega lul")
+            // TODO This must prompt a warning
+            Timber.i(error, "This user wont update. Omega lul")
         }
     }
 
-    fun getGoodCookies() {
-        executors.networkIO().execute {
-            getGoodCookiesSync()
+    private fun bakeCookie(one: Cookie, two: Cookie): SavedCookie {
+        val sessionId = if (one.name == "ASP.NET_SessionId") {
+            one.value
+        } else {
+            two.value
+        }
+
+        val auth = if (one.name == ".PORTALAUTH") {
+            one.value
+        } else {
+            two.value
+        }
+
+        return SavedCookie(auth, sessionId)
+    }
+
+    suspend fun getGoodCookies(): SavedCookie? {
+        return try {
+            service.getSession().data
+        } catch (error: Throwable) {
+            Timber.i(error, "This user is actually service or internet ducked him")
+            null
         }
     }
 
-    private fun getGoodCookiesSync() {
+    suspend fun injectGoodCookiesOnClient(): Boolean {
+        val cookies = getGoodCookies()
+        if (cookies != null) {
+            val elemental = ".PORTALAUTH=${cookies.auth};ASP.NET_SessionId=${cookies.sessionId}"
+            SagresNavigator.instance.setCookiesOnClient(elemental)
+        }
+
+        return cookies != null
+    }
+
+    suspend fun invalidateCookies() {
         try {
-            val cookies = service.getSession().execute().body()?.data
-            cookies?.let { SagresNavigator.instance.setCookiesOnClient(it) }
-        } catch (error: Throwable) {}
+            val response = service.invalidateSession()
+            Timber.d("Has service actually done something? ${response.success}")
+        } catch (error: Throwable) {
+            Timber.i(error, "Nothing actually happened. Right?")
+        }
     }
 }

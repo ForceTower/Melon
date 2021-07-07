@@ -84,13 +84,12 @@ class DisciplinesViewModel @Inject constructor(
 
     override fun downloadDisciplines(semester: Semester) {
         Timber.d("Request to download all disciplines...")
-        if (_refreshing.value == null || _refreshing.value == false) {
+        if (_refreshing.value != true) {
             Timber.d("Something will actually happen")
             _refreshing.value = true
-            val result = grades.getGradesAsync(semester.sagresId, false)
-            _refreshing.addSource(result) {
-                _refreshing.removeSource(result)
-                if (it == SagresGradesRepository.SUCCESS) {
+            viewModelScope.launch {
+                val result = grades.getGradesAsync(semester.sagresId, false)
+                if (result == SagresGradesRepository.SUCCESS) {
                     Timber.d("Completed!")
                 }
                 _refreshing.value = false
