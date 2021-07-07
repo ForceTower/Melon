@@ -26,6 +26,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.architecture.service.discipline.DisciplineDetailsLoaderService
 import com.forcetower.uefs.core.model.unes.Class
@@ -43,6 +44,7 @@ import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesA
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
@@ -142,7 +144,7 @@ class DisciplineViewModel @Inject constructor(
                 val src = if (snowpiercerEnabled) {
                     repository.loadClassDetailsSnowflake(it).asLiveData(Dispatchers.IO)
                 } else {
-                    repository.loadClassDetails(it)
+                    repository.loadClassDetails(it).asLiveData(Dispatchers.IO)
                 }
                 _loadClassDetails.addSource(src) { loading ->
                     _loadClassDetails.value = loading
@@ -235,13 +237,12 @@ class DisciplineViewModel @Inject constructor(
 
     fun updateGradesFromSemester(semesterId: Long) {
         Timber.d("Started refresh")
-        if (_refreshing.value == null || _refreshing.value == false) {
+        if (_refreshing.value != true) {
             Timber.d("Something will actually happen")
             _refreshing.value = true
-            val result = grades.getGradesAsync(semesterId, false)
-            _refreshing.addSource(result) {
-                _refreshing.removeSource(result)
-                if (it == SagresGradesRepository.SUCCESS) {
+            viewModelScope.launch {
+                val result = grades.getGradesAsync(semesterId, false)
+                if (result == SagresGradesRepository.SUCCESS) {
                     Timber.d("Completed!")
                 }
                 _refreshing.value = false

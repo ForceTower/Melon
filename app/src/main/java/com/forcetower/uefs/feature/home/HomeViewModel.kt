@@ -199,8 +199,4 @@ class HomeViewModel @Inject constructor(
     fun getAffinityQuestions() {
         affinityRepository.getAffinityQuestionsAsync()
     }
-
-    fun goodCookies() {
-        userCookieSessionRepository.getGoodCookies()
-    }
 }

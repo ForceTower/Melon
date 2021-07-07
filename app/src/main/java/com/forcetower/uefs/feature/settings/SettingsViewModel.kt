@@ -23,9 +23,11 @@ package com.forcetower.uefs.feature.settings
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
@@ -42,7 +44,9 @@ class SettingsViewModel @Inject constructor(
     fun getAllTheGrades() {
         if (done) return
         done = true
-        repository.requestAllGradesAndCalculateScore()
+        viewModelScope.launch {
+            repository.requestAllGradesAndCalculateScore()
+        }
     }
 
     fun uninstallModuleIfExists(name: String) {
