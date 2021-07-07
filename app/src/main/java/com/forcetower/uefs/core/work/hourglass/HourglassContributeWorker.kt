@@ -24,9 +24,9 @@ import android.content.Context
 import androidx.hilt.work.HiltWorker
 import androidx.work.BackoffPolicy
 import androidx.work.Constraints
+import androidx.work.CoroutineWorker
 import androidx.work.NetworkType
 import androidx.work.OneTimeWorkRequestBuilder
-import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.work.enqueueUnique
@@ -39,8 +39,9 @@ class HourglassContributeWorker @AssistedInject constructor(
     @Assisted context: Context,
     @Assisted params: WorkerParameters,
     private val repository: DisciplineDetailsRepository
-) : Worker(context, params) {
-    override fun doWork(): Result {
+) : CoroutineWorker(context, params) {
+
+    override suspend fun doWork(): Result {
         return try {
             repository.loadDisciplineDetailsSync(partialLoad = true, notify = false)
             Result.success()

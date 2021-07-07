@@ -76,20 +76,23 @@ class CookieSessionRepository @Inject constructor(
         return SavedCookie(auth, sessionId)
     }
 
-    suspend fun getGoodCookies() {
-        try {
-            val cookies = service.getSession().data
-            if (cookies == null) {
-                NotificationCreator.showSimpleNotification(context, "Vish...", "O seu login foi pro espaço, entra de novo")
-                // TODO Must actually disconnect user OMEGALUL
-                Timber.i("The cookie that is good no one wants to give!")
-            } else {
-                val elemental = ".PORTALAUTH=${cookies.auth};ASP.NET_SessionId=${cookies.sessionId}"
-                SagresNavigator.instance.setCookiesOnClient(elemental)
-            }
+    suspend fun getGoodCookies(): SavedCookie? {
+        return try {
+            service.getSession().data
         } catch (error: Throwable) {
             Timber.i(error, "This user is actually service or internet ducked him")
+            null
         }
+    }
+
+    suspend fun injectGoodCookiesOnClient(): Boolean {
+        val cookies = getGoodCookies()
+        if (cookies != null) {
+            val elemental = ".PORTALAUTH=${cookies.auth};ASP.NET_SessionId=${cookies.sessionId}"
+            SagresNavigator.instance.setCookiesOnClient(elemental)
+        }
+
+        return cookies != null
     }
 
     suspend fun invalidateCookies() {
