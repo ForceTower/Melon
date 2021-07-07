@@ -233,7 +233,7 @@ interface UService {
 
     // ---------- Cookies for everyone -----------
     @POST("biscuit/save")
-    suspend fun prepareSession(cookie: SavedCookie): UResponse<Void>
+    suspend fun prepareSession(@Body cookie: SavedCookie): UResponse<Void>
 
     @GET("biscuit/retrieve")
     suspend fun getSession(): UResponse<SavedCookie>
