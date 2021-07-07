@@ -44,7 +44,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
-import com.forcetower.uefs.architecture.service.sync.SyncService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.ActivityHomeBinding

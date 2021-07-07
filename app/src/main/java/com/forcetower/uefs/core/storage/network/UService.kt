@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.service.SavedCookie
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
@@ -230,14 +231,13 @@ interface UService {
     @POST("events/delete")
     suspend fun deleteEvent(@Field("id") id: Long): UResponse<Void>
 
-    // ---------- Toss a coin -----------
-    @FormUrlEncoded
-    @POST("cookie/save")
-    suspend fun prepareSession(@Field("cookies") cookies: String): UResponse<Void>
+    // ---------- Cookies for everyone -----------
+    @POST("biscuit/save")
+    suspend fun prepareSession(cookie: SavedCookie): UResponse<Void>
 
-    @GET("cookie/retrieve")
-    suspend fun getSession(): UResponse<String>
+    @GET("biscuit/retrieve")
+    suspend fun getSession(): UResponse<SavedCookie>
 
-    @GET("cookie/invalidate")
+    @POST("biscuit/invalidate")
     suspend fun invalidateSession(): UResponse<Void>
 }

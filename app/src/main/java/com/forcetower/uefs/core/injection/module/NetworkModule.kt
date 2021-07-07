@@ -23,6 +23,7 @@ package com.forcetower.uefs.core.injection.module
 import android.content.Context
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
+import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
@@ -66,6 +67,12 @@ object NetworkModule {
 
     @Provides
     @Singleton
+    fun provideCachedCookiePersist(context: Context): CachedCookiePersistor {
+        return CachedCookiePersistor(context)
+    }
+
+    @Provides
+    @Singleton
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
@@ -80,7 +87,7 @@ object NetworkModule {
                     Timber.tag("ok-http").d(it)
                 }.apply {
                     level = if (BuildConfig.DEBUG)
-                        HttpLoggingInterceptor.Level.HEADERS
+                        HttpLoggingInterceptor.Level.BASIC
                     else
                         HttpLoggingInterceptor.Level.NONE
                 }

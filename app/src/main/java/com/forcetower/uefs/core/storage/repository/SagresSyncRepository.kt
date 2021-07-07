@@ -184,8 +184,6 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
-
-
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
