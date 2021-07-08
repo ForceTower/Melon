@@ -33,6 +33,8 @@ import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.defineInDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_ERROR_NO_VALUE
+import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_SUCCESS
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
@@ -103,11 +105,13 @@ class MessagesRepository @Inject constructor(
                     SagresNavigator.instance.messages(person.id, all)
                 } else {
                     val injected = cookieSessionRepository.injectGoodCookiesOnClient()
-                    if (injected) {
+                    if (injected == INJECT_SUCCESS) {
                         SagresNavigator.instance.messagesHtml()
                     } else {
-                        // TODO this must show something to the user
-                        Timber.d("User didn't have a injectable cookie... Logout actually :D")
+                        if (injected == INJECT_ERROR_NO_VALUE) {
+                            // TODO this must show something to the user
+                            Timber.d("User didn't have a injectable cookie... Logout actually :D")
+                        }
                         emit(false)
                         return@flow
                     }

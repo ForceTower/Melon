@@ -187,7 +187,7 @@ class SagresSyncRepository @Inject constructor(
 
         if (preferences.isStudentFromUEFS()) {
             val injected = cookieSessionRepository.injectGoodCookiesOnClient()
-            if (!injected) {
+            if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
                 // TODO Must actually disconnect user OMEGALUL
                 Timber.i("The cookie that is good no one wants to give!")
                 NotificationCreator.showSimpleNotification(context, "Vish...", "O seu login foi pro espaço, entra de novo")
