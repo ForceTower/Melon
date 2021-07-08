@@ -76,23 +76,25 @@ class CookieSessionRepository @Inject constructor(
         return SavedCookie(auth, sessionId)
     }
 
-    suspend fun getGoodCookies(): SavedCookie? {
+    suspend fun getGoodCookies(): Pair<SavedCookie?, Int> {
         return try {
-            service.getSession().data
+            service.getSession().data to 0
         } catch (error: Throwable) {
             Timber.i(error, "This user is actually service or internet ducked him")
-            null
+            null to 1
         }
     }
 
-    suspend fun injectGoodCookiesOnClient(): Boolean {
-        val cookies = getGoodCookies()
+    suspend fun injectGoodCookiesOnClient(): Int {
+        val (cookies, status) = getGoodCookies()
         if (cookies != null) {
             val elemental = ".PORTALAUTH=${cookies.auth};ASP.NET_SessionId=${cookies.sessionId}"
             SagresNavigator.instance.setCookiesOnClient(elemental)
+            return INJECT_SUCCESS
         }
-
-        return cookies != null
+        // if status is 0 user is ducked, otherwise it's a networking error
+        return if (status == 0) INJECT_ERROR_NO_VALUE
+        else INJECT_ERROR_NETWORK
     }
 
     suspend fun invalidateCookies() {
@@ -102,5 +104,11 @@ class CookieSessionRepository @Inject constructor(
         } catch (error: Throwable) {
             Timber.i(error, "Nothing actually happened. Right?")
         }
+    }
+
+    companion object {
+        const val INJECT_SUCCESS = 0
+        const val INJECT_ERROR_NETWORK = 1
+        const val INJECT_ERROR_NO_VALUE = 2
     }
 }
