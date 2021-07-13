@@ -126,7 +126,8 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute {
                     database.accessDao().insert(username, password)
                     if (preferences.isStudentFromUEFS()) {
-                        authRepository.syncLogin(username, password)
+                        val baked = sessionRepository.getSavedBiscuit()
+                        authRepository.syncLogin(username, password, baked?.auth, baked?.sessionId)
                         // TODO Remove this SHAMELESS call
                         runBlocking {
                             sessionRepository.findAndSaveCookies()
