@@ -37,6 +37,14 @@ class CookieSessionRepository @Inject constructor(
     private val service: UService,
     private val context: Context
 ) {
+    fun getSavedBiscuit(): SavedCookie? {
+        val cached = cookiesPersistence.loadAll()
+        val filtered = cached.filter { it.name == "ASP.NET_SessionId" || it.name == ".PORTALAUTH" }
+        if (filtered.size < 2) return null
+        val (one, two) = filtered
+        return bakeCookie(one, two)
+    }
+
     suspend fun findAndSaveCookies() {
         try {
             val cached = cookiesPersistence.loadAll()
