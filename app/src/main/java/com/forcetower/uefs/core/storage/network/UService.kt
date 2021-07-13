@@ -86,13 +86,26 @@ interface UService {
 
     @POST("oauth/token")
     @FormUrlEncoded
+    fun loginWithBiscuit(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("auth") auth: String,
+        @Field("session_id") session: String,
+        @Field("grant_type") grant: String = "biscuit",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
+    ): Call<AccessToken>
+
+    @POST("oauth/token")
+    @FormUrlEncoded
     suspend fun loginWithSagresSuspend(
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): AccessToken
 
     @POST("oauth/token")
@@ -103,6 +116,19 @@ interface UService {
         @Field("grant_type") grant: String = "password",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
+    ): AccessToken
+
+    @POST("oauth/token")
+    @FormUrlEncoded
+    suspend fun loginWithBiscuitSuspend(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("auth") auth: String,
+        @Field("session_id") session: String,
+        @Field("grant_type") grant: String = "biscuit",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): AccessToken
 
     @POST("account/credentials")
