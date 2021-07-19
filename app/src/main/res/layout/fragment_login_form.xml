@@ -134,6 +134,7 @@
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
                     android:text="@string/institution_select"
+                    android:visibility="gone"
                     style="@style/UTheme.MaterialButton.Outline"
                     app:strokeColor="?attr/colorPrimary"
                     app:layout_constraintStart_toStartOf="parent"
