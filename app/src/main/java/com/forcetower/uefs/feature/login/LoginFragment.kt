@@ -30,6 +30,7 @@ import androidx.core.os.bundleOf
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
 import com.forcetower.sagres.Constants
+import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
@@ -46,6 +47,7 @@ class LoginFragment : UFragment() {
     private lateinit var binding: FragmentLoginFormBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        allowOnlyUEFS()
         return FragmentLoginFormBinding.inflate(inflater, container, false).also {
             binding = it
             binding.btnInstitution.setOnClickListener {
@@ -106,5 +108,13 @@ class LoginFragment : UFragment() {
             .setActivityOptions(bundle)
             .build()
         findNavController().navigate(R.id.action_login_open_about, null, null, extras)
+    }
+
+    private fun allowOnlyUEFS() {
+        preferences.edit()
+            .putString(com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY, "UEFS")
+            .apply()
+
+        SagresNavigator.instance.setSelectedInstitution("UEFS")
     }
 }
