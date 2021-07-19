@@ -35,6 +35,7 @@ import android.os.Build
 import android.view.View
 import androidx.annotation.DrawableRes
 import androidx.annotation.RequiresApi
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.graphics.createBitmap
 import androidx.core.graphics.drawable.toBitmap
 import androidx.core.graphics.scale
@@ -103,7 +104,8 @@ fun Bitmap.unesLogo(context: Context, pos: Int): Bitmap {
 
     val px16dp = getPixelsFromDp(context, 12)
     val px42dp = getPixelsFromDp(context, 42).toInt()
-    val logo = context.getDrawable(R.mipmap.im_logo)!!.toBitmap().scale(px42dp, px42dp)
+    val drawable = AppCompatResources.getDrawable(context, R.mipmap.im_logo) ?: throw IllegalStateException("logo not found")
+    val logo = drawable.toBitmap().scale(px42dp, px42dp)
 
     val left = if (pos == 0) px16dp else width - logo.width - px16dp
     val top = if (pos == 0) height - logo.height - px16dp else 42f
