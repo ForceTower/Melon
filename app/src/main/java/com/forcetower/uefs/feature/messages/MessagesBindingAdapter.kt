@@ -30,6 +30,7 @@ import androidx.databinding.BindingAdapter
 import com.forcetower.core.utils.WordUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Message
+import com.forcetower.uefs.feature.shared.extensions.capitalized
 import com.forcetower.uefs.feature.shared.extensions.formatMonthYear
 import com.forcetower.uefs.feature.shared.extensions.formatTimeWithoutSeconds
 import java.text.SimpleDateFormat
@@ -131,7 +132,7 @@ fun monthFromDate(tv: TextView, date: Date?) {
     if (date == null) {
         tv.text = "?? ????"
     } else {
-        tv.text = date.time.formatMonthYear().capitalize()
+        tv.text = date.time.formatMonthYear().capitalized()
     }
 }
 

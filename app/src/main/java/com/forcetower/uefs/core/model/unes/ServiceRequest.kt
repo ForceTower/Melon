@@ -49,7 +49,7 @@ data class ServiceRequest(
     var notify: Int
 ) {
     fun isAtFinalState(): Boolean {
-        return when (situation.toLowerCase(Locale.getDefault()).trim()) {
+        return when (situation.lowercase(Locale.getDefault()).trim()) {
             "atendido" -> true
             "indeferido" -> true
             else -> false
@@ -57,7 +57,7 @@ data class ServiceRequest(
     }
 
     fun isAtStartState(): Boolean {
-        return when (situation.toLowerCase(Locale.getDefault()).trim()) {
+        return when (situation.lowercase(Locale.getDefault()).trim()) {
             "registrado na web" -> true
             else -> false
         }

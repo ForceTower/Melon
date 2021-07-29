@@ -102,7 +102,7 @@ abstract class MessageDao {
     private fun updateOldMessages() {
         val messages = getAllUndefinedMessages()
         messages.forEach { message ->
-            val hash = message.content.toLowerCase(Locale.getDefault()).trim().hashCode().toLong()
+            val hash = message.content.lowercase(Locale.getDefault()).trim().hashCode().toLong()
             val existing = getMessageByHashDirect(hash)
             if (existing == null) setMessageHash(message.uid, hash)
             else {

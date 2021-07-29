@@ -28,6 +28,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.dashboard.R
+import com.forcetower.uefs.feature.shared.extensions.capitalized
 import java.util.Calendar
 import kotlin.math.abs
 
@@ -36,7 +37,7 @@ import kotlin.math.abs
 fun accountDashboardName(tv: TextView, name: String?) {
     name ?: return
     val context = tv.context
-    val firstName = name.split(" ")[0].capitalize()
+    val firstName = name.split(" ")[0].capitalized()
     tv.text = context.getString(R.string.greetings_dashboard, firstName)
 }
 
@@ -50,9 +51,9 @@ fun disciplineStartsEnds(tv: TextView, location: ClassLocationWithData?) {
 @SuppressLint("DefaultLocale")
 @BindingAdapter("disciplineLocation")
 fun disciplineLocation(tv: TextView, location: ClassLocationWithData?) {
-    val room = location?.location?.room?.toUpperCase()
-    val module = location?.location?.modulo?.toLowerCase()?.capitalize()
-    val campus = location?.location?.campus?.toUpperCase()
+    val room = location?.location?.room?.uppercase()
+    val module = location?.location?.modulo?.lowercase()?.capitalized()
+    val campus = location?.location?.campus?.uppercase()
 
     val text = listOfNotNull(room, module, campus).joinToString(separator = " - ")
     tv.text = text

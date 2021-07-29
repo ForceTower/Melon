@@ -71,7 +71,7 @@ abstract class ProfileDao {
             updateProfileName(name)
             updateProfileMockStatus(false)
             updateProfileSagresId(person.id)
-            person.email?.toLowerCase(Locale.getDefault())?.let {
+            person.email?.lowercase(Locale.getDefault())?.let {
                 updateProfileEmail(it)
             }
             return me.uid

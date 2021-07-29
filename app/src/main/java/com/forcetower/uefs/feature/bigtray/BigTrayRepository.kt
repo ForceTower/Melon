@@ -37,6 +37,7 @@ class BigTrayRepository @Inject constructor(
 ) {
     var requesting = false
 
+    // This is not recommended... like... at all!
     private var _data = MutableLiveData<BigTrayData>()
     val data: LiveData<BigTrayData>
         get() {

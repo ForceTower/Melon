@@ -73,7 +73,7 @@ class ConfigurationFragment : UFragment() {
 
     private fun decideNext() {
         val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireContext())
-        val brands = when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+        val brands = when (Build.BRAND.lowercase(Locale.getDefault())) {
             "samsung" -> true
             else -> false
         }

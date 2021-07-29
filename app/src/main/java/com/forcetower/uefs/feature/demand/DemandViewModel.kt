@@ -79,7 +79,7 @@ class DemandViewModel @Inject constructor(
             val raw = it.data
             if (raw != null) {
                 val filtered = raw.filter { s -> s.selected }
-                _selectedHours.value = filtered.sumBy { h -> h.hours }
+                _selectedHours.value = filtered.sumOf { h -> h.hours }
                 _selectedCount.value = filtered.size
             }
 
