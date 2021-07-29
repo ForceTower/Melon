@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.architecture.service.sync
 
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Handler
@@ -32,7 +31,6 @@ import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.storage.repository.MicroSyncRepository
 import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
-import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
