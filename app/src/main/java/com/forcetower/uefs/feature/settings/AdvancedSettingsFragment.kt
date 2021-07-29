@@ -106,7 +106,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
                         )
                         .setShareState(CustomTabsIntent.SHARE_STATE_ON)
                         .build(),
-                    Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}")
+                    Uri.parse("https://dontkillmyapp.com/${Build.BRAND.lowercase(Locale.getDefault())}")
                 )
                 true
             }
@@ -159,7 +159,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun updateDozePreferences() {
-        when (Build.BRAND.toLowerCase(Locale.getDefault())) {
+        when (Build.BRAND.lowercase(Locale.getDefault())) {
             "xiaomi", "redmi" -> updateXiaomiBattery()
         }
         updateDefaultBattery()

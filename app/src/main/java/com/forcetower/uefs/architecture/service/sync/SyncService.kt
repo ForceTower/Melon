@@ -114,9 +114,9 @@ class SyncService : LifecycleService() {
     }
 
     private fun createNotification() {
-        val intent = Intent(this, HomeActivity::class.java)
-        val pending = PendingIntent.getService(this, 0, intent, 0)
-        val notification = NotificationCreator.createCookieSyncServiceNotification(this, pending)
+//        val intent = Intent(this, HomeActivity::class.java)
+//        val pending = PendingIntent.getService(this, 0, intent, 0)
+        val notification = NotificationCreator.createCookieSyncServiceNotification(this)
         notificationManager.notify(SYNC_NOTIFICATION, notification)
 
         if (!isForegroundService) {

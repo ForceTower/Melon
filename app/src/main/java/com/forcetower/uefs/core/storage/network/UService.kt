@@ -71,7 +71,7 @@ interface UService {
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): Call<AccessToken>
 
     @POST("oauth/token")

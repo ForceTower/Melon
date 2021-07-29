@@ -50,6 +50,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import java.io.File
 import java.io.FileOutputStream
+import java.util.Locale
 
 fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
     return Transformations.map(this, body)
@@ -135,3 +136,8 @@ fun Int.asBoolean(): Boolean {
 }
 
 fun View.isRtl() = layoutDirection == View.LAYOUT_DIRECTION_RTL
+
+
+fun String.capitalized(locale: Locale = Locale.getDefault()): String {
+    return replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
+}
