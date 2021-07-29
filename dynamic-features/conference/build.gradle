@@ -30,10 +30,6 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
-        def (code, name) = buildVersion()
-        versionCode code
-        versionName name
 
         javaCompileOptions {
             annotationProcessorOptions {

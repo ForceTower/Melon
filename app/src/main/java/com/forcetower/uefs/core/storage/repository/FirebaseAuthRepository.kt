@@ -55,7 +55,7 @@ class FirebaseAuthRepository @Inject constructor(
     fun loginToFirebase(person: SagresPerson, access: Access, reconnect: Boolean = false) {
         if (reconnect) { firebaseAuth.signOut() }
         if (firebaseAuth.currentUser == null) {
-            val user = access.username.toLowerCase(Locale.getDefault())
+            val user = access.username.lowercase(Locale.getDefault())
             val username = if (user.contains("@")) {
                 "${user.substring(0, user.indexOf("@"))}_email"
             } else {
@@ -127,7 +127,7 @@ class FirebaseAuthRepository @Inject constructor(
         val data = mutableMapOf(
             "name" to WordUtils.toTitleCase(person.name?.trim()),
             "username" to access.username,
-            "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
+            "email" to (person.email?.trim()?.lowercase(Locale.getDefault()) ?: "unknown@unes.com"),
             "cpf" to person.getCpf()?.trim(),
             "sagresId" to person.id,
             "imageUrl" to "/users/$uid/avatar.jpg",
@@ -147,7 +147,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("User data set!")
                     } else {
@@ -166,7 +166,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(user.uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("User course data set!")
                     } else {
@@ -185,7 +185,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(user.uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("Completed setting frequency")
                     } else {

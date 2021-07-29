@@ -23,10 +23,10 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-kapt'
 apply plugin: 'kotlin-parcelize'
 apply plugin: 'androidx.navigation.safeargs'
+apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'com.github.triplet.play'
 apply plugin: 'com.google.firebase.crashlytics'
-apply plugin: 'dagger.hilt.android.plugin'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {

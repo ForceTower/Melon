@@ -54,7 +54,7 @@ fun speakerImage(
 ) {
     speaker ?: return
 
-    val placeholderId = when (speaker.name[0].toLowerCase()) {
+    val placeholderId = when (speaker.name[0].lowercaseChar()) {
         in 'a'..'i' -> R.drawable.ic_default_avatar_1
         in 'j'..'r' -> R.drawable.ic_default_avatar_2
         else -> R.drawable.ic_default_avatar_3

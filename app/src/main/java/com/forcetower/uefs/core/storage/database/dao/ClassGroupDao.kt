@@ -49,7 +49,7 @@ abstract class ClassGroupDao {
             val inserted = insert(group)
             if (inserted != null) {
                 Timber.d("Group id: ${inserted.uid}")
-                Timber.d("Group Code: ${group.code} has ${group.classItems.sumBy { it.materials.size }} materials")
+                Timber.d("Group Code: ${group.code} has ${group.classItems.sumOf { it.materials.size }} materials")
                 for (classItem in group.classItems) {
                     val insertedUid = inserted.uid
                     val item = ClassItem.createFromSagres(insertedUid, classItem)

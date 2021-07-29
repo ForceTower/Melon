@@ -80,8 +80,8 @@ class SagresDataRepository @Inject constructor(
     fun lightweightCalcScore() {
         executor.diskIO().execute {
             val classes = database.classDao().getAllDirect().filter { it.clazz.finalScore != null }
-            val hours = classes.sumBy { it.discipline.credits }
-            val mean = classes.sumByDouble {
+            val hours = classes.sumOf { it.discipline.credits }
+            val mean = classes.sumOf {
                 val zeroValue = it.clazz.missedClasses > (it.discipline.credits / 4)
                 val finalScore = if (zeroValue) 0.0 else it.clazz.finalScore!!
                 it.discipline.credits * finalScore
