@@ -29,7 +29,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser

@@ -137,7 +137,6 @@ fun Int.asBoolean(): Boolean {
 
 fun View.isRtl() = layoutDirection == View.LAYOUT_DIRECTION_RTL
 
-
 fun String.capitalized(locale: Locale = Locale.getDefault()): String {
     return replaceFirstChar { if (it.isLowerCase()) it.titlecase(locale) else it.toString() }
 }
