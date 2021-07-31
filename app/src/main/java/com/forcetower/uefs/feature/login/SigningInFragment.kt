@@ -55,6 +55,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.nio.charset.Charset
 import javax.inject.Inject
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class SigningInFragment : UFragment() {
@@ -143,7 +144,7 @@ class SigningInFragment : UFragment() {
     }
 
     private fun displayRandomText() {
-        val position = (Math.random() * (messages.size - 1)).toInt()
+        val position = (Random.nextDouble() * (messages.size - 1)).toInt()
         val message = messages[position]
         binding.textStatus.setText(message)
         Handler(Looper.getMainLooper()).postDelayed(
