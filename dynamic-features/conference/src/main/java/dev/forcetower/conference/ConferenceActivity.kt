@@ -49,13 +49,18 @@ class ConferenceActivity : UActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conference)
         WindowCompat.setDecorFitsSystemWindows(window, false)
+
+        showSnack("ABC")
+        showSnack("ABC")
+        showSnack("ABC")
+        showSnack("ABC")
     }
 
     override fun showSnack(string: String, duration: Int) {
-        getSnackInstance(string, duration)?.show()
+        getSnackInstance(string, duration).show()
     }
 
-    override fun getSnackInstance(string: String, duration: Int): Snackbar? {
+    override fun getSnackInstance(string: String, duration: Int): Snackbar {
         return Snackbar.make(binding.root, string, duration)
     }
 }

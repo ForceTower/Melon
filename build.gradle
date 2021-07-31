@@ -131,6 +131,10 @@ buildscript {
 
 }
 
+plugins {
+    id "org.sonarqube" version "3.3"
+}
+
 allprojects {
     repositories {
         google()
@@ -170,6 +174,12 @@ subprojects {
     tasks.whenTaskAdded {
         if (name == 'preBuild') {
             mustRunAfter 'lintKotlin'
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.sources", "src/main"
         }
     }
 }

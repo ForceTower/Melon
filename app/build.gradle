@@ -54,6 +54,8 @@ android {
         buildConfigField "String", "SIECOMP_DAY5_START", "\"2019-10-22T08:00:00-03:00\""
         buildConfigField "String", "SIECOMP_DAY5_END", "\"2019-10-22T17:30:00-03:00\""
 
+        buildConfigField "String", "UEFS_DEFAULT_PROXY", "\"10.65.16.2:3128\""
+
         javaCompileOptions {
             annotationProcessorOptions {
                 arguments += [

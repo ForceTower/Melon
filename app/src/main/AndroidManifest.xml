@@ -24,12 +24,12 @@
     package="com.forcetower.uefs">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
     <uses-permission android:name="com.android.vending.BILLING" />
@@ -46,7 +46,8 @@
         android:usesCleartextTraffic="true">
         <activity
             android:name=".LauncherActivity"
-            android:theme="@style/UTheme.LightNav.Launcher">
+            android:theme="@style/UTheme.LightNav.Launcher"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -61,7 +62,8 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.home.HomeActivity"
-            android:theme="@style/UTheme.LightNav">
+            android:theme="@style/UTheme.LightNav"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>

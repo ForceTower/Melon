@@ -730,7 +730,6 @@ class InkPageIndicator @JvmOverloads constructor(
 
         init {
             duration = animHalfDuration
-            interpolator = interpolator
 
             // work out the start/end values of the retreating join from the direction we're
             // travelling in.  Also look at the current selected dot position, i.e. we're moving on
@@ -739,18 +738,15 @@ class InkPageIndicator @JvmOverloads constructor(
                 min(dotCenterX!![was], selectedDotX) - dotRadius
             else
                 dotCenterX!![now] - dotRadius
-            val finalX1 = if (now > was)
-                dotCenterX!![now] - dotRadius
-            else
-                dotCenterX!![now] - dotRadius
+
+            val finalX1 = dotCenterX!![now] - dotRadius
+
             val initialX2 = if (now > was)
                 dotCenterX!![now] + dotRadius
             else
                 max(dotCenterX!![was], selectedDotX) + dotRadius
-            val finalX2 = if (now > was)
-                dotCenterX!![now] + dotRadius
-            else
-                dotCenterX!![now] + dotRadius
+
+            val finalX2 = dotCenterX!![now] + dotRadius
 
             revealAnimations = arrayOfNulls(steps)
             // hold on to the indexes of the dots that will be hidden by the retreat so that
@@ -829,7 +825,6 @@ class InkPageIndicator @JvmOverloads constructor(
         init {
             setFloatValues(MINIMAL_REVEAL, 1f)
             duration = animHalfDuration
-            interpolator = interpolator
             addUpdateListener { valueAnimator ->
                 // todo avoid autoboxing
                 setDotRevealFraction(

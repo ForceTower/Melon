@@ -75,7 +75,7 @@ object NetworkModule {
     @Singleton
     fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
-            .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT))
+            .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT)) // Needed for old sagres, omegalul
             .followRedirects(true)
             .cookieJar(cookieJar)
             .connectTimeout(1, TimeUnit.MINUTES)

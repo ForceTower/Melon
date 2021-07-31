@@ -35,7 +35,8 @@
         <activity
             android:name=".feature.details.EventDetailsActivity"
             android:parentActivityName="com.forcetower.uefs.feature.home.HomeActivity"
-            android:theme="@style/UTheme.Translucent.Event.Impl.Details">
+            android:theme="@style/UTheme.Translucent.Event.Impl.Details"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
             </intent-filter>
