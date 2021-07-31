@@ -149,7 +149,6 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             oldItem === LockedHeader && newItem === LockedHeader -> true
             oldItem === CompletedHeader && newItem === CompletedHeader -> true
             oldItem === BuggedHeader && newItem === BuggedHeader -> true
-            oldItem === BuggedHeader && newItem === BuggedHeader -> true
             oldItem is SagresDemandOffer && newItem is SagresDemandOffer -> oldItem.uid == newItem.uid
             else -> false
         }
