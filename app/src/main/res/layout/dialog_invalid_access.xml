@@ -49,7 +49,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/label_information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,7 +58,6 @@
             android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_title" />
-
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_password_input"
