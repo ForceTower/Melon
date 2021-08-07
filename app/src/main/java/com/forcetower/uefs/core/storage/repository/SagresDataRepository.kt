@@ -100,7 +100,7 @@ class SagresDataRepository @Inject constructor(
     }
 
     fun attemptLoginWithNewPassword(password: String, token: String?): LiveData<Resource<Boolean>> {
-        return liveData {
+        return liveData(Dispatchers.IO) {
             val access = database.accessDao().getAccessDirect()
             if (access == null) {
                 emit(Resource.error("", false))

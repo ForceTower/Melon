@@ -30,6 +30,7 @@ import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.lifecycleScope
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
@@ -42,6 +43,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -138,8 +141,13 @@ class InvalidAccessDialog : BottomSheetDialogFragment() {
         fragment.setCallback(
             object : CaptchaResolverFragment.CaptchaResolvedCallback {
                 override fun onCaptchaResolved(token: String) {
+                    // This here is not called on the actual "main" thread
                     Timber.d("Token received $token")
-                    viewModel.attemptNewPasswordLogin(password, token)
+                    lifecycleScope.launchWhenCreated {
+                        withContext(Dispatchers.Main) {
+                            viewModel.attemptNewPasswordLogin(password, token)
+                        }
+                    }
                 }
             }
         )
