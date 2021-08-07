@@ -20,26 +20,55 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.app.Dialog
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import android.widget.FrameLayout
 import androidx.fragment.app.activityViewModels
 import com.forcetower.core.lifecycle.EventObserver
+import com.forcetower.sagres.Constants
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.DialogInvalidAccessBinding
-import com.forcetower.uefs.feature.shared.RoundedDialog
+import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
+import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import javax.inject.Inject
 
 @AndroidEntryPoint
-class InvalidAccessDialog : RoundedDialog() {
+class InvalidAccessDialog : BottomSheetDialogFragment() {
+    @Inject lateinit var preferences: SharedPreferences
+    @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     private lateinit var binding: DialogInvalidAccessBinding
     private val viewModel: HomeViewModel by activityViewModels()
 
-    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState) as BottomSheetDialog
+
+        try {
+            dialog.setOnShowListener {
+                val bottomSheet = dialog.findViewById<FrameLayout>(com.google.android.material.R.id.design_bottom_sheet)!!
+                val behavior = BottomSheetBehavior.from(bottomSheet)
+                behavior.skipCollapsed = true
+                behavior.state = BottomSheetBehavior.STATE_EXPANDED
+            }
+        } catch (t: Throwable) {
+            Timber.d(t, "Hum...")
+        }
+        return dialog
+    }
+
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return DialogInvalidAccessBinding.inflate(inflater, container, false).also {
             binding = it
             it.btnCancel.setOnClickListener {
@@ -47,9 +76,27 @@ class InvalidAccessDialog : RoundedDialog() {
                 dismiss()
             }
             it.btnChange.setOnClickListener {
-                preparePassword()
+                internalChecks()
             }
         }.root
+    }
+
+    private fun internalChecks() {
+        val password = binding.etPassword.text.toString()
+        if (password.length < 3) {
+            binding.etPassword.run {
+                error = getString(R.string.error_too_small)
+                requestFocus()
+            }
+            return
+        }
+        val studentFromUEFS = preferences.isStudentFromUEFS()
+        val snowpiercer = remoteConfig.getBoolean("feature_flag_use_snowpiercer") && studentFromUEFS
+        if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
+            preparePassword(password)
+        } else {
+            requestCaptchaToken(password)
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,16 +133,21 @@ class InvalidAccessDialog : RoundedDialog() {
         )
     }
 
-    private fun preparePassword() {
-        val password = binding.etPassword.text.toString()
-        if (password.length < 3) {
-            binding.etPassword.run {
-                error = getString(R.string.error_too_small)
-                requestFocus()
+    private fun requestCaptchaToken(password: String) {
+        val fragment = CaptchaResolverFragment()
+        fragment.setCallback(
+            object : CaptchaResolverFragment.CaptchaResolvedCallback {
+                override fun onCaptchaResolved(token: String) {
+                    Timber.d("Token received $token")
+                    viewModel.attemptNewPasswordLogin(password, token)
+                }
             }
-            return
-        }
+        )
 
+        fragment.show(childFragmentManager, "captcha_resolver")
+    }
+
+    private fun preparePassword(password: String) {
         viewModel.attemptNewPasswordLogin(password)
     }
 }
