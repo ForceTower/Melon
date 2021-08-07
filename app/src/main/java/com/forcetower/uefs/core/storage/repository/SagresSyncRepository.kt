@@ -45,6 +45,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.sagres.parsers.SagresMessageParser
 import com.forcetower.sagres.parsers.SagresScheduleParser
+import com.forcetower.sagres.utils.ConnectedStates
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -185,12 +186,14 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
-        if (preferences.isStudentFromUEFS()) {
+        val isStudentFromUEFS = preferences.isStudentFromUEFS()
+        if (isStudentFromUEFS) {
             val injected = cookieSessionRepository.injectGoodCookiesOnClient()
             if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
-                // TODO Must actually disconnect user OMEGALUL
                 Timber.i("The cookie that is good no one wants to give!")
-                NotificationCreator.showSimpleNotification(context, "Vish...", "O seu login foi pro espaço, entra de novo")
+                NotificationCreator.showSimpleNotification(context, "Então...", "Você não tem sessão criada, entra de novo")
+                markSessionExpired()
+                return
             }
         }
 
@@ -199,10 +202,21 @@ class SagresSyncRepository @Inject constructor(
         database.classMaterialDao().markAllNotified()
 
         val homeDoc = when {
-            preferences.isStudentFromUEFS() && gToken == null -> initialPage()
-            !preferences.isStudentFromUEFS() || gToken != null -> login(access, gToken)
+            isStudentFromUEFS && gToken == null -> initialPage()
+            !isStudentFromUEFS || gToken != null -> login(access, gToken)
             else -> null
         }
+
+        if (isStudentFromUEFS) {
+            val connection = SagresBasicParser.isConnected(homeDoc)
+            if (connection == ConnectedStates.INVALID) {
+                cookieSessionRepository.invalidateCookies()
+                NotificationCreator.showSimpleNotification(context, "Vish...", "Sua sessão expirou, entra de novo")
+                markSessionExpired()
+                return
+            }
+        }
+
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
 
@@ -295,7 +309,7 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
-        val uefsStudent = preferences.isStudentFromUEFS()
+        val uefsStudent = isStudentFromUEFS
         if (uefsStudent) {
             serviceLogin()
         }
@@ -403,6 +417,13 @@ class SagresSyncRepository @Inject constructor(
             else -> produceErrorMessage(login)
         }
         return null
+    }
+
+    private fun markSessionExpired() {
+        val access = database.accessDao().getAccessDirect()
+        if (access != null && access.valid) {
+            database.accessDao().setAccessValidation(false)
+        }
     }
 
     private fun onInvalidLogin() {

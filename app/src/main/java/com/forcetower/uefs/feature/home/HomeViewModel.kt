@@ -129,9 +129,9 @@ class HomeViewModel @Inject constructor(
 
     fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
 
-    fun attemptNewPasswordLogin(password: String) {
+    fun attemptNewPasswordLogin(password: String, token: String? = null) {
         if (!snowpiercerEnabled) {
-            val source = dataRepository.attemptLoginWithNewPassword(password)
+            val source = dataRepository.attemptLoginWithNewPassword(password, token)
             _passwordChangeProcess.addSource(source) {
                 if (it.status == Status.SUCCESS) {
                     _passwordChangeProcess.removeSource(source)

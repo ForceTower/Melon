@@ -538,8 +538,8 @@
     <string name="invalid_access_information">O UNES não está conseguindo acessar o portal com a senha anterior. Por favor, insira sua nova senha para que o serviço funcione corretamente</string>
     <string name="invalid_access_new_password">Nova senha</string>
     <string name="invalid_access_keep_current">Não mudar</string>
-    <string name="invalid_access_change_password">Alterar senha</string>
-    <string name="invalid_access_snack">Você trocou sua senha?</string>
+    <string name="invalid_access_change_password">Reconectar-se</string>
+    <string name="invalid_access_snack">Sua sessão está desconectada!</string>
     <string name="invalid_access_snack_solve">Ver</string>
     <string name="invalid_access_password_change">Senha alterada!</string>
     <string name="invalid_access_new_password_is_incorrect">A nova senha não funcionou</string>
@@ -894,4 +894,6 @@
     <string name="semester_discipline_separator">Semestre %1$s</string>
     <string name="title_disciplines">Disciplinas</string>
     <string name="settings_ignore_doze_failed">Não é possível chegar às configurações</string>
+    <string name="unable_to_sync_account">Sessão expirada</string>
+    <string name="invalid_access_session_information">O UNES não está conseguindo acessar suas informações com a sessão atual, isto pode ser causado por uma troca de senha ou alguma falha de conexão com a Instituição de Ensino por longos períodos de tempo. Digite sua senha novamente para entrar.</string>
 </resources>
