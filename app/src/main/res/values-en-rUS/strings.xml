@@ -423,13 +423,13 @@
     <string name="incorrect_semester_ordering_undo_changes">Undo</string>
     <string name="install_module_aeri">Installing new module: AERI News</string>
     <string name="institution_select">Institution</string>
-    <string name="invalid_access_change_password">Change password</string>
+    <string name="invalid_access_change_password">Reconnect</string>
     <string name="invalid_access_information">UNES is not able to access the portal with this password. Please insert the new one so it can work again!</string>
     <string name="invalid_access_keep_current">Do not change</string>
     <string name="invalid_access_new_password">New password</string>
     <string name="invalid_access_new_password_is_incorrect">This password didn\'t work</string>
     <string name="invalid_access_password_change">Password changed!</string>
-    <string name="invalid_access_snack">Did you change your password</string>
+    <string name="invalid_access_snack">Your session is disconnected!</string>
     <string name="invalid_access_snack_solve">See</string>
     <string name="invalid_access_title">Incorrect password</string>
     <string name="invalid_google_sign_in_error">Login invalid error (Error on error)</string>
