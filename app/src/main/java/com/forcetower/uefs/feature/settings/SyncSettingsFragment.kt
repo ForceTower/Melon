@@ -25,11 +25,12 @@ import android.Manifest.permission.ACCESS_COARSE_LOCATION
 import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.view.View
 import android.widget.Toast
-import androidx.lifecycle.Observer
 import androidx.preference.ListPreference
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
+import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
@@ -58,11 +59,11 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_synchronization, rootKey)
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         repository.getFrequencies().observe(
             viewLifecycleOwner,
-            Observer { frequencies ->
+            { frequencies ->
                 val entries = frequencies.map { it.name }
                 val values = frequencies.map { it.value.toString() }
                 configureFrequencies(entries, values)
@@ -82,7 +83,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
             "stg_sync_worker_type" -> changeWorkerType(preference.getString(key, "0")?.toIntOrNull())
             "stg_sync_frequency" -> changeSyncFrequency(preference.getString(key, "60")?.toIntOrNull())
             "stg_sync_auto_proxy" -> autoProxy(preference.getBoolean(key, false))
-            "stg_sync_proxy" -> proxySettings(preference.getString(key, "10.65.16.2:3128")!!)
+            "stg_sync_proxy" -> proxySettings(preference.getString(key, BuildConfig.UEFS_DEFAULT_PROXY)!!)
             else -> Timber.d("Else... $key")
         }
     }
@@ -99,7 +100,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
 
         if (!valid) {
             Toast.makeText(requireContext(), R.string.settings_proxy_invalid, Toast.LENGTH_SHORT).show()
-            getSharedPreferences().edit().putString("stg_sync_proxy", "10.65.16.2:3128").apply()
+            getSharedPreferences().edit().putString("stg_sync_proxy", BuildConfig.UEFS_DEFAULT_PROXY).apply()
         } else {
             Toast.makeText(requireContext(), R.string.settings_proxy_changed, Toast.LENGTH_SHORT).show()
         }

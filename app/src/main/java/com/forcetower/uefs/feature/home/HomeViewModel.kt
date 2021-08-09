@@ -28,6 +28,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
@@ -46,7 +47,6 @@ import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionReposit
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
@@ -129,9 +129,9 @@ class HomeViewModel @Inject constructor(
 
     fun changeAccessValidation(valid: Boolean) = dataRepository.changeAccessValidation(valid)
 
-    fun attemptNewPasswordLogin(password: String) {
+    fun attemptNewPasswordLogin(password: String, token: String? = null) {
         if (!snowpiercerEnabled) {
-            val source = dataRepository.attemptLoginWithNewPassword(password)
+            val source = dataRepository.attemptLoginWithNewPassword(password, token)
             _passwordChangeProcess.addSource(source) {
                 if (it.status == Status.SUCCESS) {
                     _passwordChangeProcess.removeSource(source)
@@ -198,9 +198,5 @@ class HomeViewModel @Inject constructor(
 
     fun getAffinityQuestions() {
         affinityRepository.getAffinityQuestionsAsync()
-    }
-
-    fun goodCookies() {
-        userCookieSessionRepository.getGoodCookies()
     }
 }

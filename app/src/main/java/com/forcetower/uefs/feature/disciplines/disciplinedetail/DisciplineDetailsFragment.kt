@@ -33,9 +33,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Discipline
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.ExtItemDisciplineHoursBinding
 import com.forcetower.uefs.databinding.ExtItemMissedClassesBinding
 import com.forcetower.uefs.databinding.FragmentDisciplineDetailsBinding
@@ -90,10 +90,7 @@ class DisciplineDetailsFragment : UFragment() {
         }
 
         viewModel.materialClick.observe(viewLifecycleOwner, EventObserver { requireContext().openURL(it.link) })
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.setClassId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_ID))
         viewModel.setClassGroupId(requireNotNull(arguments).getLong(DisciplineDetailsActivity.CLASS_GROUP_ID))
         viewModel.navigateToTeacherAction.observe(

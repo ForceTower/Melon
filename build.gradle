@@ -19,36 +19,37 @@
  */
 
 buildscript {
-    ext.kotlin_version = '1.4.31'
+    ext.kotlin_version = '1.5.21'
     ext {
-        sagres = "1.6.5"
+        juice = "1.7.1"
+        snowpiercer = "1.1.4"
 
         // Kotlin Extensions
-        ktx = '1.5.0-beta03'
+        ktx = '1.6.0'
 
         // Android X
-        app_compat = '1.2.0'
-        google_material = '1.3.0'
-        constraint_layout = '2.0.4'
-        annotation = "1.1.0"
+        app_compat = '1.3.1'
+        google_material = '1.4.0'
+        constraint_layout = '2.1.0'
+        annotation = '1.2.0'
         exif_interface = "1.1.0"
         pallete = "1.0.0"
         flexbox = "1.1.0"
         browser = '1.3.0'
         preference = '1.1.1'
-        fragment = '1.3.1'
+        fragment = '1.3.6'
         swipe_refresh = '1.1.0'
 
         // Architecture
-        room = '2.2.6'
-        lifecycle = '2.3.0'
-        paging = '2.1.2'
-        navigation = '2.3.4'
+        room = '2.3.0'
+        lifecycle = '2.3.1'
+        paging = '3.0.1'
+        navigation = '2.3.5'
         work_manager = '2.5.0'
 
         // Dependency Injection
-        dagger = '2.33'
-        hilt_androidx = '1.0.0-beta01'
+        dagger = '2.35.1'
+        hilt_androidx = '1.0.0'
 
         // Firebase
         firebase_core = '17.5.1'
@@ -60,24 +61,24 @@ buildscript {
         firebase_functions = '19.1.0'
         in_app_messaging = "19.0.1"
         firebase_crashlytics = '17.2.2'
-        firebase_ui_storage = "4.3.1"
+        firebase_ui_storage = "7.1.1"
 
         // Logs
         timber = "4.7.1"
 
         // Image
         glide = '4.12.0'
-        lottie = '3.6.1'
+        lottie = '3.7.0'
         image_cropper = "2.8.0"
 
         // Google Services
         gp_core = '1.10.0'
         gp_core_ktx = '1.8.1'
-        gp_auth = '19.0.0'
+        gp_auth = '19.2.0'
         gp_games = '21.0.0'
         gp_location = '18.0.0'
-        gp_billing_client = '3.0.3'
-        gp_admob = '19.7.0'
+        gp_billing_client = '4.0.0'
+        gp_admob = '19.8.0'
 
         // Networking
         okhttp = '4.9.0'
@@ -96,23 +97,22 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '4.1.3'
+        android_gradle_plugin = '7.0.0'
         google_play_services = "4.3.4"
-        kotlinter = "3.3.0"
-        play_publisher = "3.2.0"
+        kotlinter = "3.4.4"
+        play_publisher = "3.5.0-agp7.0"
         bundletool = "0.10.0"
-        crashlytics = "2.4.1"
-        hilt_dagger = '2.33-beta'
+        crashlytics = '2.5.2'
+        hilt_dagger = '2.38.1'
         coreDesugar = '1.1.5'
     }
 
     repositories {
         google()
-        jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.fabric.io/public" }
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         mavenLocal()
     }
 
@@ -131,14 +131,17 @@ buildscript {
 
 }
 
+plugins {
+    id "org.sonarqube" version "3.3"
+}
+
 allprojects {
     repositories {
         google()
-        jcenter()
         maven { url "https://jitpack.io" }
         maven { url "https://maven.fabric.io/public" }
         maven { url "https://plugins.gradle.org/m2/" }
-        maven { url "http://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
         mavenLocal()
     }
 
@@ -171,6 +174,29 @@ subprojects {
     tasks.whenTaskAdded {
         if (name == 'preBuild') {
             mustRunAfter 'lintKotlin'
+        }
+    }
+
+    sonarqube {
+        properties {
+            property "sonar.sources", "src/main"
+        }
+    }
+}
+
+subprojects {
+    if (!gradle.startParameter.taskNames.any { it.contains("lint") }) {
+        tasks.configureEach {
+            if (name.startsWith("lint")) {
+                enabled = false
+            }
+        }
+    } else {
+        // https://github.com/JakeWharton/timber/issues/408
+        it.afterEvaluate {
+            if (it.plugins.hasPlugin("com.android.application") || it.plugins.hasPlugin("com.android.library") || it.plugins.hasPlugin("com.android.dynamic-feature")) {
+                it.android.lintOptions.disable = ["LogNotTimber", "StringFormatInTimber", "ThrowableNotAtBeginning", "BinaryOperationInTimber", "TimberArgCount", "TimberArgTypes", "TimberTagLength", "TimberExceptionLogging"]
+            }
         }
     }
 }

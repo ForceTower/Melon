@@ -24,22 +24,32 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerLoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import dev.forcetower.unes.usecases.courses.InitialCourseLoadUseCase
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
+    private val loadInitialCourses: InitialCourseLoadUseCase,
     private val repository: LoginSagresRepository,
     private val snowpiercerLogin: SnowpiercerLoginRepository
 ) : ViewModel() {
     private var loginSrc: MediatorLiveData<Callback> = MediatorLiveData()
     private var loginRunning: Boolean = false
     private var connected: Boolean = false
+
+    fun loadCoursesIfNeeded() {
+        viewModelScope.launch {
+            loadInitialCourses(Unit)
+        }
+    }
 
     fun getAccess() = repository.getAccess()
 

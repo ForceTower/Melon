@@ -37,7 +37,7 @@ abstract class DisciplineDao {
         return if (query.isNullOrBlank()) {
             getAll()
         } else {
-            val string = "%${query.toUpperCase(Locale.getDefault())}%"
+            val string = "%${query.uppercase(Locale.getDefault())}%"
             doQuery(string)
         }
     }

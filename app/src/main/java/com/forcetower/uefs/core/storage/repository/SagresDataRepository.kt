@@ -22,11 +22,9 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import com.forcetower.sagres.Constants
+import androidx.lifecycle.liveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
-import com.forcetower.sagres.operation.login.LoginCallback
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -49,7 +47,8 @@ class SagresDataRepository @Inject constructor(
     private val firebaseAuth: FirebaseAuth,
     private val preferences: SharedPreferences,
     private val client: OkHttpClient,
-    @Named("webViewUA") private val agent: String
+    @Named("webViewUA") private val agent: String,
+    private val cookies: CookieSessionRepository
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
@@ -80,8 +79,8 @@ class SagresDataRepository @Inject constructor(
     fun lightweightCalcScore() {
         executor.diskIO().execute {
             val classes = database.classDao().getAllDirect().filter { it.clazz.finalScore != null }
-            val hours = classes.sumBy { it.discipline.credits }
-            val mean = classes.sumByDouble {
+            val hours = classes.sumOf { it.discipline.credits }
+            val mean = classes.sumOf {
                 val zeroValue = it.clazz.missedClasses > (it.discipline.credits / 4)
                 val finalScore = if (zeroValue) 0.0 else it.clazz.finalScore!!
                 it.discipline.credits * finalScore
@@ -100,35 +99,26 @@ class SagresDataRepository @Inject constructor(
         }
     }
 
-    // TODO [REQUIRES PATCHING SAVID-1]
-    // TODO This one actually requires a new login, so must show captcha (for now)
-    // TODO Use this for captcha invalidation as well! Cool!
-    fun attemptLoginWithNewPassword(password: String): LiveData<Resource<Boolean>> {
-        val result = MutableLiveData<Resource<Boolean>>()
-        executor.networkIO().execute {
+    fun attemptLoginWithNewPassword(password: String, token: String?): LiveData<Resource<Boolean>> {
+        return liveData(Dispatchers.IO) {
             val access = database.accessDao().getAccessDirect()
             if (access == null) {
-                result.postValue(Resource.error("", false))
+                emit(Resource.error("", false))
             } else {
-                result.postValue(Resource.loading(null))
-                val callback = if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
-                    SagresNavigator.instance.login(access.username, access.password)
-                } else {
-                    // TODO Change this
-                    LoginCallback(Status.INVALID_LOGIN)
-                }
+                emit(Resource.loading(false))
+                val callback = SagresNavigator.instance.login(access.username, access.password, token)
                 if (callback.status == Status.INVALID_LOGIN) {
-                    result.postValue(Resource.success(false))
+                    emit(Resource.success(false))
                 } else {
+                    cookies.findAndSaveCookies()
                     database.accessDao().run {
-                        setAccessValidation(true)
-                        updateAccessPassword(password)
+                        setAccessValidationSuspend(true)
+                        updateAccessPasswordSuspend(password)
                     }
-                    result.postValue(Resource.success(true))
+                    emit(Resource.success(true))
                 }
             }
         }
-        return result
     }
 
     suspend fun loginWithNewPasswordSuspend(password: String): Boolean = withContext(Dispatchers.IO) {

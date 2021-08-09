@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.easter.twofoureight.view;
 
+import java.security.SecureRandom;
 import java.util.ArrayList;
 
 public class GameGrid {
@@ -38,8 +39,9 @@ public class GameGrid {
 
     public Position randomAvailableCell() {
         ArrayList<Position> availableCells = getAvailableCells();
+        SecureRandom random = new SecureRandom();
         if (availableCells.size() >= 1) {
-            return availableCells.get((int) Math.floor(Math.random() * availableCells.size()));
+            return availableCells.get((int) Math.floor(random.nextDouble() * availableCells.size()));
         }
         return null;
     }

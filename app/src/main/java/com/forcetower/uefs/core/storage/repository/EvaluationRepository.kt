@@ -24,8 +24,9 @@ import android.content.SharedPreferences
 import androidx.annotation.AnyThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
@@ -37,6 +38,7 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkOnlyResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
@@ -120,8 +122,13 @@ class EvaluationRepository @Inject constructor(
         return result
     }
 
-    fun queryEntities(text: String): LiveData<PagedList<EvaluationEntity>> {
-        return LivePagedListBuilder(database.evaluationEntitiesDao().query(text), 20).build()
+    fun queryEntities(queryProvider: () -> String): Flow<PagingData<EvaluationEntity>> {
+        return Pager(
+            config = PagingConfig(pageSize = 20),
+            pagingSourceFactory = {
+                database.evaluationEntitiesDao().query(queryProvider())
+            }
+        ).flow
     }
 
     @AnyThread

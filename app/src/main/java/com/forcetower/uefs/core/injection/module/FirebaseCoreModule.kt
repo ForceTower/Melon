@@ -69,9 +69,7 @@ object FirebaseCoreModule {
         config.setConfigSettingsAsync(settings)
         config.setDefaultsAsync(R.xml.remote_config_defaults)
         config.fetchAndActivate().addOnCompleteListener {
-            if (it.isSuccessful) {
-                Unit
-            } else {
+            if (!it.isSuccessful) {
                 Timber.d("Failed to init remote config")
             }
         }

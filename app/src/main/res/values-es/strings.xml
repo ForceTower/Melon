@@ -423,13 +423,13 @@
     <string name="incorrect_semester_ordering_undo_changes">Deshacer</string>
     <string name="install_module_aeri">Instalando nuevo módulo: Noticias AERI</string>
     <string name="institution_select">Institución</string>
-    <string name="invalid_access_change_password">Cambiar contraseña</string>
+    <string name="invalid_access_change_password">Reconectar</string>
     <string name="invalid_access_information">UNES no puede acceder al portal con esta contraseña. Por favor, ¡inserta el nuevo para que pueda funcionar de nuevo!</string>
     <string name="invalid_access_keep_current">No cambie</string>
     <string name="invalid_access_new_password">Nueva contraseña</string>
     <string name="invalid_access_new_password_is_incorrect">Esta contraseña no funcionó</string>
     <string name="invalid_access_password_change">¡Contraseña cambiada!</string>
-    <string name="invalid_access_snack">¿Cambiaste tu contraseña?</string>
+    <string name="invalid_access_snack">¡Tu sesión está desconectada!</string>
     <string name="invalid_access_snack_solve">Ver</string>
     <string name="invalid_access_title">Contraseña incorrecta</string>
     <string name="invalid_google_sign_in_error">Inicio de sesión inválido (error en error)</string>

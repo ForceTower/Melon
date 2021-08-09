@@ -33,13 +33,13 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.task.usecase.message.FetchAllMessagesSnowpiercerUseCase
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.shared.extensions.toFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch

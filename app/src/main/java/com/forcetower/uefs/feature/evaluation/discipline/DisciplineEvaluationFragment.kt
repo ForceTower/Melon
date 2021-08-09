@@ -27,13 +27,12 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
@@ -47,7 +46,7 @@ class DisciplineEvaluationFragment : UFragment() {
     private lateinit var elements: EvaluationElementsAdapter
     private val args: DisciplineEvaluationFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         elements = EvaluationElementsAdapter(viewModel)
         return FragmentEvaluationDisciplineBinding.inflate(inflater, container, false).also {
             binding = it
@@ -55,9 +54,9 @@ class DisciplineEvaluationFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, Observer { handleData(it) })
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, { handleData(it) })
         binding.itemsRecycler.apply {
             adapter = elements
             itemAnimator?.run {
@@ -97,14 +96,14 @@ class DisciplineEvaluationFragment : UFragment() {
                     teachers.groupBy { it.semesterSystemId }.entries.map { entry ->
                         val key = entry.key
                         val semester = entry.value
-                        val mean = semester.sumByDouble { it.mean } / semester.size
+                        val mean = semester.sumOf { it.mean } / semester.size
                         val first = semester.first()
                         SemesterMean(key, first.semester, mean)
                     }.sortedBy { id * -1 },
                     teachers.groupBy { it.teacherId }.entries.map { entry ->
                         val appearances = entry.value
                         val appear = appearances.maxByOrNull { it.semesterSystemId }!!
-                        val mean = appearances.sumByDouble { it.mean } / appearances.size
+                        val mean = appearances.sumOf { it.mean } / appearances.size
                         TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
                     }.sortedBy { it.name }
                 )

@@ -29,10 +29,10 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
 import com.forcetower.uefs.core.vm.BillingViewModel
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentPurchasesBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar

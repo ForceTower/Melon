@@ -73,10 +73,7 @@ class ScheduleDayFragment : UFragment() {
                 removeDuration = 120L
             }
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.getSessionsFromDayLocal(requireArguments().getInt(ARG_EVENT_DAY)).observe(
             viewLifecycleOwner,
             Observer {

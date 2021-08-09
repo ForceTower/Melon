@@ -27,7 +27,6 @@ import android.view.ViewGroup
 import androidx.core.view.doOnLayout
 import androidx.databinding.ObservableFloat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.databinding.FragmentDemandOverviewBinding
 import com.forcetower.uefs.feature.demand.DemandViewModel
 import com.forcetower.uefs.feature.shared.UFragment
@@ -58,8 +57,8 @@ class DemandOverviewFragment : UFragment() {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         behavior = BottomSheetBehavior.from(binding.demandOverviewSheet)
 
         val offersAdapter = OffersOverviewAdapter(this, viewModel)
@@ -70,7 +69,7 @@ class DemandOverviewFragment : UFragment() {
 
         viewModel.selected.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it != null) offersAdapter.submitList(it)
             }
         )

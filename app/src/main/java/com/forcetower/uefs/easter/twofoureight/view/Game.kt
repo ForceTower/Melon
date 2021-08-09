@@ -23,6 +23,7 @@ package com.forcetower.uefs.easter.twofoureight.view
 import timber.log.Timber
 import java.util.UUID
 import kotlin.math.pow
+import kotlin.random.Random
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -119,7 +120,7 @@ class Game {
 
     private fun addRandomTile() {
         if (gameGrid!!.isCellsAvailable) {
-            val value = if (Math.random() < 0.9) 2 else 4
+            val value = if (Random.nextDouble() < 0.9) 2 else 4
             val tile = Tile(gameGrid!!.randomAvailableCell()!!, value)
             spawnTile(tile)
         }
