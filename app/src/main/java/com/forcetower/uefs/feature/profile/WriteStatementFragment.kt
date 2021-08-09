@@ -27,8 +27,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentWriteStatementBinding
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.shared.UFragment

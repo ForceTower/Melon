@@ -55,9 +55,9 @@ class BillingRepository @Inject constructor(
     }
 
     fun handlePurchases(purchases: List<Purchase>) {
-        purchases.forEach { purchase ->
+        purchases.flatMap { it.skus }.forEach { purchase ->
             // TODO Make the effects consume the token if needed (should billing client be moved to dagger? Hum....)
-            when (purchase.sku) {
+            when (purchase) {
                 "score_increase_common" -> scoreIncreaseEffect.runEffect()
                 "unes_gold_monkey" -> monkeyGoldEffect.runEffect()
             }

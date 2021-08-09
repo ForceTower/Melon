@@ -20,7 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -36,14 +36,14 @@ abstract class EvaluationEntitiesDao {
     @Transaction
     open fun recreate(data: EverythingSnippet) {
         clear()
-        val teachers = data.teachers.map { EvaluationEntity(0, it.teacherId, it.name, null, it.imageUrl, 0, it.name.toLowerCase(Locale.getDefault()).unaccent()) }
+        val teachers = data.teachers.map { EvaluationEntity(0, it.teacherId, it.name, null, it.imageUrl, 0, it.name.lowercase(Locale.getDefault()).unaccent()) }
         val disciplines = data.disciplines.map {
             val coded = "${it.department}${it.code}"
-            val search = "$coded ${it.name}".toLowerCase(Locale.getDefault()).unaccent()
+            val search = "$coded ${it.name}".lowercase(Locale.getDefault()).unaccent()
             EvaluationEntity(0, it.disciplineId, it.name, coded, null, 1, search, comp1 = it.department, comp2 = it.code)
         }
         val students = data.students.map {
-            val search = "${it.name} ${it.courseName}".toLowerCase(Locale.getDefault()).unaccent()
+            val search = "${it.name} ${it.courseName}".lowercase(Locale.getDefault()).unaccent()
             EvaluationEntity(0, it.id, it.name, it.courseName, it.imageUrl, 2, search, referenceLong1 = it.userId)
         }
 
@@ -62,11 +62,11 @@ abstract class EvaluationEntitiesDao {
     @Query("DELETE FROM EvaluationEntity")
     protected abstract fun clear()
 
-    open fun query(query: String): DataSource.Factory<Int, EvaluationEntity> {
+    open fun query(query: String): PagingSource<Int, EvaluationEntity> {
         return if (query.isBlank()) {
             doQueryEmpty()
         } else {
-            val realQuery = query.toLowerCase(Locale.getDefault())
+            val realQuery = query.lowercase(Locale.getDefault())
                 .unaccent()
                 .split(" ")
                 .joinToString("%", "%", "%")
@@ -75,8 +75,8 @@ abstract class EvaluationEntitiesDao {
     }
 
     @Query("SELECT * FROM EvaluationEntity WHERE LOWER(searchable) LIKE :query ORDER BY name")
-    abstract fun doQuery(query: String): DataSource.Factory<Int, EvaluationEntity>
+    abstract fun doQuery(query: String): PagingSource<Int, EvaluationEntity>
 
     @Query("SELECT * FROM EvaluationEntity WHERE 0")
-    abstract fun doQueryEmpty(): DataSource.Factory<Int, EvaluationEntity>
+    abstract fun doQueryEmpty(): PagingSource<Int, EvaluationEntity>
 }

@@ -21,25 +21,22 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
-import androidx.annotation.AnyThread
+import android.content.SharedPreferences
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.asLiveData
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresDisciplineMissedClass
 import com.forcetower.sagres.database.model.SagresGrade
 import com.forcetower.sagres.operation.Status
-import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
+import com.forcetower.uefs.core.util.isStudentFromUEFS
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
@@ -48,30 +45,25 @@ import javax.inject.Named
 class SagresGradesRepository @Inject constructor(
     private val context: Context,
     private val database: UDatabase,
-    private val executors: AppExecutors,
     private val client: OkHttpClient,
+    private val cookieSessionRepository: CookieSessionRepository,
+    private val preferences: SharedPreferences,
     @Named("webViewUA") private val agent: String,
     @Named("flagSnowpiercerEnabled") private val snowpiercer: Boolean
 ) {
-    @AnyThread
-    fun getGradesAsync(semesterId: Long, needLogin: Boolean): LiveData<Int> {
-        return if (snowpiercer) {
-            getGradesSnowflake(semesterId).asLiveData(Dispatchers.IO)
+    suspend fun getGradesAsync(semesterId: Long, needLogin: Boolean): Int = withContext(Dispatchers.IO) {
+        if (snowpiercer) {
+            getGradesSnowflake(semesterId)
         } else {
-            val data = MutableLiveData<Int>()
-            executors.networkIO().execute {
-                val result = getGrades(semesterId, needLogin)
-                data.postValue(result)
-            }
-            data
+            getGrades(semesterId, needLogin)
         }
     }
 
-    private fun getGradesSnowflake(semesterId: Long) = flow {
+    private suspend fun getGradesSnowflake(semesterId: Long): Int {
         val access = database.accessDao().getAccessDirect()
         val profile = database.profileDao().selectMeDirect()
-        if (access == null || profile == null) {
-            emit(NO_ACCESS)
+        return if (access == null || profile == null) {
+            NO_ACCESS
         } else {
             val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
             orchestra.setAuthorization(Authorization(access.username, access.password))
@@ -79,20 +71,22 @@ class SagresGradesRepository @Inject constructor(
             if (outcome is Outcome.Success) {
                 val currentSemester = database.semesterDao().getSemesterDirect(semesterId)
                 DisciplinesProcessor(context, database, outcome.value, currentSemester!!.uid, profile.uid, false).execute()
-                emit(SUCCESS)
+                SUCCESS
             } else {
-                emit(CURRENT_GRADES_FAILED)
+                CURRENT_GRADES_FAILED
             }
         }
     }
 
     @WorkerThread
-    fun getGrades(semesterSagresId: Long, needLogin: Boolean = true): Int {
-        val access = database.accessDao().getAccessDirect()
-        access ?: return NO_ACCESS
+    suspend fun getGrades(semesterSagresId: Long, needLogin: Boolean = true): Int {
+        val access = database.accessDao().getAccessDirect() ?: return NO_ACCESS
 
         return if (needLogin) {
-            if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
+            if (preferences.isStudentFromUEFS()) {
+                cookieSessionRepository.injectGoodCookiesOnClient()
+                proceed(semesterSagresId)
+            } else if (Constants.getParameter("REQUIRES_CAPTCHA") != "true") {
                 val login = SagresNavigator.instance.login(access.username, access.password)
                 if (login.status == Status.SUCCESS && login.document != null) {
                     Timber.d("[$semesterSagresId] Login Completed Correctly")
@@ -101,7 +95,7 @@ class SagresGradesRepository @Inject constructor(
                     INVALID_ACCESS
                 }
             } else {
-                proceed(semesterSagresId)
+                INVALID_ACCESS
             }
         } else {
             proceed(semesterSagresId)

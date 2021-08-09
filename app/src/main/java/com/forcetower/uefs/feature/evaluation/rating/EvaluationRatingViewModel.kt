@@ -23,10 +23,10 @@ package com.forcetower.uefs.feature.evaluation.rating
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.vm.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 

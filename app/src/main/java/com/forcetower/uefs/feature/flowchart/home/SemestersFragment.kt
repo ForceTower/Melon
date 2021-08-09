@@ -28,9 +28,9 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
 import com.forcetower.uefs.core.util.toJson
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentFlowchartSemestersBinding
 import com.forcetower.uefs.feature.flowchart.FlowchartViewModel
 import com.forcetower.uefs.feature.shared.UFragment

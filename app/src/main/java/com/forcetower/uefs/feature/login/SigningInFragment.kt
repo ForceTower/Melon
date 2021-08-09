@@ -55,6 +55,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.nio.charset.Charset
 import javax.inject.Inject
+import kotlin.random.Random
 
 @AndroidEntryPoint
 class SigningInFragment : UFragment() {
@@ -128,8 +129,8 @@ class SigningInFragment : UFragment() {
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.getLogin().observe(viewLifecycleOwner, { onLoginProgress(it) })
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
         viewModel.getStep(args.snowpiercer).observe(viewLifecycleOwner, Observer(this::onStep))
@@ -143,7 +144,7 @@ class SigningInFragment : UFragment() {
     }
 
     private fun displayRandomText() {
-        val position = (Math.random() * (messages.size - 1)).toInt()
+        val position = (Random.nextDouble() * (messages.size - 1)).toInt()
         val message = messages[position]
         binding.textStatus.setText(message)
         Handler(Looper.getMainLooper()).postDelayed(

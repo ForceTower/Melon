@@ -22,34 +22,23 @@ package com.forcetower.uefs.feature.setup
 
 import android.content.Intent
 import android.os.Bundle
-import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.databinding.ActivitySetupBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class SetupActivity : UActivity() {
     private lateinit var binding: ActivitySetupBinding
-    private val coursesViewModel: CourseViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         overridePendingTransition(android.R.anim.fade_in, android.R.anim.fade_out)
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_setup)
-        coursesViewModel.courses.observe(
-            this,
-            Observer {
-                Timber.d("Courses Status: ${it.status}")
-            }
-        )
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.setup_nav_host).navigateUp()

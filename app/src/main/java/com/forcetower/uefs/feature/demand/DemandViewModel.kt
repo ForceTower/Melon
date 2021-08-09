@@ -26,12 +26,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.DemandRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.Event
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import timber.log.Timber
@@ -79,7 +79,7 @@ class DemandViewModel @Inject constructor(
             val raw = it.data
             if (raw != null) {
                 val filtered = raw.filter { s -> s.selected }
-                _selectedHours.value = filtered.sumBy { h -> h.hours }
+                _selectedHours.value = filtered.sumOf { h -> h.hours }
                 _selectedCount.value = filtered.size
             }
 

@@ -90,8 +90,8 @@ class HomeBottomFragment : UFragment() {
         dialog.show(childFragmentManager, "dialog_course")
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         setupNavigation()
         featureFlags()
         viewModel.databaseAccount.observe(viewLifecycleOwner, { handleAccount(it) })

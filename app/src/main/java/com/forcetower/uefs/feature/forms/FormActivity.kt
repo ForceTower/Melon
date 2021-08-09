@@ -24,9 +24,9 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Question
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.ActivityFormsBinding
 import com.forcetower.uefs.feature.shared.FragmentAdapter
 import com.forcetower.uefs.feature.shared.UActivity

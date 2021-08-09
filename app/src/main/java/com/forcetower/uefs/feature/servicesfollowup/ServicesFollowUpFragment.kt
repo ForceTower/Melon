@@ -25,9 +25,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.NamedFragmentAdapter
 import com.forcetower.uefs.feature.shared.UFragment
@@ -38,7 +38,7 @@ class ServicesFollowUpFragment : UFragment() {
     private val viewModel: ServicesFollowUpViewModel by activityViewModels()
     private lateinit var binding: FragmentServicesFollowupBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -61,10 +61,7 @@ class ServicesFollowUpFragment : UFragment() {
             )
         )
         tabs.setupWithViewPager(pager)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.pendingServices.observe(
             viewLifecycleOwner,
             EventObserver {

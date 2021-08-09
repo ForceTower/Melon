@@ -27,8 +27,8 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAeriMessagesBinding
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.shared.UFragment

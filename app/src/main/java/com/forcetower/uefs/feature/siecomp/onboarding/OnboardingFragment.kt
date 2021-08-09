@@ -33,8 +33,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.viewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEventOnboardingBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.ViewPagerPager

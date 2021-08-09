@@ -18,7 +18,7 @@ jobs:
     - name: Set up JDK
       uses: actions/setup-java@v1
       with:
-        java-version: 1.8
+        java-version: 11
 
     - name: Decode Google Services
       run: gpg --quiet --batch --yes --decrypt --passphrase="${{ secrets.GOOGLE_SERVICES_PASSWORD }}" --output app/google-services.json app/google-services.json.gpg
@@ -45,8 +45,15 @@ jobs:
         UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
         UNES_MAPS_KEY: ${{ secrets.UNES_MAPS_KEY }}
 
+    - name: Upload Check Results
+      uses: actions/upload-artifact@v2
+      if: always()
+      with:
+        name: check_results
+        path: ./**/build/reports/
+
     - name: Upload result for job
-      uses: actions/upload-artifact@v1
+      uses: actions/upload-artifact@v2
       if: "!contains(github.event.head_commit.message, '[publish skip]')"
       with:
         name: bundle

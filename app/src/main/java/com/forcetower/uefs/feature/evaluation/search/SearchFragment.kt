@@ -22,27 +22,27 @@ package com.forcetower.uefs.feature.evaluation.search
 
 import android.app.ActivityOptions
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.core.view.forEach
+import androidx.core.widget.doAfterTextChanged
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.collectLatest
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -51,24 +51,18 @@ class SearchFragment : UFragment() {
     private lateinit var binding: FragmentEvaluationSearchBinding
     private lateinit var adapter: EvaluationEntityAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         adapter = EvaluationEntityAdapter(viewModel)
         return FragmentEvaluationSearchBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
-            omniText.addTextChangedListener(
-                object : TextWatcher {
-                    override fun afterTextChanged(edit: Editable?) {
-                        val text = edit?.toString() ?: ""
-                        if (text.length >= 3 || text.isEmpty()) {
-                            Timber.d("Querying $text")
-                            viewModel.query(text)
-                        }
-                    }
-                    override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
-                    override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) = Unit
+            omniText.doAfterTextChanged {
+                val query = it.toString()
+                if (query != viewModel.query) {
+                    viewModel.query = query
+                    adapter.refresh()
                 }
-            )
+            }
             wildcardRecycler.adapter = adapter
             wildcardRecycler.itemAnimator?.run {
                 addDuration = 120L
@@ -79,21 +73,21 @@ class SearchFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.downloadDatabase().observe(viewLifecycleOwner, Observer { loadKnowledge(it) })
-        viewModel.query.observe(
-            viewLifecycleOwner,
-            Observer {
-                adapter.submitList(it)
-            }
-        )
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        viewModel.downloadDatabase().observe(viewLifecycleOwner, { loadKnowledge(it) })
         viewModel.entitySelect.observe(
             viewLifecycleOwner,
             EventObserver {
                 onEvalEntitySelected(it)
             }
         )
+
+        lifecycleScope.launchWhenCreated {
+            viewModel.searchSource.collectLatest {
+                adapter.submitData(it)
+            }
+        }
     }
 
     private fun onEvalEntitySelected(entity: EvaluationEntity) {

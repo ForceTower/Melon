@@ -75,14 +75,14 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
         activity ?: Timber.e("Adventure Fragment must be attached to a UGameActivity for it to work")
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = DataBindingUtil.inflate(inflater, R.layout.game_fragment_2048, container, false)
         binding.gamePad.setOnTouchListener(this)
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val mScoreKeeper = ScoreKeeper(requireActivity())
 
         mScoreKeeper.setViews(binding.tvScore, binding.tvHighscore)

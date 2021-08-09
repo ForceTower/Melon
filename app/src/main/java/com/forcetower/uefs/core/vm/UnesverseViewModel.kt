@@ -25,6 +25,7 @@ import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository

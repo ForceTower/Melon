@@ -35,6 +35,7 @@ import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.service.FlowchartDTO
+import com.forcetower.uefs.core.model.service.SavedCookie
 import com.forcetower.uefs.core.model.service.UNESUpdate
 import com.forcetower.uefs.core.model.service.UserSessionDTO
 import com.forcetower.uefs.core.model.service.discipline.DisciplineDetailsData
@@ -70,7 +71,7 @@ interface UService {
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): Call<AccessToken>
 
     @POST("oauth/token")
@@ -85,13 +86,26 @@ interface UService {
 
     @POST("oauth/token")
     @FormUrlEncoded
+    fun loginWithBiscuit(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("auth") auth: String,
+        @Field("session_id") session: String,
+        @Field("grant_type") grant: String = "biscuit",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
+    ): Call<AccessToken>
+
+    @POST("oauth/token")
+    @FormUrlEncoded
     suspend fun loginWithSagresSuspend(
         @Field("username") username: String,
         @Field("password") password: String,
         @Field("grant_type") grant: String = "sagres",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
-        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().toLowerCase(Locale.ROOT)
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): AccessToken
 
     @POST("oauth/token")
@@ -102,6 +116,19 @@ interface UService {
         @Field("grant_type") grant: String = "password",
         @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
         @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET
+    ): AccessToken
+
+    @POST("oauth/token")
+    @FormUrlEncoded
+    suspend fun loginWithBiscuitSuspend(
+        @Field("username") username: String,
+        @Field("password") password: String,
+        @Field("auth") auth: String,
+        @Field("session_id") session: String,
+        @Field("grant_type") grant: String = "biscuit",
+        @Field("client_id") client: String = Constants.SERVICE_CLIENT_ID,
+        @Field("client_secret") secret: String = Constants.SERVICE_CLIENT_SECRET,
+        @Field("institution") institution: String = SagresNavigator.instance.getSelectedInstitution().lowercase(Locale.ROOT)
     ): AccessToken
 
     @POST("account/credentials")
@@ -144,7 +171,7 @@ interface UService {
     fun saveSessions(@Body session: UserSessionDTO): Call<Void>
 
     @GET("courses")
-    fun getCourses(): Call<List<Course>>
+    suspend fun getCourses(): List<Course>
 
     @GET("synchronization")
     fun getUpdate(): Call<UNESUpdate>
@@ -230,14 +257,13 @@ interface UService {
     @POST("events/delete")
     suspend fun deleteEvent(@Field("id") id: Long): UResponse<Void>
 
-    // ---------- Toss a coin -----------
-    @FormUrlEncoded
-    @POST("cookie/save")
-    fun prepareSession(@Field("cookies") cookies: String): Call<UResponse<Void>>
+    // ---------- Cookies for everyone -----------
+    @POST("biscuit/save")
+    suspend fun prepareSession(@Body cookie: SavedCookie): UResponse<Void>
 
-    @GET("cookie/retrieve")
-    fun getSession(): Call<UResponse<String>>
+    @GET("biscuit/retrieve")
+    suspend fun getSession(): UResponse<SavedCookie>
 
-    @GET("cookie/invalidate")
-    fun invalidateSession(): Call<UResponse<Void>>
+    @POST("biscuit/invalidate")
+    suspend fun invalidateSession(): UResponse<Void>
 }

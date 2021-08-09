@@ -67,4 +67,7 @@ abstract class AccessDao {
 
     @Query("UPDATE Access SET password = :password")
     abstract suspend fun updateAccessPasswordSuspend(password: String)
+
+    @Query("SELECT COUNT(uid) FROM Access")
+    abstract suspend fun getAccessCount(): Int
 }

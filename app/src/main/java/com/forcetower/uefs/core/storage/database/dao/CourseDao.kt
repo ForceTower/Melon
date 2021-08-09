@@ -20,25 +20,27 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Course
+import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDao {
     @Insert(onConflict = REPLACE)
-    fun insert(courses: List<Course>)
+    suspend fun insert(courses: List<Course>)
 
     @Query("SELECT * FROM Course ORDER BY name")
-    fun selectAll(): LiveData<List<Course>>
+    fun selectAll(): Flow<List<Course>>
 
-    @WorkerThread
     @Query("SELECT * FROM Course ORDER BY name")
-    fun selectAllDirect(): List<Course>
+    suspend fun selectAllDirect(): List<Course>
+
+    @Query("SELECT COUNT(id) FROM Course")
+    suspend fun count(): Int
 
     @Query("SELECT * FROM Course WHERE id = :course")
     fun getCourse(course: Long): LiveData<Course?>

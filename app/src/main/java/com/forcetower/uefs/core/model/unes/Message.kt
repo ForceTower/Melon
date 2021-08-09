@@ -83,7 +83,7 @@ data class Message(
                 html = me.isFromHtml,
                 dateString = me.dateString,
                 processingTime = me.processingTime,
-                hashMessage = me.message?.toLowerCase(Locale.getDefault())?.trim().hashCode().toLong(),
+                hashMessage = me.message?.lowercase(Locale.getDefault())?.trim().hashCode().toLong(),
                 attachmentName = me.attachmentName,
                 attachmentLink = me.attachmentLink
             ).apply { disciplineResume = me.objective }
@@ -99,7 +99,7 @@ data class Message(
                 notified = notified,
                 html = false,
                 processingTime = System.currentTimeMillis(),
-                hashMessage = me.content.replace("\\n", "\n").toLowerCase(Locale.getDefault()).trim().hashCode().toLong(),
+                hashMessage = me.content.replace("\\n", "\n").lowercase(Locale.getDefault()).trim().hashCode().toLong(),
                 discipline = me.discipline?.discipline,
                 codeDiscipline = me.discipline?.code
             )

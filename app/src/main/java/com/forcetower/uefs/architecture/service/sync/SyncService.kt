@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.architecture.service.sync
 
-import android.app.PendingIntent
 import android.app.Service
 import android.content.Intent
 import android.os.Handler
@@ -37,8 +36,8 @@ import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -91,7 +90,7 @@ class SyncService : LifecycleService() {
         Timber.d("Start requesteer")
         shouldRequestSyncUpdate = true
         createNotification()
-        updateDataForService()
+        updateData()
     }
 
     private fun stopComponent() {
@@ -113,11 +112,9 @@ class SyncService : LifecycleService() {
     }
 
     private fun createNotification() {
-        val intent = Intent(this, SyncService::class.java).apply {
-            action = STOP_SERVICE_ACTION
-        }
-        val pending = PendingIntent.getService(this, 0, intent, 0)
-        val notification = NotificationCreator.createCookieSyncServiceNotification(this, pending)
+//        val intent = Intent(this, HomeActivity::class.java)
+//        val pending = PendingIntent.getService(this, 0, intent, 0)
+        val notification = NotificationCreator.createCookieSyncServiceNotification(this)
         notificationManager.notify(SYNC_NOTIFICATION, notification)
 
         if (!isForegroundService) {
@@ -130,22 +127,10 @@ class SyncService : LifecycleService() {
         }
     }
 
-    private fun updateDataForService(): Boolean = handler.postDelayed(
-        {
-            Timber.d("Will update data")
-            updateData()
-            if (shouldRequestSyncUpdate) {
-                updateDataForService()
-            } else {
-                Timber.d("Request stopped...")
-            }
-        },
-        UPDATE_DATA_INTERVAL
-    )
-
     private fun updateData() {
         serviceScope.launch {
-            withContext(Dispatchers.IO) {
+            while (shouldRequestSyncUpdate) {
+                Timber.d("Will update data")
                 try {
                     createNotification()
                     Timber.d("Running Calling the cops")
@@ -154,7 +139,9 @@ class SyncService : LifecycleService() {
                     Timber.d("Failed with exception... It's probably gone")
                     disable()
                 }
+                delay(UPDATE_DATA_INTERVAL)
             }
+            Timber.d("Request stopped...")
         }
     }
 
@@ -171,7 +158,7 @@ class SyncService : LifecycleService() {
 
     companion object {
         const val STOP_SERVICE_ACTION = "com.forcetower.uefs.sync.STOP_FOREGROUND_SERVICE"
-        const val UPDATE_DATA_INTERVAL = 450_000L // 15 minutes
+        const val UPDATE_DATA_INTERVAL = 60_000L // 15 minutes
         const val SYNC_NOTIFICATION: Int = 0xb751
     }
 }

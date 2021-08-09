@@ -21,10 +21,13 @@
 package com.forcetower.uefs.core.task
 
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 
-abstract class UseCase<in P, R>(private val coroutineDispatcher: CoroutineDispatcher) {
+abstract class UseCase<in P, R>(
+    private val coroutineDispatcher: CoroutineDispatcher = Dispatchers.IO
+) {
     suspend operator fun invoke(parameters: P): UCaseResult<R> {
         return try {
             withContext(coroutineDispatcher) {

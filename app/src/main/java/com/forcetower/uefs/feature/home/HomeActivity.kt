@@ -36,6 +36,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.uefs.AppExecutors
@@ -45,7 +46,6 @@ import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel

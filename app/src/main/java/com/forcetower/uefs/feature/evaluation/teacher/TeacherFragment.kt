@@ -28,10 +28,10 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
@@ -44,7 +44,7 @@ class TeacherFragment : UFragment() {
     private val viewModel: EvaluationViewModel by viewModels()
     private val args: TeacherFragmentArgs by navArgs()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         adapter = TeacherAdapter(viewModel)
         return FragmentEvaluateTeacherBinding.inflate(inflater, container, false).apply {
             btnEvaluate.hide()
@@ -54,8 +54,8 @@ class TeacherFragment : UFragment() {
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         val teacherName = args.teacherName
         val liveData = if (teacherName != null) {
             viewModel.getTeacher(teacherName)

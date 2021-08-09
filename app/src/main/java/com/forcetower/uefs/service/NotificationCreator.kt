@@ -390,7 +390,7 @@ object NotificationCreator {
         showNotification(context, data.absence.uid, builder)
     }
 
-    fun createCookieSyncServiceNotification(context: Context, close: PendingIntent): Notification {
+    fun createCookieSyncServiceNotification(context: Context/*, close: PendingIntent*/): Notification {
         return notificationBuilder(context, NotificationHelper.CHANNEL_GENERAL_SYNC_SERVICE_FOREGROUND, false)
             .setContentTitle(context.getString(R.string.label_service_sync_foreground))
             .setContentText(context.getString(R.string.label_service_sync_foreground_desc))

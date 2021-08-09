@@ -27,7 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
-import com.forcetower.uefs.core.vm.EventObserver
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.databinding.DialogAdventureSignInBinding
 import com.forcetower.uefs.feature.shared.RoundedDialog
 import com.forcetower.uefs.feature.shared.UGameActivity

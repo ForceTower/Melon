@@ -45,6 +45,7 @@ import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.parsers.SagresBasicParser
 import com.forcetower.sagres.parsers.SagresMessageParser
 import com.forcetower.sagres.parsers.SagresScheduleParser
+import com.forcetower.sagres.utils.ConnectedStates
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -91,6 +92,7 @@ class SagresSyncRepository @Inject constructor(
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
     private val firebaseAuthRepository: FirebaseAuthRepository,
+    private val cookieSessionRepository: CookieSessionRepository,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
     private val preferences: SharedPreferences
@@ -176,7 +178,7 @@ class SagresSyncRepository @Inject constructor(
         // this was useful to avoid unes from ddos'ing the website.
         // they said unes was doing it anyways, so here is a deleted useless piece of code
         // you welcome
-        if (!Constants.EXECUTOR_WHITELIST.contains(executor.toLowerCase(Locale.getDefault()))) {
+        if (!Constants.EXECUTOR_WHITELIST.contains(executor.lowercase(Locale.getDefault()))) {
             Timber.d("There was a time where this would cause sync to be aborted if server.. But i don't care anymore")
         }
 
@@ -184,15 +186,37 @@ class SagresSyncRepository @Inject constructor(
             findAndMatch()
         } catch (t: Throwable) { }
 
+        val isStudentFromUEFS = preferences.isStudentFromUEFS()
+        if (isStudentFromUEFS) {
+            val injected = cookieSessionRepository.injectGoodCookiesOnClient()
+            if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
+                Timber.i("The cookie that is good no one wants to give!")
+                NotificationCreator.showSimpleNotification(context, "Então...", "Você não tem sessão criada, entra de novo")
+                markSessionExpired()
+                return
+            }
+        }
+
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
         database.classMaterialDao().markAllNotified()
 
         val homeDoc = when {
-            preferences.isStudentFromUEFS() && gToken == null -> initialPage()
-            !preferences.isStudentFromUEFS() || gToken != null -> login(access, gToken)
+            isStudentFromUEFS && gToken == null -> initialPage()
+            !isStudentFromUEFS || gToken != null -> login(access, gToken)
             else -> null
         }
+
+        if (isStudentFromUEFS) {
+            val connection = SagresBasicParser.isConnected(homeDoc)
+            if (connection == ConnectedStates.INVALID) {
+                cookieSessionRepository.invalidateCookies()
+                NotificationCreator.showSimpleNotification(context, "Vish...", "Sua sessão expirou, entra de novo")
+                markSessionExpired()
+                return
+            }
+        }
+
         val score = SagresBasicParser.getScore(homeDoc)
         Timber.d("Login Completed. Score Parsed: $score")
 
@@ -268,16 +292,6 @@ class SagresSyncRepository @Inject constructor(
             ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
                 (currentDailyHour >= nextHour)
 
-        Timber.d("Discipline Sync Dump >> will sync now $shouldDisciplineSync")
-        Timber.d("Dailies $dailyDisciplines")
-        Timber.d("Current daily $currentDaily")
-        Timber.d("Current Day discipline $currentDayDiscipline")
-        Timber.d("Last daily hour $lastDailyHour")
-        Timber.d("Is this a new daily? $isNewDaily")
-        Timber.d("Current hour $currentDailyHour")
-        Timber.d("Actual daily count $actualDailyCount")
-        Timber.d("Next daily hour $nextHour")
-
         if (shouldDisciplineSync) {
             if (!disciplinesExperimental()) result += 1 shl 6
             else {
@@ -295,7 +309,7 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
-        val uefsStudent = preferences.isStudentFromUEFS()
+        val uefsStudent = isStudentFromUEFS
         if (uefsStudent) {
             serviceLogin()
         }
@@ -403,6 +417,13 @@ class SagresSyncRepository @Inject constructor(
             else -> produceErrorMessage(login)
         }
         return null
+    }
+
+    private fun markSessionExpired() {
+        val access = database.accessDao().getAccessDirect()
+        if (access != null && access.valid) {
+            database.accessDao().setAccessValidation(false)
+        }
     }
 
     private fun onInvalidLogin() {

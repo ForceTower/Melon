@@ -25,8 +25,8 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.ActivityDemandBinding
 import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity

@@ -27,7 +27,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.forcetower.uefs.core.vm.EventObserver
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.databinding.FragmentFlowchartSelectCourseBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint

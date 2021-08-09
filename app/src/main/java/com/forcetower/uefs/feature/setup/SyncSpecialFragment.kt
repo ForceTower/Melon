@@ -68,7 +68,7 @@ class SyncSpecialFragment : UFragment() {
             requireActivity().finishAfterTransition()
         }
 
-        val manufacturer = Build.MANUFACTURER.toLowerCase(Locale.getDefault())
+        val manufacturer = Build.MANUFACTURER.lowercase(Locale.getDefault())
 
         val bundle = bundleOf("manufacturer" to manufacturer)
         if (savedInstanceState == null) {
@@ -97,7 +97,7 @@ class SyncSpecialFragment : UFragment() {
                     )
                     .setShareState(CustomTabsIntent.SHARE_STATE_ON)
                     .build(),
-                Uri.parse("https://dontkillmyapp.com/${Build.BRAND.toLowerCase(Locale.getDefault())}")
+                Uri.parse("https://dontkillmyapp.com/${Build.BRAND.lowercase(Locale.getDefault())}")
             )
         }
         if (VersionUtils.isMarshmallow()) {

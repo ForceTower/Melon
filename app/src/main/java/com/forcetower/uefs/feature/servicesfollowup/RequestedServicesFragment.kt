@@ -26,7 +26,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.databinding.ContentServicesFollowupBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -38,7 +37,7 @@ class RequestedServicesFragment : UFragment() {
 
     private val adapter by lazy { ServicesFollowUpAdapter() }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return ContentServicesFollowupBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -48,14 +47,11 @@ class RequestedServicesFragment : UFragment() {
         binding.recyclerServices.run {
             adapter = this@RequestedServicesFragment.adapter
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         val filter = arguments?.getString(FILTER_TYPE)
         viewModel.getRequestedServices(filter).observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 binding.empty = it.isEmpty()
                 binding.executePendingBindings()
                 adapter.submitList(it)

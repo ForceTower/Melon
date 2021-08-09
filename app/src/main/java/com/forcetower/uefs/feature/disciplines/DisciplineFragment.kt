@@ -33,13 +33,13 @@ import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toJson
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDisciplineOldBinding
 import com.forcetower.uefs.feature.disciplines.dialog.SelectGroupDialog
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
@@ -84,10 +84,7 @@ class DisciplineFragment : UFragment() {
         adapter = SemesterAdapter(childFragmentManager)
         viewPager.adapter = adapter
         tabs.setupWithViewPager(viewPager)
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.semesters.observe(
             viewLifecycleOwner,
             {

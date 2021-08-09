@@ -28,8 +28,8 @@ import androidx.core.os.bundleOf
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.unes.ClassItem
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDisciplineClassesBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.disciplines.dialog.SelectMaterialDialog

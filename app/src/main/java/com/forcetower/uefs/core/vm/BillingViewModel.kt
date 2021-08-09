@@ -26,6 +26,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
@@ -35,12 +36,17 @@ import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
 import com.android.billingclient.api.SkuDetails
 import com.android.billingclient.api.SkuDetailsParams
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
 import com.forcetower.uefs.core.storage.repository.BillingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import javax.inject.Inject
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 @HiltViewModel
 class BillingViewModel @Inject constructor(
@@ -66,18 +72,16 @@ class BillingViewModel @Inject constructor(
         }
     }
 
-    val isGoldMonkey: Boolean
-        get() = queryGoldMonkey()
-
-    private fun queryGoldMonkey(): Boolean {
-        val response = billingClient.queryPurchases(BillingClient.SkuType.SUBS)
-        if (response.responseCode == BillingClient.BillingResponseCode.OK) {
-            val purchases = response.purchasesList ?: emptyList()
+    private suspend fun queryGoldMonkey(): Boolean {
+        try {
+            val purchases = billingClient.suspendQueryPurchases(BillingClient.SkuType.SUBS)
             if (purchases.isEmpty()) {
                 repository.cancelSubscriptions()
             } else {
                 repository.handlePurchases(purchases)
             }
+        } catch (error: Throwable) {
+            Timber.i(error, "Error during purchase update")
         }
         return repository.isGoldMonkey()
     }
@@ -150,12 +154,17 @@ class BillingViewModel @Inject constructor(
         billingClient.launchBillingFlow(activity, params)
     }
 
-    private fun updatePurchases() {
-        val result = billingClient.queryPurchases(BillingClient.SkuType.INAPP)
-        if (result.purchasesList == null) {
+    private suspend fun updatePurchases() {
+        val result = try {
+            billingClient.suspendQueryPurchases(BillingClient.SkuType.INAPP)
+        } catch (error: Throwable) {
+            null
+        }
+
+        if (result == null) {
             Timber.d("Update purchase: Null purchase list")
         } else {
-            handlePurchases(result.purchasesList ?: emptyList())
+            handlePurchases(result)
         }
     }
 
@@ -174,7 +183,9 @@ class BillingViewModel @Inject constructor(
 
     override fun onBillingSetupFinished(result: BillingResult) {
         if (result.responseCode == BillingClient.BillingResponseCode.OK) {
-            updatePurchases()
+            viewModelScope.launch {
+                updatePurchases()
+            }
         }
     }
 
@@ -190,7 +201,17 @@ class BillingViewModel @Inject constructor(
             if (response.responseCode == BillingClient.BillingResponseCode.OK) {
                 _snack.postValue(Event(R.string.purchase_you_bought_a_consumable_item))
             } else {
-                Timber.e("Failed to consume ${purchase.sku}")
+                Timber.e("Failed to consume ${purchase.skus}")
+            }
+        }
+    }
+
+    private suspend fun BillingClient.suspendQueryPurchases(type: String) = suspendCancellableCoroutine<List<Purchase>> { continuation ->
+        queryPurchasesAsync(type) { result, purchases ->
+            if (result.responseCode == BillingClient.BillingResponseCode.OK) {
+                continuation.resume(purchases)
+            } else {
+                continuation.resumeWithException(IllegalStateException("Response code was ${result.responseCode}"))
             }
         }
     }

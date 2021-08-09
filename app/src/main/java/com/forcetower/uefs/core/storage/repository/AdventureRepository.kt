@@ -177,7 +177,7 @@ class AdventureRepository @Inject constructor(
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
 
-                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline.code.toUpperCase(Locale.getDefault())]
+                    val teacher = Constants.HARD_DISCIPLINES[clazz.discipline.code.uppercase(Locale.getDefault())]
                     if (teacher != null && points >= 5) {
                         if (teacher == "__ANY__") {
                             data[R.string.achievement_vale_das_sombras] = -1

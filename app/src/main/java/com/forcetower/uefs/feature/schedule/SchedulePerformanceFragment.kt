@@ -26,10 +26,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.sagres.Constants
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentSchedulePerformanceBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
@@ -106,9 +106,15 @@ class SchedulePerformanceFragment : UFragment() {
 
     private fun onRefresh() {
         Timber.d("Refresh requested.... ${Constants.getParameter("REQUIRES_CAPTCHA")}")
-        val snowpiercer = remoteConfig.getBoolean("feature_flag_use_snowpiercer") && preferences.isStudentFromUEFS()
+        val studentFromUEFS = preferences.isStudentFromUEFS()
+        val snowpiercer = remoteConfig.getBoolean("feature_flag_use_snowpiercer") && studentFromUEFS
         if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
             viewModel.doRefreshData(null, snowpiercer)
+            return
+        }
+
+        if (studentFromUEFS) {
+            viewModel.doRefreshData(null, false)
             return
         }
 
