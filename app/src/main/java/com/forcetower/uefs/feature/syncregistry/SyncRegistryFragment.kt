@@ -25,7 +25,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.DividerItemDecoration.VERTICAL
 import com.forcetower.uefs.R
@@ -39,7 +38,7 @@ class SyncRegistryFragment : UFragment() {
     private lateinit var binding: FragmentSyncRegistryBinding
     private lateinit var syncAdapter: SyncRegistryAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSyncRegistryBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -55,10 +54,7 @@ class SyncRegistryFragment : UFragment() {
             adapter = syncAdapter
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.registry.observe(viewLifecycleOwner, Observer { syncAdapter.submitList(it) })
+        viewModel.registry.observe(viewLifecycleOwner, { syncAdapter.submitList(it) })
     }
 }

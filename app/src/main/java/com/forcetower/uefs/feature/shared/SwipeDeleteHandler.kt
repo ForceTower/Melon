@@ -57,7 +57,7 @@ class SwipeDeleteHandler(
     }
 
     override fun onChildDraw(c: Canvas, recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, dX: Float, dY: Float, actionState: Int, isCurrentlyActive: Boolean) {
-        if (viewHolder.adapterPosition < 0) return
+        if (viewHolder.bindingAdapterPosition < 0) return
 
         val view = viewHolder.itemView // the view being swiped
 

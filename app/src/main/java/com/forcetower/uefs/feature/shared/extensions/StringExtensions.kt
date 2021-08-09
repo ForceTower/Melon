@@ -21,7 +21,7 @@
 package com.forcetower.uefs.feature.shared.extensions
 
 import android.util.Base64
-import com.forcetower.sagres.utils.WordUtils
+import com.forcetower.core.utils.WordUtils
 
 fun String.makeSemester(): String {
     return if (this.length > 4) {

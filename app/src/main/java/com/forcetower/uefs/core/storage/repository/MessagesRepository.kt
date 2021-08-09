@@ -21,7 +21,6 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
-import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
@@ -30,11 +29,12 @@ import androidx.paging.PagedList
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
-import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.defineInDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_ERROR_NO_VALUE
+import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_SUCCESS
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.Query
@@ -54,7 +54,7 @@ class MessagesRepository @Inject constructor(
     private val context: Context,
     private val client: OkHttpClient,
     private val database: UDatabase,
-    private val executors: AppExecutors,
+    private val cookieSessionRepository: CookieSessionRepository,
     @Named(UMessage.COLLECTION) private val collection: CollectionReference,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     @Named("webViewUA") private val agent: String
@@ -67,12 +67,7 @@ class MessagesRepository @Inject constructor(
         return if (snowpiercerEnabled) {
             fetchMessagesSnowflake(fetchAll).asLiveData(Dispatchers.IO)
         } else {
-            val result = MutableLiveData<Boolean>()
-            executors.networkIO().execute {
-                val bool = fetchMessagesCase(fetchAll)
-                result.postValue(bool)
-            }
-            result
+            fetchMessagesCase(fetchAll).asLiveData(Dispatchers.IO)
         }
     }
 
@@ -95,11 +90,10 @@ class MessagesRepository @Inject constructor(
         }
     }
 
-    @WorkerThread
-    fun fetchMessagesCase(all: Boolean = false): Boolean {
+    fun fetchMessagesCase(all: Boolean = false) = flow {
         val profile = database.profileDao().selectMeDirect()
         val access = database.accessDao().getAccessDirect()
-        return if (profile != null && access != null) {
+        if (profile != null && access != null) {
             SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
             val messages = if (!profile.mocked) {
                 SagresNavigator.instance.messages(profile.sagresId, all)
@@ -110,8 +104,17 @@ class MessagesRepository @Inject constructor(
                     database.profileDao().insert(person)
                     SagresNavigator.instance.messages(person.id, all)
                 } else {
-                    // TODO [REQUIRES PATCHING SAVID-1]
-                    SagresNavigator.instance.messagesHtml()
+                    val injected = cookieSessionRepository.injectGoodCookiesOnClient()
+                    if (injected == INJECT_SUCCESS) {
+                        SagresNavigator.instance.messagesHtml()
+                    } else {
+                        if (injected == INJECT_ERROR_NO_VALUE) {
+                            // TODO this must show something to the user
+                            Timber.d("User didn't have a injectable cookie... Logout actually :D")
+                        }
+                        emit(false)
+                        return@flow
+                    }
                 }
             }
 
@@ -120,13 +123,13 @@ class MessagesRepository @Inject constructor(
             if (messages.status == Status.SUCCESS) {
                 Timber.d("${messages.messages}")
                 messages.messages.defineInDatabase(database, true)
-                true
+                emit(true)
             } else {
                 Timber.d("${messages.status}")
-                false
+                emit(false)
             }
         } else {
-            false
+            emit(false)
         }
     }
 

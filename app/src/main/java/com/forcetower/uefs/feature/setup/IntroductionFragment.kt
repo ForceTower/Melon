@@ -30,7 +30,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.signature.ObjectKey
@@ -61,20 +60,10 @@ class IntroductionFragment : UFragment() {
     private val viewModel: SetupViewModel by activityViewModels()
     private lateinit var binding: FragmentSetupIntroductionBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSetupIntroductionBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
-    }
-
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        repository.getFrequencies().observe(
-            viewLifecycleOwner,
-            Observer {
-                viewModel.syncFrequencies = it
-            }
-        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -128,6 +117,13 @@ class IntroductionFragment : UFragment() {
                 .signature(ObjectKey(System.currentTimeMillis() ushr 21))
                 .into(binding.imageUserImage)
         }
+
+        repository.getFrequencies().observe(
+            viewLifecycleOwner,
+            {
+                viewModel.syncFrequencies = it
+            }
+        )
     }
 
     private fun pickImage() {

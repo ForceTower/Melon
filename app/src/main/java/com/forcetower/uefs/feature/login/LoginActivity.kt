@@ -21,39 +21,31 @@
 package com.forcetower.uefs.feature.login
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.findNavController
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.CourseViewModel
 import com.forcetower.uefs.databinding.ActivityLoginBinding
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
-import javax.inject.Inject
 
+/**
+ * This class represents the main authentication flow.
+ */
 @AndroidEntryPoint
 class LoginActivity : UActivity() {
-    @Inject
-    lateinit var preferences: SharedPreferences
     private lateinit var binding: ActivityLoginBinding
-    private val coursesViewModel by viewModels<CourseViewModel>()
+    private val viewModel by viewModels<LoginViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_login)
 
-        coursesViewModel.courses.observe(
-            this,
-            Observer {
-                Timber.d("Courses Status: ${it.status}")
-            }
-        )
+        // Load university courses into database
+        viewModel.loadCoursesIfNeeded()
     }
 
     override fun navigateUpTo(upIntent: Intent?): Boolean = findNavController(R.id.login_nav_host).navigateUp()

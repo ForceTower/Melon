@@ -33,12 +33,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.util.getLinks
 import com.forcetower.uefs.core.util.isStudentFromUEFS
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAllMessagesBinding
 import com.forcetower.uefs.feature.home.HomeViewModel
 import com.forcetower.uefs.feature.messages.dynamic.AERIMessageFragment
@@ -63,7 +63,7 @@ class MessagesFragment : UFragment() {
     private val messagesViewModel: MessagesViewModel by activityViewModels()
     private val homeViewModel: HomeViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentAllMessagesBinding.inflate(inflater, container, false).apply {
             profileViewModel = this@MessagesFragment.profileViewModel
             lifecycleOwner = this@MessagesFragment
@@ -109,10 +109,7 @@ class MessagesFragment : UFragment() {
         if (index > 0 && open) {
             binding.pagerMessage.setCurrentItem(index, true)
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         messagesViewModel.messageClick.observe(viewLifecycleOwner, EventObserver { openLink(it) })
         messagesViewModel.snackMessage.observe(viewLifecycleOwner, EventObserver { showSnack(getString(it), Snackbar.LENGTH_LONG) })
     }

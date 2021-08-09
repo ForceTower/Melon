@@ -27,8 +27,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.core.vm.UnesverseViewModel
 import com.forcetower.uefs.databinding.FragmentUniverseRequiredBinding
 import com.forcetower.uefs.feature.information.InformationDialog
@@ -40,7 +40,7 @@ class UnesverseRequiredFragment : UFragment() {
     private lateinit var binding: FragmentUniverseRequiredBinding
     private val viewModel: UnesverseViewModel by viewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentUniverseRequiredBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -56,8 +56,8 @@ class UnesverseRequiredFragment : UFragment() {
         dialog.show(childFragmentManager, "what_is_unesverse")
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.connecting = viewModel.isLoggingIn
         binding.lifecycleOwner = this
         viewModel.loggingIn.observe(viewLifecycleOwner, Observer { Unit })
@@ -70,7 +70,7 @@ class UnesverseRequiredFragment : UFragment() {
         )
         viewModel.access.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it != null) {
                     findNavController().navigate(R.id.action_unesverse_required_to_presentation)
                 }

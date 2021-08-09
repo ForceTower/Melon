@@ -21,20 +21,13 @@
 package com.forcetower.uefs
 
 import android.content.Intent
-import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
-import com.forcetower.uefs.core.vm.Destination
-import com.forcetower.uefs.core.vm.EventObserver
-import com.forcetower.uefs.core.vm.LaunchViewModel
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.login.LoginActivity
-import com.forcetower.uefs.service.NotificationCreator
-import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * A atividade inicial do aplicativo, ela tem o papel de decidir qual tela mostrar
@@ -43,43 +36,23 @@ import javax.inject.Inject
  */
 @AndroidEntryPoint
 class LauncherActivity : AppCompatActivity() {
-    @Inject
-    lateinit var remoteConfig: FirebaseRemoteConfig
-    @Inject
-    lateinit var preferences: SharedPreferences
+    private val viewModel by viewModels<LaunchViewModel>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        val viewModel: LaunchViewModel by viewModels()
         if (savedInstanceState != null) return
-        createNewVersionNotification()
 
+        viewModel.checkNewAppVersion()
+        viewModel.findStarterDirection()
         viewModel.direction.observe(
             this,
-            EventObserver {
-                Timber.d("Once!")
-                // Esta linha não é necessária já que o EventObserver é chamado apenas uma vez
-                if (!viewModel.started) {
-                    when (it) {
-                        Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
-                        Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
-                    }
-                    viewModel.started = true
-                    finish()
+            EventObserver { destination ->
+                when (destination) {
+                    LaunchViewModel.Destination.LOGIN_ACTIVITY -> startActivity(Intent(this, LoginActivity::class.java))
+                    LaunchViewModel.Destination.HOME_ACTIVITY -> startActivity(Intent(this, HomeActivity::class.java))
                 }
+                finish()
             }
         )
-    }
-
-    private fun createNewVersionNotification() {
-        val currentVersion = remoteConfig.getLong("version_current")
-        val notified = preferences.getBoolean("version_ntf_key_$currentVersion", false)
-        if (currentVersion > BuildConfig.VERSION_CODE && !notified) {
-            val notes = remoteConfig.getString("version_notes")
-            val version = remoteConfig.getString("version_name")
-            val title = getString(R.string.new_version_ntf_title_format, version)
-            NotificationCreator.showSimpleNotification(this, title, notes)
-            preferences.edit().putBoolean("version_ntf_key_$currentVersion", true).apply()
-        }
     }
 }

@@ -27,10 +27,9 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentInviteDarkThemeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar
@@ -41,7 +40,7 @@ class InviteDarkThemeFragment : UFragment() {
     private val viewModel: DarkThemeViewModel by activityViewModels()
     private lateinit var binding: FragmentInviteDarkThemeBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentInviteDarkThemeBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -52,10 +51,7 @@ class InviteDarkThemeFragment : UFragment() {
             btnSend.setOnClickListener { onSend() }
             btnSendRandom.setOnClickListener { onSendRandom() }
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.currentCall.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -82,7 +78,7 @@ class InviteDarkThemeFragment : UFragment() {
 
         viewModel.profile.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 if (it == null) {
                     binding.textInvitesLeft.text = "0"
                 } else {

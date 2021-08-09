@@ -121,7 +121,7 @@ class ScheduleBlockPerformanceAdapter(
                 val casted = (item as ProcessedClassLocation.ElementSpace)
                 holder.run {
                     val colorIndex = disciplineColors[casted.reference.groupData.classData.discipline.code] ?: 0
-                    val color = colors[colorIndex]
+                    val color = colors[colorIndex % colors.size]
 
                     binding.data = casted.reference.groupData
                     binding.scheduleActions = actions

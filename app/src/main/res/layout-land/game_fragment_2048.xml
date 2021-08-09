@@ -168,7 +168,7 @@
                 android:contentDescription="@string/reset"
                 android:padding="7dp"
                 android:textColor="@android:color/white"
-                android:tint="@color/white"
+                app:tint="@color/white"
                 app:srcCompat="@drawable/ic_sync_black_24dp" />
 
             <ImageButton
@@ -182,7 +182,7 @@
                 android:contentDescription="@string/undo"
                 android:padding="7dp"
                 android:textColor="@android:color/white"
-                android:tint="@color/white"
+                app:tint="@color/white"
                 app:srcCompat="@drawable/ic_undo_black_24dp" />
 
         </LinearLayout>

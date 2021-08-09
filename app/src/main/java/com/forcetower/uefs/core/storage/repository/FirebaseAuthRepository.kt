@@ -22,14 +22,13 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import com.forcetower.core.utils.WordUtils
 import com.forcetower.sagres.database.model.SagresPerson
-import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Profile
-import com.google.android.gms.tasks.OnCompleteListener
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
@@ -55,7 +54,7 @@ class FirebaseAuthRepository @Inject constructor(
     fun loginToFirebase(person: SagresPerson, access: Access, reconnect: Boolean = false) {
         if (reconnect) { firebaseAuth.signOut() }
         if (firebaseAuth.currentUser == null) {
-            val user = access.username.toLowerCase(Locale.getDefault())
+            val user = access.username.lowercase(Locale.getDefault())
             val username = if (user.contains("@")) {
                 "${user.substring(0, user.indexOf("@"))}_email"
             } else {
@@ -127,7 +126,7 @@ class FirebaseAuthRepository @Inject constructor(
         val data = mutableMapOf(
             "name" to WordUtils.toTitleCase(person.name?.trim()),
             "username" to access.username,
-            "email" to (person.email?.trim()?.toLowerCase(Locale.getDefault()) ?: "unknown@unes.com"),
+            "email" to (person.email?.trim()?.lowercase(Locale.getDefault()) ?: "unknown@unes.com"),
             "cpf" to person.getCpf()?.trim(),
             "sagresId" to person.id,
             "imageUrl" to "/users/$uid/avatar.jpg",
@@ -147,7 +146,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("User data set!")
                     } else {
@@ -166,7 +165,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(user.uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("User course data set!")
                     } else {
@@ -185,7 +184,7 @@ class FirebaseAuthRepository @Inject constructor(
         userCollection.document(user.uid).set(data, SetOptions.merge())
             .addOnCompleteListener(
                 executors.others(),
-                OnCompleteListener { task ->
+                { task ->
                     if (task.isSuccessful) {
                         Timber.d("Completed setting frequency")
                     } else {

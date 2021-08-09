@@ -151,7 +151,7 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
 
         val seenPositions = hashSetOf<Int>()
         parent.forEach { view ->
-            val position = parent.getChildViewHolder(view).adapterPosition
+            val position = parent.getChildViewHolder(view).bindingAdapterPosition
             if (position != -1 && position in range && seenPositions.add(position)) {
                 minLeft = min(minLeft, view.left.toFloat())
                 minTop = min(minTop, view.top.toFloat())

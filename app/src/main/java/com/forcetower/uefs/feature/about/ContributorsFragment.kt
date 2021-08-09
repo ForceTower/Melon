@@ -28,13 +28,12 @@ import android.view.ViewGroup
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentAboutContributorsBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
@@ -60,10 +59,10 @@ class ContributorsFragment : UFragment() {
         binding.recyclerContributors.adapter = adapter
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         viewModel.contributorClickAction.observe(viewLifecycleOwner, EventObserver { openLink(it) })
-        viewModel.contributors.observe(viewLifecycleOwner, Observer { processContributors(it) })
+        viewModel.contributors.observe(viewLifecycleOwner, { processContributors(it) })
     }
 
     private fun processContributors(resource: Resource<List<Contributor>>?) {

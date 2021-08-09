@@ -148,23 +148,44 @@ class AuthRepository @Inject constructor(
         return false
     }
 
+    /**
+     * This is some horrible code.. HOLY!!!!
+     * Please refactor this into a nice thing... like ...
+     * one() ?: two() ?: three()
+     */
     @WorkerThread
-    fun syncLogin(username: String, password: String): AccessToken? {
+    fun syncLogin(username: String, password: String, auth: String? = null, sessionId: String? = null): AccessToken? {
         try {
             Timber.d("Sign in using ${username.trim()} and $password")
             val response = service.login(username.trim(), password).execute()
             if (response.isSuccessful) {
                 return continueWithResponse(response)
             } else {
-                val response2 = service.loginWithSagres(username, password).execute()
-                if (response2.isSuccessful) {
-                    return continueWithResponse(response2)
+                if (auth != null && sessionId != null) {
+                    val response2 = service.loginWithBiscuit(username.trim(), password, auth, sessionId).execute()
+                    if (response2.isSuccessful) {
+                        return continueWithResponse(response2)
+                    } else {
+                        val response3 = service.loginWithSagres(username, password).execute()
+                        if (response3.isSuccessful) {
+                            return continueWithResponse(response3)
+                        } else {
+                            // TODO Actually show a huge error message
+                            Timber.w("Failed with code: ${response3.code()}")
+                        }
+                    }
                 } else {
-                    Timber.e("Failed with code: ${response.code()}")
+                    val response3 = service.loginWithSagres(username, password).execute()
+                    if (response3.isSuccessful) {
+                        return continueWithResponse(response3)
+                    } else {
+                        // TODO Actually show a huge error message
+                        Timber.w("Failed with code: ${response3.code()}")
+                    }
                 }
             }
         } catch (t: Throwable) {
-            Timber.e(t, "failed to connect to api")
+            Timber.w(t, "failed to connect to api")
         }
         return null
     }

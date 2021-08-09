@@ -24,12 +24,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDisciplineUI
 import com.forcetower.uefs.core.model.unes.FlowchartRequirementUI
 import com.forcetower.uefs.core.model.unes.FlowchartSemesterUI
 import com.forcetower.uefs.core.storage.repository.FlowchartRepository
-import com.forcetower.uefs.core.vm.Event
 import com.forcetower.uefs.feature.flowchart.home.SemesterInteractor
 import com.forcetower.uefs.feature.flowchart.semester.DisciplineInteractor
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew

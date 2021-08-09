@@ -29,12 +29,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentEventScheduleBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.siecomp.SIECOMPEventViewModel
@@ -51,7 +50,7 @@ class ScheduleFragment : UFragment() {
     private lateinit var tabs: TabLayout
     private var count = 0
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         FragmentEventScheduleBinding.inflate(inflater, container, false).also {
             binding = it
             tabs = binding.tabLayout
@@ -91,7 +90,7 @@ class ScheduleFragment : UFragment() {
         }
         viewModel.access.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 binding.createSessionFloat.visibility = if (it != null) {
                     View.VISIBLE
                 } else {
@@ -99,13 +98,10 @@ class ScheduleFragment : UFragment() {
                 }
             }
         )
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
         viewModel.refreshSource.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 when (it.status) {
                     Status.ERROR -> showSnack(getString(R.string.siecomp_error_updating_info))
                     Status.LOADING, Status.SUCCESS -> {}
@@ -130,7 +126,7 @@ class ScheduleFragment : UFragment() {
             return ScheduleDayFragment.newInstance(position)
         }
 
-        override fun getPageTitle(position: Int): CharSequence? {
+        override fun getPageTitle(position: Int): CharSequence {
             return TimeUtils.EventDays[position].formatMonthDay()
         }
     }

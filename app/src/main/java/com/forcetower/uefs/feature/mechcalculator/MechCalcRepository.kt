@@ -91,7 +91,7 @@ class MechCalcRepository @Inject constructor(
                 val wildcard = (newRight / wildcardWeight).truncate()
                 val normWildcard = min(wildcard, 10.0)
 
-                val additional = values.filter { it.grade == null }.sumByDouble { (normWildcard * it.weight).truncate() }
+                val additional = values.filter { it.grade == null }.sumOf { (normWildcard * it.weight).truncate() }
                 val finalGrade = gradesSum + additional
                 val finalWeight = weightSum + wildcardWeight
                 val theMean = (finalGrade / finalWeight).truncate()

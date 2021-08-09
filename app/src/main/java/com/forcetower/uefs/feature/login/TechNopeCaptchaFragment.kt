@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.login
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -41,14 +42,15 @@ class TechNopeCaptchaFragment : UFragment() {
     private val args by navArgs<TechNopeCaptchaFragmentArgs>()
     private lateinit var binding: FragmentTechNopeCaptchaBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentTechNopeCaptchaBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    @SuppressLint("SetJavaScriptEnabled")
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         showSnack("Eu odeio essa parte...", Snackbar.LENGTH_LONG)
         binding.webView.apply {
             loadDataWithBaseURL(Constants.getParameter("CAPTCHA_BASE"), data, "text/html; charset=utf-8", "UTF-8", null)

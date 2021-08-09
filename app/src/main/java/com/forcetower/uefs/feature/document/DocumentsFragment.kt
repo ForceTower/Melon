@@ -28,11 +28,10 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.FileProvider
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
+import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.SagresDocument
-import com.forcetower.uefs.core.vm.EventObserver
 import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.shared.UFragment
@@ -46,7 +45,7 @@ class DocumentsFragment : UFragment() {
     private val viewModel: DocumentsViewModel by activityViewModels()
     private lateinit var adapter: DocumentsAdapter
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentDocumentsBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -58,11 +57,8 @@ class DocumentsFragment : UFragment() {
             recyclerDocuments.adapter = adapter
             incToolbar.textToolbarTitle.text = getString(R.string.label_documents)
         }
-    }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        viewModel.documents.observe(viewLifecycleOwner, Observer { adapter.documents = it ?: emptyList() })
+        viewModel.documents.observe(viewLifecycleOwner, { adapter.documents = it ?: emptyList() })
         viewModel.openDocumentAction.observe(viewLifecycleOwner, EventObserver { openDocument(it) })
         viewModel.snackMessages.observe(viewLifecycleOwner, EventObserver { showSnack(it) })
         viewModel.onRequestDownload.observe(viewLifecycleOwner, EventObserver { requestCaptchaForDocument(it) })

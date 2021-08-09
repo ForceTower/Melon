@@ -23,50 +23,45 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/padding_big"
-        android:paddingEnd="@dimen/padding_big"
-        android:paddingStart="@dimen/padding_big"
-        android:paddingBottom="@dimen/spacing_normal"
-        android:background="@drawable/background_rounded_dialog">
+        android:orientation="vertical"
+        android:padding="@dimen/padding_big">
 
-        <ProgressBar
-            android:id="@+id/pb_operation"
-            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+        <androidx.appcompat.widget.AppCompatImageView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:indeterminate="true"
-            android:visibility="invisible"
-            app:layout_constraintEnd_toEndOf="@+id/label_information"
-            app:layout_constraintStart_toStartOf="@+id/label_information"
-            app:layout_constraintTop_toBottomOf="@+id/layout_password_input" />
+            android:layout_height="120dp"
+            android:importantForAccessibility="no"
+            app:srcCompat="@drawable/session_timeout_warning"/>
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/label_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="@string/invalid_access_title"
+            android:layout_marginTop="16dp"
+            android:text="@string/unable_to_sync_account"
             android:textColor="?attr/colorOnSurface"
             android:textSize="20sp"
+            android:textAlignment="gravity"
+            android:gravity="center"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <TextView
+        <com.google.android.material.textview.MaterialTextView
             android:id="@+id/label_information"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_common"
-            android:text="@string/invalid_access_information"
+            android:text="@string/invalid_access_session_information"
             android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/label_title" />
 
-
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/layout_password_input"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
             android:hint="@string/invalid_access_new_password"
@@ -83,32 +78,40 @@
                 android:textColor="?attr/colorOnSurface" />
         </com.google.android.material.textfield.TextInputLayout>
 
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_cancel"
-            style="@style/UTheme.MaterialButton.Default.DialogSecondary"
-            android:layout_width="wrap_content"
+        <ProgressBar
+            android:id="@+id/pb_operation"
+            style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_normal"
-            android:fontFamily="@font/product_sans_regular"
-            android:letterSpacing="0"
-            android:text="@string/invalid_access_keep_current"
-            android:textAllCaps="false"
-            app:layout_constraintStart_toStartOf="parent"
+            android:indeterminate="true"
+            android:visibility="invisible"
+            app:layout_constraintEnd_toEndOf="@+id/label_information"
+            app:layout_constraintStart_toStartOf="@+id/label_information"
             app:layout_constraintTop_toBottomOf="@+id/layout_password_input" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_change"
-            style="@style/UTheme.MaterialButton.Default.DialogPrimary"
-            android:layout_width="wrap_content"
+            style="@style/UTheme.MaterialButton.Default"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_normal"
-            android:fontFamily="@font/product_sans_regular"
             android:letterSpacing="0"
             android:text="@string/invalid_access_change_password"
             android:textAllCaps="false"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/layout_password_input" />
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_cancel"
+            style="@style/UTheme.MaterialButton.Outline.AccentBorder"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:letterSpacing="0"
+            android:text="@string/invalid_access_keep_current"
+            android:textAllCaps="false"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/layout_password_input" />
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
 </layout>

@@ -1450,7 +1450,7 @@ public class NumberPicker extends LinearLayout {
             super.onDraw(canvas);
             return;
         }
-        float x = (getRight() - getLeft()) / 2;
+        float x = (getRight() - getLeft()) / 2f;
         float y = mCurrentScrollOffset;
 
         // draw the virtual buttons pressed state if needed
@@ -1681,7 +1681,7 @@ public class NumberPicker extends LinearLayout {
         initializeSelectorWheelIndices();
         int[] selectorIndices = mSelectorIndices;
         int totalTextHeight = selectorIndices.length * mTextSize;
-        float totalTextGapHeight = (getBottom() - getTop()) - totalTextHeight;
+        int totalTextGapHeight = (getBottom() - getTop()) - totalTextHeight;
         float textGapCount = selectorIndices.length;
         mSelectorTextGapHeight = (int) (totalTextGapHeight / textGapCount + 0.5f);
         mSelectorElementHeight = mTextSize + mSelectorTextGapHeight;
@@ -2087,8 +2087,8 @@ public class NumberPicker extends LinearLayout {
                 mIncrementVirtualButtonPressed = false;
                 invalidate(0, mBottomSelectionDividerBottom, getRight(), getBottom());
             }
-            mDecrementVirtualButtonPressed = false;
             if (mDecrementVirtualButtonPressed) {
+                mDecrementVirtualButtonPressed = false;
                 invalidate(0, 0, getRight(), mTopSelectionDividerTop);
             }
         }
@@ -2662,7 +2662,7 @@ public class NumberPicker extends LinearLayout {
         }
     }
 
-    static private String formatNumberWithLocale(int value) {
+    private static String formatNumberWithLocale(int value) {
         return String.format(Locale.getDefault(), "%d", value);
     }
 }
