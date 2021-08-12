@@ -192,7 +192,26 @@ class SagresSyncRepository @Inject constructor(
             if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
                 Timber.i("The cookie that is good no one wants to give!")
                 NotificationCreator.showSimpleNotification(context, "Então...", "Você não tem sessão criada, entra de novo")
+
+                registry.completed = true
+                registry.error = 1 shl 11
+                registry.success = false
+                registry.skipped = 0
+                registry.message = "Deve-se consultar as flags de erro"
+                registry.end = System.currentTimeMillis()
+                database.syncRegistryDao().update(registry)
+
                 markSessionExpired()
+                return
+            } else if (injected == CookieSessionRepository.INJECT_ERROR_NETWORK) {
+                Timber.i("Failed to connect to UNES Services")
+                registry.completed = true
+                registry.error = 1 shl 10
+                registry.success = false
+                registry.skipped = 0
+                registry.message = "Deve-se consultar as flags de erro"
+                registry.end = System.currentTimeMillis()
+                database.syncRegistryDao().update(registry)
                 return
             }
         }
