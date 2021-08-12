@@ -28,6 +28,7 @@ import android.view.ViewGroup
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import androidx.annotation.Keep
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.sagres.Constants
@@ -35,6 +36,7 @@ import com.forcetower.uefs.databinding.FragmentTechNopeCaptchaBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -51,7 +53,10 @@ class TechNopeCaptchaFragment : UFragment() {
     @SuppressLint("SetJavaScriptEnabled")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        showSnack("Eu odeio essa parte...", Snackbar.LENGTH_LONG)
+        lifecycleScope.launchWhenCreated {
+            delay(2000L)
+            showSnack("Eu odeio essa parte...", Snackbar.LENGTH_LONG)
+        }
         binding.webView.apply {
             loadDataWithBaseURL(Constants.getParameter("CAPTCHA_BASE"), data, "text/html; charset=utf-8", "UTF-8", null)
             settings.apply {
