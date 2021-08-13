@@ -107,10 +107,12 @@ class SigningInFragment : UFragment() {
         val font = ResourcesCompat.getFont(requireContext(), R.font.product_sans_regular)
 
         binding.textStatus.setFactory {
-            val textView = TextView(requireContext())
-            textView.textSize = 16f
-            textView.gravity = CENTER
-            textView.typeface = font
+            val textView = TextView(requireContext()).apply {
+                textSize = 16f
+                gravity = CENTER
+                typeface = font
+            }
+
             val typedValue = TypedValue()
             val theme = requireContext().theme
             theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
@@ -120,11 +122,12 @@ class SigningInFragment : UFragment() {
         }
 
         binding.textTips.setFactory {
-            val textView = TextView(requireContext())
-            textView.textSize = 13f
-            textView.gravity = CENTER
-            textView.typeface = font
-            textView.setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+            val textView = TextView(requireContext()).apply {
+                textSize = 13f
+                gravity = CENTER
+                typeface = font
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.red))
+            }
             textView
         }
     }
@@ -185,7 +188,15 @@ class SigningInFragment : UFragment() {
         when (callback.status) {
             Status.STARTED -> Timber.d("Status: Started")
             Status.LOADING -> Timber.d("Status: Loading")
-            Status.INVALID_LOGIN -> snackAndBack(getString(R.string.error_invalid_credentials))
+            Status.INVALID_LOGIN -> {
+                val code = callback.code
+                if (code != 401) {
+                    Timber.tag("connect_fail").e("User did not connect due to code $code")
+                    snackAndBack(getString(R.string.error_invalid_connect_error_with_code, code))
+                } else {
+                    snackAndBack(getString(R.string.error_invalid_credentials))
+                }
+            }
             Status.APPROVING -> Timber.d("Status: Approving")
             Status.NETWORK_ERROR -> snackAndBack(getString(R.string.error_network_error))
             Status.RESPONSE_FAILED -> snackAndBack(getString(R.string.error_unexpected_response_joke))
