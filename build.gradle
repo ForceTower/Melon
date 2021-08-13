@@ -1,3 +1,5 @@
+import javax.sound.sampled.Clip
+
 /*
  * This file is part of the UNES Open Source Project.
  * UNES is licensed under the GNU GPLv3.
@@ -17,6 +19,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+
+import javax.sound.sampled.AudioSystem
 
 buildscript {
     ext.kotlin_version = '1.5.21'
@@ -167,7 +171,9 @@ task clean(type: Delete) {
 //            clip.start()
 //            exec.createNewFile()
 //        }
-//    } catch (Throwable ignored) {}
+//    } catch (Throwable ignored) {
+//        ignored.printStackTrace()
+//    }
 //}
 
 subprojects {
