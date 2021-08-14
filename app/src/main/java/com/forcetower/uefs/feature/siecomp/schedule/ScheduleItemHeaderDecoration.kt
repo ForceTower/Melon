@@ -62,7 +62,6 @@ class ScheduleItemHeaderDecoration(
     private val meridiemTextSize: Int
     private val hourFormatter = DateTimeFormatter.ofPattern("H").withLocale(Locale.getDefault())
     private val hourMinFormatter = DateTimeFormatter.ofPattern("H:m").withLocale(Locale.getDefault())
-    private val meridiemFormatter = DateTimeFormatter.ofPattern("a").withLocale(Locale.getDefault())
     private val hoursString = context.getString(R.string.label_hours)
 
     init {

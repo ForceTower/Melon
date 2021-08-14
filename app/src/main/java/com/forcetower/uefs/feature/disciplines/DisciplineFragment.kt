@@ -66,6 +66,7 @@ class DisciplineFragment : UFragment() {
     private lateinit var tabs: TabLayout
     private lateinit var adapter: SemesterAdapter
 
+
     private var sortedSizeOnce: Int = 0
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
