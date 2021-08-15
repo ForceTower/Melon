@@ -69,13 +69,13 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.work.discipline.DisciplinesDetailsWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.service.NotificationCreator
-import com.google.android.gms.tasks.Tasks
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
+import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.jsoup.nodes.Document
 import timber.log.Timber
@@ -172,7 +172,13 @@ class SagresSyncRepository @Inject constructor(
         val calendar = Calendar.getInstance()
         val today = calendar.get(Calendar.DAY_OF_MONTH)
         registry.uid = uid
-        SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
+        SagresNavigator.instance.putCredentials(
+            SagresCredential(
+                access.username,
+                access.password,
+                SagresNavigator.instance.getSelectedInstitution()
+            )
+        )
 
         // Internal checks for canceling auto sync
         // this was useful to avoid unes from ddos'ing the website.
@@ -184,15 +190,39 @@ class SagresSyncRepository @Inject constructor(
 
         try {
             findAndMatch()
-        } catch (t: Throwable) { }
+        } catch (t: Throwable) {
+        }
 
         val isStudentFromUEFS = preferences.isStudentFromUEFS()
         if (isStudentFromUEFS) {
             val injected = cookieSessionRepository.injectGoodCookiesOnClient()
             if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
                 Timber.i("The cookie that is good no one wants to give!")
-                NotificationCreator.showSimpleNotification(context, "Então...", "Você não tem sessão criada, entra de novo")
+                NotificationCreator.showSimpleNotification(
+                    context,
+                    "Então...",
+                    "Você não tem sessão criada, entra de novo"
+                )
+
+                registry.completed = true
+                registry.error = 1 shl 11
+                registry.success = false
+                registry.skipped = 0
+                registry.message = "Deve-se consultar as flags de erro"
+                registry.end = System.currentTimeMillis()
+                database.syncRegistryDao().update(registry)
+
                 markSessionExpired()
+                return
+            } else if (injected == CookieSessionRepository.INJECT_ERROR_NETWORK) {
+                Timber.i("Failed to connect to UNES Services")
+                registry.completed = true
+                registry.error = 1 shl 10
+                registry.success = false
+                registry.skipped = 0
+                registry.message = "Deve-se consultar as flags de erro"
+                registry.end = System.currentTimeMillis()
+                database.syncRegistryDao().update(registry)
                 return
             }
         }
@@ -211,7 +241,11 @@ class SagresSyncRepository @Inject constructor(
             val connection = SagresBasicParser.isConnected(homeDoc)
             if (connection == ConnectedStates.INVALID) {
                 cookieSessionRepository.invalidateCookies()
-                NotificationCreator.showSimpleNotification(context, "Vish...", "Sua sessão expirou, entra de novo")
+                NotificationCreator.showSimpleNotification(
+                    context,
+                    "Vish...",
+                    "Sua sessão expirou, entra de novo"
+                )
                 markSessionExpired()
                 return
             }
@@ -276,7 +310,8 @@ class SagresSyncRepository @Inject constructor(
             if (!messages(null)) result += 1 shl 1
         }
 
-        val dailyDisciplines = preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
+        val dailyDisciplines =
+            preferences.getString("stg_daily_discipline_sync", "2")?.toIntOrNull() ?: 2
         val currentDaily = preferences.getInt("daily_discipline_count", 0)
         val currentDayDiscipline = preferences.getInt("daily_discipline_day", -1)
         val lastDailyHour = preferences.getInt("daily_discipline_hour", 0)
@@ -309,8 +344,7 @@ class SagresSyncRepository @Inject constructor(
         if (!grades()) result += 1 shl 4
         if (!servicesRequest()) result += 1 shl 5
 
-        val uefsStudent = isStudentFromUEFS
-        if (uefsStudent) {
+        if (isStudentFromUEFS) {
             serviceLogin()
         }
 
@@ -319,7 +353,7 @@ class SagresSyncRepository @Inject constructor(
             preferences.edit().putBoolean("primary_fetch", false).apply()
         }
 
-        if (uefsStudent) {
+        if (isStudentFromUEFS) {
             if (!preferences.getBoolean("sent_hourglass_testing_data_0.0.2", false) &&
                 authRepository.getAccessTokenDirect() != null
             ) {
@@ -334,7 +368,7 @@ class SagresSyncRepository @Inject constructor(
                 adventureRepository.performCheckAchievements(HashMap())
 
                 val task = FirebaseMessaging.getInstance().token
-                val value = Tasks.await(task)
+                val value = task.await()
                 onNewToken(value)
 
                 preferences.edit().putInt("sync_daily_update", today).apply()
@@ -590,7 +624,6 @@ class SagresSyncRepository @Inject constructor(
                 Timber.d("Semesters: ${grades.semesters}")
 
                 gradesNotifications()
-                frequencyNotifications()
 
                 Timber.d("Completed!")
                 true
@@ -635,10 +668,6 @@ class SagresSyncRepository @Inject constructor(
         services ?: return
         val list = services.map { ServiceRequest.fromSagres(it) }
         database.serviceRequestDao().insertList(list)
-    }
-
-    private fun frequencyNotifications() {
-        // TODO Implement frequency notifications
     }
 
     private fun gradesNotifications() {
@@ -736,9 +765,5 @@ class SagresSyncRepository @Inject constructor(
 
     suspend fun asyncSync(gToken: String?) {
         performSync("Manual", gToken)
-    }
-
-    companion object {
-        private val S_LOCK = Any()
     }
 }
