@@ -54,6 +54,7 @@
     <string name="label_evaluate_recent_class">Avalie aula recente</string>
     <string name="error_too_small">Muito curto</string>
     <string name="error_invalid_credentials">Usuário ou senha incorretos</string>
+    <string name="error_invalid_connect_error_with_code">Falha ao autorizar conexão (%1$d)</string>
     <string name="error_login_failed">Login Incorreto</string>
     <string name="error_connection_failed">Erro de conexão</string>
     <string name="error_network_error">Falha de conexão</string>

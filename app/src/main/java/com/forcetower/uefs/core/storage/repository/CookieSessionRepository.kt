@@ -84,7 +84,7 @@ class CookieSessionRepository @Inject constructor(
         return SavedCookie(auth, sessionId)
     }
 
-    suspend fun getGoodCookies(): Pair<SavedCookie?, Int> {
+    private suspend fun getGoodCookies(): Pair<SavedCookie?, Int> {
         return try {
             service.getSession().data to 0
         } catch (error: Throwable) {
