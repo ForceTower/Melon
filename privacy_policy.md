@@ -9,20 +9,15 @@ The terms used in this Privacy Policy have the same meanings as in our Terms and
 
 ## Information Collection and Use
 
-For a better experience, while using our Service, I may require you to provide us with certain personally identifiable information. The information that I request is retained on your device and is not collected by me in any way
+For a better experience, while using our Service, some features, such as the UNESVerse's Zhonyas, require you to provide us with certain personally identifiable information. The information that I request is retained on your device and send to the servers in a secure encrypted way. Those information are, but not limited to, session/auth information, name, course, disciplines you participated and your score on them. Some other features may explicty request you some information for you to vote or opt-in, and those are collected as well. The information collected by the app is not sold or but it may be shared with other third party companies or services. Are only kept for better user experience and for making the app techinically possible.
+
 The app does use third party services that may collect information used to identify you.
 Link to privacy policy of third party service providers used by the app
-[Google Play Services](https://www.google.com/policies/privacy/)
+[Google Play Services](https://www.google.com/policies/privacy/).
 
 ## Log Data
 
 I want to inform you that whenever you use my Service, in a case of an error in the app I collect data and information (through Google Play Services) on your phone called Log Data. This Log Data may include information such as your device Internet Protocol (“IP”) address, device name, operating system version, the configuration of the app when utilizing my Service, the time and date of your use of the Service, and other statistics.
-
-## Cookies
-
-Cookies are files with small amount of data that is commonly used an anonymous unique identifier. These are sent to your browser from the website that you visit and are stored on your device internal memory.
-
-This Service does not use these “cookies” explicitly. Those are used just to keep the connection to the Sagres
 
 ## Service Providers
 
