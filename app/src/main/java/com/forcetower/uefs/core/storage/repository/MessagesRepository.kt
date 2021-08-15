@@ -90,7 +90,7 @@ class MessagesRepository @Inject constructor(
         }
     }
 
-    fun fetchMessagesCase(all: Boolean = false) = flow {
+    private fun fetchMessagesCase(all: Boolean = false) = flow {
         val profile = database.profileDao().selectMeDirect()
         val access = database.accessDao().getAccessDirect()
         if (profile != null && access != null) {
@@ -109,7 +109,7 @@ class MessagesRepository @Inject constructor(
                         SagresNavigator.instance.messagesHtml()
                     } else {
                         if (injected == INJECT_ERROR_NO_VALUE) {
-                            // TODO this must show something to the user
+                            database.accessDao().setAccessValidationSuspend(false)
                             Timber.d("User didn't have a injectable cookie... Logout actually :D")
                         }
                         emit(false)
