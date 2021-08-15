@@ -6,6 +6,7 @@ on:
       - '*'
       - '!main'
       - '!development'
+      - '!next'
   pull_request:
     branches:
       - '*'

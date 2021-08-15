@@ -2,4 +2,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="dev.forcetower.noct.auth">
 
+    <application android:theme="@style/Theme.Noct" />
 </manifest>

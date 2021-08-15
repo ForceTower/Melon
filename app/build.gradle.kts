@@ -17,6 +17,10 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+    buildFeatures {
+        dataBinding = true
+    }
+
     buildTypes {
         getByName("release") {
             isMinifyEnabled = true

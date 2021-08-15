@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <style name="Widget.Noct.Button" parent="Widget.MaterialComponents.Button">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="cornerRadius">8dp</item>
+    </style>
+
+    <style name="Widget.Noct.Button.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="android:textAllCaps">false</item>
+        <item name="android:letterSpacing">0.01</item>
+        <item name="cornerRadius">8dp</item>
+        <item name="strokeColor">@color/blender_btn_stroke_color_selector</item>
+    </style>
+</resources>
