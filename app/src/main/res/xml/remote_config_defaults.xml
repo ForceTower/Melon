@@ -102,7 +102,7 @@
     </entry>
     <entry>
         <key>feature_flag_use_snowpiercer</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>feature_flag_in_app_review</key>
@@ -110,10 +110,10 @@
     </entry>
     <entry>
         <key>feature_flag_campus_map</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
     <entry>
         <key>feature_flag_documents</key>
-        <value>true</value>
+        <value>false</value>
     </entry>
 </defaultsMap>
