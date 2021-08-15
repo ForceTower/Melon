@@ -2,143 +2,167 @@
 <layout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/background"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="360dp"
-            android:scaleType="fitXY"
-            android:src="@drawable/brand_background_2"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            android:layout_height="wrap_content">
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="108dp"
-            android:layout_height="108dp"
-            android:layout_gravity="center_horizontal"
-            android:background="@drawable/brand_rounded_corners_shaped_element"
-            app:layout_constraintBottom_toBottomOf="@+id/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.6" />
+            <androidx.appcompat.widget.AppCompatImageView
+                android:id="@+id/background"
+                android:layout_width="match_parent"
+                android:layout_height="360dp"
+                android:scaleType="fitXY"
+                android:src="@drawable/brand_background_2"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        <androidx.appcompat.widget.AppCompatImageView
-            android:layout_width="108dp"
-            android:layout_height="108dp"
-            android:layout_gravity="center_horizontal"
-            app:srcCompat="@drawable/brand_logo_colored"
-            app:layout_constraintBottom_toBottomOf="@+id/background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.6" />
+            <View
+                android:id="@+id/view"
+                android:layout_width="108dp"
+                android:layout_height="108dp"
+                android:layout_gravity="center_horizontal"
+                android:background="@drawable/brand_rounded_corners_shaped_element"
+                app:layout_constraintBottom_toBottomOf="@+id/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.6" />
 
-        <com.google.android.material.textview.MaterialTextView
-            android:id="@+id/app_name_label"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="56dp"
-            android:gravity="center"
-            android:text="UNES"
-            android:textAlignment="gravity"
-            android:textColor="?attr/colorPrimary"
-            android:textFontWeight="600"
-            android:textSize="24sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/background" />
-
-        <com.google.android.material.textview.MaterialTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginHorizontal="56dp"
-            android:gravity="center"
-            android:text="A maneira mais fácil de acessar suas informações acadêmicas"
-            android:textAlignment="gravity"
-            android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/app_name_label" />
-
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent">
+            <androidx.appcompat.widget.AppCompatImageView
+                android:layout_width="108dp"
+                android:layout_height="108dp"
+                android:layout_gravity="center_horizontal"
+                app:srcCompat="@drawable/brand_logo_colored"
+                app:layout_constraintBottom_toBottomOf="@+id/background"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.6" />
 
             <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/app_name_label"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginHorizontal="36dp"
-                android:layout_marginTop="24dp"
-                android:text="Selecione um método de entrada"
-                android:textSize="13sp"
+                android:layout_marginHorizontal="56dp"
+                android:gravity="center"
+                android:text="UNES"
                 android:textAlignment="gravity"
-                android:gravity="center"/>
+                android:textColor="?attr/colorPrimary"
+                android:textFontWeight="600"
+                android:textSize="24sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/background" />
 
-            <com.google.android.material.button.MaterialButton
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/subtitle"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                style="?attr/materialButtonOutlinedStyle"
-                android:text="Entrar com usuário"
-                android:layout_marginHorizontal="24dp"/>
+                android:layout_marginHorizontal="56dp"
+                android:gravity="center"
+                android:text="A maneira mais fácil de acessar suas informações acadêmicas"
+                android:textAlignment="gravity"
+                android:textSize="15sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/app_name_label" />
 
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginHorizontal="24dp"
-                android:text="Entrar com Google"
-                app:backgroundTint="?attr/colorOnSurface"
-                app:icon="@drawable/googleg_standard_color_18"
-                app:iconGravity="textStart"
-                app:iconTint="@color/white"
-                app:iconTintMode="multiply"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="4dp"
-                android:layout_marginHorizontal="24dp"
-                android:text="Entrar com Facebook"
-                app:backgroundTint="@color/com_facebook_button_background_color"
-                app:icon="@drawable/com_facebook_button_icon"
-                app:iconGravity="textStart"
-                app:iconTint="@color/white"/>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                app:layout_constraintTop_toBottomOf="@id/subtitle"
+                app:layout_constraintBottom_toTopOf="@id/auth_method_container"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
 
             <androidx.appcompat.widget.LinearLayoutCompat
+                android:id="@+id/auth_method_container"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginBottom="24dp"
-                android:gravity="center">
+                android:orientation="vertical"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
                 <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="Não tem conta?"
+                    android:layout_marginHorizontal="36dp"
+                    android:layout_marginTop="24dp"
+                    android:text="Selecione um método de entrada"
+                    android:textSize="13sp"
+                    android:textAlignment="gravity"
+                    android:gravity="center"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    style="?attr/materialButtonOutlinedStyle"
+                    android:text="Entrar com usuário"
+                    android:layout_marginHorizontal="24dp"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="Entrar com Google"
+                    app:backgroundTint="?attr/colorOnSurface"
+                    app:icon="@drawable/googleg_standard_color_18"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"
+                    app:iconTintMode="multiply"/>
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginHorizontal="24dp"
+                    android:text="Entrar com Facebook"
+                    app:backgroundTint="@color/com_facebook_button_background_color"
+                    app:icon="@drawable/com_facebook_button_icon"
+                    app:iconGravity="textStart"
+                    app:iconTint="@color/white"/>
+
+                <com.google.android.material.textview.MaterialTextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginTop="16dp"
+                    android:text="A conta UNES não é a conta do portal."
                     android:textColor="?attr/colorOnBackground"
                     android:textAlignment="gravity"
                     android:gravity="center"/>
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
+
+                <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="4dp"
-                    android:text="Registre-se"
-                    android:textColor="?attr/colorPrimaryVariant"
-                    android:textAlignment="gravity"
-                    android:gravity="center"/>
+                    android:orientation="horizontal"
+                    android:layout_marginHorizontal="24dp"
+                    android:layout_marginBottom="24dp"
+                    android:gravity="center">
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Não tem conta?"
+                        android:textColor="?attr/colorOnBackground"
+                        android:textAlignment="gravity"
+                        android:gravity="center"/>
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="4dp"
+                        android:text="Registre-se"
+                        android:textColor="?attr/colorPrimaryVariant"
+                        android:textAlignment="gravity"
+                        android:gravity="center"/>
+                </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.appcompat.widget.LinearLayoutCompat>
-        </androidx.appcompat.widget.LinearLayoutCompat>
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
 </layout>

@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
@@ -9,87 +10,122 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true">
-            <androidx.appcompat.widget.LinearLayoutCompat
+
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="vertical">
-
-                <dev.forcetower.noct.design.widget.SeamlessCircleView
-                    android:layout_width="120dp"
-                    android:layout_height="120dp"
-                    android:layout_marginTop="36dp"
-                    android:layout_gravity="center"/>
-
-                <com.google.android.material.textview.MaterialTextView
+                android:layout_height="wrap_content">
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:id="@+id/background"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="36dp"
-                    android:layout_marginHorizontal="24dp"
-                    android:text="Entre utilizando sua conta Unesversal"
-                    android:textFontWeight="600"
-                    android:textColor="?attr/colorOnBackground"
-                    android:textAlignment="gravity"
-                    android:gravity="center"/>
+                    android:layout_height="360dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/brand_background_2"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
-                <com.google.android.material.textfield.TextInputLayout
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="108dp"
+                    android:layout_height="108dp"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/brand_rounded_corners_shaped_element"
+                    app:layout_constraintBottom_toBottomOf="@+id/background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.6" />
+
+                <androidx.appcompat.widget.AppCompatImageView
+                    android:layout_width="108dp"
+                    android:layout_height="108dp"
+                    android:layout_gravity="center_horizontal"
+                    app:srcCompat="@drawable/brand_logo_colored"
+                    app:layout_constraintBottom_toBottomOf="@+id/background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.6" />
+
+                <Space
+                    android:id="@+id/space"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="16dp">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Nome de usuário"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.textfield.TextInputLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginHorizontal="24dp"
-                    android:layout_marginTop="8dp"
-                    app:passwordToggleEnabled="true">
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:hint="Senha"
-                        android:inputType="textPassword"/>
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="24dp"
-                    android:text="Acessar"/>
-
-                <com.google.android.material.textview.MaterialTextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:layout_gravity="center"
-                    android:text="ou" />
+                    android:layout_height="0dp"
+                    app:layout_constraintBottom_toTopOf="@id/content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/background" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
-                    android:layout_width="match_parent"
+                    android:id="@+id/content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-                    android:layout_marginTop="16dp"
-                    android:layout_marginHorizontal="24dp">
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="0dp"
+                    android:paddingBottom="24dp"
+                    android:paddingTop="16dp"
+                    android:orientation="vertical"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:paddingStartSystemWindowInsets="@{true}"
+                    app:paddingEndSystemWindowInsets="@{true}"
+                    app:paddingBottomSystemWindowInsets="@{true}">
+
+                    <com.google.android.material.textview.MaterialTextView
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginEnd="8dp"
-                        android:text="Google"/>
+                        android:layout_marginHorizontal="24dp"
+                        android:text="Acessar o UNESVerso"
+                        android:textSize="15sp"
+                        android:textColor="?attr/colorOnBackground"
+                        android:textAlignment="gravity"
+                        android:gravity="center"/>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Usuário"
+                            tools:text="a_friend_123"/>
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="8dp"
+                        app:passwordToggleEnabled="true">
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:hint="Senha"
+                            android:inputType="textPassword"
+                            tools:text="123456"/>
+                    </com.google.android.material.textfield.TextInputLayout>
 
                     <com.google.android.material.button.MaterialButton
-                        android:layout_width="0dp"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:layout_marginStart="8dp"
-                        android:text="Facebook"/>
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_marginTop="16dp"
+                        android:text="Entrar"/>
                 </androidx.appcompat.widget.LinearLayoutCompat>
-            </androidx.appcompat.widget.LinearLayoutCompat>
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
+
+        <androidx.appcompat.widget.AppCompatImageButton
+            android:id="@+id/up"
+            android:layout_width="?actionBarSize"
+            android:layout_height="?actionBarSize"
+            android:layout_gravity="start|top"
+            android:background="?selectableItemBackgroundBorderless"
+            android:contentDescription="@string/navigate_up"
+            app:tint="?attr/colorSurface"
+            app:srcCompat="@drawable/ic_arrow_back"
+            app:marginTopSystemWindowInsets="@{true}"
+            app:marginStartSystemWindowInsets="@{true}"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
