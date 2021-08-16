@@ -100,7 +100,7 @@ class AERINewsFragment : UFragment() {
             }
         }
 
-        viewModel.announcements.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        viewModel.announcements.observe(viewLifecycleOwner, { adapter.submitData(lifecycle, it) })
         viewModel.announcementClick.observe(
             viewLifecycleOwner,
             EventObserver {
