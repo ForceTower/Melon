@@ -21,7 +21,7 @@
 package com.forcetower.uefs.aeri.feature
 
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.aeri.R
@@ -31,7 +31,7 @@ import com.forcetower.uefs.feature.shared.inflate
 
 class AERIMessagesAdapter(
     private val interactor: AnnouncementInteractor
-) : PagedListAdapter<Announcement, AERIMessagesAdapter.AnnouncementHolder>(DiffCallback) {
+) : PagingDataAdapter<Announcement, AERIMessagesAdapter.AnnouncementHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AnnouncementHolder {
         return AnnouncementHolder(parent.inflate(R.layout.item_announcement), interactor)
     }

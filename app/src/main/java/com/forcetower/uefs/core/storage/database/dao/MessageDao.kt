@@ -22,6 +22,7 @@ package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.lifecycle.LiveData
 import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.IGNORE
@@ -170,7 +171,7 @@ abstract class MessageDao {
     abstract fun getLastMessage(): LiveData<Message?>
 
     @Query("SELECT * FROM Message ORDER BY timestamp DESC")
-    abstract fun getAllMessagesPaged(): DataSource.Factory<Int, Message>
+    abstract fun getAllMessagesPaged(): PagingSource<Int, Message>
 
     @Query("SELECT * FROM Message WHERE notified = 0")
     abstract fun getNewMessages(): List<Message>

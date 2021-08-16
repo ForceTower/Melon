@@ -22,7 +22,7 @@ package com.forcetower.uefs.feature.messages
 
 import android.view.ViewGroup
 import androidx.lifecycle.LifecycleOwner
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Message
@@ -32,7 +32,7 @@ import com.forcetower.uefs.feature.shared.inflater
 class SagresMessageAdapter(
     private val lifecycleOwner: LifecycleOwner,
     private val viewModel: MessagesViewModel
-) : PagedListAdapter<Message, MessageHolder>(MessagesDiff) {
+) : PagingDataAdapter<Message, MessageHolder>(MessagesDiff) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): MessageHolder {
         val binding = ItemSagresMessageBinding.inflate(parent.inflater(), parent, false)
