@@ -24,28 +24,24 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
 
-                <View
+                <FrameLayout
                     android:id="@+id/view"
-                    android:layout_width="108dp"
+                    android:layout_width="wrap_content"
                     android:layout_height="108dp"
                     android:layout_gravity="center_horizontal"
-                    android:background="@drawable/brand_rounded_corners_shaped_element"
                     app:layout_constraintBottom_toBottomOf="@+id/background"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.6" />
+                    app:layout_constraintVertical_bias="0.4">
 
-                <androidx.appcompat.widget.AppCompatImageView
-                    android:layout_width="108dp"
-                    android:layout_height="108dp"
-                    android:layout_gravity="center_horizontal"
-                    app:srcCompat="@drawable/brand_logo_colored"
-                    app:layout_constraintBottom_toBottomOf="@+id/background"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_bias="0.6" />
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="108dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginHorizontal="24dp"
+                        android:layout_gravity="center"
+                        app:srcCompat="@drawable/branded_uefs_logo"/>
+                </FrameLayout>
 
                 <Space
                     android:id="@+id/space"
@@ -54,7 +50,7 @@
                     app:layout_constraintBottom_toTopOf="@id/content"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/background" />
+                    app:layout_constraintTop_toBottomOf="@+id/view" />
 
                 <androidx.appcompat.widget.LinearLayoutCompat
                     android:id="@+id/content"
@@ -65,7 +61,6 @@
                     android:paddingBottom="24dp"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.0"
                     app:layout_constraintStart_toStartOf="parent"
                     app:paddingBottomSystemWindowInsets="@{true}"
                     app:paddingEndSystemWindowInsets="@{true}"
@@ -76,7 +71,7 @@
                         android:layout_height="wrap_content"
                         android:layout_marginHorizontal="24dp"
                         android:gravity="center"
-                        android:text="Login"
+                        android:text="Vincular conta acadêmica"
                         android:textAlignment="gravity"
                         android:textColor="?attr/colorOnBackground"
                         android:textSize="15sp" />
@@ -87,7 +82,7 @@
                         android:layout_marginHorizontal="24dp"
                         android:layout_marginTop="4dp"
                         android:gravity="center"
-                        android:text="Insira as informações da sua conta UNES"
+                        android:text="Insira as informações de login fornecidas pela instituição"
                         android:textAlignment="gravity"
                         android:textSize="12sp" />
 
@@ -118,23 +113,6 @@
                             android:inputType="textPassword"
                             tools:text="123456" />
                     </com.google.android.material.textfield.TextInputLayout>
-
-                    <com.google.android.material.button.MaterialButton
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="24dp"
-                        android:layout_marginTop="16dp"
-                        android:text="Acessar o UNESVerso" />
-
-                    <com.google.android.material.textview.MaterialTextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginHorizontal="24dp"
-                        android:layout_marginTop="4dp"
-                        android:gravity="center"
-                        android:text="Esqueceu sua senha? Clica aqui"
-                        android:textAlignment="gravity"
-                        android:textSize="12sp" />
                 </androidx.appcompat.widget.LinearLayoutCompat>
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.core.widget.NestedScrollView>
