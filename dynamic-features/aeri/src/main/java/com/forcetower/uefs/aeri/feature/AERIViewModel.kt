@@ -20,10 +20,8 @@
 
 package com.forcetower.uefs.aeri.feature
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.aeri.core.model.Announcement
 import com.forcetower.uefs.aeri.core.storage.repository.AERIRepository
@@ -32,7 +30,7 @@ import javax.inject.Inject
 class AERIViewModel @Inject constructor(
     private val repository: AERIRepository
 ) : ViewModel(), AnnouncementInteractor {
-    val announcements = repository.getAnnouncements()
+    val announcements = repository.getAnnouncements().cachedIn(viewModelScope).asLiveData()
 
     private val _refreshing = MediatorLiveData<Boolean>()
     val refreshing: LiveData<Boolean>
