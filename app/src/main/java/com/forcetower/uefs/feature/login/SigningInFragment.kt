@@ -184,7 +184,7 @@ class SigningInFragment : UFragment() {
     }
 
     private fun onLoginProgress(callback: Callback) {
-        Timber.d("${callback.status}, ${callback.message}")
+        Timber.d("${callback.status}, ${callback.message}, ${callback.code}")
         when (callback.status) {
             Status.STARTED -> Timber.d("Status: Started")
             Status.LOADING -> Timber.d("Status: Loading")

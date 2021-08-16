@@ -21,14 +21,14 @@
 package com.forcetower.uefs.feature.syncregistry
 
 import android.view.ViewGroup
-import androidx.paging.PagedListAdapter
+import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.databinding.ItemSyncRegistryBinding
 import com.forcetower.uefs.feature.shared.inflater
 
-class SyncRegistryAdapter : PagedListAdapter<SyncRegistry, SyncRegistryHolder>(SyncDiff) {
+class SyncRegistryAdapter : PagingDataAdapter<SyncRegistry, SyncRegistryHolder>(SyncDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SyncRegistryHolder {
         return SyncRegistryHolder(
             ItemSyncRegistryBinding.inflate(parent.inflater(), parent, false)

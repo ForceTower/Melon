@@ -21,10 +21,11 @@
 package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.*
+import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.storage.database.UDatabase
+import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -32,7 +33,11 @@ import javax.inject.Singleton
 class SyncRegistryRepository @Inject constructor(
     private val database: UDatabase
 ) {
-    fun getSyncRegistry(): LiveData<PagedList<SyncRegistry>> {
-        return LivePagedListBuilder(database.syncRegistryDao().getRegistry(), 20).build()
-    }
+    fun getSyncRegistry(): Flow<PagingData<SyncRegistry>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { database.syncRegistryDao().getRegistry() }
+    ).flow
 }
