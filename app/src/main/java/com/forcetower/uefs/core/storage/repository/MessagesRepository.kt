@@ -24,7 +24,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.paging.*
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
@@ -60,13 +62,12 @@ class MessagesRepository @Inject constructor(
     @Named("webViewUA") private val agent: String
 ) {
     fun getMessages(): Flow<PagingData<Message>> = Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { database.messageDao().getAllMessagesPaged() }
-        ).flow
-
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { database.messageDao().getAllMessagesPaged() }
+    ).flow
 
     fun fetchMessages(fetchAll: Boolean = false): LiveData<Boolean> {
         return if (snowpiercerEnabled) {

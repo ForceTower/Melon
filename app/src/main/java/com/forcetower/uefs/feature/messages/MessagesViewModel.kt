@@ -28,7 +28,12 @@ import android.view.View
 import androidx.core.content.FileProvider
 import androidx.core.content.getSystemService
 import androidx.core.view.drawToBitmap
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.BuildConfig

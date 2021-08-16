@@ -20,7 +20,12 @@
 
 package com.forcetower.uefs.aeri.feature
 
-import androidx.lifecycle.*
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.aeri.core.model.Announcement
