@@ -149,7 +149,6 @@ android {
         disable 'NullSafeMutableLiveData'
         abortOnError true
 
-        checkReleaseBuilds false
         ignoreTestSources true
         checkDependencies true
     }
