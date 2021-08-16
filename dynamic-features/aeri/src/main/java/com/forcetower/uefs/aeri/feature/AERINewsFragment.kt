@@ -31,7 +31,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.core.utils.ViewUtils

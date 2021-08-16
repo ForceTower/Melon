@@ -21,7 +21,12 @@
 package com.forcetower.uefs.aeri.core.storage.database.dao
 
 import androidx.paging.PagingSource
-import androidx.room.*
+import androidx.room.Dao
+import androidx.room.Insert
+import androidx.room.OnConflictStrategy
+import androidx.room.Query
+import androidx.room.Transaction
+import androidx.room.Update
 import com.forcetower.uefs.aeri.core.model.Announcement
 import dev.forcetower.oversee.model.NewsMessage
 
