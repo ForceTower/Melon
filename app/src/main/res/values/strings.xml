@@ -897,4 +897,5 @@
     <string name="settings_ignore_doze_failed">Não é possível chegar às configurações</string>
     <string name="unable_to_sync_account">Sessão expirada</string>
     <string name="invalid_access_session_information">O UNES não está conseguindo acessar suas informações com a sessão atual, isto pode ser causado por uma troca de senha ou alguma falha de conexão com a Instituição de Ensino por longos períodos de tempo. Digite sua senha novamente para entrar.</string>
+    <string name="login_access_reconnect_not_specified">Erro não especificado. lol</string>
 </resources>

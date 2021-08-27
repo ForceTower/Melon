@@ -130,7 +130,17 @@ class InvalidAccessDialog : BottomSheetDialogFragment() {
                         pbOperation.visibility = VISIBLE
                     }
                 } else {
-                    dismiss()
+                    binding.run {
+                        btnChange.isEnabled = true
+                        btnCancel.isEnabled = true
+                        pbOperation.visibility = INVISIBLE
+
+                        etPassword.run {
+                            val message = it.message ?: getString(R.string.login_access_reconnect_not_specified)
+                            error = message
+                            requestFocus()
+                        }
+                    }
                 }
             }
         )
