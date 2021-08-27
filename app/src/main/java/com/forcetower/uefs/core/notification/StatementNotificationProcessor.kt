@@ -23,6 +23,7 @@ package com.forcetower.uefs.core.notification
 import android.app.PendingIntent
 import android.app.TaskStackBuilder
 import android.content.Context
+import android.os.Build
 import androidx.core.content.ContextCompat
 import com.forcetower.sagres.utils.WordUtils
 import com.forcetower.uefs.R
@@ -36,11 +37,11 @@ object StatementNotificationProcessor {
     @JvmStatic
     fun openProfileIntent(ctx: Context, userId: Long, profileId: Long): PendingIntent {
         val intent = ProfileActivity.startIntent(ctx, profileId, userId)
-
+        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or concatFlags)
     }
 
     @JvmStatic

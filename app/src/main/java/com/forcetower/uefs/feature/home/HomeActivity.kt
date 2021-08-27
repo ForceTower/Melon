@@ -278,8 +278,8 @@ class HomeActivity : UGameActivity() {
 
     private fun onAccessTokenUpdate(token: AccessToken?) {
         if (token == null) {
-            Timber.d("This is basically a death threat")
-            viewModel.logout()
+            Timber.d("This is basically a death sentence")
+//            viewModel.logout()
         } else {
             Timber.d("User is connected, yay :D")
         }

@@ -25,6 +25,7 @@ import android.app.PendingIntent
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Build
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
@@ -101,7 +102,8 @@ class BigTrayService : LifecycleService() {
         val intent = Intent(this, BigTrayService::class.java).apply {
             action = STOP_SERVICE_ACTION
         }
-        val pending = PendingIntent.getService(this, 0, intent, 0)
+        val flags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val pending = PendingIntent.getService(this, 0, intent, flags)
         return NotificationCreator.showBigTrayNotification(this, data, pending)
     }
 }
