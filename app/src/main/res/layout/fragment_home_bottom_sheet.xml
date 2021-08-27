@@ -123,6 +123,7 @@
             app:itemIconPadding="@dimen/second_keyline"
             app:itemIconTint="@color/navigation_icon_color"
             app:itemTextColor="@color/navigation_text_color"
+            app:itemTextAppearance="@style/TextAppearance.UNES.Body2"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
