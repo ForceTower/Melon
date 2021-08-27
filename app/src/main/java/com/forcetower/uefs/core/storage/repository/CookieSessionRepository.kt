@@ -54,7 +54,7 @@ class CookieSessionRepository @Inject constructor(
             // there MUST be 2 parts
             if (filtered.size < 2) {
                 NotificationCreator.showSimpleNotification(context, "Então...", "Essa sessão é completamente inutil")
-                Timber.d("Session contains a invalid amount of required elements")
+                Timber.tag("cooked").e("Session contains a invalid amount of required elements")
             } else {
                 val (one, two) = filtered
                 val prepared = bakeCookie(one, two)
@@ -63,8 +63,8 @@ class CookieSessionRepository @Inject constructor(
                 Timber.d("Will we eat cookies? TOGETHER? ${response.success}")
             }
         } catch (error: Throwable) {
-            // TODO This must prompt a warning
-            Timber.i(error, "This user wont update. Omega lul")
+            NotificationCreator.showSimpleNotification(context, "Então...", "Falhou ao salvar a sessão... Você pode não estar permitido no UNESVerso...")
+            Timber.tag("cooked").e(error, "This user wont update. Omega lul")
         }
     }
 
