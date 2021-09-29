@@ -20,7 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database.dao
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy.REPLACE
@@ -40,5 +40,5 @@ interface SyncRegistryDao {
     fun getRegistryByStartDirect(start: Long): SyncRegistry
 
     @Query("SELECT * FROM SyncRegistry ORDER BY uid DESC")
-    fun getRegistry(): DataSource.Factory<Int, SyncRegistry>
+    fun getRegistry(): PagingSource<Int, SyncRegistry>
 }

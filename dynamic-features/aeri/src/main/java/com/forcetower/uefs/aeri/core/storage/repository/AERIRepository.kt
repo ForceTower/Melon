@@ -22,10 +22,10 @@ package com.forcetower.uefs.aeri.core.storage.repository
 
 import android.content.Context
 import androidx.annotation.WorkerThread
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.forcetower.core.interfaces.notification.NotifyMessage
 import com.forcetower.uefs.aeri.R
 import com.forcetower.uefs.aeri.core.model.Announcement
@@ -34,6 +34,7 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.Reusable
 import dev.forcetower.oversee.Oversee
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -67,9 +68,14 @@ class AERIRepository @Inject constructor(
         database.news().insert(news)
     }
 
-    fun getAnnouncements(): LiveData<PagedList<Announcement>> {
-        return LivePagedListBuilder(database.news().getAnnouncementsPaged(), 20).build()
-    }
+    fun getAnnouncements(): Flow<PagingData<Announcement>> =
+        Pager(
+            config = PagingConfig(
+                pageSize = 20,
+                enablePlaceholders = false
+            ),
+            pagingSourceFactory = { database.news().getAnnouncementsPaged() }
+        ).flow
 
     suspend fun update(): Int {
         refreshNews()

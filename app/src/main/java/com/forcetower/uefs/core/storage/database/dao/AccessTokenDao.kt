@@ -35,6 +35,7 @@ abstract class AccessTokenDao {
         deleteAll()
         internalInsert(access)
     }
+
     @Transaction
     open suspend fun insertSuspend(access: AccessToken) {
         deleteAll()
