@@ -21,6 +21,9 @@
 package com.forcetower.uefs.feature.syncregistry
 
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
+import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.forcetower.uefs.core.storage.repository.SyncRegistryRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -30,5 +33,5 @@ class SyncRegistryViewModel @Inject constructor(
     private val repository: SyncRegistryRepository
 ) : ViewModel() {
 
-    val registry by lazy { repository.getSyncRegistry() }
+    val registry by lazy { repository.getSyncRegistry().cachedIn(viewModelScope).asLiveData() }
 }

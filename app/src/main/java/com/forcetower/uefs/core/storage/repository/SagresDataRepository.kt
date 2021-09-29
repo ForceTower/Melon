@@ -26,7 +26,10 @@ import androidx.lifecycle.liveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
+import com.forcetower.uefs.core.model.service.SavedCookie
+import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.round
 import com.google.firebase.auth.FirebaseAuth
@@ -48,7 +51,8 @@ class SagresDataRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val client: OkHttpClient,
     @Named("webViewUA") private val agent: String,
-    private val cookies: CookieSessionRepository
+    private val cookies: CookieSessionRepository,
+    private val service: UService
 ) {
     fun getMessages() = database.messageDao().getAllMessages()
 
@@ -103,22 +107,64 @@ class SagresDataRepository @Inject constructor(
         return liveData(Dispatchers.IO) {
             val access = database.accessDao().getAccessDirect()
             if (access == null) {
-                emit(Resource.error("", false))
+                emit(Resource.error("Sem acesso", false))
             } else {
                 emit(Resource.loading(false))
                 val callback = SagresNavigator.instance.login(access.username, access.password, token)
                 if (callback.status == Status.INVALID_LOGIN) {
                     emit(Resource.success(false))
                 } else {
-                    cookies.findAndSaveCookies()
-                    database.accessDao().run {
-                        setAccessValidationSuspend(true)
-                        updateAccessPasswordSuspend(password)
+                    val cooked = cookies.getSavedBiscuit()
+                    if (ensureServiceConnected(access, cooked)) {
+                        cookies.findAndSaveCookies()
+                        database.accessDao().run {
+                            setAccessValidationSuspend(true)
+                            updateAccessPasswordSuspend(password)
+                        }
+                        emit(Resource.success(true))
+                    } else {
+                        emit(Resource.error("Não consegue entrar no unesverso (provavelmente) :D", false))
                     }
-                    emit(Resource.success(true))
                 }
             }
         }
+    }
+
+    private suspend fun ensureServiceConnected(access: Access, cooked: SavedCookie?): Boolean {
+        cooked ?: return false
+        val token = database.accessTokenDao().getAccessTokenDirectSuspend()
+        try {
+            if (token == null) {
+                reconnectToService(access, cooked)
+                return true
+            } else {
+                val response = service.hi()
+                return when {
+                    response.isSuccessful -> true
+                    response.code() == 401 -> {
+                        reconnectToService(access, cooked)
+                        true
+                    }
+                    else -> {
+                        Timber.tag("reconnect").e("User fails to reconnect with code ${response.code()}")
+                        false
+                    }
+                }
+            }
+        } catch (error: Throwable) {
+            Timber.tag("reconnect").e(error, "Failed to reconnect to server...")
+            return false
+        }
+    }
+
+    private suspend fun reconnectToService(access: Access, cooked: SavedCookie) {
+        val token = service.loginWithBiscuitSuspend(
+            access.username,
+            access.password,
+            cooked.auth,
+            cooked.sessionId
+        )
+        database.accessTokenDao().insertSuspend(token)
     }
 
     suspend fun loginWithNewPasswordSuspend(password: String): Boolean = withContext(Dispatchers.IO) {

@@ -23,7 +23,7 @@ import javax.sound.sampled.Clip
 import javax.sound.sampled.AudioSystem
 
 buildscript {
-    ext.kotlin_version = '1.5.21'
+    ext.kotlin_version = '1.5.30'
     ext {
         juice = "1.7.1"
         snowpiercer = "1.1.4"
@@ -49,10 +49,10 @@ buildscript {
         lifecycle = '2.3.1'
         paging = '3.0.1'
         navigation = '2.3.5'
-        work_manager = '2.5.0'
+        work_manager = '2.7.0-alpha05'
 
         // Dependency Injection
-        dagger = '2.35.1'
+        dagger = '2.38.1'
         hilt_androidx = '1.0.0'
 
         // Firebase
@@ -68,11 +68,11 @@ buildscript {
         firebase_ui_storage = "7.1.1"
 
         // Logs
-        timber = "4.7.1"
+        timber = "5.0.1"
 
         // Image
         glide = '4.12.0'
-        lottie = '3.7.0'
+        lottie = '4.1.0'
         image_cropper = "2.8.0"
 
         // Google Services
@@ -85,13 +85,13 @@ buildscript {
         gp_admob = '19.8.0'
 
         // Networking
-        okhttp = '4.9.0'
+        okhttp = '4.9.1'
         retrofit = '2.9.0'
         cookie_jar = "v1.0.1"
 
         // Others
-        gson = '2.8.6'
-        jsoup = '1.13.1'
+        gson = '2.8.8'
+        jsoup = '1.14.2'
         chart_view = "v3.1.0"
         about_libraries = "8.5.0"
         easy_permissions = "0.3.0"
@@ -101,7 +101,7 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '7.0.0'
+        android_gradle_plugin = '7.0.1'
         google_play_services = "4.3.4"
         kotlinter = "3.4.4"
         play_publisher = "3.5.0-agp7.0"

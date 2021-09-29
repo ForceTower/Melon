@@ -55,6 +55,6 @@ class SyncRegistryFragment : UFragment() {
             addItemDecoration(DividerItemDecoration(context, VERTICAL))
         }
 
-        viewModel.registry.observe(viewLifecycleOwner, { syncAdapter.submitList(it) })
+        viewModel.registry.observe(viewLifecycleOwner, { syncAdapter.submitData(lifecycle, it) })
     }
 }

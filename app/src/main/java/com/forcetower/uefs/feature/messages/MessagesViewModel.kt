@@ -32,7 +32,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
+import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -52,7 +54,7 @@ class MessagesViewModel @Inject constructor(
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     private val fetchAllMessagesSnowpiercerUseCase: FetchAllMessagesSnowpiercerUseCase
 ) : ViewModel(), MessagesActions {
-    val messages by lazy { repository.getMessages() }
+    val messages = repository.getMessages().cachedIn(viewModelScope).asLiveData()
     val unesMessages by lazy { repository.getUnesMessages() }
     var pushedTimes = 0
 

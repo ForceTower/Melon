@@ -36,7 +36,7 @@ class SagresMessagesFragment : UFragment() {
     private lateinit var binding: FragmentSagresMessagesBinding
     private val viewModel: MessagesViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSagresMessagesBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {
@@ -57,6 +57,6 @@ class SagresMessagesFragment : UFragment() {
             }
         }
 
-        viewModel.messages.observe(viewLifecycleOwner, { adapter.submitList(it) })
+        viewModel.messages.observe(viewLifecycleOwner, { adapter.submitData(lifecycle, it) })
     }
 }

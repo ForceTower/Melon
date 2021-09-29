@@ -45,6 +45,7 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.REQUEST_IN_APP_UPDATE
 import com.forcetower.uefs.architecture.service.bigtray.BigTrayService
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
@@ -248,6 +249,7 @@ class HomeActivity : UGameActivity() {
 
     private fun setupUserData() {
         viewModel.access.observe(this, { onAccessUpdate(it) })
+        viewModel.accessToken.observe(this, { onAccessTokenUpdate(it) })
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         viewModel.sendToken().observe(this, {})
@@ -272,6 +274,15 @@ class HomeActivity : UGameActivity() {
                 binding.bottomNavigation.selectedItemId = R.id.schedule
             }
         )
+    }
+
+    private fun onAccessTokenUpdate(token: AccessToken?) {
+        if (token == null) {
+            Timber.d("This is basically a death sentence")
+//            viewModel.logout()
+        } else {
+            Timber.d("User is connected, yay :D")
+        }
     }
 
     private fun onAccessUpdate(access: Access?) {
