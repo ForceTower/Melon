@@ -20,7 +20,7 @@
 
 package com.forcetower.uefs.aeri.core.storage.database.dao
 
-import androidx.paging.DataSource
+import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
@@ -63,7 +63,7 @@ abstract class NewsDao {
     abstract fun findByLink(link: String): Announcement?
 
     @Query("SELECT * FROM Announcement ORDER BY id DESC")
-    abstract fun getAnnouncementsPaged(): DataSource.Factory<Int, Announcement>
+    abstract fun getAnnouncementsPaged(): PagingSource<Int, Announcement>
 
     @Query("SELECT * FROM Announcement WHERE notified = 0")
     abstract suspend fun getNewAnnouncements(): List<Announcement>

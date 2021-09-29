@@ -20,16 +20,17 @@
 
 package com.forcetower.uefs.feature.home
 
-import android.content.Context
+import android.app.Application
 import android.net.Uri
 import androidx.annotation.MainThread
+import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Access
+import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Message
@@ -37,7 +38,6 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.SagresFlags
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.repository.AccountRepository
-import com.forcetower.uefs.core.storage.repository.CookieSessionRepository
 import com.forcetower.uefs.core.storage.repository.FirebaseMessageRepository
 import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
@@ -64,14 +64,13 @@ class HomeViewModel @Inject constructor(
     private val darkThemeRepository: DarkThemeRepository,
     private val authRepository: AuthRepository,
     private val profileRepository: ProfileRepository,
-    private val context: Context,
+    application: Application,
     private val sessionRepository: UserSessionRepository,
     private val accountRepository: AccountRepository,
     private val affinityRepository: AffinityQuestionRepository,
-    private val userCookieSessionRepository: CookieSessionRepository,
     @Named("flagSnowpiercerEnabled")
     private val snowpiercerEnabled: Boolean
-) : ViewModel() {
+) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
 
     @AppUpdateType
@@ -94,6 +93,7 @@ class HomeViewModel @Inject constructor(
         get() = _onMoveToSchedule
 
     val access: LiveData<Access?> by lazy { loginSagresRepository.getAccess() }
+    val accessToken: LiveData<AccessToken?> by lazy { accountRepository.getAccessToken() }
     val profile: LiveData<Profile?> by lazy { loginSagresRepository.getProfileMe() }
     val messages: LiveData<List<Message>> by lazy { dataRepository.getMessages() }
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
@@ -106,7 +106,7 @@ class HomeViewModel @Inject constructor(
     fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(context, uri)
+        UploadImageToStorage.createWorker(getApplication(), uri)
     }
 
     fun setSelectedImage(uri: Uri) {

@@ -32,13 +32,12 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
-    compileSdkVersion 30
-    buildToolsVersion "30.0.3"
+    compileSdkVersion 31
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 31
         def (code, name) = buildVersion()
         versionCode code
         versionName name
@@ -149,7 +148,6 @@ android {
         disable 'NullSafeMutableLiveData'
         abortOnError true
 
-        checkReleaseBuilds false
         ignoreTestSources true
         checkDependencies true
     }
@@ -229,7 +227,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:28.1.0')
+    implementation platform('com.google.firebase:firebase-bom:28.4.0')
     implementation "com.google.firebase:firebase-core"
     implementation "com.google.firebase:firebase-auth"
     implementation "com.google.firebase:firebase-messaging"
@@ -268,7 +266,7 @@ dependencies {
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
-    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.2'
+    implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
     implementation "com.google.android.gms:play-services-maps:17.0.1"
 

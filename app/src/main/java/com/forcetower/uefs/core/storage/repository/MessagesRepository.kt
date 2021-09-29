@@ -24,8 +24,9 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
-import androidx.paging.LivePagedListBuilder
-import androidx.paging.PagedList
+import androidx.paging.Pager
+import androidx.paging.PagingConfig
+import androidx.paging.PagingData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
@@ -42,6 +43,7 @@ import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
 import timber.log.Timber
@@ -59,9 +61,13 @@ class MessagesRepository @Inject constructor(
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     @Named("webViewUA") private val agent: String
 ) {
-    fun getMessages(): LiveData<PagedList<Message>> {
-        return LivePagedListBuilder(database.messageDao().getAllMessagesPaged(), 20).build()
-    }
+    fun getMessages(): Flow<PagingData<Message>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { database.messageDao().getAllMessagesPaged() }
+    ).flow
 
     fun fetchMessages(fetchAll: Boolean = false): LiveData<Boolean> {
         return if (snowpiercerEnabled) {

@@ -175,15 +175,20 @@
         </provider>
 
         <provider
-            android:name="androidx.work.impl.WorkManagerInitializer"
-            android:authorities="${applicationId}.workmanager-init"
-            tools:node="remove"
-            android:exported="false" />
+            android:name="androidx.startup.InitializationProvider"
+            android:authorities="${applicationId}.androidx-startup"
+            android:exported="false"
+            tools:node="merge">
+            <meta-data
+                android:name="androidx.work.WorkManagerInitializer"
+                android:value="androidx.startup"
+                tools:node="remove" />
+        </provider>
 
         <receiver
             android:name=".architecture.receiver.OnUpgradeReceiver"
             android:enabled="true"
-            android:exported="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.intent.action.MY_PACKAGE_REPLACED" />
             </intent-filter>
@@ -191,7 +196,7 @@
 
         <service
             android:name=".architecture.service.firebase.FirebaseActionsService"
-            android:permission="true">
+            android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
@@ -207,7 +212,9 @@
             android:name=".architecture.service.sync.SyncService"
             android:exported="false"/>
         
-        <receiver android:name=".architecture.widget.HomeClassWidget">
+        <receiver
+            android:name=".architecture.widget.HomeClassWidget"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>
@@ -217,7 +224,9 @@
                 android:resource="@xml/widget_home_class_provider" />
         </receiver>
 
-        <receiver android:name=".architecture.widget.HomeClassWidgetSecondary">
+        <receiver
+            android:name=".architecture.widget.HomeClassWidgetSecondary"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
             </intent-filter>

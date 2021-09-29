@@ -31,7 +31,6 @@ import androidx.appcompat.app.AlertDialog
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.core.utils.ViewUtils
@@ -100,7 +99,7 @@ class AERINewsFragment : UFragment() {
             }
         }
 
-        viewModel.announcements.observe(viewLifecycleOwner, Observer { adapter.submitList(it) })
+        viewModel.announcements.observe(viewLifecycleOwner, { adapter.submitData(lifecycle, it) })
         viewModel.announcementClick.observe(
             viewLifecycleOwner,
             EventObserver {

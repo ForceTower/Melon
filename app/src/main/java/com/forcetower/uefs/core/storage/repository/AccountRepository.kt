@@ -62,4 +62,6 @@ class AccountRepository @Inject constructor(
     fun getAccountSync(): Account? {
         return database.accountDao().getAccountDirect()
     }
+
+    fun getAccessToken() = database.accessTokenDao().getAccessToken()
 }

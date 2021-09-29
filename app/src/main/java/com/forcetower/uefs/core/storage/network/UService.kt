@@ -54,6 +54,7 @@ import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.model.unes.SStudentDTO
 import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -266,4 +267,8 @@ interface UService {
 
     @POST("biscuit/invalidate")
     suspend fun invalidateSession(): UResponse<Void>
+
+    // ------------ ping --------------
+    @GET("hi")
+    suspend fun hi(): Response<UResponse<Void>>
 }
