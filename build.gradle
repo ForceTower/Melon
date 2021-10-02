@@ -20,10 +20,8 @@ import javax.sound.sampled.Clip
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-import javax.sound.sampled.AudioSystem
-
 buildscript {
-    ext.kotlin_version = '1.5.30'
+    ext.kotlin_version = '1.5.31'
     ext {
         juice = "1.7.1"
         snowpiercer = "1.1.4"
@@ -52,7 +50,7 @@ buildscript {
         work_manager = '2.7.0-rc01'
 
         // Dependency Injection
-        dagger = '2.38.1'
+        dagger = '2.39'
         hilt_androidx = '1.0.0'
 
         // Firebase
@@ -101,13 +99,13 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '7.0.1'
+        android_gradle_plugin = '7.0.2'
         google_play_services = "4.3.4"
         kotlinter = "3.4.4"
         play_publisher = "3.5.0-agp7.0"
         bundletool = "0.10.0"
         crashlytics = '2.5.2'
-        hilt_dagger = '2.38.1'
+        hilt_dagger = '2.39'
         coreDesugar = '1.1.5'
     }
 
