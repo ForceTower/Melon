@@ -54,19 +54,21 @@ import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.nio.charset.Charset
+import java.util.*
 import javax.inject.Inject
-import kotlin.random.Random
 
 @AndroidEntryPoint
 class SigningInFragment : UFragment() {
     @Inject
     lateinit var firebaseAuth: FirebaseAuth
+
     @Inject
     lateinit var firebaseStorage: FirebaseStorage
 
     private lateinit var binding: FragmentSigningInBinding
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var messages: Array<String>
+    private val possibleMessages: ArrayList<String> = arrayListOf()
 
     private val args by navArgs<SigningInFragmentArgs>()
 
@@ -147,9 +149,11 @@ class SigningInFragment : UFragment() {
     }
 
     private fun displayRandomText() {
-        val position = (Random.nextDouble() * (messages.size - 1)).toInt()
-        val message = messages[position]
-        binding.textStatus.setText(message)
+        if (possibleMessages.isEmpty()) {
+            possibleMessages.addAll(messages)
+            possibleMessages.shuffle()
+        }
+        binding.textStatus.setText(possibleMessages.removeFirst())
         Handler(Looper.getMainLooper()).postDelayed(
             {
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
