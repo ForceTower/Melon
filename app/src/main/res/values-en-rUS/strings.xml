@@ -735,4 +735,45 @@
     <string name="absence_removed_ntf_content">Absence removed in course %1$s</string>
     <string name="absence_created_ntf_content">Absence registered in course %1$s</string>
     <string name="grades_not_downloaded_yet">Grades from this period wasn\'t downloaded yet</string>
+    <string name="error_invalid_connect_error_with_code">" Failed to authorize connection (%1$d)"</string>
+    <string name="error_unexpected_response_joke">Looks like Sagres is down.</string>
+    <string name="about_unes_support">This project is completely free to use but has operating costs. If you want to help with the maintenance and development, use the PIX: joaopaulo761@gmail.com</string>
+    <string name="title_aeri">AERI\'s News</string>
+    <string name="title_conference" translatable="false">Big Events</string>
+    <string name="title_event" translatable="false">Events</string>
+    <string name="bad_device_title" translatable="false">Background execution</string>
+    <string name="bad_device_p1" translatable="false">" If you're seeing this, there's a big chance you won't receive notifications or the \"Application only updates when I open it\""</string>
+    <string name="bad_device_p2" translatable="false">" If you want a solution to this, read the whole text or, if it's not your case, close and then continue. But, you were warned "</string>
+    <string name="bad_device_p3" translatable="false">" One of the important parts of this app is the famous SyncWorker, in short terms it starts the app automatically, updates its data, notifies and closes the app again."</string>
+    <string name="bad_device_p4" translatable="false">" UNES registers in the system a task to Synchronize the data at the frequency you choose, and obeys some rules: the app must be connected to the internet and the battery must not be low (below 20%), so the app will not waste your battery if you are at a critical time."</string>
+    <string name="bad_device_p5" translatable="false">The problem happens when some brands of devices block this behavior. Yours is on this list, that\'s why you\'re seeing this message</string>
+    <string name="bad_device_p6" translatable="false">" It's not something that any app developer can solve, it's something related directly to the operating system."</string>
+    <string name="bad_device_p7" translatable="false">The good news is that you can try to solve this, visit the advanced settings</string>
+    <string name="bad_device_p8" translatable="false">Or go to https://dontkillmyapp.com, search for your brand and follow the steps</string>
+    <string name="bad_device_p9" translatable="false">" This is not a new problem, in fact Chinese brands started doing this almost 2 years ago: https://issuetracker.google.com/issues/122098785 https://issuetracker.google.com/issues/148005702"</string>
+    <string name="bad_device_p10" translatable="false">Anyway, as long as google doesn\'t convince your brand to adopt the expected behavior of the system, you\'ll have to do it :)</string>
+    <string name="bad_device_got_it">Got it</string>
+    <string name="start_up_failed">" Initialization error"</string>
+    <string name="start_up_failed_description">Error starting application. Please clear application data to continue. Reinstalling the app probably won\'t work.</string>
+    <string name="start_up_failed_positive_btn">OK!</string>
+    <string name="start_up_failed_resumed">" Initialization error"</string>
+    <string name="start_up_failed_resumed_desc">" You need to clear application data to continue"</string>
+    <string name="title_map">Map</string>
+    <string name="campus_map">Campus Map</string>
+    <string name="share_file">Share file</string>
+    <string name="why_are_you_so_clicky">" Why do you click so much?"</string>
+    <string name="settings_adv_dynamic_feature_maps">Campus Map</string>
+    <string name="settings_adv_dynamic_feature_maps_info">Controls whether the map function should be installed/uninstalled</string>
+    <string name="widget_unknown_teacher">Unknown Teacher</string>
+    <string name="widget_unknown_location">Unknown</string>
+    <string name="widget_schedule_time">Time</string>
+    <string name="widget_schedule_location">Location</string>
+    <string name="widget_no_more_class_discipline">It\'s over for today</string>
+    <string name="widget_no_more_class_location">" Where you want"</string>
+    <string name="semester_discipline_separator">Semester %1$s</string>
+    <string name="title_disciplines">Courses</string>
+    <string name="settings_ignore_doze_failed">" Unable to get to settings"</string>
+    <string name="unable_to_sync_account">Session expired</string>
+    <string name="invalid_access_session_information">UNES is not able to access your information with the current session, this may be caused by a password change or a connection failure with the Educational Institution for long periods of time. Enter your password again to login.</string>
+    <string name="login_access_reconnect_not_specified">" Unspecified error. lol"</string>
 </resources>
