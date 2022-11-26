@@ -129,6 +129,7 @@ class ScheduleBlockPerformanceAdapter(
                     binding.cardRoot.setCardBackgroundColor(ColorUtils.modifyAlpha(color, 40))
                 }
             }
+            is ScheduleHolder.NothingHolder -> Unit
         }
     }
 

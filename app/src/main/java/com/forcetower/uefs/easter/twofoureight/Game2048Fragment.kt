@@ -194,7 +194,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     }
 
     private fun save() {
-        val settings = PreferenceManager.getDefaultSharedPreferences(activity)
+        val settings = PreferenceManager.getDefaultSharedPreferences(requireContext())
         val editor = settings.edit()
         val field = mGame.gameGrid!!.grid
         val undoField = mGame.gameGrid!!.undoGrid
@@ -226,7 +226,7 @@ class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.
     private fun load() {
         // Stopping all animations
         binding.gameview.cancelAnimations()
-        val settings = PreferenceManager.getDefaultSharedPreferences(activity)
+        val settings = PreferenceManager.getDefaultSharedPreferences(requireContext())
         for (xx in mGame.gameGrid!!.grid.indices) {
             for (yy in mGame.gameGrid!!.grid[0].indices) {
                 val value = settings.getInt("$xx $yy", -1)
