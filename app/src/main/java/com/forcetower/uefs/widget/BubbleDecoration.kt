@@ -176,7 +176,7 @@ class BubbleDecoration(context: Context) : RecyclerView.ItemDecoration() {
         }.apply {
             addListener(
                 object : AnimatorListenerAdapter() {
-                    override fun onAnimationEnd(animation: Animator?) {
+                    override fun onAnimationEnd(animation: Animator) {
                         animator = null
                     }
                 }

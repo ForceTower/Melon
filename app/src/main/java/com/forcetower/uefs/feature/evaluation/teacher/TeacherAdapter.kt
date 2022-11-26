@@ -82,6 +82,7 @@ class TeacherAdapter(
                     executePendingBindings()
                 }
             }
+            is TeacherHolder.DisciplineHeaderHolder -> Unit
         }
     }
 

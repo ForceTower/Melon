@@ -97,7 +97,7 @@ object CustomNavigationUI {
         var startDestination: NavDestination? = graph
         while (startDestination is NavGraph) {
             val parent = startDestination as NavGraph?
-            startDestination = parent!!.findNode(parent.startDestination)
+            startDestination = parent!!.findNode(parent.startDestinationId)
         }
         return startDestination!!
     }

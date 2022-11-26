@@ -122,6 +122,7 @@ class DashboardAdapter(
                     holder.binding.rootView.visibility = View.GONE
                 }
             }
+            is DashboardHolder.UpdatingHolder -> Unit
         }
     }
 
