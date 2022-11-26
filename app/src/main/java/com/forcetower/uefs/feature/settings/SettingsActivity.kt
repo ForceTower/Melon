@@ -62,8 +62,11 @@ class SettingsActivity : UActivity(), PreferenceFragmentCompat.OnPreferenceStart
         }
     }
 
-    override fun onPreferenceStartFragment(caller: PreferenceFragmentCompat?, pref: Preference?): Boolean {
-        when (pref?.key ?: return false) {
+    override fun onPreferenceStartFragment(
+        caller: PreferenceFragmentCompat,
+        pref: Preference
+    ): Boolean {
+        when (pref.key) {
             "settings_synchronization" -> navigateTo(SyncSettingsFragment())
             "settings_notifications" -> {
                 if (VersionUtils.isOreo()) {

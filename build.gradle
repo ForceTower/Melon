@@ -21,49 +21,40 @@ import javax.sound.sampled.Clip
  */
 
 buildscript {
-    ext.kotlin_version = '1.5.31'
+    ext.kotlin_version = '1.7.20'
     ext {
-        juice = "1.7.1"
+        juice = "1.8.0"
         snowpiercer = "1.1.4"
 
         // Kotlin Extensions
-        ktx = '1.6.0'
+        ktx = '1.9.0'
 
         // Android X
-        app_compat = '1.3.1'
+        app_compat = '1.5.1'
         google_material = '1.4.0'
-        constraint_layout = '2.1.1'
-        annotation = '1.2.0'
+        constraint_layout = '2.1.4'
+        annotation = '1.5.0'
         exif_interface = "1.1.0"
         pallete = "1.0.0"
         flexbox = "1.1.0"
-        browser = '1.3.0'
-        preference = '1.1.1'
-        fragment = '1.3.6'
+        browser = '1.4.0'
+        preference = '1.2.0'
+        fragment = '1.5.4'
         swipe_refresh = '1.1.0'
 
         // Architecture
         room = '2.3.0'
-        lifecycle = '2.3.1'
-        paging = '3.0.1'
-        navigation = '2.3.5'
+        lifecycle = '2.5.1'
+        paging = '3.1.1'
+        navigation = '2.5.3'
         work_manager = '2.7.0-rc01'
 
         // Dependency Injection
-        dagger = '2.39'
+        dagger = '2.44.2'
         hilt_androidx = '1.0.0'
 
         // Firebase
-        firebase_core = '17.5.1'
-        firebase_auth = '19.4.0'
-        firebase_messaging = '20.3.0'
-        firebase_firestore = '21.7.1'
-        firebase_storage = '19.2.0'
-        firebase_remote_config = '19.2.0'
-        firebase_functions = '19.1.0'
-        in_app_messaging = "19.0.1"
-        firebase_crashlytics = '17.2.2'
-        firebase_ui_storage = "7.1.1"
+        firebase_ui_storage = "8.0.2"
 
         // Logs
         timber = "5.0.1"
@@ -74,7 +65,7 @@ buildscript {
         image_cropper = "2.8.0"
 
         // Google Services
-        gp_core = '1.10.2'
+        gp_core = '1.10.3'
         gp_core_ktx = '1.8.1'
         gp_auth = '19.2.0'
         gp_games = '21.0.0'
@@ -99,22 +90,22 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '7.0.2'
-        google_play_services = "4.3.4"
+        android_gradle_plugin = '7.3.1'
+        google_play_services = '4.3.14'
         kotlinter = "3.4.4"
-        play_publisher = "3.5.0-agp7.0"
+        play_publisher = "3.7.0"
         bundletool = "0.10.0"
-        crashlytics = '2.5.2'
-        hilt_dagger = '2.39'
-        coreDesugar = '1.1.5'
+        crashlytics = '2.9.2'
+        hilt_dagger = '2.44.2'
+        coreDesugar = '1.2.0'
     }
 
     repositories {
         google()
-        maven { url "https://jitpack.io" }
         maven { url "https://maven.fabric.io/public" }
         maven { url "https://plugins.gradle.org/m2/" }
         maven { url "https://oss.sonatype.org/content/repositories/snapshots" }
+        maven { url "https://mvnrepository.com/artifact/com.github.gundy/semver4j" }
         mavenLocal()
     }
 
@@ -131,10 +122,6 @@ buildscript {
         classpath "com.mikepenz.aboutlibraries.plugin:aboutlibraries-plugin:$about_libraries"
     }
 
-}
-
-plugins {
-    id "org.sonarqube" version "3.3"
 }
 
 allprojects {
@@ -178,29 +165,6 @@ subprojects {
     tasks.whenTaskAdded {
         if (name == 'preBuild') {
             mustRunAfter 'lintKotlin'
-        }
-    }
-
-    sonarqube {
-        properties {
-            property "sonar.sources", "src/main"
-        }
-    }
-}
-
-subprojects {
-    if (!gradle.startParameter.taskNames.any { it.contains("lint") }) {
-        tasks.configureEach {
-            if (name.startsWith("lint")) {
-                enabled = false
-            }
-        }
-    } else {
-        // https://github.com/JakeWharton/timber/issues/408
-        it.afterEvaluate {
-            if (it.plugins.hasPlugin("com.android.application") || it.plugins.hasPlugin("com.android.library") || it.plugins.hasPlugin("com.android.dynamic-feature")) {
-                it.android.lintOptions.disable = ["LogNotTimber", "StringFormatInTimber", "ThrowableNotAtBeginning", "BinaryOperationInTimber", "TimberArgCount", "TimberArgTypes", "TimberTagLength", "TimberExceptionLogging"]
-            }
         }
     }
 }

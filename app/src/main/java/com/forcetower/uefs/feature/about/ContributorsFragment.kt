@@ -62,7 +62,7 @@ class ContributorsFragment : UFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.contributorClickAction.observe(viewLifecycleOwner, EventObserver { openLink(it) })
-        viewModel.contributors.observe(viewLifecycleOwner, { processContributors(it) })
+        viewModel.contributors.observe(viewLifecycleOwner) { processContributors(it) }
     }
 
     private fun processContributors(resource: Resource<List<Contributor>>?) {
@@ -76,6 +76,7 @@ class ContributorsFragment : UFragment() {
                 Timber.d("Loaded!")
                 populateInterface(resource.data)
             }
+            else -> Unit
         }
     }
 

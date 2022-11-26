@@ -100,7 +100,9 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
 
         if (!valid) {
             Toast.makeText(requireContext(), R.string.settings_proxy_invalid, Toast.LENGTH_SHORT).show()
-            getSharedPreferences().edit().putString("stg_sync_proxy", BuildConfig.UEFS_DEFAULT_PROXY).apply()
+            getSharedPreferences()?.run {
+                edit().putString("stg_sync_proxy", BuildConfig.UEFS_DEFAULT_PROXY).apply()
+            }
         } else {
             Toast.makeText(requireContext(), R.string.settings_proxy_changed, Toast.LENGTH_SHORT).show()
         }
@@ -109,13 +111,13 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
     private fun changeWorkerType(intValue: Int?): Boolean {
         intValue ?: return false
         Timber.d("Changing worker type to $intValue")
-        var period = getSharedPreferences().getString("stg_sync_frequency", "60")?.toIntOrNull() ?: 60
+        var period = getSharedPreferences()?.run { getString("stg_sync_frequency", "60")?.toIntOrNull() } ?: 60
         when (intValue) {
             0 -> {
                 SyncLinkedWorker.stopWorker(requireContext())
                 if (period < 15) {
                     period = 15
-                    getSharedPreferences().edit().putString("stg_sync_frequency", "15").apply()
+                    getSharedPreferences()?.run { edit().putString("stg_sync_frequency", "15").apply() }
                 }
                 SyncMainWorker.createWorker(requireContext(), period)
             }
@@ -130,7 +132,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
 
     private fun changeSyncFrequency(period: Int?): Boolean {
         period ?: return false
-        val worker = getSharedPreferences().getString("stg_sync_worker_type", "0")?.toIntOrNull() ?: 0
+        val worker = getSharedPreferences()?.run { getString("stg_sync_worker_type", "0")?.toIntOrNull() } ?: 0
         if (period >= 15) {
             when (worker) {
                 0 -> {
@@ -143,7 +145,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
             SyncMainWorker.stopWorker(requireContext())
             SyncLinkedWorker.stopWorker(requireContext())
             SyncLinkedWorker.createWorker(requireContext(), period)
-            getSharedPreferences().edit().putString("stg_sync_worker_type", "1").apply()
+            getSharedPreferences()?.run { edit().putString("stg_sync_worker_type", "1").apply() }
         }
 
         firebaseRepository.updateFrequency(period)
@@ -160,7 +162,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
     }
 
     private fun enableAutoProxy() {
-        getSharedPreferences().edit().putBoolean("stg_sync_auto_proxy", true).apply()
+        getSharedPreferences()?.run { edit().putBoolean("stg_sync_auto_proxy", true).apply() }
         (findPreference("stg_sync_auto_proxy") as? TwoStatePreference).also {
             Timber.d("was it converted? ${it == null}")
         }?.isChecked = true
@@ -176,7 +178,7 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
             enableAutoProxy()
         } else {
-            getSharedPreferences().edit().putBoolean("stg_sync_auto_proxy", false).apply()
+            getSharedPreferences()?.run { edit().putBoolean("stg_sync_auto_proxy", false).apply() }
             (findPreference("stg_sync_auto_proxy") as? TwoStatePreference)?.isChecked = false
             EasyPermissions.requestPermissions(this, getString(R.string.permission_location_sync_text), RC_LOCATION_PERMISSION, *perms)
         }
@@ -189,12 +191,12 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.registerOnSharedPreferenceChangeListener(listener)
     }
 
     override fun onPause() {
         super.onPause()
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     private fun getSharedPreferences() = preferenceManager.sharedPreferences
