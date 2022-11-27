@@ -81,6 +81,8 @@ class ProfileAdapter(
                     executePendingBindings()
                 }
             }
+            is ProfileHolder.StatementHeader -> Unit
+            is ProfileHolder.StatementUnapprovedHeader -> Unit
         }
     }
 

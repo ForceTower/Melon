@@ -26,7 +26,7 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
@@ -55,6 +55,7 @@ android {
     kotlinOptions {
         jvmTarget = "1.8"
     }
+    namespace 'com.forcetower.uefs.aeri'
 }
 
 kotlinter {

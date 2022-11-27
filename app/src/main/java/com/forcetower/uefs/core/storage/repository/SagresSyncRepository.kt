@@ -188,13 +188,11 @@ class SagresSyncRepository @Inject constructor(
             Timber.d("There was a time where this would cause sync to be aborted if server.. But i don't care anymore")
         }
 
-        try {
-            findAndMatch()
-        } catch (t: Throwable) {
-        }
+        runCatching { findAndMatch() }
 
         val isStudentFromUEFS = preferences.isStudentFromUEFS()
-        if (isStudentFromUEFS) {
+        val isCaptchaInjectionNeeded = isStudentFromUEFS && com.forcetower.sagres.Constants.getParameter("REQUIRES_CAPTCHA") == "true"
+        if (isCaptchaInjectionNeeded) {
             val injected = cookieSessionRepository.injectGoodCookiesOnClient()
             if (injected == CookieSessionRepository.INJECT_ERROR_NO_VALUE) {
                 Timber.i("The cookie that is good no one wants to give!")
@@ -232,8 +230,9 @@ class SagresSyncRepository @Inject constructor(
         database.classMaterialDao().markAllNotified()
 
         val homeDoc = when {
-            isStudentFromUEFS && gToken == null -> initialPage()
-            !isStudentFromUEFS || gToken != null -> login(access, gToken)
+            isStudentFromUEFS && gToken == null && isCaptchaInjectionNeeded -> initialPage()
+            isStudentFromUEFS && !isCaptchaInjectionNeeded -> login(access, null)
+            !isStudentFromUEFS -> login(access, gToken)
             else -> null
         }
 

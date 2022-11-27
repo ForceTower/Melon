@@ -27,7 +27,7 @@ apply plugin: 'androidx.navigation.safeargs'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
@@ -51,11 +51,11 @@ android {
     buildFeatures {
         dataBinding true
     }
-
-    lintOptions {
-        // AGP 4.0 can't detect Activities from other modules?
+    lint {
         disable 'Instantiatable', 'MissingClass'
     }
+    namespace 'dev.forcetower.event'
+
 }
 
 dependencies {

@@ -31,12 +31,12 @@ ext {
             def (major, minor, patch) = last_tag.toLowerCase().replaceAll('-', '.').tokenize('.')
 
             def postfix = "main"
-            def adder = 10000
+            def adder = 20000
             if (branch == "development") {
-                adder = 20000
+                adder = 30000
                 postfix = "beta"
             } else if (branch.startsWith("feature/")) {
-                adder = 20000
+                adder = 30000
                 postfix = branch.replace("feature/", "")
             }
 

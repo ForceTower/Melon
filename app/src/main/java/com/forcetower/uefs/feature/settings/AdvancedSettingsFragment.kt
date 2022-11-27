@@ -42,6 +42,7 @@ import androidx.preference.Preference
 import androidx.preference.PreferenceCategory
 import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.SwitchPreference
+import com.forcetower.core.extensions.orFalse
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
@@ -75,7 +76,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_advanced, rootKey)
         updateDozePreferences()
 
-        if (!getSharedPreferences().isStudentFromUEFS()) {
+        if (!getSharedPreferences()?.isStudentFromUEFS().orFalse) {
             findPreference<SwitchPreference>("stg_advanced_aeri_tab")?.isVisible = false
             findPreference<SwitchPreference>("stg_advanced_map_tab")?.isVisible = false
         } else {
@@ -253,13 +254,13 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.registerOnSharedPreferenceChangeListener(listener)
         updateDozePreferences()
     }
 
     override fun onPause() {
         super.onPause()
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     private fun getSharedPreferences() = preferenceManager.sharedPreferences
@@ -272,11 +273,11 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
                     SyncMainWorker.stopWorker(requireContext())
                     SyncMainWorker.createWorker(requireContext(), 60)
                     Snackbar.make(requireView(), getString(R.string.settings_accept_ignore_doze), Snackbar.LENGTH_LONG).show()
-                    getSharedPreferences().edit().putString("stg_sync_frequency", "60").apply()
+                    getSharedPreferences()?.run { edit().putString("stg_sync_frequency", "60").apply() }
                     setDozePreference(true)
                 } else {
                     Snackbar.make(requireView(), getString(R.string.settings_refuse_ignore_doze), Snackbar.LENGTH_LONG).show()
-                    getSharedPreferences().edit().putBoolean("stg_advanced_ignore_doze", false).apply()
+                    getSharedPreferences()?.run { edit().putBoolean("stg_advanced_ignore_doze", false).apply() }
                     setDozePreference(false)
                 }
             }

@@ -129,6 +129,7 @@ class DisciplinePerformanceAdapter(
                     executePendingBindings()
                 }
             }
+            is DisciplineHolder.DividerHolder -> Unit
         }
     }
 
