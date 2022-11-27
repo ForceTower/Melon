@@ -27,7 +27,7 @@ plugins {
     id 'dagger.hilt.android.plugin'
 }
 android {
-    compileSdkVersion 31
+    compileSdkVersion 33
 
     defaultConfig {
         minSdkVersion 21
@@ -51,11 +51,12 @@ android {
     buildFeatures {
         dataBinding true
     }
-
-    lintOptions {
+    lint {
         abortOnError false
         disable 'MissingClass'
     }
+    namespace 'dev.forcetower.map'
+
 }
 
 dependencies {

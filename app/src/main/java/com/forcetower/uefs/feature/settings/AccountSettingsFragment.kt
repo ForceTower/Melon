@@ -55,12 +55,12 @@ class AccountSettingsFragment : PreferenceFragmentCompat() {
 
     override fun onResume() {
         super.onResume()
-        getSharedPreferences().registerOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.registerOnSharedPreferenceChangeListener(listener)
     }
 
     override fun onPause() {
         super.onPause()
-        getSharedPreferences().unregisterOnSharedPreferenceChangeListener(listener)
+        getSharedPreferences()?.unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     private fun getSharedPreferences() = preferenceManager.sharedPreferences

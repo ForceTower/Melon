@@ -59,6 +59,7 @@ class EvaluationElementsAdapter(
             is ElementHolder.MeanHolder -> holder.bind((item as Mean).list, discipline)
             is ElementHolder.TeacherHolder -> holder.view.teacher = item as TeacherInt
             is ElementHolder.DisciplineHeader -> holder.view.discipline = item as DisciplineEvaluation
+            is ElementHolder.TeacherHeader -> Unit
         }
     }
 

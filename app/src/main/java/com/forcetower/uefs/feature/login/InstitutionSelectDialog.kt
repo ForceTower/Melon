@@ -63,7 +63,7 @@ class InstitutionSelectDialog : RoundedDialog() {
         val institutions = SagresNavigator.getSupportedInstitutions()
         val selected = institutions[binding.pickerInstitution.value - 1]
         Timber.d("Selected $selected")
-        val preferences = PreferenceManager.getDefaultSharedPreferences(context)
+        val preferences = PreferenceManager.getDefaultSharedPreferences(requireContext())
         preferences.edit().putString(SELECTED_INSTITUTION_KEY, selected).apply()
         SagresNavigator.instance.setSelectedInstitution(selected)
     }

@@ -27,3 +27,6 @@ import androidx.core.content.res.ResourcesCompat
 fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
     return ResourcesCompat.getFloat(this, resId)
 }
+
+val Boolean?.orFalse
+    get() = this ?: false

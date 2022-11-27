@@ -712,4 +712,7 @@
     <string name="channel_service_sync_foreground">Actualización de datos persistentes</string>
     <string name="label_service_sync_foreground">Actualizador</string>
     <string name="label_service_sync_foreground_desc">UNES está activo</string>
+    <string name="title_aeri">Noticias AERI</string>
+    <string name="title_conference" translatable="false">Grandes Eventos</string>
+    <string name="title_event" translatable="false">Eventos</string>
 </resources>

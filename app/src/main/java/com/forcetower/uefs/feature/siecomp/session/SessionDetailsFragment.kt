@@ -29,7 +29,6 @@ import androidx.core.app.NavUtils
 import androidx.core.view.doOnLayout
 import androidx.core.view.forEach
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentEventSessionDetailsBinding
@@ -43,7 +42,7 @@ class SessionDetailsFragment : UFragment() {
     private val viewModel: SIECOMPSessionViewModel by activityViewModels()
     private lateinit var binding: FragmentEventSessionDetailsBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentEventSessionDetailsBinding.inflate(inflater, container, false).apply {
             up.setOnClickListener {
                 NavUtils.navigateUpFromSameTask(requireActivity())
@@ -73,7 +72,7 @@ class SessionDetailsFragment : UFragment() {
 
         viewModel.speakers.observe(
             viewLifecycleOwner,
-            Observer {
+            {
                 detailsAdapter.speakers = it ?: emptyList()
             }
         )
