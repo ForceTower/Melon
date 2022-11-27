@@ -24,7 +24,7 @@ buildscript {
     ext.kotlin_version = '1.7.20'
     ext {
         juice = "1.8.0"
-        snowpiercer = "1.1.4"
+        snowpiercer = "1.2.0"
 
         // Kotlin Extensions
         ktx = '1.9.0'
