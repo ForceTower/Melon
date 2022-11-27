@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.core.model.unes
 
-import androidx.annotation.Nullable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -51,7 +50,6 @@ data class ClassMaterial(
     val uid: Long = 0,
     @ColumnInfo(name = "group_id")
     val groupId: Long,
-    @Nullable
     @ColumnInfo(name = "class_item_id")
     val classItemId: Long?,
     val name: String,
