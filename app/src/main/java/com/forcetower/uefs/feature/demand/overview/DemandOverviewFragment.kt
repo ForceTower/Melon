@@ -48,11 +48,11 @@ class DemandOverviewFragment : UFragment() {
 
     private var headerAlpha = ObservableFloat(1f)
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         binding = FragmentDemandOverviewBinding.inflate(inflater, container, false).apply {
             viewModel = this@DemandOverviewFragment.viewModel
             headerAlpha = this@DemandOverviewFragment.headerAlpha
-            lifecycleOwner = this@DemandOverviewFragment
+            lifecycleOwner = viewLifecycleOwner
         }
         return binding.root
     }
@@ -67,12 +67,9 @@ class DemandOverviewFragment : UFragment() {
             setHasFixedSize(true)
         }
 
-        viewModel.selected.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) offersAdapter.submitList(it)
-            }
-        )
+        viewModel.selected.observe(viewLifecycleOwner) {
+            if (it != null) offersAdapter.submitList(it)
+        }
 
         behavior.addBottomSheetCallback(
             object : BottomSheetBehavior.BottomSheetCallback {
