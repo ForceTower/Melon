@@ -102,12 +102,8 @@ class HomeBottomFragment : UFragment() {
     }
 
     private fun featureFlags() {
-        val demandFlag = remoteConfig.getBoolean("feature_flag_demand")
-        val demandCommandFlag = remoteConfig.getBoolean("feature_flag_demand_commander")
-        viewModel.flags.observe(viewLifecycleOwner) {
-            val demand = demandCommandFlag && (it?.demandOpen == true || demandFlag)
-            toggleItem(R.id.demand, demand)
-        }
+        // This feature is broken, i think
+        // toggleItem(R.id.demand, false)
 
         val uefsStudent = preferences.isStudentFromUEFS()
 

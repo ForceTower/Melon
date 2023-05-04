@@ -71,12 +71,13 @@
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_description_black_24dp"/>
 
-                <item
-                    android:id="@+id/demand"
-                    android:title="@string/label_demand_title"
-                    android:menuCategory="secondary"
-                    android:icon="@drawable/ic_demand_black_24dp"
-                    android:visible="false"/>
+<!-- Out. -->
+<!--                <item-->
+<!--                    android:id="@+id/demand"-->
+<!--                    android:title="@string/label_demand_title"-->
+<!--                    android:menuCategory="secondary"-->
+<!--                    android:icon="@drawable/ic_demand_black_24dp"-->
+<!--                    android:visible="false"/>-->
 
                 <item
                     android:id="@+id/big_tray"
