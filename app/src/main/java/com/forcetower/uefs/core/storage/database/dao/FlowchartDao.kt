@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.service.FlowchartDTO
@@ -40,7 +40,7 @@ abstract class FlowchartDao {
     @Query("SELECT * FROM Flowchart")
     abstract fun getFlowcharts(): LiveData<List<Flowchart>>
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insert(list: Flowchart)
 
     @Transaction
@@ -102,19 +102,19 @@ abstract class FlowchartDao {
         insertRequirements(requirements)
     }
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertFlowchart(flowchart: Flowchart)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertSemesters(semesters: List<FlowchartSemester>)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertDiscipline(discipline: FlowchartDiscipline)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertRequirements(requirements: List<FlowchartRequirement>)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertLocalDiscipline(discipline: Discipline): Long
 
     @Query("SELECT * from Discipline WHERE LOWER(code) = LOWER(:code) LIMIT 1")

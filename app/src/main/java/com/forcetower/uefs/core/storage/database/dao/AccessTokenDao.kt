@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.AccessToken
@@ -42,7 +42,7 @@ abstract class AccessTokenDao {
         internalInsert(access)
     }
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun internalInsert(access: AccessToken)
 
     @Query("SELECT * FROM AccessToken LIMIT 1")

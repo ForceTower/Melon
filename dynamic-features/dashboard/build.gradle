@@ -39,8 +39,9 @@ android {
         }
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
     }
 
     buildFeatures {
@@ -86,5 +87,6 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
 
     // Google Play
-    implementation "com.google.android.play:core:$gp_core"
+    implementation 'com.google.android.play:feature-delivery-ktx:2.1.0'
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
 }
