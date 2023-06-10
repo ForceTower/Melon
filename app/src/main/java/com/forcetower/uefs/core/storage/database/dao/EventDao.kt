@@ -24,7 +24,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Event
@@ -44,7 +44,7 @@ abstract class EventDao {
     @Query("DELETE FROM Event WHERE sending = 0 or sending is null")
     protected abstract fun deleteAll()
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun internalInsert(events: List<Event>)
 
     @Query("UPDATE Event SET participating = :participating WHERE id = :id")
@@ -64,7 +64,7 @@ abstract class EventDao {
     @Query("SELECT * FROM Event ORDER BY id DESC LIMIT 1")
     protected abstract fun selectHighestId(): Event?
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun internalInsertSingle(event: Event): Long
 
     @WorkerThread

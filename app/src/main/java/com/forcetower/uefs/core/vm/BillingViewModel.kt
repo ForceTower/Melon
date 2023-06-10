@@ -24,8 +24,9 @@ import android.app.Activity
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.map
+import androidx.lifecycle.switchMap
 import androidx.lifecycle.viewModelScope
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.BillingClientStateListener
@@ -91,8 +92,8 @@ class BillingViewModel @Inject constructor(
 
     fun getSkus() = repository.getManagedSkus()
 
-    val subscriptions = Transformations.switchMap(getSkus()) { skuList -> getSubscriptions(skuList) }
-    val inAppProducts = Transformations.switchMap(getSkus()) { skuList -> getInAppProducts(skuList) }
+    val subscriptions = getSkus().switchMap { skuList -> getSubscriptions(skuList) }
+    val inAppProducts = getSkus().switchMap { skuList -> getInAppProducts(skuList) }
 
     fun selectSku(skuDetails: SkuDetails?) {
         skuDetails ?: return

@@ -44,8 +44,9 @@ android {
         coreLibraryDesugaringEnabled true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
     }
 
     buildFeatures {
@@ -83,7 +84,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Maps
-    implementation "com.google.android.gms:play-services-maps:17.0.1"
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"

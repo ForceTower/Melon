@@ -23,13 +23,13 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Contributor
 
 @Dao
 interface ContributorDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(contributor: Contributor)
 
     @Query("SELECT * FROM Contributor ORDER BY total DESC")

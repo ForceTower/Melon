@@ -24,7 +24,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -40,7 +40,7 @@ import timber.log.Timber
 
 @Dao
 abstract class ClassGroupDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(group: ClassGroup): Long
 
     @Transaction
@@ -70,7 +70,7 @@ abstract class ClassGroupDao {
         }
     }
 
-    @Update(onConflict = IGNORE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract fun update(item: ClassItem)
 
     @Query("SELECT * FROM ClassItem WHERE group_id = :groupId AND number = :number")
@@ -166,10 +166,10 @@ abstract class ClassGroupDao {
     @Query("SELECT c.uid as identifier, gd.date as eval_date, gd.grade as eval_grade, gd.name as eval_name, d.code as code, d.credits as credits, s.sagres_id as semester, s.codename as semester_name, cg.teacher as teacher, cg.teacherEmail as teacherEmail, cg.`group` as `group`, c.final_score as grade, c.partial_score as partialScore, d.name as discipline FROM ClassGroup cg, Class c, Discipline d, Semester s LEFT JOIN Grade gd ON c.uid = gd.class_id WHERE cg.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.sagres_id = :semesterId AND cg.teacher IS NOT NULL AND cg.`group` IS NOT NULL AND cg.`group` IS NOT 'unique'")
     abstract fun getClassStatsWithAllDirect(semesterId: Long): List<ClassStatsData>
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insert(item: ClassItem): Long
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insert(material: ClassMaterial)
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, Semester s, Discipline d WHERE g.class_id = c.uid AND c.discipline_id = d.uid AND c.semester_id = s.uid AND s.codename = :semester AND LOWER(d.code) = LOWER(:code) AND g.`group` = :group")

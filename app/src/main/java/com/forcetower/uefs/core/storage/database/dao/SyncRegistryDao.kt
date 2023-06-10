@@ -23,17 +23,17 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Update
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 
 @Dao
 interface SyncRegistryDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(data: SyncRegistry): Long
 
-    @Update(onConflict = REPLACE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     fun update(data: SyncRegistry)
 
     @Query("SELECT * FROM SyncRegistry WHERE start = :start")
