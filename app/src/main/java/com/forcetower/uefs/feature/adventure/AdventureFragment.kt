@@ -234,8 +234,7 @@ class AdventureFragment : UFragment() {
     private fun locationSettings() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult?) {
-                result ?: return
+            override fun onLocationResult(result: LocationResult) {
                 result.locations.forEach { location ->
                     if (location.accuracy >= 100) {
                         if (!showedLocationMessage) {

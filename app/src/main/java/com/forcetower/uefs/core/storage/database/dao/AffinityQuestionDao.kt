@@ -24,8 +24,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.service.AffinityQuestionDTO
@@ -57,7 +56,7 @@ abstract class AffinityQuestionDao {
     }
 
     @WorkerThread
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertQuestion(value: AffinityQuestion)
 
     @WorkerThread
@@ -65,11 +64,11 @@ abstract class AffinityQuestionDao {
     protected abstract fun getQuestionDirect(id: Long): AffinityQuestion?
 
     @WorkerThread
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertStudents(values: List<SStudent>)
 
     @WorkerThread
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertAlternatives(values: List<AffinityQuestionAlternative>)
 
     @WorkerThread

@@ -57,4 +57,6 @@ app/src/main/play/*
 
 app/release/output\.json
 
+.DS_Store
+
 exec_first_config
