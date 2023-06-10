@@ -36,8 +36,8 @@ import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import androidx.appcompat.graphics.drawable.DrawableWrapperCompat as DrawableWrapper
 import androidx.appcompat.widget.AppCompatRatingBar
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat as DrawableWrapper
 
 class RatingBarVectorFix @JvmOverloads constructor(
     context: Context,
