@@ -27,8 +27,6 @@ import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
 import android.os.Bundle
-import android.os.Handler
-import android.os.Looper
 import androidx.activity.viewModels
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
@@ -74,6 +72,8 @@ import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -121,14 +121,16 @@ class HomeActivity : UGameActivity() {
             verifyUpdates()
             getReviews()
             viewModel.onSessionStarted()
-            viewModel.account.observe(this, { })
+            viewModel.account.observe(this) {
+                Timber.d("Account updated.")
+            }
             checkServerAchievements()
             viewModel.getAffinityQuestions()
 //            if (preferences.isStudentFromUEFS()) {
 //                val intent = Intent(this, SyncService::class.java)
 //                startService(intent)
 //            }
-        } catch (t: Throwable) {}
+        } catch (_: Throwable) {}
         moveToTask()
     }
 
@@ -138,22 +140,18 @@ class HomeActivity : UGameActivity() {
             preferences.isStudentFromUEFS() &&
             !preferences.getBoolean("__user_in_app_review_once__", false)
         ) {
-            Handler(Looper.getMainLooper()).postDelayed(
-                {
-                    lifecycleScope.launchWhenCreated {
-                        if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                            try {
-                                val request = reviewManager.requestReview()
-                                reviewManager.launchReview(this@HomeActivity, request)
-                            } catch (error: Throwable) {
-                                Timber.e(error, "on request review")
-                            }
-                            preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
-                        }
+            lifecycleScope.launch {
+                delay(2000L)
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
+                    try {
+                        val request = reviewManager.requestReview()
+                        reviewManager.launchReview(this@HomeActivity, request)
+                    } catch (error: Throwable) {
+                        Timber.e(error, "on request review")
                     }
-                },
-                2000
-            )
+                    preferences.edit().putBoolean("__user_in_app_review_once__", true).apply()
+                }
+            }
         }
     }
 
