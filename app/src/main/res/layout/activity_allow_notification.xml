@@ -72,7 +72,7 @@
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_not_now"
-                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+                style="@style/UTheme.MaterialButton.Outline.AccentBorder"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="24dp"
