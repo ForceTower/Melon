@@ -780,4 +780,5 @@
     <string name="allow_notifications_description">UNES notifies you when you receive a message or a grade gets posted! Don\'t miss any update!</string>
     <string name="allow_notification_affirmative">Allow notifications</string>
     <string name="allow_notification_negative">Not now</string>
+    <string name="allow_notification_never">Never</string>
 </resources>

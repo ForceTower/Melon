@@ -2,6 +2,7 @@ package com.forcetower.uefs.feature.allownotification
 
 import android.Manifest
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Build
@@ -10,13 +11,19 @@ import android.provider.Settings
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.content.edit
 import androidx.databinding.DataBindingUtil
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityAllowNotificationBinding
 import com.forcetower.uefs.feature.shared.UActivity
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class AllowNotificationActivity : UActivity() {
+    @Inject lateinit var preferences: SharedPreferences
+
     private val requestPostNotificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -27,7 +34,13 @@ class AllowNotificationActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityAllowNotificationBinding>(this, R.layout.activity_allow_notification)
-        binding.btnNotNow.setOnClickListener { finish() }
+        val shown = preferences.getBoolean("notification_request_already_show", false)
+        if (shown) binding.btnNotNow.setText(R.string.allow_notification_never)
+        binding.btnNotNow.setOnClickListener {
+            val key = if (!shown) "notification_request_already_show" else "notification_request_do_not_ask"
+            preferences.edit { putBoolean(key, true) }
+            finish()
+        }
         binding.btnAllow.setOnClickListener { requestNotificationPermission() }
     }
 

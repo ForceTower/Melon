@@ -138,6 +138,9 @@
         <activity
             android:name=".feature.obsolete.ObsoleteActivity"
             android:theme="@style/UTheme.LightNav" />
+        <activity
+            android:name=".feature.allownotification.AllowNotificationActivity"
+            android:theme="@style/UTheme.LightNav" />
 
         <meta-data
             android:name="preloaded_fonts"
