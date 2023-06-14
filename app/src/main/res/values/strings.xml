@@ -898,4 +898,9 @@
     <string name="unable_to_sync_account">Sessão expirada</string>
     <string name="invalid_access_session_information">O UNES não está conseguindo acessar suas informações com a sessão atual, isto pode ser causado por uma troca de senha ou alguma falha de conexão com a Instituição de Ensino por longos períodos de tempo. Digite sua senha novamente para entrar.</string>
     <string name="login_access_reconnect_not_specified">Erro não especificado. lol</string>
+    <string name="allow_notifications_title">Permita notificações!</string>
+    <string name="allow_notifications_description">O UNES utiliza notificacoes para te avisar quando voçê receber um recado ou quando uma nota for postada!</string>
+    <string name="allow_notification_affirmative">Permitir notificações</string>
+    <string name="allow_notification_negative">Agora não</string>
+    <string name="allow_notification_never">Nunca</string>
 </resources>

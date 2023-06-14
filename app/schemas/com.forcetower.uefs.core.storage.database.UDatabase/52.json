@@ -34,10 +34,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -72,10 +72,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -152,10 +152,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -164,6 +164,7 @@
             "columnNames": [
               "sagres_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Profile_sagres_id` ON `${TABLE_NAME}` (`sagres_id`)"
           },
           {
@@ -172,6 +173,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Profile_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -231,10 +233,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -243,6 +245,7 @@
             "columnNames": [
               "sagres_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Semester_sagres_id` ON `${TABLE_NAME}` (`sagres_id`)"
           }
         ],
@@ -350,10 +353,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -362,6 +365,7 @@
             "columnNames": [
               "hash_message"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Message_hash_message` ON `${TABLE_NAME}` (`hash_message`)"
           },
           {
@@ -370,6 +374,7 @@
             "columnNames": [
               "sagres_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Message_sagres_id` ON `${TABLE_NAME}` (`sagres_id`)"
           },
           {
@@ -378,6 +383,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Message_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -413,10 +419,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -425,6 +431,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_CalendarItem_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -484,10 +491,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -496,6 +503,7 @@
             "columnNames": [
               "code"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Discipline_code` ON `${TABLE_NAME}` (`code`)"
           },
           {
@@ -504,6 +512,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Discipline_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -581,10 +590,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -593,6 +602,7 @@
             "columnNames": [
               "semester_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Class_semester_id` ON `${TABLE_NAME}` (`semester_id`)"
           },
           {
@@ -602,6 +612,7 @@
               "discipline_id",
               "semester_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Class_discipline_id_semester_id` ON `${TABLE_NAME}` (`discipline_id`, `semester_id`)"
           },
           {
@@ -610,6 +621,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Class_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -710,10 +722,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -723,6 +735,7 @@
               "class_id",
               "group"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassGroup_class_id_group` ON `${TABLE_NAME}` (`class_id`, `group`)"
           },
           {
@@ -731,6 +744,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassGroup_uuid` ON `${TABLE_NAME}` (`uuid`)"
           },
           {
@@ -739,6 +753,7 @@
             "columnNames": [
               "teacher_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassGroup_teacher_id` ON `${TABLE_NAME}` (`teacher_id`)"
           }
         ],
@@ -827,10 +842,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -839,6 +854,7 @@
             "columnNames": [
               "profile_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassAbsence_profile_id` ON `${TABLE_NAME}` (`profile_id`)"
           },
           {
@@ -847,6 +863,7 @@
             "columnNames": [
               "class_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassAbsence_class_id` ON `${TABLE_NAME}` (`class_id`)"
           },
           {
@@ -858,6 +875,7 @@
               "sequence",
               "grouping"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassAbsence_class_id_profile_id_sequence_grouping` ON `${TABLE_NAME}` (`class_id`, `profile_id`, `sequence`, `grouping`)"
           },
           {
@@ -866,6 +884,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassAbsence_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -984,10 +1003,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1000,6 +1019,7 @@
               "ends_at",
               "profile_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassLocation_group_id_day_starts_at_ends_at_profile_id` ON `${TABLE_NAME}` (`group_id`, `day`, `starts_at`, `ends_at`, `profile_id`)"
           },
           {
@@ -1008,6 +1028,7 @@
             "columnNames": [
               "profile_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassLocation_profile_id` ON `${TABLE_NAME}` (`profile_id`)"
           },
           {
@@ -1016,6 +1037,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassLocation_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -1110,10 +1132,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1123,6 +1145,7 @@
               "group_id",
               "number"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassItem_group_id_number` ON `${TABLE_NAME}` (`group_id`, `number`)"
           },
           {
@@ -1131,6 +1154,7 @@
             "columnNames": [
               "number_of_materials"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassItem_number_of_materials` ON `${TABLE_NAME}` (`number_of_materials`)"
           },
           {
@@ -1139,6 +1163,7 @@
             "columnNames": [
               "situation"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassItem_situation` ON `${TABLE_NAME}` (`situation`)"
           },
           {
@@ -1147,6 +1172,7 @@
             "columnNames": [
               "date"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassItem_date` ON `${TABLE_NAME}` (`date`)"
           },
           {
@@ -1155,6 +1181,7 @@
             "columnNames": [
               "is_new"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassItem_is_new` ON `${TABLE_NAME}` (`is_new`)"
           },
           {
@@ -1163,6 +1190,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassItem_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -1234,10 +1262,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1246,6 +1274,7 @@
             "columnNames": [
               "name"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassMaterial_name` ON `${TABLE_NAME}` (`name`)"
           },
           {
@@ -1254,6 +1283,7 @@
             "columnNames": [
               "link"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassMaterial_link` ON `${TABLE_NAME}` (`link`)"
           },
           {
@@ -1262,6 +1292,7 @@
             "columnNames": [
               "group_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassMaterial_group_id` ON `${TABLE_NAME}` (`group_id`)"
           },
           {
@@ -1270,6 +1301,7 @@
             "columnNames": [
               "class_item_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassMaterial_class_item_id` ON `${TABLE_NAME}` (`class_item_id`)"
           },
           {
@@ -1278,6 +1310,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassMaterial_uuid` ON `${TABLE_NAME}` (`uuid`)"
           },
           {
@@ -1286,6 +1319,7 @@
             "columnNames": [
               "is_new"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassMaterial_is_new` ON `${TABLE_NAME}` (`is_new`)"
           },
           {
@@ -1296,6 +1330,7 @@
               "link",
               "group_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassMaterial_name_link_group_id` ON `${TABLE_NAME}` (`name`, `link`, `group_id`)"
           }
         ],
@@ -1378,10 +1413,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1390,6 +1425,7 @@
             "columnNames": [
               "class_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Grade_class_id` ON `${TABLE_NAME}` (`class_id`)"
           },
           {
@@ -1400,6 +1436,7 @@
               "class_id",
               "grouping"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Grade_name_class_id_grouping` ON `${TABLE_NAME}` (`name`, `class_id`, `grouping`)"
           }
         ],
@@ -1453,10 +1490,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -1503,10 +1540,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1515,6 +1552,7 @@
             "columnNames": [
               "type"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SagresDocument_type` ON `${TABLE_NAME}` (`type`)"
           }
         ],
@@ -1598,10 +1636,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1610,6 +1648,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SyncRegistry_uuid` ON `${TABLE_NAME}` (`uuid`)"
           },
           {
@@ -1618,6 +1657,7 @@
             "columnNames": [
               "start"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SyncRegistry_start` ON `${TABLE_NAME}` (`start`)"
           }
         ],
@@ -1665,10 +1705,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1677,6 +1717,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Teacher_uuid` ON `${TABLE_NAME}` (`uuid`)"
           },
           {
@@ -1685,6 +1726,7 @@
             "columnNames": [
               "sagresId"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Teacher_sagresId` ON `${TABLE_NAME}` (`sagresId`)"
           }
         ],
@@ -1768,10 +1810,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -1794,10 +1836,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -1856,10 +1898,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -1868,6 +1910,7 @@
             "columnNames": [
               "login"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Contributor_login` ON `${TABLE_NAME}` (`login`)"
           }
         ],
@@ -1927,10 +1970,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -1940,6 +1983,7 @@
               "service",
               "date"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `service_uniqueness` ON `${TABLE_NAME}` (`service`, `date`)"
           }
         ],
@@ -1999,10 +2043,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -2031,10 +2075,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "teacherId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2043,6 +2087,7 @@
             "columnNames": [
               "name"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_STeacher_name` ON `${TABLE_NAME}` (`name`)"
           }
         ],
@@ -2084,10 +2129,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "disciplineId"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2097,6 +2142,7 @@
               "code",
               "department"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SDiscipline_code_department` ON `${TABLE_NAME}` (`code`, `department`)"
           },
           {
@@ -2105,6 +2151,7 @@
             "columnNames": [
               "name"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SDiscipline_name` ON `${TABLE_NAME}` (`name`)"
           },
           {
@@ -2113,6 +2160,7 @@
             "columnNames": [
               "code"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SDiscipline_code` ON `${TABLE_NAME}` (`code`)"
           },
           {
@@ -2121,6 +2169,7 @@
             "columnNames": [
               "department"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SDiscipline_department` ON `${TABLE_NAME}` (`department`)"
           }
         ],
@@ -2174,10 +2223,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2186,6 +2235,7 @@
             "columnNames": [
               "name"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SStudent_name` ON `${TABLE_NAME}` (`name`)"
           }
         ],
@@ -2263,10 +2313,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -2275,6 +2325,7 @@
             "columnNames": [
               "name"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_EvaluationEntity_name` ON `${TABLE_NAME}` (`name`)"
           }
         ],
@@ -2310,10 +2361,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -2348,10 +2399,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2360,6 +2411,7 @@
             "columnNames": [
               "flowchartId"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_FlowchartSemester_flowchartId` ON `${TABLE_NAME}` (`flowchartId`)"
           }
         ],
@@ -2425,10 +2477,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2437,6 +2489,7 @@
             "columnNames": [
               "disciplineId"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_FlowchartDiscipline_disciplineId` ON `${TABLE_NAME}` (`disciplineId`)"
           },
           {
@@ -2445,6 +2498,7 @@
             "columnNames": [
               "semesterId"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_FlowchartDiscipline_semesterId` ON `${TABLE_NAME}` (`semesterId`)"
           }
         ],
@@ -2521,10 +2575,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [
           {
@@ -2533,6 +2587,7 @@
             "columnNames": [
               "disciplineId"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_FlowchartRequirement_disciplineId` ON `${TABLE_NAME}` (`disciplineId`)"
           },
           {
@@ -2541,6 +2596,7 @@
             "columnNames": [
               "requiredDisciplineId"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_FlowchartRequirement_requiredDisciplineId` ON `${TABLE_NAME}` (`requiredDisciplineId`)"
           }
         ],
@@ -2641,10 +2697,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -2691,10 +2747,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -2729,10 +2785,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -2761,10 +2817,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -2773,6 +2829,7 @@
             "columnNames": [
               "student_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_student_id` ON `${TABLE_NAME}` (`student_id`)"
           },
           {
@@ -2781,6 +2838,7 @@
             "columnNames": [
               "question_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_AffinityQuestionAlternative_question_id` ON `${TABLE_NAME}` (`question_id`)"
           }
         ],
@@ -2948,10 +3006,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": false,
           "columnNames": [
             "id"
-          ],
-          "autoGenerate": false
+          ]
         },
         "indices": [],
         "foreignKeys": []

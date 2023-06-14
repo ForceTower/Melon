@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.core.utils.WordUtils
@@ -35,7 +35,7 @@ import java.util.Locale
 
 @Dao
 abstract class ProfileDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(profile: Profile): Long
 
     @Query("SELECT * FROM Profile WHERE me = 1 LIMIT 1")

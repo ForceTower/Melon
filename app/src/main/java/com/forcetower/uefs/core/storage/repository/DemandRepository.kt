@@ -24,8 +24,8 @@ import android.content.Context
 import androidx.annotation.WorkerThread
 import androidx.core.os.bundleOf
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
 import androidx.lifecycle.MediatorLiveData
+import androidx.lifecycle.toLiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.sagres.operation.Status
@@ -54,9 +54,7 @@ class DemandRepository @Inject constructor(
 
         result.value = Resource.loading(null)
         val local = database.demandOfferDao().getAll()
-        val network = LiveDataReactiveStreams.fromPublisher(
-            SagresNavigator.instance.aLoadDemandOffers().toFlowable(BackpressureStrategy.LATEST)
-        )
+        val network = SagresNavigator.instance.aLoadDemandOffers().toFlowable(BackpressureStrategy.LATEST).toLiveData()
 
         result.addSource(local) { result.value = Resource.loading(it) }
 

@@ -23,14 +23,14 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.Course
 import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CourseDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(courses: List<Course>)
 
     @Query("SELECT * FROM Course ORDER BY name")

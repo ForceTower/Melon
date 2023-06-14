@@ -39,8 +39,9 @@ android {
         dataBinding true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
     }
     namespace 'com.forcetower.core'
 
@@ -70,6 +71,8 @@ dependencies {
     api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
     api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
     api "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    api "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-reactivestreams:$lifecycle"
     api "androidx.lifecycle:lifecycle-service:$lifecycle"
 
     implementation "com.jakewharton.timber:timber:$timber"
@@ -83,6 +86,7 @@ dependencies {
     api "androidx.work:work-gcm:$work_manager"
 
     api "androidx.room:room-runtime:$room"
+    api "androidx.room:room-paging:$room"
     api "androidx.room:room-ktx:$room"
 
     // Image
