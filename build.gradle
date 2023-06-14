@@ -90,7 +90,7 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '7.4.2'
+        android_gradle_plugin = '8.0.2'
         google_play_services = '4.3.14'
         kotlinter = "3.4.4"
         play_publisher = "3.7.0"

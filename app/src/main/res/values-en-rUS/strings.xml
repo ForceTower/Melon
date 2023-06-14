@@ -776,4 +776,8 @@
     <string name="unable_to_sync_account">Session expired</string>
     <string name="invalid_access_session_information">UNES is not able to access your information with the current session, this may be caused by a password change or a connection failure with the Educational Institution for long periods of time. Enter your password again to login.</string>
     <string name="login_access_reconnect_not_specified">" Unspecified error. lol"</string>
+    <string name="allow_notifications_title">Get notified!</string>
+    <string name="allow_notifications_description">UNES notifies you when you receive a message or a grade gets posted! Don\'t miss any update!</string>
+    <string name="allow_notification_affirmative">Allow notifications</string>
+    <string name="allow_notification_negative">Not now</string>
 </resources>

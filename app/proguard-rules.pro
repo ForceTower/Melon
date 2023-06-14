@@ -50,6 +50,15 @@
   @com.google.gson.annotations.SerializedName <fields>;
 }
 
+-keep,allowobfuscation,allowshrinking class com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class * extends com.google.gson.reflect.TypeToken
+-keep,allowobfuscation,allowshrinking class kotlin.coroutines.Continuation
+
+## Retrofit will probably break this next update, omegalul
+# R8 full mode strips generic signatures from return types if not kept.
+-keep,allowobfuscation,allowshrinking interface retrofit2.Call
+-keep,allowobfuscation,allowshrinking class retrofit2.Response
+
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 -dontwarn java.lang.instrument.ClassFileTransformer
@@ -61,3 +70,4 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLParameters
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
+-dontwarn android.content.pm.PackageManager$PackageInfoFlags

@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:fillViewport="true">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <ImageView
+                android:id="@+id/image"
+                android:layout_width="250dp"
+                android:layout_height="250dp"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="64dp"
+                android:importantForAccessibility="no"
+                android:src="@mipmap/hourglass_landing"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.496"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="16dp"
+                android:gravity="center"
+                android:text="@string/allow_notifications_title"
+                android:textAlignment="gravity"
+                android:textColor="?attr/colorOnBackground"
+                android:textSize="21sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/image" />
+
+            <com.google.android.material.textview.MaterialTextView
+                android:id="@+id/subtitle"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginTop="8dp"
+                android:text="@string/allow_notifications_description"
+                android:textSize="13sp"
+                android:textColor="?attr/colorOnBackground"
+                android:textAlignment="gravity"
+                android:gravity="center"
+                app:layout_constraintTop_toBottomOf="@id/title"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_allow"
+                style="@style/UTheme.MaterialButton.Default"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="24dp"
+                android:layout_marginBottom="8dp"
+                android:letterSpacing="0.01"
+                android:text="@string/allow_notification_affirmative"
+                app:layout_constraintBottom_toTopOf="@+id/btn_not_now"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subtitle"
+                app:layout_constraintVertical_bias="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_not_now"
+                style="@style/UTheme.MaterialButton.Default.DialogPrimary"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="24dp"
+                android:layout_marginHorizontal="24dp"
+                android:letterSpacing="0.01"
+                android:text="@string/allow_notification_negative"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/subtitle"
+                app:layout_constraintVertical_bias="1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</layout>
