@@ -194,7 +194,8 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun checkNotificationPermission() {
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+        val neverAsk = preferences.getBoolean("notification_request_do_not_ask", false)
+        if (neverAsk || Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
         val permission = Manifest.permission.POST_NOTIFICATIONS
         val result = checkSelfPermission(permission)

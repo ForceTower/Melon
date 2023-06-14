@@ -902,4 +902,5 @@
     <string name="allow_notifications_description">O UNES utiliza notificacoes para te avisar quando voçê receber um recado ou quando uma nota for postada!</string>
     <string name="allow_notification_affirmative">Permitir notificações</string>
     <string name="allow_notification_negative">Agora não</string>
+    <string name="allow_notification_never">Nunca</string>
 </resources>
