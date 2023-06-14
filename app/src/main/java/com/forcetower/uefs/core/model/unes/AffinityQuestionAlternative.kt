@@ -23,14 +23,13 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = AffinityQuestion::class, childColumns = ["question_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
-        ForeignKey(entity = SStudent::class, childColumns = ["student_id"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
+        ForeignKey(entity = AffinityQuestion::class, childColumns = ["question_id"], parentColumns = ["id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        ForeignKey(entity = SStudent::class, childColumns = ["student_id"], parentColumns = ["id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
     ],
     indices = [
         Index("student_id", unique = false),

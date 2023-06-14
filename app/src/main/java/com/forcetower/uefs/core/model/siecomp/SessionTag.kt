@@ -23,7 +23,6 @@ package com.forcetower.uefs.core.model.siecomp
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
@@ -31,8 +30,8 @@ import java.util.UUID
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = CASCADE, onUpdate = CASCADE),
-        ForeignKey(entity = Tag::class, parentColumns = ["uid"], childColumns = ["tag_id"], onUpdate = CASCADE, onDelete = CASCADE)
+        ForeignKey(entity = Session::class, parentColumns = ["uid"], childColumns = ["session_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        ForeignKey(entity = Tag::class, parentColumns = ["uid"], childColumns = ["tag_id"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE)
     ],
     indices = [
         Index(value = ["session_id", "tag_id"], unique = true),

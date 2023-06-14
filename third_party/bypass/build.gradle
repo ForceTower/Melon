@@ -37,13 +37,16 @@ android {
         }
 
         ndkVersion "21.3.6528147"
+
+        compileOptions {
+            sourceCompatibility = 17
+            targetCompatibility = 17
+        }
     }
     namespace 'in.uncod.android.bypass'
 }
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
-
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation "androidx.annotation:annotation:$annotation"
 }

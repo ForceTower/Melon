@@ -42,19 +42,13 @@ import androidx.core.graphics.scale
 import androidx.core.view.postDelayed
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
 import com.bumptech.glide.load.resource.gif.GifDrawable
 import com.forcetower.uefs.R
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import java.io.File
 import java.io.FileOutputStream
 import java.util.Locale
-
-fun <X, Y> LiveData<X>.map(body: (X) -> Y): LiveData<Y> {
-    return Transformations.map(this, body)
-}
 
 inline fun FragmentManager.inTransaction(func: FragmentTransaction.() -> FragmentTransaction) {
     beginTransaction().func().commit()

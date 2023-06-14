@@ -23,8 +23,6 @@ package com.forcetower.uefs.core.model.unes
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
-import androidx.room.ForeignKey.SET_NULL
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMaterialLink
@@ -32,8 +30,8 @@ import java.util.UUID
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = CASCADE, onUpdate = CASCADE),
-        ForeignKey(entity = ClassItem::class, parentColumns = ["uid"], childColumns = ["class_item_id"], onDelete = SET_NULL, onUpdate = CASCADE)
+        ForeignKey(entity = ClassGroup::class, parentColumns = ["uid"], childColumns = ["group_id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        ForeignKey(entity = ClassItem::class, parentColumns = ["uid"], childColumns = ["class_item_id"], onDelete = ForeignKey.SET_NULL, onUpdate = ForeignKey.CASCADE)
     ],
     indices = [
         Index(value = ["name"], unique = false),

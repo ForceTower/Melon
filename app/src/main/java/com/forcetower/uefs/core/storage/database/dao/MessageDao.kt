@@ -24,8 +24,7 @@ import androidx.lifecycle.LiveData
 import androidx.paging.PagingSource
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Message
@@ -154,10 +153,10 @@ abstract class MessageDao {
     @Query("UPDATE Message SET content = :content WHERE sagres_id = :sagresId")
     protected abstract fun updateContent(sagresId: Long, content: String)
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertIgnore(messages: List<Message>)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun insertReplace(messages: List<Message>)
 
     @Query("SELECT * FROM Message WHERE sagres_id = :sagresId")
@@ -178,7 +177,7 @@ abstract class MessageDao {
     @Query("UPDATE Message SET notified = 1")
     abstract fun setAllNotified()
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(message: Message): Long
 
     @Query("DELETE FROM Message")

@@ -24,7 +24,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.LiveDataReactiveStreams
+import androidx.lifecycle.toLiveData
 import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
 import io.reactivex.BackpressureStrategy
@@ -71,5 +71,5 @@ fun SharedPreferences.isStudentFromUESC(): Boolean {
 }
 
 fun <T> Subject<T>.toLiveData(): LiveData<T> {
-    return LiveDataReactiveStreams.fromPublisher(this.toFlowable(BackpressureStrategy.LATEST))
+    return this.toFlowable(BackpressureStrategy.LATEST).toLiveData()
 }

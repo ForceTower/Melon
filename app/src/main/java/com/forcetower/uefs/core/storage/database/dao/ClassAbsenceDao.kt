@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -36,13 +36,13 @@ import timber.log.Timber
 
 @Dao
 abstract class ClassAbsenceDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(absence: ClassAbsence)
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun insert(absence: List<ClassAbsence>)
 
-    @Update(onConflict = IGNORE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun update(absence: ClassAbsence)
 
     @Query("UPDATE ClassAbsence SET notified = 1")

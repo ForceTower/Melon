@@ -23,13 +23,13 @@ package com.forcetower.uefs.core.storage.eventdatabase.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.AccessToken
 
 @Dao
 interface AccessTokenDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(access: AccessToken)
 
     @Query("SELECT * FROM AccessToken LIMIT 1")

@@ -52,8 +52,9 @@ android {
         dataBinding true
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
+    compileOptions {
+        sourceCompatibility = 17
+        targetCompatibility = 17
     }
     namespace 'com.forcetower.uefs.aeri'
 }
@@ -100,6 +101,5 @@ dependencies {
     kapt "com.github.bumptech.glide:compiler:$glide"
 
     // Google Play
-    implementation "com.google.android.play:core:$gp_core"
-    implementation "com.google.android.play:core-ktx:$gp_core_ktx"
+    implementation 'com.google.android.play:feature-delivery-ktx:2.1.0'
 }

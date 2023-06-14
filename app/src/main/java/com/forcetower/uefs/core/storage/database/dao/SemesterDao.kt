@@ -23,7 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Semester
@@ -76,10 +76,10 @@ abstract class SemesterDao {
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
     abstract fun getSemesterDirect(sagresId: Long): Semester?
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun internalInsertIgnoring(semesters: List<Semester>)
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insertIgnoring(semester: Semester)
 
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")

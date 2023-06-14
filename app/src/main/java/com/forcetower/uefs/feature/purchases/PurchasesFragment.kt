@@ -26,7 +26,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import com.android.billingclient.api.BillingClient
 import com.android.billingclient.api.SkuDetails
 import com.forcetower.core.lifecycle.EventObserver
@@ -77,24 +76,18 @@ class PurchasesFragment : UFragment() {
         binding.recyclerSku.apply {
             adapter = skuAdapter
         }
-        viewModel.subscriptions.observe(
-            viewLifecycleOwner,
-            Observer {
-                processDetails(it)
-            }
-        )
+        viewModel.subscriptions.observe(viewLifecycleOwner) {
+            processDetails(it)
+        }
         viewModel.selectSku.observe(
             viewLifecycleOwner,
             EventObserver {
                 purchaseFlow(it)
             }
         )
-        viewModel.currentUsername.observe(
-            viewLifecycleOwner,
-            Observer {
-                currentUsername = it
-            }
-        )
+        viewModel.currentUsername.observe(viewLifecycleOwner) {
+            currentUsername = it
+        }
     }
 
     private fun processDetails(result: SkuDetailsResult) {
