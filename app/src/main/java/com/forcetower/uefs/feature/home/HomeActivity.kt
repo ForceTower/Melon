@@ -20,13 +20,16 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.Manifest
 import android.content.Intent
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
 import android.content.pm.ShortcutManager
+import android.os.Build
 import android.os.Bundle
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
@@ -58,6 +61,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.play.core.appupdate.AppUpdateInfo
 import com.google.android.play.core.appupdate.AppUpdateManager
 import com.google.android.play.core.appupdate.AppUpdateManagerFactory
+import com.google.android.play.core.appupdate.AppUpdateOptions
 import com.google.android.play.core.install.InstallState
 import com.google.android.play.core.install.InstallStateUpdatedListener
 import com.google.android.play.core.install.model.ActivityResult.RESULT_IN_APP_UPDATE_FAILED
@@ -85,6 +89,12 @@ class HomeActivity : UGameActivity() {
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject lateinit var executors: AppExecutors
     private lateinit var reviewManager: ReviewManager
+
+    private val requestPostNotificationPermission = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()
+    ) {
+        Timber.d("User allowed notification? $it")
+    }
 
     private val updateListener = InstallStateUpdatedListener { state -> onStateUpdateChanged(state) }
     private val viewModel: HomeViewModel by viewModels()
@@ -126,6 +136,13 @@ class HomeActivity : UGameActivity() {
             }
             checkServerAchievements()
             viewModel.getAffinityQuestions()
+
+            if (!hasNotificationPermission) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    requestPostNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
+                }
+                startActivity(AllowNotifications())
+            }
 //            if (preferences.isStudentFromUEFS()) {
 //                val intent = Intent(this, SyncService::class.java)
 //                startService(intent)
@@ -177,7 +194,7 @@ class HomeActivity : UGameActivity() {
     private fun requestUpdate(@AppUpdateType type: Int, info: AppUpdateInfo) {
         viewModel.updateType = type
         updateManager.registerListener(updateListener)
-        updateManager.startUpdateFlowForResult(info, type, this, REQUEST_IN_APP_UPDATE)
+        updateManager.startUpdateFlowForResult(info, this, AppUpdateOptions.defaultOptions(type), REQUEST_IN_APP_UPDATE)
     }
 
     override fun onUserInteraction() {
@@ -246,11 +263,13 @@ class HomeActivity : UGameActivity() {
     }
 
     private fun setupUserData() {
-        viewModel.access.observe(this, { onAccessUpdate(it) })
-        viewModel.accessToken.observe(this, { onAccessTokenUpdate(it) })
+        viewModel.access.observe(this) { onAccessUpdate(it) }
+        viewModel.accessToken.observe(this) { onAccessTokenUpdate(it) }
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this, {})
+        viewModel.sendToken().observe(this) {
+            Timber.d("Sent token... I guess ($it)")
+        }
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
@@ -258,14 +277,11 @@ class HomeActivity : UGameActivity() {
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
         }
-        viewModel.scheduleHideCount.observe(
-            this,
-            {
-                Timber.d("Schedule hidden stuff: $it")
-                analytics.setUserProperty("using_schedule_hide", "${it > 0}")
-                analytics.setUserProperty("using_schedule_hide_cnt", "$it")
-            }
-        )
+        viewModel.scheduleHideCount.observe(this) {
+            Timber.d("Schedule hidden stuff: $it")
+            analytics.setUserProperty("using_schedule_hide", "${it > 0}")
+            analytics.setUserProperty("using_schedule_hide_cnt", "$it")
+        }
         viewModel.onMoveToSchedule.observe(
             this,
             EventObserver {
@@ -346,7 +362,9 @@ class HomeActivity : UGameActivity() {
     }
 
     override fun checkNotConnectedAchievements() {
-        adventureViewModel.checkNotConnectedAchievements().observe(this, {})
+        adventureViewModel.checkNotConnectedAchievements().observe(this) {
+            Timber.d("Not connected achievements...")
+        }
     }
 
     private fun checkServerAchievements() {
@@ -368,7 +386,7 @@ class HomeActivity : UGameActivity() {
         viewModel.onUserInteraction()
         updateManager.appUpdateInfo.addOnSuccessListener {
             if (viewModel.updateType == AppUpdateType.IMMEDIATE && it.updateAvailability() == UpdateAvailability.DEVELOPER_TRIGGERED_UPDATE_IN_PROGRESS) {
-                updateManager.startUpdateFlowForResult(it, AppUpdateType.IMMEDIATE, this, REQUEST_IN_APP_UPDATE)
+                updateManager.startUpdateFlowForResult(it, this, AppUpdateOptions.defaultOptions(AppUpdateType.IMMEDIATE), REQUEST_IN_APP_UPDATE)
             } else if (viewModel.updateType != AppUpdateType.IMMEDIATE && it.installStatus() == InstallStatus.DOWNLOADED) {
                 showSnackbarForRestartRequired()
             }
@@ -399,6 +417,7 @@ class HomeActivity : UGameActivity() {
         snack.show()
     }
 
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == REQUEST_IN_APP_UPDATE) {
