@@ -22,14 +22,13 @@ package com.forcetower.uefs.core.model.unes
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = Discipline::class, childColumns = ["disciplineId"], parentColumns = ["uid"], onUpdate = CASCADE, onDelete = CASCADE),
-        ForeignKey(entity = FlowchartSemester::class, childColumns = ["semesterId"], parentColumns = ["id"], onUpdate = CASCADE, onDelete = CASCADE)
+        ForeignKey(entity = Discipline::class, childColumns = ["disciplineId"], parentColumns = ["uid"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = FlowchartSemester::class, childColumns = ["semesterId"], parentColumns = ["id"], onUpdate = ForeignKey.CASCADE, onDelete = ForeignKey.CASCADE)
     ],
     indices = [
         Index(value = ["disciplineId"]),

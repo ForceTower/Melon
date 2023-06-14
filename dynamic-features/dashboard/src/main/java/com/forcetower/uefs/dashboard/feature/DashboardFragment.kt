@@ -93,16 +93,11 @@ class DashboardFragment : UFragment() {
                 dashAdapter.updatingApp = it == InstallStatus.DOWNLOADING
             }
         )
-        viewModel.currentClass.observe(viewLifecycleOwner, Observer { dashAdapter.nextClass = it })
-        viewModel.lastMessage.observe(viewLifecycleOwner, Observer { dashAdapter.lastMessage = it })
-        viewModel.student.observe(viewLifecycleOwner, Observer { dashAdapter.student = it })
-        viewModel.affinity.observe(viewLifecycleOwner, Observer { dashAdapter.affinityList = it })
-        viewModel.account.observe(
-            viewLifecycleOwner,
-            Observer {
-                dashAdapter.currentAccount = it
-            }
-        )
+        viewModel.currentClass.observe(viewLifecycleOwner) { dashAdapter.nextClass = it }
+        viewModel.lastMessage.observe(viewLifecycleOwner) { dashAdapter.lastMessage = it }
+        viewModel.student.observe(viewLifecycleOwner) { dashAdapter.student = it }
+        viewModel.affinity.observe(viewLifecycleOwner) { dashAdapter.affinityList = it }
+        viewModel.account.observe(viewLifecycleOwner) { dashAdapter.currentAccount = it }
         viewModel.onMoveToSchedule.observe(viewLifecycleOwner, EventObserver { homeViewModel.onMoveToSchedule() })
         viewModel.profileClick.observe(
             viewLifecycleOwner,

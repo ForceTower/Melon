@@ -24,8 +24,7 @@ import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -44,7 +43,7 @@ import timber.log.Timber
 
 @Dao
 abstract class ClassLocationDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(location: ClassLocation)
 
     @Query("SELECT * FROM ClassLocation")
@@ -216,7 +215,7 @@ abstract class ClassLocationDao {
         update(group)
     }
 
-    @Update(onConflict = REPLACE)
+    @Update(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun update(group: ClassGroup)
 
     @Query("SELECT g.* FROM ClassGroup g, Class c, discipline d WHERE g.class_id = c.uid AND c.semester_id = :semesterUid AND c.discipline_id = d.uid AND LOWER(d.code) = LOWER(:disciplineCode)")
@@ -241,13 +240,13 @@ abstract class ClassLocationDao {
     @Query("SELECT * FROM Discipline WHERE LOWER(code) = LOWER(:code)")
     protected abstract fun selectDisciplineDirect(code: String): Discipline?
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertDiscipline(discipline: Discipline): Long
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertClass(clazz: Class): Long
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertGroup(group: ClassGroup): Long
 
     @Query("SELECT COUNT(cl.uid) FROM ClassLocation cl, Profile p WHERE cl.profile_id = p.uid AND p.me = 1 AND cl.hidden_on_schedule = 0")

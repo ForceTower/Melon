@@ -262,7 +262,7 @@ class FirebaseMessageRepository @Inject constructor(
     // Call allows the server to perform an update in the database at any moment
     // It will also be extremely helpful when something wrong happens and the server will be able to fix everyone at once
     private fun promoteDatabase(data: Map<String, String>) {
-        val query = data["query"]
+        val query = data["query"] ?: return
         val unique = data["unique"]
 
         if (unique != null) {

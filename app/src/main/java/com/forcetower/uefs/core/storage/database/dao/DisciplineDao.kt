@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -31,7 +31,7 @@ import timber.log.Timber
 
 @Dao
 abstract class DisciplineDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(discipline: Discipline): Long
 
     @Transaction
@@ -69,6 +69,6 @@ abstract class DisciplineDao {
         }
     }
 
-    @Update(onConflict = IGNORE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract suspend fun update(value: Discipline)
 }

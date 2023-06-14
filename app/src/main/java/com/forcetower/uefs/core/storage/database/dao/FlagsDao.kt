@@ -23,13 +23,13 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.forcetower.uefs.core.model.unes.SagresFlags
 
 @Dao
 interface FlagsDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFlags(flag: SagresFlags)
 
     @Query("SELECT * FROM SagresFlags LIMIT 1")

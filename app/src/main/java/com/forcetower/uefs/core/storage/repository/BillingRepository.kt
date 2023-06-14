@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.storage.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
+import androidx.lifecycle.map
 import com.android.billingclient.api.Purchase
 import com.forcetower.uefs.core.effects.purchases.PurchaseEffect
 import com.forcetower.uefs.core.effects.purchases.SubscriptionEffect
@@ -40,7 +40,7 @@ class BillingRepository @Inject constructor(
 
     fun getUsername(): LiveData<String?> {
         val source = database.accessDao().getAccess()
-        return Transformations.map(source) { it?.username }
+        return source.map { it?.username }
     }
 
     fun getManagedSkus(): LiveData<List<String>> {

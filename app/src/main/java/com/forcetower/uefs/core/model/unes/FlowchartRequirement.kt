@@ -22,15 +22,14 @@ package com.forcetower.uefs.core.model.unes
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.google.gson.annotations.SerializedName
 
 @Entity(
     foreignKeys = [
-        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["disciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE),
-        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["requiredDisciplineId"], parentColumns = ["id"], onDelete = CASCADE, onUpdate = CASCADE)
+        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["disciplineId"], parentColumns = ["id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE),
+        ForeignKey(entity = FlowchartDiscipline::class, childColumns = ["requiredDisciplineId"], parentColumns = ["id"], onDelete = ForeignKey.CASCADE, onUpdate = ForeignKey.CASCADE)
     ],
     indices = [
         Index(value = ["disciplineId"]),

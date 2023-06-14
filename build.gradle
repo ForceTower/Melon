@@ -21,36 +21,36 @@ import javax.sound.sampled.Clip
  */
 
 buildscript {
-    ext.kotlin_version = '1.7.20'
+    ext.kotlin_version = '1.8.21'
     ext {
         juice = "1.8.0"
         snowpiercer = "1.2.0"
 
         // Kotlin Extensions
-        ktx = '1.9.0'
+        ktx = '1.10.1'
 
         // Android X
-        app_compat = '1.5.1'
-        google_material = '1.4.0'
+        app_compat = '1.6.1'
+        google_material = '1.9.0'
         constraint_layout = '2.1.4'
-        annotation = '1.5.0'
+        annotation = '1.6.0'
         exif_interface = "1.1.0"
         pallete = "1.0.0"
         flexbox = "1.1.0"
-        browser = '1.4.0'
+        browser = '1.5.0'
         preference = '1.2.0'
-        fragment = '1.5.4'
+        fragment = '1.6.0'
         swipe_refresh = '1.1.0'
 
         // Architecture
-        room = '2.3.0'
-        lifecycle = '2.5.1'
+        room = '2.5.1'
+        lifecycle = '2.6.1'
         paging = '3.1.1'
-        navigation = '2.5.3'
-        work_manager = '2.7.0-rc01'
+        navigation = '2.6.0'
+        work_manager = '2.8.1'
 
         // Dependency Injection
-        dagger = '2.44.2'
+        dagger = '2.45'
         hilt_androidx = '1.0.0'
 
         // Firebase
@@ -60,17 +60,17 @@ buildscript {
         timber = "5.0.1"
 
         // Image
-        glide = '4.12.0'
-        lottie = '4.1.0'
+        glide = '4.15.1'
+        lottie = '5.2.0'
         image_cropper = "2.8.0"
 
         // Google Services
         gp_core = '1.10.3'
         gp_core_ktx = '1.8.1'
-        gp_auth = '19.2.0'
-        gp_games = '21.0.0'
-        gp_location = '18.0.0'
-        gp_billing_client = '4.0.0'
+        gp_auth = '20.5.0'
+        gp_games = '23.1.0'
+        gp_location = '21.0.1'
+        gp_billing_client = '6.0.0'
         gp_admob = '19.8.0'
 
         // Networking
@@ -79,8 +79,8 @@ buildscript {
         cookie_jar = "v1.0.1"
 
         // Others
-        gson = '2.8.8'
-        jsoup = '1.14.2'
+        gson = '2.10.1'
+        jsoup = '1.15.4'
         chart_view = "v3.1.0"
         about_libraries = "8.5.0"
         easy_permissions = "0.3.0"
@@ -90,14 +90,14 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '7.3.1'
+        android_gradle_plugin = '8.0.2'
         google_play_services = '4.3.14'
         kotlinter = "3.4.4"
         play_publisher = "3.7.0"
         bundletool = "0.10.0"
         crashlytics = '2.9.2'
-        hilt_dagger = '2.44.2'
-        coreDesugar = '1.2.0'
+        hilt_dagger = '2.45'
+        coreDesugar = '2.0.3'
     }
 
     repositories {
@@ -110,7 +110,7 @@ buildscript {
     }
 
     dependencies {
-        classpath "com.android.tools.build:gradle:${android_gradle_plugin}"
+        classpath "com.android.tools.build:gradle:$android_gradle_plugin"
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
         classpath "com.google.gms:google-services:$google_play_services"
         classpath "com.github.triplet.gradle:play-publisher:$play_publisher"

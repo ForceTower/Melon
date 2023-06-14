@@ -23,8 +23,7 @@ package com.forcetower.uefs.core.storage.eventdatabase.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.siecomp.ServerSession
@@ -38,7 +37,7 @@ import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 
 @Dao
 abstract class EventDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(session: Session): Long
 
     @Transaction
@@ -98,16 +97,16 @@ abstract class EventDao {
     @Query("SELECT * FROM Session WHERE uuid = :uuid")
     protected abstract fun getSessionWithUUID(uuid: String): Session?
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertTags(tags: List<Tag>)
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertSpeakers(speakers: List<Speaker>)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun assocTag(tagged: SessionTag)
 
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     protected abstract fun assocSpeaker(speaker: SessionSpeaker)
 
     @Query("DELETE FROM Session WHERE uuid = :sessionUUID")

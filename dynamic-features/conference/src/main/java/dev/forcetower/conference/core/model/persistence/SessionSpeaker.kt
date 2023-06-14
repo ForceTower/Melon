@@ -22,7 +22,6 @@ package dev.forcetower.conference.core.model.persistence
 
 import androidx.room.Entity
 import androidx.room.ForeignKey
-import androidx.room.ForeignKey.CASCADE
 import androidx.room.Index
 import androidx.room.PrimaryKey
 
@@ -33,8 +32,8 @@ import androidx.room.PrimaryKey
         Index(value = ["speaker"])
     ],
     foreignKeys = [
-        ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = CASCADE),
-        ForeignKey(entity = Speaker::class, parentColumns = ["id"], childColumns = ["speaker"], onDelete = CASCADE)
+        ForeignKey(entity = Session::class, parentColumns = ["id"], childColumns = ["session"], onDelete = ForeignKey.CASCADE),
+        ForeignKey(entity = Speaker::class, parentColumns = ["id"], childColumns = ["speaker"], onDelete = ForeignKey.CASCADE)
     ]
 )
 data class SessionSpeaker(

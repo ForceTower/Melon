@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.storage.database.dao
 
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -40,10 +40,10 @@ import java.time.ZonedDateTime
 
 @Dao
 abstract class GradeDao {
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     abstract fun insert(grade: Grade): Long
 
-    @Update(onConflict = IGNORE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract fun update(grade: Grade)
 
     @Query("SELECT * FROM Grade")
@@ -319,9 +319,9 @@ abstract class GradeDao {
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresSemesterId")
     protected abstract fun getSemesterId(sagresSemesterId: Long): Semester?
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertDiscipline(discipline: Discipline): Long
 
-    @Insert(onConflict = IGNORE)
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertClass(clazz: Class): Long
 }

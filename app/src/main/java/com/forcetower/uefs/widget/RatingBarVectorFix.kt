@@ -36,8 +36,8 @@ import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import androidx.appcompat.graphics.drawable.DrawableWrapper
 import androidx.appcompat.widget.AppCompatRatingBar
+import androidx.appcompat.graphics.drawable.DrawableWrapperCompat as DrawableWrapper
 
 class RatingBarVectorFix @JvmOverloads constructor(
     context: Context,
@@ -69,10 +69,10 @@ class RatingBarVectorFix @JvmOverloads constructor(
     @SuppressLint("RestrictedApi")
     private fun tileify(drawable: Drawable, clip: Boolean): Drawable {
         if (drawable is DrawableWrapper) {
-            var inner: Drawable? = drawable.wrappedDrawable
+            var inner: Drawable? = drawable.drawable
             if (inner != null) {
                 inner = tileify(inner, clip)
-                drawable.wrappedDrawable = inner
+                drawable.drawable = inner
             }
         } else if (drawable is LayerDrawable) {
             val layers = drawable.numberOfLayers

@@ -72,8 +72,9 @@ android {
 
         ndkVersion "21.3.6528147"
 
-        kotlinOptions {
-            jvmTarget = "1.8"
+        compileOptions {
+            sourceCompatibility = 17
+            targetCompatibility = 17
         }
     }
 
@@ -178,13 +179,15 @@ kotlinter {
 }
 
 dependencies {
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreDesugar"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':bypass')
     implementation project(path: ':core')
 
     // Auto start
-    implementation 'com.github.judemanutd:autostarter:1.0.8'
+    implementation 'com.github.judemanutd:autostarter:1.1.0'
 
     // Portal scrapper
     implementation "dev.forcetower.unes:juice:$juice"
@@ -192,7 +195,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.6.4'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1'
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
@@ -209,8 +212,12 @@ dependencies {
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
     // Architecture
-    implementation "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
-    implementation "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-livedata-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-runtime-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-common-java8:$lifecycle"
+    api "androidx.lifecycle:lifecycle-reactivestreams-ktx:$lifecycle"
+    api "androidx.lifecycle:lifecycle-service:$lifecycle"
 
     // Paging
     implementation "androidx.paging:paging-runtime-ktx:$paging"
@@ -225,7 +232,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:31.1.0')
+    implementation platform('com.google.firebase:firebase-bom:32.1.0')
     implementation "com.google.firebase:firebase-auth-ktx"
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-messaging-ktx"
@@ -244,8 +251,9 @@ dependencies {
     implementation "com.google.android.gms:play-services-auth:$gp_auth"
     implementation "com.google.android.gms:play-services-location:$gp_location"
     implementation "com.android.billingclient:billing:$gp_billing_client"
-    implementation "com.google.android.play:core:$gp_core"
-    implementation "com.google.android.play:core-ktx:$gp_core_ktx"
+    implementation 'com.google.android.play:review-ktx:2.0.1'
+    implementation 'com.google.android.play:app-update-ktx:2.1.0'
+    implementation 'com.google.android.play:feature-delivery-ktx:2.1.0'
 
     // Image
     implementation "com.github.bumptech.glide:glide:$glide"
@@ -266,15 +274,15 @@ dependencies {
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
-    implementation "com.google.android.gms:play-services-maps:17.0.1"
+    implementation 'com.google.android.gms:play-services-maps:18.1.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.12.2"
-    testImplementation "androidx.arch.core:core-testing:2.1.0"
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.6.4'
+    testImplementation 'androidx.arch.core:core-testing:2.2.0'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.4'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
 }
 
 task buildNotes {

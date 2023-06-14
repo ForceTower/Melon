@@ -34,10 +34,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [],
         "foreignKeys": []
@@ -108,10 +108,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -120,6 +120,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Session_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -167,10 +168,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -179,6 +180,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Tag_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -238,10 +240,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -250,6 +252,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_Speaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -285,10 +288,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -298,6 +301,7 @@
               "session_id",
               "tag_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionTag_session_id_tag_id` ON `${TABLE_NAME}` (`session_id`, `tag_id`)"
           },
           {
@@ -306,6 +310,7 @@
             "columnNames": [
               "session_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionTag_session_id` ON `${TABLE_NAME}` (`session_id`)"
           },
           {
@@ -314,6 +319,7 @@
             "columnNames": [
               "tag_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionTag_tag_id` ON `${TABLE_NAME}` (`tag_id`)"
           },
           {
@@ -322,6 +328,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionTag_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -380,10 +387,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -393,6 +400,7 @@
               "session_id",
               "speaker_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionSpeaker_session_id_speaker_id` ON `${TABLE_NAME}` (`session_id`, `speaker_id`)"
           },
           {
@@ -401,6 +409,7 @@
             "columnNames": [
               "session_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionSpeaker_session_id` ON `${TABLE_NAME}` (`session_id`)"
           },
           {
@@ -409,6 +418,7 @@
             "columnNames": [
               "speaker_id"
             ],
+            "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_SessionSpeaker_speaker_id` ON `${TABLE_NAME}` (`speaker_id`)"
           },
           {
@@ -417,6 +427,7 @@
             "columnNames": [
               "uuid"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionSpeaker_uuid` ON `${TABLE_NAME}` (`uuid`)"
           }
         ],
@@ -463,10 +474,10 @@
           }
         ],
         "primaryKey": {
+          "autoGenerate": true,
           "columnNames": [
             "uid"
-          ],
-          "autoGenerate": true
+          ]
         },
         "indices": [
           {
@@ -475,6 +486,7 @@
             "columnNames": [
               "session_id"
             ],
+            "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_SessionStar_session_id` ON `${TABLE_NAME}` (`session_id`)"
           }
         ],

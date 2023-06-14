@@ -23,8 +23,7 @@ package com.forcetower.uefs.core.storage.database.dao
 import androidx.lifecycle.LiveData
 import androidx.room.Dao
 import androidx.room.Insert
-import androidx.room.OnConflictStrategy.IGNORE
-import androidx.room.OnConflictStrategy.REPLACE
+import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import androidx.room.Update
@@ -33,7 +32,7 @@ import timber.log.Timber
 
 @Dao
 abstract class ServiceRequestDao {
-    @Insert(onConflict = REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     abstract fun insert(service: ServiceRequest)
 
     @Transaction
@@ -60,7 +59,7 @@ abstract class ServiceRequestDao {
         }
     }
 
-    @Update(onConflict = IGNORE)
+    @Update(onConflict = OnConflictStrategy.IGNORE)
     abstract fun updateServiceRequest(service: ServiceRequest)
 
     @Query("SELECT * FROM ServiceRequest WHERE date = :date AND LOWER(service) = LOWER(:service) LIMIT 1")

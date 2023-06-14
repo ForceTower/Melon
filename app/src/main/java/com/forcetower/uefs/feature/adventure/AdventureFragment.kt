@@ -108,18 +108,17 @@ class AdventureFragment : UFragment() {
         }
 
         profileViewModel.getMeProfile().observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    profileViewModel.setProfileId(it.data?.id)
-                }
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                profileViewModel.setProfileId(it.data?.id)
             }
-        )
+        }
 
         viewModel.run {
             achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
             start.observe(viewLifecycleOwner, EventObserver { activity?.signIn() })
-            locations.observe(viewLifecycleOwner, { requestLocations(it) })
+            locations.observe(viewLifecycleOwner) { requestLocations(it) }
             leave.observe(viewLifecycleOwner, EventObserver { activity?.signOut() })
         }
 
@@ -234,8 +233,7 @@ class AdventureFragment : UFragment() {
     private fun locationSettings() {
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireContext())
         locationCallback = object : LocationCallback() {
-            override fun onLocationResult(result: LocationResult?) {
-                result ?: return
+            override fun onLocationResult(result: LocationResult) {
                 result.locations.forEach { location ->
                     if (location.accuracy >= 100) {
                         if (!showedLocationMessage) {

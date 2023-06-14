@@ -20,11 +20,11 @@
 
 package com.forcetower.uefs.architecture.service.sync
 
-import android.app.Service
+import android.Manifest
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
+import android.content.pm.PackageManager
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
@@ -50,7 +50,6 @@ class SyncService : LifecycleService() {
 
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var notificationManager: NotificationManagerCompat
     private var shouldRequestSyncUpdate = false
@@ -78,7 +77,7 @@ class SyncService : LifecycleService() {
             else -> startComponent()
         }
 
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     private fun startComponent() {
@@ -100,7 +99,7 @@ class SyncService : LifecycleService() {
 
     private fun disable() {
         if (isForegroundService) {
-            stopForeground(false)
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_DETACH)
             isForegroundService = false
             shouldRequestSyncUpdate = false
             removeNotification()
@@ -108,12 +107,11 @@ class SyncService : LifecycleService() {
     }
 
     private fun removeNotification() {
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 
     private fun createNotification() {
-//        val intent = Intent(this, HomeActivity::class.java)
-//        val pending = PendingIntent.getService(this, 0, intent, 0)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
         val notification = NotificationCreator.createCookieSyncServiceNotification(this)
         notificationManager.notify(SYNC_NOTIFICATION, notification)
 
