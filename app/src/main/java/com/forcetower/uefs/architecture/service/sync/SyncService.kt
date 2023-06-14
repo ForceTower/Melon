@@ -21,10 +21,10 @@
 package com.forcetower.uefs.architecture.service.sync
 
 import android.Manifest
-import android.app.Service
 import android.content.Intent
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.ServiceCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
@@ -77,7 +77,7 @@ class SyncService : LifecycleService() {
             else -> startComponent()
         }
 
-        return Service.START_STICKY
+        return START_STICKY
     }
 
     private fun startComponent() {
@@ -99,7 +99,7 @@ class SyncService : LifecycleService() {
 
     private fun disable() {
         if (isForegroundService) {
-            stopForeground(false)
+            ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_DETACH)
             isForegroundService = false
             shouldRequestSyncUpdate = false
             removeNotification()
@@ -107,7 +107,7 @@ class SyncService : LifecycleService() {
     }
 
     private fun removeNotification() {
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
     }
 
     private fun createNotification() {
