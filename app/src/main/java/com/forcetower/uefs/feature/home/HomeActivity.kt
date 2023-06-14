@@ -26,10 +26,10 @@ import android.content.Intent.FLAG_ACTIVITY_CLEAR_TASK
 import android.content.Intent.FLAG_ACTIVITY_CLEAR_TOP
 import android.content.Intent.FLAG_ACTIVITY_NEW_TASK
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.content.pm.ShortcutManager
 import android.os.Build
 import android.os.Bundle
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.activity.viewModels
 import androidx.core.view.doOnLayout
 import androidx.databinding.DataBindingUtil
@@ -50,6 +50,7 @@ import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.ActivityHomeBinding
 import com.forcetower.uefs.feature.adventure.AdventureViewModel
+import com.forcetower.uefs.feature.allownotification.AllowNotificationActivity
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
 import com.forcetower.uefs.feature.login.LoginActivity
 import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
@@ -89,12 +90,6 @@ class HomeActivity : UGameActivity() {
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject lateinit var executors: AppExecutors
     private lateinit var reviewManager: ReviewManager
-
-    private val requestPostNotificationPermission = registerForActivityResult(
-        ActivityResultContracts.RequestPermission()
-    ) {
-        Timber.d("User allowed notification? $it")
-    }
 
     private val updateListener = InstallStateUpdatedListener { state -> onStateUpdateChanged(state) }
     private val viewModel: HomeViewModel by viewModels()
@@ -137,16 +132,7 @@ class HomeActivity : UGameActivity() {
             checkServerAchievements()
             viewModel.getAffinityQuestions()
 
-            if (!hasNotificationPermission) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-                    requestPostNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
-                }
-                startActivity(AllowNotifications())
-            }
-//            if (preferences.isStudentFromUEFS()) {
-//                val intent = Intent(this, SyncService::class.java)
-//                startService(intent)
-//            }
+            checkNotificationPermission()
         } catch (_: Throwable) {}
         moveToTask()
     }
@@ -205,6 +191,15 @@ class HomeActivity : UGameActivity() {
     override fun onStart() {
         super.onStart()
         lightWeightCalcScore()
+    }
+
+    private fun checkNotificationPermission() {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+        val permission = Manifest.permission.POST_NOTIFICATIONS
+        val result = checkSelfPermission(permission)
+        if (result == PackageManager.PERMISSION_GRANTED) return
+        startActivity(Intent(this, AllowNotificationActivity::class.java))
     }
 
     private fun lightWeightCalcScore() {
