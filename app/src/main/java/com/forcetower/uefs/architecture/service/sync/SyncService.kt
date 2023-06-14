@@ -20,10 +20,10 @@
 
 package com.forcetower.uefs.architecture.service.sync
 
+import android.Manifest
 import android.app.Service
 import android.content.Intent
-import android.os.Handler
-import android.os.Looper
+import android.content.pm.PackageManager
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.LifecycleService
@@ -50,7 +50,6 @@ class SyncService : LifecycleService() {
 
     private val serviceJob = SupervisorJob()
     private val serviceScope = CoroutineScope(Dispatchers.Main + serviceJob)
-    private val handler = Handler(Looper.getMainLooper())
 
     private lateinit var notificationManager: NotificationManagerCompat
     private var shouldRequestSyncUpdate = false
@@ -112,8 +111,7 @@ class SyncService : LifecycleService() {
     }
 
     private fun createNotification() {
-//        val intent = Intent(this, HomeActivity::class.java)
-//        val pending = PendingIntent.getService(this, 0, intent, 0)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) return
         val notification = NotificationCreator.createCookieSyncServiceNotification(this)
         notificationManager.notify(SYNC_NOTIFICATION, notification)
 
