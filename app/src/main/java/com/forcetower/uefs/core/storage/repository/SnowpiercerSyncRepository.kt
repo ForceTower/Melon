@@ -24,7 +24,9 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
+import android.net.wifi.WifiInfo
 import android.net.wifi.WifiManager
+import android.os.Build
 import android.telephony.TelephonyManager
 import androidx.annotation.WorkerThread
 import androidx.core.content.ContextCompat
@@ -88,9 +90,7 @@ class SnowpiercerSyncRepository @Inject constructor(
         val uid = database.syncRegistryDao().insert(registry)
         registry.uid = uid
 
-        try {
-            findAndMatch()
-        } catch (t: Throwable) { }
+        runCatching { findAndMatch() }
 
         database.gradesDao().markAllNotified()
         database.messageDao().setAllNotified()
@@ -213,7 +213,12 @@ class SnowpiercerSyncRepository @Inject constructor(
                 val wifi = capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI)
                 val network = if (wifi) {
                     val manager = context.getSystemService(WifiManager::class.java)
-                    manager?.connectionInfo?.ssid ?: "Unknown"
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                        (capabilities.transportInfo as? WifiInfo)?.ssid ?: "Unknown"
+                    } else {
+                        @Suppress("DEPRECATION")
+                        manager?.connectionInfo?.ssid ?: "Unknown"
+                    }
                 } else {
                     val manager = context.getSystemService(TelephonyManager::class.java)
                     manager?.simOperatorName ?: "Operator"
@@ -229,6 +234,7 @@ class SnowpiercerSyncRepository @Inject constructor(
             }
         } else {
             val manager = ContextCompat.getSystemService(context, WifiManager::class.java)
+            @Suppress("DEPRECATION")
             val info = manager?.connectionInfo
             return if (info == null) {
                 val phone = ContextCompat.getSystemService(context, TelephonyManager::class.java)

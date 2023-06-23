@@ -25,6 +25,7 @@ import android.content.SharedPreferences
 import android.net.ConnectivityManager
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.toLiveData
+import com.forcetower.core.extensions.orFalse
 import com.forcetower.uefs.core.constants.Constants.SELECTED_INSTITUTION_KEY
 import com.google.gson.Gson
 import io.reactivex.BackpressureStrategy
@@ -47,7 +48,8 @@ fun Context.isConnectedToInternet(): Boolean {
     val manager = getSystemService(Context.CONNECTIVITY_SERVICE)
         as? ConnectivityManager ?: return false
 
-    return manager.allNetworks.isNotEmpty()
+    @Suppress("DEPRECATION")
+    return manager.activeNetworkInfo?.isConnected.orFalse
 }
 
 fun Double.truncate(decimals: Int = 1): Double {
