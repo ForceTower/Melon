@@ -38,6 +38,7 @@
 -keep class com.forcetower.uefs.core.model.** { *; }
 -keep class dev.forcetower.breaker.model.** { *; }
 -keep class dev.forcetower.breaker.dto.** { *; }
+-keep class com.forcetower.uefs.core.storage.database.aggregation.** { *; }
 
 ## Gson
 -keepattributes Signature
