@@ -24,6 +24,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
+import androidx.core.app.ServiceCompat
 import androidx.lifecycle.LifecycleService
 import com.forcetower.sagres.operation.Status
 import com.forcetower.sagres.operation.disciplinedetails.DisciplineDetailsCallback.Companion.DOWNLOADING
@@ -99,7 +100,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
                 }
                 // TODO This is a test call and will be removed when it reaches release status
                 repository.contribute()
-                stopForeground(true)
+                ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
                 stopSelf()
             }
             Status.APPROVING -> Unit
@@ -113,7 +114,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
         val title = getString(R.string.failed_to_download_disciplines)
         val message = getString(R.string.failed_to_download_disciplines_message)
         NotificationCreator.createFailedWarningNotification(this, title, message)
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 

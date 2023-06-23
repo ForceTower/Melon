@@ -46,7 +46,7 @@ fun PeriodicWorkRequest.enqueueUnique(context: Context, name: String, replace: B
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
         name,
         if (replace)
-            ExistingPeriodicWorkPolicy.REPLACE
+            ExistingPeriodicWorkPolicy.UPDATE
         else
             ExistingPeriodicWorkPolicy.KEEP,
         this
