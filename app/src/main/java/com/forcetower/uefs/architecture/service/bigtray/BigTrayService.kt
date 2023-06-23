@@ -26,6 +26,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import androidx.core.app.ServiceCompat
 import androidx.lifecycle.LifecycleService
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
@@ -69,7 +70,7 @@ class BigTrayService : LifecycleService() {
     private fun stopComponent() {
         Timber.d("Stop service action")
         running = false
-        stopForeground(true)
+        ServiceCompat.stopForeground(this, ServiceCompat.STOP_FOREGROUND_REMOVE)
         stopSelf()
     }
 
