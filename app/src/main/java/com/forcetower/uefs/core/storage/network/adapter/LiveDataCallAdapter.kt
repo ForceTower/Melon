@@ -31,16 +31,6 @@ import java.util.concurrent.atomic.AtomicBoolean
  * A Retrofit adapter that converts the Call into a LiveData of ApiResponse.
  * @param <R>
 </R> */
-class LiveDataCallAdapter<R>(private val responseType: Type) : CallAdapter<R, LiveData<ApiResponse<R>>> {
-
-    override fun responseType(): Type {
-        return responseType
-    }
-
-    override fun adapt(call: Call<R>): LiveData<ApiResponse<R>> {
-        return call.asLiveData()
-    }
-}
 
 fun <T> Call<T>.asLiveData(): LiveData<ApiResponse<T>> {
     return object : LiveData<ApiResponse<T>>() {

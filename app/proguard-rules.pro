@@ -60,8 +60,8 @@
 -keep,allowobfuscation,allowshrinking interface retrofit2.Call
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 
--keep,allowobfuscation,allowshrinking class com.forcetower.uefs.core.storage.network.adapter.ApiResponse
--keep,allowobfuscation,allowshrinking class * extends com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+## This was needed because of the CallAdapter. I dont use it anymore, so...
+# -keep,allowshrinking class androidx.lifecycle.LiveData
 
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier

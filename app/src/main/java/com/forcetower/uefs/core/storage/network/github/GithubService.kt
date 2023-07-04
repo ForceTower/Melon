@@ -20,10 +20,8 @@
 
 package com.forcetower.uefs.core.storage.network.github
 
-import androidx.lifecycle.LiveData
 import com.forcetower.uefs.core.model.unes.GithubContributor
 import com.forcetower.uefs.core.model.unes.GithubUser
-import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Path
@@ -32,8 +30,8 @@ const val username = "ForceTower"
 const val project = "Melon"
 
 interface GithubService {
-    @GET("repos/$username/$project/stats/contributors")
-    fun getContributors(): LiveData<ApiResponse<List<GithubContributor>>>
+    @GET("repos/$username/$project/contributors")
+    fun getContributors(): Call<List<GithubContributor>>
 
     @GET("users/{username}")
     fun getUserDirect(@Path("username") username: String): Call<GithubUser>

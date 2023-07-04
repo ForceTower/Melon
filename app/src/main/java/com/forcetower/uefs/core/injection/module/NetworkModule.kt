@@ -27,7 +27,6 @@ import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.storage.network.adapter.LiveDataCallAdapterFactory
 import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.forcetower.uefs.core.util.ObjectUtils
 import com.franmontiel.persistentcookiejar.PersistentCookieJar
@@ -135,7 +134,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(Constants.UNES_SERVICE_URL)
             .client(client)
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(UService::class.java)
@@ -147,7 +145,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl("https://api.github.com/")
             .client(client)
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(GithubService::class.java)
@@ -159,7 +156,6 @@ object NetworkModule {
         return Retrofit.Builder()
             .baseUrl(Constants.UNES_SERVICE_UPDATE)
             .client(client)
-            .addCallAdapterFactory(LiveDataCallAdapterFactory())
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(APIService::class.java)

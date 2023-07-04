@@ -20,17 +20,25 @@
 
 package com.forcetower.uefs.core.model.unes
 
+import com.google.gson.annotations.SerializedName
+
 data class GithubContributor(
-    var total: Int = 0,
-    var author: Contributor? = null
-) {
-    fun toContributor(): Contributor? {
-        return author?.apply { total = this@GithubContributor.total }
-    }
-}
+    @SerializedName("id")
+    val id: Long = 0,
+    @SerializedName("contributions")
+    val total: Int = 0,
+    @SerializedName("login")
+    val login: String,
+    @SerializedName("avatar_url")
+    val avatarUrl: String?,
+    @SerializedName("html_url")
+    val htmlUrl: String,
+    @SerializedName("url")
+    val url: String,
+)
 
 data class GithubUser(
-    var login: String = "",
-    var name: String = "",
-    var bio: String? = null
+    val login: String = "",
+    val name: String = "",
+    val bio: String? = null
 )

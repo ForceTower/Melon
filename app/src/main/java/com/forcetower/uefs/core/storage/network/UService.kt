@@ -228,7 +228,7 @@ interface UService {
     // ----------- SIECOMP ------------
 
     @GET("siecomp/list_sessions")
-    fun siecompSessions(): LiveData<ApiResponse<List<ServerSession>>>
+    fun siecompSessions(): Call<List<ServerSession>>
 
     @POST("siecomp/speaker")
     fun createSpeaker(@Body speaker: Speaker): Call<Void>

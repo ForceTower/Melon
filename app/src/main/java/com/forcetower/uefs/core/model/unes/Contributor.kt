@@ -32,14 +32,14 @@ import com.google.gson.annotations.SerializedName
 )
 data class Contributor(
     @PrimaryKey
-    var id: Long = 0,
-    var login: String = "",
-    var total: Int = 0,
-    var name: String = "",
+    val id: Long = 0,
+    val login: String = "",
+    val total: Int = 0,
+    val name: String = "",
     @SerializedName("avatar_url")
-    var image: String? = null,
+    val image: String? = null,
     @SerializedName("html_url")
-    var link: String? = null,
-    var url: String? = null,
-    var bio: String? = null
+    val link: String? = null,
+    val url: String? = null,
+    val bio: String? = null
 )
