@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.core.storage.network
 
-import androidx.lifecycle.LiveData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.api.DarkInvite
@@ -52,7 +51,6 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.model.unes.SStudentDTO
-import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
