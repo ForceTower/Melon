@@ -60,6 +60,9 @@
 -keep,allowobfuscation,allowshrinking interface retrofit2.Call
 -keep,allowobfuscation,allowshrinking class retrofit2.Response
 
+-keep,allowobfuscation,allowshrinking class com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+-keep,allowobfuscation,allowshrinking class * extends com.forcetower.uefs.core.storage.network.adapter.ApiResponse
+
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 -dontwarn org.conscrypt.Conscrypt$Version
