@@ -31,6 +31,7 @@ import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.storage.imgur.ImageUploader
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.service.NotificationCreator
 import okhttp3.OkHttpClient
@@ -52,7 +53,7 @@ class SIECOMPRepository @Inject constructor(
         object : NetworkBoundResource<List<SessionWithData>, List<ServerSession>>(executors) {
             override fun loadFromDb() = database.eventDao().getAllSessions()
             override fun shouldFetch(it: List<SessionWithData>?) = true
-            override fun createCall() = service.siecompSessions()
+            override fun createCall() = service.siecompSessions().asLiveData()
             override fun saveCallResult(value: List<ServerSession>) {
                 database.eventDao().insertServerSessions(value)
             }
