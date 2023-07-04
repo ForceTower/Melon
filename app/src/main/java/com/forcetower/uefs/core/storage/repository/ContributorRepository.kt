@@ -27,6 +27,7 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.GithubContributor
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
@@ -46,7 +47,7 @@ class ContributorRepository @Inject constructor(
         return object : NetworkBoundResource<List<Contributor>, List<GithubContributor>>(executors) {
             override fun loadFromDb() = database.contributorDao().getContributors()
             override fun shouldFetch(it: List<Contributor>?) = true
-            override fun createCall() = service.getContributors()
+            override fun createCall() = service.getContributors().asLiveData()
 
             override fun saveCallResult(value: List<GithubContributor>) {
                 // This is kinda messy, but since this running on a worker thread...
@@ -57,28 +58,29 @@ class ContributorRepository @Inject constructor(
 
     @WorkerThread
     private fun findDetailsAndSave(value: List<GithubContributor>) {
-        value.filter { it.author != null }.mapNotNull {
-            val name = it.author?.login
-            if (name != null) {
-                try {
-                    val response = service.getUserDirect(name).execute()
-                    if (response.isSuccessful) {
-                        val user = response.body()
-                        val contributor = it.toContributor()!!
-                        contributor.name = user?.name ?: contributor.login
-                        contributor.bio = user?.bio
-                        contributor
-                    } else {
-                        Timber.d("User fetch failed with code: ${response.code()}")
-                        it.author
-                    }
-                } catch (t: Throwable) {
-                    Timber.d("Failed to fetch user details... Message: ${t.message}")
-                    it.author
+        value.map {
+            var contributor = Contributor(
+                it.id,
+                it.login,
+                it.total,
+                it.login,
+                it.avatarUrl,
+                it.htmlUrl,
+                it.url,
+                null
+            )
+            try {
+                val response = service.getUserDirect(it.login).execute()
+                if (response.isSuccessful) {
+                    val user = response.body()
+                    contributor = contributor.copy(name = user?.name ?: it.login, bio = user?.bio)
+                } else {
+                    Timber.d("User fetch failed with code: ${response.code()}")
                 }
-            } else {
-                it.toContributor()
+            } catch (t: Throwable) {
+                Timber.d("Failed to fetch user details... Message: ${t.message}")
             }
+            contributor
         }.forEach {
             database.contributorDao().insert(it)
         }
