@@ -26,7 +26,7 @@ apply plugin: 'org.jmailen.kotlinter'
 apply plugin: 'dagger.hilt.android.plugin'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 21
@@ -79,7 +79,7 @@ dependencies {
     implementation "androidx.palette:palette-ktx:$pallete"
     implementation "androidx.browser:browser:$browser"
     implementation "androidx.preference:preference-ktx:$preference"
-    implementation "com.google.android:flexbox:$flexbox"
+    implementation "com.google.android.flexbox:flexbox:$flexbox"
     implementation "androidx.fragment:fragment-ktx:$fragment"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 

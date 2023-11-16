@@ -25,11 +25,10 @@ apply plugin: 'kotlin-parcelize'
 apply plugin: 'org.jmailen.kotlinter'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 33
 
 
         ndk {

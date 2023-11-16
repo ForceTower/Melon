@@ -32,7 +32,7 @@ apply plugin: 'com.google.firebase.crashlytics'
 apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
-    compileSdkVersion 33
+    compileSdk 34
 
     defaultConfig {
         applicationId 'com.forcetower.uefs'
@@ -179,8 +179,8 @@ kotlinter {
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.6.0'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.6.0'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreDesugar"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':bypass')
@@ -207,7 +207,7 @@ dependencies {
     implementation "androidx.palette:palette-ktx:$pallete"
     implementation "androidx.browser:browser:$browser"
     implementation "androidx.preference:preference-ktx:$preference"
-    implementation "com.google.android:flexbox:$flexbox"
+    implementation "com.google.android.flexbox:flexbox:$flexbox"
     implementation "androidx.fragment:fragment-ktx:$fragment"
     implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
 
@@ -232,7 +232,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.1.0')
+    implementation platform('com.google.firebase:firebase-bom:32.5.0')
     implementation "com.google.firebase:firebase-auth-ktx"
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-messaging-ktx"
@@ -268,13 +268,13 @@ dependencies {
     implementation "com.google.code.gson:gson:$gson"
     implementation "org.jsoup:jsoup:$jsoup"
     implementation "com.github.PhilJay:MPAndroidChart:$chart_view"
-    implementation "pub.devrel:easypermissions:$easy_permissions"
+//    implementation "pub.devrel:easypermissions:$easy_permissions"
     implementation "com.ramotion.cardslider:card-slider:$card_slider"
     implementation "com.github.arimorty:floatingsearchview:$floating_search"
     implementation "io.reactivex.rxjava2:rxkotlin:$rx_kotlin"
     implementation 'com.getkeepsafe.taptargetview:taptargetview:1.13.3'
 
-    implementation 'com.google.android.gms:play-services-maps:18.1.0'
+    implementation 'com.google.android.gms:play-services-maps:18.2.0'
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation "io.mockk:mockk:1.12.2"

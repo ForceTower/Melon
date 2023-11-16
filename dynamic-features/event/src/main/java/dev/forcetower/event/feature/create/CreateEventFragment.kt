@@ -29,7 +29,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.webkit.URLUtil
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.Keep
+import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
@@ -48,8 +50,11 @@ import com.forcetower.uefs.feature.setup.SelectCourseDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.google.android.material.textfield.TextInputEditText
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
+import com.canhub.cropper.CropImage
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.wdullaer.materialdatetimepicker.date.DatePickerDialog
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import dagger.hilt.android.EntryPointAccessors
@@ -346,12 +351,11 @@ class CreateEventFragment : UFragment() {
 
         viewModel.create(name, location, description, image, start, end, offeredBy, price, courseId, certificateHours, page)
             .observe(
-                viewLifecycleOwner,
-                Observer {
-                    viewModel.createdId = it
-                    preview(it)
-                }
-            )
+                viewLifecycleOwner
+            ) {
+                viewModel.createdId = it
+                preview(it)
+            }
     }
 
     private fun preview(id: Long) {
@@ -382,16 +386,6 @@ class CreateEventFragment : UFragment() {
         }
     }
 
-    private fun pickImage() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        try {
-            startActivityForResult(intent, REQUEST_SELECT_PICTURE)
-        } catch (t: Throwable) {
-            showSnack(getString(R.string.cant_start_activity_for_picking_image))
-        }
-    }
-
     private fun onImagePicked(uri: Uri) {
         GlideApp.with(binding.image).load(uri).into(binding.image)
         viewModel.imageUri = uri
@@ -400,26 +394,6 @@ class CreateEventFragment : UFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when (requestCode) {
-            REQUEST_SELECT_PICTURE -> {
-                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-                    val uri = data.data!!
-
-                    val bg = ColorUtils.modifyAlpha(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary), 120)
-                    val ac = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorAccent)
-                    CropImage.activity(uri)
-                        .setFixAspectRatio(true)
-                        .setAspectRatio(4, 3)
-                        .setCropShape(CropImageView.CropShape.RECTANGLE)
-                        .setBackgroundColor(bg)
-                        .setBorderLineColor(ac)
-                        .setBorderCornerColor(ac)
-                        .setActivityMenuIconColor(ac)
-                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
-                        .setActivityTitle(getString(R.string.cut_event_image))
-                        .setGuidelines(CropImageView.Guidelines.OFF)
-                        .start(requireContext(), this)
-                }
-            }
             REQUEST_PREVIEW_EVENT -> {
                 Timber.d("Result code $resultCode")
                 if (resultCode == Activity.RESULT_OK) {
@@ -433,14 +407,49 @@ class CreateEventFragment : UFragment() {
                     findNavController().popBackStack()
                 }
             }
-            CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
-                val result = CropImage.getActivityResult(data)
-                if (resultCode == Activity.RESULT_OK) {
-                    val imageUri = result.uri
-                    onImagePicked(imageUri)
-                }
-            }
         }
+    }
+
+    private val pickImageContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        onContentSelected(it)
+    }
+
+    private val cropImage = registerForActivityResult(CropImageContract()) {
+        onCropResults(it)
+    }
+
+    private fun pickImage() {
+        pickImageContract.launch("image/*")
+    }
+
+    private fun onContentSelected(uri: Uri?) {
+        uri ?: return
+        val bg = ColorUtils.modifyAlpha(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary), 120)
+        val ac = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorAccent)
+
+        val options = CropImageContractOptions(
+            uri,
+            CropImageOptions(
+                fixAspectRatio = true,
+                aspectRatioX = 4,
+                aspectRatioY = 3,
+                cropShape = CropImageView.CropShape.RECTANGLE,
+                backgroundColor = bg,
+                borderLineColor = ac,
+                borderCornerColor = ac,
+                activityMenuIconColor = ac,
+                borderLineThickness = getPixelsFromDp(requireContext(), 2),
+                activityTitle = getString(com.forcetower.uefs.R.string.cut_profile_image),
+                guidelines = CropImageView.Guidelines.OFF
+            )
+        )
+
+        cropImage.launch(options)
+    }
+
+    private fun onCropResults(result: CropImageView.CropResult) {
+        val imageUri = result.uriContent ?: return
+        onImagePicked(imageUri)
     }
 
     private fun Boolean.toVisibility(): Int {
@@ -448,7 +457,6 @@ class CreateEventFragment : UFragment() {
     }
 
     companion object {
-        private const val REQUEST_SELECT_PICTURE = 9000
         private const val REQUEST_PREVIEW_EVENT = 10000
     }
 }
