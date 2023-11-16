@@ -20,19 +20,22 @@
 
 package com.forcetower.uefs.feature.profile
 
-import android.app.Activity
-import android.content.Intent
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.core.view.doOnLayout
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import com.canhub.cropper.CropImageContract
+import com.canhub.cropper.CropImageContractOptions
+import com.canhub.cropper.CropImageOptions
+import com.canhub.cropper.CropImageView
 import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.R
@@ -47,8 +50,6 @@ import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -56,6 +57,14 @@ import javax.inject.Inject
 class ProfileFragment : UFragment() {
     @Inject lateinit var firebaseAuth: FirebaseAuth
     @Inject lateinit var firebaseStorage: FirebaseStorage
+
+    private val pickImageContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
+        onContentSelected(it)
+    }
+
+    private val cropImage = registerForActivityResult(CropImageContract()) {
+        onCropResults(it)
+    }
 
     private val viewModel: ProfileViewModel by viewModels()
     private val setupViewModel: SetupViewModel by viewModels()
@@ -121,11 +130,10 @@ class ProfileFragment : UFragment() {
         }
 
         viewModel.statements.observe(
-            viewLifecycleOwner,
-            Observer { statements ->
-                adapter.statements = statements.sortedByDescending { it.createdAt }
-            }
-        )
+            viewLifecycleOwner
+        ) { statements ->
+            adapter.statements = statements.sortedByDescending { it.createdAt }
+        }
 
         binding.up.setOnClickListener {
             requireActivity().finishAfterTransition()
@@ -147,10 +155,38 @@ class ProfileFragment : UFragment() {
         }
     }
 
-    private fun pickImage() {
-        val intent = Intent(Intent.ACTION_PICK)
-        intent.type = "image/*"
-        startActivityForResult(intent, REQUEST_SELECT_PICTURE)
+    fun pickImage() {
+        pickImageContract.launch("image/*")
+    }
+
+    private fun onContentSelected(uri: Uri?) {
+        uri ?: return
+        val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
+        val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
+
+        val options = CropImageContractOptions(
+            uri,
+            CropImageOptions(
+                fixAspectRatio = true,
+                aspectRatioX = 1,
+                aspectRatioY = 1,
+                cropShape = CropImageView.CropShape.OVAL,
+                backgroundColor = bg,
+                borderLineColor = ac,
+                borderCornerColor = ac,
+                activityMenuIconColor = ac,
+                borderLineThickness = getPixelsFromDp(requireContext(), 2),
+                activityTitle = getString(R.string.cut_profile_image),
+                guidelines = CropImageView.Guidelines.OFF
+            )
+        )
+
+        cropImage.launch(options)
+    }
+
+    private fun onCropResults(result: CropImageView.CropResult) {
+        val imageUri = result.uriContent ?: return
+        onImagePicked(imageUri)
     }
 
     private fun onImagePicked(uri: Uri) {
@@ -158,41 +194,7 @@ class ProfileFragment : UFragment() {
         setupViewModel.uploadImageToStorage()
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            REQUEST_SELECT_PICTURE -> {
-                if (resultCode == Activity.RESULT_OK && data != null && data.data != null) {
-                    val uri = data.data!!
-
-                    val bg = ColorUtils.modifyAlpha(ContextCompat.getColor(requireContext(), R.color.colorPrimary), 120)
-                    val ac = ContextCompat.getColor(requireContext(), R.color.colorAccent)
-                    CropImage.activity(uri)
-                        .setFixAspectRatio(true)
-                        .setAspectRatio(1, 1)
-                        .setCropShape(CropImageView.CropShape.OVAL)
-                        .setBackgroundColor(bg)
-                        .setBorderLineColor(ac)
-                        .setBorderCornerColor(ac)
-                        .setActivityMenuIconColor(ac)
-                        .setBorderLineThickness(getPixelsFromDp(requireContext(), 2))
-                        .setActivityTitle(getString(R.string.cut_profile_image))
-                        .setGuidelines(CropImageView.Guidelines.OFF)
-                        .start(requireContext(), this)
-                }
-            }
-            CropImage.CROP_IMAGE_ACTIVITY_REQUEST_CODE -> {
-                val result = CropImage.getActivityResult(data)
-                if (resultCode == Activity.RESULT_OK) {
-                    val imageUri = result.uri
-                    onImagePicked(imageUri)
-                }
-            }
-        }
-    }
-
     companion object {
-        private const val REQUEST_SELECT_PICTURE = 8000
         fun newInstance(profileId: Long, userId: Long): ProfileFragment {
             return ProfileFragment().apply {
                 arguments = bundleOf(

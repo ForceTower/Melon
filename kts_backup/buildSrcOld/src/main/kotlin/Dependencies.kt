@@ -39,7 +39,7 @@ object Dependencies {
         const val pallete = "androidx.palette:palette:${Versions.pallete}"
         const val browser = "androidx.browser:browser:${Versions.browser}"
         const val preference = "androidx.preference:preference:${Versions.preference}"
-        const val flexbox = "com.google.android:flexbox:${Versions.flexbox}"
+        const val flexbox = "com.google.android.flexbox:flexbox:${Versions.flexbox}"
     }
 
     object Architecture {

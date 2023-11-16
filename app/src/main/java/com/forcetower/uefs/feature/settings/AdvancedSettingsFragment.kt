@@ -193,7 +193,7 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
         }
     }
 
-    private fun onPreferenceChange(preference: SharedPreferences, key: String) {
+    private fun onPreferenceChange(preference: SharedPreferences, key: String?) {
         when (key) {
             "stg_advanced_aeri_tab" -> aeriTabs(preference.getBoolean(key, true))
             "stg_advanced_maps_install" -> mapsInstall(preference.getBoolean(key, true))
