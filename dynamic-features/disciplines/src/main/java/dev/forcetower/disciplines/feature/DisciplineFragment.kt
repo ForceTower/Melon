@@ -165,12 +165,11 @@ class DisciplineFragment : UFragment() {
         super.onViewCreated(view, savedInstanceState)
 
         viewModel.disciplines.observe(
-            viewLifecycleOwner,
-            {
-                Timber.d("Discipline Data sized ${it.data.size}")
-                onUiUpdate(it)
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            Timber.d("Discipline Data sized ${it.data.size}")
+            onUiUpdate(it)
+        }
 
         viewModel.scrollToEvent.observe(
             viewLifecycleOwner,

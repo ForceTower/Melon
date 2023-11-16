@@ -42,14 +42,14 @@ class LectureProcessor(
             lectures.forEach { lecture ->
                 val current = database.classItemDao().getItemByIdentifiers(groupId, lecture.ordinal)
                 val classId = if (current != null) {
-                    current.copy(
+                    val copied = current.copy(
                         date = lecture.date,
                         situation = lecture.situation.asLectureSituation(),
                         subject = lecture.subject,
                         numberOfMaterials = lecture.materials.size,
                         materialLinks = ""
                     )
-                    database.classItemDao().update(current)
+                    database.classItemDao().update(copied)
                     current.uid
                 } else {
                     database.classItemDao().insert(
