@@ -40,7 +40,7 @@ class AccountSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_account, rootKey)
     }
 
-    private fun onPreferenceChange(preference: SharedPreferences, key: String) {
+    private fun onPreferenceChange(preference: SharedPreferences, key: String?) {
         when (key) {
             "stg_choice_score" -> toggleScoreChoice(preference.getBoolean(key, false))
         }

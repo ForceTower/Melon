@@ -38,7 +38,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
         setPreferencesFromResource(R.xml.settings_start, rootKey)
     }
 
-    private fun onPreferenceChange(preference: SharedPreferences, key: String) {
+    private fun onPreferenceChange(preference: SharedPreferences, key: String?) {
         when (key) {
             "stg_night_mode" -> changeDarkThemePrefs(preference.getString(key, "-1")?.toIntOrNull() ?: -1)
             else -> Timber.d("Else... $key")

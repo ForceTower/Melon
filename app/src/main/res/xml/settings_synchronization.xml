@@ -42,6 +42,7 @@
     
     <SwitchPreference
         app:key="stg_sync_auto_proxy"
+        app:isPreferenceVisible="false"
         app:title="@string/settings_sync_auto_proxy_label"
         app:summary="@string/settings_sync_auto_proxy_info_label"
         app:icon="@drawable/ic_parking_accent_30dp"
@@ -50,6 +51,7 @@
     <EditTextPreference
         app:key="stg_sync_proxy"
         app:defaultValue="10.65.16.2:3128"
+        app:isPreferenceVisible="false"
         app:title="@string/settings_proxy_label"
         app:summary="@string/settings_proxy_info_label"
         app:icon="@drawable/ic_http_accent_30dp"

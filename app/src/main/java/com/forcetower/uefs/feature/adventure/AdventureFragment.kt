@@ -23,6 +23,7 @@ package com.forcetower.uefs.feature.adventure
 import android.Manifest
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.pm.PackageManager
 import android.location.Location
 import android.os.Bundle
 import android.os.Looper
@@ -32,6 +33,7 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
@@ -54,7 +56,6 @@ import com.google.android.gms.location.LocationSettingsRequest
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -167,7 +168,11 @@ class AdventureFragment : UFragment() {
 
     private fun startRequesting() {
         val perms = arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION)
-        if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
+        val permissionsGranted = perms.all {
+            ContextCompat.checkSelfPermission(requireContext(), it) == PackageManager.PERMISSION_GRANTED
+        }
+
+        if (permissionsGranted) {
             startLocationsUpdate()
         } else {
             requestPermissions.launch(perms)

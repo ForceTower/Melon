@@ -20,9 +20,6 @@
 
 package com.forcetower.uefs.feature.settings
 
-import android.Manifest.permission.ACCESS_BACKGROUND_LOCATION
-import android.Manifest.permission.ACCESS_COARSE_LOCATION
-import android.Manifest.permission.ACCESS_FINE_LOCATION
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
@@ -32,15 +29,11 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.RC_LOCATION_PERMISSION
 import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
-import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.hilt.android.AndroidEntryPoint
-import pub.devrel.easypermissions.AfterPermissionGranted
-import pub.devrel.easypermissions.EasyPermissions
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -62,13 +55,12 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         repository.getFrequencies().observe(
-            viewLifecycleOwner,
-            { frequencies ->
-                val entries = frequencies.map { it.name }
-                val values = frequencies.map { it.value.toString() }
-                configureFrequencies(entries, values)
-            }
-        )
+            viewLifecycleOwner
+        ) { frequencies ->
+            val entries = frequencies.map { it.name }
+            val values = frequencies.map { it.value.toString() }
+            configureFrequencies(entries, values)
+        }
     }
 
     private fun configureFrequencies(entries: List<String>, values: List<String>) {
@@ -78,11 +70,11 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         preference.entryValues = values.toTypedArray()
     }
 
-    private fun onPreferenceChange(preference: SharedPreferences, key: String) {
+    private fun onPreferenceChange(preference: SharedPreferences, key: String?) {
         when (key) {
             "stg_sync_worker_type" -> changeWorkerType(preference.getString(key, "0")?.toIntOrNull())
             "stg_sync_frequency" -> changeSyncFrequency(preference.getString(key, "60")?.toIntOrNull())
-            "stg_sync_auto_proxy" -> autoProxy(preference.getBoolean(key, false))
+//            "stg_sync_auto_proxy" -> autoProxy(preference.getBoolean(key, false))
             "stg_sync_proxy" -> proxySettings(preference.getString(key, BuildConfig.UEFS_DEFAULT_PROXY)!!)
             else -> Timber.d("Else... $key")
         }
@@ -152,41 +144,11 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
         return true
     }
 
-    private fun autoProxy(value: Boolean): Boolean {
-        return if (value) {
-            checkAndEnableAutoProxy()
-            false
-        } else {
-            true
-        }
-    }
-
     private fun enableAutoProxy() {
         getSharedPreferences()?.run { edit().putBoolean("stg_sync_auto_proxy", true).apply() }
         (findPreference("stg_sync_auto_proxy") as? TwoStatePreference).also {
             Timber.d("was it converted? ${it == null}")
         }?.isChecked = true
-    }
-
-    @AfterPermissionGranted(RC_LOCATION_PERMISSION)
-    private fun checkAndEnableAutoProxy() {
-        val permissions = mutableListOf(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)
-        if (VersionUtils.isAndroid10()) {
-            permissions.add(ACCESS_BACKGROUND_LOCATION)
-        }
-        val perms = permissions.toTypedArray()
-        if (EasyPermissions.hasPermissions(requireContext(), *perms)) {
-            enableAutoProxy()
-        } else {
-            getSharedPreferences()?.run { edit().putBoolean("stg_sync_auto_proxy", false).apply() }
-            (findPreference("stg_sync_auto_proxy") as? TwoStatePreference)?.isChecked = false
-            EasyPermissions.requestPermissions(this, getString(R.string.permission_location_sync_text), RC_LOCATION_PERMISSION, *perms)
-        }
-    }
-
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        EasyPermissions.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 
     override fun onResume() {
