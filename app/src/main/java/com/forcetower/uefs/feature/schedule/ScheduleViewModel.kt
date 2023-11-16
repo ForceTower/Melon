@@ -20,8 +20,6 @@
 
 package com.forcetower.uefs.feature.schedule
 
-import android.content.Context
-import android.content.SharedPreferences
 import android.view.View
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -48,9 +46,7 @@ import javax.inject.Inject
 class ScheduleViewModel @Inject constructor(
     repository: ScheduleRepository,
     private val sagresSyncRepository: SagresSyncRepository,
-    private val snowpiercerSyncRepository: SnowpiercerSyncRepository,
-    private val preferences: SharedPreferences,
-    private val context: Context
+    private val snowpiercerSyncRepository: SnowpiercerSyncRepository
 ) : ViewModel(), ScheduleActions {
 
     val hasSchedule = repository.hasSchedule()

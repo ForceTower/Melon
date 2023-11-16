@@ -69,15 +69,14 @@ class SchedulePerformanceFragment : UFragment() {
         binding.recyclerSchedule.adapter = adapter
         binding.recyclerScheduleLine.adapter = adapterLine
 
-        viewModel.hasSchedule.observe(viewLifecycleOwner, { binding.empty = !it })
+        viewModel.hasSchedule.observe(viewLifecycleOwner) { binding.empty = !it }
         viewModel.schedule.observe(
-            viewLifecycleOwner,
-            {
-                val gridMax = if (it.keys.contains(7)) 7 else 6
-                manager.spanCount = max(it.keys.size, if (showEmptyDays) gridMax else 0)
-                adapter.elements = it
-            }
-        )
+            viewLifecycleOwner
+        ) {
+            val gridMax = if (it.keys.contains(7)) 7 else 6
+            manager.spanCount = max(it.keys.size, if (showEmptyDays) gridMax else 0)
+            adapter.elements = it
+        }
         viewModel.scheduleLine.observe(viewLifecycleOwner) {
             adapterLine.elements = it
         }
@@ -93,14 +92,13 @@ class SchedulePerformanceFragment : UFragment() {
             binding.btnConferenceSchedule.visibility = View.GONE
         } else {
             profileViewModel.commonProfile.observe(
-                viewLifecycleOwner,
-                {
-                    val course = it?.course ?: 1L
-                    if (course == 1L && preferences.isStudentFromUEFS()) {
-                        binding.btnConferenceSchedule.visibility = View.VISIBLE
-                    }
+                viewLifecycleOwner
+            ) {
+                val course = it?.course ?: 1L
+                if (course == 1L && preferences.isStudentFromUEFS()) {
+                    binding.btnConferenceSchedule.visibility = View.VISIBLE
                 }
-            )
+            }
         }
     }
 
