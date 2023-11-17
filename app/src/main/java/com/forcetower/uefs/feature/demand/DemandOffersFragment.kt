@@ -25,17 +25,15 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentDemandOffersBinding
-import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class DemandOffersFragment : UFragment(), NavigationFragment {
+class DemandOffersFragment : UFragment() {
     private val viewModel: DemandViewModel by activityViewModels()
     private lateinit var binding: FragmentDemandOffersBinding
 
@@ -67,13 +65,12 @@ class DemandOffersFragment : UFragment(), NavigationFragment {
             )
         }
         viewModel.offers.observe(
-            viewLifecycleOwner,
-            Observer {
-                val data = it.data
-                if (data != null) {
-                    offersAdapter.currentList = data
-                }
+            viewLifecycleOwner
+        ) {
+            val data = it.data
+            if (data != null) {
+                offersAdapter.currentList = data
             }
-        )
+        }
     }
 }
