@@ -24,6 +24,7 @@ import android.app.Activity
 import android.graphics.drawable.Drawable
 import android.net.Uri
 import android.os.Bundle
+import androidx.activity.OnBackPressedCallback
 import androidx.activity.viewModels
 import androidx.browser.customtabs.CustomTabColorSchemeParams
 import androidx.browser.customtabs.CustomTabsIntent
@@ -151,6 +152,15 @@ class EventDetailsActivity : UActivity() {
             }
             back.setOnClickListener { finishAfterTransition() }
         }
+
+        onBackPressedDispatcher.addCallback(
+            this,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    finishAfterTransition()
+                }
+            }
+        )
     }
 
     override fun onResume() {
@@ -161,10 +171,6 @@ class EventDetailsActivity : UActivity() {
     override fun onPause() {
         binding.draggableFrame.removeListener(chromeFader)
         super.onPause()
-    }
-
-    override fun onBackPressed() {
-        finishAfterTransition()
     }
 
     fun applyFullImagePalette(palette: Palette?) {
