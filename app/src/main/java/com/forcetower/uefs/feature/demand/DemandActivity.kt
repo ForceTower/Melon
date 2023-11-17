@@ -28,7 +28,6 @@ import androidx.databinding.DataBindingUtil
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.ActivityDemandBinding
-import com.forcetower.uefs.feature.shared.NavigationFragment
 import com.forcetower.uefs.feature.shared.UActivity
 import com.forcetower.uefs.feature.shared.extensions.config
 import com.forcetower.uefs.feature.shared.extensions.inTransaction
@@ -44,7 +43,6 @@ class DemandActivity : UActivity() {
     lateinit var analytics: FirebaseAnalytics
 
     private lateinit var binding: ActivityDemandBinding
-    private lateinit var currentFragment: NavigationFragment
     private val viewModel: DemandViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -54,19 +52,12 @@ class DemandActivity : UActivity() {
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
                 val fragment = DemandOffersFragment()
-                currentFragment = fragment
                 add(R.id.fragment_container, fragment)
             }
             analytics.logEvent("demand_entered_screen", null)
         }
 
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-    }
-
-    override fun onBackPressed() {
-        if (!::currentFragment.isInitialized || !currentFragment.onBackPressed()) {
-            super.onBackPressed()
-        }
     }
 
     override fun showSnack(string: String, duration: Int) {
