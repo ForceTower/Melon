@@ -162,8 +162,8 @@ task clean(type: Delete) {
 //}
 
 subprojects {
-    tasks.whenTaskAdded {
-        if (name == 'preBuild') {
+    tasks.configureEach {
+        if (it.name == 'preBuild') {
             mustRunAfter 'lintKotlin'
         }
     }
