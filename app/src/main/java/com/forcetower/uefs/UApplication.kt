@@ -99,8 +99,8 @@ class UApplication : Application(), Configuration.Provider {
         NotificationHelper(this).createChannels()
     }
 
-    override fun getWorkManagerConfiguration() =
-        Configuration.Builder()
+    override val workManagerConfiguration: Configuration
+        get() = Configuration.Builder()
             .setWorkerFactory(workerFactory)
             .build()
 

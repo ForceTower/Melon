@@ -37,7 +37,7 @@ android {
     defaultConfig {
         applicationId 'com.forcetower.uefs'
         minSdkVersion 21
-        targetSdkVersion 33
+        targetSdkVersion 34
         def (code, name) = buildVersion()
         versionCode code
         versionName name
@@ -130,6 +130,7 @@ android {
 
     buildFeatures {
         dataBinding true
+        buildConfig true
     }
 
     kapt {
@@ -179,8 +180,8 @@ kotlinter {
 }
 
 dependencies {
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.7.5'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.7.7'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.7.7'
     coreLibraryDesugaring "com.android.tools:desugar_jdk_libs:$coreDesugar"
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation project(path: ':bypass')
@@ -195,7 +196,7 @@ dependencies {
 
     // Kotlin
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.7.1'
+    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-play-services:1.8.0'
 
     // Android X
     implementation "androidx.core:core-ktx:$ktx"
@@ -232,7 +233,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.5.0')
+    implementation platform('com.google.firebase:firebase-bom:32.7.3')
     implementation "com.google.firebase:firebase-auth-ktx"
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-messaging-ktx"
@@ -277,9 +278,9 @@ dependencies {
     implementation 'com.google.android.gms:play-services-maps:18.2.0'
 
     testImplementation 'junit:junit:4.13.2'
-    testImplementation "io.mockk:mockk:1.12.2"
+    testImplementation 'io.mockk:mockk:1.13.10'
     testImplementation 'androidx.arch.core:core-testing:2.2.0'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.1'
+    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.0'
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'

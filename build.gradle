@@ -21,19 +21,19 @@ import javax.sound.sampled.Clip
  */
 
 buildscript {
-    ext.kotlin_version = '1.9.20'
+    ext.kotlin_version = '1.9.22'
     ext {
         juice = "1.8.0"
-        snowpiercer = "1.5.0"
+        snowpiercer = "1.5.1"
 
         // Kotlin Extensions
         ktx = '1.12.0'
 
         // Android X
         app_compat = '1.6.1'
-        google_material = '1.10.0'
+        google_material = '1.11.0'
         constraint_layout = '2.1.4'
-        annotation = '1.7.0'
+        annotation = '1.7.1'
         exif_interface = "1.1.0"
         pallete = "1.0.0"
         flexbox = "3.0.0"
@@ -43,15 +43,15 @@ buildscript {
         swipe_refresh = '1.1.0'
 
         // Architecture
-        room = '2.6.0'
-        lifecycle = '2.6.2'
+        room = '2.6.1'
+        lifecycle = '2.7.0'
         paging = '3.2.1'
-        navigation = '2.7.5'
-        work_manager = '2.8.1'
+        navigation = '2.7.7'
+        work_manager = '2.9.0'
 
         // Dependency Injection
-        dagger = '2.48.1'
-        hilt_androidx = '1.1.0'
+        dagger = '2.51'
+        hilt_androidx = '1.2.0'
 
         // Firebase
         firebase_ui_storage = "8.0.2"
@@ -60,29 +60,29 @@ buildscript {
         timber = "5.0.1"
 
         // Image
-        glide = '4.15.1'
-        lottie = '5.2.0'
+        glide = '4.16.0'
+        lottie = '6.3.0'
         image_cropper = "4.5.0"
 
         // Google Services
         gp_core = '1.10.3'
         gp_core_ktx = '1.8.1'
-        gp_auth = '20.7.0'
+        gp_auth = '21.0.0'
         gp_games = '23.1.0'
-        gp_location = '21.0.1'
+        gp_location = '21.1.0'
         gp_billing_client = '6.1.0'
         gp_admob = '19.8.0'
 
         // Networking
-        okhttp = '4.9.1'
+        okhttp = '4.12.0'
         retrofit = '2.9.0'
         cookie_jar = "v1.0.1"
 
         // Others
         gson = '2.10.1'
-        jsoup = '1.15.4'
+        jsoup = '1.17.2'
         chart_view = "v3.1.0"
-        about_libraries = "8.5.0"
+        about_libraries = '11.1.0'
         easy_permissions = "0.3.0"
         card_slider = '0.3.1'
         date_time_picker = '4.2.3'
@@ -90,13 +90,13 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '8.1.4'
+        android_gradle_plugin = '8.3.0'
         google_play_services = '4.3.14'
         kotlinter = "3.4.4"
         play_publisher = "3.7.0"
         bundletool = "0.10.0"
         crashlytics = '2.9.2'
-        hilt_dagger = '2.48.1'
+        hilt_dagger = '2.51'
         coreDesugar = '2.0.4'
     }
 

@@ -91,9 +91,9 @@ fun imageUri(
             object : RequestListener<Drawable> {
                 override fun onResourceReady(
                     resource: Drawable,
-                    model: Any?,
+                    model: Any,
                     target: Target<Drawable>?,
-                    dataSource: DataSource?,
+                    dataSource: DataSource,
                     isFirstResource: Boolean
                 ): Boolean {
                     listener.onImageLoaded(resource)
@@ -103,7 +103,7 @@ fun imageUri(
                 override fun onLoadFailed(
                     e: GlideException?,
                     model: Any?,
-                    target: Target<Drawable>?,
+                    target: Target<Drawable>,
                     isFirstResource: Boolean
                 ): Boolean {
                     listener.onImageLoadFailed()
