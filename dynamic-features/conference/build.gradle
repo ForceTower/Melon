@@ -95,7 +95,7 @@ dependencies {
     // Dependency injection
     implementation "com.google.dagger:hilt-android:$hilt_dagger"
     kapt "com.google.dagger:hilt-compiler:$hilt_dagger"
-    kapt 'androidx.hilt:hilt-compiler:1.0.0'
+    kapt 'androidx.hilt:hilt-compiler:1.2.0'
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"
