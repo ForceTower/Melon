@@ -42,8 +42,10 @@ import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetail
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
@@ -54,7 +56,10 @@ class DisciplineDetailsRepository @Inject constructor(
     private val cookieSessionRepository: CookieSessionRepository,
     private val preferences: SharedPreferences,
     private val service: UService,
-    private val remoteConfig: FirebaseRemoteConfig
+    private val remoteConfig: FirebaseRemoteConfig,
+    private val client: OkHttpClient,
+    @Named("webViewUA") private val agent: String,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
 ) {
 
     /**
@@ -78,7 +83,18 @@ class DisciplineDetailsRepository @Inject constructor(
      */
     @MainThread
     fun loadDisciplineDetails(semester: String? = null, code: String? = null, group: String? = null, partialLoad: Boolean = true, discover: Boolean = false): LiveData<FastDisciplinesCallback> {
-        return object : LoadDisciplineDetailsResource(executors, database, semester, code, group, partialLoad, discover) {
+        return object : LoadDisciplineDetailsResource(
+            executors,
+            database,
+            semester,
+            code,
+            group,
+            partialLoad,
+            discover,
+            snowpiercerEnabled,
+            agent,
+            client
+        ) {
             @WorkerThread
             override fun saveResults(callback: FastDisciplinesCallback) {
                 defineSemesters(callback.getSemesters())
