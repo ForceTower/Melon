@@ -71,8 +71,9 @@ class DisciplinesViewModel @Inject constructor(
         Timber.d("Requested to download all disciplines")
         viewModelScope.launch {
             _refreshing.value = true
-            // TODO Decide what to do here...
-            delay(1000L)
+            delay(1000)
+//            val semester = repository.getCurrentSemester()
+//            downloadDisciplines(semester)
             _refreshing.value = false
         }
     }
@@ -98,7 +99,7 @@ class DisciplinesViewModel @Inject constructor(
     }
 
     override fun loadAllDisciplines(view: View): Boolean {
-        Timber.d("This is not completed for this fragment yet")
+//        DisciplineDetailsLoaderService.startService(view.context, true)
         return true
     }
 
