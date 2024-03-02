@@ -31,7 +31,7 @@ data class ClassStatsData(
     @SerializedName("credits")
     @ColumnInfo(name = "credits")
     val disciplineCredits: Int,
-    val semester: Int,
+    val semester: Long,
     @ColumnInfo(name = "semester_name")
     @SerializedName("semester_name")
     val semesterName: String,

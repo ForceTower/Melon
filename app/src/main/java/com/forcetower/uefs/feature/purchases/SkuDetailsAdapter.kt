@@ -24,7 +24,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.ProductDetails
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.BillingViewModel
 import com.forcetower.uefs.databinding.ItemSkuDetailsBinding
@@ -32,7 +32,7 @@ import com.forcetower.uefs.feature.shared.inflate
 
 class SkuDetailsAdapter(
     private val viewModel: BillingViewModel
-) : ListAdapter<SkuDetails, SkuDetailsAdapter.SkuHolder>(SkuDiff) {
+) : ListAdapter<ProductDetails, SkuDetailsAdapter.SkuHolder>(SkuDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SkuHolder {
         return SkuHolder(parent.inflate(R.layout.item_sku_details))
     }
@@ -47,8 +47,8 @@ class SkuDetailsAdapter(
 
     inner class SkuHolder(val binding: ItemSkuDetailsBinding) : RecyclerView.ViewHolder(binding.root)
 
-    object SkuDiff : DiffUtil.ItemCallback<SkuDetails>() {
-        override fun areItemsTheSame(oldItem: SkuDetails, newItem: SkuDetails) = oldItem.sku == newItem.sku
-        override fun areContentsTheSame(oldItem: SkuDetails, newItem: SkuDetails) = oldItem == newItem
+    object SkuDiff : DiffUtil.ItemCallback<ProductDetails>() {
+        override fun areItemsTheSame(oldItem: ProductDetails, newItem: ProductDetails) = oldItem.productId == newItem.productId
+        override fun areContentsTheSame(oldItem: ProductDetails, newItem: ProductDetails) = oldItem == newItem
     }
 }

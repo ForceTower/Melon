@@ -32,10 +32,11 @@ import com.android.billingclient.api.BillingClientStateListener
 import com.android.billingclient.api.BillingFlowParams
 import com.android.billingclient.api.BillingResult
 import com.android.billingclient.api.ConsumeParams
+import com.android.billingclient.api.ProductDetails
 import com.android.billingclient.api.Purchase
 import com.android.billingclient.api.PurchasesUpdatedListener
-import com.android.billingclient.api.SkuDetails
-import com.android.billingclient.api.SkuDetailsParams
+import com.android.billingclient.api.QueryProductDetailsParams
+import com.android.billingclient.api.QueryPurchasesParams
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
@@ -53,8 +54,8 @@ class BillingViewModel @Inject constructor(
     context: Context,
     private val repository: BillingRepository
 ) : ViewModel(), PurchasesUpdatedListener, BillingClientStateListener {
-    private val _selectSku = MutableLiveData<Event<SkuDetails>>()
-    val selectSku: LiveData<Event<SkuDetails>>
+    private val _selectSku = MutableLiveData<Event<ProductDetails>>()
+    val selectSku: LiveData<Event<ProductDetails>>
         get() = _selectSku
 
     private val _snack = MutableLiveData<Event<Int>>()
@@ -74,7 +75,7 @@ class BillingViewModel @Inject constructor(
 
     private suspend fun queryGoldMonkey(): Boolean {
         try {
-            val purchases = billingClient.suspendQueryPurchases(BillingClient.SkuType.SUBS)
+            val purchases = billingClient.suspendQueryPurchases(BillingClient.ProductType.SUBS)
             if (purchases.isEmpty()) {
                 repository.cancelSubscriptions()
             } else {
@@ -94,19 +95,25 @@ class BillingViewModel @Inject constructor(
     val subscriptions = getSkus().switchMap { skuList -> getSubscriptions(skuList) }
     val inAppProducts = getSkus().switchMap { skuList -> getInAppProducts(skuList) }
 
-    fun selectSku(skuDetails: SkuDetails?) {
+    fun selectSku(skuDetails: ProductDetails?) {
         skuDetails ?: return
         _selectSku.value = Event(skuDetails)
     }
 
     private fun getSubscriptions(list: List<String>): LiveData<SkuDetailsResult> {
         val subscriptions = MutableLiveData<SkuDetailsResult>()
-        val params = SkuDetailsParams.newBuilder()
-            .setSkusList(list)
-            .setType(BillingClient.SkuType.SUBS)
+        val products = list.map {
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductType(BillingClient.ProductType.SUBS)
+                .setProductId(it)
+                .build()
+        }
+
+        val request = QueryProductDetailsParams.newBuilder()
+            .setProductList(products)
             .build()
 
-        billingClient.querySkuDetailsAsync(params) { response, details ->
+        billingClient.queryProductDetailsAsync(request) { response, details ->
             subscriptions.value = SkuDetailsResult(response.responseCode, details)
         }
         return subscriptions
@@ -114,12 +121,18 @@ class BillingViewModel @Inject constructor(
 
     private fun getInAppProducts(list: List<String>): LiveData<SkuDetailsResult> {
         val inAppProducts = MutableLiveData<SkuDetailsResult>()
-        val params = SkuDetailsParams.newBuilder()
-            .setSkusList(list)
-            .setType(BillingClient.SkuType.INAPP)
+        val products = list.map {
+            QueryProductDetailsParams.Product.newBuilder()
+                .setProductType(BillingClient.ProductType.INAPP)
+                .setProductId(it)
+                .build()
+        }
+
+        val request = QueryProductDetailsParams.newBuilder()
+            .setProductList(products)
             .build()
 
-        billingClient.querySkuDetailsAsync(params) { response, details ->
+        billingClient.queryProductDetailsAsync(request) { response, details ->
             inAppProducts.value = SkuDetailsResult(response.responseCode, details)
         }
         return inAppProducts
@@ -145,9 +158,13 @@ class BillingViewModel @Inject constructor(
         }
     }
 
-    fun launchBillingFlow(activity: Activity, details: SkuDetails, username: String) {
+    fun launchBillingFlow(activity: Activity, details: ProductDetails, username: String) {
+        val productParams = BillingFlowParams.ProductDetailsParams.newBuilder()
+            .setProductDetails(details)
+            .build()
+
         val params = BillingFlowParams.newBuilder()
-            .setSkuDetails(details)
+            .setProductDetailsParamsList(listOf(productParams))
             .setObfuscatedAccountId(username)
             .build()
 
@@ -156,7 +173,7 @@ class BillingViewModel @Inject constructor(
 
     private suspend fun updatePurchases() {
         val result = try {
-            billingClient.suspendQueryPurchases(BillingClient.SkuType.INAPP)
+            billingClient.suspendQueryPurchases(BillingClient.ProductType.INAPP)
         } catch (error: Throwable) {
             null
         }
@@ -206,8 +223,14 @@ class BillingViewModel @Inject constructor(
         }
     }
 
-    private suspend fun BillingClient.suspendQueryPurchases(type: String) = suspendCancellableCoroutine<List<Purchase>> { continuation ->
-        queryPurchasesAsync(type) { result, purchases ->
+    private suspend fun BillingClient.suspendQueryPurchases(
+        @BillingClient.ProductType type: String
+    ) = suspendCancellableCoroutine<List<Purchase>> { continuation ->
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(type)
+            .build()
+
+        queryPurchasesAsync(params) { result, purchases ->
             if (result.responseCode == BillingClient.BillingResponseCode.OK) {
                 continuation.resume(purchases)
             } else {

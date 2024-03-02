@@ -22,6 +22,8 @@ package com.forcetower.uefs.feature.purchases
 
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
+import com.android.billingclient.api.BillingClient
+import com.android.billingclient.api.ProductDetails
 import com.forcetower.uefs.R
 
 @BindingAdapter(value = ["skuPrice"])
@@ -40,4 +42,12 @@ fun title(tv: TextView, title: String?) {
     } else {
         tv.text = value
     }
+}
+
+@BindingAdapter("iapPrice")
+fun TextView.iapPrice(details: ProductDetails?) {
+    details ?: return
+    if (details.productType != BillingClient.ProductType.INAPP) return
+    val price = details.oneTimePurchaseOfferDetails?.formattedPrice ?: "???,??"
+    text = price
 }

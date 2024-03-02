@@ -20,11 +20,11 @@
 
 package com.forcetower.uefs.core.billing
 
-import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.ProductDetails
 
 data class SkuDetailsResult(
     val responseCode: Int,
-    val list: List<SkuDetails>? = null
+    val list: List<ProductDetails>? = null
 )
 
 data class SkuConsumeResult(
