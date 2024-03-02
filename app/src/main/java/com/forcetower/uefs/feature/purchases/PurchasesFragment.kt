@@ -27,7 +27,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import com.android.billingclient.api.BillingClient
-import com.android.billingclient.api.SkuDetails
+import com.android.billingclient.api.ProductDetails
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
@@ -48,7 +48,7 @@ class PurchasesFragment : UFragment() {
     private lateinit var binding: FragmentPurchasesBinding
     private lateinit var skuAdapter: SkuDetailsAdapter
 
-    private val details: MutableList<SkuDetails> = mutableListOf()
+    private val details: MutableList<ProductDetails> = mutableListOf()
 
     private var currentUsername: String? = null
 
@@ -102,7 +102,7 @@ class PurchasesFragment : UFragment() {
         }
     }
 
-    private fun purchaseFlow(details: SkuDetails) {
+    private fun purchaseFlow(details: ProductDetails) {
         val username = currentUsername
         if (username != null) {
             viewModel.launchBillingFlow(requireActivity(), details, username)
