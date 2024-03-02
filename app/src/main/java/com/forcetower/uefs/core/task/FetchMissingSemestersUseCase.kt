@@ -1,6 +1,10 @@
 package com.forcetower.uefs.core.task
 
 import android.content.Context
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.SemestersProcessor
@@ -9,6 +13,7 @@ import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.model.Semester
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.firstOrNull
 import okhttp3.OkHttpClient
 import timber.log.Timber
 import javax.inject.Inject
@@ -20,7 +25,9 @@ class FetchMissingSemestersUseCase @Inject constructor(
     private val client: OkHttpClient,
     @Named("webViewUA") private val agent: String,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    @Named("internalConfig") private val config: DataStore<Preferences>
 ) : UseCase<Unit, Unit>(Dispatchers.IO) {
+    private val key = stringSetPreferencesKey("missing_semesters_run")
     override suspend fun execute(parameters: Unit) {
         if (!snowpiercerEnabled) return
 
@@ -35,13 +42,20 @@ class FetchMissingSemestersUseCase @Inject constructor(
         val semesters = database.semesterDao().getSemestersDirect()
         val missing = basicSemesters.filter { semesters.none { s -> s.sagresId == it.id } }
 
-        missing.map { semester ->
+        missing.forEach { semester ->
+            val set = config.data.firstOrNull()?.get(key) ?: emptySet()
+            if (set.contains(semester.id.toString())) return@forEach
             val result = orchestra.grades(profile.sagresId, semester.id)
+
             result.success()?.value?.let {
                 if (it.isNotEmpty()) {
                     SemestersProcessor(database, listOf(semester)).execute()
                     val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
                     DisciplinesProcessor(context, database, it, currentSemesterIns.uid, profile.sagresId, false).execute()
+                }
+                config.edit { prefs ->
+                    val pref = prefs[key] ?: emptySet()
+                    prefs[key] = pref.toMutableSet().also { s -> s.add(semester.id.toString()) }
                 }
             }
             result.error()?.let {

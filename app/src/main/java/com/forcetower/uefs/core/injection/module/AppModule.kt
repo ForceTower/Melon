@@ -23,6 +23,10 @@ package com.forcetower.uefs.core.injection.module
 import android.content.Context
 import android.content.SharedPreferences
 import android.webkit.WebSettings
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.PreferenceDataStoreFactory
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.preference.PreferenceManager
 import androidx.room.Room
 import com.forcetower.uefs.GooglePlayGamesInstance
@@ -84,6 +88,15 @@ object AppModule {
     @Singleton
     fun providePlayGames(context: Context): GooglePlayGamesInstance =
         GooglePlayGamesInstance(context)
+
+    @Provides
+    @Singleton
+    @Named("internalConfig")
+    fun provideFlagsConfig(context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            context.preferencesDataStoreFile("internal_config")
+        }
+    }
 
     @Provides
     @Singleton

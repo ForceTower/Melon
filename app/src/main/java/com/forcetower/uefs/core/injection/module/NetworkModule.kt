@@ -21,6 +21,9 @@
 package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
+import com.chuckerteam.chucker.api.ChuckerInterceptor
+import com.chuckerteam.chucker.api.RetentionManager
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
@@ -37,6 +40,7 @@ import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
@@ -72,14 +76,16 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideOkHttpClient(cookieJar: PersistentCookieJar, interceptor: Interceptor): OkHttpClient {
+    fun provideOkHttpClient(
+        cookieJar: PersistentCookieJar,
+        interceptor: Interceptor,
+        chuckerInterceptor: ChuckerInterceptor
+    ): OkHttpClient {
         return OkHttpClient.Builder()
             .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT)) // Needed for old sagres, omegalul
             .followRedirects(true)
             .cookieJar(cookieJar)
-            .connectTimeout(1, TimeUnit.MINUTES)
-            .readTimeout(1, TimeUnit.MINUTES)
-            .writeTimeout(1, TimeUnit.MINUTES)
+            .callTimeout(2, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
             .addInterceptor(
                 HttpLoggingInterceptor {
@@ -91,6 +97,7 @@ object NetworkModule {
                         HttpLoggingInterceptor.Level.NONE
                 }
             )
+            .addInterceptor(chuckerInterceptor)
             .build()
     }
 
@@ -116,6 +123,24 @@ object NetworkModule {
             val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
             chain.proceed(nRequest)
         }
+    }
+
+    @Provides
+    @Singleton
+    fun chuckerInterceptor(
+        @ApplicationContext context: Context
+    ): ChuckerInterceptor {
+        val chuckerCollector = ChuckerCollector(
+            context = context,
+            showNotification = true,
+            retentionPeriod = RetentionManager.Period.ONE_WEEK
+        )
+
+        return ChuckerInterceptor.Builder(context)
+            .collector(chuckerCollector)
+            .alwaysReadResponseBody(true)
+            .createShortcut(true)
+            .build()
     }
 
     @Provides

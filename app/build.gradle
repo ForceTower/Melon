@@ -244,6 +244,9 @@ dependencies {
     implementation "com.google.firebase:firebase-crashlytics-ktx"
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
 
+    debugImplementation "com.github.chuckerteam.chucker:library:4.0.0"
+    releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0"
+
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"
 
