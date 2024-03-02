@@ -110,7 +110,7 @@ class SnowpiercerLoginRepository @Inject constructor(
         LoginSagresRepository.createStep(0)
         currentStep.postValue(LoginSagresRepository.createStep(R.string.step_fetching_semesters))
         val semestersOutcome = orchestra.semesters(person.id)
-        val currentSemester = (semestersOutcome as? Outcome.Success)?.let { success ->
+        val currentSemester = (semestersOutcome.success())?.let { success ->
             val semesters = success.value
             SemestersProcessor(database, semesters).execute()
 
@@ -126,7 +126,7 @@ class SnowpiercerLoginRepository @Inject constructor(
         currentStep.postValue(LoginSagresRepository.createStep(R.string.step_fetching_grades))
         currentSemester?.let { semester ->
             val gradesOutcome = orchestra.grades(person.id, semester.id)
-            (gradesOutcome as? Outcome.Success)?.let { success ->
+            (gradesOutcome.success())?.let { success ->
                 val disciplines = success.value
                 val currentSemesterIns = database.semesterDao().getSemesterDirect(semester.id)!!
                 DisciplinesProcessor(context, database, disciplines, currentSemesterIns.uid, localProfileId, false).execute()

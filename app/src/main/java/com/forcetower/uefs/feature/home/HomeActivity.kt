@@ -133,6 +133,7 @@ class HomeActivity : UGameActivity() {
             viewModel.getAffinityQuestions()
 
             checkNotificationPermission()
+            viewModel.checkMissingSemesters()
         } catch (_: Throwable) {}
         moveToTask()
     }
