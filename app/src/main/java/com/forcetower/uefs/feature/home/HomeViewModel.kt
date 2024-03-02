@@ -47,6 +47,7 @@ import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionReposit
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
@@ -68,6 +69,7 @@ class HomeViewModel @Inject constructor(
     private val sessionRepository: UserSessionRepository,
     private val accountRepository: AccountRepository,
     private val affinityRepository: AffinityQuestionRepository,
+    private val fetchMissingSemesters: FetchMissingSemestersUseCase,
     @Named("flagSnowpiercerEnabled")
     private val snowpiercerEnabled: Boolean
 ) : AndroidViewModel(application) {
@@ -198,5 +200,12 @@ class HomeViewModel @Inject constructor(
 
     fun getAffinityQuestions() {
         affinityRepository.getAffinityQuestionsAsync()
+    }
+
+    fun checkMissingSemesters() {
+        if (!snowpiercerEnabled) return
+        viewModelScope.launch {
+            fetchMissingSemesters(Unit)
+        }
     }
 }
