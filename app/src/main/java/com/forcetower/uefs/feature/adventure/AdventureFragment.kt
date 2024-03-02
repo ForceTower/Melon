@@ -53,6 +53,7 @@ import com.google.android.gms.location.LocationRequest
 import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
+import com.google.android.gms.location.Priority
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
@@ -81,7 +82,7 @@ class AdventureFragment : UFragment() {
     private var currentList: List<AchDistance>? = null
 
     private val requestPermissions = registerForActivityResult(ActivityResultContracts.RequestMultiplePermissions()) { result ->
-        val allGranted = result.entries.all { it.value }
+        val allGranted = result.size > 1 && result.entries.all { it.value }
         if (allGranted) startRequesting()
     }
 
@@ -180,12 +181,11 @@ class AdventureFragment : UFragment() {
     }
 
     private fun startLocationsUpdate() {
-        mLocationRequest = LocationRequest.create()
-        mLocationRequest.run {
-            interval = 7000
-            fastestInterval = 5000
-            priority = LocationRequest.PRIORITY_HIGH_ACCURACY
-        }
+        mLocationRequest = LocationRequest.Builder(7000)
+            .setWaitForAccurateLocation(true)
+            .setMinUpdateIntervalMillis(5000)
+            .setPriority(Priority.PRIORITY_HIGH_ACCURACY)
+            .build()
 
         if (currentList == null) {
             onReceiveLocation(null)

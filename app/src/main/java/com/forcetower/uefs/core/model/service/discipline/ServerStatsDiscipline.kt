@@ -72,7 +72,7 @@ data class DisciplineData(
     @SerializedName("group")
     val disciplineGroup: String,
     @SerializedName("semester")
-    val sagresSemesterId: Int,
+    val sagresSemesterId: Long,
     @SerializedName("semester_name")
     val semesterName: String,
     @SerializedName("teacher")
