@@ -168,6 +168,9 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+        <meta-data
+            android:name="asset_statements"
+            android:resource="@string/asset_statements" />
 
         <provider
             android:name="androidx.core.content.FileProvider"
