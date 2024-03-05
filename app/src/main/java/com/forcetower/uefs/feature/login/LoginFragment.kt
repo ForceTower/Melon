@@ -27,23 +27,42 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.os.bundleOf
+import androidx.credentials.CreateCredentialResponse
+import androidx.credentials.CreatePublicKeyCredentialRequest
+import androidx.credentials.CreatePublicKeyCredentialResponse
+import androidx.credentials.CredentialManager
+import androidx.credentials.GetCredentialRequest
+import androidx.credentials.GetCredentialResponse
+import androidx.credentials.GetPasswordOption
+import androidx.credentials.GetPublicKeyCredentialOption
+import androidx.credentials.PasswordCredential
+import androidx.credentials.PublicKeyCredential
+import androidx.credentials.exceptions.CreateCredentialException
+import androidx.credentials.exceptions.GetCredentialException
+import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.ActivityNavigator
 import androidx.navigation.fragment.findNavController
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class LoginFragment : UFragment() {
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     @Inject lateinit var preferences: SharedPreferences
+
+    private val viewModel by viewModels<LoginFormViewModel>()
     private lateinit var binding: FragmentLoginFormBinding
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
@@ -54,12 +73,101 @@ class LoginFragment : UFragment() {
                 showInstitutionSelector()
             }
             binding.btnConnect.setOnClickListener {
-                prepareLogin()
+                viewModel.startAssertion()
             }
             binding.btnAboutUnes.setOnClickListener {
-                toAbout()
+                viewModel.startRegister()
             }
         }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        viewModel.challenge.observe(viewLifecycleOwner) {
+            startCredentialsManager(it)
+        }
+
+        viewModel.register.observe(viewLifecycleOwner) {
+            runCatching {
+                startPasskeyRegister(it)
+            }
+        }
+    }
+
+    private fun startPasskeyRegister(start: RegisterPasskeyStart) {
+        val manager = CredentialManager.create(requireContext())
+
+        Timber.d("Register challenge: ${start.create}")
+
+        val request = CreatePublicKeyCredentialRequest(
+            requestJson = start.create,
+            preferImmediatelyAvailableCredentials = false,
+        )
+
+        lifecycleScope.launch {
+            try {
+                val result = manager.createCredential(
+                    context = requireActivity(),
+                    request = request,
+                )
+                handlePasskeyRegistrationResult(result, start)
+            } catch (e : CreateCredentialException) {
+                Timber.e(e, "Failed to create passkey")
+                showSnack("Não foi possível recuperar credenciais.")
+            }
+        }
+    }
+
+    private fun handlePasskeyRegistrationResult(
+        result: CreateCredentialResponse,
+        start: RegisterPasskeyStart
+    ) {
+        if (result is CreatePublicKeyCredentialResponse) {
+            Timber.d("Register Response: ${result.registrationResponseJson}")
+            viewModel.finishRegister(start.flowId, result.registrationResponseJson)
+        } else {
+            Timber.e("This is not a passkey. lol")
+        }
+    }
+
+    private fun startCredentialsManager(challenge: String) {
+        val manager = CredentialManager.create(requireContext())
+        val passwordOption = GetPasswordOption()
+
+        val publicKeyCredential = GetPublicKeyCredentialOption(
+            requestJson = challenge
+        )
+
+        val request = GetCredentialRequest(listOf(passwordOption, publicKeyCredential))
+
+        lifecycleScope.launch {
+            try {
+                val result = manager.getCredential(
+                    context = requireActivity(),
+                    request = request
+                )
+                onCredentialSignInCompleted(result)
+            } catch (e : GetCredentialException) {
+                Timber.e(e, "Failed to get credentials")
+                showSnack("Não foi possível recuperar credenciais.")
+            }
+        }
+    }
+
+    private fun onCredentialSignInCompleted(result: GetCredentialResponse) {
+        when (val credential = result.credential) {
+            is PublicKeyCredential -> {
+                val responseJson = credential.authenticationResponseJson
+                viewModel.completeAssertion(responseJson)
+            }
+
+            is PasswordCredential -> {
+                val username = credential.id
+                val password = credential.password
+                doLogin(username, password)
+            }
+        }
     }
 
     private fun showInstitutionSelector() {
@@ -86,7 +194,12 @@ class LoginFragment : UFragment() {
 
         if (error) return
 
-        val snowpiercer = preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+        doLogin(username, password)
+    }
+
+    private fun doLogin(username: String, password: String) {
+        val snowpiercer =
+            preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
         FirebaseCrashlytics.getInstance().setCustomKey("snowpiercer_user", snowpiercer)
         val info = bundleOf(
             "username" to username,
@@ -97,9 +210,14 @@ class LoginFragment : UFragment() {
         if (Constants.getParameter("REQUIRES_CAPTCHA") != "true" || snowpiercer) {
             findNavController().navigate(R.id.action_login_form_to_signing_in, info)
         } else {
-            val directions = LoginFragmentDirections.actionLoginFormToTechNopeCaptchaStuff(username, password)
+            val directions =
+                LoginFragmentDirections.actionLoginFormToTechNopeCaptchaStuff(username, password)
             findNavController().navigate(directions)
         }
+    }
+
+    private fun loginWithPasskey() {
+        viewModel.startAssertion()
     }
 
     private fun toAbout() {

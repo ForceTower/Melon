@@ -11,6 +11,11 @@
     public static *** i(...);
 }
 
+-if class androidx.credentials.CredentialManager
+-keep class androidx.credentials.playservices.** {
+  *;
+}
+
 # Work around android fragment artifact bug
 -keep class androidx.navigation.fragment.NavHostFragment { *; }
 -keep class androidx.navigation.dynamicfeatures.fragment.DynamicNavHostFragment { *; }

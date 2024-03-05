@@ -29,6 +29,7 @@ import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.APIService
+import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.forcetower.uefs.core.util.ObjectUtils
@@ -184,5 +185,16 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
             .create(APIService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEdgeService(client: OkHttpClient): EdgeService {
+        return Retrofit.Builder()
+            .baseUrl("https://edge-unes.forcetower.dev/api/")
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create())
+            .build()
+            .create(EdgeService::class.java)
     }
 }
