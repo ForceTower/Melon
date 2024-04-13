@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.login
 
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Patterns
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -70,7 +69,6 @@ class LoginFragment : UFragment() {
         allowOnlyUEFS()
         return FragmentLoginFormBinding.inflate(inflater, container, false).also {
             binding = it
-            Patterns.EMAIL_ADDRESS
             binding.btnInstitution.setOnClickListener {
                 showInstitutionSelector()
             }
@@ -114,7 +112,7 @@ class LoginFragment : UFragment() {
                     request = request,
                 )
                 handlePasskeyRegistrationResult(result, start)
-            } catch (e : CreateCredentialException) {
+            } catch (e: CreateCredentialException) {
                 Timber.e(e, "Failed to create passkey")
                 showSnack("Não foi possível recuperar credenciais.")
             }
@@ -150,7 +148,7 @@ class LoginFragment : UFragment() {
                     request = request
                 )
                 onCredentialSignInCompleted(result)
-            } catch (e : GetCredentialException) {
+            } catch (e: GetCredentialException) {
                 Timber.e(e, "Failed to get credentials")
                 showSnack("Não foi possível recuperar credenciais.")
             }

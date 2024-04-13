@@ -27,12 +27,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.forcetower.core.lifecycle.Event
-import com.google.android.gms.games.AchievementsClient
-import com.google.android.gms.games.GamesClient
-import com.google.android.gms.games.GamesSignInClient
 import com.google.android.gms.games.PlayGames
 import kotlinx.coroutines.tasks.await
-
 
 class GooglePlayGamesInstance(
     private val activity: Activity

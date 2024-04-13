@@ -32,7 +32,7 @@ class LoginFormViewModel @Inject constructor(
             runCatching {
                 val data = registerPasskey.start()
                 _register.value = data
-            }.onFailure { 
+            }.onFailure {
                 Timber.e(it, "Failed to request challenge")
             }
         }
