@@ -31,11 +31,6 @@ interface AdventureInteractor {
     fun beginAdventure()
 
     /**
-     * Desconecta o usuário do Google Play Games
-     */
-    fun leave()
-
-    /**
      * Começa ou finaliza a requisição por localizações e verifica se a localização é de uma das
      * conquistas
      */

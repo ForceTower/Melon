@@ -86,11 +86,6 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun providePlayGames(context: Context): GooglePlayGamesInstance =
-        GooglePlayGamesInstance(context)
-
-    @Provides
-    @Singleton
     @Named("internalConfig")
     fun provideFlagsConfig(context: Context): DataStore<Preferences> {
         return PreferenceDataStoreFactory.create {

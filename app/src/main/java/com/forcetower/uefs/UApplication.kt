@@ -35,6 +35,7 @@ import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.impl.CrashlyticsTree
 import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
+import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.HiltAndroidApp
 import okhttp3.OkHttpClient
@@ -62,6 +63,7 @@ class UApplication : Application(), Configuration.Provider {
         }
         super.onCreate()
 
+        PlayGamesSdk.initialize(this);
         setupDayNightTheme(this)
         defineWorker()
     }

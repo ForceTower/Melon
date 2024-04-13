@@ -104,24 +104,5 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/text_other_actions" />
-    
-    
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btn_leave"
-            style="@style/UTheme.MaterialButton.Outline.AccentBorder"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="16dp"
-            android:text="@string/btn_achievements_leave"
-            android:onClick="@{() -> interactor.leave()}"
-            android:textColor="@color/red"
-            app:strokeColor="@color/red"
-            app:rippleColor="@color/red"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btn_check_achievements" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
