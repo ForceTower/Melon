@@ -63,7 +63,7 @@ class UApplication : Application(), Configuration.Provider {
         }
         super.onCreate()
 
-        PlayGamesSdk.initialize(this);
+        PlayGamesSdk.initialize(this)
         setupDayNightTheme(this)
         defineWorker()
     }
