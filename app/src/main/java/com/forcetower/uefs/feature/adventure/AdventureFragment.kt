@@ -37,6 +37,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.lifecycleScope
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.GameConnectionStatus
 import com.forcetower.uefs.R
@@ -57,6 +58,7 @@ import com.google.android.gms.location.Priority
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -118,14 +120,15 @@ class AdventureFragment : UFragment() {
         }
 
         viewModel.run {
-            achievements.observe(viewLifecycleOwner, EventObserver { activity?.openAchievements() })
+            achievements.observe(viewLifecycleOwner, EventObserver { onOpenAchievements() })
             start.observe(viewLifecycleOwner, EventObserver { activity?.signIn() })
             locations.observe(viewLifecycleOwner) { requestLocations(it) }
-            leave.observe(viewLifecycleOwner, EventObserver { activity?.signOut() })
         }
 
-        if (activity?.isConnectedToPlayGames() == false && savedInstanceState == null) {
-            openStartupDialog()
+        lifecycleScope.launch {
+            if (activity?.isConnectedToPlayGames() == false && savedInstanceState == null) {
+                openStartupDialog()
+            }
         }
 
         activity?.mGamesInstance?.connectionStatus?.observe(
@@ -144,6 +147,12 @@ class AdventureFragment : UFragment() {
         )
     }
 
+    private fun onOpenAchievements() {
+        lifecycleScope.launch {
+            activity?.openAchievements()
+        }
+    }
+
     override fun onPause() {
         super.onPause()
         stopUpdates()
@@ -155,6 +164,7 @@ class AdventureFragment : UFragment() {
     }
 
     private fun openStartupDialog() {
+        Timber.d(Exception(), "Called open startup dialog")
         val dialog = AdventureSignInDialog()
         dialog.show(childFragmentManager, "adventure_sign_in")
     }

@@ -69,8 +69,8 @@ buildscript {
         gp_core_ktx = '1.8.1'
         gp_auth = '21.0.0'
         gp_games = '23.1.0'
-        gp_location = '21.1.0'
-        gp_billing_client = '6.1.0'
+        gp_location = '21.2.0'
+        gp_billing_client = '6.2.0'
         gp_admob = '19.8.0'
 
         // Networking
@@ -90,7 +90,7 @@ buildscript {
         rx_kotlin = "2.4.0"
 
         // Build Versions
-        android_gradle_plugin = '8.3.0'
+        android_gradle_plugin = '8.3.2'
         google_play_services = '4.3.14'
         kotlinter = "3.4.4"
         play_publisher = "3.7.0"

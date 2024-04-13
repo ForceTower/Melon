@@ -43,20 +43,12 @@ class AdventureViewModel @Inject constructor(
     val achievements: LiveData<Event<Any?>>
         get() = _achievements
 
-    private val _leave = MutableLiveData<Event<Boolean>>()
-    val leave: LiveData<Event<Boolean>>
-        get() = _leave
-
     private val _start = MutableLiveData<Event<Any?>>()
     val start: LiveData<Event<Any?>>
         get() = _start
 
     override fun beginAdventure() {
         _start.value = Event(Any())
-    }
-
-    override fun leave() {
-        _leave.value = Event(true)
     }
 
     override fun turnOnLocations() {

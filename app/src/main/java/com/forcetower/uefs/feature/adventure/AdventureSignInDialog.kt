@@ -43,10 +43,10 @@ class AdventureSignInDialog : RoundedDialog() {
     override fun onAttach(context: Context) {
         super.onAttach(context)
         activity = context as? UGameActivity
-        activity ?: Timber.e("Adventure Fragment must be attached to a UGameActivity for it to work")
+        activity ?: Timber.e("Dialog must be attached to a UGameActivity for it to work")
     }
 
-    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onChildCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return DialogAdventureSignInBinding.inflate(inflater, container, false).apply {
             interactor = viewModel
             lifecycleOwner = this@AdventureSignInDialog
@@ -59,7 +59,7 @@ class AdventureSignInDialog : RoundedDialog() {
         viewModel.start.observe(
             viewLifecycleOwner,
             EventObserver {
-                dismiss()
+                dismissAllowingStateLoss()
                 activity?.signIn()
             }
         )

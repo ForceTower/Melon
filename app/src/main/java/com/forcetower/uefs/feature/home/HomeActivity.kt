@@ -346,7 +346,7 @@ class HomeActivity : UGameActivity() {
         return snack
     }
 
-    override fun checkAchievements(email: String?) {
+    override fun checkAchievements() {
         adventureViewModel.checkAchievements().observe(this) {
             it.entries.forEach { achievement ->
                 if (achievement.value == -1)
