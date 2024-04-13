@@ -233,7 +233,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Firebase
-    implementation platform('com.google.firebase:firebase-bom:32.7.3')
+    implementation platform('com.google.firebase:firebase-bom:32.8.1')
     implementation "com.google.firebase:firebase-auth-ktx"
     implementation "com.google.firebase:firebase-analytics-ktx"
     implementation "com.google.firebase:firebase-messaging-ktx"
@@ -245,8 +245,8 @@ dependencies {
     implementation "com.firebaseui:firebase-ui-storage:$firebase_ui_storage"
 
     // passkeys
-    implementation("androidx.credentials:credentials:1.3.0-alpha01")
-    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha01")
+    implementation("androidx.credentials:credentials:1.3.0-alpha02")
+    implementation("androidx.credentials:credentials-play-services-auth:1.3.0-alpha02")
 
     debugImplementation "com.github.chuckerteam.chucker:library:4.0.0"
     releaseImplementation "com.github.chuckerteam.chucker:library-no-op:4.0.0"
@@ -255,7 +255,7 @@ dependencies {
     implementation "com.jakewharton.timber:timber:$timber"
 
     // Google Play
-    implementation "com.google.android.gms:play-services-games:$gp_games"
+    implementation "com.google.android.gms:play-services-games-v2:20.0.0"
     implementation "com.google.android.gms:play-services-auth:$gp_auth"
     implementation "com.google.android.gms:play-services-location:$gp_location"
     implementation "com.android.billingclient:billing:$gp_billing_client"

@@ -20,28 +20,26 @@
 
 package com.forcetower.uefs
 
-import android.content.Context
+import android.app.Activity
 import android.content.ContextWrapper
 import androidx.annotation.StringRes
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.preference.PreferenceManager
 import com.forcetower.core.lifecycle.Event
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInClient
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.games.AchievementsClient
-import com.google.android.gms.games.Games
 import com.google.android.gms.games.GamesClient
-import com.google.android.gms.games.LeaderboardsClient
+import com.google.android.gms.games.GamesSignInClient
+import com.google.android.gms.games.PlayGames
+import kotlinx.coroutines.tasks.await
 
-class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
+
+class GooglePlayGamesInstance(
+    private val activity: Activity
+) : ContextWrapper(activity) {
     private var playerName: String? = null
-    var signInClient: GoogleSignInClient? = null
-    var achievementsClient: AchievementsClient? = null
-    private var leaderboardClient: LeaderboardsClient? = null
-    var gamesClient: GamesClient? = null
+    val signInClient = PlayGames.getGamesSignInClient(activity)
+    val achievementsClient = PlayGames.getAchievementsClient(activity)
 
     private val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     private var playerUnlockedSwitch: Boolean = false
@@ -51,27 +49,10 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
         get() = _status
 
     /**
-     * Cria o cliente de login com as ferramentas do Google para esta sessão de jogos!
-     */
-    fun createGoogleClient() {
-        if (signInClient == null) {
-            signInClient = GoogleSignIn.getClient(
-                this,
-                GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_GAMES_SIGN_IN)
-                    // .requestEmail()
-                    .build()
-            )
-        }
-    }
-
-    /**
      * Deve ser chamado quando o usuário de conectar com a conta do google para que o objeto possa
      * criar todas as dependencias
      */
-    fun onConnected(account: GoogleSignInAccount) {
-        achievementsClient = Games.getAchievementsClient(this, account)
-        leaderboardClient = Games.getLeaderboardsClient(this, account)
-        gamesClient = Games.getGamesClient(this, account)
+    fun onConnected() {
         _status.postValue(Event(GameConnectionStatus.CONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled_v2", true).apply()
         unlockAchievement(R.string.achievement_comeou_o_jogo)
@@ -84,9 +65,6 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
      * Deve ser chamado quando o usuário optar por sair do jogo
      */
     fun onDisconnected() {
-        achievementsClient = null
-        leaderboardClient = null
-        gamesClient = null
         _status.postValue(Event(GameConnectionStatus.DISCONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled_v2", false).apply()
     }
@@ -95,11 +73,7 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
      * Chame este método para desconectar o usuário do google play games
      */
     fun disconnect() {
-        signInClient?.signOut()?.addOnCompleteListener { task ->
-            if (task.isSuccessful) {
-                onDisconnected()
-            }
-        }
+        // removed. i guess
     }
 
     /**
@@ -116,8 +90,8 @@ class GooglePlayGamesInstance(base: Context) : ContextWrapper(base) {
     /**
      * Retorna se existe alguem conectado às contas do google ou não
      */
-    fun isConnected(): Boolean {
-        return GoogleSignIn.getLastSignedInAccount(this) != null
+    suspend fun isConnected(): Boolean {
+        return PlayGames.getGamesSignInClient(activity).isAuthenticated.await().isAuthenticated
     }
 
     /**
