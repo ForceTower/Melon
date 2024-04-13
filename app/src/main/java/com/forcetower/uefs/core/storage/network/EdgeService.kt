@@ -7,7 +7,6 @@ import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.core.model.unes.AccessToken
 import retrofit2.http.Body
 import retrofit2.http.GET
-import retrofit2.http.Headers
 import retrofit2.http.POST
 
 interface EdgeService {

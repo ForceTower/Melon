@@ -20,20 +20,11 @@
 
 package com.forcetower.uefs.feature.shared
 
-import android.content.Intent
 import android.os.Bundle
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import com.forcetower.uefs.GooglePlayGamesInstance
-import com.forcetower.uefs.PLAY_GAMES_ACHIEVEMENTS
-import com.forcetower.uefs.PLAY_GAMES_SIGN_IN
 import com.forcetower.uefs.R
-import com.google.android.gms.auth.api.signin.GoogleSignIn
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CANCELLED
-import com.google.android.gms.auth.api.signin.GoogleSignInStatusCodes.SIGN_IN_CURRENTLY_IN_PROGRESS
-import com.google.android.gms.common.ConnectionResult.NETWORK_ERROR
-import com.google.android.gms.common.api.ApiException
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
