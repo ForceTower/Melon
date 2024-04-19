@@ -63,7 +63,9 @@ class UApplication : Application(), Configuration.Provider {
         }
         super.onCreate()
 
-        PlayGamesSdk.initialize(this)
+        if (preferences.getBoolean("google_play_games_enabled_v2", false)) {
+            PlayGamesSdk.initialize(this)
+        }
         setupDayNightTheme(this)
         defineWorker()
     }
