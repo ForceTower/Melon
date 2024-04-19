@@ -21,10 +21,10 @@ import javax.sound.sampled.Clip
  */
 
 buildscript {
-    ext.kotlin_version = '1.9.22'
+    ext.kotlin_version = '1.9.23'
     ext {
         juice = "1.8.0"
-        snowpiercer = "1.5.1"
+        snowpiercer = "2.2.0"
 
         // Kotlin Extensions
         ktx = '1.12.0'
