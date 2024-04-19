@@ -25,6 +25,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.StringRes
 import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.R
+import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
@@ -66,6 +67,7 @@ abstract class UGameActivity : UActivity() {
     }
 
     fun signIn() {
+        PlayGamesSdk.initialize(applicationContext)
         val client = mGamesInstance.signInClient
         Timber.d("Signing in!")
         client.signIn()
