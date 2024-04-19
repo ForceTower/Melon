@@ -164,7 +164,6 @@ class AdventureFragment : UFragment() {
     }
 
     private fun openStartupDialog() {
-        Timber.d(Exception(), "Called open startup dialog")
         val dialog = AdventureSignInDialog()
         dialog.show(childFragmentManager, "adventure_sign_in")
     }
