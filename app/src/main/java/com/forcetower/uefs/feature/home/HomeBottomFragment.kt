@@ -103,7 +103,7 @@ class HomeBottomFragment : UFragment() {
         super.onViewCreated(view, savedInstanceState)
         setupNavigation()
         featureFlags()
-        viewModel.databaseAccount.observe(viewLifecycleOwner, { handleAccount(it) })
+        viewModel.databaseAccount.observe(viewLifecycleOwner) { handleAccount(it) }
     }
 
     private fun handleAccount(account: Account?) {
