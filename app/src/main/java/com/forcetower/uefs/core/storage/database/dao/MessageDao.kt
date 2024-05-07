@@ -40,7 +40,11 @@ abstract class MessageDao {
     open fun insertIgnoring(messages: List<Message>) {
         updateOldMessages()
         for (message in messages) {
-            val direct = getMessageByHashDirect(message.hashMessage)
+            val direct = if (message.html) {
+                getMessageByHashDirect(message.hashMessage)
+            } else {
+                getMessageDirect(message.sagresId)
+            }
             if (direct != null) {
                 if (message.senderName != null) {
                     if (direct.senderName.isNullOrBlank()) {
