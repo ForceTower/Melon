@@ -84,7 +84,7 @@ dependencies {
     kapt "androidx.hilt:hilt-compiler:$hilt_androidx"
 
     // Maps
-    implementation 'com.google.android.gms:play-services-maps:18.2.0'
+    implementation 'com.google.android.gms:play-services-maps:19.0.0'
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"

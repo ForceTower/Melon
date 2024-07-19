@@ -55,8 +55,6 @@ import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.location.LocationSettingsRequest
 import com.google.android.gms.location.Priority
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -64,8 +62,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class AdventureFragment : UFragment() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
-    @Inject lateinit var firebaseStorage: FirebaseStorage
     @Inject lateinit var preferences: SharedPreferences
 
     private val viewModel: AdventureViewModel by activityViewModels()

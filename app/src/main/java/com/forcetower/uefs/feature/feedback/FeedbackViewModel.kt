@@ -35,7 +35,6 @@ import javax.inject.Inject
 @HiltViewModel
 class FeedbackViewModel @Inject constructor(
     private val repository: FeedbackRepository,
-    private val context: Context
 ) : ViewModel() {
     private val _sendFeedback = MediatorLiveData<Event<Boolean>>()
     val sendFeedback: LiveData<Event<Boolean>>
@@ -47,15 +46,6 @@ class FeedbackViewModel @Inject constructor(
 
     @MainThread
     fun onSendFeedback(text: String?) {
-        if (text.isNullOrBlank()) {
-            _textError.value = Event(context.getString(R.string.feedback_text_empty))
-        } else {
-            _textError.value = Event(null)
-            val source = repository.onSendFeedback(text)
-            _sendFeedback.addSource(source) {
-                _sendFeedback.value = Event(it)
-                _sendFeedback.removeSource(source)
-            }
-        }
+
     }
 }

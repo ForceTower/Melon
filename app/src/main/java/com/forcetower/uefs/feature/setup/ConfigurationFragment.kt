@@ -31,16 +31,12 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.databinding.FragmentSetupConfigurationBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.google.firebase.auth.FirebaseAuth
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ConfigurationFragment : UFragment() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
-
     private lateinit var binding: FragmentSetupConfigurationBinding
     private val viewModel: SetupViewModel by activityViewModels()
 

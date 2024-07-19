@@ -24,7 +24,6 @@ import android.content.Context
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants.REMOTE_CONFIG_REFRESH
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.functions.FirebaseFunctions
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
@@ -41,10 +40,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object FirebaseCoreModule {
-    @Provides
-    @Singleton
-    fun provideAuth(): FirebaseAuth = FirebaseAuth.getInstance()
-
     @Provides
     @Singleton
     fun provideStorage(): FirebaseStorage = FirebaseStorage.getInstance()

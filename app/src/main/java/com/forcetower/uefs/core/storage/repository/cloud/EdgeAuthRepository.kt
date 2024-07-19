@@ -2,8 +2,10 @@ package com.forcetower.uefs.core.storage.repository.cloud
 
 import com.forcetower.uefs.core.model.edge.AssertionData
 import com.forcetower.uefs.core.model.edge.CompleteAssertionData
+import com.forcetower.uefs.core.model.edge.EdgeLoginBody
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyCredential
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import timber.log.Timber
 import javax.inject.Inject
@@ -11,8 +13,13 @@ import javax.inject.Singleton
 
 @Singleton
 class EdgeAuthRepository @Inject constructor(
-    private val service: EdgeService
+    private val service: EdgeService,
+    private val database: UDatabase
 ) {
+    suspend fun anonymous(username: String, password: String) {
+        val result = service.loginAnonymous(EdgeLoginBody(username, password))
+    }
+
     suspend fun startAssertion(): AssertionData {
         return service.startAssertion()
     }

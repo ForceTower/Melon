@@ -26,13 +26,6 @@
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
-            name="firebaseStorage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
     </data>
 
     <androidx.coordinatorlayout.widget.CoordinatorLayout

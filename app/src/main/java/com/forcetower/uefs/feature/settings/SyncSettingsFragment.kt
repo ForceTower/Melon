@@ -29,7 +29,6 @@ import androidx.preference.PreferenceFragmentCompat
 import androidx.preference.TwoStatePreference
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
@@ -39,8 +38,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class SyncSettingsFragment : PreferenceFragmentCompat() {
-    @Inject
-    lateinit var firebaseRepository: FirebaseAuthRepository
     @Inject
     lateinit var repository: SyncFrequencyRepository
 
@@ -118,7 +115,6 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
                 SyncLinkedWorker.createWorker(requireContext(), period)
             }
         }
-        firebaseRepository.updateFrequency(period)
         return true
     }
 
@@ -139,8 +135,6 @@ class SyncSettingsFragment : PreferenceFragmentCompat() {
             SyncLinkedWorker.createWorker(requireContext(), period)
             getSharedPreferences()?.run { edit().putString("stg_sync_worker_type", "1").apply() }
         }
-
-        firebaseRepository.updateFrequency(period)
         return true
     }
 

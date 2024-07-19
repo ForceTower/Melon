@@ -24,14 +24,6 @@
 
     <data>
         <variable
-            name="storage"
-            type="com.google.firebase.storage.FirebaseStorage"/>
-
-        <variable
-            name="firebaseUser"
-            type="com.google.firebase.auth.FirebaseUser"/>
-
-        <variable
             name="profile"
             type="com.forcetower.uefs.feature.profile.ProfileViewModel"/>
 
