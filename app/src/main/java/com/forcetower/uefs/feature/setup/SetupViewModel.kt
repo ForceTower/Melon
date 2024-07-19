@@ -26,18 +26,15 @@ import androidx.lifecycle.ViewModel
 import androidx.preference.PreferenceManager
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course
-import com.forcetower.uefs.core.storage.repository.FirebaseAuthRepository
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
-import com.google.firebase.auth.FirebaseUser
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val firebaseAuthRepository: FirebaseAuthRepository,
     private val context: Context,
     private val profileRepository: ProfileRepository
 ) : ViewModel() {
@@ -62,9 +59,8 @@ class SetupViewModel @Inject constructor(
 
     fun getSelectedCourse() = course
 
-    fun updateCourse(course: Course?, user: FirebaseUser) {
+    fun updateCourse(course: Course?) {
         course ?: return
-        firebaseAuthRepository.updateCourse(course, user)
         profileRepository.updateUserCourse(course)
     }
 
@@ -77,7 +73,6 @@ class SetupViewModel @Inject constructor(
     }
 
     fun setFrequencyAndComplete(frequency: SyncFrequency) {
-        firebaseAuthRepository.updateFrequency(frequency.value)
         SyncLinkedWorker.stopWorker(context)
         SyncMainWorker.createWorker(context, frequency.value)
         PreferenceManager.getDefaultSharedPreferences(context).edit()

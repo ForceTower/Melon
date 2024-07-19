@@ -48,15 +48,12 @@ import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : UFragment() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
-    @Inject lateinit var firebaseStorage: FirebaseStorage
 
     private val pickImageContract = registerForActivityResult(ActivityResultContracts.GetContent()) {
         onContentSelected(it)

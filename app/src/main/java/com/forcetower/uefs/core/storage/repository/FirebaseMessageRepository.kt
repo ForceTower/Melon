@@ -52,7 +52,6 @@ class FirebaseMessageRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val context: Context,
     private val syncRepository: SagresSyncRepository,
-    private val firebaseAuthRepository: FirebaseAuthRepository,
     private val firebaseMessaging: FirebaseMessaging,
     private val executors: AppExecutors
 ) {
@@ -73,7 +72,6 @@ class FirebaseMessageRepository @Inject constructor(
             "remote_database" -> promoteDatabase(data)
             "service" -> serviceNotificationExtractor(data)
             "synchronize" -> universalSync()
-            "reconnect_firebase" -> firebaseReconnect(data)
             "reschedule_sync" -> rescheduleSync(data)
             "hourglass_initiator" -> hourglassRunner()
             "worker_cancel" -> cancelWorker(data)
@@ -169,29 +167,6 @@ class FirebaseMessageRepository @Inject constructor(
             preferences.edit().putString("stg_sync_frequency", period.toString()).apply()
             Timber.d("Target rescheduled")
         }
-    }
-
-    private fun firebaseReconnect(data: Map<String, String>) {
-        // Esta função se tornou necessária ja que eu fiz a besteira de não colocar um toLowerCase nos nomes
-        // que compõe as credenciais do firebase, isso poderia fazer com que todos os usuarios precisassem se reconectar.
-        // Então, basta invocar esta função que a pessoa irá se reconectar aos serviços do firebase sem problemas.
-
-        val unique = data["unique"]
-        val version = data["version"]?.toIntOrNull()
-        if (unique == null || version == null) {
-            Timber.e("You need to specify a unique key and a version for this to work")
-            return
-        }
-
-        val executed = preferences.getBoolean("${unique}__firebase", false)
-        if (BuildConfig.VERSION_CODE >= version || executed) {
-            Timber.d("Invalid version code($version) or executed($executed)")
-            return
-        }
-
-        val completed = firebaseAuthRepository.reconnect()
-        Timber.d("Finished execution >> Completed: $completed")
-        preferences.edit().putBoolean("${unique}__firebase", completed).apply()
     }
 
     private suspend fun universalSync() {

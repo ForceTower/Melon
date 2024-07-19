@@ -31,7 +31,6 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
@@ -45,16 +44,11 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class IntroductionFragment : UFragment() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
-    @Inject lateinit var firebaseStorage: FirebaseStorage
     @Inject lateinit var repository: SyncFrequencyRepository
     @Inject lateinit var preferences: SharedPreferences
 
@@ -101,30 +95,8 @@ class IntroductionFragment : UFragment() {
                 binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
             } else {
                 binding.textSelectCourseInternal.error = null
-                val user = firebaseAuth.currentUser
-                if (user != null) {
-                    viewModel.uploadImageToStorage()
-                    if (uefsStudent) {
-                        viewModel.updateCourse(course, user)
-                    }
-                } else {
-                    Timber.d("Not connected to firebase. Write would denied")
-                }
                 findNavController().navigate(R.id.action_introduction_to_configuration)
             }
-        }
-
-        val current = firebaseAuth.currentUser
-        if (current != null) {
-            val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
-            GlideApp.with(requireContext())
-                .load(reference)
-                .fallback(R.drawable.ic_account_black_24dp)
-                .placeholder(R.drawable.ic_account_black_24dp)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
-                .into(binding.imageUserImage)
         }
 
         repository.getFrequencies().observe(

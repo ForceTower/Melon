@@ -68,7 +68,6 @@ class LoginSagresRepository @Inject constructor(
     private val executor: AppExecutors,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
-    private val firebaseAuthRepository: FirebaseAuthRepository,
     private val authRepository: AuthRepository,
     private val sessionRepository: CookieSessionRepository,
     private val context: Context
@@ -163,7 +162,6 @@ class LoginSagresRepository @Inject constructor(
                     val person = m.person
                     if (person != null) {
                         executor.diskIO().execute { database.profileDao().insert(person, score) }
-                        executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
                         messages(data, person.id)
                     } else {
                         Timber.d("SPerson is null")
@@ -188,7 +186,6 @@ class LoginSagresRepository @Inject constructor(
         val name = SagresBasicParser.getName(document) ?: username
         val person = SagresPerson(username.hashCode().toLong(), name, name, "00000000000", username)
         executor.diskIO().execute { database.profileDao().insert(person, score) }
-        executor.others().execute { firebaseAuthRepository.loginToFirebase(person, access, true) }
         messages(data, null)
     }
 
