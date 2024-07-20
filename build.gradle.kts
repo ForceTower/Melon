@@ -40,7 +40,6 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-//        maven { url "https://plugins.gradle.org/m2/" }
         mavenLocal()
     }
 
@@ -54,18 +53,18 @@ allprojects {
         mavenLocal()
     }
 
-//    gradle.projectsEvaluated {
-//        tasks.withType(JavaCompile) {
-//            options.compilerArgs << "-Xmaxerrs" << "10000"
-//            options.compilerArgs << "-Xmaxwarns" << "10000"
-//        }
-//    }
+    gradle.projectsEvaluated {
+        tasks.withType<JavaCompile> {
+            options.compilerArgs.addAll(listOf("-Xmaxerrs", "10000"))
+            options.compilerArgs.addAll(listOf("-Xmaxwarns", "10000"))
+        }
+    }
 }
 
-//subprojects {
-//    tasks.configureEach {
-//        if (it.name == 'preBuild') {
-//            mustRunAfter 'lintKotlin'
-//        }
-//    }
-//}
+subprojects {
+    tasks.configureEach {
+        if (name == "preBuild") {
+            mustRunAfter("lintKotlin")
+        }
+    }
+}
