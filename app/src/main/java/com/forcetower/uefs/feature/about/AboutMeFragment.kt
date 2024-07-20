@@ -30,9 +30,9 @@ import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.uefs.BuildConfig
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
@@ -71,7 +71,7 @@ class AboutMeFragment : UFragment() {
         val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", aboutSupport, "\n\n", about3, "\n", about4)
         HtmlUtils.setTextWithNiceLinks(binding.textAboutContinuation, sequence)
 
-        GlideApp.with(this)
+        Glide.with(this)
             .load("https://avatars.githubusercontent.com/ForceTower")
             .fallback(R.mipmap.ic_unes_large_image_512)
             .placeholder(R.mipmap.ic_unes_large_image_512)

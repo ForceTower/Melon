@@ -24,6 +24,7 @@ plugins {
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinter.gradle)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -77,7 +78,7 @@ dependencies {
     api(libs.androidx.room.paging)
     api(libs.androidx.room.ktx)
     api(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     api(libs.android.image.cropper)
     api(libs.okhttp)
     api(libs.logging.interceptor)
@@ -85,5 +86,5 @@ dependencies {
     api(libs.converter.gson)
     api(libs.persistentcookiejar)
     api(libs.dagger)
-    kapt(libs.dagger.compiler)
+    ksp(libs.dagger.compiler)
 }

@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.hilt.android.gradle)
     alias(libs.plugins.kotlinter.gradle)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -74,8 +75,8 @@ dependencies {
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.play.services.maps)
     implementation(libs.timber)
 }

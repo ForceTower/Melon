@@ -25,6 +25,8 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinter.gradle)
     alias(libs.plugins.hilt.android.gradle)
+    alias(libs.plugins.androidx.room)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -32,15 +34,6 @@ android {
 
     defaultConfig {
         minSdk = 21
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.incremental" to "true"
-                )
-            }
-        }
     }
 
     kapt {
@@ -61,6 +54,10 @@ android {
     namespace = "com.forcetower.uefs.aeri"
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 dependencies {
     implementation(project(":app"))
     implementation(project(":core"))
@@ -77,13 +74,13 @@ dependencies {
     implementation(libs.flexbox)
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.listenablefuture)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.paging.runtime.ktx)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.timber)
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.feature.delivery.ktx)
 }
