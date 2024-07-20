@@ -25,6 +25,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinter.gradle)
     alias(libs.plugins.hilt.android.gradle)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -69,8 +70,8 @@ dependencies {
     implementation(libs.androidx.constraintlayout)
     implementation(libs.material)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.timber)
     implementation(libs.feature.delivery.ktx)
     testImplementation(libs.junit)

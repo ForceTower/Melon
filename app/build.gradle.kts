@@ -32,6 +32,8 @@ plugins {
     alias(libs.plugins.kotlinter.gradle)
     alias(libs.plugins.play.publisher)
     alias(libs.plugins.firebase.crashlytics.gradle)
+    alias(libs.plugins.google.ksp)
+    alias(libs.plugins.androidx.room)
     alias(libs.plugins.aboutlibraries)
     alias(libs.plugins.google.services)
 }
@@ -60,15 +62,6 @@ android {
         buildConfigField("String", "SIECOMP_DAY5_START", "\"2019-10-22T08:00:00-03:00\"")
         buildConfigField("String", "SIECOMP_DAY5_END", "\"2019-10-22T17:30:00-03:00\"")
         buildConfigField("String", "UEFS_DEFAULT_PROXY", "\"10.65.16.2:3128\"")
-
-        javaCompileOptions {
-            annotationProcessorOptions {
-                arguments += mapOf(
-                    "room.schemaLocation" to "$projectDir/schemas",
-                    "room.incremental" to "true"
-                )
-            }
-        }
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi", "armeabi-v7a", "mips", "mips64", "x86", "x86_64")
@@ -178,6 +171,10 @@ play {
     defaultToAppBundles.set(true)
 }
 
+room {
+    schemaDirectory("$projectDir/schemas")
+}
+
 kotlinter {
 
 }
@@ -213,11 +210,11 @@ dependencies {
     api(libs.androidx.lifecycle.service)
     api(libs.androidx.datastore.preferences)
     implementation(libs.androidx.paging.runtime.ktx)
-    kapt(libs.androidx.room.compiler)
+    ksp(libs.androidx.room.compiler)
     implementation(libs.hilt.android)
     implementation(libs.androidx.hilt.work)
-    kapt(libs.androidx.hilt.compiler)
-    kapt(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics.ktx)
     implementation(libs.firebase.messaging.ktx)
@@ -240,7 +237,7 @@ dependencies {
     implementation(libs.app.update.ktx)
     implementation(libs.feature.delivery.ktx)
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.lottie)
     implementation(libs.aboutlibraries)
     implementation(libs.aboutlibraries.core)

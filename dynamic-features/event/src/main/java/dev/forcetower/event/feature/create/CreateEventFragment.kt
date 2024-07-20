@@ -37,6 +37,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
+import com.bumptech.glide.Glide
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
@@ -44,7 +45,6 @@ import com.canhub.cropper.CropImageView
 import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.core.utils.ViewUtils
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.core.injection.dependencies.EventModuleDependencies
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
@@ -364,7 +364,7 @@ class CreateEventFragment : UFragment() {
     }
 
     private fun populateInterface(event: Event) {
-        GlideApp.with(binding.image).load(event.imageUrl).into(binding.image)
+        Glide.with(binding.image).load(event.imageUrl).into(binding.image)
         binding.inputName.setText(event.name)
         binding.inputLocation.setText(event.location)
         binding.inputDescription.setText(event.description)
@@ -385,7 +385,7 @@ class CreateEventFragment : UFragment() {
     }
 
     private fun onImagePicked(uri: Uri) {
-        GlideApp.with(binding.image).load(uri).into(binding.image)
+        Glide.with(binding.image).load(uri).into(binding.image)
         viewModel.imageUri = uri
     }
 

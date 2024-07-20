@@ -25,8 +25,8 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.preference.PreferenceManager
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
 import java.text.SimpleDateFormat
@@ -42,7 +42,7 @@ import kotlin.math.min
 fun profileImage(iv: ImageView, url: String?) {
     if (url == null) return
 
-    GlideApp.with(iv.context)
+    Glide.with(iv.context)
         .load(url)
         .fallback(R.mipmap.ic_unes_large_image_512)
         .placeholder(R.mipmap.ic_unes_large_image_512)

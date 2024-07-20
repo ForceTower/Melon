@@ -32,6 +32,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
@@ -39,7 +40,6 @@ import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.BuildConfig
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
@@ -188,7 +188,7 @@ class HomeBottomFragment : UFragment() {
 
     private fun onImagePicked(uri: Uri) {
         viewModel.setSelectedImage(uri)
-        GlideApp.with(requireContext())
+        Glide.with(requireContext())
             .load(uri)
             .fallback(R.mipmap.ic_unes_large_image_512)
             .placeholder(R.mipmap.ic_unes_large_image_512)

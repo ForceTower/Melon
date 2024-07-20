@@ -26,6 +26,7 @@ plugins {
     alias(libs.plugins.kotlinter.gradle)
     alias(libs.plugins.androidx.navigation.safe.args)
     alias(libs.plugins.hilt.android.gradle)
+    alias(libs.plugins.google.ksp)
 }
 
 android {
@@ -77,11 +78,11 @@ dependencies {
     implementation(libs.androidx.fragment.ktx)
     implementation(libs.listenablefuture)
     implementation(libs.hilt.android)
-    kapt(libs.hilt.compiler)
-    kapt(libs.androidx.hilt.compiler)
+    ksp(libs.hilt.compiler)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.timber)
     implementation(libs.glide)
-    kapt(libs.glide.compiler)
+    ksp(libs.glide.compiler)
     implementation(libs.materialdatetimepicker)
     implementation(libs.feature.delivery.ktx)
 }
