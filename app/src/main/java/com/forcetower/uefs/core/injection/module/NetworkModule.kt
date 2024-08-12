@@ -28,7 +28,6 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.APIService
 import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.github.GithubService
@@ -43,6 +42,7 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -54,6 +54,7 @@ import java.net.CookieHandler
 import java.net.CookieManager
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Module
@@ -104,16 +105,34 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideInterceptor(database: UDatabase) = Interceptor { chain ->
+    fun provideInterceptor(
+        database: UDatabase,
+        @Named("webViewUA") userAgent: String
+    ) = Interceptor { chain ->
         val request = chain.request()
         val host = request.url.host
         if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
             val builder = request.headers.newBuilder()
                 .add("Accept", "application/json")
+                .set("User-Agent", userAgent)
 
             val token = database.accessTokenDao().getAccessTokenDirect()
             if (token?.token != null) {
                 builder.add("Authorization", token.type + " " + token.token)
+            }
+
+            val newHeaders = builder.build()
+            val renewed = request.newBuilder().headers(newHeaders).build()
+
+            chain.proceed(renewed)
+        } else if (host.contains(Constants.EDGE_UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+            val builder = request.headers.newBuilder()
+                .add("Accept", "application/json")
+                .set("User-Agent", userAgent)
+
+            val token = runBlocking { database.edgeAccessToken.require() }
+            if (token?.accessToken != null) {
+                builder.add("Authorization", "Bearer ${token.accessToken}")
             }
 
             val newHeaders = builder.build()
@@ -178,20 +197,9 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideTemporaryService(client: OkHttpClient): APIService {
-        return Retrofit.Builder()
-            .baseUrl(Constants.UNES_SERVICE_UPDATE)
-            .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(APIService::class.java)
-    }
-
-    @Provides
-    @Singleton
     fun provideEdgeService(client: OkHttpClient): EdgeService {
         return Retrofit.Builder()
-            .baseUrl("https://edge-unes.forcetower.dev/api/")
+            .baseUrl(Constants.EDGE_UNES_SERVICE_URL)
             .client(client)
             .addConverterFactory(GsonConverterFactory.create())
             .build()

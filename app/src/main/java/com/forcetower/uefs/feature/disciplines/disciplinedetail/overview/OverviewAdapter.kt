@@ -29,12 +29,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
+import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithTeachers
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding
 import com.forcetower.uefs.databinding.ItemDisciplineScheduleHideBinding
 import com.forcetower.uefs.databinding.ItemDisciplineShortBinding
 import com.forcetower.uefs.databinding.ItemDisciplineTeacherBinding
 import com.forcetower.uefs.feature.disciplines.DisciplineViewModel
+import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import com.forcetower.uefs.feature.shared.inflate
 import com.forcetower.uefs.feature.shared.inflater
 
@@ -48,7 +51,7 @@ class OverviewAdapter(
             differ.submitList(buildMergedList(clazz = value))
         }
 
-    var currentGroup: ClassGroup? = null
+    var currentGroup: ClassGroupWithTeachers? = null
         set(value) {
             field = value
             differ.submitList(buildMergedList(group = value))
@@ -82,6 +85,7 @@ class OverviewAdapter(
             is OverviewHolder.TeacherHolder -> holder.binding.apply {
                 lifecycleOwner = this@OverviewAdapter.lifecycleOwner
                 viewModel = this@OverviewAdapter.viewModel
+                name = (differ.currentList[position] as? DisciplineTeacher)?.teacher
                 executePendingBindings()
             }
             is OverviewHolder.ResumeHolder -> holder.binding.apply {
@@ -115,12 +119,12 @@ class OverviewAdapter(
 
     private fun buildMergedList(
         clazz: ClassFullWithGroup? = currentClazz,
-        group: ClassGroup? = currentGroup,
+        group: ClassGroupWithTeachers? = currentGroup,
         schedule: List<ClassLocation> = currentSchedule
     ): List<Any> {
         val list = mutableListOf<Any>()
         if (clazz != null) {
-            if (group?.draft == true) {
+            if (group?.data?.draft == true) {
                 list += DisciplineDraft
             }
 
@@ -128,8 +132,10 @@ class OverviewAdapter(
                 list += DisciplineShort
             }
 
-            if (group?.teacher != null) {
-                list += DisciplineTeacher
+            group?.teachers?.forEach { t ->
+                t.name.toTitleCase()?.let {
+                    list += DisciplineTeacher(t.uid, it)
+                }
             }
 
             if (clazz.discipline.resume != null) {
@@ -146,7 +152,7 @@ class OverviewAdapter(
         return list
     }
 
-    private val differ = AsyncListDiffer<Any>(this, DiffCallback)
+    private val differ = AsyncListDiffer(this, DiffCallback)
 }
 
 sealed class OverviewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -162,10 +168,10 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
         return when {
             oldItem === DisciplineDraft && newItem === DisciplineDraft -> true
             oldItem === DisciplineShort && newItem === DisciplineShort -> true
-            oldItem === DisciplineTeacher && newItem === DisciplineTeacher -> true
             oldItem === DisciplineResume && newItem === DisciplineResume -> true
             oldItem === Statistics && newItem === Statistics -> true
             oldItem === ScheduleHeader && newItem === ScheduleHeader -> true
+            oldItem is DisciplineTeacher && newItem is DisciplineTeacher -> oldItem.id == newItem.id
             oldItem is ClassLocation && newItem is ClassLocation -> oldItem.uid == newItem.uid
             else -> false
         }
@@ -174,6 +180,7 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
     override fun areContentsTheSame(oldItem: Any, newItem: Any): Boolean {
         return when {
             oldItem is ClassLocation && newItem is ClassLocation -> oldItem == newItem
+            oldItem is DisciplineTeacher && newItem is DisciplineTeacher -> oldItem == newItem
             else -> true
         }
     }
@@ -181,7 +188,10 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
 
 private object DisciplineDraft
 private object DisciplineShort
-private object DisciplineTeacher
+private data class DisciplineTeacher(
+    val id: Long,
+    val teacher: String
+)
 private object DisciplineResume
 private object Statistics
 private object ScheduleHeader

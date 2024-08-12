@@ -49,11 +49,13 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
+import com.forcetower.uefs.domain.usecase.auth.EdgeAnonymousLoginUseCase
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 
@@ -71,7 +73,8 @@ class HomeViewModel @Inject constructor(
     private val affinityRepository: AffinityQuestionRepository,
     private val fetchMissingSemesters: FetchMissingSemestersUseCase,
     @Named("flagSnowpiercerEnabled")
-    private val snowpiercerEnabled: Boolean
+    private val snowpiercerEnabled: Boolean,
+    private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase
 ) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
 
@@ -151,6 +154,13 @@ class HomeViewModel @Inject constructor(
 
     fun connectToServiceIfNeeded() {
         authRepository.performAccountSyncStateIfNeededAsync()
+        viewModelScope.launch {
+            runCatching {
+                anonymousLoginUseCase.prepareAndLogin()
+            }.onFailure {
+                Timber.e(it, "Failed to authenticate.")
+            }
+        }
     }
 
     @MainThread

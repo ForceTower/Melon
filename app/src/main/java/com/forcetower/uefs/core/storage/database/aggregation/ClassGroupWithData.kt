@@ -21,13 +21,23 @@
 package com.forcetower.uefs.core.storage.database.aggregation
 
 import androidx.room.Embedded
+import androidx.room.Junction
 import androidx.room.Relation
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassGroupTeacher
+import com.forcetower.uefs.core.model.unes.Teacher
 
 data class ClassGroupWithData(
     @Embedded
     val group: ClassGroup,
     @Relation(parentColumn = "class_id", entityColumn = "uid", entity = Class::class)
-    val classData: ClassWithDiscipline
+    val classData: ClassWithDiscipline,
+    @Relation(
+        entity = Teacher::class,
+        entityColumn = "uid",
+        parentColumn = "uid",
+        associateBy = Junction(value = ClassGroupTeacher::class, parentColumn = "classGroupId", entityColumn = "teacherId")
+    )
+    val teachers: List<Teacher>
 )
