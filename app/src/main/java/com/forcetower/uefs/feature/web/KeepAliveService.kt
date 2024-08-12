@@ -27,7 +27,7 @@ import android.os.IBinder
 
 class KeepAliveService : Service() {
 
-    override fun onBind(intent: Intent): IBinder? {
+    override fun onBind(intent: Intent): IBinder {
         return sBinder
     }
 

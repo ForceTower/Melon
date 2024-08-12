@@ -38,7 +38,7 @@ class OverviewFragment : UFragment() {
     private lateinit var binding: FragmentDisciplineOverviewBinding
     private val viewModel: DisciplineViewModel by activityViewModels()
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentDisciplineOverviewBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -56,9 +56,9 @@ class OverviewFragment : UFragment() {
             }
         }
 
-        viewModel.clazz.observe(viewLifecycleOwner, Observer { overviewAdapter.currentClazz = it })
-        viewModel.group.observe(viewLifecycleOwner, Observer { overviewAdapter.currentGroup = it })
-        viewModel.schedule.observe(viewLifecycleOwner, Observer { overviewAdapter.currentSchedule = it })
+        viewModel.clazz.observe(viewLifecycleOwner) { overviewAdapter.currentClazz = it }
+        viewModel.group.observe(viewLifecycleOwner) { overviewAdapter.currentGroup = it }
+        viewModel.schedule.observe(viewLifecycleOwner) { overviewAdapter.currentSchedule = it }
     }
 
     companion object {

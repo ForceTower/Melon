@@ -1,4 +1,4 @@
-package com.forcetower.uefs.domain.usecase
+package com.forcetower.uefs.domain.usecase.auth
 
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import dagger.Reusable

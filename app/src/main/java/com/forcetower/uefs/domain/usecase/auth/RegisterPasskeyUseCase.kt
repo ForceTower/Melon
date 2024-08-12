@@ -1,4 +1,4 @@
-package com.forcetower.uefs.domain.usecase
+package com.forcetower.uefs.domain.usecase.auth
 
 import com.forcetower.uefs.core.model.edge.PasskeyRegister
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart

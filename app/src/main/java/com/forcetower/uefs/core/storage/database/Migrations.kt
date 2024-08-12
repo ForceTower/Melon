@@ -430,3 +430,13 @@ object M51TO52 : Migration(51, 52) {
         db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_Teacher_sagresId` ON `Teacher` (`sagresId`)")
     }
 }
+
+object M52TO53 : Migration(52, 53) {
+    override fun migrate(db: SupportSQLiteDatabase) {
+        db.execSQL("CREATE TABLE IF NOT EXISTS `ClassGroupTeacher` (`uid` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `classGroupId` INTEGER NOT NULL, `teacherId` INTEGER NOT NULL, FOREIGN KEY(`classGroupId`) REFERENCES `ClassGroup`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE , FOREIGN KEY(`teacherId`) REFERENCES `Teacher`(`uid`) ON UPDATE CASCADE ON DELETE CASCADE )")
+        db.execSQL("CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassGroupTeacher_classGroupId_teacherId` ON `ClassGroupTeacher` (`classGroupId`, `teacherId`)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_ClassGroupTeacher_teacherId` ON `ClassGroupTeacher` (`teacherId`)")
+        db.execSQL("CREATE INDEX IF NOT EXISTS `index_ClassGroupTeacher_classGroupId` ON `ClassGroupTeacher` (`classGroupId`)")
+        db.execSQL("INSERT OR IGNORE INTO ClassGroupTeacher(classGroupId,teacherId) SELECT uid AS classGroupId, teacher_id AS teacherId FROM ClassGroup WHERE teacher_id IS NOT NULL")
+    }
+}
