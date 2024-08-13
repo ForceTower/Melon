@@ -98,7 +98,7 @@ class SigningInFragment : UFragment() {
 
             val typedValue = TypedValue()
             val theme = requireContext().theme
-            theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
             val colorOnSurface = typedValue.data
             textView.setTextColor(colorOnSurface)
             textView

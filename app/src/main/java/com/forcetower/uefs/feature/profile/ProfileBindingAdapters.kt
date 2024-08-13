@@ -44,8 +44,8 @@ fun profileImage(iv: ImageView, url: String?) {
 
     Glide.with(iv.context)
         .load(url)
-        .fallback(R.mipmap.ic_unes_large_image_512)
-        .placeholder(R.mipmap.ic_unes_large_image_512)
+        .fallback(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
+        .placeholder(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
         .circleCrop()
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(iv)

@@ -111,7 +111,7 @@ class EventDetailsActivity : UActivity() {
                         .setDefaultColorSchemeParams(
                             CustomTabColorSchemeParams
                                 .Builder()
-                                .setToolbarColor(ViewUtils.attributeColorUtils(this, com.forcetower.uefs.R.attr.colorPrimary))
+                                .setToolbarColor(ViewUtils.attributeColorUtils(this, androidx.appcompat.R.attr.colorPrimary))
                                 .build()
                         )
                         .setShareState(CustomTabsIntent.SHARE_STATE_ON)
