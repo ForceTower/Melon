@@ -24,9 +24,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
@@ -45,7 +47,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
-    val account: LiveData<Account?> = repository.getAccount()
+    val account: LiveData<EdgeServiceAccount> = repository.getEdgeServiceAccount().asLiveData()
     val student: LiveData<SStudent> = repository.getStudentMe()
     val lastMessage = repository.getLastMessage()
     val affinity = repository.getAffinityQuestions()
@@ -83,10 +85,10 @@ class DashboardViewModel @Inject constructor(
     }
 
     fun onProfilePictureClick() {
-        val accountId = account.value?.id ?: return
-        val studentId = student.value?.id ?: return
-
-        _profileClick.value = Event(accountId to studentId)
+//        val accountId = account.value?.id ?: return
+//        val studentId = student.value?.id ?: return
+//
+//        _profileClick.value = Event(accountId to studentId)
     }
 
     fun onShowAllClasses() {

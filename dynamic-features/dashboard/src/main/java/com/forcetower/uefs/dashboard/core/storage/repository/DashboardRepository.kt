@@ -24,12 +24,14 @@ import android.content.Context
 import androidx.lifecycle.LiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import dagger.Reusable
+import kotlinx.coroutines.flow.Flow
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -41,6 +43,9 @@ class DashboardRepository @Inject constructor(
 ) {
     fun getAccount(): LiveData<Account?> {
         return database.accountDao().getAccountNullable()
+    }
+    fun getEdgeServiceAccount(): Flow<EdgeServiceAccount> {
+        return database.edgeServiceAccount.me()
     }
 
     fun getCurrentClass(): LiveData<ClassLocationWithData?> {
