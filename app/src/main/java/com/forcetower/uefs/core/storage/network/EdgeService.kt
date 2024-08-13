@@ -4,11 +4,15 @@ import com.forcetower.uefs.core.model.edge.AssertionData
 import com.forcetower.uefs.core.model.edge.CompleteAssertionData
 import com.forcetower.uefs.core.model.edge.EdgeAccessTokenDTO
 import com.forcetower.uefs.core.model.edge.EdgeLoginBody
+import com.forcetower.uefs.core.model.edge.EmailLinkBodyDTO
+import com.forcetower.uefs.core.model.edge.EmailLinkConfirmDTO
+import com.forcetower.uefs.core.model.edge.LinkEmailResponseDTO
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyCredential
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.core.model.edge.ServiceAccountDTO
 import com.forcetower.uefs.core.model.edge.ServiceResponseWrapper
 import com.forcetower.uefs.core.model.unes.AccessToken
+import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
@@ -31,4 +35,10 @@ interface EdgeService {
 
     @GET("account/me")
     suspend fun me(): ServiceResponseWrapper<ServiceAccountDTO>
+
+    @POST("account/register/start")
+    suspend fun linkEmailStart(@Body data: EmailLinkBodyDTO): Response<ServiceResponseWrapper<LinkEmailResponseDTO>>
+
+    @POST("account/register/complete")
+    suspend fun linkEmailComplete(@Body data: EmailLinkConfirmDTO): Response<ServiceResponseWrapper<Unit>>
 }

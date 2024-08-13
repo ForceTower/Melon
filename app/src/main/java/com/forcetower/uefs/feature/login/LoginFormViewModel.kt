@@ -7,7 +7,7 @@ import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.domain.usecase.auth.CompleteAssertionUseCase
 import com.forcetower.uefs.domain.usecase.auth.RegisterPasskeyUseCase
 import com.forcetower.uefs.domain.usecase.auth.StartAssertionUseCase
-import com.forcetower.uefs.feature.shared.SingleLiveEvent
+import com.forcetower.core.lifecycle.SingleLiveEvent
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import timber.log.Timber
