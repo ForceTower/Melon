@@ -14,13 +14,13 @@ class RegisterPasskeyUseCase @Inject constructor(
     private val gson: Gson
 ) {
     suspend fun start(): RegisterPasskeyStart {
-        val data = edge.registerStart()
+        val data = edge.passkeyRegisterStart()
         Timber.d("Original data: ${data.create}")
         val register = gson.fromJson(data.create, PasskeyRegister::class.java)
         return data.copy(create = gson.toJson(register.publicKey))
     }
 
     suspend fun finish(flowId: String, credential: String) {
-        return edge.registerFinish(flowId, credential)
+        return edge.passkeyRegisterFinish(flowId, credential)
     }
 }

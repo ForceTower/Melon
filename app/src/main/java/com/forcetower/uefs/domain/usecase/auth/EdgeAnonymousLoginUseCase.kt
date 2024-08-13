@@ -12,6 +12,10 @@ class EdgeAnonymousLoginUseCase @Inject constructor(
         repository.prepareAndLogin()
     }
 
+    suspend fun loginOrThrow() {
+        repository.doAnonymousLogin()
+    }
+
     suspend fun invoke(username: String, password: String) {
         repository.anonymous(username, password)
     }

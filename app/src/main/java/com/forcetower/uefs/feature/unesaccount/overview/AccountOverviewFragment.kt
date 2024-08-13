@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import com.forcetower.uefs.databinding.FragmentServiceAccountOverviewBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -25,5 +26,27 @@ class AccountOverviewFragment : UFragment() {
             binding.viewModel = viewModel
             binding.lifecycleOwner = viewLifecycleOwner
         }.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.btnLogin.setOnClickListener {
+            onLoginStart()
+        }
+
+        binding.btnAddEmail.setOnClickListener {
+            onLinkEmail()
+        }
+    }
+
+    private fun onLoginStart() {
+        val directions = AccountOverviewFragmentDirections.actionUnesAccountOverviewToUnesAccountStart()
+        findNavController().navigate(directions)
+    }
+
+    private fun onLinkEmail() {
+        val directions = AccountOverviewFragmentDirections.actionUnesAccountOverviewToUnesAccountLinkEmail()
+        findNavController().navigate(directions)
     }
 }

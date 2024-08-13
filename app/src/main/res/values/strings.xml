@@ -933,4 +933,9 @@
     <string name="service_account_link_email_btn">Adicionar e-mail</string>
     <string name="service_account_create_passkey">Criar Chave Senha</string>
     <string name="service_account_login_btn">Acessar conta UNES</string>
+    <string name="service_account_create_start_why">Mas, por que?</string>
+    <string name="service_account_login_anonymous_failed">Ocorreu um erro ao fazer login :(</string>
+    <string name="service_account_email_send_failed">Ocorreu um erro ao enviar as informações</string>
+    <string name="service_account_email_send_invalid_info">Informaçoes inválidas ou temporariamente indisponível</string>
+    <string name="service_account_email_invalid_format">Email inválido</string>
 </resources>

@@ -18,20 +18,18 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.core.extensions
+package com.forcetower.core.lifecycle
 
-import android.content.res.Resources
-import androidx.annotation.DimenRes
-import androidx.core.content.res.ResourcesCompat
-import androidx.lifecycle.MutableLiveData
-
-fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
-    return ResourcesCompat.getFloat(this, resId)
-}
-
-val Boolean?.orFalse
-    get() = this ?: false
-
-internal fun <T> MutableLiveData<T>.setValueIfNew(newValue: T) {
-    if (this.value != newValue) value = newValue
-}
+/**
+ * A lifecycle-aware observable that sends only new updates after subscription, used for events like
+ * navigation and Snackbar messages.
+ *
+ *
+ * This avoids a common problem with events: on configuration change (like rotation) an update
+ * can be emitted if the observer is active. This LiveData only calls the observable if there's an
+ * explicit call to setValue() or call().
+ *
+ *
+ * Note that only one observer is going to be notified of changes.
+ */
+class SingleLiveEvent<T> : LiveDataEvent<T>()
