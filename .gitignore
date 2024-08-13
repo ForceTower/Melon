@@ -37,6 +37,9 @@ captures/
 *.iml
 .idea
 
+# Kotlin
+.kotlin
+
 # Keystore files
 *.jks
 

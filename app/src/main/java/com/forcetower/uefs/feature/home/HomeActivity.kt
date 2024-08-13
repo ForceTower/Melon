@@ -74,7 +74,6 @@ import com.google.android.play.core.ktx.requestReview
 import com.google.android.play.core.review.ReviewManager
 import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
@@ -84,7 +83,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : UGameActivity() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
     @Inject lateinit var preferences: SharedPreferences
     @Inject lateinit var analytics: FirebaseAnalytics
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
@@ -264,9 +262,7 @@ class HomeActivity : UGameActivity() {
         viewModel.accessToken.observe(this) { onAccessTokenUpdate(it) }
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this) {
-            Timber.d("Sent token... I guess ($it)")
-        }
+        viewModel.sendToken()
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()
@@ -299,7 +295,6 @@ class HomeActivity : UGameActivity() {
     private fun onAccessUpdate(access: Access?) {
         if (access == null) {
             Timber.d("Access Invalidated")
-            firebaseAuth.signOut()
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)

@@ -32,6 +32,7 @@ import androidx.room.Room
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
 import com.forcetower.uefs.core.storage.database.M50TO51
 import com.forcetower.uefs.core.storage.database.M51TO52
+import com.forcetower.uefs.core.storage.database.M52TO53
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -64,7 +65,7 @@ object AppModule {
     @Singleton
     fun provideDatabase(context: Context): UDatabase =
         Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-            .addMigrations(M50TO51, M51TO52)
+            .addMigrations(M50TO51, M51TO52, M52TO53)
             .enableMultiInstanceInvalidation()
             .fallbackToDestructiveMigrationOnDowngrade()
             .build()

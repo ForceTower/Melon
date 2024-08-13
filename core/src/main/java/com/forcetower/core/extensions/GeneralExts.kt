@@ -23,6 +23,7 @@ package com.forcetower.core.extensions
 import android.content.res.Resources
 import androidx.annotation.DimenRes
 import androidx.core.content.res.ResourcesCompat
+import androidx.lifecycle.MutableLiveData
 
 fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
     return ResourcesCompat.getFloat(this, resId)
@@ -30,3 +31,7 @@ fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
 
 val Boolean?.orFalse
     get() = this ?: false
+
+internal fun <T> MutableLiveData<T>.setValueIfNew(newValue: T) {
+    if (this.value != newValue) value = newValue
+}

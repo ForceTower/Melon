@@ -54,7 +54,7 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.9.0'
 
     implementation "com.google.dagger:hilt-android:$hilt_dagger"
-    kapt "com.google.dagger:hilt-compiler:$hilt_dagger"
+    kapt libs.hilt.compiler
 
     // Logs
     implementation "com.jakewharton.timber:timber:$timber"

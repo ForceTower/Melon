@@ -25,13 +25,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.preference.PreferenceManager
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.signature.ObjectKey
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Semester
-import com.google.firebase.auth.FirebaseUser
-import com.google.firebase.storage.FirebaseStorage
 import java.text.SimpleDateFormat
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
@@ -45,39 +42,13 @@ import kotlin.math.min
 fun profileImage(iv: ImageView, url: String?) {
     if (url == null) return
 
-    GlideApp.with(iv.context)
+    Glide.with(iv.context)
         .load(url)
-        .fallback(R.mipmap.ic_unes_large_image_512)
-        .placeholder(R.mipmap.ic_unes_large_image_512)
+        .fallback(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
+        .placeholder(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
         .circleCrop()
         .transition(DrawableTransitionOptions.withCrossFade())
         .into(iv)
-}
-
-@BindingAdapter(requireAll = true, value = ["firebaseUser", "firebaseStorage"])
-fun firebaseUser(iv: ImageView, user: FirebaseUser?, storage: FirebaseStorage) {
-    if (user != null) {
-        val reference = storage.getReference("users/${user.uid}/avatar.jpg")
-        try {
-            GlideApp.with(iv.context)
-                .load(reference)
-                .fallback(R.mipmap.ic_unes_large_image_512)
-                .placeholder(R.mipmap.ic_unes_large_image_512)
-                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .into(iv)
-        } catch (ignored: Throwable) {
-        }
-    } else {
-        GlideApp.with(iv.context)
-            .load(R.mipmap.ic_unes_large_image_512)
-            .fallback(R.mipmap.ic_unes_large_image_512)
-            .placeholder(R.mipmap.ic_unes_large_image_512)
-            .circleCrop()
-            .transition(DrawableTransitionOptions.withCrossFade())
-            .into(iv)
-    }
 }
 
 @BindingAdapter(value = ["profileScoreOptional", "profileScoreCalculated", "semestersList", "profileCourse"], requireAll = true)

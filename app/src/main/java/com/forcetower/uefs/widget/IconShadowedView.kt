@@ -42,6 +42,7 @@ import androidx.annotation.StyleRes
 import androidx.interpolator.view.animation.FastOutSlowInInterpolator
 import com.forcetower.uefs.R
 
+@Suppress("DEPRECATION")
 class IconShadowedView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet,

@@ -37,7 +37,6 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
-import com.google.firebase.auth.FirebaseAuth
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -47,7 +46,6 @@ import kotlin.collections.set
 class AdventureRepository @Inject constructor(
     private val database: UDatabase,
     private val executors: AppExecutors,
-    private val auth: FirebaseAuth,
     private val preferences: SharedPreferences,
     private val locations: AchLocationsRepository,
     private val service: UService
@@ -102,9 +100,6 @@ class AdventureRepository @Inject constructor(
     @WorkerThread
     private fun internalCheckAchievements(): Map<Int, Int> {
         val data = HashMap<Int, Int>()
-
-        auth.currentUser ?: return data
-
         performCheckAchievements(data)
         return data
     }
@@ -193,9 +188,9 @@ class AdventureRepository @Inject constructor(
 
                     clazz.grades.forEach { grade ->
                         valid = true
-                        val number = grade.gradeDouble() ?: -1
-                        if (number == 7) data[R.string.achievement_medocre] = -1
-                        if (number == 10) data[R.string.achievement_achei_fcil] = -1
+                        val number = grade.gradeDouble() ?: -1.0
+                        if (number == 7.0) data[R.string.achievement_medocre] = -1
+                        if (number == 10.0) data[R.string.achievement_achei_fcil] = -1
                     }
 
                     if (clazz.grades.size == 3) {
@@ -266,9 +261,9 @@ class AdventureRepository @Inject constructor(
                 if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
 
                 clazz.grades.forEach { grade ->
-                    val number = grade.gradeDouble() ?: -1
-                    if (number == 7) data[R.string.achievement_medocre] = -1
-                    if (number == 10) data[R.string.achievement_achei_fcil] = -1
+                    val number = grade.gradeDouble() ?: -1.0
+                    if (number == 7.0) data[R.string.achievement_medocre] = -1
+                    if (number == 10.0) data[R.string.achievement_achei_fcil] = -1
                 }
 
                 if (clazz.grades.size == 3) {

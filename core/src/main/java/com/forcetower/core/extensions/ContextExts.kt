@@ -20,8 +20,35 @@
 
 package com.forcetower.core.extensions
 
+import android.app.Activity
 import android.content.Context
+import android.content.ContextWrapper
 import android.content.res.Configuration
+import android.view.View
+import androidx.core.view.WindowCompat
+import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.WindowInsetsControllerCompat
 
 val Context.isDarkTheme
     get() = resources.configuration.uiMode and Configuration.UI_MODE_NIGHT_MASK == Configuration.UI_MODE_NIGHT_YES
+
+val View.windowInsetsControllerCompat: WindowInsetsControllerCompat?
+    get() {
+        var ctx = context
+        while (ctx is ContextWrapper) {
+            if (ctx is Activity) {
+                val window = ctx.window
+                return window?.let { WindowCompat.getInsetsController(window, this) }
+            }
+            ctx = ctx.baseContext
+        }
+        return null
+    }
+
+fun View.closeKeyboard() {
+    windowInsetsControllerCompat?.hide(WindowInsetsCompat.Type.ime())
+}
+
+fun View.openKeyboard() {
+    windowInsetsControllerCompat?.show(WindowInsetsCompat.Type.ime())
+}

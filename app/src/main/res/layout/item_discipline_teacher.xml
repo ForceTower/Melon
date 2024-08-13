@@ -26,13 +26,16 @@
         <variable
             name="viewModel"
             type="com.forcetower.uefs.feature.disciplines.DisciplineViewModel"/>
+        <variable
+            name="name"
+            type="String" />
     </data>
     
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginVertical="@dimen/spacing_normal"
-        android:onClick="@{() -> viewModel.onTeacherNameClick(viewModel.group.teacher)}">
+        android:onClick="@{() -> viewModel.onTeacherNameClick(name)}">
 
         <TextView
             android:id="@+id/label_teacher"
@@ -65,7 +68,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/spacing_normal"
             android:layout_marginTop="@dimen/spacing_common"
-            android:text="@{viewModel.group.teacher}"
+            android:text="@{name}"
             android:textColor="?attr/colorOnSurfaceLight"
             app:layout_constraintBottom_toTopOf="@id/speaker_item_company"
             app:layout_constraintEnd_toStartOf="@+id/imageView3"
