@@ -9,4 +9,7 @@ import com.forcetower.uefs.core.model.unes.EdgeAccessToken
 abstract class EdgeAccessTokenDao : BaseDao<EdgeAccessToken>() {
     @Query("SELECT * FROM EdgeAccessToken LIMIT 1")
     abstract suspend fun require(): EdgeAccessToken?
+
+    @Query("DELETE FROM EdgeAccessToken")
+    abstract suspend fun deleteAll()
 }

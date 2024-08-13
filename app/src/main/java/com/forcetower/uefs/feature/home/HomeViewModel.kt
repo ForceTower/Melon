@@ -27,6 +27,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.Access
@@ -45,6 +46,7 @@ import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
@@ -70,6 +72,7 @@ class HomeViewModel @Inject constructor(
     application: Application,
     private val sessionRepository: UserSessionRepository,
     private val accountRepository: AccountRepository,
+    private val edgeAccountRepository: EdgeAccountRepository,
     private val affinityRepository: AffinityQuestionRepository,
     private val fetchMissingSemesters: FetchMissingSemestersUseCase,
     @Named("flagSnowpiercerEnabled")
@@ -104,7 +107,7 @@ class HomeViewModel @Inject constructor(
     val semesters: LiveData<List<Semester>> by lazy { dataRepository.getSemesters() }
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
     val account: LiveData<Resource<Account>> = accountRepository.getAccount()
-    val databaseAccount = accountRepository.getAccountOnDatabase()
+    val databaseAccount = edgeAccountRepository.getAccount().asLiveData()
     val flags: LiveData<SagresFlags?> by lazy { dataRepository.getFlags() }
     val scheduleHideCount: LiveData<Int> = dataRepository.getScheduleHideCount()
 
@@ -118,7 +121,12 @@ class HomeViewModel @Inject constructor(
         selectImageUri = uri
     }
 
-    fun logout() = dataRepository.logout()
+    fun logout() {
+        dataRepository.logout()
+        viewModelScope.launch {
+            dataRepository.logoutSuspend()
+        }
+    }
 
     fun showSnack(message: String) {
         _snackbar.value = Event(message)
@@ -163,9 +171,10 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    @MainThread
-    fun sendToken(): LiveData<Boolean> {
-        return firebaseMessageRepository.sendNewTokenOrNot()
+    fun sendToken() {
+        viewModelScope.launch {
+            firebaseMessageRepository.sendNewTokenOrNot()
+        }
     }
 
     fun setSelectedCourse(course: Course) {

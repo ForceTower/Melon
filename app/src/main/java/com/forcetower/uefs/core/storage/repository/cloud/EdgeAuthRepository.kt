@@ -10,6 +10,7 @@ import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.core.model.ui.edge.EmailLinkComplete
 import com.forcetower.uefs.core.model.ui.edge.EmailLinkStart
 import com.forcetower.uefs.core.model.unes.EdgeAccessToken
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import timber.log.Timber
@@ -30,9 +31,23 @@ class EdgeAuthRepository @Inject constructor(
         return service.startAssertion()
     }
 
-    suspend fun completeAssertion(flowId: String, response: String) {
+    suspend fun completeAssertion(flowId: String, response: String): EdgeServiceAccount? {
         val token = service.completeAssertion(CompleteAssertionData(flowId, response))
-        Timber.d("Token $token")
+        database.edgeAccessToken.insert(EdgeAccessToken(token.accessToken))
+
+        runCatching {
+            val me = service.me().data
+            val value = EdgeServiceAccount(
+                id = me.id,
+                name = me.name,
+                email = me.email,
+                imageUrl = me.imageUrl,
+                me = true
+            )
+            database.edgeServiceAccount.insertOrUpdate(value)
+        }
+
+        return database.edgeServiceAccount.requireMe()
     }
 
     suspend fun passkeyRegisterStart(): RegisterPasskeyStart {
@@ -66,6 +81,7 @@ class EdgeAuthRepository @Inject constructor(
 
             return EmailLinkComplete.ConnectionError
         } catch (error: Throwable) {
+            Timber.e(error, "Failed to finish registration!")
             return EmailLinkComplete.ConnectionError
         }
     }
@@ -93,7 +109,7 @@ class EdgeAuthRepository @Inject constructor(
         database.edgeAccessToken.insert(EdgeAccessToken(result.accessToken))
     }
 
-    suspend fun doAnonymousLogin() {
+    suspend fun doAnonymousLogin(): EdgeServiceAccount? {
         val access = database.accessDao().getAccessDirectSuspend() ?: throw IllegalStateException("Access is null!")
 
         if (!access.valid) {
@@ -103,5 +119,19 @@ class EdgeAuthRepository @Inject constructor(
         val result = service.loginAnonymous(EdgeLoginBody(access.username, access.password))
         Timber.i("Login completed with result $result")
         database.edgeAccessToken.insert(EdgeAccessToken(result.accessToken))
+
+        runCatching {
+            val me = service.me().data
+            val value = EdgeServiceAccount(
+                id = me.id,
+                name = me.name,
+                email = me.email,
+                imageUrl = me.imageUrl,
+                me = true
+            )
+            database.edgeServiceAccount.insertOrUpdate(value)
+        }
+
+        return database.edgeServiceAccount.requireMe()
     }
 }

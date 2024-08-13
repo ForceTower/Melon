@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.extensions.closeKeyboard
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentServiceAccountLinkEmailBinding
 import com.forcetower.uefs.feature.shared.UFragment
@@ -36,6 +37,7 @@ class LinkEmailAccountFragment : UFragment() {
         binding.btnContinue.setOnClickListener {
             val email = binding.email.text?.toString() ?: return@setOnClickListener
             viewModel.link(email)
+            binding.btnContinue.closeKeyboard()
         }
     }
 

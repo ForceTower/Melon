@@ -30,7 +30,7 @@
 
         <variable
             name="account"
-            type="com.forcetower.uefs.core.model.unes.Account" />
+            type="com.forcetower.uefs.core.model.unes.EdgeServiceAccount" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout

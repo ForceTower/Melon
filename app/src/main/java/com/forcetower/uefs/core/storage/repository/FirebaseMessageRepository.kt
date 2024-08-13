@@ -29,9 +29,11 @@ import androidx.work.WorkManager
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.BuildConfig
+import com.forcetower.uefs.core.model.edge.SendMessagingTokenDTO
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.notification.StatementNotificationProcessor
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
@@ -41,6 +43,7 @@ import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
+import kotlinx.coroutines.tasks.await
 import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -48,6 +51,7 @@ import javax.inject.Singleton
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
     private val service: UService,
+    private val edgeService: EdgeService,
     private val database: UDatabase,
     private val preferences: SharedPreferences,
     private val context: Context,
@@ -277,15 +281,19 @@ class FirebaseMessageRepository @Inject constructor(
         NotificationCreator.showSimpleNotification(context, title, content)
     }
 
-    fun onNewToken(token: String) {
-        val auth = database.accessTokenDao().getAccessTokenDirect()
+    suspend fun onNewToken(token: String) {
+        val auth = database.accessTokenDao().getAccessTokenDirectSuspend()
         if (auth != null) {
-            try {
-                service.sendToken(mapOf("token" to token)).execute()
-            } catch (t: Throwable) { }
+            runCatching { service.sendTokenSuspend(mapOf("token" to token)) }
         } else {
-            Timber.d("Disconnected")
+            Timber.d("Disconnected Base UNES")
         }
+
+        val auth2 = database.edgeAccessToken.require()
+        if (auth2 != null) {
+            runCatching { edgeService.fcm(SendMessagingTokenDTO(token)) }
+        }
+
         preferences.edit().putString("current_firebase_token", token).apply()
     }
 
@@ -301,23 +309,13 @@ class FirebaseMessageRepository @Inject constructor(
         }
     }
 
-    @MainThread
-    fun sendNewTokenOrNot(): LiveData<Boolean> {
-        val result = MutableLiveData<Boolean>()
-        executors.diskIO().execute {
-            try {
-                sendNewToken()
-                result.postValue(true)
-            } catch (t: Throwable) {
-                result.postValue(false)
-            }
+    suspend fun sendNewTokenOrNot() {
+        try {
+            val task = FirebaseMessaging.getInstance().token
+            val value = task.await()
+            onNewToken(value)
+        } catch (e: Throwable) {
+            Timber.e(e, "Failed to update fcm token")
         }
-        return result
-    }
-
-    private fun sendNewToken() {
-        val task = FirebaseMessaging.getInstance().token
-        val value = Tasks.await(task)
-        onNewToken(value)
     }
 }
