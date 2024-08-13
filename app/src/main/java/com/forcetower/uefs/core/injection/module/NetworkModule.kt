@@ -111,21 +111,8 @@ object NetworkModule {
     ) = Interceptor { chain ->
         val request = chain.request()
         val host = request.url.host
-        if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
-            val builder = request.headers.newBuilder()
-                .add("Accept", "application/json")
-                .set("User-Agent", userAgent)
-
-            val token = database.accessTokenDao().getAccessTokenDirect()
-            if (token?.token != null) {
-                builder.add("Authorization", token.type + " " + token.token)
-            }
-
-            val newHeaders = builder.build()
-            val renewed = request.newBuilder().headers(newHeaders).build()
-
-            chain.proceed(renewed)
-        } else if (host.contains(Constants.EDGE_UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+        // Normal contains edge
+        if (host.contains(Constants.EDGE_UNES_SERVICE_BASE_URL, ignoreCase = true)) {
             val builder = request.headers.newBuilder()
                 .add("Accept", "application/json")
                 .set("User-Agent", userAgent)
@@ -139,7 +126,21 @@ object NetworkModule {
             val renewed = request.newBuilder().headers(newHeaders).build()
 
             chain.proceed(renewed)
-        } else {
+        } else if (host.contains(Constants.UNES_SERVICE_BASE_URL, ignoreCase = true)) {
+            val builder = request.headers.newBuilder()
+                .add("Accept", "application/json")
+                .set("User-Agent", userAgent)
+
+            val token = database.accessTokenDao().getAccessTokenDirect()
+            if (token?.token != null) {
+                builder.add("Authorization", token.type + " " + token.token)
+            }
+
+            val newHeaders = builder.build()
+            val renewed = request.newBuilder().headers(newHeaders).build()
+
+            chain.proceed(renewed)
+        }  else {
             val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
             chain.proceed(nRequest)
         }

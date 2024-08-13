@@ -59,6 +59,7 @@ class EdgeAuthRepository @Inject constructor(
         }
 
         val result = service.loginAnonymous(EdgeLoginBody(access.username, access.password))
+        Timber.i("Login completed with result $result")
         database.edgeAccessToken.insert(EdgeAccessToken(result.accessToken))
     }
 }

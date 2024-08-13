@@ -41,6 +41,7 @@ import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.EdgeAccessToken
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
@@ -81,6 +82,7 @@ import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
 import com.forcetower.uefs.core.storage.database.dao.EdgeAccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.EdgeServiceAccountDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.EventDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
@@ -140,12 +142,14 @@ import com.forcetower.uefs.core.util.Converters
         AffinityQuestionAlternative::class,
         Event::class,
         ClassGroupTeacher::class,
-        EdgeAccessToken::class
+        EdgeAccessToken::class,
+        EdgeServiceAccount::class
     ],
-    version = 54,
+    version = 55,
     exportSchema = true,
     autoMigrations = [
-        AutoMigration(from = 53, to = 54)
+        AutoMigration(from = 53, to = 54),
+        AutoMigration(from = 54, to = 55),
     ]
 )
 @TypeConverters(value = [Converters::class])
@@ -188,4 +192,5 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun classGroupTeacher(): ClassGroupTeacherDao
 
     abstract val edgeAccessToken: EdgeAccessTokenDao
+    abstract val edgeServiceAccount: EdgeServiceAccountDao
 }

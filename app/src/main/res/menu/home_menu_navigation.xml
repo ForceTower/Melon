@@ -28,7 +28,7 @@
                 android:checkableBehavior="single">
 
                 <item
-                    android:id="@+id/unes_account"
+                    android:id="@+id/unes_account_overview"
                     android:title="@string/label_unes_account"
                     android:menuCategory="secondary"
                     android:icon="@drawable/ic_person_black_24dp"/>

@@ -6,6 +6,8 @@ import com.forcetower.uefs.core.model.edge.EdgeAccessTokenDTO
 import com.forcetower.uefs.core.model.edge.EdgeLoginBody
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyCredential
 import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.ServiceAccountDTO
+import com.forcetower.uefs.core.model.edge.ServiceResponseWrapper
 import com.forcetower.uefs.core.model.unes.AccessToken
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -26,4 +28,7 @@ interface EdgeService {
 
     @POST("passkeys/register/finish")
     suspend fun registerPasskeyFinish(@Body data: RegisterPasskeyCredential)
+
+    @GET("account/me")
+    suspend fun me(): ServiceResponseWrapper<ServiceAccountDTO>
 }
