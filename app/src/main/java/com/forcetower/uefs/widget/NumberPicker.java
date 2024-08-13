@@ -2182,7 +2182,7 @@ public class NumberPicker extends LinearLayout {
             super(context, attrs);
             TypedValue typedValue = new TypedValue();
             Resources.Theme theme = context.getTheme();
-            theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true);
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true);
             setTextColor(typedValue.data);
 
             float textSize = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 7, context.getResources().getDisplayMetrics());

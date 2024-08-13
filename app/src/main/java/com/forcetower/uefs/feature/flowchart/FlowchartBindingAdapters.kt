@@ -49,7 +49,7 @@ fun disciplineFlowchartTextColor(tv: TextView, completed: Boolean?, participatin
     val participate = participating ?: false
     val ctx = tv.context
     val color = when {
-        complete -> ViewUtils.attributeColorUtils(ctx, R.attr.colorPrimary)
+        complete -> ViewUtils.attributeColorUtils(ctx, androidx.appcompat.R.attr.colorPrimary)
         participate -> ContextCompat.getColor(ctx, R.color.yellow)
         else -> ContextCompat.getColor(ctx, R.color.red)
     }

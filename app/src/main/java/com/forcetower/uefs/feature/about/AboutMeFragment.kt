@@ -73,8 +73,8 @@ class AboutMeFragment : UFragment() {
 
         Glide.with(this)
             .load("https://avatars.githubusercontent.com/ForceTower")
-            .fallback(R.mipmap.ic_unes_large_image_512)
-            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .fallback(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
+            .placeholder(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
             .transition(DrawableTransitionOptions.withCrossFade())
             .circleCrop()
             .into(binding.imageCreatorPicture)

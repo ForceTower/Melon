@@ -163,7 +163,7 @@ class CreateEventFragment : UFragment() {
         val selection = (if (start) viewModel.start else viewModel.end)
         calendar.timeInMillis = selection
 
-        val color = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary)
+        val color = ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary)
 
         val picker = DatePickerDialog.newInstance(
             { _, y, m, d ->
@@ -220,7 +220,7 @@ class CreateEventFragment : UFragment() {
 
         picker.version = TimePickerDialog.Version.VERSION_2
 
-        val color = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary)
+        val color = ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary)
         picker.accentColor = color
         picker.setOkColor(color)
 
@@ -422,8 +422,8 @@ class CreateEventFragment : UFragment() {
 
     private fun onContentSelected(uri: Uri?) {
         uri ?: return
-        val bg = ColorUtils.modifyAlpha(ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorPrimary), 120)
-        val ac = ViewUtils.attributeColorUtils(requireContext(), com.forcetower.uefs.R.attr.colorAccent)
+        val bg = ColorUtils.modifyAlpha(ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary), 120)
+        val ac = ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorAccent)
 
         val options = CropImageContractOptions(
             uri,
