@@ -76,6 +76,7 @@ class SagresDataRepository @Inject constructor(
     suspend fun logoutSuspend() {
         database.edgeAccessToken.deleteAll()
         database.edgeServiceAccount.deleteAll()
+        database.studentServiceDao().markNoOneAsMe()
     }
 
     fun getFlags() = database.flagsDao().getFlags()

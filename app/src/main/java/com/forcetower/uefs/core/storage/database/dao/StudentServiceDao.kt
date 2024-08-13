@@ -40,4 +40,7 @@ interface StudentServiceDao {
 
     @Query("SELECT * FROM SStudent WHERE me = 1")
     fun getMeStudent(): LiveData<SStudent>
+
+    @Query("UPDATE SStudent SET me = 0")
+    suspend fun markNoOneAsMe()
 }
