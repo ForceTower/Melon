@@ -27,6 +27,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.core.model.unes.Account
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.aggregation.AffinityQuestionFull
@@ -72,7 +73,7 @@ class DashboardAdapter(
             differ.submitList(buildMergedList(affinity = value))
         }
 
-    var currentAccount: Account? = null
+    var currentAccount: EdgeServiceAccount? = null
         set(value) {
             field = value
             differ.submitList(buildMergedList(account = value))
@@ -142,7 +143,7 @@ class DashboardAdapter(
         message: Message? = lastMessage,
         updating: Boolean = updatingApp,
         affinity: List<AffinityQuestionFull> = affinityList,
-        account: Account? = currentAccount
+        account: EdgeServiceAccount? = currentAccount
     ): List<Any> {
         return mutableListOf<Any>().apply {
             if (account != null) {

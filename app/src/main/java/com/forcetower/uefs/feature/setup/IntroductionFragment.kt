@@ -30,14 +30,13 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
+import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import com.bumptech.glide.signature.ObjectKey
 import com.canhub.cropper.CropImageContract
 import com.canhub.cropper.CropImageContractOptions
 import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.forcetower.core.utils.ColorUtils
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
@@ -45,16 +44,11 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 
 @AndroidEntryPoint
 class IntroductionFragment : UFragment() {
-    @Inject lateinit var firebaseAuth: FirebaseAuth
-    @Inject lateinit var firebaseStorage: FirebaseStorage
     @Inject lateinit var repository: SyncFrequencyRepository
     @Inject lateinit var preferences: SharedPreferences
 
@@ -101,30 +95,8 @@ class IntroductionFragment : UFragment() {
                 binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
             } else {
                 binding.textSelectCourseInternal.error = null
-                val user = firebaseAuth.currentUser
-                if (user != null) {
-                    viewModel.uploadImageToStorage()
-                    if (uefsStudent) {
-                        viewModel.updateCourse(course, user)
-                    }
-                } else {
-                    Timber.d("Not connected to firebase. Write would denied")
-                }
                 findNavController().navigate(R.id.action_introduction_to_configuration)
             }
-        }
-
-        val current = firebaseAuth.currentUser
-        if (current != null) {
-            val reference = firebaseStorage.getReference("users/${current.uid}/avatar.jpg")
-            GlideApp.with(requireContext())
-                .load(reference)
-                .fallback(R.drawable.ic_account_black_24dp)
-                .placeholder(R.drawable.ic_account_black_24dp)
-                .circleCrop()
-                .transition(DrawableTransitionOptions.withCrossFade())
-                .signature(ObjectKey(System.currentTimeMillis() ushr 21))
-                .into(binding.imageUserImage)
         }
 
         repository.getFrequencies().observe(
@@ -170,10 +142,10 @@ class IntroductionFragment : UFragment() {
 
     private fun onImagePicked(uri: Uri) {
         viewModel.setSelectedImage(uri)
-        GlideApp.with(requireContext())
+        Glide.with(requireContext())
             .load(uri)
-            .fallback(R.mipmap.ic_unes_large_image_512)
-            .placeholder(R.mipmap.ic_unes_large_image_512)
+            .fallback(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
+            .placeholder(com.forcetower.core.R.mipmap.ic_unes_large_image_512)
             .circleCrop()
             .transition(DrawableTransitionOptions.withCrossFade())
             .into(binding.imageUserImage)

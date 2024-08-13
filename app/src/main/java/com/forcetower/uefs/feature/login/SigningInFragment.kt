@@ -49,21 +49,12 @@ import com.forcetower.uefs.databinding.FragmentSigningInBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.nio.charset.Charset
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class SigningInFragment : UFragment() {
-    @Inject
-    lateinit var firebaseAuth: FirebaseAuth
-
-    @Inject
-    lateinit var firebaseStorage: FirebaseStorage
-
     private lateinit var binding: FragmentSigningInBinding
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var messages: Array<String>
@@ -71,20 +62,11 @@ class SigningInFragment : UFragment() {
 
     private val args by navArgs<SigningInFragmentArgs>()
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        firebaseAuth = FirebaseAuth.getInstance()
-    }
-
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentSigningInBinding.inflate(inflater, container, false).also {
             binding = it
             prepareSwitcher()
             prepareMessages()
-        }.apply {
-            firebaseStorage = this@SigningInFragment.firebaseStorage
-            firebaseUser = this@SigningInFragment.firebaseAuth.currentUser
-            executePendingBindings()
         }.root
     }
 
@@ -116,7 +98,7 @@ class SigningInFragment : UFragment() {
 
             val typedValue = TypedValue()
             val theme = requireContext().theme
-            theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
+            theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
             val colorOnSurface = typedValue.data
             textView.setTextColor(colorOnSurface)
             textView
@@ -135,7 +117,7 @@ class SigningInFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getLogin().observe(viewLifecycleOwner, { onLoginProgress(it) })
+        viewModel.getLogin().observe(viewLifecycleOwner) { onLoginProgress(it) }
         viewModel.getProfile().observe(viewLifecycleOwner, Observer(this::onProfileUpdate))
         viewModel.getStep(args.snowpiercer).observe(viewLifecycleOwner, Observer(this::onStep))
         doLogin()
@@ -144,7 +126,6 @@ class SigningInFragment : UFragment() {
     override fun onStart() {
         super.onStart()
         displayRandomText()
-        firebaseAuthListener()
     }
 
     private fun displayRandomText() {
@@ -253,20 +234,8 @@ class SigningInFragment : UFragment() {
         )
     }
 
-    private fun firebaseAuthListener() {
-        firebaseAuth.addAuthStateListener {
-            if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
-                val current = it.currentUser
-                Timber.d("Auth State changed... User is ${current?.email}")
-                binding.firebaseUser = current
-                binding.executePendingBindings()
-            }
-        }
-    }
-
     private fun snackAndBack(string: String) {
         showSnack(string)
-        firebaseAuth.signOut()
         binding.textHelloUser.text = ""
         binding.textHelloUser.fadeOut()
         binding.textTips.fadeOut()

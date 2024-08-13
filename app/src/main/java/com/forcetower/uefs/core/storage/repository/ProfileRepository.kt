@@ -51,6 +51,8 @@ class ProfileRepository @Inject constructor(
 ) {
     fun getCommonProfile() = database.profileDao().selectMe()
 
+    fun me() = database.profileDao().me()
+
     fun getMeProfileAsync() {
         executors.networkIO().execute {
             getMeProfileSync()

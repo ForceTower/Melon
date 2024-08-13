@@ -23,8 +23,8 @@ package com.forcetower.uefs.feature.demand
 import android.widget.ImageView
 import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
+import com.bumptech.glide.Glide
 import com.forcetower.sagres.database.model.SagresDemandOffer
-import com.forcetower.uefs.GlideApp
 import com.forcetower.uefs.R
 import com.google.android.material.card.MaterialCardView
 
@@ -42,7 +42,7 @@ fun disciplineIcon(iv: ImageView, offer: SagresDemandOffer?) {
         else -> R.drawable.ic_bug_report_black_24dp
     }
 
-    GlideApp.with(iv.context).load(drawable).fitCenter().into(iv)
+    Glide.with(iv.context).load(drawable).fitCenter().into(iv)
 }
 
 @BindingAdapter(value = ["animatedStrokeColor"])

@@ -28,11 +28,10 @@
                 android:checkableBehavior="single">
 
                 <item
-                    android:id="@+id/profile"
-                    android:title="@string/label_profile"
-                    android:visible="false"
+                    android:id="@+id/unes_account_overview"
+                    android:title="@string/label_unes_account"
                     android:menuCategory="secondary"
-                    android:icon="@drawable/ic_face_black_24dp"/>
+                    android:icon="@drawable/ic_person_black_24dp"/>
 
                 <item
                     android:id="@+id/purchases"

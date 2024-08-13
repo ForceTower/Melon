@@ -50,7 +50,7 @@ class UApplication : Application(), Configuration.Provider {
     var disciplineToolbarDevClickCount = 0
     var messageToolbarDevClickCount = 0
 
-    override fun attachBaseContext(base: Context?) {
+    override fun attachBaseContext(base: Context) {
         super.attachBaseContext(base)
         SplitCompat.install(this)
     }

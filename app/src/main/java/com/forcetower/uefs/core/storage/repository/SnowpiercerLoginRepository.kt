@@ -47,7 +47,6 @@ class SnowpiercerLoginRepository @Inject constructor(
     private val database: UDatabase,
     private val context: Context,
     private val executors: AppExecutors,
-    private val firebaseAuthRepository: FirebaseAuthRepository,
     @Named("webViewUA") private val agent: String
 ) {
     val currentStep: MutableLiveData<LoginSagresRepository.Step> = MutableLiveData()
@@ -78,19 +77,6 @@ class SnowpiercerLoginRepository @Inject constructor(
         database.accessDao().insert(username, password)
 
         val person = (login as Outcome.Success).value
-        executors.others().execute {
-            firebaseAuthRepository.loginToFirebase(
-                SagresPerson(
-                    person.id,
-                    person.name,
-                    person.name,
-                    person.cpf,
-                    person.email
-                ),
-                Access(username = username, password = password),
-                true
-            )
-        }
 
         val localProfileId = defineUser(person)
 

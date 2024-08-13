@@ -60,7 +60,7 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
     set.setDrawFilled(true)
     set.fillDrawable = ContextCompat.getDrawable(context, R.drawable.gradient_chart_evaluation)
     set.mode = LineDataSet.Mode.CUBIC_BEZIER
-    set.color = ViewUtils.attributeColorUtils(context, R.attr.colorAccent)
+    set.color = ViewUtils.attributeColorUtils(context, androidx.appcompat.R.attr.colorAccent)
     set.setDrawCircles(false)
     set.setDrawValues(false)
 
@@ -76,7 +76,7 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
 
     val typedValue = TypedValue()
     val theme = context.theme
-    theme.resolveAttribute(R.attr.colorOnSurface, typedValue, true)
+    theme.resolveAttribute(com.google.android.material.R.attr.colorOnSurface, typedValue, true)
     val colorOnSurface = typedValue.data
 
     chart.apply {

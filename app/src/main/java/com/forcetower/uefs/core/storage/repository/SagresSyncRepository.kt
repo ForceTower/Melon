@@ -93,7 +93,6 @@ class SagresSyncRepository @Inject constructor(
     private val executors: AppExecutors,
     private val authRepository: AuthRepository,
     private val adventureRepository: AdventureRepository,
-    private val firebaseAuthRepository: FirebaseAuthRepository,
     private val cookieSessionRepository: CookieSessionRepository,
     private val service: UService,
     private val remoteConfig: FirebaseRemoteConfig,
@@ -282,16 +281,6 @@ class SagresSyncRepository @Inject constructor(
             registry.end = System.currentTimeMillis()
             database.syncRegistryDao().update(registry)
             return
-        }
-
-        executors.others().execute {
-            try {
-                val reconnect = preferences.getBoolean("firebase_reconnect_update", true)
-                firebaseAuthRepository.loginToFirebase(person, access, reconnect)
-                preferences.edit().putBoolean("firebase_reconnect_update", false).apply()
-            } catch (t: Throwable) {
-                Timber.e(t)
-            }
         }
 
         var result = 0

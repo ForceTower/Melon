@@ -32,7 +32,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.preference.PreferenceManager
-import com.forcetower.uefs.GlideApp
+import com.bumptech.glide.Glide
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
@@ -416,7 +416,7 @@ object NotificationCreator {
 
     private fun createBigImage(context: Context, image: String): NotificationCompat.Style? {
         return try {
-            val bitmap = GlideApp.with(context).asBitmap().load(image).submit().get()
+            val bitmap = Glide.with(context).asBitmap().load(image).submit().get()
             NotificationCompat.BigPictureStyle().bigPicture(bitmap)
         } catch (t: Throwable) {
             Timber.d("Error happened at image load: ${t.message}")

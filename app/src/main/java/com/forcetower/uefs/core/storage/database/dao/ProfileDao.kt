@@ -30,6 +30,7 @@ import com.forcetower.core.utils.WordUtils
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.uefs.core.model.unes.Profile
 import dev.forcetower.breaker.model.Person
+import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
 import java.util.Locale
 
@@ -43,6 +44,9 @@ abstract class ProfileDao {
 
     @Query("SELECT * FROM Profile WHERE me = 1 LIMIT 1")
     abstract fun selectMe(): LiveData<Profile?>
+
+    @Query("SELECT * FROM Profile WHERE me = 1 LIMIT 1")
+    abstract fun me(): Flow<Profile>
 
     @Transaction
     open fun insert(person: SagresPerson, score: Double = -1.0) {

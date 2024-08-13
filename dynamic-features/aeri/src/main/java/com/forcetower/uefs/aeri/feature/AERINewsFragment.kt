@@ -109,7 +109,7 @@ class AERINewsFragment : UFragment() {
                         .setDefaultColorSchemeParams(
                             CustomTabColorSchemeParams
                                 .Builder()
-                                .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary))
+                                .setToolbarColor(ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary))
                                 .build()
                         )
                         .setShareState(CustomTabsIntent.SHARE_STATE_ON)

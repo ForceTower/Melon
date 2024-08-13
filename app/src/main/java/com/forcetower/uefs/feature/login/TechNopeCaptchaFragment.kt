@@ -78,10 +78,7 @@ class TechNopeCaptchaFragment : UFragment() {
     @JavascriptInterface
     fun reCaptchaCallback(token: String) {
         Timber.d("reCaptcha token $token")
-        val directions = TechNopeCaptchaFragmentDirections.actionLoginTechNopeToLoginSigningIn(args.username, args.password, false).apply {
-            captchaToken = token
-        }
-
+        val directions = TechNopeCaptchaFragmentDirections.actionLoginTechNopeToLoginSigningIn(args.username, args.password, false, captchaToken = token)
         requireActivity().runOnUiThread {
             findNavController().navigate(directions)
         }

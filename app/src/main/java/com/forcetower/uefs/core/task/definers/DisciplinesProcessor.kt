@@ -25,6 +25,7 @@ import androidx.room.withTransaction
 import com.forcetower.core.extensions.removeSeconds
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassGroupTeacher
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Teacher
@@ -72,18 +73,25 @@ class DisciplinesProcessor(
 
                 val classId = database.classDao().insertNewWays(bound)
                 it.classes.forEach { clazz ->
-                    val teacherId = insertTeacher(clazz.teacher, it.department)
                     val group = ClassGroup(
                         classId = classId,
                         credits = clazz.hours,
                         draft = false,
                         group = clazz.groupName,
-                        teacher = clazz.teacher?.name?.toTitleCase(),
+                        teacher = clazz.teachers.mapNotNull { t -> t.name.toTitleCase() }.joinToString(", "),
                         sagresId = clazz.id,
-                        teacherId = teacherId,
-                        teacherEmail = clazz.teacher?.email
+                        teacherId = null,
+                        teacherEmail = null
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
+
+                    if (clazz.teachers.isNotEmpty())
+                        database.classGroupTeacher().deleteAllFromClassGroup(groupId)
+
+                    clazz.teachers.forEach { teacher ->
+                        val id = insertTeacher(teacher, it.department)
+                        database.classGroupTeacher().insert(ClassGroupTeacher(0, classGroupId = groupId, teacherId = id))
+                    }
                     if (currentSemester?.uid == semesterId) {
                         clazz.allocations.forEach { allocation ->
                             val time = allocation.time
@@ -129,8 +137,7 @@ class DisciplinesProcessor(
         }
     }
 
-    private suspend fun insertTeacher(teacher: Person?, department: String?): Long? {
-        teacher ?: return null
+    private suspend fun insertTeacher(teacher: Person, department: String?): Long {
         val value = Teacher(
             0,
             teacher.name,

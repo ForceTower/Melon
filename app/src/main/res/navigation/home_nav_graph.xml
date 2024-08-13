@@ -180,5 +180,58 @@
         android:name="com.forcetower.uefs.feature.themeswitcher.ThemeSwitcherFragment"
         android:label="ThemeSwitcher"
         tools:layout="@layout/fragment_theme_switcher"/>
+    <fragment
+        android:id="@+id/unes_account_overview"
+        android:name="com.forcetower.uefs.feature.unesaccount.overview.AccountOverviewFragment"
+        android:label="AccountOverviewFragment" >
+        <action
+            android:id="@+id/action_unes_account_overview_to_unes_account_start"
+            app:destination="@id/unes_account_start" />
+        <action
+            android:id="@+id/action_unes_account_overview_to_unes_account_link_email"
+            app:destination="@id/unes_account_link_email" />
+        <action
+            android:id="@+id/action_unes_account_overview_to_unes_account_login"
+            app:destination="@id/unes_account_login" />
+    </fragment>
+    <fragment
+        android:id="@+id/unes_account_start"
+        android:name="com.forcetower.uefs.feature.unesaccount.start.CreateAccountStartFragment"
+        android:label="CreateAccountStartFragment" >
+        <action
+            android:id="@+id/action_unes_account_start_to_unes_account_login"
+            app:destination="@id/unes_account_login"
+            app:popUpTo="@id/unes_account_start"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/unes_account_login"
+        android:name="com.forcetower.uefs.feature.unesaccount.login.LoginAccountFragment"
+        android:label="LoginAccountFragment" >
+        <action
+            android:id="@+id/action_unes_account_login_to_linkEmailAccountFragment"
+            app:destination="@id/unes_account_link_email"
+            app:popUpTo="@id/unes_account_login"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/unes_account_link_email"
+        android:name="com.forcetower.uefs.feature.unesaccount.email.LinkEmailAccountFragment"
+        android:label="LinkEmailAccountFragment" >
+        <action
+            android:id="@+id/action_unes_account_link_email_to_unes_account_confirm_email"
+            app:destination="@id/unes_account_confirm_email" />
+    </fragment>
+    <fragment
+        android:id="@+id/unes_account_confirm_email"
+        android:name="com.forcetower.uefs.feature.unesaccount.confirm.ConfirmEmailAccountFragment"
+        android:label="ConfirmEmailAccountFragment" >
+        <argument
+            android:name="securityCode"
+            app:argType="string" />
+        <argument
+            android:name="email"
+            app:argType="string" />
+    </fragment>
 
 </navigation>

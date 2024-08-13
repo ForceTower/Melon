@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.core.storage.database
 
+import androidx.room.AutoMigration
 import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
@@ -32,12 +33,15 @@ import com.forcetower.uefs.core.model.unes.CalendarItem
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.ClassAbsence
 import com.forcetower.uefs.core.model.unes.ClassGroup
+import com.forcetower.uefs.core.model.unes.ClassGroupTeacher
 import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
+import com.forcetower.uefs.core.model.unes.EdgeAccessToken
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Event
 import com.forcetower.uefs.core.model.unes.Flowchart
@@ -67,6 +71,7 @@ import com.forcetower.uefs.core.storage.database.dao.CalendarDao
 import com.forcetower.uefs.core.storage.database.dao.ClassAbsenceDao
 import com.forcetower.uefs.core.storage.database.dao.ClassDao
 import com.forcetower.uefs.core.storage.database.dao.ClassGroupDao
+import com.forcetower.uefs.core.storage.database.dao.ClassGroupTeacherDao
 import com.forcetower.uefs.core.storage.database.dao.ClassItemDao
 import com.forcetower.uefs.core.storage.database.dao.ClassLocationDao
 import com.forcetower.uefs.core.storage.database.dao.ClassMaterialDao
@@ -76,6 +81,8 @@ import com.forcetower.uefs.core.storage.database.dao.DemandOfferDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
+import com.forcetower.uefs.core.storage.database.dao.EdgeAccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.EdgeServiceAccountDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.EventDao
 import com.forcetower.uefs.core.storage.database.dao.FlagsDao
@@ -133,10 +140,17 @@ import com.forcetower.uefs.core.util.Converters
         UserSession::class,
         AffinityQuestion::class,
         AffinityQuestionAlternative::class,
-        Event::class
+        Event::class,
+        ClassGroupTeacher::class,
+        EdgeAccessToken::class,
+        EdgeServiceAccount::class
     ],
-    version = 52,
-    exportSchema = true
+    version = 55,
+    exportSchema = true,
+    autoMigrations = [
+        AutoMigration(from = 53, to = 54),
+        AutoMigration(from = 54, to = 55),
+    ]
 )
 @TypeConverters(value = [Converters::class])
 abstract class UDatabase : RoomDatabase() {
@@ -175,4 +189,8 @@ abstract class UDatabase : RoomDatabase() {
     abstract fun userSessionDao(): UserSessionDao
     abstract fun affinityQuestion(): AffinityQuestionDao
     abstract fun eventDao(): EventDao
+    abstract fun classGroupTeacher(): ClassGroupTeacherDao
+
+    abstract val edgeAccessToken: EdgeAccessTokenDao
+    abstract val edgeServiceAccount: EdgeServiceAccountDao
 }

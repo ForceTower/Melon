@@ -36,6 +36,7 @@ import com.forcetower.uefs.core.model.unes.ClassItem
 import com.forcetower.uefs.core.model.unes.ClassLocation
 import com.forcetower.uefs.core.model.unes.ClassMaterial
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
+import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithTeachers
 import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
@@ -67,8 +68,8 @@ class DisciplineViewModel @Inject constructor(
     val clazz: LiveData<ClassFullWithGroup?>
         get() = _classFull
 
-    private val _group = MediatorLiveData<ClassGroup?>()
-    val group: LiveData<ClassGroup?>
+    private val _group = MediatorLiveData<ClassGroupWithTeachers?>()
+    val group: LiveData<ClassGroupWithTeachers?>
         get() = _group
 
     private val _absences = MediatorLiveData<List<ClassAbsence>>()
@@ -155,7 +156,7 @@ class DisciplineViewModel @Inject constructor(
             if (it != null) {
                 val source = repository.getClassGroup(it)
                 _group.addSource(source) { value ->
-                    _group.value = value?.group
+                    _group.value = value?.let { el -> ClassGroupWithTeachers(el.group, el.teachers) }
                 }
             }
         }

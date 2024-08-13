@@ -32,7 +32,6 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.round
-import com.google.firebase.auth.FirebaseAuth
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import kotlinx.coroutines.Dispatchers
@@ -47,7 +46,6 @@ import javax.inject.Singleton
 class SagresDataRepository @Inject constructor(
     private val database: UDatabase,
     private val executor: AppExecutors,
-    private val firebaseAuth: FirebaseAuth,
     private val preferences: SharedPreferences,
     private val client: OkHttpClient,
     @Named("webViewUA") private val agent: String,
@@ -58,7 +56,6 @@ class SagresDataRepository @Inject constructor(
 
     fun logout() {
         executor.diskIO().execute {
-            firebaseAuth.signOut()
             preferences.edit()
                 .remove("hourglass_status")
                 .apply()
@@ -74,6 +71,11 @@ class SagresDataRepository @Inject constructor(
             SagresNavigator.instance.logout()
             SagresNavigator.instance.putCredentials(null)
         }
+    }
+
+    suspend fun logoutSuspend() {
+        database.edgeAccessToken.deleteAll()
+        database.edgeServiceAccount.deleteAll()
     }
 
     fun getFlags() = database.flagsDao().getFlags()

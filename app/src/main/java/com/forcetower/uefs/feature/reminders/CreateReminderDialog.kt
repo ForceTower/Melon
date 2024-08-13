@@ -74,7 +74,7 @@ class CreateReminderDialog : RoundedDialog() {
         if (viewModel.currentDeadline != null)
             calendar.timeInMillis = viewModel.currentDeadline!!
 
-        val color = ViewUtils.attributeColorUtils(requireContext(), R.attr.colorPrimary)
+        val color = ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary)
 
         val picker = DatePickerDialog.newInstance(
             { _, y, m, d ->
