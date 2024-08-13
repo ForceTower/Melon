@@ -29,5 +29,9 @@ class CreateAccountStartFragment : UFragment() {
             val directions = CreateAccountStartFragmentDirections.actionUnesAccountStartToUnesAccountLogin()
             findNavController().navigate(directions)
         }
+
+        binding.btnWhy.setOnClickListener {
+
+        }
     }
 }

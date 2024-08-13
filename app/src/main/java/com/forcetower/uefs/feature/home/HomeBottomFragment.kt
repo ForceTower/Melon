@@ -43,6 +43,7 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.HomeBottomBinding
 import com.forcetower.uefs.feature.about.AboutActivity
@@ -80,7 +81,6 @@ class HomeBottomFragment : UFragment() {
             lifecycleOwner = this@HomeBottomFragment
             viewModel = this@HomeBottomFragment.viewModel
             executePendingBindings()
-            imageUserPicture.setOnClickListener { pickImage() }
             textUserName.setOnClickListener { editCourse() }
             textScore.setOnClickListener { editCourse() }
         }.root
@@ -106,7 +106,7 @@ class HomeBottomFragment : UFragment() {
         viewModel.databaseAccount.observe(viewLifecycleOwner) { handleAccount(it) }
     }
 
-    private fun handleAccount(account: Account?) {
+    private fun handleAccount(account: EdgeServiceAccount?) {
         binding.account = account
     }
 

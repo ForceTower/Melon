@@ -1,5 +1,6 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
+import com.forcetower.uefs.core.model.edge.ChangePictureDTO
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
@@ -27,5 +28,10 @@ class EdgeAccountRepository @Inject constructor(
             me = true
         )
         database.edgeServiceAccount.insertOrUpdate(value)
+    }
+
+    suspend fun uploadPicture(base64: String) {
+        service.uploadPicture(ChangePictureDTO(base64))
+        runCatching { fetchAccountIfNeeded() }
     }
 }

@@ -73,6 +73,11 @@ class SagresDataRepository @Inject constructor(
         }
     }
 
+    suspend fun logoutSuspend() {
+        database.edgeAccessToken.deleteAll()
+        database.edgeServiceAccount.deleteAll()
+    }
+
     fun getFlags() = database.flagsDao().getFlags()
     fun getSemesters() = database.semesterDao().getParticipatingSemesters()
     fun getCourse() = database.profileDao().getProfileCourse()

@@ -139,6 +139,9 @@ interface UService {
     @POST("account/update_fcm")
     fun sendToken(@Body data: Map<String, String>): Call<UResponse<Void>>
 
+    @POST("account/update_fcm")
+    suspend fun sendTokenSuspend(@Body data: Map<String, String>): UResponse<Void>
+
     @GET("account")
     fun getAccount(): Call<Account>
 

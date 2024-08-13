@@ -49,7 +49,9 @@ class FirebaseActionsService : FirebaseMessagingService() {
 
     override fun onNewToken(token: String) {
         Timber.d("On Token received: $token")
-        repository.onNewToken(token)
+        coroutineScope.launch {
+            repository.onNewToken(token)
+        }
     }
 
     override fun onDestroy() {

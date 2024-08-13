@@ -938,4 +938,14 @@
     <string name="service_account_email_send_failed">Ocorreu um erro ao enviar as informações</string>
     <string name="service_account_email_send_invalid_info">Informaçoes inválidas ou temporariamente indisponível</string>
     <string name="service_account_email_invalid_format">Email inválido</string>
+    <string name="service_account_email_confirm_too_many_tries">Muitas tentativas... Tente novamente depois</string>
+    <string name="service_account_email_confirm_invalid_code">Código inválido</string>
+    <string name="service_account_email_confirm_email_taken">Este email já foi registrado.</string>
+    <string name="service_account_email_confirm_connection_failed">Erro de conexão, tente novamente mais tarde</string>
+    <string name="service_account_email_confirm_linked">Email confirmado!</string>
+    <string name="service_account_register_passkey_credential_create_failed">Erro ao criar chave senha</string>
+    <string name="service_account_register_passkey_connect_failed">Não foi possível recuperar as informações para criação</string>
+    <string name="service_account_register_passkey_credential_not_public">A chave selecionada não é aceita nesta operação</string>
+    <string name="service_account_register_passkey_credential_create_canceled">Criação Cancelada</string>
+    <string name="service_account_update_image_failed">Erro ao atualizar imagem</string>
 </resources>

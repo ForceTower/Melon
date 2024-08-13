@@ -262,9 +262,7 @@ class HomeActivity : UGameActivity() {
         viewModel.accessToken.observe(this) { onAccessTokenUpdate(it) }
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken().observe(this) {
-            Timber.d("Sent token... I guess ($it)")
-        }
+        viewModel.sendToken()
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.connectToServiceIfNeeded()

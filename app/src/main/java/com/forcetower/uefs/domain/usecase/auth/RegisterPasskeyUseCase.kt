@@ -15,7 +15,6 @@ class RegisterPasskeyUseCase @Inject constructor(
 ) {
     suspend fun start(): RegisterPasskeyStart {
         val data = edge.passkeyRegisterStart()
-        Timber.d("Original data: ${data.create}")
         val register = gson.fromJson(data.create, PasskeyRegister::class.java)
         return data.copy(create = gson.toJson(register.publicKey))
     }
