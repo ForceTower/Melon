@@ -81,6 +81,10 @@ class AccountOverviewFragment : UFragment() {
             viewModel.registerPasskeyStart()
         }
 
+        binding.btnWhy.setOnClickListener {
+            onReasons()
+        }
+
         binding.profileImage.setOnClickListener {
             pickImage()
         }
@@ -90,6 +94,11 @@ class AccountOverviewFragment : UFragment() {
         }
 
         binding.btnCreatePasskey.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+    }
+
+    private fun onReasons() {
+        val directions = AccountOverviewFragmentDirections.actionUnesAccountOverviewToUnesAccountReasons()
+        findNavController().navigate(directions)
     }
 
     private fun onEvent(event: AccountOverviewEvent) {

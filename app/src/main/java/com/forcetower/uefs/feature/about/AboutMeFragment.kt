@@ -44,7 +44,7 @@ class AboutMeFragment : UFragment() {
     private lateinit var binding: FragmentAboutMeBinding
     private val markdown: Bypass by lazy { Bypass(requireContext(), Bypass.Options()) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         FragmentAboutMeBinding.inflate(inflater, container, false).also {
             binding = it
         }
@@ -64,11 +64,9 @@ class AboutMeFragment : UFragment() {
         about3.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about3.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val about4 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_4, BuildConfig.VERSION_CODE), binding.textAboutContinuation, null))
         about4.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about4.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val aboutSupport = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_support), binding.textAboutContinuation, null))
-        aboutSupport.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about4.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         HtmlUtils.setTextWithNiceLinks(binding.textAboutDescription, about0)
-        val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", aboutSupport, "\n\n", about3, "\n", about4)
+        val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", about3, "\n", about4)
         HtmlUtils.setTextWithNiceLinks(binding.textAboutContinuation, sequence)
 
         Glide.with(this)
