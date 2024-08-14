@@ -737,7 +737,6 @@
     <string name="grades_not_downloaded_yet">Grades from this period wasn\'t downloaded yet</string>
     <string name="error_invalid_connect_error_with_code">" Failed to authorize connection (%1$d)"</string>
     <string name="error_unexpected_response_joke">Looks like Sagres is down.</string>
-    <string name="about_unes_support">This project is completely free to use but has operating costs. If you want to help with the maintenance and development, use the PIX: joaopaulo761@gmail.com</string>
     <string name="title_aeri">AERI\'s News</string>
     <string name="title_conference" translatable="false">Big Events</string>
     <string name="title_event" translatable="false">Events</string>
