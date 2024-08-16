@@ -165,8 +165,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 anonymousLoginUseCase.prepareAndLogin()
+                edgeAccountRepository.fetchAccountIfNeeded()
             }.onFailure {
-                Timber.e(it, "Failed to authenticate.")
+                Timber.e(it, "Failed to authenticate or fetch account.")
             }
         }
     }
