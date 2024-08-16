@@ -40,7 +40,6 @@ import com.forcetower.core.adapters.ImageLoadListener
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentProfileBinding
-import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_USER_ID
 import com.forcetower.uefs.feature.setup.SetupViewModel
 import com.forcetower.uefs.feature.shared.UFragment
@@ -48,9 +47,7 @@ import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.forcetower.uefs.feature.shared.extensions.postponeEnterTransition
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
 import com.forcetower.uefs.feature.siecomp.session.PushUpScrollListener
-import com.google.firebase.storage.FirebaseStorage
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class ProfileFragment : UFragment() {
@@ -70,10 +67,8 @@ class ProfileFragment : UFragment() {
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         activity?.postponeEnterTransition(500L)
-        val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
-        check(userId != 0L) { "Well.. That happened" }
+        val userId = requireArguments().getString(EXTRA_USER_ID) ?: throw IllegalStateException("Welp...")
         viewModel.setUserId(userId)
-        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
         viewModel.profile.observe(
             viewLifecycleOwner,
             Observer {
@@ -137,12 +132,10 @@ class ProfileFragment : UFragment() {
         }
 
         binding.writeStatement.setOnClickListener {
-            val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
             val userId = requireNotNull(arguments).getLong(EXTRA_USER_ID, 0)
             parentFragmentManager.inTransaction {
                 val fragment = WriteStatementFragment().apply {
                     arguments = bundleOf(
-                        EXTRA_STUDENT_ID to profileId,
                         EXTRA_USER_ID to userId
                     )
                 }
@@ -192,10 +185,9 @@ class ProfileFragment : UFragment() {
     }
 
     companion object {
-        fun newInstance(profileId: Long, userId: Long): ProfileFragment {
+        fun newInstance(userId: String): ProfileFragment {
             return ProfileFragment().apply {
                 arguments = bundleOf(
-                    EXTRA_STUDENT_ID to profileId,
                     EXTRA_USER_ID to userId
                 )
             }

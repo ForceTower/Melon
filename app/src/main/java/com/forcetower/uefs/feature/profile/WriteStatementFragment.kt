@@ -30,7 +30,6 @@ import androidx.lifecycle.Observer
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentWriteStatementBinding
-import com.forcetower.uefs.feature.profile.ProfileActivity.Companion.EXTRA_STUDENT_ID
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import dagger.hilt.android.AndroidEntryPoint
@@ -45,7 +44,8 @@ class WriteStatementFragment : UFragment() {
     private val viewModel: ProfileViewModel by viewModels()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
+//        viewModel.setProfileId(requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0))
+        TODO()
         return FragmentWriteStatementBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -103,8 +103,8 @@ class WriteStatementFragment : UFragment() {
             return
         }
 
-        val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
-        viewModel.onSendStatement(statement, profileId, hidden)
+//        val profileId = requireNotNull(arguments).getLong(EXTRA_STUDENT_ID, 0)
+//        viewModel.onSendStatement(statement, profileId, hidden)
     }
 
     private fun onShowWarningUserAgreement() {

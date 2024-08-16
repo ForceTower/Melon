@@ -39,7 +39,7 @@ class ProfileViewModel @Inject constructor(
     private val repository: ProfileRepository
 ) : ViewModel(), ProfileInteractor {
     val commonProfile = repository.getCommonProfile()
-    private var userId: Long? = null
+    private var userId: String? = null
     private val profileId = MutableLiveData<Long?>()
 
     private val _profile = MediatorLiveData<SStudent?>()
@@ -67,19 +67,17 @@ class ProfileViewModel @Inject constructor(
     init {
         _profile.addSource(profileId) {
             refreshProfile(it)
-            refreshStatements(it, userId)
+            refreshStatements(userId)
         }
     }
 
-    private fun refreshStatements(profileId: Long?, userId: Long?) {
-        profileId ?: return
-        userId ?: return
-        val source = repository.loadStatements(profileId, userId)
-        _statements.addSource(source) {
-            Timber.d("Resource status ${it.status}")
-            val data = it.data ?: emptyList()
-            _statements.value = data
-        }
+    private fun refreshStatements(userId: String?) {
+//        val source = repository.loadStatements(profileId, userId)
+//        _statements.addSource(source) {
+//            Timber.d("Resource status ${it.status}")
+//            val data = it.data ?: emptyList()
+//            _statements.value = data
+//        }
     }
 
     private fun refreshProfile(profileId: Long?) {
@@ -108,7 +106,7 @@ class ProfileViewModel @Inject constructor(
     /**
      * This method should be replaced by a reactive thing together with setProfileId
      */
-    fun setUserId(userId: Long) {
+    fun setUserId(userId: String) {
         Timber.d("Setting new userId: $userId")
         this.userId = userId
     }
@@ -127,13 +125,13 @@ class ProfileViewModel @Inject constructor(
                 _messages.value = Event(it.message)
             }
 
-            if (it.status == Status.SUCCESS) {
-                _statementSentSignal.value = Event(true)
-                val uid = userId
-                if (uid != null) {
-                    repository.loadStatements(profileId, uid)
-                }
-            }
+//            if (it.status == Status.SUCCESS) {
+//                _statementSentSignal.value = Event(true)
+//                val uid = userId
+//                if (uid != null) {
+//                    repository.loadStatements(uid)
+//                }
+//            }
 
             _sendingStatement.value = false
         }

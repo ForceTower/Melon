@@ -23,32 +23,43 @@ package com.forcetower.uefs.feature.evaluation
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
 import com.forcetower.core.lifecycle.Event
+import com.forcetower.core.lifecycle.viewmodel.StateViewModel
+import com.forcetower.uefs.core.model.edge.paradox.EvaluationHotTopic
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher
+import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
+import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationData
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.TextTransformUtils
+import com.forcetower.uefs.domain.model.paradox.DisciplineCombinedData
 import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
 import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
 import com.forcetower.uefs.feature.evaluation.home.HomeInteractor
 import com.forcetower.uefs.feature.evaluation.search.EntitySelector
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class EvaluationViewModel @Inject constructor(
-    private val authRepository: AuthRepository,
-    private val accountRepository: AccountRepository,
+    private val edgeAuthRepository: EdgeAuthRepository,
+    private val edgeAccountRepository: EdgeAccountRepository,
     private val evaluationRepository: EvaluationRepository
-) : ViewModel(), HomeInteractor, EntitySelector, DisciplineInteractor {
-    private var _trending: LiveData<Resource<List<EvaluationHomeTopic>>>? = null
+) : StateViewModel<EvaluationState>(EvaluationState()), HomeInteractor, EntitySelector, DisciplineInteractor {
 
     var query = ""
         set(value) {
@@ -57,77 +68,109 @@ class EvaluationViewModel @Inject constructor(
 
     val searchSource = evaluationRepository.queryEntities { query }.cachedIn(viewModelScope)
 
-    private val _disciplineSelect = MutableLiveData<Event<EvaluationDiscipline>>()
+    private val _disciplineSelect = MutableLiveData<Event<PublicHotEvaluationDiscipline>>()
+    val disciplineSelect: LiveData<Event<PublicHotEvaluationDiscipline>> = _disciplineSelect
 
-    val disciplineSelect: LiveData<Event<EvaluationDiscipline>>
-        get() = _disciplineSelect
-    private val _teacherSelect = MutableLiveData<Event<EvaluationTeacher>>()
+    private val _disciplineSelectTeacher = MutableLiveData<Event<PublicTeacherEvaluationData>>()
+    val disciplineSelectTeacher: LiveData<Event<PublicTeacherEvaluationData>> = _disciplineSelectTeacher
 
-    val teacherSelect: LiveData<Event<EvaluationTeacher>>
-        get() = _teacherSelect
-    private var _discipline: LiveData<Resource<EvaluationDiscipline>>? = null
-    private var _teacher: LiveData<Resource<EvaluationTeacher>>? = null
+    private val _teacherSelect = MutableLiveData<Event<PublicHotEvaluationTeacher>>()
+    val teacherSelect: LiveData<Event<PublicHotEvaluationTeacher>> = _teacherSelect
 
-    private var _knowledge: LiveData<Resource<Boolean>>? = null
+    private val _trending = MutableLiveData<List<EvaluationHotTopic>>()
+    val trending: LiveData<List<EvaluationHotTopic>> = _trending
+
+    private val _discipline = MutableLiveData<DisciplineCombinedData>()
+    val discipline: LiveData<DisciplineCombinedData> = _discipline
+
+    private val _teacher = MutableLiveData<PublicTeacherEvaluationCombinedData>()
+    val teacher: LiveData<PublicTeacherEvaluationCombinedData> = _teacher
 
     private val _teacherIntSelect = MutableLiveData<Event<TeacherInt>>()
     val teacherIntSelect: LiveData<Event<TeacherInt>>
         get() = _teacherIntSelect
 
-    private val _entitySelected = MutableLiveData<Event<EvaluationEntity>>()
-    val entitySelect: LiveData<Event<EvaluationEntity>>
-        get() = _entitySelected
+    private val _entitySelected = MutableLiveData<Event<EdgeParadoxSearchableItem>>()
+    val entitySelect: LiveData<Event<EdgeParadoxSearchableItem>> = _entitySelected
 
-    fun getToken() = authRepository.getAccessToken()
-    fun getAccount() = accountRepository.getAccount()
-    fun getTrendingList(): LiveData<Resource<List<EvaluationHomeTopic>>> {
-        if (_trending == null) {
-            _trending = evaluationRepository.getTrendingList()
+    fun getToken() = edgeAuthRepository.getAccessToken().asLiveData()
+    fun getAccount() = edgeAccountRepository.getAccount().asLiveData()
+
+    fun fetchTrending() {
+        viewModelScope.launch {
+            setState { it.copy(loading = true) }
+            runCatching {
+                val data = evaluationRepository.getTrendingList()
+                _trending.value = data
+            }.onFailure {
+                setState { it.copy(failed = true) }
+            }
+            setState { it.copy(loading = false) }
         }
-        return _trending!!
     }
 
-    override fun onClickDiscipline(discipline: EvaluationDiscipline) {
+    override fun onClickDiscipline(discipline: PublicHotEvaluationDiscipline) {
         _disciplineSelect.value = Event(discipline)
     }
 
-    override fun onClickTeacher(teacher: EvaluationTeacher) {
+    override fun onClickTeacherDiscipline(discipline: PublicTeacherEvaluationData) {
+        _disciplineSelectTeacher.value = Event(discipline)
+    }
+
+    override fun onClickTeacher(teacher: PublicHotEvaluationTeacher) {
         _teacherSelect.value = Event(teacher)
     }
 
-    fun getDiscipline(department: String, code: String): LiveData<Resource<EvaluationDiscipline>> {
-        if (_discipline == null) {
-            _discipline = evaluationRepository.getDiscipline(department, code)
+    fun fetchDiscipline(id: String) {
+        viewModelScope.launch {
+            setState { it.copy(loading = true) }
+            runCatching {
+                val data = evaluationRepository.getDiscipline(id)
+                _discipline.value = data
+            }.onFailure {
+                setState { it.copy(failed = true) }
+            }
+            setState { it.copy(loading = false) }
         }
-        return _discipline!!
     }
 
-    fun getTeacher(teacherId: Long): LiveData<Resource<EvaluationTeacher>> {
-        if (_teacher == null) {
-            _teacher = evaluationRepository.getTeacherById(teacherId)
+    fun fetchTeacher(id: String) {
+        viewModelScope.launch {
+            setState { it.copy(loading = true) }
+            runCatching {
+                val data = evaluationRepository.getTeacherById(id)
+                _teacher.value = data
+            }.onFailure {
+                setState { it.copy(failed = true) }
+            }
+            setState { it.copy(loading = false) }
         }
-        return _teacher!!
     }
 
-    fun getTeacher(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
-        if (_teacher == null) {
-            _teacher = evaluationRepository.getTeacherByName(teacherName)
-        }
-        return _teacher!!
-    }
+//    fun getTeacher(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
+//        if (_teacher == null) {
+//            _teacher = evaluationRepository.getTeacherByName(teacherName)
+//        }
+//        return _teacher!!
+//    }
 
     override fun onTeacherSelected(value: TeacherInt) {
         _teacherIntSelect.value = Event(value)
     }
 
-    override fun onEntitySelected(entity: EvaluationEntity) {
+    override fun onEntitySelected(entity: EdgeParadoxSearchableItem) {
         _entitySelected.value = Event(entity)
     }
 
-    fun downloadDatabase(): LiveData<Resource<Boolean>> {
-        if (_knowledge == null) {
-            _knowledge = evaluationRepository.downloadKnowledgeDatabase()
+    fun downloadDatabase() {
+        setState { it.copy(loading = true) }
+        viewModelScope.launch {
+            runCatching {
+                evaluationRepository.downloadKnowledgeDatabase()
+            }.onFailure {
+                setState { it.copy(failed = true) }
+            }
+            setState { it.copy(loading = false) }
         }
-        return _knowledge!!
     }
 }

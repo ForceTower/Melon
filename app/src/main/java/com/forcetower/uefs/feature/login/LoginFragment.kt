@@ -46,7 +46,7 @@ import androidx.navigation.fragment.findNavController
 import com.forcetower.sagres.Constants
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentLoginFormBinding
 import com.forcetower.uefs.feature.shared.UFragment

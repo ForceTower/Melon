@@ -1,4 +1,4 @@
-package com.forcetower.uefs.core.model.edge
+package com.forcetower.uefs.core.model.edge.auth
 
 import com.google.gson.annotations.SerializedName
 

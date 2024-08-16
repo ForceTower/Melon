@@ -103,8 +103,7 @@ class DashboardFragment : UFragment() {
             viewLifecycleOwner,
             EventObserver {
                 val accountId = it.first
-                val profileId = it.second
-                val intent = ProfileActivity.startIntent(requireContext(), profileId, accountId)
+                val intent = ProfileActivity.startIntent(requireContext(), accountId)
 
                 val shared = findStudentHeadshot(binding.recyclerElements)
                 val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, "student_headshot_transition")

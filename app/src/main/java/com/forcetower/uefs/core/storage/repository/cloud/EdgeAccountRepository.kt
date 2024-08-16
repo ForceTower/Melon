@@ -1,6 +1,6 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
-import com.forcetower.uefs.core.model.edge.ChangePictureDTO
+import com.forcetower.uefs.core.model.edge.account.ChangePictureDTO
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService

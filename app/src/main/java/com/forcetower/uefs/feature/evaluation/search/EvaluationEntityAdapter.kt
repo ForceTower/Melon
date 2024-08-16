@@ -25,13 +25,14 @@ import androidx.paging.PagingDataAdapter
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.databinding.ItemEvaluationSimpleEntityBinding
 import com.forcetower.uefs.feature.shared.inflate
 
 class EvaluationEntityAdapter(
     private val selector: EntitySelector
-) : PagingDataAdapter<EvaluationEntity, EvaluationEntityAdapter.EntityHolder>(EntityDiff) {
+) : PagingDataAdapter<EdgeParadoxSearchableItem, EvaluationEntityAdapter.EntityHolder>(EntityDiff) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = EntityHolder(
         parent.inflate(R.layout.item_evaluation_simple_entity),
         selector
@@ -41,7 +42,7 @@ class EvaluationEntityAdapter(
         val item = getItem(position)
         holder.binding.apply {
             entity = item
-            root.setTag(R.id.tag_student_id, item?.referencedId)
+            root.setTag(R.id.tag_student_id, item?.serviceId)
             executePendingBindings()
         }
     }
@@ -55,8 +56,8 @@ class EvaluationEntityAdapter(
         }
     }
 
-    private object EntityDiff : DiffUtil.ItemCallback<EvaluationEntity>() {
-        override fun areItemsTheSame(oldItem: EvaluationEntity, newItem: EvaluationEntity) = oldItem.id == newItem.id
-        override fun areContentsTheSame(oldItem: EvaluationEntity, newItem: EvaluationEntity) = oldItem == newItem
+    private object EntityDiff : DiffUtil.ItemCallback<EdgeParadoxSearchableItem>() {
+        override fun areItemsTheSame(oldItem: EdgeParadoxSearchableItem, newItem: EdgeParadoxSearchableItem) = oldItem.id == newItem.id
+        override fun areContentsTheSame(oldItem: EdgeParadoxSearchableItem, newItem: EdgeParadoxSearchableItem) = oldItem == newItem
     }
 }

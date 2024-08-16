@@ -54,12 +54,12 @@ class RatingActivity : UActivity() {
 
         if (args.isTeacher) {
             viewModel.initForTeacher(args.teacherId)
-            viewModel.getQuestionsForTeacher(args.teacherId).observe(this, Observer { useResponse(it) })
+//            viewModel.getQuestionsForTeacher(args.teacherId).observe(this, Observer { useResponse(it) })
         } else {
             val code = args.code ?: "0"
             val department = args.department ?: "0"
             viewModel.initForDiscipline(code, department)
-            viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
+//            viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
         }
 
         viewModel.nextQuestion.observe(

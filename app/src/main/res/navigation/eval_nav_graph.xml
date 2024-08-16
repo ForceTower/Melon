@@ -62,7 +62,7 @@
     </fragment>
     <fragment
         android:id="@+id/unesverse_required"
-        android:name="com.forcetower.uefs.feature.universe.UnesverseRequiredFragment"
+        android:name="com.forcetower.uefs.feature.evaluation.universe.UnesverseRequiredFragment"
         android:label="UnesverseRequiredFragment"
         tools:layout="@layout/fragment_universe_required">
         <action
@@ -116,10 +116,7 @@
                 android:name="teacherId" />
         </action>
         <argument
-            android:name="code"
-            app:argType="string" />
-        <argument
-            android:name="department"
+            android:name="id"
             app:argType="string" />
         <action
             android:id="@+id/action_discipline_to_teacher"
@@ -167,8 +164,8 @@
                 android:name="department" />
         </action>
         <argument
-            android:name="teacherId"
-            app:argType="long" />
+            android:name="id"
+            app:argType="string" />
         <action
             android:id="@+id/action_teacher_to_discipline"
             app:destination="@id/eval_discipline"
@@ -178,10 +175,6 @@
             app:popEnterAnim="@anim/open_scale"
             app:popExitAnim="@anim/close_translate"
             app:popUpToInclusive="false" />
-        <argument
-            android:name="teacherName"
-            app:argType="string"
-            app:nullable="true" />
     </fragment>
     <activity
         android:id="@+id/rating"

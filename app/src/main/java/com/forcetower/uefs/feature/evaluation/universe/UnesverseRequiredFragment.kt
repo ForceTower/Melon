@@ -18,7 +18,7 @@
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-package com.forcetower.uefs.feature.universe
+package com.forcetower.uefs.feature.evaluation.universe
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -69,13 +69,12 @@ class UnesverseRequiredFragment : UFragment() {
             }
         )
         viewModel.access.observe(
-            viewLifecycleOwner,
-            {
-                if (it != null) {
-                    findNavController().navigate(R.id.action_unesverse_required_to_presentation)
-                }
+            viewLifecycleOwner
+        ) {
+            if (it != null) {
+                findNavController().navigate(R.id.action_unesverse_required_to_presentation)
             }
-        )
+        }
     }
 
     private fun connect() {

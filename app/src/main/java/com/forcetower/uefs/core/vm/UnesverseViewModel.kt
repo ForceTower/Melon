@@ -24,11 +24,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -37,9 +39,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class UnesverseViewModel @Inject constructor(
-    private val auth: AuthRepository
+    private val auth: EdgeAuthRepository,
 ) : ViewModel() {
-    val access = auth.getAccessToken()
+    val access = auth.getAccessToken().asLiveData()
 
     private val _isLoggingIn = MediatorLiveData<Boolean>()
     val isLoggingIn: LiveData<Boolean>
@@ -58,10 +60,14 @@ class UnesverseViewModel @Inject constructor(
         _isLoggingIn.value = true
 
         viewModelScope.launch {
-            val token = auth.loginToService()
-            if (token != null) {
-                _loginMessenger.setValueIfNew(Event(R.string.connected_to_the_unesverse))
-            } else {
+            runCatching {
+                val token = auth.doAnonymousLogin()
+                if (token != null) {
+                    _loginMessenger.setValueIfNew(Event(R.string.connected_to_the_unesverse))
+                } else {
+                    _loginMessenger.setValueIfNew(Event(R.string.failed_to_connect_to_unesverse))
+                }
+            }.onFailure {
                 _loginMessenger.setValueIfNew(Event(R.string.failed_to_connect_to_unesverse))
             }
             _isLoggingIn.value = false

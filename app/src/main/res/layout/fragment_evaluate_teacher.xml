@@ -26,7 +26,7 @@
     <data>
         <variable
             name="teacher"
-            type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
+            type="com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData" />
         <variable
             name="loading"
             type="Boolean" />
@@ -87,7 +87,7 @@
             android:id="@+id/teacher_count_top"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.qtdStudents)}"
+            android:text="@{@string/evaluation_teacher_amount_student_format(teacher.studentCount)}"
             android:textColor="?attr/colorOnBackground"
             android:textSize="10sp"
             app:layout_constraintBottom_toBottomOf="@+id/grade_progress_top"
@@ -102,7 +102,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:constraint_referenced_ids="teacher_count_top,teacher_mean_top,grade_progress_top"
-            app:invisibleUnless="@{teacher.imageUrl == null}" />
+            app:invisibleUnless="@{true}" />
 
         <ImageView
             android:id="@+id/teacher_image"
@@ -112,8 +112,8 @@
             android:contentDescription="@string/evaluated_teacher_image"
             android:visibility="invisible"
             app:clipToCircle="@{true}"
-            app:imageUrl="@{teacher.imageUrl}"
-            app:invisibleUnless="@{teacher.imageUrl != null}"
+            app:imageUrl="@{null}"
+            app:invisibleUnless="@{false}"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -136,8 +136,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            app:goneUnless="@{teacher.email != null}"
-            android:text="@{teacher.email}"
+            app:goneUnless="@{false}"
             android:textColor="?attr/colorPrimaryDark"
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
