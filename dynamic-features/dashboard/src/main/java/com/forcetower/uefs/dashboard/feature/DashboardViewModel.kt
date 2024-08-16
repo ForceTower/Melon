@@ -66,8 +66,8 @@ class DashboardViewModel @Inject constructor(
         }
     }
 
-    private val _profileClick = MutableLiveData<Event<Pair<Long, Long>>>()
-    val profileClick: LiveData<Event<Pair<Long, Long>>>
+    private val _profileClick = MutableLiveData<Event<Pair<String, Long>>>()
+    val profileClick: LiveData<Event<Pair<String, Long>>>
         get() = _profileClick
 
     private val _onMoveToSchedule = MutableLiveData<Event<Unit>>()

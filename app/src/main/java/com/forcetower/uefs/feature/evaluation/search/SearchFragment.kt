@@ -34,15 +34,20 @@ import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.DISCIPLINE_TYPE
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.TEACHER_TYPE
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
+import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.profile.ProfileActivity
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import timber.log.Timber
 
 @AndroidEntryPoint
@@ -75,7 +80,7 @@ class SearchFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.downloadDatabase().observe(viewLifecycleOwner, { loadKnowledge(it) })
+        viewModel.state.observe(viewLifecycleOwner) { handleState(it) }
         viewModel.entitySelect.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -83,39 +88,38 @@ class SearchFragment : UFragment() {
             }
         )
 
-        lifecycleScope.launchWhenCreated {
+        lifecycleScope.launch {
             viewModel.searchSource.collectLatest {
                 adapter.submitData(it)
             }
         }
+
+        if (savedInstanceState == null) {
+            viewModel.downloadDatabase()
+        }
     }
 
-    private fun onEvalEntitySelected(entity: EvaluationEntity) {
+    private fun onEvalEntitySelected(entity: EdgeParadoxSearchableItem) {
         when (entity.type) {
-            0 -> {
-                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.referencedId, null)
+            TEACHER_TYPE -> {
+                val directions = SearchFragmentDirections.actionSearchToTeacher(entity.serviceId)
                 findNavController().navigate(directions)
             }
-            1 -> {
-                val comp1 = entity.comp1 ?: return
-                val comp2 = entity.comp2 ?: return
-                val directions = SearchFragmentDirections.actionSearchToDiscipline(comp2, comp1)
+            DISCIPLINE_TYPE -> {
+                val directions = SearchFragmentDirections.actionSearchToDiscipline(entity.serviceId)
                 findNavController().navigate(directions)
-            }
-            2 -> {
-                onStudentSelected(entity)
             }
         }
     }
 
-    private fun onStudentSelected(entity: EvaluationEntity) {
-        val shared = findStudentHeadshot(binding.wildcardRecycler, entity.referencedId)
+    private fun onStudentSelected(entity: EdgeParadoxSearchableItem) {
+        val shared = findStudentHeadshot(binding.wildcardRecycler, entity.serviceId)
         val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, getString(R.string.student_headshot_transition))
-        val intent = ProfileActivity.startIntent(requireContext(), entity.referencedId, entity.referenceLong1 ?: 0)
+        val intent = ProfileActivity.startIntent(requireContext(), entity.serviceId)
         startActivity(intent, option.toBundle())
     }
 
-    private fun findStudentHeadshot(entities: ViewGroup, studentId: Long): View {
+    private fun findStudentHeadshot(entities: ViewGroup, studentId: String): View {
         entities.forEach {
             if (it.getTag(R.id.tag_student_id) == studentId) {
                 return it.findViewById(R.id.entity_image)
@@ -125,8 +129,8 @@ class SearchFragment : UFragment() {
         return entities
     }
 
-    private fun loadKnowledge(resource: Resource<Boolean>) {
-        if (resource.status == Status.LOADING && resource.data == true) {
+    private fun handleState(state: EvaluationState) {
+        if (state.loading) {
             binding.loadingGroup.visibility = VISIBLE
             binding.wildcardRecycler.visibility = GONE
         } else {

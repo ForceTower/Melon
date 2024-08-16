@@ -35,11 +35,10 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class PresentationFragment : UFragment() {
-    @Inject
-    lateinit var preferences: SharedPreferences
+    @Inject lateinit var preferences: SharedPreferences
     private lateinit var binding: FragmentEvaluationPresentationBinding
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         return FragmentEvaluationPresentationBinding.inflate(inflater, container, false).also {
             binding = it
         }.apply {

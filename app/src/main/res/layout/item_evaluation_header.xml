@@ -25,7 +25,7 @@
     <data>
         <variable
             name="header"
-            type="com.forcetower.uefs.core.model.service.EvaluationHomeTopic" />
+            type="com.forcetower.uefs.core.model.edge.paradox.EvaluationHotTopic" />
     </data>
     <LinearLayout
         android:layout_width="match_parent"

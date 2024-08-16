@@ -45,10 +45,10 @@ class EvaluationActivity : UGameActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation)
         if (savedInstanceState == null) {
             val teacherName = intent.getStringExtra("teacherName")
-            if (teacherName != null) {
-                val direction = EvalNavGraphDirections.actionGlobalEvalTeacher(0, teacherName)
-                findNavController(R.id.eval_nav_host).navigate(direction)
-            }
+//            if (teacherName != null) {
+//                val direction = EvalNavGraphDirections.actionGlobalEvalTeacher(0, teacherName)
+//                findNavController(R.id.eval_nav_host).navigate(direction)
+//            }
         }
     }
 

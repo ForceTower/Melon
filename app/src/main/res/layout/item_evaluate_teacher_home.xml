@@ -26,7 +26,7 @@
     <data>
         <variable
             name="teacher"
-            type="com.forcetower.uefs.core.model.service.EvaluationTeacher" />
+            type="com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher" />
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.evaluation.home.HomeInteractor" />
@@ -80,7 +80,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:layout_marginStart="16dp"
-                android:text="@{@string/evaluation_teacher_mean_count(teacher.qtdStudents)}"
+                android:text="@{@string/evaluation_teacher_mean_count(teacher.studentCount)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_grade"
                 app:layout_constraintTop_toBottomOf="@+id/text_title"

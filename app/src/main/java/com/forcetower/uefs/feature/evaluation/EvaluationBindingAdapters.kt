@@ -26,6 +26,9 @@ import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import com.forcetower.core.utils.ViewUtils
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.DISCIPLINE_TYPE
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.TEACHER_TYPE
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.feature.evaluation.discipline.SemesterMean
 import com.github.mikephil.charting.charts.LineChart
@@ -116,13 +119,13 @@ private fun List<SemesterMean>.convertToDataSetWithTitles(): Pair<List<String>, 
 }
 
 @BindingAdapter("evaluationEntityDescription")
-fun evaluationEntityDescription(tv: TextView, entity: EvaluationEntity?) {
+fun evaluationEntityDescription(tv: TextView, entity: EdgeParadoxSearchableItem?) {
     entity ?: return
     val context = tv.context
     val string = when (entity.type) {
-        0 -> context.getString(R.string.teacher_evaluation_entity)
-        1 -> context.getString(R.string.discipline_evaluation_entity)
-        2 -> context.getString(R.string.student_evaluation_entity, entity.extra)
+        TEACHER_TYPE -> context.getString(R.string.teacher_evaluation_entity)
+        DISCIPLINE_TYPE -> context.getString(R.string.discipline_evaluation_entity)
+//        2 -> context.getString(R.string.student_evaluation_entity, entity.extra)
         else -> context.getString(R.string.unknown_evaluation_entity)
     }
     tv.text = string

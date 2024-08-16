@@ -1,12 +1,12 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
-import com.forcetower.uefs.core.model.edge.AssertionData
-import com.forcetower.uefs.core.model.edge.CompleteAssertionData
-import com.forcetower.uefs.core.model.edge.EdgeLoginBody
-import com.forcetower.uefs.core.model.edge.EmailLinkBodyDTO
-import com.forcetower.uefs.core.model.edge.EmailLinkConfirmDTO
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyCredential
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.auth.AssertionData
+import com.forcetower.uefs.core.model.edge.auth.CompleteAssertionData
+import com.forcetower.uefs.core.model.edge.auth.EdgeLoginBody
+import com.forcetower.uefs.core.model.edge.auth.EmailLinkBodyDTO
+import com.forcetower.uefs.core.model.edge.auth.EmailLinkConfirmDTO
+import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyCredential
+import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.core.model.ui.edge.EmailLinkComplete
 import com.forcetower.uefs.core.model.ui.edge.EmailLinkStart
 import com.forcetower.uefs.core.model.unes.EdgeAccessToken
@@ -22,6 +22,8 @@ class EdgeAuthRepository @Inject constructor(
     private val service: EdgeService,
     private val database: UDatabase
 ) {
+    fun getAccessToken() = database.edgeAccessToken.get()
+
     suspend fun anonymous(username: String, password: String) {
         val result = service.loginAnonymous(EdgeLoginBody(username, password))
         database.edgeAccessToken.insert(EdgeAccessToken(result.accessToken))

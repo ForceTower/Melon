@@ -20,8 +20,8 @@
 
 package com.forcetower.uefs.feature.evaluation.search
 
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 
 interface EntitySelector {
-    fun onEntitySelected(entity: EvaluationEntity)
+    fun onEntitySelected(entity: EdgeParadoxSearchableItem)
 }

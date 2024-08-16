@@ -46,18 +46,15 @@ class InitialFragment : UFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val onboarding = preferences.getBoolean("evaluation_presentation_shown", false)
-        viewModel.getToken().observe(
-            viewLifecycleOwner,
-            {
-                Timber.d("Token received: $it")
-                if (it == null) {
-                    findNavController().navigate(R.id.action_initial_to_unesverse_required)
-                } else if (!onboarding) {
-                    findNavController().navigate(R.id.action_initial_to_presentation)
-                } else {
-                    findNavController().navigate(R.id.action_initial_to_home)
-                }
+        viewModel.getAccount().observe(
+            viewLifecycleOwner
+        ) {
+            Timber.d("Token received: $it")
+            when {
+                it?.email == null -> findNavController().navigate(R.id.action_initial_to_unesverse_required)
+                !onboarding -> findNavController().navigate(R.id.action_initial_to_presentation)
+                else -> findNavController().navigate(R.id.action_initial_to_home)
             }
-        )
+        }
     }
 }

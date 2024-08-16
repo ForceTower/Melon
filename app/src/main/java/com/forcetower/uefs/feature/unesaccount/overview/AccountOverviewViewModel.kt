@@ -57,6 +57,8 @@ class AccountOverviewViewModel @Inject constructor(
             }.onFailure {
                 Timber.e(it, "Failed to finish registration")
                 sendEvent { AccountOverviewEvent.PasskeyRegisterConnectionFailed }
+            }.onSuccess {
+                sendEvent { AccountOverviewEvent.PasskeyRegisterCompleted }
             }
 
             onPasskeyRegistrationFinished()

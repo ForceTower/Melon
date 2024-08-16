@@ -26,7 +26,7 @@
     <data>
         <variable
             name="discipline"
-            type="com.forcetower.uefs.core.model.service.EvaluationDiscipline" />
+            type="com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline" />
         
         <variable
             name="interactor"
@@ -81,7 +81,7 @@
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:layout_marginStart="16dp"
-                android:text="@{@string/evaluation_discipline_mean_count(discipline.qtdStudents)}"
+                android:text="@{@string/evaluation_discipline_mean_count(discipline.studentCount)}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/text_grade"
                 app:layout_constraintTop_toBottomOf="@+id/text_title"
@@ -95,7 +95,7 @@
                 android:layout_marginStart="44dp"
                 android:text="@string/evaluation_open_discipline"
                 android:onClick="@{() -> interactor.onClickDiscipline(discipline)}"
-                app:goneIf="@{discipline.participant}"
+                app:goneIf="@{false}"
                 app:iconGravity="end"
                 app:iconPadding="10dp"
                 app:icon="@drawable/ic_chevron_right_black_24dp"
@@ -105,7 +105,7 @@
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_vote"
                 style="@style/UTheme.MaterialButton.Default.DialogPrimary"
-                app:goneUnless="@{discipline.participant}"
+                app:goneUnless="@{false}"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="44dp"

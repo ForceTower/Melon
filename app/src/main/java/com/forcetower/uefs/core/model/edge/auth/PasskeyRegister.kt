@@ -1,4 +1,4 @@
-package com.forcetower.uefs.core.model.edge
+package com.forcetower.uefs.core.model.edge.auth
 
 data class Rp(val name: String, val id: String)
 data class User(val name: String, val displayName: String, val id: String)

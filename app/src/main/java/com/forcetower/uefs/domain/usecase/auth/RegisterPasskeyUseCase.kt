@@ -1,11 +1,10 @@
 package com.forcetower.uefs.domain.usecase.auth
 
-import com.forcetower.uefs.core.model.edge.PasskeyRegister
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.auth.PasskeyRegister
+import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.google.gson.Gson
 import dagger.Reusable
-import timber.log.Timber
 import javax.inject.Inject
 
 @Reusable

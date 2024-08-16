@@ -3,7 +3,7 @@ package com.forcetower.uefs.feature.login
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.domain.usecase.auth.CompleteAssertionUseCase
 import com.forcetower.uefs.domain.usecase.auth.RegisterPasskeyUseCase
 import com.forcetower.uefs.domain.usecase.auth.StartAssertionUseCase
