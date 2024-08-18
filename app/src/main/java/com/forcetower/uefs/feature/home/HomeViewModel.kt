@@ -47,6 +47,7 @@ import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeSyncRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
@@ -77,7 +78,8 @@ class HomeViewModel @Inject constructor(
     private val fetchMissingSemesters: FetchMissingSemestersUseCase,
     @Named("flagSnowpiercerEnabled")
     private val snowpiercerEnabled: Boolean,
-    private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase
+    private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase,
+    private val edgeSyncRepository: EdgeSyncRepository
 ) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
 
@@ -166,6 +168,7 @@ class HomeViewModel @Inject constructor(
             runCatching {
                 anonymousLoginUseCase.prepareAndLogin()
                 edgeAccountRepository.fetchAccountIfNeeded()
+                edgeSyncRepository.syncDataIfNeeded()
             }.onFailure {
                 Timber.e(it, "Failed to authenticate or fetch account.")
             }

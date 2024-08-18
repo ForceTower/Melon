@@ -13,6 +13,8 @@ import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.core.model.edge.account.SendMessagingTokenDTO
 import com.forcetower.uefs.core.model.edge.account.ServiceAccountDTO
 import com.forcetower.uefs.core.model.edge.ServiceResponseWrapper
+import com.forcetower.uefs.core.model.edge.sync.PublicDisciplineData
+import com.forcetower.uefs.core.model.edge.sync.PublicPlatformMessage
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -48,4 +50,10 @@ interface EdgeService {
 
     @POST("account/picture")
     suspend fun uploadPicture(@Body data: ChangePictureDTO): ServiceResponseWrapper<String>
+
+    @GET("messages/platform")
+    suspend fun messages(): ServiceResponseWrapper<List<PublicPlatformMessage>>
+
+    @GET("disciplines/current")
+    suspend fun disciplines(): ServiceResponseWrapper<PublicDisciplineData>
 }

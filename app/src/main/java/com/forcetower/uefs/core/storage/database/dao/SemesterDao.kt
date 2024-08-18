@@ -76,6 +76,9 @@ abstract class SemesterDao {
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
     abstract fun getSemesterDirect(sagresId: Long): Semester?
 
+    @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
+    abstract suspend fun getSemesterDirectSuspend(sagresId: Long): Semester?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun internalInsertIgnoring(semesters: List<Semester>)
 
@@ -93,4 +96,7 @@ abstract class SemesterDao {
 
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
     abstract fun getSemestersDirect(): List<Semester>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertIgnoreSuspend(semester: Semester)
 }

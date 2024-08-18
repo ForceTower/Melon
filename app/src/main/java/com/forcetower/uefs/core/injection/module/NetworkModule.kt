@@ -199,22 +199,22 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideEdgeService(client: OkHttpClient): EdgeService {
+    fun provideEdgeService(client: OkHttpClient, gson: Gson): EdgeService {
         return Retrofit.Builder()
             .baseUrl(Constants.EDGE_UNES_SERVICE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(EdgeService::class.java)
     }
 
     @Provides
     @Singleton
-    fun provideParadoxService(client: OkHttpClient): ParadoxService {
+    fun provideParadoxService(client: OkHttpClient, gson: Gson): ParadoxService {
         return Retrofit.Builder()
             .baseUrl(Constants.EDGE_UNES_SERVICE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(ParadoxService::class.java)
     }
