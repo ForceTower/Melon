@@ -28,6 +28,7 @@ import androidx.room.Transaction
 import androidx.room.Update
 import com.forcetower.sagres.database.model.SagresGrade
 import com.forcetower.sagres.database.model.SagresGradeInfo
+import com.forcetower.uefs.core.model.edge.sync.PublicGrade
 import com.forcetower.uefs.core.model.unes.Class
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.Grade
@@ -324,4 +325,52 @@ abstract class GradeDao {
 
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun insertClass(clazz: Class): Long
+
+    @Transaction
+    open suspend fun putEdgeGrades(grades: List<PublicGrade>, classId: Long) {
+        grades.forEach { grade ->
+            val current = getNamedGradeDirect(classId, grade.name, grade.groupingName?.trim().hashCode())
+            if (current == null) {
+                insert(
+                    Grade(
+                        classId = classId,
+                        name = grade.name,
+                        notified = 0,
+                        grade = grade.grade?.toString(),
+                        grouping = grade.groupingName?.trim().hashCode(),
+                        groupingName = grade.groupingName?.trim() ?: "Notas",
+                        date = grade.date?.trim()
+                    )
+                )
+            } else {
+                var shouldUpdate = true
+                val score = grade.grade?.toString() ?: ""
+                var next = current
+                if (current.hasGrade() && grade.grade != null && score != current.grade) {
+                    next = current.copy(
+                        grade = score,
+                        date = grade.date?.trim()
+                    )
+                } else if (!current.hasGrade() && grade.grade != null) {
+                    next = current.copy(
+                        grade = score,
+                        date = grade.date?.trim()
+                    )
+                } else if (!current.hasGrade() && grade.grade == null && current.date != grade.date) {
+                    next = current.copy(
+                        date = grade.date?.trim()
+                    )
+                } else {
+                    shouldUpdate = false
+                }
+
+                if (current.groupingName != grade.groupingName?.trim()) {
+                    shouldUpdate = true
+                    next = next.copy(groupingName = grade.groupingName?.trim() ?: "Notas")
+                }
+
+                if (shouldUpdate) update(next)
+            }
+        }
+    }
 }
