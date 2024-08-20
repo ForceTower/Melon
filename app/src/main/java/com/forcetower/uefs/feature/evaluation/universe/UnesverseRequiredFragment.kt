@@ -79,6 +79,6 @@ class UnesverseRequiredFragment : UFragment() {
     }
 
     private fun connect() {
-        viewModel.login()
+        findNavController().popBackStack()
     }
 }
