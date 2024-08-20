@@ -25,6 +25,7 @@ class CreateAccountReasonsFragment : UFragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        binding = FragmentServiceAccountWhyIsItNeededBinding.inflate(inflater, container, false)
         val markwon = Markwon.builder(requireContext())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
@@ -46,9 +47,7 @@ class CreateAccountReasonsFragment : UFragment() {
 
         markwon.setMarkdown(binding.content, span)
 
-        return FragmentServiceAccountWhyIsItNeededBinding.inflate(inflater, container, false).also {
-            binding = it
-        }.root
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

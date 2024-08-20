@@ -105,9 +105,9 @@ object AppModule {
     @Provides
     @Reusable
     @Named("webViewUA")
-    fun provideWebViewUserAgent(context: Context): String {
+    fun provideWebViewUserAgent(): String {
         return try {
-            WebSettings.getDefaultUserAgent(context)
+            System.getProperty("http.agent") ?: "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.6312.118 Mobile Safari/537.36"
         } catch (error: Throwable) {
             Timber.w("Failed to obtain device UserAgent")
             Timber.w("UserAgent error ${error.message}")
