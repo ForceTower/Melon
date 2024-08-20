@@ -63,9 +63,11 @@ class AERIRepository @Inject constructor(
 
     @WorkerThread
     suspend fun refreshNews() = withContext(Dispatchers.IO) {
-        Oversee.initialize()
-        val news = Oversee.instance.getAERINews().reversed()
-        database.news().insert(news)
+        runCatching {
+            Oversee.initialize()
+            val news = Oversee.instance.getAERINews().reversed()
+            database.news().insert(news)
+        }
     }
 
     fun getAnnouncements(): Flow<PagingData<Announcement>> =
