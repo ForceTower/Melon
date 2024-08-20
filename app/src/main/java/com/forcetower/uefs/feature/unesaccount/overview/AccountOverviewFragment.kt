@@ -91,6 +91,7 @@ class AccountOverviewFragment : UFragment() {
         }
 
         binding.btnCreatePasskey.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+        binding.btnWhy.isVisible = false
     }
 
     private fun onReasons() {
