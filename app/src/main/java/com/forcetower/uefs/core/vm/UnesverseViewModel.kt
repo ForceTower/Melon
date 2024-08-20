@@ -30,6 +30,7 @@ import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
@@ -40,12 +41,15 @@ import javax.inject.Inject
 @HiltViewModel
 class UnesverseViewModel @Inject constructor(
     private val auth: EdgeAuthRepository,
+    accountRepository: EdgeAccountRepository
 ) : ViewModel() {
     val access = auth.getAccessToken().asLiveData()
 
     private val _isLoggingIn = MediatorLiveData<Boolean>()
     val isLoggingIn: LiveData<Boolean>
         get() = _isLoggingIn
+
+    val account = accountRepository.getAccount().asLiveData()
 
     private val _loggingIn = MediatorLiveData<Resource<AccessToken?>>()
     val loggingIn: MediatorLiveData<Resource<AccessToken?>>

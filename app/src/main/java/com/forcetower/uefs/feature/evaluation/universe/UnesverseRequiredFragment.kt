@@ -34,6 +34,7 @@ import com.forcetower.uefs.databinding.FragmentUniverseRequiredBinding
 import com.forcetower.uefs.feature.information.InformationDialog
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 @AndroidEntryPoint
 class UnesverseRequiredFragment : UFragment() {
@@ -60,7 +61,7 @@ class UnesverseRequiredFragment : UFragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.connecting = viewModel.isLoggingIn
         binding.lifecycleOwner = this
-        viewModel.loggingIn.observe(viewLifecycleOwner, Observer { Unit })
+        viewModel.loggingIn.observe(viewLifecycleOwner) { Timber.i("Logging in!") }
         viewModel.loginMessenger.observe(
             viewLifecycleOwner,
             EventObserver {
@@ -68,10 +69,10 @@ class UnesverseRequiredFragment : UFragment() {
                 showSnack(message)
             }
         )
-        viewModel.access.observe(
+        viewModel.account.observe(
             viewLifecycleOwner
         ) {
-            if (it != null) {
+            if (it?.email != null) {
                 findNavController().navigate(R.id.action_unesverse_required_to_presentation)
             }
         }
