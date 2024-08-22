@@ -26,8 +26,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.storage.repository.FormsRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class FormsViewModel @Inject constructor(

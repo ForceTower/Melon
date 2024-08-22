@@ -79,6 +79,7 @@ abstract class NetworkOnlyResource<RequestType>
 
     @MainThread
     abstract fun createCall(): LiveData<ApiResponse<RequestType>>
+
     @WorkerThread
     abstract fun saveCallResult(value: RequestType)
 }

@@ -37,9 +37,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.DISCIPLINE_TYPE
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.TEACHER_TYPE
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
-import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.databinding.FragmentEvaluationSearchBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel

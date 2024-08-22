@@ -74,17 +74,18 @@ fun profileScoreOptional(
 
     if (preferences.getBoolean("stg_acc_score", true)) {
         // caso queira o calculado
-        if (preferences.getBoolean("stg_choice_score", false))
+        if (preferences.getBoolean("stg_choice_score", false)) {
             when {
                 calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
                 actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
             }
-        // por padrão exibe o real que vem do SAGRES
-        else
+        } // por padrão exibe o real que vem do SAGRES
+        else {
             when {
                 actual != -1.0 -> tv.text = context.getString(R.string.label_your_score, min((actual + currentIncrease), 10.0))
                 calc != -1.0 -> tv.text = context.getString(R.string.label_your_calculated_score, min((calc + currentIncrease), 10.0))
             }
+        }
 
         // verificando se existe realmente um score
         if (calc / actual == 1.0 && calc == -1.0) tv.text = context.getString(R.string.label_score_undefined)

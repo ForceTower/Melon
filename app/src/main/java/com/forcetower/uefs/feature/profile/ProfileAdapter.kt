@@ -118,7 +118,9 @@ class ProfileAdapter(
 
     sealed class ProfileHolder(view: View) : RecyclerView.ViewHolder(view) {
         class Header(val binding: ItemProfileHeaderBinding, interactor: ProfileInteractor?) : ProfileHolder(binding.root) {
-            init { binding.interactor = interactor }
+            init {
+                binding.interactor = interactor
+            }
         }
         class Statement(
             val binding: ItemProfileStatementBinding,

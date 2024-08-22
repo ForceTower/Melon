@@ -34,10 +34,10 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.service.NotificationCreator
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 @Singleton
 class SIECOMPRepository @Inject constructor(

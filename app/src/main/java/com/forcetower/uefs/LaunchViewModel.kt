@@ -29,8 +29,8 @@ import com.forcetower.uefs.core.task.successOr
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.unes.usecases.auth.HasEnrolledAccessUseCase
 import dev.forcetower.unes.usecases.version.NotifyNewVersionUseCase
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LaunchViewModel @Inject constructor(

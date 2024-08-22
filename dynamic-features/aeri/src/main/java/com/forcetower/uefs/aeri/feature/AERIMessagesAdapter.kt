@@ -44,7 +44,9 @@ class AERIMessagesAdapter(
     }
 
     inner class AnnouncementHolder(val binding: ItemAnnouncementBinding, interactor: AnnouncementInteractor) : RecyclerView.ViewHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Announcement>() {

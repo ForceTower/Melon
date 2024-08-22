@@ -34,8 +34,8 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class DemandViewModel @Inject constructor(
@@ -56,7 +56,9 @@ class DemandViewModel @Inject constructor(
     private val _offers = MediatorLiveData<Resource<List<SagresDemandOffer>>>()
     val offers: LiveData<Resource<List<SagresDemandOffer>>>
         get() {
-            if (!loaded) { initLoad() }
+            if (!loaded) {
+                initLoad()
+            }
             return _offers
         }
 

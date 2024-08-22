@@ -32,8 +32,8 @@ import com.forcetower.uefs.core.work.enqueueUnique
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.core.repository.EventRepository
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class CreateEventWorker(
     private val context: Context,

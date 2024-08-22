@@ -56,8 +56,10 @@ data class Session(
 
     @Ignore
     val year = startTime.year
+
     @Ignore
     val duration = endTime.toInstant().toEpochMilli() - startTime.toInstant().toEpochMilli()
+
     @Ignore
     val sessionType = when (type) {
         0 -> SessionType.SPEAK
@@ -80,9 +82,10 @@ data class Session(
 
     override fun compareTo(other: Session): Int {
         val value = startTime.compareTo(other.startTime)
-        return if (value != 0)
+        return if (value != 0) {
             value
-        else
+        } else {
             duration.compareTo(other.duration)
+        }
     }
 }

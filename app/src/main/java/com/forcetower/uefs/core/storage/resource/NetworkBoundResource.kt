@@ -106,12 +106,16 @@ abstract class NetworkBoundResource<ResultType, RequestType>
 
     @MainThread
     abstract fun loadFromDb(): LiveData<ResultType>
+
     @MainThread
     abstract fun shouldFetch(it: ResultType?): Boolean
+
     @MainThread
     abstract fun createCall(): LiveData<ApiResponse<RequestType>>
+
     @WorkerThread
     abstract fun saveCallResult(value: RequestType)
+
     @WorkerThread
     open fun onErrorCallback() = Unit
 }

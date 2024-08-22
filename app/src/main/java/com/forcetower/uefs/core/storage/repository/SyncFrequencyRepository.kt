@@ -24,10 +24,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.google.firebase.firestore.CollectionReference
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class SyncFrequencyRepository @Inject constructor(
@@ -44,7 +44,9 @@ class SyncFrequencyRepository @Inject constructor(
                         .map { it.toObject(SyncFrequency::class.java)!! }
                         .sortedBy { it.value }
                         .toMutableList()
-                    if (frequencies.isEmpty()) { frequencies += SyncFrequency() }
+                    if (frequencies.isEmpty()) {
+                        frequencies += SyncFrequency()
+                    }
                     result.postValue(frequencies)
                 }
                 exception != null -> {

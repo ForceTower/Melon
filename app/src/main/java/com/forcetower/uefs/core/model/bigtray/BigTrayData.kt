@@ -22,11 +22,11 @@ package com.forcetower.uefs.core.model.bigtray
 
 import androidx.core.math.MathUtils.clamp
 import com.forcetower.uefs.feature.shared.extensions.toCalendar
-import timber.log.Timber
 import java.util.Calendar
 import java.util.Calendar.SATURDAY
 import java.util.Calendar.SUNDAY
 import java.util.Objects
+import timber.log.Timber
 
 data class BigTrayData(
     val open: Boolean,
@@ -108,7 +108,9 @@ fun BigTrayData.getNextMealTime(): String {
 
 fun BigTrayData.isOpen(): Boolean {
     var amount = -1
-    try { amount = quota.toInt() } catch (e: Exception) {}
+    try {
+        amount = quota.toInt()
+    } catch (e: Exception) {}
     return open && amount != -1
 }
 

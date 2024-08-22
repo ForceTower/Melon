@@ -42,8 +42,8 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Keep
 class DashboardFragment : UFragment() {

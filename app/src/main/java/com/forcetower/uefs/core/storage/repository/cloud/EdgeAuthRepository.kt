@@ -13,9 +13,9 @@ import com.forcetower.uefs.core.model.unes.EdgeAccessToken
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class EdgeAuthRepository @Inject constructor(
@@ -64,8 +64,9 @@ class EdgeAuthRepository @Inject constructor(
         try {
             val response = service.linkEmailStart(EmailLinkBodyDTO(email))
             val body = response.body()
-            if (body != null && response.isSuccessful)
+            if (body != null && response.isSuccessful) {
                 return EmailLinkStart.CodeSent(body.data.securityToken)
+            }
 
             return EmailLinkStart.InvalidInfo
         } catch (error: Throwable) {

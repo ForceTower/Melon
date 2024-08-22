@@ -39,8 +39,8 @@ import com.forcetower.uefs.core.storage.repository.DisciplineDetailsRepository
 import com.forcetower.uefs.core.util.isConnectedToInternet
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DisciplineDetailsLoaderService : LifecycleService() {
@@ -59,6 +59,7 @@ class DisciplineDetailsLoaderService : LifecycleService() {
 
     @Inject
     lateinit var repository: DisciplineDetailsRepository
+
     @Inject
     lateinit var preferences: SharedPreferences
 

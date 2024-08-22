@@ -50,6 +50,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class IntroductionFragment : UFragment() {
     @Inject lateinit var repository: SyncFrequencyRepository
+
     @Inject lateinit var preferences: SharedPreferences
 
     private val pickImageContract = registerForActivityResult(ActivityResultContracts.GetContent()) {

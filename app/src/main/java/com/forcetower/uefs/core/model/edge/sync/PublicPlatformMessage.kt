@@ -27,5 +27,5 @@ data class PublicPlatformMessage(
     @SerializedName("attachmentName")
     val attachmentName: String?,
     @SerializedName("attachmentLink")
-    val attachmentLink: String?,
+    val attachmentLink: String?
 )

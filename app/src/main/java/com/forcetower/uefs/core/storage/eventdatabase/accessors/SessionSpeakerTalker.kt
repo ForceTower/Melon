@@ -28,6 +28,7 @@ import com.forcetower.uefs.core.model.siecomp.Speaker
 class SessionSpeakerTalker {
     @Embedded
     lateinit var data: SessionSpeaker
+
     @Relation(entityColumn = "uid", parentColumn = "speaker_id")
     lateinit var speakers: List<Speaker>
 

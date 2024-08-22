@@ -42,12 +42,12 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.billing.SkuDetailsResult
 import com.forcetower.uefs.core.storage.repository.BillingRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
+import timber.log.Timber
 
 @HiltViewModel
 class BillingViewModel @Inject constructor(

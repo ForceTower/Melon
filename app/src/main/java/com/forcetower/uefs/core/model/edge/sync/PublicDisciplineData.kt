@@ -55,5 +55,5 @@ data class PublicGrade(
     @SerializedName("date")
     val date: String?,
     @SerializedName("grade")
-    val grade: Double?,
+    val grade: Double?
 )

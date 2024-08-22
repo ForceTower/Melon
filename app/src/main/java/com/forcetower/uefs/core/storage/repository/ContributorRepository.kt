@@ -31,9 +31,9 @@ import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.network.github.GithubService
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class ContributorRepository @Inject constructor(

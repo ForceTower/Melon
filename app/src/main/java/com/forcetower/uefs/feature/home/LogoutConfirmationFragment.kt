@@ -45,7 +45,10 @@ class LogoutConfirmationFragment : BottomSheetDialogFragment() {
             binding = it
         }.apply {
             btnCancel.setOnClickListener { dismiss() }
-            btnConfirm.setOnClickListener { viewModel.logout(); dismiss() }
+            btnConfirm.setOnClickListener {
+                viewModel.logout()
+                dismiss()
+            }
         }.root
     }
 

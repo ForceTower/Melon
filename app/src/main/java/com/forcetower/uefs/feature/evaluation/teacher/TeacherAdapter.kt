@@ -26,12 +26,8 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationData
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.databinding.ItemEvaluateDisciplineHomeBinding
 import com.forcetower.uefs.databinding.ItemEvaluateDisciplineTeacherBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeacherGraphicsBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeacherMeanBinding

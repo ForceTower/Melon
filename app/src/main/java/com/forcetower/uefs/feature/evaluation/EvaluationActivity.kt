@@ -26,7 +26,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.forcetower.uefs.EvalNavGraphDirections
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.databinding.ActivityEvaluationBinding

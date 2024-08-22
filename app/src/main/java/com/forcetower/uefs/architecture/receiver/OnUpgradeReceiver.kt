@@ -34,6 +34,7 @@ import javax.inject.Inject
 class OnUpgradeReceiver : BroadcastReceiver() {
     @Inject
     lateinit var preferences: SharedPreferences
+
     @Inject
     lateinit var repository: UpgradeRepository
 

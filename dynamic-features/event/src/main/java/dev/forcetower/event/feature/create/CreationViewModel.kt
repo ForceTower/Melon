@@ -27,10 +27,10 @@ import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
-import kotlinx.coroutines.launch
 import java.time.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 class CreationViewModel @Inject constructor(
     private val repository: EventRepository

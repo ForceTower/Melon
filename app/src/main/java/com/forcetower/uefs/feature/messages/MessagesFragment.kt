@@ -48,13 +48,14 @@ import com.forcetower.uefs.feature.shared.extensions.openURL
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import dagger.hilt.android.AndroidEntryPoint
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @AndroidEntryPoint
 class MessagesFragment : UFragment() {
     @Inject
     lateinit var preferences: SharedPreferences
+
     @Inject
     lateinit var database: UDatabase
 

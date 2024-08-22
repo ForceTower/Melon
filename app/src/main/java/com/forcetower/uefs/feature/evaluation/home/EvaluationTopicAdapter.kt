@@ -113,10 +113,14 @@ private data class DisciplineWrapper(val discipline: PublicHotEvaluationDiscipli
 sealed class EvaluationHolder(view: View) : RecyclerView.ViewHolder(view) {
     class EvaluationHeader(val binding: ItemEvaluationHeaderBinding) : EvaluationHolder(binding.root)
     class EvaluationDiscipline(val binding: ItemEvaluateDisciplineHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
     class EvaluationTeacher(val binding: ItemEvaluateTeacherHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
 }
 

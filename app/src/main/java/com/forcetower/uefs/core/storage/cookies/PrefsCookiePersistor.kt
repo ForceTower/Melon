@@ -24,8 +24,8 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.forcetower.sagres.cookies.CookiePersistor
 import com.forcetower.sagres.cookies.SerializableCookie
-import okhttp3.Cookie
 import java.util.ArrayList
+import okhttp3.Cookie
 
 class PrefsCookiePersistor(context: Context) : CookiePersistor {
     private val sharedPreferences: SharedPreferences =

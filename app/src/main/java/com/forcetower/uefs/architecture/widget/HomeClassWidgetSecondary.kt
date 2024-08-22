@@ -29,12 +29,12 @@ import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeClassWidgetSecondary : AppWidgetProvider() {

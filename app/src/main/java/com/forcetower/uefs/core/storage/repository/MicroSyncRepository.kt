@@ -22,9 +22,9 @@ package com.forcetower.uefs.core.storage.repository
 
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.storage.database.UDatabase
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import javax.inject.Inject
 
 class MicroSyncRepository @Inject constructor(
     database: UDatabase

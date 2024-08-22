@@ -50,8 +50,11 @@ data class Semester(
             val str2 = Integer.parseInt(o2.substring(0, 5))
 
             if (str1 == str2) {
-                if (o1.length > 5) -1
-                else 1
+                if (o1.length > 5) {
+                    -1
+                } else {
+                    1
+                }
             } else {
                 str1.compareTo(str2) * -1
             }

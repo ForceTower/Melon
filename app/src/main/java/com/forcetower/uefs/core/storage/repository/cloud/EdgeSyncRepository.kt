@@ -9,10 +9,10 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import dagger.Reusable
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 @Reusable
 class EdgeSyncRepository @Inject constructor(

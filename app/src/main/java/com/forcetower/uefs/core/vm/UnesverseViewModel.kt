@@ -35,8 +35,8 @@ import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class UnesverseViewModel @Inject constructor(

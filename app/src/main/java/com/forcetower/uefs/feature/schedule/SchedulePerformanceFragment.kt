@@ -36,13 +36,14 @@ import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.max
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SchedulePerformanceFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     private val viewModel by activityViewModels<ScheduleViewModel>()
     private val profileViewModel by activityViewModels<ProfileViewModel>()

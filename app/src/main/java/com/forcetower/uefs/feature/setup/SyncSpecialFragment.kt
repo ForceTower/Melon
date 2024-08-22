@@ -44,9 +44,9 @@ import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.Locale
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SyncSpecialFragment : UFragment() {
@@ -62,7 +62,6 @@ class SyncSpecialFragment : UFragment() {
 
     @SuppressLint("BatteryLife")
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
         binding.btnNext.setOnClickListener {
             findNavController().navigate(R.id.action_special_to_home)
             requireActivity().finishAfterTransition()

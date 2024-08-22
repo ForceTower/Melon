@@ -20,10 +20,10 @@
 package com.forcetower.uefs.core.storage.network.adapter
 
 import androidx.lifecycle.LiveData
+import java.util.concurrent.atomic.AtomicBoolean
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.util.concurrent.atomic.AtomicBoolean
 
 /**
  * A Retrofit adapter that converts the Call into a LiveData of ApiResponse.

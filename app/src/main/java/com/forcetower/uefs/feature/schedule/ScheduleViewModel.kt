@@ -37,10 +37,10 @@ import com.forcetower.uefs.easter.twofoureight.Game2048Activity
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.DisciplineDetailsActivity
 import com.forcetower.uefs.feature.shared.extensions.toLongWeekDay
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class ScheduleViewModel @Inject constructor(

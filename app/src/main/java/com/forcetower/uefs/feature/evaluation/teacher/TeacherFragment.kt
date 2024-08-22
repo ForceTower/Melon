@@ -25,14 +25,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
 import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel

@@ -153,7 +153,7 @@ import com.forcetower.uefs.core.util.Converters
     autoMigrations = [
         AutoMigration(from = 53, to = 54),
         AutoMigration(from = 54, to = 55),
-        AutoMigration(from = 55, to = 56),
+        AutoMigration(from = 55, to = 56)
     ]
 )
 @TypeConverters(value = [Converters::class])
