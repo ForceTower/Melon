@@ -24,6 +24,7 @@ import android.content.res.Resources
 import androidx.annotation.DimenRes
 import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.MutableLiveData
+import kotlin.math.abs
 
 fun Resources.getFloatUsingCompat(@DimenRes resId: Int): Float {
     return ResourcesCompat.getFloat(this, resId)
@@ -34,4 +35,8 @@ val Boolean?.orFalse
 
 internal fun <T> MutableLiveData<T>.setValueIfNew(newValue: T) {
     if (this.value != newValue) value = newValue
+}
+
+fun Double.nearlyEquals(other: Double, difference: Double = 0.001): Boolean {
+    return abs(this - other) <= difference
 }

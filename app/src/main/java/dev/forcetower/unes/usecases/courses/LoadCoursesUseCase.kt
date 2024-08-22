@@ -25,8 +25,8 @@ import com.forcetower.uefs.core.storage.repository.CourseRepository
 import com.forcetower.uefs.core.task.FlowUseCase
 import com.forcetower.uefs.core.task.UCaseResult
 import dagger.Reusable
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
 
 @Reusable
 class LoadCoursesUseCase @Inject constructor(

@@ -65,8 +65,12 @@ class SpeakerFragment : UFragment() {
         )
 
         val headLoadListener = object : ImageLoadListener {
-            override fun onImageLoaded(drawable: Drawable) { activity?.startPostponedEnterTransition() }
-            override fun onImageLoadFailed() { activity?.startPostponedEnterTransition() }
+            override fun onImageLoaded(drawable: Drawable) {
+                activity?.startPostponedEnterTransition()
+            }
+            override fun onImageLoadFailed() {
+                activity?.startPostponedEnterTransition()
+            }
         }
 
         val speakerAdapter = SpeakerAdapter(this, speakerViewModel, headLoadListener)

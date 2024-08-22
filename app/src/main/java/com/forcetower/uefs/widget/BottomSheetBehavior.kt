@@ -55,14 +55,19 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
     companion object {
         /** The bottom sheet is dragging. */
         const val STATE_DRAGGING = 1
+
         /** The bottom sheet is settling. */
         const val STATE_SETTLING = 2
+
         /** The bottom sheet is expanded. */
         const val STATE_EXPANDED = 3
+
         /** The bottom sheet is collapsed. */
         const val STATE_COLLAPSED = 4
+
         /** The bottom sheet is hidden. */
         const val STATE_HIDDEN = 5
+
         /** The bottom sheet is half-expanded (used when behavior_fitToContents is false). */
         const val STATE_HALF_EXPANDED = 6
 
@@ -123,6 +128,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
 
     /** The current state of the bottom sheet, backing property */
     private var _state = STATE_COLLAPSED
+
     /** The current state of the bottom sheet */
     @State
     var state
@@ -174,6 +180,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
 
     /** Real peek height in pixels */
     private var _peekHeight = 0
+
     /** Peek height in pixels, or [PEEK_HEIGHT_AUTO] */
     private var peekHeight
         get() = if (peekHeightAuto) PEEK_HEIGHT_AUTO else _peekHeight
@@ -219,21 +226,27 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
 
     /** Whether or not to use automatic peek height */
     private var peekHeightAuto = false
+
     /** Minimum peek height allowed */
     private var peekHeightMin = 0
+
     /** The last peek height calculated in onLayoutChild */
     private var lastPeekHeight = 0
 
     private var parentHeight = 0
+
     /** Bottom sheet's top offset in [STATE_EXPANDED] state. */
     private var fitToContentsOffset = 0
+
     /** Bottom sheet's top offset in [STATE_HALF_EXPANDED] state. */
     private var halfExpandedOffset = 0
+
     /** Bottom sheet's top offset in [STATE_COLLAPSED] state. */
     private var collapsedOffset = 0
 
     /** Keeps reference to the bottom sheet outside of Behavior callbacks */
     private var viewRef: WeakReference<View>? = null
+
     /** Controls movement of the bottom sheet */
     private lateinit var dragHelper: ViewDragHelper
 
@@ -615,6 +628,7 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
 
     private fun settleBottomSheet(sheet: View, yVelocity: Float, isNestedScroll: Boolean) {
         val top: Int
+
         @State val targetState: Int
 
         val flinging = yVelocity.absoluteValue > minimumVelocity

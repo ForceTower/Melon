@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.about
 
-import `in`.uncod.android.bypass.Bypass
 import android.os.Bundle
 import android.text.Layout
 import android.text.SpannableString
@@ -38,6 +37,7 @@ import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
+import `in`.uncod.android.bypass.Bypass
 
 @AndroidEntryPoint
 class AboutMeFragment : UFragment() {

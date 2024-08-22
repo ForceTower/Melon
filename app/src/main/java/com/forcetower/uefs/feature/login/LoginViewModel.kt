@@ -31,9 +31,9 @@ import com.forcetower.uefs.core.storage.repository.LoginSagresRepository
 import com.forcetower.uefs.core.storage.repository.SnowpiercerLoginRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.unes.usecases.courses.InitialCourseLoadUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(

@@ -43,6 +43,12 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import java.net.CookieHandler
+import java.net.CookieManager
+import java.time.ZonedDateTime
+import java.util.concurrent.TimeUnit
+import javax.inject.Named
+import javax.inject.Singleton
 import kotlinx.coroutines.runBlocking
 import okhttp3.ConnectionSpec
 import okhttp3.Interceptor
@@ -51,12 +57,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
-import java.net.CookieHandler
-import java.net.CookieManager
-import java.time.ZonedDateTime
-import java.util.concurrent.TimeUnit
-import javax.inject.Named
-import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -94,10 +94,11 @@ object NetworkModule {
                 HttpLoggingInterceptor {
                     Timber.tag("ok-http").d(it)
                 }.apply {
-                    level = if (BuildConfig.DEBUG)
+                    level = if (BuildConfig.DEBUG) {
                         HttpLoggingInterceptor.Level.BASIC
-                    else
+                    } else {
                         HttpLoggingInterceptor.Level.NONE
+                    }
                 }
             )
             .addInterceptor(chuckerInterceptor)
@@ -108,7 +109,7 @@ object NetworkModule {
     @Singleton
     fun provideInterceptor(
         database: UDatabase,
-        @Named("webViewUA") userAgent: String
+        @Named("unesUserAgent") userAgent: String
     ) = Interceptor { chain ->
         val request = chain.request()
         val host = request.url.host
@@ -141,7 +142,7 @@ object NetworkModule {
             val renewed = request.newBuilder().headers(newHeaders).build()
 
             chain.proceed(renewed)
-        }  else {
+        } else {
             val nRequest = request.newBuilder().addHeader("Accept", "application/json").build()
             chain.proceed(nRequest)
         }

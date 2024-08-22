@@ -35,10 +35,10 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.easter.twofoureight.tools.ScoreKeeper
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class DarkThemeRepository @Inject constructor(

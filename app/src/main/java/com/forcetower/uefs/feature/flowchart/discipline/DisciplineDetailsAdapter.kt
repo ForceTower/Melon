@@ -123,8 +123,9 @@ class DisciplineDetailsAdapter(
 
         if (item != null) {
             result += Header(item, semester)
-            if (item.program != null)
+            if (item.program != null) {
                 result += Resume(item)
+            }
         }
 
         val mapped = default.groupBy { it.type }
@@ -144,7 +145,9 @@ class DisciplineDetailsAdapter(
         class ResumeHolder(val binding: ItemFlowchartDisciplineProgramBinding) : DisciplineDetailsHolder(binding.root)
         class CategoryHolder(val binding: ItemFlowchartDisciplineGroupingBinding) : DisciplineDetailsHolder(binding.root)
         class DisciplineHolder(val binding: ItemFlowchartDisciplineMinifiedBinding, interactor: DisciplineInteractor) : DisciplineDetailsHolder(binding.root) {
-            init { binding.interactor = interactor }
+            init {
+                binding.interactor = interactor
+            }
         }
     }
 

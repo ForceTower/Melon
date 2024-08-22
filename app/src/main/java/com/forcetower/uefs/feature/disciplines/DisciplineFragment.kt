@@ -50,12 +50,13 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DisciplineFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
 
     private val viewModel: DisciplineViewModel by activityViewModels()

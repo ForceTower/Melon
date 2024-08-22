@@ -7,8 +7,8 @@ import com.forcetower.uefs.domain.usecase.auth.LinkEmailUseCase
 import com.forcetower.uefs.feature.unesaccount.confirm.vm.ConfirmEmailAccountEvent
 import com.forcetower.uefs.feature.unesaccount.confirm.vm.ConfirmEmailAccountState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class ConfirmEmailAccountViewModel @Inject constructor(

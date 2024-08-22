@@ -129,5 +129,7 @@ class GooglePlayGamesInstance(
 }
 
 enum class GameConnectionStatus {
-    CONNECTED, DISCONNECTED, LOADING
+    CONNECTED,
+    DISCONNECTED,
+    LOADING
 }

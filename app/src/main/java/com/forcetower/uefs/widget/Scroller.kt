@@ -56,6 +56,7 @@ class Scroller
      * @return The start X offset as an absolute distance from the origin.
      */
     private var startX: Int = 0
+
     /**
      * Returns the start Y offset in the scroll.
      *
@@ -77,6 +78,7 @@ class Scroller
      * @return The new X offset as an absolute distance from the origin.
      */
     private var currX: Int = 0
+
     /**
      * Returns the current Y offset in the scroll.
      *
@@ -85,6 +87,7 @@ class Scroller
     var currY: Int = 0
         private set
     private var mStartTime: Long = 0
+
     /**
      * Returns how long the scroll event will take, in milliseconds.
      *
@@ -95,6 +98,7 @@ class Scroller
     private var mDurationReciprocal: Float = 0.toFloat()
     private var mDeltaX: Float = 0.toFloat()
     private var mDeltaY: Float = 0.toFloat()
+
     /**
      *
      * Returns whether the scroller has finished scrolling.
@@ -213,10 +217,11 @@ class Scroller
                 SCROLL_MODE -> {
                     var x = timePassed * mDurationReciprocal
 
-                    x = if (mInterpolator == null)
+                    x = if (mInterpolator == null) {
                         viscousFluid(x)
-                    else
+                    } else {
                         mInterpolator.getInterpolation(x)
+                    }
 
                     currX = startX + (x * mDeltaX).roundToInt()
                     currY = startY + (x * mDeltaY).roundToInt()
@@ -436,10 +441,11 @@ class Scroller
                     coef = 3.0f * x * (1.0f - x)
                     tx = coef * ((1.0f - x) * START_TENSION + x * END_TENSION) + x * x * x
                     if (abs(tx - t) < 1E-5) break
-                    if (tx > t)
+                    if (tx > t) {
                         x_max = x
-                    else
+                    } else {
                         x_min = x
+                    }
                 }
                 val d = coef + x * x * x
                 SPLINE[i] = d

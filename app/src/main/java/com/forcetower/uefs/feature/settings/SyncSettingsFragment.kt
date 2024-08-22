@@ -33,8 +33,8 @@ import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
 import com.forcetower.uefs.core.work.sync.SyncLinkedWorker
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SyncSettingsFragment : PreferenceFragmentCompat() {

@@ -24,8 +24,8 @@ import androidx.lifecycle.ViewModel
 import com.forcetower.uefs.core.model.service.Reminder
 import com.forcetower.uefs.core.storage.repository.RemindersRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class RemindersViewModel @Inject constructor(

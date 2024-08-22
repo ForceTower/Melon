@@ -44,11 +44,11 @@ import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.disciplines.disciplinedetail.classes.ClassesActions
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
 
 @HiltViewModel
 class DisciplineViewModel @Inject constructor(

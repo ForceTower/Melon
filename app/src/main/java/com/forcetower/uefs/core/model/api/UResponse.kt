@@ -20,7 +20,7 @@
 
 package com.forcetower.uefs.core.model.api
 
-data class UResponse<T> (
+data class UResponse<T>(
     val success: Boolean = false,
     val message: String? = null,
     val data: T? = null

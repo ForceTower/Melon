@@ -141,6 +141,7 @@ class NotificationHelper(val context: Context) : ContextWrapper(context) {
         const val CHANNEL_GROUP_SERVICE_REQUEST_ID = "com.forcetower.uefs.SERVICE_REQUEST"
         const val CHANNEL_GROUP_DISCIPLINE_ID = "com.forcetower.uefs.DISCIPLINE"
         const val CHANNEL_GROUP_SOCIAL_ID = "com.forcetower.uefs.SOCIAL"
+
         // Notification Channels
         const val CHANNEL_MESSAGES_TEACHER_ID = "com.forcetower.uefs.MESSAGES.SAGRES.TEACHER.POST"
         const val CHANNEL_MESSAGES_UEFS_ID = "com.forcetower.uefs.MESSAGES.SAGRES.UEFS.POST"

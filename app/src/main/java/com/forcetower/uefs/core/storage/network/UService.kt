@@ -51,6 +51,7 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.model.unes.SStudentDTO
+import java.util.Locale
 import retrofit2.Call
 import retrofit2.Response
 import retrofit2.http.Body
@@ -59,7 +60,6 @@ import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
-import java.util.Locale
 
 interface UService {
     @POST("oauth/token")

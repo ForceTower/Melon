@@ -20,10 +20,10 @@
 
 package com.forcetower.uefs.easter.twofoureight.view
 
-import timber.log.Timber
 import java.util.UUID
 import kotlin.math.pow
 import kotlin.random.Random
+import timber.log.Timber
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -62,7 +62,11 @@ class Game {
         get() = gameGrid!!.isCellsAvailable || tileMatchesAvailable()
 
     enum class State {
-        NORMAL, WON, LOST, ENDLESS, ENDLESS_WON
+        NORMAL,
+        WON,
+        LOST,
+        ENDLESS,
+        ENDLESS_WON
     }
 
     interface ScoreListener {
@@ -87,8 +91,9 @@ class Game {
 
     private fun updateScore(score: Long) {
         this.score = score
-        if (mScoreListener != null)
+        if (mScoreListener != null) {
             mScoreListener!!.onNewScore(this.score)
+        }
     }
 
     fun newGame() {
@@ -275,8 +280,9 @@ class Game {
 
     fun updateGameState(state: State?) {
         gameState = state
-        if (mGameStateListener != null)
+        if (mGameStateListener != null) {
             mGameStateListener!!.onGameStateChanged(gameState)
+        }
     }
 
     private fun checkLose() {

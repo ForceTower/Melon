@@ -268,8 +268,9 @@ class InkPageIndicator @JvmOverloads constructor(
             0
         }
         if (dotCenterX != null) {
-            if (currentPage < dotCenterX!!.size)
+            if (currentPage < dotCenterX!!.size) {
                 selectedDotX = dotCenterX!![currentPage]
+            }
         }
     }
 
@@ -284,7 +285,6 @@ class InkPageIndicator @JvmOverloads constructor(
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-
         val desiredHeight = desiredHeight
         val height: Int
         height = when (MeasureSpec.getMode(heightMeasureSpec)) {
@@ -321,7 +321,6 @@ class InkPageIndicator @JvmOverloads constructor(
     }
 
     private fun drawUnselected(canvas: Canvas) {
-
         combinedUnselectedPath.rewind()
 
         // draw any settled, revealing or joining dots
@@ -373,14 +372,12 @@ class InkPageIndicator @JvmOverloads constructor(
         joiningFraction: Float,
         dotRevealFraction: Float
     ): Path {
-
         unselectedDotPath.rewind()
 
         if ((joiningFraction == 0f || joiningFraction == INVALID_FRACTION) &&
             dotRevealFraction == 0f &&
             !(page == currentPage && selectedDotInPosition)
         ) {
-
             // case #1 – At rest
             unselectedDotPath.addCircle(dotCenterX!![page], dotCenterY, dotRadius, Path.Direction.CW)
         }
@@ -388,7 +385,6 @@ class InkPageIndicator @JvmOverloads constructor(
         if (joiningFraction > 0f && joiningFraction <= 0.5f &&
             retreatingJoinX1 == INVALID_FRACTION
         ) {
-
             // case #2 – Joining neighbour, still separate
 
             // start with the left dot
@@ -482,7 +478,6 @@ class InkPageIndicator @JvmOverloads constructor(
         if (joiningFraction > 0.5f && joiningFraction < 1f &&
             retreatingJoinX1 == INVALID_FRACTION
         ) {
-
             // case #3 – Joining neighbour, combined curved
 
             // adjust the fraction so that it goes from 0.3 -> 1 to produce a more realistic 'join'
@@ -564,7 +559,6 @@ class InkPageIndicator @JvmOverloads constructor(
             )
         }
         if (joiningFraction == 1f && retreatingJoinX1 == INVALID_FRACTION) {
-
             // case #4 Joining neighbour, combined straight technically we could use case 3 for this
             // situation as well but assume that this is an optimization rather than faffing around
             // with beziers just to draw a rounded rect
@@ -577,7 +571,6 @@ class InkPageIndicator @JvmOverloads constructor(
         // multiple dots and therefore animate it's movement smoothly
 
         if (dotRevealFraction > MINIMAL_REVEAL) {
-
             // case #6 – previously hidden dot revealing
             unselectedDotPath.addCircle(
                 centerX,
@@ -628,7 +621,6 @@ class InkPageIndicator @JvmOverloads constructor(
         now: Int,
         steps: Int
     ): ValueAnimator {
-
         // create the actual move animator
         val moveSelected = ValueAnimator.ofFloat(selectedDotX, moveTo)
 
@@ -637,10 +629,11 @@ class InkPageIndicator @JvmOverloads constructor(
             was,
             now,
             steps,
-            if (now > was)
+            if (now > was) {
                 RightwardStartPredicate(moveTo - (moveTo - selectedDotX) * 0.25f)
-            else
+            } else {
                 LeftwardStartPredicate(moveTo + (selectedDotX - moveTo) * 0.25f)
+            }
         )
         retreatAnimation!!.addListener(
             object : AnimatorListenerAdapter() {
@@ -734,17 +727,19 @@ class InkPageIndicator @JvmOverloads constructor(
             // work out the start/end values of the retreating join from the direction we're
             // travelling in.  Also look at the current selected dot position, i.e. we're moving on
             // before a prior anim has finished.
-            val initialX1 = if (now > was)
+            val initialX1 = if (now > was) {
                 min(dotCenterX!![was], selectedDotX) - dotRadius
-            else
+            } else {
                 dotCenterX!![now] - dotRadius
+            }
 
             val finalX1 = dotCenterX!![now] - dotRadius
 
-            val initialX2 = if (now > was)
+            val initialX2 = if (now > was) {
                 dotCenterX!![now] + dotRadius
-            else
+            } else {
                 max(dotCenterX!![was], selectedDotX) + dotRadius
+            }
 
             val finalX2 = dotCenterX!![now] + dotRadius
 

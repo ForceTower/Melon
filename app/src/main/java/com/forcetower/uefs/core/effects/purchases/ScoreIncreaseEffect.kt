@@ -21,9 +21,9 @@
 package com.forcetower.uefs.core.effects.purchases
 
 import android.content.SharedPreferences
-import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
+import timber.log.Timber
 
 class ScoreIncreaseEffect @Inject constructor(
     private val preferences: SharedPreferences

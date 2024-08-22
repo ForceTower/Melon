@@ -57,11 +57,11 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.core.util.toLiveData
 import com.forcetower.uefs.core.work.grades.GradesSagresWorker
 import com.forcetower.uefs.core.work.hourglass.HourglassContributeWorker
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.runBlocking
 import org.jsoup.nodes.Document
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class LoginSagresRepository @Inject constructor(
@@ -190,10 +190,11 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun messages(data: MediatorLiveData<Callback>, userId: Long?) {
-        val messages = if (userId != null)
+        val messages = if (userId != null) {
             SagresNavigator.instance.aMessages(userId).toLiveData()
-        else
+        } else {
             SagresNavigator.instance.aMessagesHtml().toLiveData()
+        }
 
         currentStep.value = createStep(R.string.step_fetching_messages)
         data.addSource(messages) { m ->
@@ -203,10 +204,11 @@ class LoginSagresRepository @Inject constructor(
                 executor.diskIO().execute { database.messageDao().insertIgnoring(values) }
                 Timber.d("Messages Completed")
                 Timber.d("You got: ${m.messages}")
-                if (userId != null)
+                if (userId != null) {
                     semesters(data, userId)
-                else
+                } else {
                     disciplinesExperimental(data)
+                }
             } else {
                 data.value = Callback.Builder(m.status)
                     .code(m.code)
@@ -260,8 +262,9 @@ class LoginSagresRepository @Inject constructor(
     }
 
     private fun defineExperimentalWorkers() {
-        if (preferences.isStudentFromUEFS())
+        if (preferences.isStudentFromUEFS()) {
             HourglassContributeWorker.createWorker(context)
+        }
         preferences.edit().putBoolean("sent_hourglass_testing_data_0.0.0", true).apply()
     }
 

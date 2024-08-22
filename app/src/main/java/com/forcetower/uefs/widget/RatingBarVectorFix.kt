@@ -36,8 +36,8 @@ import android.graphics.drawable.shapes.Shape
 import android.util.AttributeSet
 import android.view.Gravity
 import android.view.View
-import androidx.appcompat.widget.AppCompatRatingBar
 import androidx.appcompat.graphics.drawable.DrawableWrapperCompat as DrawableWrapper
+import androidx.appcompat.widget.AppCompatRatingBar
 
 class RatingBarVectorFix @JvmOverloads constructor(
     context: Context,
@@ -106,14 +106,15 @@ class RatingBarVectorFix @JvmOverloads constructor(
             )
             shapeDrawable.paint.shader = bitmapShader
             shapeDrawable.paint.colorFilter = drawable.paint.colorFilter
-            return if (clip)
+            return if (clip) {
                 ClipDrawable(
                     shapeDrawable,
                     Gravity.START,
                     ClipDrawable.HORIZONTAL
                 )
-            else
+            } else {
                 shapeDrawable
+            }
         } else {
             return tileify(getBitmapDrawableFromVectorDrawable(drawable), clip)
         }

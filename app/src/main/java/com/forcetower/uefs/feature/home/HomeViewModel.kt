@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.home
 
 import android.app.Application
 import android.net.Uri
-import androidx.annotation.MainThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -57,10 +56,10 @@ import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -162,7 +161,7 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun connectToServiceIfNeeded() {
+    fun performServerSync() {
         authRepository.performAccountSyncStateIfNeededAsync()
         viewModelScope.launch {
             runCatching {
@@ -172,12 +171,12 @@ class HomeViewModel @Inject constructor(
             }.onFailure {
                 Timber.e(it, "Failed to authenticate or fetch account.")
             }
-        }
-    }
 
-    fun sendToken() {
-        viewModelScope.launch {
-            firebaseMessageRepository.sendNewTokenOrNot()
+            runCatching {
+                firebaseMessageRepository.sendNewTokenOrNot()
+            }.onFailure {
+                Timber.e(it, "Failed to send FCM token")
+            }
         }
     }
 

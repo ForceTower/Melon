@@ -28,8 +28,9 @@ import com.forcetower.uefs.feature.shared.extensions.formatFullDate
 
 @BindingAdapter("syncTime")
 fun bindTime(tv: TextView, value: Long?) {
-    if (value == null) tv.text = "..."
-    else {
+    if (value == null) {
+        tv.text = "..."
+    } else {
         val date = value.formatFullDate()
         tv.text = date
     }
@@ -37,10 +38,11 @@ fun bindTime(tv: TextView, value: Long?) {
 
 @BindingAdapter(value = ["network", "networkType"], requireAll = true)
 fun bindNetwork(tv: TextView, network: String, networkType: Int) {
-    val drawable = if (networkType == NetworkType.WIFI.ordinal)
+    val drawable = if (networkType == NetworkType.WIFI.ordinal) {
         R.drawable.ic_network_wifi_black_24dp
-    else
+    } else {
         R.drawable.ic_network_cell_black_24dp
+    }
 
     tv.setCompoundDrawablesWithIntrinsicBounds(drawable, 0, 0, 0)
     tv.text = network
@@ -48,12 +50,13 @@ fun bindNetwork(tv: TextView, network: String, networkType: Int) {
 
 @BindingAdapter(value = ["syncComplete", "syncStatus"])
 fun bindStatus(tv: TextView, syncComplete: Boolean, syncStatus: Boolean) {
-    val message = if (!syncComplete)
+    val message = if (!syncComplete) {
         tv.context.getString(R.string.sync_incomplete)
-    else if (syncStatus)
+    } else if (syncStatus) {
         tv.context.getString(R.string.sync_completed)
-    else
+    } else {
         tv.context.getString(R.string.sync_failed)
+    }
 
     tv.text = message
 }

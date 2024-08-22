@@ -39,10 +39,10 @@ import com.forcetower.uefs.service.NotificationCreator
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.messaging.RemoteMessage
-import kotlinx.coroutines.tasks.await
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.tasks.await
+import timber.log.Timber
 
 @Singleton
 class FirebaseMessageRepository @Inject constructor(
@@ -250,8 +250,9 @@ class FirebaseMessageRepository @Inject constructor(
 
         try {
             database.openHelper.writableDatabase.execSQL(query)
-            if (unique != null)
+            if (unique != null) {
                 preferences.edit().putBoolean(unique, true).apply()
+            }
         } catch (t: Throwable) {
             Timber.d("Failed executing database promotion. ${t.message}")
             Timber.e(t)

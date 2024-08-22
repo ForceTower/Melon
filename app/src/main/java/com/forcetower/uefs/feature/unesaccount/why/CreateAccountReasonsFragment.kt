@@ -56,5 +56,4 @@ class CreateAccountReasonsFragment : UFragment() {
             findNavController().popBackStack()
         }
     }
-
 }

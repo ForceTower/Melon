@@ -47,9 +47,9 @@ import com.forcetower.uefs.easter.twofoureight.view.Tile
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.UGameActivity
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
 import kotlin.math.abs
+import timber.log.Timber
 
 /**
  * Created by João Paulo on 02/06/2018.
@@ -58,6 +58,7 @@ import kotlin.math.abs
 class Game2048Fragment : UFragment(), KeyListener, Game.GameStateListener, View.OnTouchListener {
 
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var darkRepository: DarkThemeRepository
 
     private var downX: Float = 0.toFloat()

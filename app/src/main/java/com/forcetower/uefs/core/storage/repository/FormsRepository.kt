@@ -23,11 +23,11 @@ package com.forcetower.uefs.core.storage.repository
 import android.content.SharedPreferences
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.storage.database.UDatabase
+import javax.inject.Inject
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import javax.inject.Inject
 
 class FormsRepository @Inject constructor(
     private val client: OkHttpClient,

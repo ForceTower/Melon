@@ -27,11 +27,11 @@ import android.net.Uri
 import android.util.Base64
 import com.forcetower.uefs.core.model.api.ImgurUpload
 import com.forcetower.uefs.core.util.ImgurUploader
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.UUID
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 object ImageUploader {
     fun uploadToImGur(

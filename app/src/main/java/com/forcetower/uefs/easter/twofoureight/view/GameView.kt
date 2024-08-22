@@ -30,10 +30,10 @@ import android.util.AttributeSet
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.forcetower.uefs.R
-import timber.log.Timber
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import timber.log.Timber
 
 /**
  * Created by João Paulo on 02/06/2018.

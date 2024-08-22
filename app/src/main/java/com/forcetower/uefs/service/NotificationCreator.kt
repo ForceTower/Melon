@@ -122,20 +122,23 @@ object NotificationCreator {
             return
         }
 
-        val channel = if (created)
+        val channel = if (created) {
             NotificationHelper.CHANNEL_ABSENCE_CREATE_ID
-        else
+        } else {
             NotificationHelper.CHANNEL_ABSENCE_REMOVE_ID
+        }
 
-        val message = if (created)
+        val message = if (created) {
             context.getString(R.string.notification_absence_posted, absence.description.toTitleCase())
-        else
+        } else {
             context.getString(R.string.notification_absence_deleted, absence.description.toTitleCase())
+        }
 
-        val titleRes = if (created)
+        val titleRes = if (created) {
             R.string.notification_absence_posted_title
-        else
+        } else {
             R.string.notification_absence_removed_title
+        }
 
         val builder = notificationBuilder(context, channel)
             .setContentTitle(context.getString(titleRes))
@@ -179,13 +182,16 @@ object NotificationCreator {
             1 -> {
                 val value = grade.grade.gradeDouble()
                 Timber.d("Level 1 spoiler value: $value")
-                if (value == null) context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
-                else when (value) {
-                    in 0.0..6.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_bad, grade.grade.name, discipline)
-                    in 7.0..7.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_pass, grade.grade.name, discipline)
-                    in 8.0..9.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_good, grade.grade.name, discipline)
-                    10.0 -> context.getString(R.string.notification_grade_posted_message_lv_1_perfect, grade.grade.name, discipline)
-                    else -> context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+                if (value == null) {
+                    context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+                } else {
+                    when (value) {
+                        in 0.0..6.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_bad, grade.grade.name, discipline)
+                        in 7.0..7.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_pass, grade.grade.name, discipline)
+                        in 8.0..9.9 -> context.getString(R.string.notification_grade_posted_message_lv_1_good, grade.grade.name, discipline)
+                        10.0 -> context.getString(R.string.notification_grade_posted_message_lv_1_perfect, grade.grade.name, discipline)
+                        else -> context.getString(R.string.notification_grade_posted_message_lv_0, grade.grade.name, discipline)
+                    }
                 }
             }
             2 -> context.getString(R.string.notification_grade_posted_message_lv_2, grade.grade.grade, discipline)

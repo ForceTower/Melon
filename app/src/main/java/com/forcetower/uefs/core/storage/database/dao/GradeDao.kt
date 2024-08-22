@@ -36,8 +36,8 @@ import com.forcetower.uefs.core.model.unes.Profile
 import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.GradeWithClassStudent
 import dev.forcetower.breaker.model.ClassEvaluation
-import timber.log.Timber
 import java.time.ZonedDateTime
+import timber.log.Timber
 
 @Dao
 abstract class GradeDao {
@@ -131,10 +131,12 @@ abstract class GradeDao {
                         clazz.uid = id
                     }
                     if (clazz.uid > 0) {
-                        if (score != null)
+                        if (score != null) {
                             updateClassScore(clazz.uid, score)
-                        if (partialScore != null)
+                        }
+                        if (partialScore != null) {
                             updateClassPartialScore(clazz.uid, partialScore)
+                        }
 
                         prepareInsertion(clazz, it, notify)
                     }
@@ -164,9 +166,13 @@ abstract class GradeDao {
             if (grade == null) {
                 grade = g
             } else {
-                if (g.hasGrade()) grade = g
-                else if (g.hasDate() && grade.hasDate() && g.date != grade.date) grade = g
-                else Timber.d("This grade was ignored ${g.name}_${g.grade}")
+                if (g.hasGrade()) {
+                    grade = g
+                } else if (g.hasDate() && grade.hasDate() && g.date != grade.date) {
+                    grade = g
+                } else {
+                    Timber.d("This grade was ignored ${g.name}_${g.grade}")
+                }
             }
             values["${g.grouping}<><>${g.name}"] = grade
         }

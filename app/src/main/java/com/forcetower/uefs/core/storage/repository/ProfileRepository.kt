@@ -38,9 +38,9 @@ import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.work.statement.ProfileStatementWorker
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class ProfileRepository @Inject constructor(
@@ -117,6 +117,7 @@ class ProfileRepository @Inject constructor(
         return object : NetworkBoundResource<List<ProfileStatement>, UResponse<List<ProfileStatement>>>(executors) {
             override fun loadFromDb() = database.statementDao().getStatements(userId)
             override fun shouldFetch(it: List<ProfileStatement>?) = true
+
             // As of this version, the API uses the student id for loading the statements
             // This was a poor design on my part :/
             override fun createCall() = service.getStatements(studentId).asLiveData()
@@ -169,7 +170,9 @@ class ProfileRepository @Inject constructor(
         return if (response.isSuccessful) {
             database.statementDao().markStatementAccepted(statementId)
             0
-        } else 1
+        } else {
+            1
+        }
     }
 
     @WorkerThread
@@ -178,7 +181,9 @@ class ProfileRepository @Inject constructor(
         return if (response.isSuccessful) {
             database.statementDao().markStatementRefused(statementId)
             0
-        } else 1
+        } else {
+            1
+        }
     }
 
     @WorkerThread
@@ -187,6 +192,8 @@ class ProfileRepository @Inject constructor(
         return if (response.isSuccessful) {
             database.statementDao().markStatementDeleted(statementId)
             0
-        } else 1
+        } else {
+            1
+        }
     }
 }

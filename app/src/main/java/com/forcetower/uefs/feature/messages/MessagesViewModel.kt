@@ -44,9 +44,9 @@ import com.forcetower.uefs.core.storage.repository.MessagesRepository
 import com.forcetower.uefs.core.task.usecase.message.FetchAllMessagesSnowpiercerUseCase
 import com.forcetower.uefs.feature.shared.extensions.toFile
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class MessagesViewModel @Inject constructor(

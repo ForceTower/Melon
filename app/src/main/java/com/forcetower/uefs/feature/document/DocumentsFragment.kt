@@ -36,8 +36,8 @@ import com.forcetower.uefs.databinding.FragmentDocumentsBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DocumentsFragment : UFragment() {

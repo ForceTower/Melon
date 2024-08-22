@@ -44,11 +44,11 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.util.siecomp.TimeUtils
 import com.google.android.gms.common.util.PlatformVersion
-import timber.log.Timber
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import timber.log.Timber
 
 class ScheduleItemHeaderDecoration(
     context: Context,
@@ -107,7 +107,8 @@ class ScheduleItemHeaderDecoration(
             if (view == null) {
                 Timber.w(
                     """View is null. Index: $i, childCount: ${parent.childCount},
-                        |RecyclerView.State: $state""".trimMargin()
+                        |RecyclerView.State: $state
+                    """.trimMargin()
                 )
                 continue
             }

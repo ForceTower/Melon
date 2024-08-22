@@ -20,13 +20,13 @@
 
 package com.forcetower.uefs.core.util
 
-import `in`.uncod.android.bypass.style.TouchableUrlSpan
 import android.text.Selection
 import android.text.Spannable
 import android.text.method.LinkMovementMethod
 import android.text.method.MovementMethod
 import android.view.MotionEvent
 import android.widget.TextView
+import `in`.uncod.android.bypass.style.TouchableUrlSpan
 
 class LinkTouchMovementMethod : LinkMovementMethod() {
     private var pressedSpan: TouchableUrlSpan? = null
@@ -64,7 +64,6 @@ class LinkTouchMovementMethod : LinkMovementMethod() {
     }
 
     private fun getPressedSpan(textView: TextView, spannable: Spannable, event: MotionEvent): TouchableUrlSpan? {
-
         var x = event.x.toInt()
         var y = event.y.toInt()
 
@@ -91,8 +90,9 @@ class LinkTouchMovementMethod : LinkMovementMethod() {
         private var instance: LinkTouchMovementMethod? = null
 
         fun getInstance(): MovementMethod {
-            if (instance == null)
+            if (instance == null) {
                 instance = LinkTouchMovementMethod()
+            }
 
             return instance!!
         }

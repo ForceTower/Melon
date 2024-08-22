@@ -35,12 +35,12 @@ import com.forcetower.uefs.core.util.isStudentFromUEFS
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
 
 class SagresGradesRepository @Inject constructor(
     private val context: Context,

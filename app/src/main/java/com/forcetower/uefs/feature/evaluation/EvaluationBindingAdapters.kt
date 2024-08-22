@@ -29,7 +29,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.DISCIPLINE_TYPE
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem.Companion.TEACHER_TYPE
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.feature.evaluation.discipline.SemesterMean
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.AxisBase
@@ -71,8 +70,9 @@ fun formatSemesterGradeChart(chart: LineChart, list: List<SemesterMean>?) {
     val formatter = object : ValueFormatter() {
         override fun getAxisLabel(value: Float, axis: AxisBase?): String {
             val converted = value.toInt()
-            if (converted < 0 || converted >= pair.first.size)
+            if (converted < 0 || converted >= pair.first.size) {
                 return ""
+            }
             return pair.first[converted]
         }
     }

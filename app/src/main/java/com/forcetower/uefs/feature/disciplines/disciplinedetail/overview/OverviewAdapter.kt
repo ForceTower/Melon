@@ -27,9 +27,7 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.ClassGroup
 import com.forcetower.uefs.core.model.unes.ClassLocation
-import com.forcetower.uefs.core.model.unes.Teacher
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.database.aggregation.ClassGroupWithTeachers
 import com.forcetower.uefs.databinding.ItemDisciplineGoalsBinding

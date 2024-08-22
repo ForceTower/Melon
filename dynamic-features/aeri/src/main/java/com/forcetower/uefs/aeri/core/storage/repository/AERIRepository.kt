@@ -33,11 +33,11 @@ import com.forcetower.uefs.aeri.core.storage.database.AERIDatabase
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.Reusable
 import dev.forcetower.oversee.Oversee
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 @Reusable
 class AERIRepository @Inject constructor(

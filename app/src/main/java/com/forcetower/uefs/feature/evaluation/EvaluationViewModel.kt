@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.evaluation
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import androidx.paging.cachedIn
@@ -33,17 +32,10 @@ import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
 import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationData
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
-import com.forcetower.uefs.core.storage.repository.AccountRepository
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
-import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
-import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.TextTransformUtils
 import com.forcetower.uefs.domain.model.paradox.DisciplineCombinedData
 import com.forcetower.uefs.feature.evaluation.discipline.DisciplineInteractor
@@ -51,8 +43,8 @@ import com.forcetower.uefs.feature.evaluation.discipline.TeacherInt
 import com.forcetower.uefs.feature.evaluation.home.HomeInteractor
 import com.forcetower.uefs.feature.evaluation.search.EntitySelector
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class EvaluationViewModel @Inject constructor(

@@ -57,14 +57,15 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.io.File
 import java.util.Locale
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class AdvancedSettingsFragment : PreferenceFragmentCompat() {
     private val viewModel: SettingsViewModel by activityViewModels()
+
     @Inject
     lateinit var remoteConfig: FirebaseRemoteConfig
 

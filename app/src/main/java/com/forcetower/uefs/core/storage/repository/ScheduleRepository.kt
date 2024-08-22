@@ -28,12 +28,12 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.google.android.gms.tasks.Tasks
 import com.google.firebase.firestore.CollectionReference
 import com.google.firebase.firestore.SetOptions
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.map
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.map
+import timber.log.Timber
 
 @Singleton
 class ScheduleRepository @Inject constructor(

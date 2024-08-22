@@ -55,10 +55,11 @@ abstract class LoadDisciplineDetailsResource @MainThread constructor(
         .build()
 
     init {
-        if (!snowpiercer)
+        if (!snowpiercer) {
             loginToSagres()
-        else
+        } else {
             syncAllSnowpiercer()
+        }
     }
 
     private fun syncAllSnowpiercer() {

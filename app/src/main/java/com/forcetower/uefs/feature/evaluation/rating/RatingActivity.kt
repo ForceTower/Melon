@@ -25,7 +25,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R

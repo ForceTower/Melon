@@ -30,10 +30,11 @@ import androidx.work.WorkManager
 fun OneTimeWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
     WorkManager.getInstance(context).beginUniqueWork(
         name,
-        if (replace)
+        if (replace) {
             ExistingWorkPolicy.REPLACE
-        else
-            ExistingWorkPolicy.KEEP,
+        } else {
+            ExistingWorkPolicy.KEEP
+        },
         this
     ).enqueue()
 }
@@ -45,10 +46,11 @@ fun OneTimeWorkRequest.enqueue(context: Context) {
 fun PeriodicWorkRequest.enqueueUnique(context: Context, name: String, replace: Boolean = true) {
     WorkManager.getInstance(context).enqueueUniquePeriodicWork(
         name,
-        if (replace)
+        if (replace) {
             ExistingPeriodicWorkPolicy.UPDATE
-        else
-            ExistingPeriodicWorkPolicy.KEEP,
+        } else {
+            ExistingPeriodicWorkPolicy.KEEP
+        },
         this
     )
 }

@@ -21,35 +21,21 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
-import androidx.annotation.AnyThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
-import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.core.storage.network.ParadoxService
-import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.storage.network.adapter.asLiveData
-import com.forcetower.uefs.core.storage.resource.NetworkOnlyResource
-import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.domain.model.paradox.DisciplineCombinedData
 import com.forcetower.uefs.domain.model.paradox.SemesterMean
 import com.forcetower.uefs.domain.model.paradox.TeacherMean
-import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 class EvaluationRepository @Inject constructor(
     private val database: UDatabase,
@@ -67,9 +53,11 @@ class EvaluationRepository @Inject constructor(
             val semester = entry.value
 
             val studentCountWeighted = semester.sumOf { it.studentCountWeighted }
-            val mean = if (studentCountWeighted > 0)
+            val mean = if (studentCountWeighted > 0) {
                 semester.sumOf { it.mean * it.studentCountWeighted } / studentCountWeighted
-            else 0.0
+            } else {
+                0.0
+            }
 
             val first = semester.first()
             val startedAt = ZonedDateTime.parse(first.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
@@ -88,9 +76,11 @@ class EvaluationRepository @Inject constructor(
             val studentCount = values.sumOf { it.studentsCount }
 
             val studentCountWeighted = values.sumOf { it.studentCountWeighted }
-            val mean = if (studentCountWeighted > 0)
+            val mean = if (studentCountWeighted > 0) {
                 values.sumOf { it.mean * it.studentCountWeighted } / studentCountWeighted
-            else 0.0
+            } else {
+                0.0
+            }
 
             val appearTime = ZonedDateTime.parse(appear.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
 

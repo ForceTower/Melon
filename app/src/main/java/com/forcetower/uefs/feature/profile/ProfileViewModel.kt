@@ -28,11 +28,10 @@ import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.ProfileStatement
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.repository.ProfileRepository
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(

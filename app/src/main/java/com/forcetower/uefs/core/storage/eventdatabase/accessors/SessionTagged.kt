@@ -28,6 +28,7 @@ import com.forcetower.uefs.core.model.siecomp.Tag
 class SessionTagged {
     @Embedded
     lateinit var data: SessionTag
+
     @Relation(entityColumn = "uid", parentColumn = "tag_id")
     lateinit var tag: List<Tag>
 

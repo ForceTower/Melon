@@ -23,8 +23,6 @@ package com.forcetower.uefs.feature.evaluation.home
 import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
 import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher
 import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationData
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
 
 interface HomeInteractor {
     fun onClickDiscipline(discipline: PublicHotEvaluationDiscipline)

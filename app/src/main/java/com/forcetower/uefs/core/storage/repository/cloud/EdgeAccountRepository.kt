@@ -5,8 +5,8 @@ import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import dagger.Reusable
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Reusable
 class EdgeAccountRepository @Inject constructor(

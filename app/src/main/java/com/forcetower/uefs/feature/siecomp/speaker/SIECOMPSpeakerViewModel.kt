@@ -29,8 +29,8 @@ import com.forcetower.uefs.core.model.siecomp.Speaker
 import com.forcetower.uefs.core.storage.repository.SIECOMPRepository
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @HiltViewModel
 class SIECOMPSpeakerViewModel @Inject constructor(

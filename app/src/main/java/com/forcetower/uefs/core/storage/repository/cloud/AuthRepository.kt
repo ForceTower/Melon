@@ -35,12 +35,12 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.Response
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class AuthRepository @Inject constructor(
@@ -64,7 +64,9 @@ class AuthRepository @Inject constructor(
                     else -> service.loginWithSagres(username, password).asLiveData()
                 }
             }
-            override fun saveCallResult(value: AccessToken) { database.accessTokenDao().insert(value) }
+            override fun saveCallResult(value: AccessToken) {
+                database.accessTokenDao().insert(value)
+            }
         }.asLiveData()
     }
 
@@ -94,8 +96,11 @@ class AuthRepository @Inject constructor(
     fun performAccountSyncStateIfNeededAsync() {
         executors.networkIO().execute {
             val tk = database.accessTokenDao().getAccessTokenDirect()
-            if (tk == null) performAccountSyncState()
-            else updateAccount()
+            if (tk == null) {
+                performAccountSyncState()
+            } else {
+                updateAccount()
+            }
         }
     }
 

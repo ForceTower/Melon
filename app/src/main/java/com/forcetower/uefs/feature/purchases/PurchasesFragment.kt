@@ -42,6 +42,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class PurchasesFragment : UFragment() {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var analytics: FirebaseAnalytics
 
     private val viewModel: BillingViewModel by activityViewModels()

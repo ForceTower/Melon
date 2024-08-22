@@ -30,10 +30,13 @@ import com.forcetower.uefs.core.model.siecomp.SessionTag
 class SessionWithData : Comparable<SessionWithData> {
     @Embedded
     lateinit var session: Session
+
     @Relation(entityColumn = "session_id", parentColumn = "uid", entity = SessionSpeaker::class)
     lateinit var speakersRel: List<SessionSpeakerTalker>
+
     @Relation(entityColumn = "session_id", parentColumn = "uid", entity = SessionTag::class)
     lateinit var displayTags: List<SessionTagged>
+
     @Relation(entityColumn = "session_id", parentColumn = "uid")
     lateinit var stars: List<SessionStar>
 

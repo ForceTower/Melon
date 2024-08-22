@@ -32,6 +32,7 @@ class InformationDialog : RoundedDialog() {
     private lateinit var binding: DialogInformationBaseBinding
     lateinit var title: String
     lateinit var description: String
+
     @Suppress("MemberVisibilityCanBePrivate")
     var buttonText: String? = null
 

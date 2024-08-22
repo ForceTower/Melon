@@ -126,14 +126,14 @@ class AccountOverviewFragment : UFragment() {
 
         val request = CreatePublicKeyCredentialRequest(
             requestJson = event.json,
-            preferImmediatelyAvailableCredentials = false,
+            preferImmediatelyAvailableCredentials = false
         )
 
         lifecycleScope.launch {
             try {
                 val result = manager.createCredential(
                     context = requireActivity(),
-                    request = request,
+                    request = request
                 )
                 handlePasskeyRegistrationResult(result, event)
             } catch (e: CreateCredentialCancellationException) {

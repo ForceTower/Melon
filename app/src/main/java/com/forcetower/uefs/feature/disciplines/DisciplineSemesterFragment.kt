@@ -59,7 +59,11 @@ class DisciplineSemesterFragment : UFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        try { binding.lifecycleOwner = viewLifecycleOwner } catch (t: Throwable) { Timber.e(t) }
+        try {
+            binding.lifecycleOwner = viewLifecycleOwner
+        } catch (t: Throwable) {
+            Timber.e(t)
+        }
 
         adapterPerformance = DisciplinePerformanceAdapter(viewModel)
         recyclerView.adapter = adapterPerformance

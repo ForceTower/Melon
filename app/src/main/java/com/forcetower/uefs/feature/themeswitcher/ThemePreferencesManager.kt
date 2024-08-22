@@ -99,8 +99,9 @@ class ThemePreferencesManager(private val context: Context) {
             intArrayOf(R.id.theme_feature_background_color, background)
         )
         for (i in themesMap.indices) {
-            if (themesMap[i][1] != 0)
+            if (themesMap[i][1] != 0) {
                 ThemeOverlayUtils.setThemeOverlay(themesMap[i][0], themesMap[i][1])
+            }
         }
     }
 
@@ -111,8 +112,9 @@ class ThemePreferencesManager(private val context: Context) {
             intArrayOf(R.id.theme_feature_background_color, background)
         )
         for (i in themesMap.indices) {
-            if (themesMap[i][1] != 0)
+            if (themesMap[i][1] != 0) {
                 ThemeOverlayUtils.setThemeOverlay(themesMap[i][0], themesMap[i][1])
+            }
         }
 
         activity.recreate()

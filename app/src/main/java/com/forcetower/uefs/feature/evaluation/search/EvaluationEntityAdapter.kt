@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.databinding.ItemEvaluationSimpleEntityBinding
 import com.forcetower.uefs.feature.shared.inflate
 

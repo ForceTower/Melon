@@ -11,9 +11,9 @@ import com.forcetower.uefs.domain.usecase.profile.GetProfileUseCase
 import com.forcetower.uefs.feature.unesaccount.overview.vm.AccountOverviewEvent
 import com.forcetower.uefs.feature.unesaccount.overview.vm.AccountOverviewState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class AccountOverviewViewModel @Inject constructor(
@@ -21,7 +21,8 @@ class AccountOverviewViewModel @Inject constructor(
     private val registerPasskeyUseCase: RegisterPasskeyUseCase,
     getProfile: GetProfileUseCase,
     private val changeProfilePictureUseCase: ChangeProfilePictureUseCase
-) : BaseViewModel<AccountOverviewState, AccountOverviewEvent>(AccountOverviewState()
+) : BaseViewModel<AccountOverviewState, AccountOverviewEvent>(
+    AccountOverviewState()
 ) {
     val user = getAccount().asLiveData()
     val profile = getProfile().asLiveData()
