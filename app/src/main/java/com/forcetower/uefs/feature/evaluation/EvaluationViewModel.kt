@@ -150,7 +150,8 @@ class EvaluationViewModel @Inject constructor(
         _teacherIntSelect.value = Event(value)
     }
 
-    override fun onEntitySelected(entity: EdgeParadoxSearchableItem) {
+    override fun onEntitySelected(entity: EdgeParadoxSearchableItem?) {
+        entity ?: return
         _entitySelected.value = Event(entity)
     }
 
