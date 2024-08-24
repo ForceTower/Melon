@@ -133,7 +133,7 @@ android {
     kapt {
         correctErrorTypes = true
         javacOptions {
-            option("-Xmaxerrs", 1000)
+            option("-Xmaxerrs", "1000")
         }
     }
 
