@@ -232,7 +232,6 @@ dependencies {
     implementation(libs.play.services.games.v2)
     implementation(libs.play.services.auth)
     implementation(libs.play.services.location)
-    implementation(libs.billing)
     implementation(libs.review.ktx)
     implementation(libs.app.update.ktx)
     implementation(libs.feature.delivery.ktx)
