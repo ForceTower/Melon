@@ -224,6 +224,8 @@ dependencies {
     implementation(libs.firebase.functions.ktx)
     implementation(libs.firebase.crashlytics.ktx)
     implementation(libs.firebase.ui.storage)
+    // Remove direct guava dependency when https://github.com/firebase/firebase-android-sdk/issues/6232 resolves. or don't.
+    implementation(libs.guava)
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
     debugImplementation(libs.chucker)
