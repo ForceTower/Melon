@@ -34,6 +34,8 @@ import com.forcetower.uefs.feature.shared.extensions.capitalized
 import com.forcetower.uefs.feature.shared.extensions.formatMonthYear
 import com.forcetower.uefs.feature.shared.extensions.formatTimeWithoutSeconds
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -127,6 +129,15 @@ fun dateNumberFromDate(tv: TextView, date: Date?) {
     }
 }
 
+@BindingAdapter("dateNumberFromZonedDate")
+fun dateNumberFromDate(tv: TextView, date: ZonedDateTime?) {
+    if (date == null) {
+        tv.text = "??"
+    } else {
+        tv.text = "${date.toLocalDateTime().dayOfMonth}"
+    }
+}
+
 @BindingAdapter("monthFromDate")
 fun monthFromDate(tv: TextView, date: Date?) {
     if (date == null) {
@@ -136,11 +147,29 @@ fun monthFromDate(tv: TextView, date: Date?) {
     }
 }
 
+@BindingAdapter("monthFromZonedDate")
+fun monthFromDate(tv: TextView, date: ZonedDateTime?) {
+    if (date == null) {
+        tv.text = "?? ????"
+    } else {
+        tv.text = DateTimeFormatter.ofPattern("MMMM yyyy").withLocale(Locale.getDefault()).format(date.toLocalDateTime())
+    }
+}
+
 @BindingAdapter("hourFromDate")
 fun hourFromDate(tv: TextView, date: Date?) {
     if (date == null) {
         tv.text = "??:??"
     } else {
         tv.text = date.time.formatTimeWithoutSeconds()
+    }
+}
+
+@BindingAdapter("hourFromZonedDate")
+fun hourFromDate(tv: TextView, date: ZonedDateTime?) {
+    if (date == null) {
+        tv.text = "??:??"
+    } else {
+        tv.text = DateTimeFormatter.ofPattern("HH:mm").withLocale(Locale.getDefault()).format(date)
     }
 }

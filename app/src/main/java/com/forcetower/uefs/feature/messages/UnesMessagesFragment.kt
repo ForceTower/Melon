@@ -44,9 +44,8 @@ class UnesMessagesFragment : UFragment() {
     private lateinit var messagesAdapter: UnesMessageAdapter
     private lateinit var adapterDataObserver: RecyclerView.AdapterDataObserver
 
-    private var initialized = false
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        viewModel.fetchUnesMessages()
         return FragmentUnesMessagesBinding.inflate(inflater, container, false).also {
             binding = it
         }.root
@@ -64,19 +63,7 @@ class UnesMessagesFragment : UFragment() {
             }
         }
 
-        val manager = binding.recyclerSagresMessages.layoutManager as LinearLayoutManager
-        adapterDataObserver = object : RecyclerView.AdapterDataObserver() {
-            override fun onItemRangeInserted(positionStart: Int, itemCount: Int) {
-                super.onItemRangeInserted(positionStart, itemCount)
-                if (positionStart == 0 && initialized) {
-                    manager.smoothScrollToPosition(binding.recyclerSagresMessages, null, 0)
-                }
-                initialized = true
-            }
-        }
-
-        messagesAdapter.registerAdapterDataObserver(adapterDataObserver)
-        viewModel.unesMessages.observe(viewLifecycleOwner, Observer { messagesAdapter.submitList(it) })
+        viewModel.unesMessages.observe(viewLifecycleOwner) { messagesAdapter.submitList(it) }
     }
 
     override fun onDestroyView() {

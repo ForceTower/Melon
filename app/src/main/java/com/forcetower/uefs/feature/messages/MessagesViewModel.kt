@@ -39,23 +39,27 @@ import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.UMessage
+import com.forcetower.uefs.core.model.unes.EdgeAppMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.storage.repository.MessagesRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeMessageRepository
 import com.forcetower.uefs.core.task.usecase.message.FetchAllMessagesSnowpiercerUseCase
 import com.forcetower.uefs.feature.shared.extensions.toFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import javax.inject.Named
 import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class MessagesViewModel @Inject constructor(
     private val repository: MessagesRepository,
+    private val edgeRepository: EdgeMessageRepository,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     private val fetchAllMessagesSnowpiercerUseCase: FetchAllMessagesSnowpiercerUseCase
 ) : ViewModel(), MessagesActions {
     val messages = repository.getMessages().cachedIn(viewModelScope).asLiveData()
-    val unesMessages by lazy { repository.getUnesMessages() }
+    val unesMessages by lazy { edgeRepository.getAll().asLiveData() }
     var pushedTimes = 0
 
     private val _refreshing = MediatorLiveData<Boolean>()
@@ -105,10 +109,10 @@ class MessagesViewModel @Inject constructor(
         onMessageClick(message.content)
     }
 
-    override fun onUNESMessageLongClick(view: View, message: UMessage?): Boolean {
+    override fun onUNESMessageLongClick(view: View, message: EdgeAppMessage?): Boolean {
         message ?: return false
         val context = view.context
-        val content = "Mensagem UNES\n\n${message.message}"
+        val content = "Mensagem UNES\n\n${message.content}"
         return shareMessage(context, content)
     }
 
@@ -137,5 +141,13 @@ class MessagesViewModel @Inject constructor(
         clipboard.setPrimaryClip(ClipData.newPlainText("unes-message", content))
         _snackMessage.value = Event(R.string.message_copied_to_clipboard)
         return true
+    }
+
+    fun fetchUnesMessages() {
+        viewModelScope.launch {
+            runCatching { edgeRepository.syncDataIfNeeded() }
+                .onSuccess { Timber.i("Completed fetching app messages") }
+                .onFailure { Timber.e(it, "Failed to fetch app messages.") }
+        }
     }
 }

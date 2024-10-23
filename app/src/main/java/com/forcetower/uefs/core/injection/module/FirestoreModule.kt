@@ -60,11 +60,6 @@ object FirestoreModule {
 
     @Provides
     @Reusable
-    @Named(UMessage.COLLECTION)
-    fun provideUnesMessagesCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(UMessage.COLLECTION)
-
-    @Provides
-    @Reusable
     @Named(ClassStatsData.STATS_CONTRIBUTION)
     fun provideStatsContributionCollection(firestore: FirebaseFirestore): CollectionReference = firestore.collection(ClassStatsData.STATS_CONTRIBUTION)
 
