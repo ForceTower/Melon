@@ -121,7 +121,7 @@ object AppModule {
     @Reusable
     @Named("unesUserAgent")
     fun provideUnesUserAgent(context: Context): String {
-        val version = context.packageManager.getPackageInfo(context.packageName, 0).versionName
+        val version = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.0.-1"
         val parts = version.split(".")
         return "UNES/${parts[0]}.${parts[1]}.${parts[2]}.${parts[3]} (Android ${Build.VERSION.RELEASE}; Build/${Build.MODEL})"
     }

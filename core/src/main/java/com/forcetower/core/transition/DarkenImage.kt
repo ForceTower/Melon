@@ -54,7 +54,7 @@ class DarkenImage(context: Context, attrs: AttributeSet) : Transition(context, a
     override fun captureEndValues(transitionValues: TransitionValues?) { }
 
     override fun createAnimator(
-        sceneRoot: ViewGroup?,
+        sceneRoot: ViewGroup,
         startValues: TransitionValues?,
         endValues: TransitionValues?
     ): Animator? {

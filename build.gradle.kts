@@ -1,4 +1,6 @@
-import javax.sound.sampled.Clip
+import com.android.build.api.variant.AndroidComponentsExtension
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 /*
  * This file is part of the UNES Open Source Project.
@@ -67,6 +69,27 @@ subprojects {
     tasks.configureEach {
         if (name == "preBuild") {
             mustRunAfter("lintKotlin")
+        }
+    }
+
+    tasks.withType<KotlinCompile>().configureEach {
+        compilerOptions {
+            jvmTarget.set(JvmTarget.JVM_17)
+            freeCompilerArgs.add("-Xstring-concat=inline")
+        }
+    }
+
+    pluginManager.withPlugin("com.android.application") {
+        extensions.getByType(AndroidComponentsExtension::class.java).finalizeDsl { ext ->
+            ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+            ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
+        }
+    }
+
+    pluginManager.withPlugin("com.android.library") {
+        extensions.getByType(AndroidComponentsExtension::class.java).finalizeDsl { ext ->
+            ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
+            ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
         }
     }
 }
