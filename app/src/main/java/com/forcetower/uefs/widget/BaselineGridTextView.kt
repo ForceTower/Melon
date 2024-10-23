@@ -146,10 +146,11 @@ class BaselineGridTextView @JvmOverloads constructor(
     private fun computeLineHeight() {
         val fm = paint.fontMetrics
         val fontHeight = abs(fm.ascent - fm.descent) + fm.leading
-        val desiredLineHeight = if (lineHeightHint > 0)
+        val desiredLineHeight = if (lineHeightHint > 0) {
             lineHeightHint
-        else
+        } else {
             lineHeightMultiplierHint * fontHeight
+        }
 
         val baselineAlignedLineHeight = (fourDp * ceil((desiredLineHeight / fourDp).toDouble()).toFloat() + 0.5f).toInt()
         setLineSpacing(baselineAlignedLineHeight - fontHeight, 1f)

@@ -25,8 +25,11 @@ import com.forcetower.core.utils.WordUtils
 
 fun String.makeSemester(): String {
     return if (this.length > 4) {
-        if (this[4] == '.') this
-        else this.substring(0, 4) + "." + this.substring(4)
+        if (this[4] == '.') {
+            this
+        } else {
+            this.substring(0, 4) + "." + this.substring(4)
+        }
     } else {
         this
     }

@@ -23,12 +23,12 @@ package com.forcetower.uefs.feature.shared.extensions
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import com.forcetower.uefs.R
-import timber.log.Timber
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 @BindingAdapter(value = ["timestamped"])
 fun getTimeStampedDate(view: TextView, time: Long) {
@@ -174,8 +174,9 @@ fun String?.generateCalendarFromHour(): Calendar? {
             calendar.set(Calendar.HOUR_OF_DAY, Integer.parseInt(parts[0]))
             calendar.set(Calendar.MINUTE, Integer.parseInt(parts[1]))
 
-            if (parts.size == 3)
+            if (parts.size == 3) {
                 calendar.set(Calendar.SECOND, Integer.parseInt(parts[2]))
+            }
 
             return calendar
         }

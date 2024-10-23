@@ -27,16 +27,15 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import com.forcetower.core.lifecycle.Event
-import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.SStudent
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.storage.repository.SagresDataRepository
 import com.forcetower.uefs.dashboard.core.storage.repository.DashboardRepository
 import com.forcetower.uefs.feature.shared.TimeLiveData
-import timber.log.Timber
 import java.util.Calendar
 import javax.inject.Inject
+import timber.log.Timber
 
 class DashboardViewModel @Inject constructor(
     private val repository: DashboardRepository,
@@ -60,14 +59,15 @@ class DashboardViewModel @Inject constructor(
         val calendar = Calendar.getInstance()
         val currentTimeInt = calendar.get(Calendar.HOUR_OF_DAY) * 60 + calendar.get(Calendar.MINUTE)
         val startInt = it?.location?.startsAtInt
-        if (startInt == null) false
-        else {
+        if (startInt == null) {
+            false
+        } else {
             startInt <= currentTimeInt
         }
     }
 
-    private val _profileClick = MutableLiveData<Event<Pair<Long, Long>>>()
-    val profileClick: LiveData<Event<Pair<Long, Long>>>
+    private val _profileClick = MutableLiveData<Event<Pair<String, Long>>>()
+    val profileClick: LiveData<Event<Pair<String, Long>>>
         get() = _profileClick
 
     private val _onMoveToSchedule = MutableLiveData<Event<Unit>>()

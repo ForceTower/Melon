@@ -50,8 +50,9 @@ class DisciplinePerformanceAdapter(
     private fun buildMergedList(classes: List<ClassFullWithGroup>): List<Any> {
         val list = mutableListOf<Any>()
         classes.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
-            if (index != 0)
+            if (index != 0) {
                 list += Divider
+            }
 
             list += Header(clazz)
 
@@ -152,35 +153,45 @@ class DisciplinePerformanceAdapter(
             val binding: ItemDisciplineStatusGroupingNameOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init {
+                binding.listener = listener
+            }
         }
 
         class MeanHolder(
             val binding: ItemDisciplineStatusMeanOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init {
+                binding.listener = listener
+            }
         }
 
         class FinalsHolder(
             val binding: ItemDisciplineStatusFinalsOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init {
+                binding.listener = listener
+            }
         }
 
         class GradeHolder(
             val binding: ItemGradeOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init {
+                binding.listener = listener
+            }
         }
 
         class HeaderHolder(
             val binding: ItemDisciplineStatusNameResumedOldBinding,
             listener: DisciplineActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.listener = listener }
+            init {
+                binding.listener = listener
+            }
         }
 
         class DividerHolder(

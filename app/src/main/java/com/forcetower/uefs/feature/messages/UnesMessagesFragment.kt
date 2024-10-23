@@ -34,7 +34,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class UnesMessagesFragment : UFragment() {
-    init { displayName = "UNES" }
+    init {
+        displayName = "UNES"
+    }
 
     private lateinit var binding: FragmentUnesMessagesBinding
 

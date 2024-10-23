@@ -119,35 +119,45 @@ class DisciplinePerformanceAdapter(
             val binding: ItemDisciplineStatusGroupingNameBinding,
             listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = listener }
+            init {
+                binding.actions = listener
+            }
         }
 
         class MeanHolder(
             val binding: ItemDisciplineStatusMeanBinding,
             listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = listener }
+            init {
+                binding.actions = listener
+            }
         }
 
         class FinalsHolder(
             val binding: ItemDisciplineStatusFinalsBinding,
             listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = listener }
+            init {
+                binding.actions = listener
+            }
         }
 
         class GradeHolder(
             val binding: ItemGradeBinding,
             listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = listener }
+            init {
+                binding.actions = listener
+            }
         }
 
         class HeaderHolder(
             val binding: ItemDisciplineStatusNameResumedBinding,
             listener: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = listener }
+            init {
+                binding.actions = listener
+            }
         }
 
         class DividerHolder(
@@ -158,7 +168,9 @@ class DisciplinePerformanceAdapter(
             val binding: ItemDisciplineEmptyDataBinding,
             actions: DisciplinesSemestersActions
         ) : DisciplineHolder(binding.root) {
-            init { binding.actions = actions }
+            init {
+                binding.actions = actions
+            }
         }
     }
 

@@ -44,7 +44,9 @@ class DisciplineSemesterAdapter(
     }
 
     inner class SemesterHolder(val binding: ItemDisciplinesSemesterIndicatorBinding) : RecyclerView.ViewHolder(binding.root) {
-        init { binding.actions = actions }
+        init {
+            binding.actions = actions
+        }
     }
 
     private object SemesterDiff : DiffUtil.ItemCallback<CheckableSemester>() {

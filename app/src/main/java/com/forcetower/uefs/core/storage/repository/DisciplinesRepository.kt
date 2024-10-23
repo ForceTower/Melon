@@ -48,14 +48,14 @@ import dagger.Reusable
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome
+import java.util.Calendar
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.util.Calendar
-import javax.inject.Inject
-import javax.inject.Named
 
 @Reusable
 class DisciplinesRepository @Inject constructor(
@@ -97,8 +97,9 @@ class DisciplinesRepository @Inject constructor(
                 val disciplines = entry.value
                 val result = mutableListOf<DisciplineHelperData>()
                 disciplines.sortedBy { it.discipline.name }.forEachIndexed { index, clazz ->
-                    if (index != 0)
+                    if (index != 0) {
                         result += DisciplineHelperData.Divider
+                    }
 
                     result += DisciplineHelperData.Header(clazz)
 

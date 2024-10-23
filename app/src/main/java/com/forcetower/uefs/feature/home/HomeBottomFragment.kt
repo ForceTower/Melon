@@ -41,7 +41,6 @@ import com.canhub.cropper.CropImageView
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Account
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -61,6 +60,7 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class HomeBottomFragment : UFragment() {
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+
     @Inject lateinit var preferences: SharedPreferences
 
     private val pickImageContract = registerForActivityResult(ActivityResultContracts.GetContent()) {

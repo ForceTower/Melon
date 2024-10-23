@@ -28,10 +28,10 @@ import com.forcetower.uefs.core.task.UCaseResult
 import com.forcetower.uefs.core.task.data
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.unes.usecases.courses.LoadCoursesUseCase
+import javax.inject.Inject
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
-import javax.inject.Inject
 
 @HiltViewModel
 class CourseViewModel @Inject constructor(

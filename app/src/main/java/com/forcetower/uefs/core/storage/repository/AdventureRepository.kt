@@ -27,6 +27,7 @@ import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.core.extensions.nearlyEquals
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
@@ -123,8 +124,9 @@ class AdventureRepository @Inject constructor(
         val profile = database.profileDao().selectMeDirect()
         val score = profile?.score ?: profile?.calcScore ?: -1.0
 
-        if (semesters.size > 5 && score >= 7)
+        if (semesters.size > 5 && score >= 7) {
             data[R.string.achievement_sobrevivente] = -1
+        }
 
         if (semesters.size > 4) data[R.string.achievement_veterano] = -1
         if (semesters.size > 7) data[R.string.achievement_e_ai_forma_quando] = -1
@@ -152,8 +154,9 @@ class AdventureRepository @Inject constructor(
                     val calendarStart = Calendar.getInstance().apply { timeInMillis = start }.get(Calendar.YEAR)
                     val calendarEnd = Calendar.getInstance().apply { timeInMillis = end }.get(Calendar.YEAR)
 
-                    if (calendarStart != calendarEnd)
+                    if (calendarStart != calendarEnd) {
                         data[R.string.achievement_semestre_da_virada] = -1
+                    }
                 }
 
                 var final = false
@@ -166,9 +169,9 @@ class AdventureRepository @Inject constructor(
                     val credits = clazz.discipline.credits
 
                     if (points < 7 && points >= 0) final = true
-                    if (points == 10.0) data[R.string.achievement_mdia_10] = -1
+                    if (points.nearlyEquals(10.0)) data[R.string.achievement_mdia_10] = -1
                     if (points >= 5 && points < 7) data[R.string.achievement_luta_at_o_fim] = -1
-                    if (points == 5.0) data[R.string.achievement_quase] = -1
+                    if (points.nearlyEquals(5.0)) data[R.string.achievement_quase] = -1
                     if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
                     if (points < 8) mechanics = false
 
@@ -189,8 +192,8 @@ class AdventureRepository @Inject constructor(
                     clazz.grades.forEach { grade ->
                         valid = true
                         val number = grade.gradeDouble() ?: -1.0
-                        if (number == 7.0) data[R.string.achievement_medocre] = -1
-                        if (number == 10.0) data[R.string.achievement_achei_fcil] = -1
+                        if (number.nearlyEquals(7.0)) data[R.string.achievement_medocre] = -1
+                        if (number.nearlyEquals(10.0)) data[R.string.achievement_achei_fcil] = -1
                     }
 
                     if (clazz.grades.size == 3) {
@@ -199,10 +202,12 @@ class AdventureRepository @Inject constructor(
                         val thr = clazz.grades[2].gradeDouble()
 
                         if (one != null && two != null && thr != null) {
-                            if (one < 5 && two > 8.5 && thr > 8.5)
+                            if (one < 5 && two > 8.5 && thr > 8.5) {
                                 data[R.string.achievement_agora_todas_as_peas_se_encaixaram] = -1
-                            if (one == 7.0 && two == 7.0 && thr == 7.0)
+                            }
+                            if (one.nearlyEquals(7.0) && two.nearlyEquals(7.0) && thr.nearlyEquals(7.0)) {
                                 data[R.string.achievement_jackpot]
+                            }
                         }
                     }
 
@@ -232,8 +237,11 @@ class AdventureRepository @Inject constructor(
                 mechanics = mechanics and (classes.size >= 4)
                 if (mechanics) data[R.string.achievement_mecanizou_todo] = -1
 
-                if (hours >= 480) data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
-                else if (hours <= 275) data[R.string.achievement_engatinhando] = -1
+                if (hours >= 480) {
+                    data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
+                } else if (hours <= 275) {
+                    data[R.string.achievement_engatinhando] = -1
+                }
             }
 
             data[R.string.achievement_introduo_a_introdues] = introduction
@@ -255,15 +263,15 @@ class AdventureRepository @Inject constructor(
 
                 hours += credits
 
-                if (points == 10.0) data[R.string.achievement_mdia_10] = -1
+                if (points.nearlyEquals(10.0)) data[R.string.achievement_mdia_10] = -1
                 if (points >= 5 && points < 7) data[R.string.achievement_luta_at_o_fim] = -1
-                if (points == 5.0) data[R.string.achievement_quase] = -1
+                if (points.nearlyEquals(5.0)) data[R.string.achievement_quase] = -1
                 if (points in 9.5..9.9) data[R.string.achievement_to_perto_mas_to_longe] = -1
 
                 clazz.grades.forEach { grade ->
                     val number = grade.gradeDouble() ?: -1.0
-                    if (number == 7.0) data[R.string.achievement_medocre] = -1
-                    if (number == 10.0) data[R.string.achievement_achei_fcil] = -1
+                    if (number.nearlyEquals(7.0)) data[R.string.achievement_medocre] = -1
+                    if (number.nearlyEquals(10.0)) data[R.string.achievement_achei_fcil] = -1
                 }
 
                 if (clazz.grades.size == 3) {
@@ -272,16 +280,21 @@ class AdventureRepository @Inject constructor(
                     val thr = clazz.grades[2].gradeDouble()
 
                     if (one != null && two != null && thr != null) {
-                        if (one < 5 && two > 8.5 && thr > 8.5)
+                        if (one < 5 && two > 8.5 && thr > 8.5) {
                             data[R.string.achievement_agora_todas_as_peas_se_encaixaram] = -1
-                        if (one == 7.0 && two == 7.0 && thr == 7.0)
+                        }
+                        if (one.nearlyEquals(7.0) && two.nearlyEquals(7.0) && thr.nearlyEquals(7.0)) {
                             data[R.string.achievement_jackpot]
+                        }
                     }
                 }
             }
 
-            if (hours >= 480) data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
-            else if (hours <= 275) data[R.string.achievement_engatinhando] = -1
+            if (hours >= 480) {
+                data[R.string.achievement_me_empresta_o_seu_viratempo] = -1
+            } else if (hours <= 275) {
+                data[R.string.achievement_engatinhando] = -1
+            }
         }
     }
 

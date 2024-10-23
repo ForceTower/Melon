@@ -27,9 +27,9 @@ import com.forcetower.uefs.GooglePlayGamesInstance
 import com.forcetower.uefs.R
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.material.snackbar.Snackbar
+import javax.inject.Inject
 import kotlinx.coroutines.tasks.await
 import timber.log.Timber
-import javax.inject.Inject
 
 /**
  * Disponibiliza código especifico para trabalhar com as ferramentas do Google Play Games.

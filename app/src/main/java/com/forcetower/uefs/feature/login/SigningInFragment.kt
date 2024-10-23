@@ -50,8 +50,8 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.fadeIn
 import com.forcetower.uefs.feature.shared.fadeOut
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.nio.charset.Charset
+import timber.log.Timber
 
 @AndroidEntryPoint
 class SigningInFragment : UFragment() {
@@ -136,8 +136,9 @@ class SigningInFragment : UFragment() {
         binding.textStatus.setText(possibleMessages.removeFirst())
         Handler(Looper.getMainLooper()).postDelayed(
             {
-                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED))
+                if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
                     displayRandomText()
+                }
             },
             3000
         )

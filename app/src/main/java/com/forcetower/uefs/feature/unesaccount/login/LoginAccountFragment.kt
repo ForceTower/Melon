@@ -9,9 +9,7 @@ import androidx.core.view.isVisible
 import androidx.credentials.CredentialManager
 import androidx.credentials.GetCredentialRequest
 import androidx.credentials.GetCredentialResponse
-import androidx.credentials.GetPasswordOption
 import androidx.credentials.GetPublicKeyCredentialOption
-import androidx.credentials.PasswordCredential
 import androidx.credentials.PublicKeyCredential
 import androidx.credentials.exceptions.GetCredentialException
 import androidx.fragment.app.viewModels

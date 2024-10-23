@@ -26,8 +26,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.model.unes.Event
 import dev.forcetower.event.core.repository.EventRepository
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 typealias SingleEventAction = com.forcetower.core.lifecycle.Event<Event>
 

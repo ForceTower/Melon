@@ -34,15 +34,15 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.util.ImgurUploader
 import com.google.android.play.core.splitcompat.SplitCompat
 import dev.forcetower.event.core.work.CreateEventWorker
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.time.ZonedDateTime
 import java.util.UUID
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 class EventRepository @Inject constructor(
     private val database: UDatabase,

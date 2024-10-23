@@ -46,7 +46,9 @@ class CourseAdapter(
         val binding: ItemFlowchartCourseBinding,
         interactor: FlowchartInteractor
     ) : RecyclerView.ViewHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<Flowchart>() {

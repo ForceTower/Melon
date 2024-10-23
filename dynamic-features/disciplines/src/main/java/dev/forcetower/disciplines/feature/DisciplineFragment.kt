@@ -54,8 +54,8 @@ import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.disciplines.core.injection.DaggerDisciplineComponent
 import dev.forcetower.disciplines.databinding.FragmentDisciplineBinding
 import dev.forcetower.disciplines.feature.dialog.SelectGroupDialog
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Keep
 class DisciplineFragment : UFragment() {

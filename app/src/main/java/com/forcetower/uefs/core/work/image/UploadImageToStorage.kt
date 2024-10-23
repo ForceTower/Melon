@@ -41,11 +41,11 @@ import com.forcetower.uefs.core.util.ImgurUploader
 import com.forcetower.uefs.core.work.enqueue
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
 import java.util.UUID
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 @HiltWorker
 class UploadImageToStorage @AssistedInject constructor(

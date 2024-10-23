@@ -26,10 +26,10 @@ import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.core.util.truncate
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.math.min
+import timber.log.Timber
 
 @Singleton
 class MechCalcRepository @Inject constructor(

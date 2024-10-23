@@ -31,10 +31,10 @@ import com.forcetower.uefs.core.util.round
 import com.forcetower.uefs.feature.common.DisciplineActions
 import com.forcetower.uefs.feature.grades.ClassGroupGradesAdapter
 import com.forcetower.uefs.widget.CircleProgressBar
-import timber.log.Timber
 import java.time.OffsetDateTime
 import java.time.format.DateTimeFormatter
 import kotlin.math.max
+import timber.log.Timber
 
 @BindingAdapter(value = ["disciplineGroupsGrades", "disciplineListener"], requireAll = false)
 fun disciplineGroupsGrades(recycler: RecyclerView, classes: List<Grade>?, listener: DisciplineActions?) {
@@ -170,8 +170,11 @@ fun classSubject(tv: TextView, subject: String?, situation: String?) {
 
     val strike = situation?.trim()?.equals("realizada", ignoreCase = true)
 
-    if (strike == true) tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-    else tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    if (strike == true) {
+        tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    } else {
+        tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    }
 }
 
 @BindingAdapter(value = ["absenceSequence", "absenceDate"], requireAll = true)

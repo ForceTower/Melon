@@ -74,6 +74,10 @@ import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.google.firebase.messaging.FirebaseMessaging
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
+import java.util.Calendar
+import java.util.Locale
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
@@ -81,10 +85,6 @@ import kotlinx.coroutines.tasks.await
 import kotlinx.coroutines.withContext
 import org.jsoup.nodes.Document
 import timber.log.Timber
-import java.util.Calendar
-import java.util.Locale
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class SagresSyncRepository @Inject constructor(
@@ -161,6 +161,7 @@ class SagresSyncRepository @Inject constructor(
             }
         } else {
             val manager = ContextCompat.getSystemService(context, WifiManager::class.java)
+
             @Suppress("DEPRECATION")
             val info = manager?.connectionInfo
             return if (info == null) {
@@ -314,18 +315,20 @@ class SagresSyncRepository @Inject constructor(
         val isNewDaily = currentDayDiscipline != today || dailyDisciplines == -1
         val currentDailyHour = calendar.get(Calendar.HOUR_OF_DAY)
 
-        val (actualDailyCount, nextHour) = if (isNewDaily)
+        val (actualDailyCount, nextHour) = if (isNewDaily) {
             0 to -1
-        else
+        } else {
             currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
+        }
 
         val shouldDisciplineSync =
             ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
                 (currentDailyHour >= nextHour)
 
         if (shouldDisciplineSync) {
-            if (!disciplinesExperimental()) result += 1 shl 6
-            else {
+            if (!disciplinesExperimental()) {
+                result += 1 shl 6
+            } else {
                 preferences.edit()
                     .putInt("daily_discipline_count", actualDailyCount + 1)
                     .putInt("daily_discipline_day", today)
@@ -506,10 +509,11 @@ class SagresSyncRepository @Inject constructor(
     @WorkerThread
     private fun messages(userId: Long?): Boolean {
         Timber.d("Messages was invoked using $userId")
-        val messages = if (userId != null)
+        val messages = if (userId != null) {
             SagresNavigator.instance.messages(userId)
-        else
+        } else {
             SagresNavigator.instance.messagesHtml()
+        }
 
         Timber.d("Did receive a valid list? ${messages.messages != null}, ${messages.status}")
 

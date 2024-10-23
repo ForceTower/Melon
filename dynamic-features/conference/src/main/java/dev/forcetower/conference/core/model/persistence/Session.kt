@@ -48,6 +48,7 @@ data class Session(
     val dayId: String
 ) {
     val hasPhoto inline get() = !photoUrl.isNullOrBlank()
+
     @Ignore
     val duration = endTime.toInstant().toEpochMilli() - startTime.toInstant().toEpochMilli()
 

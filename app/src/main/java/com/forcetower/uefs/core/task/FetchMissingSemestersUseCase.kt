@@ -12,12 +12,12 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.model.Semester
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.firstOrNull
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
 
 class FetchMissingSemestersUseCase @Inject constructor(
     @ApplicationContext private val context: Context,
@@ -79,7 +79,7 @@ class FetchMissingSemestersUseCase @Inject constructor(
             Semester(1000000439, "20131", "2013.1", "2013-03-11T00:00:00-03:00", "2013-08-15T00:00:00-03:00"),
             Semester(1000000403, "20122", "2012.2", "2012-09-05T00:00:00-03:00", "2013-01-23T00:00:00-02:00"),
             Semester(1000000372, "20121", "2012.1", "2012-04-09T00:00:00-03:00", "2012-08-27T00:00:00-03:00"),
-            Semester(1000000340, "20112", "2011.2", "2011-09-29T00:00:00-03:00", "2012-03-19T00:00:00-03:00"),
+            Semester(1000000340, "20112", "2011.2", "2011-09-29T00:00:00-03:00", "2012-03-19T00:00:00-03:00")
         )
     }
 }

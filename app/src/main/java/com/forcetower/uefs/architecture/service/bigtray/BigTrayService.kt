@@ -33,8 +33,8 @@ import com.forcetower.uefs.core.model.bigtray.BigTrayData
 import com.forcetower.uefs.feature.bigtray.BigTrayRepository
 import com.forcetower.uefs.service.NotificationCreator
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class BigTrayService : LifecycleService() {

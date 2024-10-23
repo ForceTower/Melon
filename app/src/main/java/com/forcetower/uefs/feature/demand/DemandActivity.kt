@@ -34,8 +34,8 @@ import com.forcetower.uefs.feature.shared.extensions.inTransaction
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class DemandActivity : UActivity() {

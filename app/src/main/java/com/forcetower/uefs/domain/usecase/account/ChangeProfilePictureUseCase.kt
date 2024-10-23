@@ -9,10 +9,10 @@ import android.util.Base64
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
 import dagger.Reusable
 import dagger.hilt.android.qualifiers.ApplicationContext
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import javax.inject.Inject
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 
 @Reusable
 class ChangeProfilePictureUseCase @Inject constructor(

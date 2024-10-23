@@ -47,16 +47,16 @@ import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.model.Person
 import dev.forcetower.breaker.result.Outcome
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 @Singleton
 class SnowpiercerSyncRepository @Inject constructor(
@@ -100,8 +100,11 @@ class SnowpiercerSyncRepository @Inject constructor(
 
         val login = orchestra.login()
         if (login is Outcome.Error) {
-            if (login.code == 401) onAccessInvalided()
-            else produceErrorMessage(login)
+            if (login.code == 401) {
+                onAccessInvalided()
+            } else {
+                produceErrorMessage(login)
+            }
             // The first request failed... stop here
             return
         }
@@ -234,6 +237,7 @@ class SnowpiercerSyncRepository @Inject constructor(
             }
         } else {
             val manager = ContextCompat.getSystemService(context, WifiManager::class.java)
+
             @Suppress("DEPRECATION")
             val info = manager?.connectionInfo
             return if (info == null) {
@@ -257,10 +261,11 @@ class SnowpiercerSyncRepository @Inject constructor(
         val isNewDaily = currentDayDiscipline != today || dailyDisciplines == -1
         val currentDailyHour = calendar.get(Calendar.HOUR_OF_DAY)
 
-        val (actualDailyCount, nextHour) = if (isNewDaily)
+        val (actualDailyCount, nextHour) = if (isNewDaily) {
             0 to -1
-        else
+        } else {
             currentDaily to if (lastDailyHour < 8) 10 else lastDailyHour + 4
+        }
 
         val execute = ((actualDailyCount < dailyDisciplines) || (dailyDisciplines == -1)) &&
             (currentDailyHour >= nextHour)

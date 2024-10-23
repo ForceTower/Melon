@@ -27,11 +27,11 @@ import com.forcetower.uefs.core.model.unes.UserSession
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
-import timber.log.Timber
 import java.util.Calendar
 import java.util.UUID
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class UserSessionRepository @Inject constructor(

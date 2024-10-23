@@ -42,8 +42,8 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.google.android.play.core.install.model.InstallStatus
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Keep
 class DashboardFragment : UFragment() {
@@ -103,8 +103,7 @@ class DashboardFragment : UFragment() {
             viewLifecycleOwner,
             EventObserver {
                 val accountId = it.first
-                val profileId = it.second
-                val intent = ProfileActivity.startIntent(requireContext(), profileId, accountId)
+                val intent = ProfileActivity.startIntent(requireContext(), accountId)
 
                 val shared = findStudentHeadshot(binding.recyclerElements)
                 val option = ActivityOptions.makeSceneTransitionAnimation(requireActivity(), shared, "student_headshot_transition")

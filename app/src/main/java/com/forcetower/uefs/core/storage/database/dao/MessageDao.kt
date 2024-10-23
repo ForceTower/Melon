@@ -28,8 +28,8 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import androidx.room.Transaction
 import com.forcetower.uefs.core.model.unes.Message
-import timber.log.Timber
 import java.util.Locale
+import timber.log.Timber
 
 @Dao
 abstract class MessageDao {
@@ -83,10 +83,12 @@ abstract class MessageDao {
                     updateSenderProfile(direct.sagresId, message.senderProfile)
                     updateHtmlParseStatus(direct.sagresId, false)
 
-                    if (message.senderName != null)
+                    if (message.senderName != null) {
                         updateSenderName(direct.sagresId, message.senderName)
-                    if (message.discipline != null)
+                    }
+                    if (message.discipline != null) {
                         updateDisciplineName(direct.sagresId, message.discipline)
+                    }
                 }
             }
             val resume = message.disciplineResume?.trim()
@@ -107,8 +109,9 @@ abstract class MessageDao {
         messages.forEach { message ->
             val hash = message.content.lowercase(Locale.getDefault()).trim().hashCode().toLong()
             val existing = getMessageByHashDirect(hash)
-            if (existing == null) setMessageHash(message.uid, hash)
-            else {
+            if (existing == null) {
+                setMessageHash(message.uid, hash)
+            } else {
                 deleteMessage(message.uid)
                 Timber.e("Collision of messages ${existing.senderName} and ${message.codeDiscipline}")
             }

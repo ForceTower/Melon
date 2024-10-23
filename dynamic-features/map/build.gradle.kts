@@ -30,7 +30,7 @@ plugins {
 
 android {
     namespace = "dev.forcetower.map"
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         minSdk = 21
@@ -39,7 +39,7 @@ android {
     kapt {
         correctErrorTypes = true
         javacOptions {
-            option("-Xmaxerrs", 1000)
+            option("-Xmaxerrs", "1000")
         }
     }
 

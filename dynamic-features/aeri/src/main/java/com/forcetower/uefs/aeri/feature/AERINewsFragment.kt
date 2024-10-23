@@ -42,8 +42,8 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Keep
 class AERINewsFragment : UFragment() {

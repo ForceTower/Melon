@@ -55,7 +55,8 @@ import javax.inject.Inject
 import javax.inject.Named
 
 class DisciplineDetailsFragment : UFragment() {
-    @Inject @Named(Discipline.COLLECTION)
+    @Inject
+    @Named(Discipline.COLLECTION)
     lateinit var firestore: CollectionReference
 
     private val viewModel: DisciplineViewModel by activityViewModels()

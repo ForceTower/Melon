@@ -34,14 +34,11 @@ class RemindersRepository @Inject constructor() {
     }
 
     fun createReminder(reminder: Reminder) {
-
     }
 
     fun updateReminderCompleteStatus(reminder: Reminder, next: Boolean) {
-
     }
 
     fun deleteReminder(reminder: Reminder) {
-
     }
 }

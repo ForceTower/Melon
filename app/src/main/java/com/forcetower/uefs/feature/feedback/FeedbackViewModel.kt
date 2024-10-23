@@ -20,21 +20,19 @@
 
 package com.forcetower.uefs.feature.feedback
 
-import android.content.Context
 import androidx.annotation.MainThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.core.lifecycle.Event
-import com.forcetower.uefs.R
 import com.forcetower.uefs.core.storage.repository.FeedbackRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
 class FeedbackViewModel @Inject constructor(
-    private val repository: FeedbackRepository,
+    private val repository: FeedbackRepository
 ) : ViewModel() {
     private val _sendFeedback = MediatorLiveData<Event<Boolean>>()
     val sendFeedback: LiveData<Event<Boolean>>
@@ -46,6 +44,5 @@ class FeedbackViewModel @Inject constructor(
 
     @MainThread
     fun onSendFeedback(text: String?) {
-
     }
 }

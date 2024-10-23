@@ -35,8 +35,8 @@ import com.forcetower.uefs.core.storage.repository.SagresSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
+import timber.log.Timber
 
 @HiltWorker
 class SyncLinkedWorker @AssistedInject constructor(

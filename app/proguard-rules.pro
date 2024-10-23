@@ -68,6 +68,10 @@
 ## This was needed because of the CallAdapter. I dont use it anymore, so...
 # -keep,allowshrinking class androidx.lifecycle.LiveData
 
+-keep class com.caverock.androidsvg.** { *; }
+-dontwarn com.caverock.androidsvg.**
+-dontwarn pl.droidsonroids.gif.GifDrawable
+
 -dontwarn okhttp3.internal.platform.ConscryptPlatform
 -dontwarn org.conscrypt.ConscryptHostnameVerifier
 -dontwarn org.conscrypt.Conscrypt$Version

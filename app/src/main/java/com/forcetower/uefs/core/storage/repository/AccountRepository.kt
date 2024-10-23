@@ -29,8 +29,8 @@ import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.core.storage.resource.Resource
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 class AccountRepository @Inject constructor(
     private val database: UDatabase,

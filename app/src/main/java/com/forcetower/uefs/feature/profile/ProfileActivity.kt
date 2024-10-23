@@ -41,9 +41,8 @@ class ProfileActivity : UActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_profile)
         if (savedInstanceState == null) {
             supportFragmentManager.inTransaction {
-                val profileId = intent.getLongExtra(EXTRA_STUDENT_ID, 0)
-                val userId = intent.getLongExtra(EXTRA_USER_ID, 0)
-                add(R.id.fragment_container, ProfileFragment.newInstance(profileId, userId))
+                val userId = intent.getStringExtra(EXTRA_USER_ID) ?: throw IllegalStateException("NO!")
+                add(R.id.fragment_container, ProfileFragment.newInstance(userId))
             }
         }
     }
@@ -60,11 +59,9 @@ class ProfileActivity : UActivity() {
     }
 
     companion object {
-        const val EXTRA_STUDENT_ID = "student_id"
         const val EXTRA_USER_ID = "user_id"
-        fun startIntent(context: Context, profileId: Long, userId: Long): Intent {
+        fun startIntent(context: Context, userId: String): Intent {
             return Intent(context, ProfileActivity::class.java).apply {
-                putExtra(EXTRA_STUDENT_ID, profileId)
                 putExtra(EXTRA_USER_ID, userId)
             }
         }

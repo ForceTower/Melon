@@ -31,7 +31,8 @@ class CreateAccountStartFragment : UFragment() {
         }
 
         binding.btnWhy.setOnClickListener {
-
+            val directions = CreateAccountStartFragmentDirections.actionUnesAccountStartToUnesAccountReasons()
+            findNavController().navigate(directions)
         }
     }
 }

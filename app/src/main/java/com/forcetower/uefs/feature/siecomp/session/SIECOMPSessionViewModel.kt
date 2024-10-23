@@ -34,11 +34,11 @@ import com.forcetower.uefs.feature.shared.SetIntervalLiveData
 import com.forcetower.uefs.feature.shared.extensions.setValueIfNew
 import com.forcetower.uefs.feature.siecomp.common.SpeakerActions
 import dagger.hilt.android.lifecycle.HiltViewModel
-import timber.log.Timber
 import java.time.Duration
 import java.time.Instant
 import java.time.ZoneId
 import javax.inject.Inject
+import timber.log.Timber
 
 private const val TEN_SECONDS = 10_000L
 

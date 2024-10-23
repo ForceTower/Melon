@@ -37,9 +37,9 @@ import com.forcetower.uefs.core.work.demand.CreateDemandWorker
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.analytics.FirebaseAnalytics
 import io.reactivex.BackpressureStrategy
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class DemandRepository @Inject constructor(

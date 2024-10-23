@@ -26,9 +26,9 @@ import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.service.AffinityQuestionAnswer
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class AffinityQuestionRepository @Inject constructor(

@@ -61,8 +61,9 @@ class CreateReminderDialog : RoundedDialog() {
             return
         }
 
-        if (description != null && description.isBlank())
+        if (description != null && description.isBlank()) {
             description = null
+        }
 
         viewModel.createReminder(title, description)
         dismiss()
@@ -71,8 +72,9 @@ class CreateReminderDialog : RoundedDialog() {
     private fun openCalendar() {
         val calendar = Calendar.getInstance()
 
-        if (viewModel.currentDeadline != null)
+        if (viewModel.currentDeadline != null) {
             calendar.timeInMillis = viewModel.currentDeadline!!
+        }
 
         val color = ViewUtils.attributeColorUtils(requireContext(), androidx.appcompat.R.attr.colorPrimary)
 

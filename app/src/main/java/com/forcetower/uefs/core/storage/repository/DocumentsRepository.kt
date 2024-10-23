@@ -32,10 +32,10 @@ import com.forcetower.uefs.core.model.unes.Document
 import com.forcetower.uefs.core.model.unes.SagresDocument
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.resource.Resource
-import timber.log.Timber
 import java.io.File
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class DocumentsRepository @Inject constructor(

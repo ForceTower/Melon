@@ -26,9 +26,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.databinding.ItemEvaluateDisciplineHomeBinding
+import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
+import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationData
+import com.forcetower.uefs.databinding.ItemEvaluateDisciplineTeacherBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeacherGraphicsBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeacherMeanBinding
 import com.forcetower.uefs.databinding.ItemEvaluationTeacherOffersHeaderBinding
@@ -38,7 +38,7 @@ import com.forcetower.uefs.feature.shared.inflate
 class TeacherAdapter(
     private val interactor: HomeInteractor
 ) : RecyclerView.Adapter<TeacherHolder>() {
-    var discipline: EvaluationTeacher? = null
+    var discipline: PublicTeacherEvaluationCombinedData? = null
         set(value) {
             field = value
             diff.submitList(buildList(value))
@@ -49,7 +49,7 @@ class TeacherAdapter(
             R.layout.item_evaluation_teacher_mean -> TeacherHolder.GeneralMeanHolder(parent.inflate(viewType))
             R.layout.item_evaluation_teacher_graphics -> TeacherHolder.StatisticsApprovalHolder(parent.inflate(viewType))
             R.layout.item_evaluation_teacher_offers_header -> TeacherHolder.DisciplineHeaderHolder(parent.inflate(viewType))
-            R.layout.item_evaluate_discipline_home -> TeacherHolder.DisciplineHolder(parent.inflate(viewType), interactor)
+            R.layout.item_evaluate_discipline_teacher -> TeacherHolder.DisciplineHolder(parent.inflate(viewType), interactor)
             else -> throw IllegalStateException("No view holder found for view type $viewType")
         }
     }
@@ -70,14 +70,13 @@ class TeacherAdapter(
                     val cast = (item as StatisticsApproval).data
                     amountApprovals = cast.approved
                     amountFails = cast.failed
-                    amountFinals = cast.finals
-                    total = cast.qtdStudents
+                    total = cast.studentCountWeighted
                     executePendingBindings()
                 }
             }
             is TeacherHolder.DisciplineHolder -> {
                 holder.binding.apply {
-                    val value = item as EvaluationDiscipline
+                    val value = item as PublicTeacherEvaluationData
                     discipline = value
                     executePendingBindings()
                 }
@@ -88,16 +87,13 @@ class TeacherAdapter(
 
     private val diff = AsyncListDiffer(this, DiffCallback)
 
-    private fun buildList(value: EvaluationTeacher?): List<Any> {
+    private fun buildList(value: PublicTeacherEvaluationCombinedData?): List<Any> {
         val list = mutableListOf<Any>()
         value ?: return list
-        if (value.imageUrl != null) {
-            list += GeneralMeanWrapper(value)
-        }
         list += StatisticsApproval(value)
 
         val disciplines = value.disciplines
-        if (disciplines?.isNotEmpty() == true) {
+        if (disciplines.isNotEmpty()) {
             list += DisciplineHeader
             list.addAll(value.disciplines)
         }
@@ -109,7 +105,7 @@ class TeacherAdapter(
             is GeneralMeanWrapper -> R.layout.item_evaluation_teacher_mean
             is StatisticsApproval -> R.layout.item_evaluation_teacher_graphics
             is DisciplineHeader -> R.layout.item_evaluation_teacher_offers_header
-            is EvaluationDiscipline -> R.layout.item_evaluate_discipline_home
+            is PublicTeacherEvaluationData -> R.layout.item_evaluate_discipline_teacher
             else -> throw IllegalStateException("No view found for position $position -> object is: ${diff.currentList[position]}")
         }
     }
@@ -130,13 +126,13 @@ sealed class TeacherHolder(view: View) : RecyclerView.ViewHolder(view) {
     class GeneralMeanHolder(val binding: ItemEvaluationTeacherMeanBinding) : TeacherHolder(binding.root)
     class StatisticsApprovalHolder(val binding: ItemEvaluationTeacherGraphicsBinding) : TeacherHolder(binding.root)
     class DisciplineHeaderHolder(val binding: ItemEvaluationTeacherOffersHeaderBinding) : TeacherHolder(binding.root)
-    class DisciplineHolder(val binding: ItemEvaluateDisciplineHomeBinding, val interactor: HomeInteractor) : TeacherHolder(binding.root) {
+    class DisciplineHolder(val binding: ItemEvaluateDisciplineTeacherBinding, val interactor: HomeInteractor) : TeacherHolder(binding.root) {
         init {
             binding.interactor = interactor
         }
     }
 }
 
-private data class GeneralMeanWrapper(val data: EvaluationTeacher)
-private data class StatisticsApproval(val data: EvaluationTeacher)
+private data class GeneralMeanWrapper(val data: PublicTeacherEvaluationCombinedData)
+private data class StatisticsApproval(val data: PublicTeacherEvaluationCombinedData)
 private object DisciplineHeader

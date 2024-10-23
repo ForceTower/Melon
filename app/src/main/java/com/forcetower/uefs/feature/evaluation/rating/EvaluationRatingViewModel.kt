@@ -24,9 +24,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.forcetower.core.lifecycle.Event
-import com.forcetower.uefs.core.model.unes.Question
 import com.forcetower.uefs.core.storage.repository.EvaluationRepository
-import com.forcetower.uefs.core.storage.resource.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
@@ -44,13 +42,13 @@ class EvaluationRatingViewModel @Inject constructor(
     val nextQuestion: LiveData<Event<Unit>>
         get() = _nextQuestion
 
-    fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
-        return evaluationRepository.getQuestionsForTeacher(teacherId)
-    }
-
-    fun getQuestionsForDiscipline(code: String, department: String): LiveData<Resource<List<Question>>> {
-        return evaluationRepository.getQuestionsForDiscipline(code, department)
-    }
+//    fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
+//        return evaluationRepository.getQuestionsForTeacher(teacherId)
+//    }
+//
+//    fun getQuestionsForDiscipline(code: String, department: String): LiveData<Resource<List<Question>>> {
+//        return evaluationRepository.getQuestionsForDiscipline(code, department)
+//    }
 
     fun onNextQuestion() {
         _nextQuestion.value = Event(Unit)
@@ -78,6 +76,6 @@ class EvaluationRatingViewModel @Inject constructor(
             data["code"] = code
             data["department"] = department
         }
-        evaluationRepository.answer(data)
+//        evaluationRepository.answer(data)
     }
 }

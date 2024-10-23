@@ -41,12 +41,12 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.storage.resource.discipline.LoadDisciplineDetailsResource
 import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import kotlinx.coroutines.runBlocking
-import okhttp3.OkHttpClient
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import javax.inject.Singleton
+import kotlinx.coroutines.runBlocking
+import okhttp3.OkHttpClient
+import timber.log.Timber
 
 @Singleton
 class DisciplineDetailsRepository @Inject constructor(
@@ -59,7 +59,7 @@ class DisciplineDetailsRepository @Inject constructor(
     private val remoteConfig: FirebaseRemoteConfig,
     private val client: OkHttpClient,
     @Named("webViewUA") private val agent: String,
-    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
 ) {
 
     /**

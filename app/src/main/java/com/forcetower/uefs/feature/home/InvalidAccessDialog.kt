@@ -43,14 +43,15 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class InvalidAccessDialog : BottomSheetDialogFragment() {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
     private lateinit var binding: DialogInvalidAccessBinding
     private val viewModel: HomeViewModel by activityViewModels()

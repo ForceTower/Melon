@@ -107,12 +107,6 @@
         tools:layout="@layout/fragment_reminders"/>
 
     <fragment
-        android:id="@+id/purchases"
-        android:name="com.forcetower.uefs.feature.purchases.PurchasesFragment"
-        android:label="PurchasesFragment"
-        tools:layout="@layout/fragment_purchases"/>
-
-    <fragment
         android:id="@+id/adventure"
         android:name="com.forcetower.uefs.feature.adventure.AdventureFragment"
         android:label="AdventureFragment"
@@ -193,6 +187,9 @@
         <action
             android:id="@+id/action_unes_account_overview_to_unes_account_login"
             app:destination="@id/unes_account_login" />
+        <action
+            android:id="@+id/action_unes_account_overview_to_unes_account_reasons"
+            app:destination="@id/unes_account_reasons" />
     </fragment>
     <fragment
         android:id="@+id/unes_account_start"
@@ -203,6 +200,9 @@
             app:destination="@id/unes_account_login"
             app:popUpTo="@id/unes_account_start"
             app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_unes_account_start_to_unes_account_reasons"
+            app:destination="@id/unes_account_reasons" />
     </fragment>
     <fragment
         android:id="@+id/unes_account_login"
@@ -233,5 +233,9 @@
             android:name="email"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/unes_account_reasons"
+        android:name="com.forcetower.uefs.feature.unesaccount.why.CreateAccountReasonsFragment"
+        android:label="CreateAccountReasonsFragment" />
 
 </navigation>

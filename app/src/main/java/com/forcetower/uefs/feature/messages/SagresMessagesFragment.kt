@@ -31,7 +31,9 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class SagresMessagesFragment : UFragment() {
-    init { displayName = "Sagres" }
+    init {
+        displayName = "Sagres"
+    }
 
     private lateinit var binding: FragmentSagresMessagesBinding
     private val viewModel: MessagesViewModel by activityViewModels()

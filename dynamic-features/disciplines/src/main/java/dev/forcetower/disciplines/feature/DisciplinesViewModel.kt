@@ -34,12 +34,12 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.aggregation.ClassFullWithGroup
 import com.forcetower.uefs.core.storage.repository.DisciplinesRepository
 import com.forcetower.uefs.core.storage.repository.SagresGradesRepository
+import javax.inject.Inject
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 class DisciplinesViewModel @Inject constructor(
     private val repository: DisciplinesRepository,

@@ -21,129 +21,141 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
-import androidx.annotation.AnyThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import com.forcetower.uefs.AppExecutors
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.core.model.unes.EvaluationEntity
-import com.forcetower.uefs.core.model.unes.Question
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.storage.database.UDatabase
-import com.forcetower.uefs.core.storage.network.UService
-import com.forcetower.uefs.core.storage.network.adapter.asLiveData
-import com.forcetower.uefs.core.storage.resource.NetworkOnlyResource
-import com.forcetower.uefs.core.storage.resource.Resource
-import kotlinx.coroutines.flow.Flow
-import timber.log.Timber
+import com.forcetower.uefs.core.storage.network.ParadoxService
+import com.forcetower.uefs.domain.model.paradox.DisciplineCombinedData
+import com.forcetower.uefs.domain.model.paradox.SemesterMean
+import com.forcetower.uefs.domain.model.paradox.TeacherMean
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.Calendar
 import javax.inject.Inject
+import kotlinx.coroutines.flow.Flow
+import timber.log.Timber
 
 class EvaluationRepository @Inject constructor(
     private val database: UDatabase,
-    private val service: UService,
-    private val executors: AppExecutors,
+    private val service: ParadoxService,
     private val preferences: SharedPreferences
 ) {
-    fun getTrendingList(): LiveData<Resource<List<EvaluationHomeTopic>>> {
-        return object : NetworkOnlyResource<List<EvaluationHomeTopic>>(executors) {
-            override fun createCall() = service.getEvaluationTopics().asLiveData()
-            override fun saveCallResult(value: List<EvaluationHomeTopic>) = Unit
-        }.asLiveData()
+    suspend fun getTrendingList() = service.hot().data
+
+    suspend fun getDiscipline(id: String): DisciplineCombinedData {
+        val data = service.discipline(id).data
+
+        val teacherGrouped = data.teachers.groupBy { it.semesterPlatformId }
+        val semesters = teacherGrouped.entries.map { entry ->
+            val key = entry.key
+            val semester = entry.value
+
+            val studentCountWeighted = semester.sumOf { it.studentCountWeighted }
+            val mean = if (studentCountWeighted > 0) {
+                semester.sumOf { it.mean * it.studentCountWeighted } / studentCountWeighted
+            } else {
+                0.0
+            }
+
+            val first = semester.first()
+            val startedAt = ZonedDateTime.parse(first.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+            SemesterMean(key, first.semester, mean, startedAt, studentCountWeighted)
+        }.sortedBy { it.start }
+
+        val teachers = data.teachers.groupBy { it.teacherId }.entries.map { entry ->
+            val key = entry.key
+            val values = entry.value.sortedBy {
+                ZonedDateTime.parse(it.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+            }
+            val first = values.first()
+            val appear = values.maxBy {
+                ZonedDateTime.parse(it.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+            }
+            val studentCount = values.sumOf { it.studentsCount }
+
+            val studentCountWeighted = values.sumOf { it.studentCountWeighted }
+            val mean = if (studentCountWeighted > 0) {
+                values.sumOf { it.mean * it.studentCountWeighted } / studentCountWeighted
+            } else {
+                0.0
+            }
+
+            val appearTime = ZonedDateTime.parse(appear.semesterStart, DateTimeFormatter.ISO_ZONED_DATE_TIME)
+
+            TeacherMean(key, first.teacherName, appear.semester, mean, studentCount, studentCountWeighted, appearTime, values)
+        }.sortedByDescending { it.semesterStart }
+
+        return DisciplineCombinedData(
+            data,
+            semesters,
+            teachers
+        )
     }
 
-    fun getDiscipline(department: String, code: String): LiveData<Resource<EvaluationDiscipline>> {
-        return object : NetworkOnlyResource<EvaluationDiscipline>(executors) {
-            override fun createCall() = service.getEvaluationDiscipline(department, code).asLiveData()
-            override fun saveCallResult(value: EvaluationDiscipline) = Unit
-        }.asLiveData()
-    }
+    suspend fun getTeacherById(id: String) = service.teacher(id).data
 
-    fun getTeacherById(teacherId: Long): LiveData<Resource<EvaluationTeacher>> {
-        return object : NetworkOnlyResource<EvaluationTeacher>(executors) {
-            override fun createCall() = service.getTeacherById(teacherId).asLiveData()
-            override fun saveCallResult(value: EvaluationTeacher) = Unit
-        }.asLiveData()
-    }
-
-    fun getTeacherByName(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
-        return object : NetworkOnlyResource<EvaluationTeacher>(executors) {
-            override fun createCall() = service.getTeacherByName(teacherName).asLiveData()
-            override fun saveCallResult(value: EvaluationTeacher) = Unit
-        }.asLiveData()
-    }
-
-    fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
-        return object : NetworkOnlyResource<List<Question>>(executors) {
-            override fun createCall() = service.getQuestionsForTeachers(teacherId).asLiveData()
-            override fun saveCallResult(value: List<Question>) = Unit
-        }.asLiveData()
-    }
-
-    fun getQuestionsForDiscipline(code: String, department: String): LiveData<Resource<List<Question>>> {
-        return object : NetworkOnlyResource<List<Question>>(executors) {
-            override fun createCall() = service.getQuestionsForDisciplines(code, department).asLiveData()
-            override fun saveCallResult(value: List<Question>) = Unit
-        }.asLiveData()
-    }
-
-    fun downloadKnowledgeDatabase(): LiveData<Resource<Boolean>> {
-        val result = MutableLiveData<Resource<Boolean>>()
-        val update = preferences.getLong("_next_evaluation_knowledge_update_02_", 0)
+    suspend fun downloadKnowledgeDatabase() {
+        val update = preferences.getLong("_next_evaluation_knowledge_update_03_", 0)
         val calendar = Calendar.getInstance()
         if (update > calendar.timeInMillis) {
-            result.value = Resource.success(false)
-        } else {
-            executors.networkIO().execute {
-                result.postValue(Resource.loading(true))
-                try {
-                    val response = service.getEvaluationSnippetData().execute()
-                    if (response.isSuccessful) {
-                        val body = response.body()!!
-                        database.disciplineServiceDao().insert(body.disciplines)
-                        database.teacherServiceDao().insert(body.teachers)
-                        database.studentServiceDao().insert(body.students)
-                        database.evaluationEntitiesDao().recreate(body)
-                        calendar.add(Calendar.DAY_OF_YEAR, 2)
-                        preferences.edit().putLong("_next_evaluation_knowledge_update_02_", calendar.timeInMillis).apply()
-                        result.postValue(Resource.success(true))
-                    } else {
-                        result.postValue(Resource.error("Call failed", response.code(), Exception("Call failed")))
-                    }
-                } catch (t: Throwable) {
-                    result.postValue(Resource.error(t.message, 500, t))
-                }
-            }
+            return
         }
-        return result
+
+        try {
+            val snapshot = service.all().data
+            database.edgeParadoxSearchableItem.recreate(snapshot)
+            calendar.add(Calendar.DAY_OF_YEAR, 2)
+            preferences.edit().putLong("_next_evaluation_knowledge_update_03_", calendar.timeInMillis).apply()
+        } catch (t: Throwable) {
+            Timber.e("Failed to download knowledge database")
+        }
     }
 
-    fun queryEntities(queryProvider: () -> String): Flow<PagingData<EvaluationEntity>> {
+    fun queryEntities(queryProvider: () -> String): Flow<PagingData<EdgeParadoxSearchableItem>> {
         return Pager(
             config = PagingConfig(pageSize = 20),
             pagingSourceFactory = {
-                database.evaluationEntitiesDao().query(queryProvider())
+                database.edgeParadoxSearchableItem.query(queryProvider())
             }
         ).flow
     }
 
-    @AnyThread
-    fun answer(data: MutableMap<String, Any?>) {
-        executors.networkIO().execute {
-            try {
-                val response = service.answerQuestion(data).execute()
-                if (response.isSuccessful) {
-                    Timber.d("Posted answer correctly")
-                } else {
-                    Timber.d("Answer failed with code ${response.code()}")
-                }
-            } catch (t: Throwable) {
-                Timber.e(t, "error on posting answer")
-            }
-        }
-    }
+//    fun getTeacherByName(teacherName: String): LiveData<Resource<EvaluationTeacher>> {
+//        return object : NetworkOnlyResource<EvaluationTeacher>(executors) {
+//            override fun createCall() = service.getTeacherByName(teacherName).asLiveData()
+//            override fun saveCallResult(value: EvaluationTeacher) = Unit
+//        }.asLiveData()
+//    }
+//
+//    fun getQuestionsForTeacher(teacherId: Long): LiveData<Resource<List<Question>>> {
+//        return object : NetworkOnlyResource<List<Question>>(executors) {
+//            override fun createCall() = service.getQuestionsForTeachers(teacherId).asLiveData()
+//            override fun saveCallResult(value: List<Question>) = Unit
+//        }.asLiveData()
+//    }
+//
+//    fun getQuestionsForDiscipline(code: String, department: String): LiveData<Resource<List<Question>>> {
+//        return object : NetworkOnlyResource<List<Question>>(executors) {
+//            override fun createCall() = service.getQuestionsForDisciplines(code, department).asLiveData()
+//            override fun saveCallResult(value: List<Question>) = Unit
+//        }.asLiveData()
+//    }
+//
+//    @AnyThread
+//    fun answer(data: MutableMap<String, Any?>) {
+//        executors.networkIO().execute {
+//            try {
+//                val response = service.answerQuestion(data).execute()
+//                if (response.isSuccessful) {
+//                    Timber.d("Posted answer correctly")
+//                } else {
+//                    Timber.d("Answer failed with code ${response.code()}")
+//                }
+//            } catch (t: Throwable) {
+//                Timber.e(t, "error on posting answer")
+//            }
+//        }
+//    }
 }

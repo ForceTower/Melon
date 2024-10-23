@@ -1,12 +1,12 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
-import com.forcetower.uefs.core.model.edge.ChangePictureDTO
+import com.forcetower.uefs.core.model.edge.account.ChangePictureDTO
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import dagger.Reusable
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Reusable
 class EdgeAccountRepository @Inject constructor(

@@ -37,8 +37,8 @@ import com.forcetower.uefs.feature.shared.extensions.toWeekDay
 import com.forcetower.uefs.service.NotificationCreator
 import dev.forcetower.breaker.model.DisciplineData
 import dev.forcetower.breaker.model.Person
-import timber.log.Timber
 import java.util.UUID
+import timber.log.Timber
 
 class DisciplinesProcessor(
     private val context: Context,
@@ -85,8 +85,9 @@ class DisciplinesProcessor(
                     )
                     val groupId = database.classGroupDao().insertNewWay(group)
 
-                    if (clazz.teachers.isNotEmpty())
+                    if (clazz.teachers.isNotEmpty()) {
                         database.classGroupTeacher().deleteAllFromClassGroup(groupId)
+                    }
 
                     clazz.teachers.forEach { teacher ->
                         val id = insertTeacher(teacher, it.department)
