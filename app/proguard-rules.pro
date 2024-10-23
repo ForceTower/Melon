@@ -84,3 +84,4 @@
 -dontwarn org.openjsse.javax.net.ssl.SSLSocket
 -dontwarn org.openjsse.net.ssl.OpenJSSE
 -dontwarn android.content.pm.PackageManager$PackageInfoFlags
+-dontwarn com.google.android.gms.common.annotation.NoNullnessRewrite
