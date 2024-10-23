@@ -35,20 +35,25 @@ abstract class SemesterDao {
         val newSemesters = semesters.filter { semester ->
             val current = getSemesterDirect(semester.sagresId)
             if (current != null) {
-                if (current.start != semester.start && semester.start != null)
+                if (current.start != semester.start && semester.start != null) {
                     updateStart(current.sagresId, semester.start)
+                }
 
-                if (current.end != semester.end && semester.end != null)
+                if (current.end != semester.end && semester.end != null) {
                     updateEnd(current.sagresId, semester.end)
+                }
 
-                if (current.startClass != semester.startClass && semester.startClass != null)
+                if (current.startClass != semester.startClass && semester.startClass != null) {
                     updateStartClass(current.sagresId, semester.startClass)
+                }
 
-                if (current.endClass != semester.endClass && semester.endClass != null)
+                if (current.endClass != semester.endClass && semester.endClass != null) {
                     updateEndClass(current.sagresId, semester.endClass)
+                }
 
-                if (current.name != semester.name)
+                if (current.name != semester.name) {
                     updateName(current.sagresId, semester.name)
+                }
             }
 
             // keep only the new semesters
@@ -76,6 +81,9 @@ abstract class SemesterDao {
     @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
     abstract fun getSemesterDirect(sagresId: Long): Semester?
 
+    @Query("SELECT * FROM Semester WHERE sagres_id = :sagresId")
+    abstract suspend fun getSemesterDirectSuspend(sagresId: Long): Semester?
+
     @Insert(onConflict = OnConflictStrategy.IGNORE)
     protected abstract fun internalInsertIgnoring(semesters: List<Semester>)
 
@@ -93,4 +101,7 @@ abstract class SemesterDao {
 
     @Query("SELECT * FROM Semester ORDER BY sagres_id DESC")
     abstract fun getSemestersDirect(): List<Semester>
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    abstract suspend fun insertIgnoreSuspend(semester: Semester)
 }

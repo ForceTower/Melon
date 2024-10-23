@@ -37,6 +37,7 @@ import com.forcetower.core.utils.ViewUtils
  */
 class BackgroundFade : Visibility {
     constructor() : super()
+
     @Keep
     constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
 
@@ -58,10 +59,14 @@ class BackgroundFade : Visibility {
         startValues: TransitionValues?,
         endValues: TransitionValues?
     ): Animator? {
-        return if (view == null || view.background == null) null else ObjectAnimator.ofInt<Drawable>(
-            view.background,
-            ViewUtils.DRAWABLE_ALPHA,
-            0
-        )
+        return if (view == null || view.background == null) {
+            null
+        } else {
+            ObjectAnimator.ofInt<Drawable>(
+                view.background,
+                ViewUtils.DRAWABLE_ALPHA,
+                0
+            )
+        }
     }
 }

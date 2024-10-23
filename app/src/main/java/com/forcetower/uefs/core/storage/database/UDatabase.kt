@@ -41,6 +41,7 @@ import com.forcetower.uefs.core.model.unes.Contributor
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.Discipline
 import com.forcetower.uefs.core.model.unes.EdgeAccessToken
+import com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.model.unes.EvaluationEntity
 import com.forcetower.uefs.core.model.unes.Event
@@ -82,6 +83,7 @@ import com.forcetower.uefs.core.storage.database.dao.DisciplineDao
 import com.forcetower.uefs.core.storage.database.dao.DisciplineServiceDao
 import com.forcetower.uefs.core.storage.database.dao.DocumentDao
 import com.forcetower.uefs.core.storage.database.dao.EdgeAccessTokenDao
+import com.forcetower.uefs.core.storage.database.dao.EdgeParadoxSearchableItemDao
 import com.forcetower.uefs.core.storage.database.dao.EdgeServiceAccountDao
 import com.forcetower.uefs.core.storage.database.dao.EvaluationEntitiesDao
 import com.forcetower.uefs.core.storage.database.dao.EventDao
@@ -143,13 +145,15 @@ import com.forcetower.uefs.core.util.Converters
         Event::class,
         ClassGroupTeacher::class,
         EdgeAccessToken::class,
-        EdgeServiceAccount::class
+        EdgeServiceAccount::class,
+        EdgeParadoxSearchableItem::class
     ],
-    version = 55,
+    version = 56,
     exportSchema = true,
     autoMigrations = [
         AutoMigration(from = 53, to = 54),
         AutoMigration(from = 54, to = 55),
+        AutoMigration(from = 55, to = 56)
     ]
 )
 @TypeConverters(value = [Converters::class])
@@ -193,4 +197,5 @@ abstract class UDatabase : RoomDatabase() {
 
     abstract val edgeAccessToken: EdgeAccessTokenDao
     abstract val edgeServiceAccount: EdgeServiceAccountDao
+    abstract val edgeParadoxSearchableItem: EdgeParadoxSearchableItemDao
 }

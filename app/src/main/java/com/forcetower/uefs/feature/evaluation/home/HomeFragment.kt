@@ -30,17 +30,15 @@ import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.findNavController
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.core.model.unes.Account
-import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.model.edge.paradox.EvaluationHotTopic
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher
+import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.databinding.FragmentEvaluationHomeBinding
+import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class HomeFragment : UFragment() {
@@ -69,22 +67,24 @@ class HomeFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getAccount().observe(viewLifecycleOwner, { handleAccount(it) })
-        viewModel.getTrendingList().observe(viewLifecycleOwner, { handleTopics(it) })
+        viewModel.getAccount().observe(viewLifecycleOwner) { handleAccount(it) }
+        viewModel.trending.observe(viewLifecycleOwner) { handleTopics(it) }
         viewModel.disciplineSelect.observe(viewLifecycleOwner, EventObserver { onDisciplineSelected(it) })
         viewModel.teacherSelect.observe(viewLifecycleOwner, EventObserver { onTeacherSelected(it) })
+        viewModel.state.observe(viewLifecycleOwner, ::handleState)
+
+        if (savedInstanceState == null) {
+            viewModel.fetchTrending()
+        }
     }
 
-    private fun onTeacherSelected(teacher: EvaluationTeacher) {
-        val id = teacher.teacherId
-        val directions = HomeFragmentDirections.actionHomeToEvalTeacher(id, null)
+    private fun onTeacherSelected(teacher: PublicHotEvaluationTeacher) {
+        val directions = HomeFragmentDirections.actionHomeToEvalTeacher(teacher.id)
         findNavController().navigate(directions)
     }
 
-    private fun onDisciplineSelected(discipline: EvaluationDiscipline) {
-        val code = discipline.code
-        val department = discipline.department
-        val directions = HomeFragmentDirections.actionHomeToEvalDiscipline(code, department)
+    private fun onDisciplineSelected(discipline: PublicHotEvaluationDiscipline) {
+        val directions = HomeFragmentDirections.actionHomeToEvalDiscipline(discipline.id)
         findNavController().navigate(directions)
     }
 
@@ -93,42 +93,26 @@ class HomeFragment : UFragment() {
         findNavController().navigate(directions)
     }
 
-    private fun handleTopics(resource: Resource<List<EvaluationHomeTopic>>) {
-        val data = resource.data
-        when (resource.status) {
-            Status.LOADING -> {
-                if (data == null) {
-                    binding.loadingGroup.visibility = VISIBLE
-                    binding.disciplinesRecycler.visibility = GONE
-                } else {
-                    binding.loadingGroup.visibility = GONE
-                    binding.disciplinesRecycler.visibility = VISIBLE
-                }
+    private fun handleTopics(data: List<EvaluationHotTopic>) {
+        binding.loadingGroup.visibility = GONE
+        binding.disciplinesRecycler.visibility = VISIBLE
+        adapter.currentList = data
+    }
+
+    private fun handleState(state: EvaluationState) {
+        when {
+            state.loading -> {
+                binding.loadingGroup.visibility = VISIBLE
+                binding.disciplinesRecycler.visibility = GONE
             }
-            Status.SUCCESS -> {
-                if (data != null) {
-                    binding.loadingGroup.visibility = GONE
-                    binding.disciplinesRecycler.visibility = VISIBLE
-                }
+            state.failed -> {
+                showSnack(getString(R.string.evaluation_topics_load_failed))
             }
-            Status.ERROR -> {
-                if (data != null) {
-                    binding.loadingGroup.visibility = GONE
-                    binding.disciplinesRecycler.visibility = VISIBLE
-                } else {
-                    showSnack(getString(R.string.evaluation_topics_load_failed))
-                }
-            }
-        }
-        if (data != null) {
-            Timber.d("Data received $data")
-            adapter.currentList = data
         }
     }
 
-    private fun handleAccount(resource: Resource<Account>) {
-        val account = resource.data ?: return
+    private fun handleAccount(account: EdgeServiceAccount?) {
+        account ?: return
         binding.account = account
-        binding.executePendingBindings()
     }
 }

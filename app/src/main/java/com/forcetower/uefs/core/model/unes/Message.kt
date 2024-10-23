@@ -27,6 +27,7 @@ import androidx.room.Ignore
 import androidx.room.Index
 import androidx.room.PrimaryKey
 import com.forcetower.sagres.database.model.SagresMessage
+import com.forcetower.uefs.core.model.edge.sync.PublicPlatformMessage
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.service.NotificationCreator
 import java.time.OffsetDateTime
@@ -104,6 +105,22 @@ data class Message(
                 codeDiscipline = me.discipline?.code
             )
         }
+
+        fun fromMessage(me: PublicPlatformMessage, notified: Boolean): Message {
+            return Message(
+                content = me.content,
+                sagresId = me.platformId,
+                senderName = me.senderName,
+                senderProfile = me.senderProfile.toInt(),
+                timestamp = me.timestamp,
+                notified = notified,
+                html = false,
+                processingTime = System.currentTimeMillis(),
+                hashMessage = me.content.lowercase(Locale.getDefault()).trim().hashCode().toLong(),
+                discipline = me.discipline,
+                codeDiscipline = me.codeDiscipline
+            )
+        }
     }
 }
 
@@ -111,7 +128,7 @@ fun Message.notify(context: Context) {
     NotificationCreator.showSagresMessageNotification(this, context)
 }
 
-fun List<SagresMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
+suspend fun List<SagresMessage>?.defineInDatabase(database: UDatabase, notified: Boolean = false) {
     val values = this?.map { Message.fromMessage(it, notified) } ?: emptyList()
     database.messageDao().insertIgnoring(values)
 }

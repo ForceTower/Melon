@@ -45,7 +45,9 @@ class DisciplinesAdapter(
     }
 
     class DisciplineHolder(val binding: ItemFlowchartDisciplineBinding, interactor: DisciplineInteractor) : RecyclerView.ViewHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
 
     private object DiffCallback : DiffUtil.ItemCallback<FlowchartDisciplineUI>() {

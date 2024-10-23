@@ -79,10 +79,11 @@ class DisciplineFragment : UFragment() {
 
     private fun onRequirementSelected(requirement: FlowchartRequirementUI) {
         if (requirement.requiredDisciplineId != null) {
-            val id = if (requirement.type == getString(R.string.flowchart_recursive_unlock))
+            val id = if (requirement.type == getString(R.string.flowchart_recursive_unlock)) {
                 requirement.disciplineId
-            else
+            } else {
                 requirement.requiredDisciplineId
+            }
             val direction = DisciplineFragmentDirections.actionDisciplineSelf(id)
             findNavController().navigate(direction)
         }

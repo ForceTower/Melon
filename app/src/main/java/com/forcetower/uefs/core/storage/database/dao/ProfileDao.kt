@@ -30,9 +30,9 @@ import com.forcetower.core.utils.WordUtils
 import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.uefs.core.model.unes.Profile
 import dev.forcetower.breaker.model.Person
+import java.util.Locale
 import kotlinx.coroutines.flow.Flow
 import timber.log.Timber
-import java.util.Locale
 
 @Dao
 abstract class ProfileDao {

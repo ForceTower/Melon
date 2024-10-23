@@ -26,10 +26,10 @@ import com.forcetower.uefs.core.model.service.SavedCookie
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.service.NotificationCreator
-import okhttp3.Cookie
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import okhttp3.Cookie
+import timber.log.Timber
 
 @Singleton
 class CookieSessionRepository @Inject constructor(
@@ -101,8 +101,11 @@ class CookieSessionRepository @Inject constructor(
             return INJECT_SUCCESS
         }
         // if status is 0 user is ducked, otherwise it's a networking error
-        return if (status == 0) INJECT_ERROR_NO_VALUE
-        else INJECT_ERROR_NETWORK
+        return if (status == 0) {
+            INJECT_ERROR_NO_VALUE
+        } else {
+            INJECT_ERROR_NETWORK
+        }
     }
 
     suspend fun invalidateCookies() {

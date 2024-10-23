@@ -22,12 +22,10 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import androidx.lifecycle.MutableLiveData
-import com.forcetower.sagres.database.model.SagresPerson
 import com.forcetower.sagres.operation.Callback
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.task.definers.DisciplinesProcessor
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
@@ -36,11 +34,11 @@ import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.model.Person
 import dev.forcetower.breaker.result.Outcome
+import javax.inject.Inject
+import javax.inject.Named
 import kotlinx.coroutines.flow.flow
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
 
 class SnowpiercerLoginRepository @Inject constructor(
     private val client: OkHttpClient,
@@ -70,7 +68,9 @@ class SnowpiercerLoginRepository @Inject constructor(
         if (login is Outcome.Error) {
             if (login.code == 401) {
                 emit(Callback.Builder(Status.INVALID_LOGIN).code(401).build())
-            } else emit(produceErrorMessage(login))
+            } else {
+                emit(produceErrorMessage(login))
+            }
             return@flow
         }
 

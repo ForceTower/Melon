@@ -61,12 +61,12 @@ import dev.forcetower.event.core.binding.formattedDate
 import dev.forcetower.event.core.injection.DaggerEventComponent
 import dev.forcetower.event.databinding.FragmentCreateEventBinding
 import dev.forcetower.event.feature.details.EventDetailsActivity
-import timber.log.Timber
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.util.Calendar
 import javax.inject.Inject
+import timber.log.Timber
 
 @Keep
 class CreateEventFragment : UFragment() {
@@ -292,7 +292,9 @@ class CreateEventFragment : UFragment() {
         }
 
         val free = binding.checkFree.isChecked
-        val price = if (free) null else {
+        val price = if (free) {
+            null
+        } else {
             try {
                 binding.inputPrice.text.toString().toDouble()
             } catch (error: Throwable) {

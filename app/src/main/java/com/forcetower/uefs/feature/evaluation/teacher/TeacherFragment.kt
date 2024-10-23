@@ -25,14 +25,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.lifecycle.EventObserver
-import com.forcetower.uefs.core.model.service.EvaluationTeacher
-import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.storage.resource.Status
+import com.forcetower.uefs.core.model.edge.paradox.PublicTeacherEvaluationCombinedData
 import com.forcetower.uefs.databinding.FragmentEvaluateTeacherBinding
+import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
@@ -56,49 +54,46 @@ class TeacherFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val teacherName = args.teacherName
-        val liveData = if (teacherName != null) {
-            viewModel.getTeacher(teacherName)
-        } else {
-            viewModel.getTeacher(args.teacherId)
-        }
-        liveData.observe(viewLifecycleOwner, Observer { handleData(it) })
+        viewModel.fetchTeacher(args.id)
+        viewModel.teacher.observe(viewLifecycleOwner) { handleData(it) }
+        viewModel.state.observe(viewLifecycleOwner) { handleState(it) }
         viewModel.disciplineSelect.observe(
             viewLifecycleOwner,
             EventObserver {
-                val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.code, it.department)
+                val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.id)
                 findNavController().navigate(directions)
             }
         )
-        binding.btnEvaluate.setOnClickListener {
-            val directions = TeacherFragmentDirections.actionEvalTeacherToRating(args.teacherId)
-            findNavController().navigate(directions)
+        viewModel.disciplineSelectTeacher.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                val directions = TeacherFragmentDirections.actionTeacherToDiscipline(it.disciplineId)
+                findNavController().navigate(directions)
+            }
+        )
+//        binding.btnEvaluate.setOnClickListener {
+//            val directions = TeacherFragmentDirections.actionEvalTeacherToRating(args.teacherId)
+//            findNavController().navigate(directions)
+//        }
+    }
+
+    private fun handleData(data: PublicTeacherEvaluationCombinedData) {
+        adapter.discipline = data
+        binding.run {
+            teacher = data
+            loading = false
+            failed = false
         }
     }
 
-    private fun handleData(resource: Resource<EvaluationTeacher>) {
-        val data = resource.data
-        when (resource.status) {
-            Status.LOADING -> binding.loading = true
-            Status.SUCCESS -> binding.loading = false
-            Status.ERROR -> {
+    private fun handleState(state: EvaluationState) {
+        when {
+            state.loading -> binding.loading = true
+            state.failed -> {
                 binding.loading = true
                 binding.failed = true
             }
+            else -> binding.loading = false
         }
-        if (data != null) {
-            adapter.discipline = data
-            if (data.participant == true) {
-                binding.btnEvaluate.show()
-                binding.btnEvaluate.extend()
-            }
-            binding.run {
-                teacher = data
-                loading = false
-                failed = false
-            }
-        }
-
-        binding.executePendingBindings()
     }
 }

@@ -34,13 +34,13 @@ import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.util.round
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
+import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
-import javax.inject.Named
-import javax.inject.Singleton
 
 @Singleton
 class SagresDataRepository @Inject constructor(
@@ -76,6 +76,7 @@ class SagresDataRepository @Inject constructor(
     suspend fun logoutSuspend() {
         database.edgeAccessToken.deleteAll()
         database.edgeServiceAccount.deleteAll()
+        database.studentServiceDao().markNoOneAsMe()
     }
 
     fun getFlags() = database.flagsDao().getFlags()

@@ -26,18 +26,17 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.forcetower.core.lifecycle.EventObserver
-import com.forcetower.uefs.core.model.service.EvaluationDiscipline
-import com.forcetower.uefs.core.storage.resource.Resource
-import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.databinding.FragmentEvaluationDisciplineBinding
+import com.forcetower.uefs.domain.model.paradox.DisciplineCombinedData
+import com.forcetower.uefs.feature.evaluation.EvaluationState
 import com.forcetower.uefs.feature.evaluation.EvaluationViewModel
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 
 @AndroidEntryPoint
 class DisciplineEvaluationFragment : UFragment() {
@@ -56,7 +55,10 @@ class DisciplineEvaluationFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.getDiscipline(args.department, args.code).observe(viewLifecycleOwner, { handleData(it) })
+        viewModel.fetchDiscipline(args.id)
+        viewModel.discipline.observe(viewLifecycleOwner) {
+            handleData(it)
+        }
         binding.itemsRecycler.apply {
             adapter = elements
             itemAnimator?.run {
@@ -69,61 +71,43 @@ class DisciplineEvaluationFragment : UFragment() {
         viewModel.teacherIntSelect.observe(
             viewLifecycleOwner,
             EventObserver {
-                val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id, null)
+                val directions = DisciplineEvaluationFragmentDirections.actionDisciplineToTeacher(it.id)
                 findNavController().navigate(directions)
             }
         )
-        binding.btnEvaluate.setOnClickListener {
-            val directions = DisciplineEvaluationFragmentDirections.actionEvalDisciplineToRating(args.code, args.department)
-            findNavController().navigate(directions)
-        }
+
+        viewModel.state.observe(viewLifecycleOwner, ::handleState)
+        binding.btnEvaluate.isVisible = false
     }
 
-    private fun handleData(resource: Resource<EvaluationDiscipline>) {
-        val data = resource.data
-        if (data != null) {
-            Timber.d("The data is $data")
-            if (data.participant == true) {
-                binding.btnEvaluate.show()
-                binding.btnEvaluate.extend()
-            }
-            val teachers = data.teachers
-            val evaluation = if (teachers != null) {
-                DisciplineEvaluation(
-                    data.name,
-                    data.departmentName ?: data.department,
-                    data.qtdStudents,
-                    teachers.groupBy { it.semesterSystemId }.entries.map { entry ->
-                        val key = entry.key
-                        val semester = entry.value
-                        val mean = semester.sumOf { it.mean } / semester.size
-                        val first = semester.first()
-                        SemesterMean(key, first.semester, mean)
-                    }.sortedBy { id * -1 },
-                    teachers.groupBy { it.teacherId }.entries.map { entry ->
-                        val appearances = entry.value
-                        val appear = appearances.maxByOrNull { it.semesterSystemId }!!
-                        val mean = appearances.sumOf { it.mean } / appearances.size
-                        TeacherInt(appear.teacherId, appear.name, appear.semester, mean)
-                    }.sortedBy { it.name }
-                )
-            } else {
-                DisciplineEvaluation(data.name, data.departmentName ?: data.department, data.qtdStudents, listOf(), listOf())
-            }
-            elements.discipline = evaluation
-        }
-        when (resource.status) {
-            Status.ERROR -> {
+    private fun handleData(data: DisciplineCombinedData) {
+        val evaluation = DisciplineEvaluation(
+            data.ref.discipline,
+            data.ref.departmentName,
+            data.ref.studentCount,
+            data.semesters.map {
+                SemesterMean(it.id, it.name, it.mean)
+            },
+            data.teachers.map {
+                TeacherInt(it.id, it.name, it.lastSeen, it.mean)
+            }.sortedBy { it.name }
+        )
+        elements.discipline = evaluation
+    }
+
+    private fun handleState(state: EvaluationState) {
+        when {
+            state.failed -> {
                 binding.itemsRecycler.visibility = GONE
                 binding.loadingGroup.visibility = GONE
                 binding.failedGroup.visibility = VISIBLE
             }
-            Status.LOADING -> {
+            state.loading -> {
                 binding.itemsRecycler.visibility = GONE
                 binding.loadingGroup.visibility = VISIBLE
                 binding.failedGroup.visibility = GONE
             }
-            Status.SUCCESS -> {
+            else -> {
                 binding.itemsRecycler.visibility = VISIBLE
                 binding.loadingGroup.visibility = GONE
                 binding.failedGroup.visibility = GONE
@@ -147,7 +131,7 @@ data class SemesterMean(
 )
 
 data class TeacherInt(
-    val id: Long,
+    val id: String,
     val name: String,
     val lastSeen: String,
     val mean: Double

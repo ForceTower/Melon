@@ -28,7 +28,7 @@
         <import type="com.forcetower.core.utils.WordUtils"/>
         <variable
             name="entity"
-            type="com.forcetower.uefs.core.model.unes.EvaluationEntity" />
+            type="com.forcetower.uefs.core.model.unes.EdgeParadoxSearchableItem" />
         <variable
             name="interactor"
             type="com.forcetower.uefs.feature.evaluation.search.EntitySelector" />
@@ -63,8 +63,8 @@
             android:importantForAccessibility="no"
             android:transitionName="@string/student_headshot_transition"
             app:clipCircle="@{true}"
-            app:invisibleUnless="@{entity.image != null}"
-            app:imageUrl="@{entity.image}"
+            app:invisibleUnless="@{entity.displayImage != null}"
+            app:imageUrl="@{entity.displayImage}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -78,7 +78,7 @@
             android:layout_marginTop="8dp"
             android:textColor="?attr/colorOnSurface"
             android:textSize="16sp"
-            android:text="@{WordUtils.toTitleCase(entity.name)}"
+            android:text="@{WordUtils.toTitleCase(entity.displayName)}"
             app:layout_constraintBottom_toTopOf="@+id/entity_description"
             app:layout_constraintEnd_toEndOf="@id/guide_end"
             app:layout_constraintHorizontal_bias="0.5"

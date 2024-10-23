@@ -23,8 +23,8 @@ package com.forcetower.core
 import android.content.Context
 import com.forcetower.core.interfaces.DynamicDataSourceFactory
 import com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
-import timber.log.Timber
 import kotlin.reflect.full.createInstance
+import timber.log.Timber
 
 fun getDynamicDataSourceFactory(context: Context, className: String): DynamicDataSourceFactory? {
     return try {

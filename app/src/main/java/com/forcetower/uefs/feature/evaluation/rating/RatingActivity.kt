@@ -25,7 +25,6 @@ import android.view.View.GONE
 import android.view.View.VISIBLE
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import androidx.navigation.navArgs
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.uefs.R
@@ -54,12 +53,12 @@ class RatingActivity : UActivity() {
 
         if (args.isTeacher) {
             viewModel.initForTeacher(args.teacherId)
-            viewModel.getQuestionsForTeacher(args.teacherId).observe(this, Observer { useResponse(it) })
+//            viewModel.getQuestionsForTeacher(args.teacherId).observe(this, Observer { useResponse(it) })
         } else {
             val code = args.code ?: "0"
             val department = args.department ?: "0"
             viewModel.initForDiscipline(code, department)
-            viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
+//            viewModel.getQuestionsForDiscipline(code, department).observe(this, Observer { useResponse(it) })
         }
 
         viewModel.nextQuestion.observe(

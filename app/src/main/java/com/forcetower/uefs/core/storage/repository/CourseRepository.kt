@@ -27,14 +27,14 @@ import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.core.task.UCaseResult
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.nio.charset.Charset
+import javax.inject.Inject
+import javax.inject.Singleton
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emitAll
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import timber.log.Timber
-import java.nio.charset.Charset
-import javax.inject.Inject
-import javax.inject.Singleton
 
 @Singleton
 class CourseRepository @Inject constructor(

@@ -26,6 +26,9 @@ import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.model.edge.paradox.EvaluationHotTopic
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationDiscipline
+import com.forcetower.uefs.core.model.edge.paradox.PublicHotEvaluationTeacher
 import com.forcetower.uefs.core.model.service.EvaluationDiscipline
 import com.forcetower.uefs.core.model.service.EvaluationHomeTopic
 import com.forcetower.uefs.core.model.service.EvaluationTeacher
@@ -39,7 +42,7 @@ class EvaluationTopicAdapter(
 ) : RecyclerView.Adapter<EvaluationHolder>() {
     private val differ = AsyncListDiffer(this, DiffCallback)
 
-    var currentList: List<EvaluationHomeTopic> = listOf()
+    var currentList: List<EvaluationHotTopic> = listOf()
         set(value) {
             field = value
             differ.submitList(buildMergedList(value))
@@ -59,7 +62,7 @@ class EvaluationTopicAdapter(
     override fun onBindViewHolder(holder: EvaluationHolder, position: Int) {
         when (holder) {
             is EvaluationHolder.EvaluationHeader -> {
-                val topic = differ.currentList[position] as EvaluationHomeTopic
+                val topic = differ.currentList[position] as EvaluationHotTopic
                 holder.binding.apply {
                     header = topic
                     executePendingBindings()
@@ -84,14 +87,14 @@ class EvaluationTopicAdapter(
 
     override fun getItemViewType(position: Int): Int {
         return when (differ.currentList[position]) {
-            is EvaluationHomeTopic -> R.layout.item_evaluation_header
+            is EvaluationHotTopic -> R.layout.item_evaluation_header
             is DisciplineWrapper -> R.layout.item_evaluate_discipline_home
             is TeacherWrapper -> R.layout.item_evaluate_teacher_home
             else -> throw IllegalStateException("Can't find view for object at position $position ${differ.currentList[position]}")
         }
     }
 
-    private fun buildMergedList(list: List<EvaluationHomeTopic>?): List<Any> {
+    private fun buildMergedList(list: List<EvaluationHotTopic>?): List<Any> {
         val result = mutableListOf<Any>()
         list?.forEach {
             result += it
@@ -104,16 +107,20 @@ class EvaluationTopicAdapter(
     }
 }
 
-private data class TeacherWrapper(val teacher: EvaluationTeacher, val groupId: Int)
-private data class DisciplineWrapper(val discipline: EvaluationDiscipline, val groupId: Int)
+private data class TeacherWrapper(val teacher: PublicHotEvaluationTeacher, val groupId: String)
+private data class DisciplineWrapper(val discipline: PublicHotEvaluationDiscipline, val groupId: String)
 
 sealed class EvaluationHolder(view: View) : RecyclerView.ViewHolder(view) {
     class EvaluationHeader(val binding: ItemEvaluationHeaderBinding) : EvaluationHolder(binding.root)
     class EvaluationDiscipline(val binding: ItemEvaluateDisciplineHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
     class EvaluationTeacher(val binding: ItemEvaluateTeacherHomeBinding, interactor: HomeInteractor) : EvaluationHolder(binding.root) {
-        init { binding.interactor = interactor }
+        init {
+            binding.interactor = interactor
+        }
     }
 }
 
@@ -125,11 +132,11 @@ private object DiffCallback : DiffUtil.ItemCallback<Any>() {
             }
             oldItem is TeacherWrapper && newItem is TeacherWrapper -> {
                 oldItem.groupId == newItem.groupId &&
-                    oldItem.teacher.teacherId == newItem.teacher.teacherId
+                    oldItem.teacher.id == newItem.teacher.id
             }
             oldItem is DisciplineWrapper && newItem is DisciplineWrapper -> {
                 oldItem.groupId == newItem.groupId &&
-                    oldItem.discipline.disciplineId == newItem.discipline.disciplineId
+                    oldItem.discipline.id == newItem.discipline.id
             }
             else -> false
         }

@@ -3,8 +3,8 @@ package com.forcetower.uefs.domain.usecase.auth
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import dagger.Reusable
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @Reusable
 class CompleteAssertionUseCase @Inject constructor(

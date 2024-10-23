@@ -38,13 +38,14 @@ import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.gms.games.PlayGamesSdk
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.HiltAndroidApp
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltAndroidApp
 class UApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var workerFactory: HiltWorkerFactory
 
     var disciplineToolbarDevClickCount = 0

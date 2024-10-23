@@ -26,8 +26,8 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.text.TextUtils
 import androidx.browser.customtabs.CustomTabsService
-import timber.log.Timber
 import java.util.ArrayList
+import timber.log.Timber
 
 object CustomTabsHelper {
     private const val STABLE_PACKAGE = "com.android.chrome"

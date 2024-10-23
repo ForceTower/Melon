@@ -35,8 +35,8 @@ import timber.log.Timber
 
 object StatementNotificationProcessor {
     @JvmStatic
-    fun openProfileIntent(ctx: Context, userId: Long, profileId: Long): PendingIntent {
-        val intent = ProfileActivity.startIntent(ctx, profileId, userId)
+    fun openProfileIntent(ctx: Context, userId: String): PendingIntent {
+        val intent = ProfileActivity.startIntent(ctx, userId)
         val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
@@ -51,7 +51,7 @@ object StatementNotificationProcessor {
         val type = data["service_typed"]
         val statement = data["statement"]
         val statementId = data["statement_id"]
-        val userId = data["receiver_user_id"]?.toLongOrNull()
+        val userId = data["receiver_user_id"]
         val profileId = data["receiver_profile_id"]?.toLongOrNull()
 
         Timber.d("Statement Received: $statement, $statementId")
@@ -73,8 +73,8 @@ object StatementNotificationProcessor {
             WordUtils.capitalize(senderName)
         }
 
-        val intent = if (userId != null && profileId != null) {
-            openProfileIntent(context, userId, profileId)
+        val intent = if (userId != null) {
+            openProfileIntent(context, userId)
         } else {
             null
         }

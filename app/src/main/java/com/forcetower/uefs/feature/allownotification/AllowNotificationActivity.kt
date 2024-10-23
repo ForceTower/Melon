@@ -27,8 +27,11 @@ class AllowNotificationActivity : UActivity() {
     private val requestPostNotificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
-        if (granted) finish()
-        else onPermissionsDenied()
+        if (granted) {
+            finish()
+        } else {
+            onPermissionsDenied()
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,8 +53,9 @@ class AllowNotificationActivity : UActivity() {
     }
 
     private fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(this, PERMISSION) == PackageManager.PERMISSION_GRANTED)
+        if (ContextCompat.checkSelfPermission(this, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
             finish()
+        }
     }
 
     private fun requestNotificationPermission() {

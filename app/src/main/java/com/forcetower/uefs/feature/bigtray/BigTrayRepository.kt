@@ -26,10 +26,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.core.model.bigtray.BigTrayData
+import javax.inject.Inject
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import javax.inject.Inject
 
 class BigTrayRepository @Inject constructor(
     private val client: OkHttpClient,

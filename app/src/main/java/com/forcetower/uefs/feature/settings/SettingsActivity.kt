@@ -45,8 +45,11 @@ class SettingsActivity : UActivity(), PreferenceFragmentCompat.OnPreferenceStart
         binding = DataBindingUtil.setContentView(this, R.layout.activity_settings)
         binding.btnBack.setOnClickListener {
             supportFragmentManager.run {
-                if (backStackEntryCount == 0) finish()
-                else popBackStack()
+                if (backStackEntryCount == 0) {
+                    finish()
+                } else {
+                    popBackStack()
+                }
             }
         }
         if (savedInstanceState == null) {

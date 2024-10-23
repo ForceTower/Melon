@@ -24,7 +24,6 @@ object Constants {
     const val SELECTED_INSTITUTION_KEY = "selected_institution_worker"
     const val UNES_SERVICE_BASE_URL = "unes.forcetower.dev"
     const val EDGE_UNES_SERVICE_BASE_URL = "edge-unes.forcetower.dev"
-    private const val UNES_SERVICE_BASE_UPDATE = "unes.herokuapp.com"
     const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
     const val EDGE_UNES_SERVICE_URL = "https://$EDGE_UNES_SERVICE_BASE_URL/api/"
 
@@ -33,8 +32,6 @@ object Constants {
 
     val HARD_DISCIPLINES = mapOf("TEC501" to "__ANY__")
     val EXECUTOR_WHITELIST = listOf("manual", "universal")
-
-    const val ADMOB_TEST_ID = "38D27336B4D54E6E431E86E4ABEE0B20"
 
     const val SERVICE_CLIENT_ID = "1"
     const val SERVICE_CLIENT_SECRET = "bCP23X90J5anU0H3uxzWg0RwE6BxEo0HDkqr0PZg"

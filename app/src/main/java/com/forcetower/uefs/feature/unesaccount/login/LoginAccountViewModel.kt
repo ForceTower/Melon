@@ -2,16 +2,15 @@ package com.forcetower.uefs.feature.unesaccount.login
 
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.viewmodel.BaseViewModel
-import com.forcetower.uefs.domain.usecase.auth.EdgeAnonymousLoginUseCase
-import dagger.hilt.android.lifecycle.HiltViewModel
-import com.forcetower.core.lifecycle.viewmodel.EventViewModel
 import com.forcetower.uefs.domain.usecase.auth.CompleteAssertionUseCase
+import com.forcetower.uefs.domain.usecase.auth.EdgeAnonymousLoginUseCase
 import com.forcetower.uefs.domain.usecase.auth.StartAssertionUseCase
 import com.forcetower.uefs.feature.unesaccount.login.vm.LoginAccountEvent
 import com.forcetower.uefs.feature.unesaccount.login.vm.LoginAccountState
+import dagger.hilt.android.lifecycle.HiltViewModel
+import javax.inject.Inject
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @HiltViewModel
 class LoginAccountViewModel @Inject constructor(
@@ -29,10 +28,11 @@ class LoginAccountViewModel @Inject constructor(
                 Timber.e(it, "Failed to anonymously login")
                 sendEvent { LoginAccountEvent.LoginFailed }
             }.onSuccess { user ->
-                if (user?.email != null)
+                if (user?.email != null) {
                     sendEvent { LoginAccountEvent.SuccessHasEmail }
-                else
+                } else {
                     sendEvent { LoginAccountEvent.SuccessLinkEmail }
+                }
             }
             setState { it.copy(loading = false) }
         }
@@ -60,10 +60,11 @@ class LoginAccountViewModel @Inject constructor(
                 Timber.e(it, "Failed to complete assertion")
                 sendEvent { LoginAccountEvent.LoginFailed }
             }.onSuccess { user ->
-                if (user?.email != null)
+                if (user?.email != null) {
                     sendEvent { LoginAccountEvent.SuccessHasEmail }
-                else
+                } else {
                     sendEvent { LoginAccountEvent.SuccessLinkEmail }
+                }
             }
             setState { it.copy(loading = false) }
         }

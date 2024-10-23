@@ -7,7 +7,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.credentials.CreateCredentialResponse
@@ -27,9 +26,7 @@ import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.forcetower.core.adapters.imageUri
 import com.forcetower.core.utils.ColorUtils
-import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.edge.RegisterPasskeyStart
 import com.forcetower.uefs.databinding.FragmentServiceAccountOverviewBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
@@ -81,6 +78,10 @@ class AccountOverviewFragment : UFragment() {
             viewModel.registerPasskeyStart()
         }
 
+        binding.btnWhy.setOnClickListener {
+            onReasons()
+        }
+
         binding.profileImage.setOnClickListener {
             pickImage()
         }
@@ -90,6 +91,12 @@ class AccountOverviewFragment : UFragment() {
         }
 
         binding.btnCreatePasskey.isVisible = Build.VERSION.SDK_INT >= Build.VERSION_CODES.P
+        binding.btnWhy.isVisible = false
+    }
+
+    private fun onReasons() {
+        val directions = AccountOverviewFragmentDirections.actionUnesAccountOverviewToUnesAccountReasons()
+        findNavController().navigate(directions)
     }
 
     private fun onEvent(event: AccountOverviewEvent) {
@@ -97,7 +104,12 @@ class AccountOverviewFragment : UFragment() {
             is AccountOverviewEvent.PasskeyRegister -> onPasskeyRegisterStart(event)
             AccountOverviewEvent.PasskeyRegisterConnectionFailed -> onConnectionFailed()
             AccountOverviewEvent.ImageUpdateFailed -> onImageUpdateFailed()
+            AccountOverviewEvent.PasskeyRegisterCompleted -> onPasskeyRegisterCompleted()
         }
+    }
+
+    private fun onPasskeyRegisterCompleted() {
+        showSnack(getString(R.string.service_account_register_passkey_completed))
     }
 
     private fun onImageUpdateFailed() {
@@ -114,14 +126,14 @@ class AccountOverviewFragment : UFragment() {
 
         val request = CreatePublicKeyCredentialRequest(
             requestJson = event.json,
-            preferImmediatelyAvailableCredentials = false,
+            preferImmediatelyAvailableCredentials = false
         )
 
         lifecycleScope.launch {
             try {
                 val result = manager.createCredential(
                     context = requireActivity(),
-                    request = request,
+                    request = request
                 )
                 handlePasskeyRegistrationResult(result, event)
             } catch (e: CreateCredentialCancellationException) {

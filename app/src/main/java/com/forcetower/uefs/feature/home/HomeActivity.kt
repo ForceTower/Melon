@@ -76,16 +76,19 @@ import com.google.android.play.core.review.ReviewManagerFactory
 import com.google.firebase.analytics.FirebaseAnalytics
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import javax.inject.Inject
 
 @AndroidEntryPoint
 class HomeActivity : UGameActivity() {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var analytics: FirebaseAnalytics
+
     @Inject lateinit var remoteConfig: FirebaseRemoteConfig
+
     @Inject lateinit var executors: AppExecutors
     private lateinit var reviewManager: ReviewManager
 
@@ -262,10 +265,9 @@ class HomeActivity : UGameActivity() {
         viewModel.accessToken.observe(this) { onAccessTokenUpdate(it) }
         viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
         dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        viewModel.sendToken()
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
-            viewModel.connectToServiceIfNeeded()
+            viewModel.performServerSync()
 //            viewModel.goodCookies()
             disciplineViewModel.prepareAndSendStats()
             viewModel.getMeProfile()
@@ -344,10 +346,11 @@ class HomeActivity : UGameActivity() {
     override fun checkAchievements() {
         adventureViewModel.checkAchievements().observe(this) {
             it.entries.forEach { achievement ->
-                if (achievement.value == -1)
+                if (achievement.value == -1) {
                     unlockAchievement(achievement.key)
-                else
+                } else {
                     updateAchievementProgress(achievement.key, achievement.value)
+                }
             }
         }
         checkServerAchievements()
@@ -368,7 +371,9 @@ class HomeActivity : UGameActivity() {
                     } else {
                         unlockAchievement(achievement.identifier)
                     }
-                } catch (error: Throwable) { Timber.e(error, "Failed to unlock achievement ${achievement.identifier}") }
+                } catch (error: Throwable) {
+                    Timber.e(error, "Failed to unlock achievement ${achievement.identifier}")
+                }
             }
         }
     }

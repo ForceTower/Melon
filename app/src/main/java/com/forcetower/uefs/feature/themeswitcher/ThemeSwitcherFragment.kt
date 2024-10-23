@@ -44,8 +44,8 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ThemeSwitcherFragment : BottomSheetDialogFragment() {
@@ -141,8 +141,9 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment() {
         val themeValues = resources.obtainTypedArray(overlays)
         val contentDescriptionArray = resources.obtainTypedArray(contentDescriptions)
 
-        if (themeValues.length() != contentDescriptionArray.length())
+        if (themeValues.length() != contentDescriptionArray.length()) {
             throw IllegalStateException("Values and contents must be same length")
+        }
 
         for (i in 0 until themeValues.length()) {
             @StyleRes val valueThemeOverlay = themeValues.getResourceId(i, 0)

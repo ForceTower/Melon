@@ -32,8 +32,8 @@ import com.forcetower.uefs.core.model.unes.Flowchart
 import com.forcetower.uefs.core.model.unes.FlowchartDiscipline
 import com.forcetower.uefs.core.model.unes.FlowchartRequirement
 import com.forcetower.uefs.core.model.unes.FlowchartSemester
-import timber.log.Timber
 import java.util.Calendar
+import timber.log.Timber
 
 @Dao
 abstract class FlowchartDao {

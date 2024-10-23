@@ -20,7 +20,6 @@
 
 package com.forcetower.uefs.feature.login
 
-import `in`.uncod.android.bypass.Bypass
 import android.app.ActivityManager
 import android.content.Intent
 import android.os.Bundle
@@ -52,8 +51,9 @@ import com.forcetower.uefs.feature.shared.fadeOut
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
+import `in`.uncod.android.bypass.Bypass
 import javax.inject.Inject
+import timber.log.Timber
 
 @AndroidEntryPoint
 class LoadingFragment : UFragment() {

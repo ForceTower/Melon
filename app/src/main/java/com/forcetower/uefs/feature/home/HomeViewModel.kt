@@ -22,7 +22,6 @@ package com.forcetower.uefs.feature.home
 
 import android.app.Application
 import android.net.Uri
-import androidx.annotation.MainThread
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
@@ -47,6 +46,7 @@ import com.forcetower.uefs.core.storage.repository.UserSessionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AffinityQuestionRepository
 import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
+import com.forcetower.uefs.core.storage.repository.cloud.EdgeSyncRepository
 import com.forcetower.uefs.core.storage.resource.Resource
 import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
@@ -56,10 +56,10 @@ import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
+import kotlinx.coroutines.launch
+import timber.log.Timber
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -77,7 +77,8 @@ class HomeViewModel @Inject constructor(
     private val fetchMissingSemesters: FetchMissingSemestersUseCase,
     @Named("flagSnowpiercerEnabled")
     private val snowpiercerEnabled: Boolean,
-    private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase
+    private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase,
+    private val edgeSyncRepository: EdgeSyncRepository
 ) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
 
@@ -160,20 +161,22 @@ class HomeViewModel @Inject constructor(
         }
     }
 
-    fun connectToServiceIfNeeded() {
+    fun performServerSync() {
         authRepository.performAccountSyncStateIfNeededAsync()
         viewModelScope.launch {
             runCatching {
                 anonymousLoginUseCase.prepareAndLogin()
+                edgeAccountRepository.fetchAccountIfNeeded()
+                edgeSyncRepository.syncDataIfNeeded()
             }.onFailure {
-                Timber.e(it, "Failed to authenticate.")
+                Timber.e(it, "Failed to authenticate or fetch account.")
             }
-        }
-    }
 
-    fun sendToken() {
-        viewModelScope.launch {
-            firebaseMessageRepository.sendNewTokenOrNot()
+            runCatching {
+                firebaseMessageRepository.sendNewTokenOrNot()
+            }.onFailure {
+                Timber.e(it, "Failed to send FCM token")
+            }
         }
     }
 

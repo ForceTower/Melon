@@ -85,7 +85,6 @@
     <string name="about_unes_0">UNES é uma ferramenta para auxiliar os estudantes durante a vida universitária. O UNES irá periodicamente buscar os dados disponibilizados no [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) e irá te mandar notificações quando alguma mudança nos dados for detectada. Este não é um aplicativo oficial ou foi endorsado pela Tecnotrends.</string>
     <string name="about_unes_1">O UNES foi feito por João Paulo Sena (Seará)</string>
     <string name="about_unes_2" translatable="false">[Facebook](https://facebook.com/ForceTower) | [GitHub](https://github.com/ForceTower)</string>
-    <string name="about_unes_support">Este projeto é totalmente gratuito para uso mas possui custos de operação. Se deseja ajudar na manutenção e desenvolvimento utilize o PIX: joaopaulo761@gmail.com</string>
     <string name="about_unes_3">Versão %1$s</string>
     <string name="about_unes_4">Código %1$d</string>
     <string name="acc_contributor_image">Imagem do contribuidor</string>
@@ -594,7 +593,7 @@
     <string name="next_steps_under_development">Os próximos passos estão em desenvolvimento</string>
     <string name="got_it">Entendi!</string>
     <string name="unesverse_what_is_title">Universo UNES</string>
-    <string name="unesverse_what_is_description">O UNESVerso é o gerenciador de ações compartilhadas do UNES.\n\nTodas as funções que precisam que você interaja com outros alunos é intermediado pelo universo UNES, afinal, todos estão no mesmo universo compartilhado.\n\nNesta dimensão do universo você poderá encontrar várias funções desde email dos professores até conversar com alguem (será?)</string>
+    <string name="unesverse_what_is_description">O UNESVerso é o gerenciador de ações compartilhadas do UNES.\n\nTodas as funções que precisam que você interaja com outros alunos é intermediado pelo universo UNES, afinal, todos estão no mesmo universo compartilhado.\n\nVenha ver a média histórica dos professores.</string>
     <string name="evaluation_what_is">Avaliação das Disciplinas</string>
     <string name="evaluation_what_is_description">Bem, nós sempre somos avaliados em nossas disciplinas, agora é nossa vez de avaliar os professores e suas metodologias interessantes.\n\nAqui você poderá consultar e dar notas aos seus professores e disciplinas de acordo com sua experiência na sala de aula. Seja o mais sincero(a) possível, suas avaliações são publicas e também anônimas. Ao clicar em entrar, você irá compartilhar com o UNES todas as disciplinas que você já participou e poderá começar as avaliações.\n\nIsso é basicamente o Barril de Boas v3  Dúvidas? Mande uma pergunta no feedback!</string>
     <string name="share_using">Compartilhar mensagem</string>
@@ -948,4 +947,9 @@
     <string name="service_account_register_passkey_credential_not_public">A chave selecionada não é aceita nesta operação</string>
     <string name="service_account_register_passkey_credential_create_canceled">Criação Cancelada</string>
     <string name="service_account_update_image_failed">Erro ao atualizar imagem</string>
+    <string name="service_account_create_reasons">Conta UNES? Para que?</string>
+    <string name="edge_unes_account_required">Conta UNES necessária</string>
+    <string name="edge_unes_account_required_desc">Você precisa ter uma conta UNES com email verificado para acessar esta funcionalidade. Se você criar uma chave senha no final tambem seria incrível!</string>
+    <string name="edge_unes_account_required_btn">Entendi!</string>
+    <string name="service_account_register_passkey_completed">Sua chave-senha foi registrada! Uhuu!</string>
 </resources>

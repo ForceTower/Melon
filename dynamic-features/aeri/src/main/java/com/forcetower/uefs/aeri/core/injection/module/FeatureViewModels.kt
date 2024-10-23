@@ -37,6 +37,7 @@ abstract class FeatureViewModels {
     @IntoMap
     @ViewModelKey(AERIViewModel::class)
     abstract fun aeri(viewModel: AERIViewModel): ViewModel
+
     @Binds
     abstract fun bindViewModelFactory(factory: BaseViewModelFactory): ViewModelProvider.Factory
 }

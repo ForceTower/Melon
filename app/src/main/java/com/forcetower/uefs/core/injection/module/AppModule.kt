@@ -22,7 +22,7 @@ package com.forcetower.uefs.core.injection.module
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.webkit.WebSettings
+import android.os.Build
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.PreferenceDataStoreFactory
 import androidx.datastore.preferences.core.Preferences
@@ -44,7 +44,6 @@ import dagger.Reusable
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import timber.log.Timber
 import javax.inject.Named
 import javax.inject.Singleton
 
@@ -105,13 +104,25 @@ object AppModule {
     @Provides
     @Reusable
     @Named("webViewUA")
-    fun provideWebViewUserAgent(context: Context): String {
-        return try {
-            WebSettings.getDefaultUserAgent(context)
-        } catch (error: Throwable) {
-            Timber.w("Failed to obtain device UserAgent")
-            Timber.w("UserAgent error ${error.message}")
-            "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.6312.118 Mobile Safari/537.36"
-        }
+    fun provideWebViewUserAgent(): String {
+        val agents = listOf(
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36",
+            "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.6 Safari/605.1.15",
+            "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Mobile Safari/537.36",
+            "Mozilla/5.0 (iPhone; CPU iPhone OS 16_5_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.5.2 (a) Mobile/15E148 Safari/604.1",
+            "Mozilla/5.0 (Linux; Android 14; SM-S928B Build/UP1A.231005.007; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/127.0.6533.103 Mobile Safari/537.36",
+            "Mozilla/5.0 (Linux; Android 10; MI 9 Build/QKQ1.190825.002; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/123.0.6312.118 Mobile Safari/537.36",
+            "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
+        )
+        return agents.random()
+    }
+
+    @Provides
+    @Reusable
+    @Named("unesUserAgent")
+    fun provideUnesUserAgent(context: Context): String {
+        val version = context.packageManager.getPackageInfo(context.packageName, 0).versionName ?: "0.0.-1"
+        val parts = version.split(".")
+        return "UNES/${parts[0]}.${parts[1]}.${parts[2]}.${parts[3]} (Android ${Build.VERSION.RELEASE}; Build/${Build.MODEL})"
     }
 }

@@ -24,11 +24,11 @@ import androidx.annotation.WorkerThread
 import com.forcetower.uefs.core.model.api.ImgurUpload
 import com.forcetower.uefs.core.model.api.UploadResponse
 import com.google.gson.Gson
+import java.io.IOException
 import okhttp3.FormBody
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import timber.log.Timber
-import java.io.IOException
 
 object ImgurUploader {
     @WorkerThread

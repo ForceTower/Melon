@@ -25,9 +25,9 @@ import androidx.paging.PagingConfig
 import androidx.paging.PagingData
 import com.forcetower.uefs.core.model.unes.SyncRegistry
 import com.forcetower.uefs.core.storage.database.UDatabase
-import kotlinx.coroutines.flow.Flow
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlinx.coroutines.flow.Flow
 
 @Singleton
 class SyncRegistryRepository @Inject constructor(

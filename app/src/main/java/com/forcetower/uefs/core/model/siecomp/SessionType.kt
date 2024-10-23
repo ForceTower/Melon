@@ -21,5 +21,11 @@
 package com.forcetower.uefs.core.model.siecomp
 
 enum class SessionType {
-    WORKSHOP, SPEAK, TALK, PROJECT, DEBATE, CONCLUSION, UNKNOWN
+    WORKSHOP,
+    SPEAK,
+    TALK,
+    PROJECT,
+    DEBATE,
+    CONCLUSION,
+    UNKNOWN
 }

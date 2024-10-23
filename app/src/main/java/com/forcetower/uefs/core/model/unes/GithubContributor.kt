@@ -34,7 +34,7 @@ data class GithubContributor(
     @SerializedName("html_url")
     val htmlUrl: String,
     @SerializedName("url")
-    val url: String,
+    val url: String
 )
 
 data class GithubUser(

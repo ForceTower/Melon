@@ -37,9 +37,9 @@ import com.forcetower.uefs.core.storage.repository.SnowpiercerSyncRepository
 import com.forcetower.uefs.core.work.enqueueUnique
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
+import timber.log.Timber
 
 @HiltWorker
 class SyncMainWorker @AssistedInject constructor(
@@ -47,7 +47,7 @@ class SyncMainWorker @AssistedInject constructor(
     @Assisted params: WorkerParameters,
     private val repository: SagresSyncRepository,
     private val snowpiercer: SnowpiercerSyncRepository,
-    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
+    @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean
 ) : CoroutineWorker(context, params) {
     override suspend fun doWork(): Result {
         try {

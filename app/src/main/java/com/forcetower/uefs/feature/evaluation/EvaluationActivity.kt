@@ -26,7 +26,6 @@ import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
 import androidx.navigation.findNavController
-import com.forcetower.uefs.EvalNavGraphDirections
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UserSessionViewModel
 import com.forcetower.uefs.databinding.ActivityEvaluationBinding
@@ -45,10 +44,10 @@ class EvaluationActivity : UGameActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_evaluation)
         if (savedInstanceState == null) {
             val teacherName = intent.getStringExtra("teacherName")
-            if (teacherName != null) {
-                val direction = EvalNavGraphDirections.actionGlobalEvalTeacher(0, teacherName)
-                findNavController(R.id.eval_nav_host).navigate(direction)
-            }
+//            if (teacherName != null) {
+//                val direction = EvalNavGraphDirections.actionGlobalEvalTeacher(0, teacherName)
+//                findNavController(R.id.eval_nav_host).navigate(direction)
+//            }
         }
     }
 

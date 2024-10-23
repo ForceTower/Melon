@@ -27,8 +27,11 @@ import com.forcetower.uefs.feature.shared.extensions.formatSimpleDay
 
 @BindingAdapter("strikeText")
 fun strikeText(tv: TextView, strike: Boolean) {
-    if (strike) tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
-    else tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    if (strike) {
+        tv.paintFlags = tv.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+    } else {
+        tv.paintFlags = tv.paintFlags and Paint.STRIKE_THRU_TEXT_FLAG.inv()
+    }
 }
 
 @BindingAdapter("reminderDate")

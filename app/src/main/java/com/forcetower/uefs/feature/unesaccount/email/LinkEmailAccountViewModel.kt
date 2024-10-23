@@ -8,8 +8,8 @@ import com.forcetower.uefs.domain.usecase.auth.LinkEmailUseCase
 import com.forcetower.uefs.feature.unesaccount.email.vm.LinkEmailAccountEvent
 import com.forcetower.uefs.feature.unesaccount.email.vm.LinkEmailAccountState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlinx.coroutines.launch
 
 @HiltViewModel
 class LinkEmailAccountViewModel @Inject constructor(

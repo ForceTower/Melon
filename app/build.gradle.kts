@@ -39,12 +39,12 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.forcetower.uefs"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         val (code, name) = buildVersion()
         versionCode = code
         versionName = name
@@ -112,15 +112,15 @@ android {
             mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
         }
         getByName("release") {
+            manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
-            manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             resValue("string", "google_maps_key", mapsKey)
         }
         getByName("debug") {
-            applicationIdSuffix = ".debug"
             manifestPlaceholders += mapOf("crashlyticsEnabled" to false)
+            applicationIdSuffix = ".debug"
             resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }
@@ -133,7 +133,7 @@ android {
     kapt {
         correctErrorTypes = true
         javacOptions {
-            option("-Xmaxerrs", 1000)
+            option("-Xmaxerrs", "1000")
         }
     }
 
@@ -232,7 +232,6 @@ dependencies {
     implementation(libs.play.services.games.v2)
     implementation(libs.play.services.auth)
     implementation(libs.play.services.location)
-    implementation(libs.billing)
     implementation(libs.review.ktx)
     implementation(libs.app.update.ktx)
     implementation(libs.feature.delivery.ktx)
@@ -250,6 +249,14 @@ dependencies {
     implementation(libs.taptargetview)
     implementation(libs.play.services.maps)
     implementation(libs.materialdatetimepicker)
+    implementation(libs.markwon.core)
+    implementation(libs.markwon.ext.latex)
+    implementation(libs.markwon.ext.strikethrough)
+    implementation(libs.markwon.html)
+    implementation(libs.markwon.image)
+    implementation(libs.markwon.image.glide)
+    implementation(libs.markwon.linkify)
+
     testImplementation(libs.junit)
     testImplementation(libs.mockk)
     testImplementation(libs.androidx.core.testing)
