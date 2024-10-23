@@ -32,8 +32,13 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.viewpager.widget.ViewPager
+import androidx.viewpager2.adapter.FragmentStateAdapter
+import androidx.viewpager2.widget.ViewPager2
 import com.forcetower.core.lifecycle.EventObserver
+import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
@@ -48,6 +53,7 @@ import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.extensions.makeSemester
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -63,7 +69,7 @@ class DisciplineFragment : UFragment() {
     private val homeViewModel: HomeViewModel by activityViewModels()
     private lateinit var binding: FragmentDisciplineOldBinding
 
-    private lateinit var viewPager: ViewPager
+    private lateinit var viewPager: ViewPager2
     private lateinit var tabs: TabLayout
     private lateinit var adapter: SemesterAdapter
 
@@ -82,17 +88,16 @@ class DisciplineFragment : UFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        adapter = SemesterAdapter(childFragmentManager)
+        adapter = SemesterAdapter(childFragmentManager, lifecycle)
         viewPager.adapter = adapter
-        tabs.setupWithViewPager(viewPager)
+        TabLayoutMediator(tabs, viewPager) { tab, position ->
+            tab.text = adapter.getPageTitle(position)
+        }
 
-        viewModel.semesters.observe(
-            viewLifecycleOwner,
-            {
-                val actualList = applySortOptions(it)
-                adapter.submitList(actualList)
-            }
-        )
+        viewModel.semesters.observe(viewLifecycleOwner) {
+            val actualList = applySortOptions(it)
+            adapter.submitList(actualList)
+        }
 
         viewModel.navigateToDisciplineAction.observe(
             viewLifecycleOwner,
@@ -189,17 +194,28 @@ class DisciplineFragment : UFragment() {
         dialog.show(childFragmentManager, "select_discipline_group")
     }
 
-    private inner class SemesterAdapter(fm: FragmentManager) : FragmentPagerAdapter(fm, BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
-        private val semesters: MutableList<Semester> = ArrayList()
+    private inner class SemesterAdapter(
+        fm: FragmentManager,
+        lifecycle: Lifecycle
+    ) : FragmentStateAdapter(fm, lifecycle) {
+        private val diffCallback = object : DiffUtil.ItemCallback<Semester>() {
+            override fun areItemsTheSame(oldItem: Semester, newItem: Semester): Boolean {
+                return oldItem.uid == newItem.uid
+            }
+
+            override fun areContentsTheSame(oldItem: Semester, newItem: Semester): Boolean {
+                return oldItem == newItem
+            }
+
+        }
+        private val differ = AsyncListDiffer(this, diffCallback)
 
         fun submitList(list: List<Semester>) {
-            semesters.clear()
-            semesters.addAll(list)
-            notifyDataSetChanged()
+            differ.submitList(list)
         }
 
-        override fun getCount() = semesters.size
-        override fun getItem(position: Int) = DisciplineSemesterFragment.newInstance(semesters[position])
-        override fun getPageTitle(position: Int) = semesters[position].codename.makeSemester()
+        override fun getItemCount() = differ.currentList.size
+        override fun createFragment(position: Int) = DisciplineSemesterFragment.newInstance(differ.currentList[position])
+        fun getPageTitle(position: Int) = differ.currentList[position].codename.makeSemester()
     }
 }

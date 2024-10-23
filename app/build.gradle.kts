@@ -39,12 +39,12 @@ plugins {
 }
 
 android {
-    compileSdk = 34
+    compileSdk = 35
 
     defaultConfig {
         applicationId = "com.forcetower.uefs"
         minSdk = 21
-        targetSdk = 34
+        targetSdk = 35
         val (code, name) = buildVersion()
         versionCode = code
         versionName = name
@@ -112,15 +112,15 @@ android {
             mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
         }
         getByName("release") {
+            manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
-            manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             resValue("string", "google_maps_key", mapsKey)
         }
         getByName("debug") {
-            applicationIdSuffix = ".debug"
             manifestPlaceholders += mapOf("crashlyticsEnabled" to false)
+            applicationIdSuffix = ".debug"
             resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }

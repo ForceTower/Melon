@@ -55,7 +55,7 @@ class DeparallaxChangeBounds(
         sceneRoot: ViewGroup,
         startValues: TransitionValues?,
         endValues: TransitionValues?
-    ): Animator {
+    ): Animator? {
         val changeBounds = super.createAnimator(sceneRoot, startValues, endValues)
         if (startValues == null || endValues == null || endValues.view !is ParallaxScrimageView) return changeBounds
 
