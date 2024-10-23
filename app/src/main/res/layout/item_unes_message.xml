@@ -26,7 +26,7 @@
     <data>
         <variable
             name="message"
-            type="com.forcetower.uefs.core.model.service.UMessage"/>
+            type="com.forcetower.uefs.core.model.unes.EdgeAppMessage"/>
         <variable
             name="listener"
             type="com.forcetower.uefs.feature.messages.MessagesActions"/>
@@ -39,7 +39,7 @@
         app:cardCornerRadius="8dp"
         app:cardElevation="4dp"
         android:onLongClick="@{(view) -> listener.onUNESMessageLongClick(view, message)}"
-        android:onClick="@{() -> listener.onMessageClick(message.link)}"
+        android:onClick="@{() -> listener.onMessageClick(message.clickableLink)}"
         android:stateListAnimator="@animator/default_card_raise">
     
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -90,7 +90,7 @@
                 android:textColor="#FFF"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:dateNumberFromDate="@{message.createdAt}"
+                app:dateNumberFromZonedDate="@{message.createdAt}"
                 app:layout_constraintBottom_toBottomOf="@+id/circle"
                 app:layout_constraintEnd_toEndOf="@+id/circle"
                 app:layout_constraintStart_toStartOf="@+id/circle"
@@ -105,7 +105,7 @@
                 android:textColor="?attr/colorOnSurface"
                 android:textSize="16sp"
                 android:textStyle="bold"
-                app:monthFromDate="@{message.createdAt}"
+                app:monthFromZonedDate="@{message.createdAt}"
                 app:layout_constraintBottom_toBottomOf="@+id/text_date_number"
                 app:layout_constraintStart_toEndOf="@+id/text_date_number"
                 app:layout_constraintTop_toTopOf="@+id/text_date_number"
@@ -131,7 +131,7 @@
                 android:layout_height="wrap_content"
                 android:textColor="?attr/colorOnSurfaceLight"
                 android:textSize="15sp"
-                app:hourFromDate="@{message.createdAt}"
+                app:hourFromZonedDate="@{message.createdAt}"
                 app:layout_constraintStart_toStartOf="@+id/guideline_start"
                 app:layout_constraintTop_toBottomOf="@id/guideline_header"
                 tools:text="09:17" />
@@ -160,7 +160,7 @@
                 android:layout_marginBottom="16dp"
                 android:textColor="?attr/colorOnSurfaceLight"
                 android:textSize="16sp"
-                android:text="@{message.message}"
+                android:text="@{message.content}"
                 app:layout_constraintBottom_toTopOf="@+id/image_message"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_end"
                 app:layout_constraintHorizontal_bias="0.5"
@@ -175,8 +175,8 @@
                 android:layout_marginBottom="16dp"
                 android:contentDescription="@string/unes_message_image"
                 android:scaleType="centerCrop"
-                app:goneUnless="@{message.image != null}"
-                app:imageUrl="@{message.image}"
+                app:goneUnless="@{message.imageUrl != null}"
+                app:imageUrl="@{message.imageUrl}"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintDimensionRatio="16:9"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_end"

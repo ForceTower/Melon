@@ -31,6 +31,7 @@ import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
 import com.forcetower.uefs.core.model.service.UMessage
+import com.forcetower.uefs.core.model.unes.EdgeAppMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.defineInDatabase
 import com.forcetower.uefs.core.storage.database.UDatabase
@@ -57,7 +58,6 @@ class MessagesRepository @Inject constructor(
     private val client: OkHttpClient,
     private val database: UDatabase,
     private val cookieSessionRepository: CookieSessionRepository,
-    @Named(UMessage.COLLECTION) private val collection: CollectionReference,
     @Named("flagSnowpiercerEnabled") private val snowpiercerEnabled: Boolean,
     @Named("webViewUA") private val agent: String
 ) {
@@ -139,23 +139,7 @@ class MessagesRepository @Inject constructor(
         }
     }
 
-    fun getUnesMessages(): LiveData<List<UMessage>> {
-        val result = MutableLiveData<List<UMessage>>()
-        val institution = SagresNavigator.instance.getSelectedInstitution()
-        collection.orderBy("createdAt", Query.Direction.DESCENDING).addSnapshotListener { snapshot, exception ->
-            if (exception != null) {
-                Timber.e(exception)
-            } else if (snapshot != null) {
-                val list = snapshot.documents.mapNotNull {
-                    it.toObject(UMessage::class.java)?.apply {
-                        id = it.id
-                        val replaced = message.replace("\\n", "\n")
-                        message = replaced
-                    }
-                }.filter { it.institution == null || it.institution == institution }
-                result.postValue(list)
-            }
-        }
-        return result
+    fun getUnesMessages(): Flow<List<EdgeAppMessage>> {
+        return database.edgeMessages.getAll()
     }
 }
