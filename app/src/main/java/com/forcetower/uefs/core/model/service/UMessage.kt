@@ -20,20 +20,13 @@
 
 package com.forcetower.uefs.core.model.service
 
-import com.google.firebase.firestore.ServerTimestamp
-import java.util.Date
+import java.time.LocalDateTime
 
 data class UMessage(
-    var id: String = "",
-    var title: String = "",
-    var message: String = "",
-    var image: String? = null,
-    @ServerTimestamp
-    var createdAt: Date? = null,
-    var link: String? = null,
-    var institution: String? = null
-) {
-    companion object {
-        const val COLLECTION = "unes_messages"
-    }
-}
+    val id: String,
+    val title: String,
+    val message: String,
+    val image: String?,
+    val createdAt: LocalDateTime,
+    val link: String?
+)

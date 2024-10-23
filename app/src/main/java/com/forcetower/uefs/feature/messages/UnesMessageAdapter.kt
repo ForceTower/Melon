@@ -27,13 +27,14 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.UMessage
+import com.forcetower.uefs.core.model.unes.EdgeAppMessage
 import com.forcetower.uefs.databinding.ItemUnesMessageBinding
 import com.forcetower.uefs.feature.shared.inflate
 
 class UnesMessageAdapter(
     val lifecycleOwner: LifecycleOwner,
     val actions: MessagesActions
-) : ListAdapter<UMessage, UMessageHolder>(DiffCallback) {
+) : ListAdapter<EdgeAppMessage, UMessageHolder>(DiffCallback) {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = UMessageHolder(
         parent.inflate(R.layout.item_unes_message)
     )
@@ -50,7 +51,7 @@ class UnesMessageAdapter(
 
 class UMessageHolder(val binding: ItemUnesMessageBinding) : RecyclerView.ViewHolder(binding.root)
 
-private object DiffCallback : DiffUtil.ItemCallback<UMessage>() {
-    override fun areItemsTheSame(oldItem: UMessage, newItem: UMessage) = oldItem.id == newItem.id
-    override fun areContentsTheSame(oldItem: UMessage, newItem: UMessage) = oldItem == newItem
+private object DiffCallback : DiffUtil.ItemCallback<EdgeAppMessage>() {
+    override fun areItemsTheSame(oldItem: EdgeAppMessage, newItem: EdgeAppMessage) = oldItem.id == newItem.id
+    override fun areContentsTheSame(oldItem: EdgeAppMessage, newItem: EdgeAppMessage) = oldItem == newItem
 }
