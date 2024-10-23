@@ -57,6 +57,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
+import java.time.OffsetDateTime
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -171,6 +172,7 @@ object NetworkModule {
     fun provideGson(): Gson {
         return GsonBuilder()
             .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_DESERIALIZER)
+            .registerTypeAdapter(OffsetDateTime::class.java, ObjectUtils.ODT_DESERIALIZER)
             .registerTypeAdapter(ZonedDateTime::class.java, ObjectUtils.ZDT_SERIALIZER)
             .serializeNulls()
             .create()

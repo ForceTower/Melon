@@ -27,6 +27,7 @@ import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializer
 import java.time.Instant
+import java.time.OffsetDateTime
 import java.time.ZoneId
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
@@ -51,7 +52,7 @@ object ObjectUtils {
                     try {
                         val parser = DateTimeFormatter.ofPattern(pattern).withZone(ZoneId.of(BuildConfig.SIECOMP_TIMEZONE))
                         return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString, parser)
-                    } catch (t: Throwable) { }
+                    } catch (_: Throwable) { }
                 }
             }
 
@@ -64,6 +65,19 @@ object ObjectUtils {
         }
 
         throw JsonParseException("Unable to parse ZonedDateTime")
+    }
+
+    @JvmStatic
+    val ODT_DESERIALIZER: JsonDeserializer<OffsetDateTime> = JsonDeserializer { json, _, _ ->
+        if (json.isJsonPrimitive && json.asJsonPrimitive.isString) {
+            return@JsonDeserializer runCatching {
+                OffsetDateTime.parse(json.asJsonPrimitive.asString)
+            }.getOrElse {
+                throw JsonParseException("Unable to parse OffsetDateTime", it)
+            }
+        }
+
+        throw JsonParseException("Unable to parse OffsetDateTime")
     }
 
     @SuppressLint("ConstantLocale")

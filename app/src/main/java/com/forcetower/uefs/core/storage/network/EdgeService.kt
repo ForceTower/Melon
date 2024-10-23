@@ -13,6 +13,7 @@ import com.forcetower.uefs.core.model.edge.auth.EmailLinkConfirmDTO
 import com.forcetower.uefs.core.model.edge.auth.LinkEmailResponseDTO
 import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyCredential
 import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
+import com.forcetower.uefs.core.model.edge.sync.PublicAppMessage
 import com.forcetower.uefs.core.model.edge.sync.PublicDisciplineData
 import com.forcetower.uefs.core.model.edge.sync.PublicPlatformMessage
 import retrofit2.Response
@@ -53,6 +54,9 @@ interface EdgeService {
 
     @GET("messages/platform")
     suspend fun messages(): ServiceResponseWrapper<List<PublicPlatformMessage>>
+
+    @GET("messages/app/public")
+    suspend fun appMessages(): ServiceResponseWrapper<List<PublicAppMessage>>
 
     @GET("disciplines/current")
     suspend fun disciplines(): ServiceResponseWrapper<PublicDisciplineData>
