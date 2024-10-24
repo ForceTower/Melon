@@ -133,7 +133,7 @@ class SigningInFragment : UFragment() {
             possibleMessages.addAll(messages)
             possibleMessages.shuffle()
         }
-        binding.textStatus.setText(possibleMessages.removeFirst())
+        binding.textStatus.setText(possibleMessages.removeAt(0))
         Handler(Looper.getMainLooper()).postDelayed(
             {
                 if (lifecycle.currentState.isAtLeast(Lifecycle.State.STARTED)) {
