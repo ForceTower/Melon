@@ -26,6 +26,7 @@ import com.google.gson.JsonDeserializer
 import com.google.gson.JsonParseException
 import com.google.gson.JsonPrimitive
 import com.google.gson.JsonSerializer
+import timber.log.Timber
 import java.time.Instant
 import java.time.OffsetDateTime
 import java.time.ZoneId
@@ -43,10 +44,7 @@ object ObjectUtils {
                 val patterns = arrayOf(
                     "yyyy-MM-dd HH:mm:ss",
                     "yyyy-MM-dd'T'HH:mmX",
-                    "yyyy-MM-dd'T'HH:mm:ssX",
-                    "yyyy-MM-dd'T'HH:mmZ",
-                    "yyyy-MM-dd'T'HH:mm:ssZ",
-                    "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+                    "yyyy-MM-dd'T'HH:mm:ssX"
                 )
                 for (pattern in patterns) {
                     try {
@@ -54,12 +52,16 @@ object ObjectUtils {
                         return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString, parser)
                     } catch (_: Throwable) { }
                 }
+
+                return@JsonDeserializer ZonedDateTime.parse(jsonPrimitive.asString)
             }
 
             // if provided as Long
             if (jsonPrimitive.isNumber) {
                 return@JsonDeserializer ZonedDateTime.ofInstant(Instant.ofEpochMilli(jsonPrimitive.asLong), ZoneId.systemDefault())
             }
+
+//            Timber.e("JSON Primitive: $jsonPrimitive")
         } catch (e: RuntimeException) {
             throw JsonParseException("Unable to parse ZonedDateTime", e)
         }

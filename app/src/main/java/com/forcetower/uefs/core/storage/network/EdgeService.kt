@@ -40,7 +40,7 @@ interface EdgeService {
     @GET("account/me")
     suspend fun me(): ServiceResponseWrapper<ServiceAccountDTO>
 
-    @GET("account/session/start")
+    @POST("account/session/start")
     suspend fun sessionStart(@Body data: EdgeLoginBody)
 
     @POST("account/register/start")
