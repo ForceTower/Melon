@@ -126,7 +126,7 @@
     <string name="channel_messages_dce">Mensagens DCE</string>
     <string name="unes_image_transition" translatable="false">unes_image_transition</string>
     <string name="setup_about_you">Sobre você</string>
-    <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada. Selecione uma foto e um curso</string>
+    <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada. Selecione uma foto!</string>
     <string name="setup_select_course_label">Selecione um curso</string>
     <string name="setup_next">Próximo</string>
     <string name="label_course">Curso</string>

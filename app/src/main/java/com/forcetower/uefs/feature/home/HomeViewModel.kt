@@ -166,6 +166,7 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             runCatching {
                 anonymousLoginUseCase.prepareAndLogin()
+                edgeAccountRepository.startSession()
                 edgeAccountRepository.fetchAccountIfNeeded()
                 edgeSyncRepository.syncDataIfNeeded()
             }.onFailure {

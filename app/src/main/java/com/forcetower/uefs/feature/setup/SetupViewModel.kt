@@ -20,9 +20,9 @@
 
 package com.forcetower.uefs.feature.setup
 
-import android.content.Context
+import android.app.Application
 import android.net.Uri
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.AndroidViewModel
 import androidx.preference.PreferenceManager
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.core.model.unes.Course
@@ -35,9 +35,9 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SetupViewModel @Inject constructor(
-    private val context: Context,
+    application: Application,
     private val profileRepository: ProfileRepository
-) : ViewModel() {
+) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
     private var course: Course? = null
     private var frequency: SyncFrequency = SyncFrequency()
@@ -46,7 +46,7 @@ class SetupViewModel @Inject constructor(
     fun uploadImageToStorage() {
         val uri = selectImageUri
         uri ?: return
-        UploadImageToStorage.createWorker(context, uri)
+        UploadImageToStorage.createWorker(getApplication(), uri)
     }
 
     fun setSelectedImage(uri: Uri) {
@@ -73,9 +73,9 @@ class SetupViewModel @Inject constructor(
     }
 
     fun setFrequencyAndComplete(frequency: SyncFrequency) {
-        SyncLinkedWorker.stopWorker(context)
-        SyncMainWorker.createWorker(context, frequency.value)
-        PreferenceManager.getDefaultSharedPreferences(context).edit()
+        SyncLinkedWorker.stopWorker(getApplication())
+        SyncMainWorker.createWorker(getApplication(), frequency.value)
+        PreferenceManager.getDefaultSharedPreferences(getApplication()).edit()
             .putString("stg_sync_frequency", frequency.value.toString())
             .apply()
     }

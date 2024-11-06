@@ -71,33 +71,12 @@ class IntroductionFragment : UFragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val uefsStudent = preferences.isStudentFromUEFS()
-        if (!uefsStudent) binding.textSelectCourse.visibility = View.INVISIBLE
-        binding.textSelectCourseInternal.setOnClickListener {
-            val dialog = SelectCourseDialog()
-            dialog.setCallback(
-                object : CourseSelectionCallback {
-                    override fun onSelected(course: Course) {
-                        viewModel.setSelectedCourse(course)
-                        binding.textSelectCourseInternal.setText(course.name)
-                    }
-                }
-            )
-            dialog.show(childFragmentManager, "dialog_course")
-        }
-
         binding.imageUserImage.setOnClickListener {
             pickImage()
         }
 
         binding.btnNext.setOnClickListener {
-            val course = viewModel.getSelectedCourse()
-            if (course == null && uefsStudent) {
-                binding.textSelectCourseInternal.error = getString(R.string.error_select_a_course)
-            } else {
-                binding.textSelectCourseInternal.error = null
-                findNavController().navigate(R.id.action_introduction_to_configuration)
-            }
+            findNavController().navigate(R.id.action_introduction_to_configuration)
         }
 
         repository.getFrequencies().observe(

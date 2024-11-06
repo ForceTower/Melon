@@ -92,7 +92,7 @@ class EdgeAuthRepository @Inject constructor(
     suspend fun prepareAndLogin() {
         val current = database.edgeAccessToken.require()
         if (current != null) {
-            Timber.i("Current access already exists!")
+            Timber.i("Current access token already exists!")
             return
         }
 
