@@ -43,6 +43,7 @@ import com.forcetower.uefs.core.task.definers.SemestersProcessor
 import com.forcetower.uefs.core.util.VersionUtils
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.model.Person
@@ -64,7 +65,8 @@ class SnowpiercerSyncRepository @Inject constructor(
     @Named("webViewUA") agent: String,
     private val context: Context,
     private val database: UDatabase,
-    private val preferences: SharedPreferences
+    private val preferences: SharedPreferences,
+    private val remoteConfig: FirebaseRemoteConfig
 ) {
     private val orchestra = Orchestra.Builder().client(client).userAgent(agent).build()
 
@@ -192,9 +194,12 @@ class SnowpiercerSyncRepository @Inject constructor(
         return database.profileDao().insert(person)
     }
 
-    private fun onAccessInvalided() {
-        database.accessDao().setAccessValidation(false)
-        NotificationCreator.showInvalidAccessNotification(context)
+    private suspend fun onAccessInvalided() {
+        val access = database.accessDao().getAccessDirectSuspend() ?: return
+        database.accessDao().setAccessValidationDirect(false)
+        if (access.valid && remoteConfig.getBoolean("show_access_invalidation_notification")) {
+            NotificationCreator.showInvalidAccessNotification(context)
+        }
     }
 
     private suspend fun findAndMatch() {
