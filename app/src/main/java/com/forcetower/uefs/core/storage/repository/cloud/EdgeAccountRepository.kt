@@ -1,6 +1,7 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
 import com.forcetower.uefs.core.model.edge.account.ChangePictureDTO
+import com.forcetower.uefs.core.model.edge.auth.EdgeLoginBody
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
@@ -28,6 +29,18 @@ class EdgeAccountRepository @Inject constructor(
             me = true
         )
         database.edgeServiceAccount.insertOrUpdate(value)
+    }
+
+    suspend fun startSession() {
+        val token = database.edgeAccessToken.require() ?: return
+        Timber.d("Has edge token $token")
+        val access = database.accessDao().getAccessDirectSuspend() ?: return
+        Timber.d("No credentials")
+        runCatching {
+            service.sessionStart(EdgeLoginBody(access.username, access.password))
+        }.onFailure {
+            Timber.e(it, "Failed to start edge session. Cookie wont be validated.")
+        }
     }
 
     suspend fun uploadPicture(base64: String) {
