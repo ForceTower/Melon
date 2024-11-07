@@ -17,8 +17,8 @@ class EdgeAccountRepository @Inject constructor(
     fun getAccount() = database.edgeServiceAccount.me()
 
     suspend fun fetchAccountIfNeeded() {
-        val token = database.edgeAccessToken.require() ?: return
-        Timber.d("Has edge token $token")
+        database.edgeAccessToken.require() ?: return
+        Timber.d("Has edge token")
 
         val me = service.me().data
         val value = EdgeServiceAccount(
@@ -32,8 +32,8 @@ class EdgeAccountRepository @Inject constructor(
     }
 
     suspend fun startSession() {
-        val token = database.edgeAccessToken.require() ?: return
-        Timber.d("Has edge token $token")
+        database.edgeAccessToken.require() ?: return
+        Timber.d("Has edge token")
         val access = database.accessDao().getAccessDirectSuspend() ?: return
         Timber.d("No credentials")
         runCatching {

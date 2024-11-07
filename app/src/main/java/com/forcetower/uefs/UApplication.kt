@@ -23,16 +23,25 @@ package com.forcetower.uefs
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import androidx.core.content.edit
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
+import com.datadog.android.Datadog
+import com.datadog.android.DatadogSite
+import com.datadog.android.log.Logger
+import com.datadog.android.log.Logs
+import com.datadog.android.log.LogsConfiguration
+import com.datadog.android.privacy.TrackingConsent
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.cookies.PrefsCookiePersistor
 import com.forcetower.uefs.core.work.sync.SyncMainWorker
+import com.forcetower.uefs.domain.usecase.device.GetDeviceInfoUseCase
 import com.forcetower.uefs.feature.themeswitcher.ThemePreferencesManager
 import com.forcetower.uefs.impl.AndroidBase64Encoder
 import com.forcetower.uefs.impl.CrashlyticsTree
+import com.forcetower.uefs.impl.DatadogTree
 import com.forcetower.uefs.impl.SharedPrefsCachePersistence
 import com.forcetower.uefs.service.NotificationHelper
 import com.google.android.gms.games.PlayGamesSdk
@@ -41,12 +50,15 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import okhttp3.OkHttpClient
 import timber.log.Timber
+import java.util.UUID
+import kotlin.uuid.Uuid
 
 @HiltAndroidApp
 class UApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferences: SharedPreferences
-
+    @Inject lateinit var datadogTree: DatadogTree
     @Inject lateinit var workerFactory: HiltWorkerFactory
+    @Inject lateinit var deviceInfoUseCase: GetDeviceInfoUseCase
 
     var disciplineToolbarDevClickCount = 0
     var messageToolbarDevClickCount = 0
@@ -56,13 +68,34 @@ class UApplication : Application(), Configuration.Provider {
         SplitCompat.install(this)
     }
 
+    private fun initializeDatadog() {
+        if (BuildConfig.DEBUG) return
+        val configuration = com.datadog.android.core.configuration.Configuration.Builder(
+            clientToken = BuildConfig.DATADOG_PUBLIC_KEY,
+            env = "production",
+        ).apply {
+            setCrashReportsEnabled(false)
+            useSite(DatadogSite.US1)
+        }.build()
+        Datadog.initialize(this, configuration, TrackingConsent.GRANTED)
+
+
+        val logsConfig = LogsConfiguration.Builder().build()
+        Logs.enable(logsConfig)
+    }
+
     override fun onCreate() {
+        initializeDatadog()
+        super.onCreate()
+        Logs.addAttribute("machineId", deviceInfoUseCase.machineIdDirect())
+
         if (BuildConfig.DEBUG) {
             Timber.plant(Timber.DebugTree())
         } else {
             Timber.plant(CrashlyticsTree())
+            Timber.plant(datadogTree)
         }
-        super.onCreate()
+
 
         if (preferences.getBoolean("google_play_games_enabled_v2", false)) {
             PlayGamesSdk.initialize(this)

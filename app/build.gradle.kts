@@ -62,6 +62,7 @@ android {
         buildConfigField("String", "SIECOMP_DAY5_START", "\"2019-10-22T08:00:00-03:00\"")
         buildConfigField("String", "SIECOMP_DAY5_END", "\"2019-10-22T17:30:00-03:00\"")
         buildConfigField("String", "UEFS_DEFAULT_PROXY", "\"10.65.16.2:3128\"")
+        buildConfigField("String", "DATADOG_PUBLIC_KEY", "\"${System.getenv("UNES_DATADOG_CLIENT_KEY")}\"")
 
         ndk {
             abiFilters += listOf("arm64-v8a", "armeabi", "armeabi-v7a", "mips", "mips64", "x86", "x86_64")
@@ -231,6 +232,7 @@ dependencies {
     debugImplementation(libs.chucker)
     releaseImplementation(libs.chucker.no.op)
     implementation(libs.timber)
+    implementation(libs.datadog)
     implementation(libs.play.services.games.v2)
     implementation(libs.play.services.auth)
     implementation(libs.play.services.location)
