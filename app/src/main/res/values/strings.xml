@@ -952,4 +952,6 @@
     <string name="edge_unes_account_required_desc">Você precisa ter uma conta UNES com email verificado para acessar esta funcionalidade. Se você criar uma chave senha no final tambem seria incrível!</string>
     <string name="edge_unes_account_required_btn">Entendi!</string>
     <string name="service_account_register_passkey_completed">Sua chave-senha foi registrada! Uhuu!</string>
+    <string name="settings_device_id">Copiar ID do dispositivo</string>
+    <string name="device_id_copied_to_clipboard">ID copiado para área de transferência</string>
 </resources>

@@ -29,6 +29,7 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStoreFile
 import androidx.preference.PreferenceManager
 import androidx.room.Room
+import com.datadog.android.log.Logger
 import com.forcetower.uefs.core.storage.apidatabase.APIDatabase
 import com.forcetower.uefs.core.storage.database.M50TO51
 import com.forcetower.uefs.core.storage.database.M51TO52
@@ -94,6 +95,15 @@ object AppModule {
 
     @Provides
     @Singleton
+    @Named("settings")
+    fun provideSettings(context: Context): DataStore<Preferences> {
+        return PreferenceDataStoreFactory.create {
+            context.preferencesDataStoreFile("settings")
+        }
+    }
+
+    @Provides
+    @Singleton
     fun provideThemeSwitcherResourceProvider() = ThemeSwitcherResourceProvider()
 
     @Provides
@@ -115,6 +125,19 @@ object AppModule {
             "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/127.0.0.0 Safari/537.36"
         )
         return agents.random()
+    }
+
+    @Provides
+    @Singleton
+    fun datadogLogs(): Logger {
+        return Logger.Builder()
+            .setNetworkInfoEnabled(true)
+            .setLogcatLogsEnabled(false)
+            .setRemoteSampleRate(100f)
+            .setBundleWithTraceEnabled(true)
+            .setService("Android")
+            .setName("Android")
+            .build()
     }
 
     @Provides

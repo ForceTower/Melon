@@ -37,6 +37,7 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.findNavController
 import androidx.navigation.ui.NavigationUI
+import com.datadog.android.log.Logs
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
@@ -297,6 +298,10 @@ class HomeActivity : UGameActivity() {
     private fun onAccessUpdate(access: Access?) {
         if (access == null) {
             Timber.d("Access Invalidated")
+            Logs.removeAttribute("username")
+            Logs.removeAttribute("institution")
+            Logs.removeAttribute("accessValid")
+
             val intent = Intent(this, LoginActivity::class.java)
             intent.addFlags(FLAG_ACTIVITY_NEW_TASK)
             intent.addFlags(FLAG_ACTIVITY_CLEAR_TOP)
@@ -309,6 +314,9 @@ class HomeActivity : UGameActivity() {
             analytics.setUserId(access.username)
             analytics.setUserProperty("institution", SagresNavigator.instance.getSelectedInstitution())
             analytics.setUserProperty("access_valid", "${access.valid}")
+            Logs.addAttribute("username", access.username)
+            Logs.addAttribute("institution", SagresNavigator.instance.getSelectedInstitution())
+            Logs.addAttribute("accessValid", access.valid)
             SagresNavigator.instance.putCredentials(SagresCredential(access.username, access.password, SagresNavigator.instance.getSelectedInstitution()))
 
             if (!access.valid) {

@@ -15,6 +15,7 @@ card-slider = "0.3.1"
 constraintlayout = "2.2.0"
 core-testing = "2.2.0"
 credentials = "1.3.0"
+datadog = "2.15.1"
 dagger = "2.52"
 datastore-preferences = "1.1.1"
 espresso-core = "3.6.1"
@@ -121,6 +122,7 @@ autostarter = { module = "com.github.judemanutd:autostarter", version.ref = "aut
 billing = { module = "com.android.billingclient:billing", version.ref = "billing" }
 card-slider = { module = "com.ramotion.cardslider:card-slider", version.ref = "card-slider" }
 converter-gson = { module = "com.squareup.retrofit2:converter-gson", version.ref = "retrofit" }
+datadog = { module = "com.datadoghq:dd-sdk-android-logs", version.ref = "datadog" }
 dagger = { module = "com.google.dagger:dagger", version.ref = "dagger" }
 dagger-compiler = { module = "com.google.dagger:dagger-compiler", version.ref = "dagger" }
 feature-delivery-ktx = { module = "com.google.android.play:feature-delivery-ktx", version.ref = "app-update-ktx" }

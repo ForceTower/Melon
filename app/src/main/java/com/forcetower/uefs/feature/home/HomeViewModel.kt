@@ -52,6 +52,7 @@ import com.forcetower.uefs.core.storage.resource.Status
 import com.forcetower.uefs.core.task.FetchMissingSemestersUseCase
 import com.forcetower.uefs.core.work.image.UploadImageToStorage
 import com.forcetower.uefs.domain.usecase.auth.EdgeAnonymousLoginUseCase
+import com.forcetower.uefs.domain.usecase.device.GetDeviceInfoUseCase
 import com.forcetower.uefs.easter.darktheme.DarkThemeRepository
 import com.google.android.play.core.install.model.AppUpdateType
 import com.google.android.play.core.install.model.InstallStatus
@@ -78,7 +79,8 @@ class HomeViewModel @Inject constructor(
     @Named("flagSnowpiercerEnabled")
     private val snowpiercerEnabled: Boolean,
     private val anonymousLoginUseCase: EdgeAnonymousLoginUseCase,
-    private val edgeSyncRepository: EdgeSyncRepository
+    private val edgeSyncRepository: EdgeSyncRepository,
+    private val deviceInfoUseCase: GetDeviceInfoUseCase
 ) : AndroidViewModel(application) {
     private var selectImageUri: Uri? = null
 
@@ -230,5 +232,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             fetchMissingSemesters(Unit)
         }
+    }
+
+    fun requireDeviceId(): String {
+        return deviceInfoUseCase.machineIdDirect()
     }
 }

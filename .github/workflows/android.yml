@@ -44,6 +44,7 @@ jobs:
         UNES_KEYSTORE_PASSWORD: ${{ secrets.UNES_KEYSTORE_PASSWORD }}
         UNES_KEYSTORE_PRIVATE_KEY_PASSWORD: ${{ secrets.UNES_KEYSTORE_PRIVATE_KEY_PASSWORD }}
         UNES_MAPS_KEY: ${{ secrets.UNES_MAPS_KEY }}
+        UNES_DATADOG_CLIENT_KEY: ${{ secrets.UNES_DATADOG_CLIENT_KEY }}
 
     - name: Upload Check Results
       uses: actions/upload-artifact@v2
