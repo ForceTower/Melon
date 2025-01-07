@@ -92,7 +92,7 @@ object NetworkModule {
             .callTimeout(2, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
             .apply {
-                if (!BuildConfig.DEBUG) {
+                if (BuildConfig.DEBUG) {
                     addInterceptor(
                         HttpLoggingInterceptor {
                             Timber.tag("ok-http").d(it)
