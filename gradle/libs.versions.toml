@@ -1,7 +1,7 @@
 [versions]
 aboutlibraries = "11.2.2"
 agp = "8.7.3"
-android-desugar = "2.1.3"
+android-desugar = "2.1.4"
 android-image-cropper = "4.6.0"
 androidx-lifecycle = "2.8.7"
 androidx-hilt-compiler = "1.2.0"
