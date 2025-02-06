@@ -176,10 +176,6 @@ room {
     schemaDirectory("$projectDir/schemas")
 }
 
-kotlinter {
-
-}
-
 dependencies {
     coreLibraryDesugaring(libs.android.tools.desugar)
     implementation(project(":bypass"))
