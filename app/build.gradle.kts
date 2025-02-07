@@ -141,15 +141,7 @@ android {
     compileOptions {
         isCoreLibraryDesugaringEnabled = true
     }
-
-    dynamicFeatures += listOf(
-        ":dynamic-features:aeri",
-        ":dynamic-features:dashboard",
-        ":dynamic-features:conference",
-        ":dynamic-features:event",
-        ":dynamic-features:map",
-        ":dynamic-features:disciplines"
-    )
+    dynamicFeatures += setOf(":dynamic-features:aeri", ":dynamic-features:dashboard", ":dynamic-features:conference", ":dynamic-features:event", ":dynamic-features:map", ":dynamic-features:disciplines", ":dynamic-features:enrollment")
 
     testOptions.unitTests.isReturnDefaultValues = true
 

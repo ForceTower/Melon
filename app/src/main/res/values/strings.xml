@@ -954,4 +954,5 @@
     <string name="service_account_register_passkey_completed">Sua chave-senha foi registrada! Uhuu!</string>
     <string name="settings_device_id">Copiar ID do dispositivo</string>
     <string name="device_id_copied_to_clipboard">ID copiado para área de transferência</string>
+    <string name="title_enrollment">Matrícula</string>
 </resources>
