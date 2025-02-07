@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="pt">
+    <string name="enrollment_onboarding_title">Matrícula App</string>
+    <string name="enrollment_onboarding_message">Você consegue fazer a sua matrícula de forma prática diretamente pelo UNES!</string>
+    <string name="enrollment_onboarding_footnote">Esta funcionalidade está em beta! O UNES não faz alguma validações que o portal realiza antes de permitir a matrícula.\nSiga as instruções do colegiado e confira se as alterações foram realizadas!</string>
+</resources>

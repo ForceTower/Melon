@@ -38,6 +38,7 @@ plugins {
     alias(libs.plugins.hilt.android.gradle) apply false
     alias(libs.plugins.aboutlibraries) apply false
     alias(libs.plugins.google.ksp) apply false
+    alias(libs.plugins.kotlin.compose) apply false
 }
 
 buildscript {
