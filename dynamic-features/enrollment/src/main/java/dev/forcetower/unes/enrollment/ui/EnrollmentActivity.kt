@@ -1,12 +1,23 @@
 package dev.forcetower.unes.enrollment.ui
 
 import android.os.Bundle
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.compose.foundation.layout.calculateEndPadding
+import androidx.compose.foundation.layout.calculateStartPadding
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Scaffold
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.LayoutDirection
 import androidx.lifecycle.ViewModelProvider
 import com.forcetower.uefs.core.injection.dependencies.EnrollmentModuleDependencies
 import com.forcetower.uefs.feature.shared.UActivity
 import com.google.android.play.core.splitcompat.SplitCompat
 import dagger.hilt.android.EntryPointAccessors
 import dev.forcetower.unes.enrollment.di.DaggerEnrollmentComponent
+import dev.forcetower.unes.enrollment.ui.onboarding.OnboardingScreen
+import dev.forcetower.unes.enrollment.ui.theme.EnrollmentTheme
 import javax.inject.Inject
 
 class EnrollmentActivity : UActivity() {
@@ -31,9 +42,21 @@ class EnrollmentActivity : UActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         SplitCompat.install(this)
-
-        setContentView {
-
+        enableEdgeToEdge()
+        setContent {
+            EnrollmentTheme {
+                Scaffold(modifier = Modifier.fillMaxSize()) { padding ->
+                    OnboardingScreen(
+                        modifier = Modifier
+                            .padding(
+                                top = padding.calculateTopPadding(),
+                                start = padding.calculateStartPadding(LayoutDirection.Ltr),
+                                end = padding.calculateEndPadding(LayoutDirection.Ltr),
+                                bottom = padding.calculateBottomPadding()
+                            )
+                    )
+                }
+            }
         }
     }
 

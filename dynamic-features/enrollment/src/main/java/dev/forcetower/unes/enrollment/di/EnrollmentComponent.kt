@@ -4,10 +4,11 @@ import android.content.Context
 import com.forcetower.uefs.core.injection.dependencies.EnrollmentModuleDependencies
 import dagger.BindsInstance
 import dagger.Component
+import dev.forcetower.unes.enrollment.di.vm.EnrollmentViewModelModule
 import dev.forcetower.unes.enrollment.ui.EnrollmentActivity
 
 @Component(
-    modules = [],
+    modules = [EnrollmentViewModelModule::class],
     dependencies = [EnrollmentModuleDependencies::class]
 )
 interface EnrollmentComponent {
