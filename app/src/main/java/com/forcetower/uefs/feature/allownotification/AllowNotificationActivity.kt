@@ -20,10 +20,10 @@ import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
 @AndroidEntryPoint
-@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 class AllowNotificationActivity : UActivity() {
     @Inject lateinit var preferences: SharedPreferences
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private val requestPostNotificationPermission = registerForActivityResult(
         ActivityResultContracts.RequestPermission()
     ) { granted ->
@@ -34,6 +34,7 @@ class AllowNotificationActivity : UActivity() {
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         val binding = DataBindingUtil.setContentView<ActivityAllowNotificationBinding>(this, R.layout.activity_allow_notification)
@@ -53,22 +54,24 @@ class AllowNotificationActivity : UActivity() {
     }
 
     private fun checkNotificationPermission() {
-        if (ContextCompat.checkSelfPermission(this, PERMISSION) == PackageManager.PERMISSION_GRANTED) {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
             finish()
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun requestNotificationPermission() {
-        val result = ContextCompat.checkSelfPermission(this, PERMISSION)
+        val result = ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS)
         if (result == PackageManager.PERMISSION_GRANTED) {
             finish()
         } else {
-            requestPostNotificationPermission.launch(PERMISSION)
+            requestPostNotificationPermission.launch(Manifest.permission.POST_NOTIFICATIONS)
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     private fun onPermissionsDenied() {
-        if (!shouldShowRequestPermissionRationale(PERMISSION)) {
+        if (!shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
             onPermissionPermanentlyDenied()
         }
     }
@@ -78,9 +81,5 @@ class AllowNotificationActivity : UActivity() {
         val uri = Uri.fromParts("package", packageName, null)
         intent.data = uri
         startActivity(intent)
-    }
-
-    companion object {
-        private const val PERMISSION = Manifest.permission.POST_NOTIFICATIONS
     }
 }
