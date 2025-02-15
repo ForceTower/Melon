@@ -34,6 +34,10 @@
             android:paddingBottom="?actionBarSize"
             android:scrollbars="vertical"
             app:hasFixedSize="@{true}"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:listitem="@layout/item_event_session_info"
             tools:itemCount="1"/>
@@ -46,7 +50,9 @@
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/navigate_up"
             app:tint="?attr/colorOnSurface"
-            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
