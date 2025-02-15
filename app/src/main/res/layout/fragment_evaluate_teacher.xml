@@ -116,6 +116,8 @@
             app:clipToCircle="@{true}"
             app:imageUrl="@{null}"
             app:invisibleUnless="@{false}"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent" />
 
