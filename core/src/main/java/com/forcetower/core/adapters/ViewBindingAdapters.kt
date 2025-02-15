@@ -129,7 +129,7 @@ fun applySystemWindows(
     applyBottom: Boolean
 ) {
     view.doOnApplyWindowInsets { _, insets, padding ->
-        val ins = insets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val ins = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
         val left = if (applyLeft) ins.left else 0
         val top = if (applyTop) ins.top else 0
         val right = if (applyRight) ins.right else 0
@@ -159,7 +159,7 @@ fun applyMarginSystemWindows(
     applyBottom: Boolean
 ) {
     view.doOnApplyWindowMarginInsets { _, allInsets, margins ->
-        val insets = allInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val insets = allInsets.getInsets(WindowInsetsCompat.Type.systemBars()or WindowInsetsCompat.Type.displayCutout())
         val left = if (applyLeft) insets.left else 0
         val top = if (applyTop) insets.top else 0
         val right = if (applyRight) insets.right else 0
