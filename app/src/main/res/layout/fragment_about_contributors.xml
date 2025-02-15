@@ -36,14 +36,19 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
+            android:clipToPadding="false">
 
             <TextView
                 xmlns:android="http://schemas.android.com/apk/res/android"
                 android:id="@+id/text_about_intro"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xlarge"
+                android:layout_marginTop="@dimen/spacing_big"
                 android:layout_marginBottom="@dimen/spacing_common"
                 android:padding="@dimen/padding_normal"
                 android:text="@string/label_contributors_calling"

@@ -36,7 +36,10 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppBar">
+            style="@style/Widget.AppBar"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -61,7 +64,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                style="@style/Widget.Material3.TabLayout"
                 app:tabContentStart="36dp"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="false"

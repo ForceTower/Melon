@@ -33,7 +33,10 @@
             android:layout_height="wrap_content"
             style="@style/Widget.AppBar"
             app:elevation="0dp"
-            app:liftOnScroll="true">
+            app:liftOnScroll="true"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}">
         
             <FrameLayout
                 android:layout_width="match_parent"
@@ -62,7 +65,10 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_teacher"
             android:paddingBottom="8dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"/>
         
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:layout_width="wrap_content"

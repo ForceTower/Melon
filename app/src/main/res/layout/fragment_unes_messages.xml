@@ -32,5 +32,7 @@
         android:paddingTop="8dp"
         android:clipToPadding="false"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:paddingStartSystemWindowInsets="@{true}"
+        app:paddingEndSystemWindowInsets="@{true}"
         tools:listitem="@layout/item_unes_message"/>
 </layout>

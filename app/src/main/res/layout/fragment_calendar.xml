@@ -33,6 +33,9 @@
             android:id="@+id/recycler_academic_calendar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
         

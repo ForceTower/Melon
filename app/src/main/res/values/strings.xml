@@ -126,7 +126,7 @@
     <string name="channel_messages_dce">Mensagens DCE</string>
     <string name="unes_image_transition" translatable="false">unes_image_transition</string>
     <string name="setup_about_you">Sobre você</string>
-    <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada. Selecione uma foto e um curso</string>
+    <string name="setup_about_you_information">Estas informações ajudam o UNES a identificar melhor você e te oferecer uma experiência personalizada. Selecione uma foto!</string>
     <string name="setup_select_course_label">Selecione um curso</string>
     <string name="setup_next">Próximo</string>
     <string name="label_course">Curso</string>
@@ -952,4 +952,6 @@
     <string name="edge_unes_account_required_desc">Você precisa ter uma conta UNES com email verificado para acessar esta funcionalidade. Se você criar uma chave senha no final tambem seria incrível!</string>
     <string name="edge_unes_account_required_btn">Entendi!</string>
     <string name="service_account_register_passkey_completed">Sua chave-senha foi registrada! Uhuu!</string>
+    <string name="settings_device_id">Copiar ID do dispositivo</string>
+    <string name="device_id_copied_to_clipboard">ID copiado para área de transferência</string>
 </resources>

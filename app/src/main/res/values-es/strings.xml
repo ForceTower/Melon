@@ -109,7 +109,7 @@
     <string name="channel_events_general">Eventos generales</string>
     <string name="channel_messages_dce">Mensajes DCE</string>
     <string name="setup_about_you">Sobre ti</string>
-    <string name="setup_about_you_information">Esta información ayuda a UNES a identificarte mejor y ofrecerte una experiencia personalizada. Selecciona una imagen y un curso</string>
+    <string name="setup_about_you_information">Esta información ayuda a UNES a identificarte mejor y ofrecerte una experiencia personalizada. Selecciona una imagen!</string>
     <string name="setup_select_course_label">Selecciona un curso</string>
     <string name="setup_next">Siguiente</string>
     <string name="label_course">Curso</string>

@@ -55,6 +55,8 @@
             android:textSize="16sp"
             android:textAlignment="gravity"
             android:gravity="center"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
             app:layout_constraintBottom_toTopOf="@+id/bottom_results"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,6 +69,9 @@
             android:clipToPadding="false"
             android:paddingBottom="120dp"
             android:visibility="gone"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +88,9 @@
             app:backgroundTint="?attr/colorPrimary"
             android:src="@drawable/ic_add_black_24dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintBottom_toTopOf="@+id/bottom_results" />
+            app:layout_constraintBottom_toTopOf="@+id/bottom_results"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginBottomSystemWindowInsets="@{true}" />
 
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/bottom_results"
@@ -94,7 +101,10 @@
             android:elevation="8dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent">
+            app:layout_constraintStart_toStartOf="parent"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginBottomSystemWindowInsets="@{true}">
 
             <TextView
                 android:layout_width="match_parent"

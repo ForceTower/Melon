@@ -91,17 +91,17 @@ object NetworkModule {
             .cookieJar(cookieJar)
             .callTimeout(2, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
-            .addInterceptor(
-                HttpLoggingInterceptor {
-                    Timber.tag("ok-http").d(it)
-                }.apply {
-                    level = if (BuildConfig.DEBUG) {
-                        HttpLoggingInterceptor.Level.BASIC
-                    } else {
-                        HttpLoggingInterceptor.Level.NONE
-                    }
+            .apply {
+                if (BuildConfig.DEBUG) {
+                    addInterceptor(
+                        HttpLoggingInterceptor {
+                            Timber.tag("ok-http").d(it)
+                        }.apply {
+                            level = HttpLoggingInterceptor.Level.BASIC
+                        }
+                    )
                 }
-            )
+            }
             .addInterceptor(chuckerInterceptor)
             .build()
     }

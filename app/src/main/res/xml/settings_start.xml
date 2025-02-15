@@ -21,7 +21,8 @@
 
 <androidx.preference.PreferenceScreen android:key="settings_root"
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
     
     <Preference
         android:key="settings_synchronization"
@@ -50,6 +51,12 @@
         android:summary="@string/settings_advanced_info_label"
         android:icon="@drawable/ic_developer_mode_accent_24dp"
         android:fragment="com.forcetower.uefs.feature.settings.AdvancedSettingsFragment"/>
+
+    <Preference
+        app:key="settings_device_id"
+        app:title="@string/settings_device_id"
+        tools:summary="c33b45c9289bc0c75fc916cb32191b7a"
+        app:icon="@drawable/ic_baseline_content_copy_24" />
 
     <ListPreference
         app:key="stg_night_mode"

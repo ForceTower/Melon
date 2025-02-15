@@ -25,7 +25,11 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:paddingStartSystemWindowInsets="@{true}"
+        app:paddingEndSystemWindowInsets="@{true}"
+        app:paddingTopSystemWindowInsets="@{true}"
+        app:paddingBottomSystemWindowInsets="@{true}">
 
         <ImageView
             android:id="@+id/image"
@@ -60,7 +64,7 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/update_button"
-            style="@style/Widget.MaterialComponents.Button.Icon"
+            style="@style/Widget.Material3.Button.Icon"
             android:layout_width="300dp"
             android:layout_height="64dp"
             android:letterSpacing="0"

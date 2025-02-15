@@ -59,6 +59,9 @@ abstract class AccessDao {
     @Query("UPDATE Access SET valid = :valid")
     abstract fun setAccessValidation(valid: Boolean)
 
+    @Query("UPDATE Access SET valid = :valid")
+    abstract suspend fun setAccessValidationDirect(valid: Boolean)
+
     @Query("UPDATE Access SET password = :password")
     abstract fun updateAccessPassword(password: String)
 

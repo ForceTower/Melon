@@ -25,7 +25,7 @@ plugins {
     alias(libs.plugins.kotlin.parcelize)
     alias(libs.plugins.kotlinter.gradle)
     alias(libs.plugins.androidx.navigation.safe.args)
-    alias(libs.plugins.hilt.android.gradle)
+//    alias(libs.plugins.hilt.android.gradle)
     alias(libs.plugins.google.ksp)
 }
 

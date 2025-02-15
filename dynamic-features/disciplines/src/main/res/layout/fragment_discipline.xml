@@ -39,14 +39,17 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/background"
-            style="@style/Widget.AppBar">
+            style="@style/Widget.AppBar"
+            app:paddingTopSystemWindowInsets="@{true}">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_normal"
                 android:paddingEnd="@dimen/spacing_common"
-                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}"
+                app:layout_scrollFlags="snap|exitUntilCollapsed">
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
@@ -88,6 +91,9 @@
                 android:id="@+id/disciplines_recycler"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}"
+                android:clipToPadding="false"
                 app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
         </com.forcetower.core.widget.CustomSwipeRefreshLayout>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -37,14 +37,17 @@
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.AppBar">
+            style="@style/Widget.AppBar"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}">
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingStart="@dimen/spacing_normal"
                 android:paddingEnd="@dimen/spacing_common"
-                app:layout_scrollFlags="scroll|snap|exitUntilCollapsed">
+                app:layout_scrollFlags="snap|exitUntilCollapsed">
 
                 <TextView
                     android:id="@+id/text_toolbar_title"
@@ -63,7 +66,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                style="@style/Widget.Material3.TabLayout"
                 app:tabContentStart="36dp"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="false"

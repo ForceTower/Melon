@@ -20,7 +20,7 @@
   -->
 
 <resources>
-    <style name="Widget.Dashboard.HeaderCardView" parent="@style/Widget.MaterialComponents.CardView">
+    <style name="Widget.Dashboard.HeaderCardView" parent="@style/Widget.Material3.CardView.Elevated">
         <item name="cardElevation">0dp</item>
         <item name="cardBackgroundColor">?attr/colorAccent</item>
         <item name="shapeAppearanceOverlay">@style/ShapeAppearanceOverlay.MaterialCardView.Dashboard.Cut</item>
@@ -28,13 +28,13 @@
 
     <style name="ShapeAppearanceOverlay.MaterialCardView.Dashboard.Cut" parent="">
         <item name="cornerFamily">rounded</item>
-        <item name="cornerSizeTopRight">0dp</item>
-        <item name="cornerSizeTopLeft">0dp</item>
-        <item name="cornerSizeBottomRight">0dp</item>
+        <item name="cornerSizeTopRight">12dp</item>
+        <item name="cornerSizeTopLeft">12dp</item>
+        <item name="cornerSizeBottomRight">12dp</item>
         <item name="cornerSizeBottomLeft">12dp</item>
     </style>
 
-    <style name="Widget.Dashboard.MaterialButton.Dialog" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="Widget.Dashboard.MaterialButton.Dialog" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0.0</item>
     </style>
