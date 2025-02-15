@@ -31,9 +31,9 @@ abstract class UActivity : AppCompatActivity() {
 
     @CallSuper
     override fun onCreate(savedInstanceState: Bundle?) {
+        enableEdgeToEdge()
         if (shouldApplyThemeOverlay()) ThemeOverlayUtils.applyThemeOverlays(this)
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
     }
 
     open fun showSnack(string: String, duration: Int = Snackbar.LENGTH_SHORT) {}

@@ -21,7 +21,7 @@
 
 <resources>
     
-    <style name="CropTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="CropTheme" parent="Theme.Material3.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -38,7 +38,7 @@
         <item name="android:statusBarColor">@color/statusBarColor</item>
     </style>
     
-    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="UTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>

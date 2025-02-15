@@ -61,7 +61,7 @@
                 android:id="@+id/tab_layout"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
-                style="@style/Widget.MaterialComponents.TabLayout.Colored"
+                style="@style/Widget.Material3.TabLayout"
                 app:tabContentStart="36dp"
                 app:tabGravity="fill"
                 app:tabIndicatorFullWidth="false"

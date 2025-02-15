@@ -20,7 +20,7 @@
 
 <resources xmlns:tools="http://schemas.android.com/tools">
 
-    <style name="CropTheme" parent="Theme.MaterialComponents.Light.DarkActionBar">
+    <style name="CropTheme" parent="Theme.Material3.Light">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
@@ -45,7 +45,7 @@
     </style>
 
     <!-- Base application theme. -->
-    <style name="UTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+    <style name="UTheme" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
@@ -90,12 +90,12 @@
         <item name="alertDialogTheme">@style/UTheme.AlertDialog</item>
     </style>
 
-    <style name="UTheme.AlertDialog" parent="Theme.MaterialComponents.Light.Dialog.MinWidth">
+    <style name="UTheme.AlertDialog" parent="Theme.Material3.Light.Dialog.MinWidth">
         <item name="android:windowMinWidthMajor">90%</item>
         <item name="android:windowMinWidthMinor">90%</item>
     </style>
 
-    <style name="mdtp_ActionButton.Text" parent="Widget.MaterialComponents.Button.TextButton.Dialog"/>
+    <style name="mdtp_ActionButton.Text" parent="Widget.Material3.Button.TextButton.Dialog"/>
 
     <style name="UNumberPicker">
         <item name="android:solidColor">?attr/colorOnSurface</item>
@@ -174,7 +174,7 @@
         <item name="android:windowSharedElementEnterTransition">@transition/speaker_shared_enter</item>
     </style>
 
-    <style name="UTheme.MaterialButton" parent="Widget.MaterialComponents.Button">
+    <style name="UTheme.MaterialButton" parent="Widget.Material3.Button">
     </style>
 
     <style name="UTheme.MaterialButton.Default">
@@ -182,7 +182,7 @@
         <item name="android:textAllCaps">false</item>
     </style>
     
-    <style name="UTheme.MaterialButton.Outline" parent="Widget.MaterialComponents.Button.OutlinedButton">
+    <style name="UTheme.MaterialButton.Outline" parent="Widget.Material3.Button.OutlinedButton">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
     </style>
@@ -191,13 +191,13 @@
         <item name="strokeColor">?attr/colorPrimary</item>
     </style>
 
-    <style name="UTheme.MaterialButton.Default.DialogPrimary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="UTheme.MaterialButton.Default.DialogPrimary" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:letterSpacing">0</item>
     </style>
 
-    <style name="UTheme.MaterialButton.Default.DialogSecondary" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+    <style name="UTheme.MaterialButton.Default.DialogSecondary" parent="Widget.Material3.Button.TextButton.Dialog">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textAllCaps">false</item>
         <item name="android:textColor">?attr/colorOnSurfaceLight</item>
@@ -221,7 +221,7 @@
         <item name="android:textAlignment">center</item>
     </style>
 
-    <style name="TextAppearance.UNES.Body2" parent="TextAppearance.MaterialComponents.Body2">
+    <style name="TextAppearance.UNES.Body2" parent="TextAppearance.Material3.BodyMedium">
         <item name="fontFamily">@font/product_sans_regular</item>
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
@@ -252,7 +252,7 @@
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
-    <style name="UTheme.BottomNavigation" parent="Widget.MaterialComponents.BottomNavigationView">
+    <style name="UTheme.BottomNavigation" parent="Widget.Material3.BottomNavigationView">
         <item name="itemTextAppearanceActive">@style/UTheme.BottomNavigation.Active</item>
         <item name="itemTextAppearanceInactive">@style/UTheme.BottomNavigation.Active</item>
         <item name="labelVisibilityMode">labeled</item>
@@ -262,11 +262,11 @@
         <item name="android:background">?attr/colorSurface</item>
     </style>
 
-    <style name="UTheme.BottomNavigation.Active" parent="TextAppearance.MaterialComponents.Caption">
+    <style name="UTheme.BottomNavigation.Active" parent="TextAppearance.Material3.LabelMedium">
         <item name="android:fontFamily">@font/product_sans_regular</item>
     </style>
 
-    <style name="BottomSheetDialogTheme" parent="@style/Theme.MaterialComponents.Light.BottomSheetDialog">
+    <style name="BottomSheetDialogTheme" parent="@style/Theme.Material3.Light.BottomSheetDialog">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorPrimaryLight">@color/colorPrimaryLight</item>
@@ -292,10 +292,6 @@
         <!--<item name="android:background">@drawable/bottom_sheet_dialog_background</item>-->
     </style>
 
-    <style name="TextAppearanceSubtitle2" parent="TextAppearance.MaterialComponents.Subtitle2">
-        <item name="fontFamily">@font/product_sans_regular</item>
-    </style>
-
     <style name="TextAppearanceTabLayout" parent="TextAppearance.Design.Tab">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="textAllCaps">false</item>
@@ -314,7 +310,7 @@
         <item name="iconColor">@color/iconColor</item>
     </style>
 
-    <style name="Widget.AppBarLayout" parent="Widget.MaterialComponents.AppBarLayout.Surface"/>
+    <style name="Widget.AppBarLayout" parent="Widget.Material3.AppBarLayout"/>
     
     <style name="Widget.Melon" parent="@android:style/Widget">
         <item name="iconColor">@color/iconColor</item>
@@ -345,7 +341,7 @@
         <item name="android:textColor">@color/text_primary_dark</item>
     </style>
 
-    <style name="UTheme.PopupTheme" parent="ThemeOverlay.MaterialComponents.Light" />
+    <style name="UTheme.PopupTheme" parent="ThemeOverlay.Material3.Light" />
 
     <style name="UTheme.EventTitleText">
         <item name="android:textColor">?attr/colorOnBackground</item>
@@ -362,7 +358,7 @@
         <item name="android:maxLines">1</item>
     </style>
     
-    <style name="Widget.Melon.BorderlessButton" parent="@style/Widget.MaterialComponents.Button.TextButton">
+    <style name="Widget.Melon.BorderlessButton" parent="@style/Widget.Material3.Button.TextButton">
         <item name="android:fontFamily">@font/product_sans_regular</item>
         <item name="android:textStyle">bold</item>
         <item name="android:textColor">?colorAccent</item>
@@ -382,7 +378,7 @@
         <item name="iconColor">@color/iconColor</item>
     </style>
 
-    <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+    <style name="UTheme.TextInputLayout.OutlinedBox" parent="@style/Widget.Material3.TextInputLayout.OutlinedBox">
         <item name="hintTextAppearance">@style/UTheme.TextAppearance.TextInputLayoutHint</item>
     </style>
 
@@ -411,7 +407,7 @@
     </style>
 
     <!--@style/Widget.AppCompat.Button.Colored-->
-    <style name="Widget.UTheme.RaisedButton" parent="@style/Widget.MaterialComponents.Button">
+    <style name="Widget.UTheme.RaisedButton" parent="@style/Widget.Material3.Button">
         <item name="android:textStyle">bold</item>
         <item name="android:letterSpacing">0.025</item>
         <item name="android:textAllCaps">false</item>
