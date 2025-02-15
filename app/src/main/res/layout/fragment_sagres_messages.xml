@@ -44,6 +44,8 @@
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:clipToPadding="false"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
     </com.forcetower.core.widget.CustomSwipeRefreshLayout>
 </layout>
