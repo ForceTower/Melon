@@ -55,25 +55,22 @@ class DisciplineDetailsActivity : UGameActivity() {
             }
         }
 
-        viewModel.clazz.observe(
-            this,
-            Observer {
-                if (it != null) {
-                    val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
-                    if (teacher != null) {
-                        if (teacher == "__ANY__") {
-                            unlockAchievement(R.string.achievement_vale_das_sombras)
-                        } else {
-                            it.groups.forEach { group ->
-                                if (group.teacher != null && group.teacher == teacher) {
-                                    unlockAchievement(R.string.achievement_vale_das_sombras)
-                                }
+        viewModel.clazz.observe(this) {
+            if (it != null) {
+                val teacher = Constants.HARD_DISCIPLINES[it.discipline.code]
+                if (teacher != null) {
+                    if (teacher == "__ANY__") {
+                        unlockAchievement(R.string.achievement_vale_das_sombras)
+                    } else {
+                        it.groups.forEach { group ->
+                            if (group.teacher != null && group.teacher == teacher) {
+                                unlockAchievement(R.string.achievement_vale_das_sombras)
                             }
                         }
                     }
                 }
             }
-        )
+        }
     }
 
     override fun showSnack(string: String, duration: Int) {
