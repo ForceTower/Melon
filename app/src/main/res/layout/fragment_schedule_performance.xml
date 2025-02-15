@@ -39,10 +39,13 @@
         <com.google.android.material.appbar.AppBarLayout
             android:id="@+id/app_bar"
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
+            android:layout_height="wrap_content"
             android:background="?attr/background"
             android:orientation="vertical"
-            app:liftOnScroll="true">
+            app:liftOnScroll="true"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}">
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -88,7 +91,10 @@
                 <HorizontalScrollView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none">
+                    android:scrollbars="none"
+                    app:paddingStartSystemWindowInsets="@{true}"
+                    app:paddingEndSystemWindowInsets="@{true}"
+                    android:clipToPadding="false">
                     <androidx.recyclerview.widget.RecyclerView
                         android:id="@+id/recycler_schedule"
                         android:layout_width="wrap_content"
@@ -109,7 +115,9 @@
                     android:paddingTop="4dp"
                     android:paddingBottom="56dp"
                     android:clipToPadding="false"
-                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
+                    app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+                    app:paddingStartSystemWindowInsets="@{true}"
+                    app:paddingEndSystemWindowInsets="@{true}"/>
             </LinearLayout>
         </androidx.core.widget.NestedScrollView>
 
@@ -119,7 +127,9 @@
             android:layout_height="match_parent"
             android:visibility="gone"
             app:goneUnless="@{safeUnbox(empty)}"
-            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
+            app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}">
 
             <ImageView
                 android:id="@+id/imageView4"
@@ -183,6 +193,7 @@
             android:layout_gravity="bottom|center_horizontal"
             app:backgroundTint="?attr/colorPrimary"
             app:icon="@drawable/ic_local_activity_black_24dp"
+            app:marginBottomSystemWindowInsets="@{true}"
             tools:visibility="visible"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

@@ -119,6 +119,7 @@ data class ViewPaddingState(
     "paddingTopSystemWindowInsets",
     "paddingEndSystemWindowInsets",
     "paddingBottomSystemWindowInsets",
+    "paddingConsumeWindowInsets",
     requireAll = false
 )
 fun applySystemWindows(
@@ -126,7 +127,8 @@ fun applySystemWindows(
     applyLeft: Boolean,
     applyTop: Boolean,
     applyRight: Boolean,
-    applyBottom: Boolean
+    applyBottom: Boolean,
+    consumeInsets: Boolean
 ) {
     view.doOnApplyWindowInsets { _, insets, padding ->
         val ins = insets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
@@ -141,6 +143,7 @@ fun applySystemWindows(
             padding.right + right,
             padding.bottom + bottom
         )
+        return@doOnApplyWindowInsets consumeInsets
     }
 }
 
@@ -149,6 +152,7 @@ fun applySystemWindows(
     "marginTopSystemWindowInsets",
     "marginEndSystemWindowInsets",
     "marginBottomSystemWindowInsets",
+    "marginConsumeWindowInsets",
     requireAll = false
 )
 fun applyMarginSystemWindows(
@@ -156,25 +160,26 @@ fun applyMarginSystemWindows(
     applyLeft: Boolean,
     applyTop: Boolean,
     applyRight: Boolean,
-    applyBottom: Boolean
+    applyBottom: Boolean,
+    consumeInsets: Boolean
 ) {
     view.doOnApplyWindowMarginInsets { _, allInsets, margins ->
-        val insets = allInsets.getInsets(WindowInsetsCompat.Type.systemBars()or WindowInsetsCompat.Type.displayCutout())
+        val insets = allInsets.getInsets(WindowInsetsCompat.Type.systemBars() or WindowInsetsCompat.Type.displayCutout())
         val left = if (applyLeft) insets.left else 0
         val top = if (applyTop) insets.top else 0
         val right = if (applyRight) insets.right else 0
         val bottom = if (applyBottom) insets.bottom else 0
 
         (view.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
-            setMargins(
-                margins.left + left,
-                margins.top + top,
-                margins.right + right,
-                margins.bottom + bottom
-            )
+            marginStart = margins.left + left
+            topMargin = margins.top + top
+            marginEnd = margins.right + right
+            bottomMargin = margins.bottom + bottom
         }?.also {
             view.layoutParams = it
         }
+
+        return@doOnApplyWindowMarginInsets consumeInsets
     }
 }
 
@@ -208,20 +213,26 @@ fun View.requestApplyInsetsWhenAttached() {
     }
 }
 
-fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Unit) {
+fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Boolean) {
     val initialPadding = recordInitialPaddingForView(this)
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-        f(v, insets, initialPadding)
-        insets
+        val result = f(v, insets, initialPadding)
+        if (result)
+            WindowInsetsCompat.CONSUMED
+        else
+            insets
     }
     requestApplyInsetsWhenAttached()
 }
 
-fun View.doOnApplyWindowMarginInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Unit) {
+fun View.doOnApplyWindowMarginInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Boolean) {
     val initialMargin = recordInitialMarginForView(this)
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
-        f(v, insets, initialMargin)
-        insets
+        val result = f(v, insets, initialMargin)
+        if (result)
+            WindowInsetsCompat.CONSUMED
+        else
+            insets
     }
     requestApplyInsetsWhenAttached()
 }
