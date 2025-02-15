@@ -42,6 +42,11 @@
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
             android:layout_marginTop="@dimen/padding_normal"
+            app:marginTopSystemWindowInsets="@{true}"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:pageIndicatorColor="@color/page_indicator_dark"
             app:currentPageIndicatorColor="@color/page_indicator_dark_selected" />
 

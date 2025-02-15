@@ -52,7 +52,7 @@ class CutoutTextView(ctx: Context, attrs: AttributeSet) : View(ctx, attrs) {
             try {
                 val font = ResourcesCompat.getFont(context, a.getResourceId(R.styleable.CutoutTextView_android_fontFamily, 0))
                 if (font != null) textPaint.typeface = font
-            } catch (nfe: Resources.NotFoundException) {}
+            } catch (_: Resources.NotFoundException) {}
         }
 
         if (a.hasValue(R.styleable.CutoutTextView_foregroundColor)) {

@@ -30,14 +30,27 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            app:paddingBottomSystemWindowInsets="@{true}">
+
+            <!-- Modern problems require modern solutions -->
+            <FrameLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/colorPrimary"
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}"
+                app:paddingTopSystemWindowInsets="@{true}" />
 
             <com.forcetower.uefs.widget.CutoutTextView
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/about_app_name_header"
                 app:foregroundColor="?attr/colorPrimary"
                 android:text="@string/app_name"
-                android:fontFamily="@font/product_sans_regular"/>
+                android:fontFamily="@font/product_sans_regular"
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}"/>
 
             <com.forcetower.uefs.widget.BaselineGridTextView
                 android:id="@+id/text_about_description"
@@ -50,7 +63,9 @@
                 android:paddingBottom="@dimen/spacing_large"
                 style="@style/UTheme.TextAppearance.About"
                 android:textColorHighlight="@color/links_colors"
-                android:textColorLink="@color/unes_links"/>
+                android:textColorLink="@color/unes_links"
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}"/>
 
             <FrameLayout
                 android:layout_width="match_parent"
@@ -78,7 +93,9 @@
                 android:paddingBottom="@dimen/spacing_large"
                 style="@style/UTheme.TextAppearance.About"
                 android:textColorHighlight="@color/links_colors"
-                android:textColorLink="@color/unes_links"/>
+                android:textColorLink="@color/unes_links"
+                app:paddingStartSystemWindowInsets="@{true}"
+                app:paddingEndSystemWindowInsets="@{true}" />
         </LinearLayout>
     </ScrollView>
 </layout>
