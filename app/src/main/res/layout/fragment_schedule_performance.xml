@@ -69,7 +69,7 @@
                     android:layout_gravity="end"
                     android:onClick="@{() -> actions.refreshData()}"
                     app:icon="@drawable/ic_refresh_black_24dp"
-                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    style="@style/Widget.Material3.Button.OutlinedButton"
                     app:iconTint="?attr/colorOnSurface"
                     app:strokeWidth="0dp"/>
             </FrameLayout>

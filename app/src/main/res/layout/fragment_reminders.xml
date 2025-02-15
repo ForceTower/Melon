@@ -71,7 +71,7 @@
     
         <com.google.android.material.button.MaterialButton
             android:id="@+id/fab"
-            style="@style/Widget.MaterialComponents.Button"
+            style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="64dp"
             android:layout_marginBottom="16dp"

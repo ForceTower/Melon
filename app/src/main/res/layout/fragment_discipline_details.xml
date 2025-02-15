@@ -143,7 +143,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="8dp"
-                    style="@style/Widget.MaterialComponents.TabLayout"
+                    style="@style/Widget.Material3.TabLayout"
                     app:layout_constraintTop_toBottomOf="@+id/recycler_discipline_items"
                     app:tabSelectedTextColor="?attr/colorPrimary"
                     app:tabTextColor="?attr/colorOnSurfaceLight"

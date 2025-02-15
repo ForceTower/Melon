@@ -35,7 +35,7 @@
             android:layout_height="wrap_content"
             android:background="?attr/background"
             app:liftOnScroll="true"
-            style="@style/Widget.MaterialComponents.AppBarLayout.Surface">
+            style="@style/Widget.Material3.AppBarLayout">
             <com.google.android.material.appbar.MaterialToolbar
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
