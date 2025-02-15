@@ -24,9 +24,14 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.INVISIBLE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.core.view.marginBottom
+import androidx.core.view.marginLeft
+import androidx.core.view.marginRight
+import androidx.core.view.marginTop
 import androidx.databinding.BindingAdapter
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.viewpager.widget.ViewPager
@@ -139,6 +144,40 @@ fun applySystemWindows(
     }
 }
 
+@BindingAdapter(
+    "marginStartSystemWindowInsets",
+    "marginTopSystemWindowInsets",
+    "marginEndSystemWindowInsets",
+    "marginBottomSystemWindowInsets",
+    requireAll = false
+)
+fun applyMarginSystemWindows(
+    view: View,
+    applyLeft: Boolean,
+    applyTop: Boolean,
+    applyRight: Boolean,
+    applyBottom: Boolean
+) {
+    view.doOnApplyWindowMarginInsets { _, allInsets, margins ->
+        val insets = allInsets.getInsets(WindowInsetsCompat.Type.systemBars())
+        val left = if (applyLeft) insets.left else 0
+        val top = if (applyTop) insets.top else 0
+        val right = if (applyRight) insets.right else 0
+        val bottom = if (applyBottom) insets.bottom else 0
+
+        (view.layoutParams as? ViewGroup.MarginLayoutParams)?.apply {
+            setMargins(
+                margins.left + left,
+                margins.top + top,
+                margins.right + right,
+                margins.bottom + bottom
+            )
+        }?.also {
+            view.layoutParams = it
+        }
+    }
+}
+
 data class InitialPadding(
     val left: Int,
     val top: Int,
@@ -177,3 +216,16 @@ fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> 
     }
     requestApplyInsetsWhenAttached()
 }
+
+fun View.doOnApplyWindowMarginInsets(f: (View, WindowInsetsCompat, InitialPadding) -> Unit) {
+    val initialMargin = recordInitialMarginForView(this)
+    ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
+        f(v, insets, initialMargin)
+        insets
+    }
+    requestApplyInsetsWhenAttached()
+}
+
+private fun recordInitialMarginForView(view: View) = InitialPadding(
+    view.marginLeft, view.marginTop, view.marginRight, view.marginBottom
+)

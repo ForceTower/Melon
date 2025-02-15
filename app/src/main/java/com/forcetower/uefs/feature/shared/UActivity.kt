@@ -21,6 +21,7 @@
 package com.forcetower.uefs.feature.shared
 
 import android.os.Bundle
+import androidx.activity.enableEdgeToEdge
 import androidx.annotation.CallSuper
 import androidx.appcompat.app.AppCompatActivity
 import com.forcetower.uefs.feature.themeswitcher.ThemeOverlayUtils
@@ -32,6 +33,7 @@ abstract class UActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         if (shouldApplyThemeOverlay()) ThemeOverlayUtils.applyThemeOverlays(this)
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
     }
 
     open fun showSnack(string: String, duration: Int = Snackbar.LENGTH_SHORT) {}
