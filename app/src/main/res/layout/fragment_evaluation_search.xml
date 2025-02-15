@@ -52,7 +52,10 @@
             android:layout_marginTop="32dp"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}"/>
 
         <TextView
             android:id="@+id/search_description"
@@ -61,6 +64,8 @@
             android:textColor="?attr/colorOnSurfaceLight"
             android:text="@string/evaluation_omnibox_description"
             android:layout_marginTop="4dp"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginEndSystemWindowInsets="@{true}"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@id/search_title"/>
@@ -72,6 +77,9 @@
             android:layout_marginTop="16dp"
             style="@style/UTheme.TextInputLayout.OutlinedBox"
             android:hint="@string/evaluation_omnibox_hint"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}"
             app:layout_constraintEnd_toStartOf="@+id/guideline_end"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toBottomOf="@+id/search_description">
@@ -122,6 +130,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/omnibox_container"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

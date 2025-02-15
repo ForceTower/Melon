@@ -40,29 +40,16 @@
         android:clipToPadding="false"
         android:elevation="1dp">
 
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/header_bottom"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            app:layout_constraintGuide_begin="@dimen/nav_header_keyline"/>
-
-        <androidx.constraintlayout.widget.Guideline
-            android:id="@+id/third_keyline"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintGuide_begin="96dp" />
-
         <ImageView
             android:id="@+id/image_user_picture"
             android:layout_width="@dimen/nav_header_size"
             android:layout_height="@dimen/nav_header_size"
             android:layout_marginStart="@dimen/second_keyline"
             android:contentDescription="@string/acc_user_image"
+            app:marginTopSystemWindowInsets="@{true}"
+            app:marginStartSystemWindowInsets="@{true}"
             app:clipToCircle="@{true}"
             app:imageUrl="@{account.imageUrl}"
-            app:layout_constraintBottom_toBottomOf="@id/header_bottom"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             tools:src="@mipmap/ic_unes_large_image_512"/>
@@ -72,14 +59,16 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_marginEnd="16dp"
+            android:layout_marginStart="16dp"
+            app:marginEndSystemWindowInsets="@{true}"
             app:layout_constraintBottom_toBottomOf="@+id/image_user_picture"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="@+id/third_keyline"
+            app:layout_constraintStart_toEndOf="@+id/image_user_picture"
             app:layout_constraintTop_toTopOf="@+id/image_user_picture">
 
             <TextView
                 android:id="@+id/text_user_name"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@{viewModel.profile.name}"
                 android:textColor="?attr/colorOnBackground"
@@ -90,7 +79,7 @@
 
             <TextView
                 android:id="@+id/text_score"
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
                 app:profileScoreOptional="@{viewModel.profile.score}"
@@ -109,9 +98,10 @@
             android:layout_width="match_parent"
             android:layout_height="1dp"
             android:background="@color/home_bottom_color_divider"
+            android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/header_bottom"/>
+            app:layout_constraintTop_toBottomOf="@id/image_user_picture"/>
 
         <com.google.android.material.navigation.NavigationView
             android:id="@+id/navigation_view"
@@ -128,6 +118,7 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider"
             app:layout_constraintBottom_toBottomOf="parent"
+            app:marginStartSystemWindowInsets="@{true}"
             app:menu="@menu/home_menu_navigation" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

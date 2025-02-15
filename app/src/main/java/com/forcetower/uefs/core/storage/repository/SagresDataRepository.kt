@@ -21,6 +21,10 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.content.SharedPreferences
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
 import com.forcetower.sagres.SagresNavigator
@@ -49,9 +53,12 @@ class SagresDataRepository @Inject constructor(
     private val preferences: SharedPreferences,
     private val client: OkHttpClient,
     @Named("webViewUA") private val agent: String,
+    @Named("internalConfig") private val config: DataStore<Preferences>,
     private val cookies: CookieSessionRepository,
     private val service: UService
 ) {
+    private val missingSemestersKey = stringSetPreferencesKey("missing_semesters_run")
+
     fun getMessages() = database.messageDao().getAllMessages()
 
     fun logout() {
@@ -77,6 +84,9 @@ class SagresDataRepository @Inject constructor(
         database.edgeAccessToken.deleteAll()
         database.edgeServiceAccount.deleteAll()
         database.studentServiceDao().markNoOneAsMe()
+        config.edit {
+            it[missingSemestersKey] = emptySet()
+        }
     }
 
     fun getFlags() = database.flagsDao().getFlags()

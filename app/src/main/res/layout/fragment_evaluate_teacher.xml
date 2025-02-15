@@ -65,6 +65,8 @@
             app:layout_constraintTop_toTopOf="parent"
             app:progressWithAnimation="@{(float)(teacher.mean * 10)}"
             app:progressbarColor="?attr/colorPrimary"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}"
             tools:progress="76" />
 
         <TextView
@@ -114,6 +116,8 @@
             app:clipToCircle="@{true}"
             app:imageUrl="@{null}"
             app:invisibleUnless="@{false}"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}"
             app:layout_constraintStart_toStartOf="@+id/guideline_start"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -129,6 +133,8 @@
             app:layout_constraintEnd_toEndOf="@id/guideline_end"
             app:layout_constraintStart_toEndOf="@+id/grade_progress_top"
             app:layout_constraintTop_toTopOf="parent"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
             tools:text="Angelo do Ártico Polonês" />
 
         <TextView
@@ -141,6 +147,7 @@
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/teacher_name"
+            app:paddingEndSystemWindowInsets="@{true}"
             tools:text="angelocl@gmail.com"/>
 
         <TextView
@@ -153,6 +160,7 @@
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/teacher_email"
+            app:paddingEndSystemWindowInsets="@{true}"
             tools:text="Visto pela primeira vez"/>
 
         <TextView
@@ -165,6 +173,7 @@
             app:layout_constraintEnd_toEndOf="@+id/teacher_name"
             app:layout_constraintStart_toStartOf="@+id/teacher_name"
             app:layout_constraintTop_toBottomOf="@+id/first_registered_semester"
+            app:paddingEndSystemWindowInsets="@{true}"
             tools:text="Visto pela ultima vez"/>
 
         <androidx.constraintlayout.widget.Barrier
@@ -184,6 +193,9 @@
             android:paddingTop="8dp"
             android:paddingBottom="56dp"
             app:invisibleUnless="@{loading == false}"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -242,7 +254,9 @@
             app:backgroundTint="?attr/colorPrimary"
             app:icon="@drawable/rate_review_black_24dp"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toStartOf="@+id/guideline_end" />
+            app:layout_constraintEnd_toStartOf="@+id/guideline_end"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginBottomSystemWindowInsets="@{true}"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

@@ -40,7 +40,7 @@
         <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            style="@style/Widget.MaterialComponents.AppBarLayout.Surface"
+            style="@style/Widget.Material3.AppBarLayout"
             app:paddingTopSystemWindowInsets="@{true}"
             app:liftOnScroll="true">
             <androidx.appcompat.widget.Toolbar

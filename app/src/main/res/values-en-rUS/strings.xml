@@ -109,7 +109,7 @@
     <string name="channel_events_general">General Events</string>
     <string name="channel_messages_dce">DCE\'s messages</string>
     <string name="setup_about_you">About you</string>
-    <string name="setup_about_you_information">These information help UNES to identify you better and offer you a personalized experience. Select a picture and a course</string>
+    <string name="setup_about_you_information">These information help UNES to identify you better and offer you a personalized experience. Select a picture!</string>
     <string name="setup_select_course_label">Select a course</string>
     <string name="setup_next">Next</string>
     <string name="label_course">Course</string>

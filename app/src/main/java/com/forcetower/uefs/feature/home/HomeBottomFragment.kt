@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.home
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.net.Uri
 import android.os.Bundle
@@ -41,6 +42,7 @@ import com.canhub.cropper.CropImageView
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
+import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
 import com.forcetower.uefs.core.util.isStudentFromUEFS
@@ -171,8 +173,7 @@ class HomeBottomFragment : UFragment() {
                     true
                 }
                 R.id.bug_report -> {
-                    val fragment = SendFeedbackFragment()
-                    fragment.show(childFragmentManager, "feedback_modal")
+                    sendEmail()
                     true
                 }
                 R.id.campus_map -> {
@@ -184,6 +185,15 @@ class HomeBottomFragment : UFragment() {
                 }
             }
         }
+    }
+
+    private fun sendEmail() {
+        val text = "\n\nVersion: ${BuildConfig.VERSION_NAME}\nCode: ${BuildConfig.VERSION_CODE}\nDevice ID: ${viewModel.requireDeviceId()}"
+        val intent = Intent(Intent.ACTION_SENDTO, Uri.fromParts("mailto", Constants.DEVELOPER_EMAIL, null)).apply {
+            putExtra(Intent.EXTRA_SUBJECT, "[UNES] App Feedback")
+            putExtra(Intent.EXTRA_TEXT, text)
+        }
+        startActivity(Intent.createChooser(intent, getString(R.string.send_email)))
     }
 
     private fun onImagePicked(uri: Uri) {

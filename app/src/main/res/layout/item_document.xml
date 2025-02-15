@@ -106,7 +106,7 @@
     
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_delete"
-                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+                style="@style/Widget.Material3.Button.TextButton.Icon"
                 android:layout_width="50dp"
                 android:layout_height="wrap_content"
                 android:onClick="@{() -> listener.onDelete(document)}"

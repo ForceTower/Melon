@@ -23,8 +23,10 @@ package com.forcetower.uefs.feature.settings
 import android.content.Context
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import com.forcetower.uefs.core.storage.repository.SettingsRepository
+import com.forcetower.uefs.domain.usecase.device.GetDeviceInfoUseCase
 import com.google.android.play.core.splitinstall.SplitInstallManagerFactory
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -33,10 +35,12 @@ import kotlinx.coroutines.launch
 @HiltViewModel
 class SettingsViewModel @Inject constructor(
     private val repository: SettingsRepository,
+    deviceInfoUseCase: GetDeviceInfoUseCase,
     context: Context
 ) : ViewModel() {
     private val splitInstallManager = SplitInstallManagerFactory.create(context)
     private var done: Boolean = false
+    val deviceId = deviceInfoUseCase.machineId().asLiveData()
 
     val isDarkModeEnabled: LiveData<Boolean>
         get() = repository.hasDarkModeEnabled()
