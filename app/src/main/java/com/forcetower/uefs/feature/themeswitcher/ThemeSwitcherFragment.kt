@@ -91,20 +91,20 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment() {
             R.id.theme_feature_secondary_color
         )
 
-        if (!requireContext().isDarkTheme) {
+//        if (!requireContext().isDarkTheme) {
             binding.backgroundColors.visibility = GONE
             binding.labelBackground.visibility = GONE
-        } else {
-            binding.backgroundColors.visibility = VISIBLE
-            binding.labelBackground.visibility = VISIBLE
-            initThemingValues(
-                binding.backgroundColors,
-                resourceProvider.backgroundColors,
-                resourceProvider.backgroundColorsContentDescription,
-                resourceProvider.backgroundThemeOverlayAttrs,
-                R.id.theme_feature_background_color
-            )
-        }
+//        } else {
+//            binding.backgroundColors.visibility = VISIBLE
+//            binding.labelBackground.visibility = VISIBLE
+//            initThemingValues(
+//                binding.backgroundColors,
+//                resourceProvider.backgroundColors,
+//                resourceProvider.backgroundColorsContentDescription,
+//                resourceProvider.backgroundThemeOverlayAttrs,
+//                R.id.theme_feature_background_color
+//            )
+//        }
 
         binding.applyButton.setOnClickListener {
             applyThemeOverlays()
