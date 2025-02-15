@@ -38,7 +38,10 @@
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             android:paddingBottom="@dimen/event_schedule_padding_bottom"
             android:paddingTop="@dimen/spacing_common"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"/>
 
         <TextView
             android:id="@+id/text_empty"

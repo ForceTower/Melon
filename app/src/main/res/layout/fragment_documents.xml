@@ -40,7 +40,10 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
             tools:listitem="@layout/item_document"
             android:paddingBottom="8dp"
-            android:clipToPadding="false"/>
+            android:clipToPadding="false"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"/>
         
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 

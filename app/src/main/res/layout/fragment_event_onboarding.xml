@@ -74,7 +74,8 @@
             app:layout_constraintTop_toBottomOf="@id/get_started"
             app:currentPageIndicatorColor="?attr/colorOnSurface"
             app:pageIndicatorColor="?attr/colorOnSurfaceLight"
-            app:viewPager="@{pager}" />
+            app:viewPager="@{pager}"
+            app:marginBottomSystemWindowInsets="@{true}" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

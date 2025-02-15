@@ -40,7 +40,10 @@
             tools:listitem="@layout/item_reminder"
             android:paddingBottom="72dp"
             android:clipToPadding="false"
-            android:visibility="visible"/>
+            android:visibility="visible"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"/>
 
         <LinearLayout
             android:id="@+id/layout_no_data"
@@ -49,7 +52,11 @@
             android:orientation="vertical"
             android:gravity="center"
             android:visibility="gone"
-            tools:ignore="UseCompoundDrawables">
+            tools:ignore="UseCompoundDrawables"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}">
 
             <ImageView
                 android:layout_width="match_parent"
@@ -88,7 +95,8 @@
             app:iconSize="24dp"
             android:elevation="6dp"
             app:iconTint="?attr/colorOnPrimary"
-            android:layout_gravity="bottom|center" />
+            android:layout_gravity="bottom|center"
+            app:marginBottomSystemWindowInsets="@{true}"/>
     
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>

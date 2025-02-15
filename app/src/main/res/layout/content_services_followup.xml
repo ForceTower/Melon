@@ -47,6 +47,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             tools:listitem="@layout/item_service_request"/>
 
         <LinearLayout
@@ -59,7 +62,10 @@
             app:layout_constraintTop_toTopOf="parent"
             android:orientation="vertical"
             tools:visibility="gone"
-            android:layout_marginBottom="30dp">
+            android:layout_marginBottom="30dp"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}">
 
             <ImageView
                 android:layout_width="match_parent"

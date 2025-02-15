@@ -43,6 +43,10 @@
             android:scrollbars="vertical"
             android:paddingBottom="56dp"
             android:clipToPadding="false"
+            app:paddingStartSystemWindowInsets="@{true}"
+            app:paddingEndSystemWindowInsets="@{true}"
+            app:paddingTopSystemWindowInsets="@{true}"
+            app:paddingBottomSystemWindowInsets="@{true}"
             app:hasFixedSize="@{true}"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             tools:itemCount="1"
@@ -56,7 +60,9 @@
             android:background="?selectableItemBackgroundBorderless"
             android:contentDescription="@string/navigate_up"
             app:tint="?attr/colorOnSurface"
-            app:srcCompat="@drawable/ic_arrow_back_black_24dp" />
+            app:srcCompat="@drawable/ic_arrow_back_black_24dp"
+            app:marginStartSystemWindowInsets="@{true}"
+            app:marginTopSystemWindowInsets="@{true}" />
 
         <com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
             android:id="@+id/write_statement"
@@ -68,6 +74,8 @@
             android:visibility="gone"
             app:icon="@drawable/rate_review_black_24dp"
             app:backgroundTint="?attr/colorPrimary"
+            app:marginEndSystemWindowInsets="@{true}"
+            app:marginBottomSystemWindowInsets="@{true}"
             android:layout_gravity="end|bottom"
             android:layout_margin="16dp"/>
     </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -29,7 +29,10 @@
         android:layout_height="wrap_content"
         style="@style/Widget.AppBar"
         app:elevation="0dp"
-        app:liftOnScroll="true">
+        app:liftOnScroll="true"
+        app:paddingStartSystemWindowInsets="@{true}"
+        app:paddingEndSystemWindowInsets="@{true}"
+        app:paddingTopSystemWindowInsets="@{true}">
 
         <FrameLayout
             android:layout_width="match_parent"
