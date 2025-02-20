@@ -24,7 +24,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MediatorLiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.lifecycle.asLiveData
 import androidx.lifecycle.map
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.core.model.unes.EdgeServiceAccount
@@ -46,7 +45,7 @@ class DashboardViewModel @Inject constructor(
     }
 
     val course: LiveData<String?> by lazy { dataRepository.getCourse() }
-    val account: LiveData<EdgeServiceAccount> = repository.getEdgeServiceAccount().asLiveData()
+    val account: LiveData<EdgeServiceAccount> = repository.getEdgeServiceAccount()
     val student: LiveData<SStudent> = repository.getStudentMe()
     val lastMessage = repository.getLastMessage()
     val affinity = repository.getAffinityQuestions()
