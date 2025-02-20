@@ -21,7 +21,6 @@
 package com.forcetower.uefs.feature.settings
 
 import android.content.Context
-import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
@@ -41,9 +40,6 @@ class SettingsViewModel @Inject constructor(
     private val splitInstallManager = SplitInstallManagerFactory.create(context)
     private var done: Boolean = false
     val deviceId = deviceInfoUseCase.machineId().asLiveData()
-
-    val isDarkModeEnabled: LiveData<Boolean>
-        get() = repository.hasDarkModeEnabled()
 
     fun getAllTheGrades() {
         if (done) return

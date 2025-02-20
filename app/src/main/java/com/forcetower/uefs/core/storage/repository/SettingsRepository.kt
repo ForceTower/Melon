@@ -20,10 +20,6 @@
 
 package com.forcetower.uefs.core.storage.repository
 
-import android.content.SharedPreferences
-import androidx.annotation.MainThread
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MediatorLiveData
 import com.forcetower.uefs.core.storage.database.UDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -33,27 +29,10 @@ import timber.log.Timber
 
 @Singleton
 class SettingsRepository @Inject constructor(
-    private val preferences: SharedPreferences,
     private val database: UDatabase,
     private val gradesRepository: SagresGradesRepository,
     private val adventureRepository: AdventureRepository
 ) {
-
-    @MainThread
-    fun hasDarkModeEnabled(): LiveData<Boolean> {
-        val result = MediatorLiveData<Boolean>()
-        val default = preferences.getBoolean("ach_night_mode_enabled", false)
-        result.value = default
-
-//        val source = darkThemeRepository.getFirebaseProfile()
-//        result.addSource(source) {
-//            val enabled = it?.darkThemeEnabled ?: false
-//            preferences.edit().putBoolean("ach_night_mode_enabled", enabled).apply()
-//            result.postValue(enabled)
-//        }
-
-        return result
-    }
 
     suspend fun requestAllGradesAndCalculateScore() = withContext(Dispatchers.IO) {
         var loginNeeded = true
