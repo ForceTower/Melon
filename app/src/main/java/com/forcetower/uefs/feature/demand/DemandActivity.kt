@@ -57,7 +57,7 @@ class DemandActivity : UActivity() {
             analytics.logEvent("demand_entered_screen", null)
         }
 
-        viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
+        viewModel.snackbar.observe(this, EventObserver { showSnack(it) })
     }
 
     override fun showSnack(string: String, duration: Int) {

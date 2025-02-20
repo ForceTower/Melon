@@ -35,8 +35,7 @@ class MaterialAdapter(
     val lifecycleOwner: LifecycleOwner,
     val viewModel: DisciplineViewModel
 ) : ListAdapter<ClassMaterial, MaterialAdapter.ClassMaterialHolder>(DiffCallback) {
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ClassMaterialHolder(parent.inflate(R.layout.item_discipline_class_material))
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ClassMaterialHolder(parent.inflate(R.layout.item_discipline_class_material))
 
     override fun onBindViewHolder(holder: ClassMaterialHolder, position: Int) {
         holder.binding.apply {

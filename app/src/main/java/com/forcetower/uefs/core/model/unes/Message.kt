@@ -71,23 +71,22 @@ data class Message(
     var disciplineResume: String? = null
 
     companion object {
-        fun fromMessage(me: SagresMessage, notified: Boolean) =
-            Message(
-                content = me.message ?: "",
-                sagresId = me.sagresId,
-                senderName = me.senderName,
-                senderProfile = me.senderProfile,
-                timestamp = if (me.isFromHtml) me.processingTime else me.timeStampInMillis,
-                notified = notified,
-                discipline = me.discipline,
-                codeDiscipline = me.disciplineCode,
-                html = me.isFromHtml,
-                dateString = me.dateString,
-                processingTime = me.processingTime,
-                hashMessage = me.message?.lowercase(Locale.getDefault())?.trim().hashCode().toLong(),
-                attachmentName = me.attachmentName,
-                attachmentLink = me.attachmentLink
-            ).apply { disciplineResume = me.objective }
+        fun fromMessage(me: SagresMessage, notified: Boolean) = Message(
+            content = me.message ?: "",
+            sagresId = me.sagresId,
+            senderName = me.senderName,
+            senderProfile = me.senderProfile,
+            timestamp = if (me.isFromHtml) me.processingTime else me.timeStampInMillis,
+            notified = notified,
+            discipline = me.discipline,
+            codeDiscipline = me.disciplineCode,
+            html = me.isFromHtml,
+            dateString = me.dateString,
+            processingTime = me.processingTime,
+            hashMessage = me.message?.lowercase(Locale.getDefault())?.trim().hashCode().toLong(),
+            attachmentName = me.attachmentName,
+            attachmentLink = me.attachmentLink
+        ).apply { disciplineResume = me.objective }
 
         fun fromMessage(me: dev.forcetower.breaker.model.Message, notified: Boolean): Message {
             val timestamp = OffsetDateTime.parse(me.timestamp).toInstant().toEpochMilli()

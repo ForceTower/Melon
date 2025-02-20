@@ -88,7 +88,7 @@ class HomeViewModel @Inject constructor(
     var updateType: Int? = null
 
     private val _snackbar = MutableLiveData<Event<String>>()
-    val snackbarMessage: LiveData<Event<String>>
+    val snackbar: LiveData<Event<String>>
         get() = _snackbar
 
     private val _passwordChangeProcess = MediatorLiveData<Event<Resource<Boolean>>>()

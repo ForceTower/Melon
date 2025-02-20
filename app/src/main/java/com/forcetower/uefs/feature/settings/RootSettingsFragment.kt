@@ -24,19 +24,14 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.getSystemService
 import androidx.fragment.app.viewModels
 import androidx.preference.Preference
 import androidx.preference.PreferenceFragmentCompat
-import androidx.preference.SwitchPreference
-import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
-import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 
@@ -58,7 +53,6 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
             findPreference<Preference>("settings_device_id")?.summary = it
         }
     }
-
 
     override fun onCreatePreferences(savedInstanceState: Bundle?, rootKey: String?) {
         setPreferencesFromResource(R.xml.settings_start, rootKey)

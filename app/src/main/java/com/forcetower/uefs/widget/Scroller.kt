@@ -410,7 +410,8 @@ class Scroller
      * @hide
      */
     fun isScrollingInDirection(xvel: Float, yvel: Float): Boolean {
-        return !isFinished && sign(xvel) == sign((mFinalX - startX).toFloat()) &&
+        return !isFinished &&
+            sign(xvel) == sign((mFinalX - startX).toFloat()) &&
             sign(yvel) == sign((mFinalY - startY).toFloat())
     }
 

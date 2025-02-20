@@ -25,7 +25,6 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.viewModels
 import androidx.databinding.DataBindingUtil
-import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.vm.UserSessionViewModel

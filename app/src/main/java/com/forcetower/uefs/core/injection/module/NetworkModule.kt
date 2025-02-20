@@ -45,6 +45,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import java.net.CookieHandler
 import java.net.CookieManager
+import java.time.OffsetDateTime
 import java.time.ZonedDateTime
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
@@ -57,7 +58,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import timber.log.Timber
-import java.time.OffsetDateTime
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -69,8 +69,7 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideCookieJar(context: Context): PersistentCookieJar =
-        PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
+    fun provideCookieJar(context: Context): PersistentCookieJar = PersistentCookieJar(SetCookieCache(), SharedPrefsCookiePersistor(context))
 
     @Provides
     @Singleton

@@ -22,7 +22,6 @@ package com.forcetower.uefs.core.storage.repository
 
 import android.content.Context
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.asLiveData
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
@@ -30,7 +29,6 @@ import androidx.paging.PagingData
 import com.forcetower.sagres.SagresNavigator
 import com.forcetower.sagres.database.model.SagresCredential
 import com.forcetower.sagres.operation.Status
-import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.EdgeAppMessage
 import com.forcetower.uefs.core.model.unes.Message
 import com.forcetower.uefs.core.model.unes.defineInDatabase
@@ -38,8 +36,6 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_ERROR_NO_VALUE
 import com.forcetower.uefs.core.storage.repository.CookieSessionRepository.Companion.INJECT_SUCCESS
 import com.forcetower.uefs.core.task.definers.MessagesProcessor
-import com.google.firebase.firestore.CollectionReference
-import com.google.firebase.firestore.Query
 import dev.forcetower.breaker.Orchestra
 import dev.forcetower.breaker.model.Authorization
 import dev.forcetower.breaker.result.Outcome

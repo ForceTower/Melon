@@ -29,7 +29,6 @@ import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.Event
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.AccessToken
-import com.forcetower.uefs.core.storage.repository.cloud.AuthRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAccountRepository
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.core.storage.resource.Resource

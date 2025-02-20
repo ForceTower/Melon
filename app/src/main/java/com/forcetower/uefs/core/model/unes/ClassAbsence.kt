@@ -57,9 +57,8 @@ data class ClassAbsence(
         return "[sequence: $sequence]"
     }
 
-    fun isSame(other: ClassAbsence) =
-        other.classId == classId &&
-            other.profileId == profileId &&
-            other.sequence == sequence &&
-            other.grouping == grouping
+    fun isSame(other: ClassAbsence) = other.classId == classId &&
+        other.profileId == profileId &&
+        other.sequence == sequence &&
+        other.grouping == grouping
 }

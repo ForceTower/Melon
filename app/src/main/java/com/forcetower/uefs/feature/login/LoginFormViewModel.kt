@@ -19,8 +19,8 @@ class LoginFormViewModel @Inject constructor(
     private val completeAssertion: CompleteAssertionUseCase,
     private val registerPasskey: RegisterPasskeyUseCase
 ) : ViewModel() {
-    private val _data = SingleLiveEvent<String>()
-    val challenge: LiveData<String> = _data
+    private val _challenge = SingleLiveEvent<String>()
+    val challenge: LiveData<String> = _challenge
 
     private val _register = SingleLiveEvent<RegisterPasskeyStart>()
     val register: LiveData<RegisterPasskeyStart> = _register
@@ -54,7 +54,7 @@ class LoginFormViewModel @Inject constructor(
                 val data = getLoginChallenge()
                 flowId = data.flowId
                 val challenge = data.challenge
-                _data.value = challenge
+                _challenge.value = challenge
             }.onFailure {
                 Timber.e(it, "Failed to request assertion")
             }

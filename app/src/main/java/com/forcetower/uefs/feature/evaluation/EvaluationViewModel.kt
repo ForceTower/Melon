@@ -82,8 +82,8 @@ class EvaluationViewModel @Inject constructor(
     val teacherIntSelect: LiveData<Event<TeacherInt>>
         get() = _teacherIntSelect
 
-    private val _entitySelected = MutableLiveData<Event<EdgeParadoxSearchableItem>>()
-    val entitySelect: LiveData<Event<EdgeParadoxSearchableItem>> = _entitySelected
+    private val _entitySelect = MutableLiveData<Event<EdgeParadoxSearchableItem>>()
+    val entitySelect: LiveData<Event<EdgeParadoxSearchableItem>> = _entitySelect
 
     fun getToken() = edgeAuthRepository.getAccessToken().asLiveData()
     fun getAccount() = edgeAccountRepository.getAccount().asLiveData()
@@ -152,7 +152,7 @@ class EvaluationViewModel @Inject constructor(
 
     override fun onEntitySelected(entity: EdgeParadoxSearchableItem?) {
         entity ?: return
-        _entitySelected.value = Event(entity)
+        _entitySelect.value = Event(entity)
     }
 
     fun downloadDatabase() {

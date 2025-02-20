@@ -9,8 +9,8 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import com.google.gson.JsonParser
 import dagger.Reusable
-import retrofit2.HttpException
 import javax.inject.Inject
+import retrofit2.HttpException
 import timber.log.Timber
 
 @Reusable

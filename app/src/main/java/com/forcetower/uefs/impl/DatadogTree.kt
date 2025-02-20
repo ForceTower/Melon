@@ -2,9 +2,9 @@ package com.forcetower.uefs.impl
 
 import android.util.Log
 import com.datadog.android.log.Logger
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Singleton
+import timber.log.Timber
 
 @Singleton
 class DatadogTree @Inject constructor(

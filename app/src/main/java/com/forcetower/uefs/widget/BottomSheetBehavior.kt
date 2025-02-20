@@ -602,13 +602,14 @@ class BottomSheetBehavior<V : View> : Behavior<V> {
         return isDraggable &&
             target == nestedScrollingChildRef?.get() &&
             (
-                state != STATE_EXPANDED || super.onNestedPreFling(
-                    coordinatorLayout,
-                    child,
-                    target,
-                    velocityX,
-                    velocityY
-                )
+                state != STATE_EXPANDED ||
+                    super.onNestedPreFling(
+                        coordinatorLayout,
+                        child,
+                        target,
+                        velocityX,
+                        velocityY
+                    )
                 )
     }
 

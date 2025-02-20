@@ -58,31 +58,27 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSharedPreferences(context: Context): SharedPreferences =
-        PreferenceManager.getDefaultSharedPreferences(context)
+    fun provideSharedPreferences(context: Context): SharedPreferences = PreferenceManager.getDefaultSharedPreferences(context)
 
     @Provides
     @Singleton
-    fun provideDatabase(context: Context): UDatabase =
-        Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
-            .addMigrations(M50TO51, M51TO52, M52TO53)
-            .enableMultiInstanceInvalidation()
-            .fallbackToDestructiveMigrationOnDowngrade()
-            .build()
+    fun provideDatabase(context: Context): UDatabase = Room.databaseBuilder(context.applicationContext, UDatabase::class.java, "unespiercer.db")
+        .addMigrations(M50TO51, M51TO52, M52TO53)
+        .enableMultiInstanceInvalidation()
+        .fallbackToDestructiveMigrationOnDowngrade()
+        .build()
 
     @Provides
     @Singleton
-    fun provideApiDatabase(context: Context): APIDatabase =
-        Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
-            .fallbackToDestructiveMigration()
-            .build()
+    fun provideApiDatabase(context: Context): APIDatabase = Room.databaseBuilder(context.applicationContext, APIDatabase::class.java, "unesglass.db")
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton
-    fun provideEventDatabase(context: Context): EventDatabase =
-        Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
-            .fallbackToDestructiveMigration()
-            .build()
+    fun provideEventDatabase(context: Context): EventDatabase = Room.databaseBuilder(context.applicationContext, EventDatabase::class.java, "unevents.db")
+        .fallbackToDestructiveMigration()
+        .build()
 
     @Provides
     @Singleton
@@ -108,8 +104,7 @@ object AppModule {
 
     @Provides
     @Named("flagSnowpiercerEnabled")
-    fun provideFlagSnowpiercer(preferences: SharedPreferences, remoteConfig: FirebaseRemoteConfig) =
-        preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
+    fun provideFlagSnowpiercer(preferences: SharedPreferences, remoteConfig: FirebaseRemoteConfig) = preferences.isStudentFromUEFS() && remoteConfig.getBoolean("feature_flag_use_snowpiercer")
 
     @Provides
     @Reusable

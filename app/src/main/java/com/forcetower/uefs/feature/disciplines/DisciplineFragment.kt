@@ -29,16 +29,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.FragmentManager
-import androidx.fragment.app.FragmentPagerAdapter
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Lifecycle
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
-import androidx.viewpager.widget.ViewPager
 import androidx.viewpager2.adapter.FragmentStateAdapter
 import androidx.viewpager2.widget.ViewPager2
 import com.forcetower.core.lifecycle.EventObserver
-import com.forcetower.sagres.database.model.SagresDemandOffer
 import com.forcetower.uefs.R
 import com.forcetower.uefs.UApplication
 import com.forcetower.uefs.core.model.unes.Semester
@@ -206,7 +203,6 @@ class DisciplineFragment : UFragment() {
             override fun areContentsTheSame(oldItem: Semester, newItem: Semester): Boolean {
                 return oldItem == newItem
             }
-
         }
         private val differ = AsyncListDiffer(this, diffCallback)
 

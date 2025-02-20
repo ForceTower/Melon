@@ -38,9 +38,7 @@ import com.canhub.cropper.CropImageOptions
 import com.canhub.cropper.CropImageView
 import com.forcetower.core.utils.ColorUtils
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.unes.Course
 import com.forcetower.uefs.core.storage.repository.SyncFrequencyRepository
-import com.forcetower.uefs.core.util.isStudentFromUEFS
 import com.forcetower.uefs.databinding.FragmentSetupIntroductionBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.shared.getPixelsFromDp
