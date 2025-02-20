@@ -5,4 +5,7 @@ ktlint_standard_property-naming = disabled
 ij_kotlin_allow_trailing_comma_on_call_site = false
 ij_kotlin_allow_trailing_comma = false
 indent_size = 4
+ktlint_standard_class-signature = disabled
+ktlint_standard_trailing-comma-on-call-site = disabled
+ktlint_standard_function-expression-body = disabled
 

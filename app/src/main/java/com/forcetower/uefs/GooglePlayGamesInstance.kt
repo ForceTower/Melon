@@ -40,16 +40,16 @@ class GooglePlayGamesInstance(
     private val preferences = PreferenceManager.getDefaultSharedPreferences(this)
     private var playerUnlockedSwitch: Boolean = false
 
-    private val _status = MutableLiveData<Event<GameConnectionStatus>>()
+    private val status = MutableLiveData<Event<GameConnectionStatus>>()
     val connectionStatus: LiveData<Event<GameConnectionStatus>>
-        get() = _status
+        get() = status
 
     /**
      * Deve ser chamado quando o usuário de conectar com a conta do google para que o objeto possa
      * criar todas as dependencias
      */
     fun onConnected() {
-        _status.postValue(Event(GameConnectionStatus.CONNECTED))
+        status.postValue(Event(GameConnectionStatus.CONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled_v2", true).apply()
         unlockAchievement(R.string.achievement_comeou_o_jogo)
         if (playerUnlockedSwitch) {
@@ -61,7 +61,7 @@ class GooglePlayGamesInstance(
      * Deve ser chamado quando o usuário optar por sair do jogo
      */
     fun onDisconnected() {
-        _status.postValue(Event(GameConnectionStatus.DISCONNECTED))
+        status.postValue(Event(GameConnectionStatus.DISCONNECTED))
         preferences.edit().putBoolean("google_play_games_enabled_v2", false).apply()
     }
 

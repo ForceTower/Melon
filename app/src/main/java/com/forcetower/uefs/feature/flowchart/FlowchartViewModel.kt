@@ -40,7 +40,7 @@ import javax.inject.Inject
 class FlowchartViewModel @Inject constructor(
     private val repository: FlowchartRepository
 ) : ViewModel(), FlowchartInteractor, SemesterInteractor, DisciplineInteractor {
-    private val _courseId = MutableLiveData<Long>()
+    private val courseId = MutableLiveData<Long>()
 
     private val _onSemesterSelect = MutableLiveData<Event<FlowchartSemesterUI>>()
     val onSemesterSelect: LiveData<Event<FlowchartSemesterUI>>
@@ -63,7 +63,7 @@ class FlowchartViewModel @Inject constructor(
         get() = _onFlowchartSelect
 
     init {
-        _flowchart.addSource(_courseId) { courseId ->
+        _flowchart.addSource(courseId) { courseId ->
             val source = repository.getFlowchart(courseId)
             _flowchart.addSource(source) { value ->
                 if (value.data != null) {
@@ -97,6 +97,6 @@ class FlowchartViewModel @Inject constructor(
     fun getRequirementsUI(disciplineId: Long) = repository.getUnifiedRequirementsUI(disciplineId)
 
     fun setCourse(courseId: Long) {
-        _courseId.setValueIfNew(courseId)
+        this.courseId.setValueIfNew(courseId)
     }
 }
