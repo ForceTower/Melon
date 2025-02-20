@@ -31,21 +31,21 @@ import javax.inject.Inject
 class EventDetailsViewModel @Inject constructor(
     private val repository: EventRepository
 ) : ViewModel(), EventDetailsActions {
-    private val _eventCreationSent = MutableLiveData<SingleEventAction>()
+    private val _onEventCreationSent = MutableLiveData<SingleEventAction>()
     val onEventCreationSent: LiveData<SingleEventAction>
-        get() = _eventCreationSent
+        get() = _onEventCreationSent
 
-    private val _eventMoveToPage = MutableLiveData<SingleEventAction>()
+    private val _onEventMoveToPage = MutableLiveData<SingleEventAction>()
     val onEventMoveToPage: LiveData<SingleEventAction>
-        get() = _eventMoveToPage
+        get() = _onEventMoveToPage
 
     fun loadModel(id: Long) = repository.getEvent(id)
 
     override fun onConfirmCreation(event: Event) {
-        _eventCreationSent.value = SingleEventAction(event)
+        _onEventCreationSent.value = SingleEventAction(event)
     }
 
     override fun onMoveToPage(event: Event) {
-        _eventMoveToPage.value = SingleEventAction(event)
+        _onEventMoveToPage.value = SingleEventAction(event)
     }
 }

@@ -17,6 +17,7 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <https://www.gnu.org/licenses/>.
  */
+@file:Suppress("ktlint:standard:package-name")
 
 package `in`.uncod.android.bypass.style
 
@@ -36,11 +37,7 @@ class TouchableUrlSpan(
 ) : URLSpan(url) {
     private var isPressed: Boolean = false
     private val normalTextColor: Int = textColor.defaultColor
-    private val pressedTextColor: Int
-
-    init {
-        this.pressedTextColor = textColor.getColorForState(STATE_PRESSED, normalTextColor)
-    }
+    private val pressedTextColor: Int = textColor.getColorForState(STATE_PRESSED, normalTextColor)
 
     fun setPressed(isPressed: Boolean) {
         this.isPressed = isPressed

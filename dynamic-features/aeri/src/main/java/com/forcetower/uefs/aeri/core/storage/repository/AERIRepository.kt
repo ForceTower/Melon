@@ -70,14 +70,13 @@ class AERIRepository @Inject constructor(
         }
     }
 
-    fun getAnnouncements(): Flow<PagingData<Announcement>> =
-        Pager(
-            config = PagingConfig(
-                pageSize = 20,
-                enablePlaceholders = false
-            ),
-            pagingSourceFactory = { database.news().getAnnouncementsPaged() }
-        ).flow
+    fun getAnnouncements(): Flow<PagingData<Announcement>> = Pager(
+        config = PagingConfig(
+            pageSize = 20,
+            enablePlaceholders = false
+        ),
+        pagingSourceFactory = { database.news().getAnnouncementsPaged() }
+    ).flow
 
     suspend fun update(): Int {
         refreshNews()

@@ -52,7 +52,6 @@ class DayAdapter(
 
     private object DiffCallback : DiffUtil.ItemCallback<DayIndicator>() {
         override fun areItemsTheSame(oldItem: DayIndicator, newItem: DayIndicator) = oldItem == newItem
-        override fun areContentsTheSame(oldItem: DayIndicator, newItem: DayIndicator) =
-            oldItem.areUiContentsTheSame(newItem)
+        override fun areContentsTheSame(oldItem: DayIndicator, newItem: DayIndicator) = oldItem.areUiContentsTheSame(newItem)
     }
 }
