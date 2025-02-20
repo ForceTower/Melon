@@ -163,10 +163,8 @@ android {
 }
 
 play {
-    val branch = "git rev-parse --abbrev-ref HEAD".runCommand(project.rootDir).trim()
-    var publishTrack = "internal"
-    if (branch == "main") publishTrack = "production"
-
+//    val branch = "git rev-parse --abbrev-ref HEAD".runCommand(project.rootDir).trim()
+    val publishTrack = "internal"
     serviceAccountCredentials.set(rootProject.file("unes_uefs_publisher.json"))
     track.set(publishTrack)
     defaultToAppBundles.set(true)
