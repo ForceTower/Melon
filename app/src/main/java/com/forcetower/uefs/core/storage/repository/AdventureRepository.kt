@@ -21,12 +21,14 @@
 package com.forcetower.uefs.core.storage.repository
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.SharedPreferences
 import android.location.Location
 import androidx.annotation.AnyThread
 import androidx.annotation.WorkerThread
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.core.extensions.nearlyEquals
 import com.forcetower.uefs.AppExecutors
 import com.forcetower.uefs.R
@@ -38,6 +40,7 @@ import com.forcetower.uefs.core.model.unes.Semester
 import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.UService
 import com.forcetower.uefs.feature.shared.extensions.generateCalendarFromHour
+import dagger.hilt.android.qualifiers.ApplicationContext
 import java.util.Calendar
 import java.util.Locale
 import java.util.concurrent.TimeUnit
@@ -49,7 +52,8 @@ class AdventureRepository @Inject constructor(
     private val executors: AppExecutors,
     private val preferences: SharedPreferences,
     private val locations: AchLocationsRepository,
-    private val service: UService
+    private val service: UService,
+    @ApplicationContext private val context: Context
 ) {
 
     @AnyThread
@@ -112,8 +116,7 @@ class AdventureRepository @Inject constructor(
         val schedule = database.classLocationDao().getCurrentScheduleDirect()
         unlockScheduleBased(schedule, data)
 
-        val darkTheme = preferences.getBoolean("ach_night_mode_enabled", false)
-        if (darkTheme) {
+        if (context.isDarkTheme) {
             data[R.string.achievement_escuridao] = -1
         }
 
