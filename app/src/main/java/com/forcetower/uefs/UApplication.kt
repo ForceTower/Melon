@@ -23,12 +23,10 @@ package com.forcetower.uefs
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
-import androidx.core.content.edit
 import androidx.hilt.work.HiltWorkerFactory
 import androidx.work.Configuration
 import com.datadog.android.Datadog
 import com.datadog.android.DatadogSite
-import com.datadog.android.log.Logger
 import com.datadog.android.log.Logs
 import com.datadog.android.log.LogsConfiguration
 import com.datadog.android.privacy.TrackingConsent
@@ -50,14 +48,15 @@ import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 import okhttp3.OkHttpClient
 import timber.log.Timber
-import java.util.UUID
-import kotlin.uuid.Uuid
 
 @HiltAndroidApp
 class UApplication : Application(), Configuration.Provider {
     @Inject lateinit var preferences: SharedPreferences
+
     @Inject lateinit var datadogTree: DatadogTree
+
     @Inject lateinit var workerFactory: HiltWorkerFactory
+
     @Inject lateinit var deviceInfoUseCase: GetDeviceInfoUseCase
 
     var disciplineToolbarDevClickCount = 0
@@ -79,7 +78,6 @@ class UApplication : Application(), Configuration.Provider {
         }.build()
         Datadog.initialize(this, configuration, TrackingConsent.GRANTED)
 
-
         val logsConfig = LogsConfiguration.Builder().build()
         Logs.enable(logsConfig)
     }
@@ -95,7 +93,6 @@ class UApplication : Application(), Configuration.Provider {
             Timber.plant(CrashlyticsTree())
             Timber.plant(datadogTree)
         }
-
 
         if (preferences.getBoolean("google_play_games_enabled_v2", false)) {
             PlayGamesSdk.initialize(this)

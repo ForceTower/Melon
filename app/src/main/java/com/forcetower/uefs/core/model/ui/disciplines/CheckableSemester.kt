@@ -26,11 +26,9 @@ data class CheckableSemester(
     val semester: Semester,
     val checked: Boolean
 ) {
-    override fun equals(other: Any?): Boolean =
-        this === other || (other is CheckableSemester && semester == other.semester)
+    override fun equals(other: Any?): Boolean = this === other || (other is CheckableSemester && semester == other.semester)
 
     override fun hashCode(): Int = semester.hashCode()
 
-    fun areUiContentsTheSame(other: CheckableSemester) =
-        checked == other.checked
+    fun areUiContentsTheSame(other: CheckableSemester) = checked == other.checked
 }

@@ -72,7 +72,8 @@ class InputListener : View.OnTouchListener {
                 y = event.y
                 if (mGame!!.isGameOnGoing) {
                     val dx = x - previousX
-                    if (abs(lastdx + dx) < abs(lastdx) + abs(dx) && abs(dx) > RESET_STARTING &&
+                    if (abs(lastdx + dx) < abs(lastdx) + abs(dx) &&
+                        abs(dx) > RESET_STARTING &&
                         abs(x - startingX) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x
@@ -84,7 +85,8 @@ class InputListener : View.OnTouchListener {
                         lastdx = dx
                     }
                     val dy = y - previousY
-                    if (abs(lastdy + dy) < abs(lastdy) + abs(dy) && abs(dy) > RESET_STARTING &&
+                    if (abs(lastdy + dy) < abs(lastdy) + abs(dy) &&
+                        abs(dy) > RESET_STARTING &&
                         abs(y - startingY) > SWIPE_MIN_DISTANCE
                     ) {
                         startingX = x

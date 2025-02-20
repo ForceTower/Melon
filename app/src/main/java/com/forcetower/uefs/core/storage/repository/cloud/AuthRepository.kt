@@ -55,7 +55,7 @@ class AuthRepository @Inject constructor(
         @USLoginMethod method: String = LOGIN_METHOD_UNES,
         forcedFetch: Boolean = true
     ): LiveData<Resource<AccessToken?>> {
-        return object : NetworkBoundResource<AccessToken?, AccessToken> (executors) {
+        return object : NetworkBoundResource<AccessToken?, AccessToken>(executors) {
             override fun loadFromDb() = database.accessTokenDao().getAccessToken()
             override fun shouldFetch(it: AccessToken?) = forcedFetch || it == null
             override fun createCall(): LiveData<ApiResponse<AccessToken>> {

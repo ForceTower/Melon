@@ -48,8 +48,8 @@ class DocumentsViewModel @Inject constructor(
     val openDocumentAction: LiveData<Event<File>>
         get() = _openDocumentAction
 
-    private val _onRequestPendingDownload = MutableLiveData<Event<SagresDocument>>()
-    val onRequestDownload: LiveData<Event<SagresDocument>> = _onRequestPendingDownload
+    private val _onRequestDownload = MutableLiveData<Event<SagresDocument>>()
+    val onRequestDownload: LiveData<Event<SagresDocument>> = _onRequestDownload
 
     private val _snackMessages = MediatorLiveData<Event<String>>()
     val snackMessages: LiveData<Event<String>>
@@ -63,7 +63,7 @@ class DocumentsViewModel @Inject constructor(
         val value = getDocumentValue(document)
 
         if (Constants.getParameter("REQUIRES_CAPTCHA") == "true" && gtoken == null) {
-            _onRequestPendingDownload.value = Event(document)
+            _onRequestDownload.value = Event(document)
         } else {
             val source = repository.downloadDocument(value, gtoken)
             _snackMessages.addSource(source) {

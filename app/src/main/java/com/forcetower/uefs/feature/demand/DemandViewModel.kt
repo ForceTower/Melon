@@ -46,7 +46,7 @@ class DemandViewModel @Inject constructor(
     private var loaded = false
 
     private val _snackbar = MutableLiveData<Event<String>>()
-    val snackbarMessage: LiveData<Event<String>>
+    val snackbar: LiveData<Event<String>>
         get() = _snackbar
 
     private val _loading = MutableLiveData<Boolean>()

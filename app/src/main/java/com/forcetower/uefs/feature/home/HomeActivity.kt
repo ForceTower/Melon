@@ -264,8 +264,8 @@ class HomeActivity : UGameActivity() {
     private fun setupUserData() {
         viewModel.access.observe(this) { onAccessUpdate(it) }
         viewModel.accessToken.observe(this) { onAccessTokenUpdate(it) }
-        viewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
-        dynamicDFMViewModel.snackbarMessage.observe(this, EventObserver { showSnack(it) })
+        viewModel.snackbar.observe(this, EventObserver { showSnack(it) })
+        dynamicDFMViewModel.snackbar.observe(this, EventObserver { showSnack(it) })
         if (preferences.isStudentFromUEFS()) {
             // Update and unlock achievements for participating in a class with the creator
             viewModel.performServerSync()

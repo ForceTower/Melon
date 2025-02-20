@@ -26,7 +26,6 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.model.service.UMessage
 import com.forcetower.uefs.core.model.unes.EdgeAppMessage
 import com.forcetower.uefs.databinding.ItemUnesMessageBinding
 import com.forcetower.uefs.feature.shared.inflate

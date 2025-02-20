@@ -25,7 +25,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.KeyEvent
 import androidx.activity.viewModels
-import androidx.core.app.ActivityCompat
 import androidx.core.view.WindowCompat
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.vm.UserSessionViewModel

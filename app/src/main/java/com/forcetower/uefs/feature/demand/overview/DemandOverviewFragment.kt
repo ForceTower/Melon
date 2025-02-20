@@ -91,7 +91,8 @@ class DemandOverviewFragment : UFragment() {
             val slideOffset = when (behavior.state) {
                 STATE_EXPANDED -> 1f
                 STATE_COLLAPSED -> 0f
-                else /*BottomSheetBehavior.STATE_HIDDEN*/ -> -1f
+                // BottomSheetBehavior.STATE_HIDDEN
+                else -> -1f
             }
             updateFilterHeadersAlpha(slideOffset)
         }

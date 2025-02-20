@@ -64,9 +64,9 @@ class DisciplineViewModel @Inject constructor(
     private val classGroupId = MutableLiveData<Long?>()
     private val classId = MutableLiveData<Long?>()
 
-    private val _classFull = MediatorLiveData<ClassFullWithGroup?>()
+    private val _clazz = MediatorLiveData<ClassFullWithGroup?>()
     val clazz: LiveData<ClassFullWithGroup?>
-        get() = _classFull
+        get() = _clazz
 
     private val _group = MediatorLiveData<ClassGroupWithTeachers?>()
     val group: LiveData<ClassGroupWithTeachers?>
@@ -121,7 +121,7 @@ class DisciplineViewModel @Inject constructor(
         get() = _classItemClick
 
     init {
-        _classFull.addSource(classId) {
+        _clazz.addSource(classId) {
             refreshClassStudent(it)
         }
         _absences.addSource(classId) {
@@ -209,8 +209,8 @@ class DisciplineViewModel @Inject constructor(
     private fun refreshClassStudent(classId: Long?) {
         if (classId != null) {
             val source = repository.getClassFull(classId)
-            _classFull.addSource(source) { value ->
-                _classFull.value = value
+            _clazz.addSource(source) { value ->
+                _clazz.value = value
             }
         }
     }

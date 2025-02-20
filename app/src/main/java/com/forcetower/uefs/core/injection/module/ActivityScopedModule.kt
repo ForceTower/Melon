@@ -11,6 +11,5 @@ import dagger.hilt.android.components.ActivityComponent
 @InstallIn(ActivityComponent::class)
 object ActivityScopedModule {
     @Provides
-    fun providePlayGames(activity: Activity): GooglePlayGamesInstance =
-        GooglePlayGamesInstance(activity)
+    fun providePlayGames(activity: Activity): GooglePlayGamesInstance = GooglePlayGamesInstance(activity)
 }

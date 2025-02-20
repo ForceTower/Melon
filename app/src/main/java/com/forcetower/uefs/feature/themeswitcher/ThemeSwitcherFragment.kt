@@ -28,7 +28,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.GONE
-import android.view.View.VISIBLE
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.RadioGroup
@@ -37,7 +36,6 @@ import androidx.annotation.StyleRes
 import androidx.annotation.StyleableRes
 import androidx.appcompat.widget.AppCompatRadioButton
 import androidx.core.widget.CompoundButtonCompat
-import com.forcetower.core.extensions.isDarkTheme
 import com.forcetower.uefs.R
 import com.forcetower.uefs.databinding.FragmentThemeSwitcherBinding
 import com.google.android.material.bottomsheet.BottomSheetBehavior
@@ -92,8 +90,8 @@ class ThemeSwitcherFragment : BottomSheetDialogFragment() {
         )
 
 //        if (!requireContext().isDarkTheme) {
-            binding.backgroundColors.visibility = GONE
-            binding.labelBackground.visibility = GONE
+        binding.backgroundColors.visibility = GONE
+        binding.labelBackground.visibility = GONE
 //        } else {
 //            binding.backgroundColors.visibility = VISIBLE
 //            binding.labelBackground.visibility = VISIBLE

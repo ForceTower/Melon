@@ -240,7 +240,10 @@ class InkPageIndicator @JvmOverloads constructor(
         requestLayout()
     }
 
-    private fun calculateDotPositions(width: Int/*, height: Int*/) {
+    private fun calculateDotPositions(
+        width: Int
+        /*, height: Int*/
+    ) {
         val left = paddingLeft
         val top = paddingTop
         val right = width - paddingRight
@@ -286,8 +289,7 @@ class InkPageIndicator @JvmOverloads constructor(
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         val desiredHeight = desiredHeight
-        val height: Int
-        height = when (MeasureSpec.getMode(heightMeasureSpec)) {
+        val height: Int = when (MeasureSpec.getMode(heightMeasureSpec)) {
             MeasureSpec.EXACTLY -> MeasureSpec.getSize(heightMeasureSpec)
             MeasureSpec.AT_MOST -> min(desiredHeight, MeasureSpec.getSize(heightMeasureSpec))
             MeasureSpec.UNSPECIFIED -> desiredHeight
@@ -295,15 +297,14 @@ class InkPageIndicator @JvmOverloads constructor(
         }
 
         val desiredWidth = desiredWidth
-        val width: Int
-        width = when (MeasureSpec.getMode(widthMeasureSpec)) {
+        val width: Int = when (MeasureSpec.getMode(widthMeasureSpec)) {
             MeasureSpec.EXACTLY -> MeasureSpec.getSize(widthMeasureSpec)
             MeasureSpec.AT_MOST -> min(desiredWidth, MeasureSpec.getSize(widthMeasureSpec))
             MeasureSpec.UNSPECIFIED -> desiredWidth
             else -> desiredWidth
         }
         setMeasuredDimension(width, height)
-        calculateDotPositions(width/*, height*/)
+        calculateDotPositions(width)
     }
 
     override fun onViewAttachedToWindow(view: View) {
@@ -382,7 +383,8 @@ class InkPageIndicator @JvmOverloads constructor(
             unselectedDotPath.addCircle(dotCenterX!![page], dotCenterY, dotRadius, Path.Direction.CW)
         }
 
-        if (joiningFraction > 0f && joiningFraction <= 0.5f &&
+        if (joiningFraction > 0f &&
+            joiningFraction <= 0.5f &&
             retreatingJoinX1 == INVALID_FRACTION
         ) {
             // case #2 – Joining neighbour, still separate
@@ -475,7 +477,8 @@ class InkPageIndicator @JvmOverloads constructor(
             unselectedDotPath.op(unselectedDotRightPath, Path.Op.UNION)
         }
 
-        if (joiningFraction > 0.5f && joiningFraction < 1f &&
+        if (joiningFraction > 0.5f &&
+            joiningFraction < 1f &&
             retreatingJoinX1 == INVALID_FRACTION
         ) {
             // case #3 – Joining neighbour, combined curved

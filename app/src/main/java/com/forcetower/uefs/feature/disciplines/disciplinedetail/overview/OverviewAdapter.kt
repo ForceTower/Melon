@@ -68,7 +68,7 @@ class OverviewAdapter(
             R.layout.item_discipline_teacher -> OverviewHolder.TeacherHolder(parent.inflate(viewType))
             R.layout.item_discipline_goals -> OverviewHolder.ResumeHolder(parent.inflate(viewType))
             R.layout.item_discipline_schedule_hide -> OverviewHolder.ScheduleHolder(parent.inflate(viewType))
-            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false)) /* Draft or Statistics */
+            else -> OverviewHolder.SimpleHolder(inflater.inflate(viewType, parent, false))
         }
     }
 
