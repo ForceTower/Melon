@@ -1,11 +1,6 @@
 name: Android General Build CI
 
 on:
-  push:
-    branches:
-      - '*'
-      - '!main'
-      - '!development'
   pull_request:
     branches:
       - '*'
