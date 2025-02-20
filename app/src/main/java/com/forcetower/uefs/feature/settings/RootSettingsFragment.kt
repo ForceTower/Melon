@@ -60,7 +60,7 @@ class RootSettingsFragment : PreferenceFragmentCompat() {
 
     private fun onPreferenceChange(preference: SharedPreferences, key: String?) {
         when (key) {
-            "stg_night_mode" -> changeDarkThemePrefs(preference.getString(key, "-1")?.toIntOrNull() ?: -1)
+            "stg_night_mode" -> changeDarkThemePrefs(preference.getString(key, "${AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM}")?.toIntOrNull() ?: AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
             else -> Timber.d("Else... $key")
         }
     }
