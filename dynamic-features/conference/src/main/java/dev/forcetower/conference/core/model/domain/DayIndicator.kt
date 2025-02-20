@@ -26,11 +26,9 @@ data class DayIndicator(
     val day: ConferenceDay,
     val checked: Boolean
 ) {
-    override fun equals(other: Any?): Boolean =
-        this === other || (other is DayIndicator && day == other.day)
+    override fun equals(other: Any?): Boolean = this === other || (other is DayIndicator && day == other.day)
 
     override fun hashCode(): Int = day.hashCode()
 
-    fun areUiContentsTheSame(other: DayIndicator) =
-        checked == other.checked
+    fun areUiContentsTheSame(other: DayIndicator) = checked == other.checked
 }

@@ -217,10 +217,11 @@ fun View.doOnApplyWindowInsets(f: (View, WindowInsetsCompat, InitialPadding) -> 
     val initialPadding = recordInitialPaddingForView(this)
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         val result = f(v, insets, initialPadding)
-        if (result)
+        if (result) {
             WindowInsetsCompat.CONSUMED
-        else
+        } else {
             insets
+        }
     }
     requestApplyInsetsWhenAttached()
 }
@@ -229,14 +230,18 @@ fun View.doOnApplyWindowMarginInsets(f: (View, WindowInsetsCompat, InitialPaddin
     val initialMargin = recordInitialMarginForView(this)
     ViewCompat.setOnApplyWindowInsetsListener(this) { v, insets ->
         val result = f(v, insets, initialMargin)
-        if (result)
+        if (result) {
             WindowInsetsCompat.CONSUMED
-        else
+        } else {
             insets
+        }
     }
     requestApplyInsetsWhenAttached()
 }
 
 private fun recordInitialMarginForView(view: View) = InitialPadding(
-    view.marginLeft, view.marginTop, view.marginRight, view.marginBottom
+    view.marginLeft,
+    view.marginTop,
+    view.marginRight,
+    view.marginBottom
 )
