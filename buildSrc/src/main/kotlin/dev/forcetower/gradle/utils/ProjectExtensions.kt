@@ -2,7 +2,7 @@ package dev.forcetower.gradle.utils
 
 import org.gradle.api.Project
 
-fun Project.buildVersion(): Pair<Int, String> {
+fun Project.buildVersion(versionName: String? = null): Pair<Int, String> {
     try {
 //        val tagCount = Integer.parseInt("git tag | wc -l".runCommand(project.rootDir).trim())
         val commitCount = Integer.parseInt("git rev-list --count HEAD".runCommand(project.rootDir).trim())
@@ -11,7 +11,7 @@ fun Project.buildVersion(): Pair<Int, String> {
         val lastTag = "git describe --tags $lastTagCommit".runCommand(project.rootDir).trim()
         val lastCommit = "git rev-parse HEAD".runCommand(project.rootDir).trim().substring(0, 7)
 
-        val (majorStr, minorStr, patchStr) = lastTag.lowercase().replace('-', '.').split('.')
+        val (majorStr, minorStr, patchStr) = (versionName ?: lastTag).lowercase().replace('-', '.').split('.')
 
         var postfix = "main"
         if (branch == "development") {

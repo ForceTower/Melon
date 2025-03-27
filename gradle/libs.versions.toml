@@ -1,6 +1,6 @@
 [versions]
 aboutlibraries = "11.2.2"
-agp = "8.8.1"
+agp = "8.9.1"
 android-desugar = "2.1.4"
 android-image-cropper = "4.6.0"
 androidx-lifecycle = "2.8.7"

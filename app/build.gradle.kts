@@ -45,7 +45,7 @@ android {
         applicationId = "com.forcetower.uefs"
         minSdk = 21
         targetSdk = 35
-        val (code, name) = buildVersion()
+        val (code, name) = buildVersion("10.15s.1")
         versionCode = code
         versionName = name
         multiDexEnabled = true
