@@ -32,6 +32,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.database.aggregation.ClassLocationWithData
 import com.forcetower.uefs.core.work.affinity.AnswerAffinityWorker
 import dagger.Reusable
+import kotlinx.coroutines.flow.filterNotNull
 import java.util.Calendar
 import javax.inject.Inject
 
@@ -45,7 +46,7 @@ class DashboardRepository @Inject constructor(
         return database.accountDao().getAccountNullable()
     }
     fun getEdgeServiceAccount(): LiveData<EdgeServiceAccount> {
-        return database.edgeServiceAccount.me().asLiveData()
+        return database.edgeServiceAccount.me().filterNotNull().asLiveData()
     }
 
     fun getCurrentClass(): LiveData<ClassLocationWithData?> {
