@@ -1,6 +1,9 @@
 import com.android.build.api.variant.AndroidComponentsExtension
+import com.android.build.api.variant.ApplicationAndroidComponentsExtension
+import com.android.build.api.variant.LibraryAndroidComponentsExtension
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
+import kotlin.jvm.java
 
 /*
  * This file is part of the UNES Open Source Project.
@@ -80,14 +83,14 @@ subprojects {
     }
 
     pluginManager.withPlugin("com.android.application") {
-        extensions.getByType(AndroidComponentsExtension::class.java).finalizeDsl { ext ->
+        extensions.getByType(ApplicationAndroidComponentsExtension::class.java).finalizeDsl { ext ->
             ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
         }
     }
 
     pluginManager.withPlugin("com.android.library") {
-        extensions.getByType(AndroidComponentsExtension::class.java).finalizeDsl { ext ->
+        extensions.getByType(LibraryAndroidComponentsExtension::class.java).finalizeDsl { ext ->
             ext.compileOptions.sourceCompatibility = JavaVersion.VERSION_17
             ext.compileOptions.targetCompatibility = JavaVersion.VERSION_17
         }

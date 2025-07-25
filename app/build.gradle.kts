@@ -39,12 +39,12 @@ plugins {
 }
 
 android {
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.forcetower.uefs"
-        minSdk = 21
-        targetSdk = 35
+        minSdk = 23
+        targetSdk = 36
         val (code, name) = buildVersion()
         versionCode = code
         versionName = name
@@ -211,13 +211,13 @@ dependencies {
     ksp(libs.androidx.hilt.compiler)
     ksp(libs.hilt.compiler)
     implementation(platform(libs.firebase.bom))
-    implementation(libs.firebase.analytics.ktx)
-    implementation(libs.firebase.messaging.ktx)
-    implementation(libs.firebase.firestore.ktx)
-    implementation(libs.firebase.storage.ktx)
-    implementation(libs.firebase.config.ktx)
-    implementation(libs.firebase.functions.ktx)
-    implementation(libs.firebase.crashlytics.ktx)
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.messaging)
+    implementation(libs.firebase.firestore)
+    implementation(libs.firebase.storage)
+    implementation(libs.firebase.config)
+    implementation(libs.firebase.functions)
+    implementation(libs.firebase.crashlytics)
     implementation(libs.firebase.ui.storage)
     // Remove direct guava dependency when https://github.com/firebase/firebase-android-sdk/issues/6232 resolves. or don't.
     implementation(libs.guava)
@@ -263,7 +263,7 @@ dependencies {
     androidTestImplementation(libs.androidx.espresso.core)
 }
 
-val buildNotesTask = tasks.create("buildNotes") {
+val buildNotesTask = tasks.register("buildNotes") {
     doFirst {
         try {
             val branch = "git rev-parse --abbrev-ref HEAD".runCommand(project.rootDir).trim()
@@ -285,7 +285,7 @@ val buildNotesTask = tasks.create("buildNotes") {
 
 afterEvaluate {
     val publish = tasks.findByName("publishReleaseBundle")
-    publish?.dependsOn(buildNotesTask)
+    publish?.dependsOn(buildNotesTask.get())
 }
 
 val googleServices = file("google-services.json")

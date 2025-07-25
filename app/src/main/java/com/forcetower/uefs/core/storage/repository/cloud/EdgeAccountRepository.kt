@@ -9,6 +9,7 @@ import com.forcetower.uefs.core.storage.database.UDatabase
 import com.forcetower.uefs.core.storage.network.EdgeService
 import com.google.gson.JsonParser
 import dagger.Reusable
+import kotlinx.coroutines.flow.filterNotNull
 import javax.inject.Inject
 import retrofit2.HttpException
 import timber.log.Timber
@@ -18,7 +19,7 @@ class EdgeAccountRepository @Inject constructor(
     private val service: EdgeService,
     private val database: UDatabase
 ) {
-    fun getAccount() = database.edgeServiceAccount.me()
+    fun getAccount() = database.edgeServiceAccount.me().filterNotNull()
 
     suspend fun fetchAccountIfNeeded() {
         database.edgeAccessToken.require() ?: return

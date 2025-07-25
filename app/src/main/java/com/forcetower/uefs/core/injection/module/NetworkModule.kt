@@ -88,7 +88,10 @@ object NetworkModule {
             .connectionSpecs(listOf(ConnectionSpec.COMPATIBLE_TLS, ConnectionSpec.CLEARTEXT)) // Needed for old sagres, omegalul
             .followRedirects(true)
             .cookieJar(cookieJar)
-            .callTimeout(2, TimeUnit.MINUTES)
+            .readTimeout(1, TimeUnit.MINUTES)
+            .writeTimeout(1, TimeUnit.MINUTES)
+            .connectTimeout(1, TimeUnit.MINUTES)
+            .callTimeout(1, TimeUnit.MINUTES)
             .addInterceptor(interceptor)
             .apply {
                 if (BuildConfig.DEBUG) {

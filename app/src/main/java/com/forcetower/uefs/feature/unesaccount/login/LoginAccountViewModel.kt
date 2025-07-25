@@ -49,6 +49,7 @@ class LoginAccountViewModel @Inject constructor(
                 Timber.e(it, "Failed to start assertion")
                 sendEvent { LoginAccountEvent.LoginFailed }
             }
+            setState { it.copy(loading = false) }
         }
     }
 

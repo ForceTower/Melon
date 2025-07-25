@@ -3,6 +3,7 @@ package com.forcetower.uefs.domain.usecase.auth
 import com.forcetower.uefs.core.model.edge.auth.AssertionData
 import com.forcetower.uefs.core.model.edge.auth.PasskeyAssert
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
+import com.forcetower.uefs.domain.model.auth.AssertionDataUI
 import com.google.gson.Gson
 import dagger.Reusable
 import javax.inject.Inject
@@ -12,9 +13,11 @@ class StartAssertionUseCase @Inject constructor(
     private val auth: EdgeAuthRepository,
     private val gson: Gson
 ) {
-    suspend operator fun invoke(): AssertionData {
+    suspend operator fun invoke(): AssertionDataUI {
         val data = auth.startAssertion()
-        val parsed = gson.fromJson(data.challenge, PasskeyAssert::class.java)
-        return data.copy(challenge = gson.toJson(parsed.publicKey))
+        return AssertionDataUI(
+            flowId = data.flowId,
+            challenge = gson.toJson(data.challenge.publicKey)
+        )
     }
 }

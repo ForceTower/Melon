@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 abstract class EdgeServiceAccountDao : BaseDao<EdgeServiceAccount>() {
     @Query("SELECT * FROM EdgeServiceAccount WHERE me = 1 LIMIT 1")
-    abstract fun me(): Flow<EdgeServiceAccount>
+    abstract fun me(): Flow<EdgeServiceAccount?>
 
     @Query("SELECT * FROM EdgeServiceAccount WHERE me = 1 LIMIT 1")
     abstract suspend fun requireMe(): EdgeServiceAccount?
