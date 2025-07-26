@@ -127,6 +127,7 @@ class Scroller
      *
      * @return The final X offset as an absolute distance from the origin.
      */
+
     /**
      * Sets the final position (X) for this scroller.
      *
@@ -147,6 +148,7 @@ class Scroller
      *
      * @return The final Y offset as an absolute distance from the origin.
      */
+
     /**
      * Sets the final position (Y) for this scroller.
      *

@@ -35,7 +35,6 @@ import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.forcetower.core.extensions.resolveColorAttr
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
-import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint

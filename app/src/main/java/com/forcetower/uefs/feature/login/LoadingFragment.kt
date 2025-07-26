@@ -44,7 +44,6 @@ import androidx.navigation.fragment.findNavController
 import com.forcetower.core.extensions.resolveColorAttr
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
-import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentLoadingBinding
 import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.shared.UFragment
