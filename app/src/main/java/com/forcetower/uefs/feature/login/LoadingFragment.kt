@@ -29,6 +29,7 @@ import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
@@ -40,6 +41,7 @@ import androidx.core.os.postDelayed
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.navigation.fragment.findNavController
+import com.forcetower.core.extensions.resolveColorAttr
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.unes.Access
 import com.forcetower.uefs.core.util.HtmlUtils
@@ -51,7 +53,12 @@ import com.forcetower.uefs.feature.shared.fadeOut
 import com.forcetower.uefs.service.NotificationCreator
 import com.google.firebase.analytics.FirebaseAnalytics
 import dagger.hilt.android.AndroidEntryPoint
-import `in`.uncod.android.bypass.Bypass
+import io.noties.markwon.AbstractMarkwonPlugin
+import io.noties.markwon.Markwon
+import io.noties.markwon.core.MarkwonTheme
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
+import io.noties.markwon.movement.MovementMethodPlugin
 import javax.inject.Inject
 import timber.log.Timber
 
@@ -61,7 +68,7 @@ class LoadingFragment : UFragment() {
     lateinit var analytics: FirebaseAnalytics
     private val viewModel: LoginViewModel by viewModels()
     private lateinit var binding: FragmentLoadingBinding
-    private lateinit var markdown: Bypass
+    private lateinit var markdown: Markwon
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         return try {
@@ -70,7 +77,16 @@ class LoadingFragment : UFragment() {
                 binding.btnFirstSteps.setOnClickListener {
                     onMoveToNextScreen()
                 }
-                markdown = Bypass(requireContext(), Bypass.Options())
+                markdown = Markwon.builder(requireContext())
+                    .usePlugin(object : AbstractMarkwonPlugin() {
+                        override fun configureTheme(builder: MarkwonTheme.Builder) {
+                            builder.linkColor(requireContext().resolveColorAttr(com.google.android.material.R.attr.colorPrimary))
+                        }
+                    })
+                    .usePlugin(ImagesPlugin.create())
+                    .usePlugin(MovementMethodPlugin.create(LinkMovementMethod.getInstance()))
+                    .usePlugin(LinkifyPlugin.create())
+                    .build()
                 setupTermsText()
             }.root
         } catch (error: Exception) {
@@ -141,10 +157,10 @@ class LoadingFragment : UFragment() {
     private fun setupTermsText() {
         val sequence1 = SpannableString(resources.getString(R.string.label_terms_and_conditions_p1))
         sequence1.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, sequence1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val sequence2 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.label_terms_and_conditions_p2), binding.textTermsAndPrivacy, null))
+        val sequence2 = SpannableString(resources.getString(R.string.label_terms_and_conditions_p2))
         sequence2.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, sequence2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
         val sequence = TextUtils.concat(sequence1, "\n", sequence2)
-        HtmlUtils.setTextWithNiceLinks(binding.textTermsAndPrivacy, sequence)
+        markdown.setMarkdown(binding.textTermsAndPrivacy, sequence.toString())
     }
 }

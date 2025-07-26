@@ -25,26 +25,44 @@ import android.text.Layout
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.TextUtils
+import android.text.method.LinkMovementMethod
 import android.text.style.AlignmentSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
+import com.forcetower.core.extensions.resolveColorAttr
 import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.R
 import com.forcetower.uefs.core.util.HtmlUtils
 import com.forcetower.uefs.databinding.FragmentAboutMeBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import dagger.hilt.android.AndroidEntryPoint
-import `in`.uncod.android.bypass.Bypass
+import io.noties.markwon.AbstractMarkwonPlugin
+import io.noties.markwon.Markwon
+import io.noties.markwon.core.MarkwonTheme
+import io.noties.markwon.image.ImagesPlugin
+import io.noties.markwon.linkify.LinkifyPlugin
+import io.noties.markwon.movement.MovementMethodPlugin
 
 @AndroidEntryPoint
 class AboutMeFragment : UFragment() {
+    private lateinit var markwon: Markwon
     private lateinit var binding: FragmentAboutMeBinding
-    private val markdown: Bypass by lazy { Bypass(requireContext(), Bypass.Options()) }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
+        markwon = Markwon.builder(requireContext())
+            .usePlugin(object : AbstractMarkwonPlugin() {
+                override fun configureTheme(builder: MarkwonTheme.Builder) {
+                    builder.linkColor(requireContext().resolveColorAttr(com.google.android.material.R.attr.colorPrimary))
+                }
+            })
+            .usePlugin(ImagesPlugin.create())
+            .usePlugin(MovementMethodPlugin.create(LinkMovementMethod.getInstance()))
+            .usePlugin(LinkifyPlugin.create())
+            .build()
+
         FragmentAboutMeBinding.inflate(inflater, container, false).also {
             binding = it
         }
@@ -54,20 +72,20 @@ class AboutMeFragment : UFragment() {
     }
 
     private fun setupInterface() {
-        val about0 = SpannableString(markdown.markdownToSpannable(getString(R.string.about_unes_0), binding.textAboutDescription, null))
+        val about0 = SpannableString(getString(R.string.about_unes_0))
         about0.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about0.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         val about1 = SpannableString(getString(R.string.about_unes_1))
         about1.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about1.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val about2 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_2), binding.textAboutContinuation, null))
+        val about2 = SpannableString(resources.getString(R.string.about_unes_2))
         about2.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about2.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val about3 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_3, BuildConfig.VERSION_NAME), binding.textAboutContinuation, null))
+        val about3 = SpannableString(resources.getString(R.string.about_unes_3, BuildConfig.VERSION_NAME))
         about3.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about3.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-        val about4 = SpannableString(markdown.markdownToSpannable(resources.getString(R.string.about_unes_4, BuildConfig.VERSION_CODE), binding.textAboutContinuation, null))
+        val about4 = SpannableString(resources.getString(R.string.about_unes_4, BuildConfig.VERSION_CODE))
         about4.setSpan(AlignmentSpan.Standard(Layout.Alignment.ALIGN_CENTER), 0, about4.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
 
-        HtmlUtils.setTextWithNiceLinks(binding.textAboutDescription, about0)
+        markwon.setMarkdown(binding.textAboutDescription, getString(R.string.about_unes_0))
         val sequence = TextUtils.concat(about1, "\n", about2, "\n\n", about3, "\n", about4)
-        HtmlUtils.setTextWithNiceLinks(binding.textAboutContinuation, sequence)
+        markwon.setMarkdown(binding.textAboutContinuation, sequence.toString())
 
         Glide.with(this)
             .load("https://avatars.githubusercontent.com/ForceTower")

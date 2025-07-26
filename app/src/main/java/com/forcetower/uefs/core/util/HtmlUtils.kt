@@ -19,13 +19,14 @@
  */
 
 package com.forcetower.uefs.core.util
+import android.text.method.LinkMovementMethod
 import android.widget.TextView
 
 object HtmlUtils {
     @JvmStatic
     fun setTextWithNiceLinks(textView: TextView, input: CharSequence) {
         textView.text = input
-        textView.movementMethod = LinkTouchMovementMethod.getInstance()
+        textView.movementMethod = LinkMovementMethod.getInstance()
         textView.isFocusable = false
         textView.isClickable = false
         textView.isLongClickable = false

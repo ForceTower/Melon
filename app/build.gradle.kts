@@ -176,7 +176,6 @@ room {
 
 dependencies {
     coreLibraryDesugaring(libs.android.tools.desugar)
-    implementation(project(":bypass"))
     implementation(project(":core"))
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
