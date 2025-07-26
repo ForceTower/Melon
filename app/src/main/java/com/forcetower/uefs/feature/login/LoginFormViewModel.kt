@@ -4,7 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.forcetower.core.lifecycle.SingleLiveEvent
-import com.forcetower.uefs.core.model.edge.auth.PasskeyAssert
 import com.forcetower.uefs.core.model.edge.auth.RegisterPasskeyStart
 import com.forcetower.uefs.domain.usecase.auth.CompleteAssertionUseCase
 import com.forcetower.uefs.domain.usecase.auth.RegisterPasskeyUseCase

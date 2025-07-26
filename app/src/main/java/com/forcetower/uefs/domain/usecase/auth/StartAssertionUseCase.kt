@@ -1,7 +1,5 @@
 package com.forcetower.uefs.domain.usecase.auth
 
-import com.forcetower.uefs.core.model.edge.auth.AssertionData
-import com.forcetower.uefs.core.model.edge.auth.PasskeyAssert
 import com.forcetower.uefs.core.storage.repository.cloud.EdgeAuthRepository
 import com.forcetower.uefs.domain.model.auth.AssertionDataUI
 import com.google.gson.Gson
