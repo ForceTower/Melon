@@ -74,8 +74,8 @@
     <string name="step_fetching_grades">Obteniendo notas</string>
     <string name="label_terms_and_conditions_p1">Si continúas, estás de acuerdo con el</string>
     <string name="label_terms_and_conditions_p2">[Términos de servicio](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md) y la [Política de privacidad](https://github.com/ForceTower/Melon/blob/development/privacy_policy.md)</string>
-    <string name="about_unes_0">UNES es una herramienta para ayudar a los estudiantes durante la vida académica. UNES buscará los datos disponibles en el [Portal Sagres](http://academico2.uefs.br/Portal/Acesso.aspx) periódicamente y te enviará notificaciones cuando algún cambio de datos sea detectada. Esta no es una aplicación oficial ni ha sido avalada por Tecnotrends.</string>
-    <string name="about_unes_1">UNES fue desarrollado por João Paulo Sena (Seará)</string>
+    <string name="about_unes_0">UNES es una herramienta para ayudar a los estudiantes durante la vida académica. UNES buscará los datos disponibles en el [Portal Sagres](https://academico.uefs.br/PortalSagres/Acesso.aspx) periódicamente y te enviará notificaciones cuando algún cambio de datos sea detectada. Esta no es una aplicación oficial ni ha sido avalada por Tecnotrends.</string>
+    <string name="about_unes_1">UNES fue desarrollado por João Sena</string>
     <string name="about_unes_3">Versión %1$s</string>
     <string name="about_unes_4">Código %1$d</string>
     <string name="acc_contributor_image">Imagen de contribuidor</string>

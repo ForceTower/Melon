@@ -25,6 +25,7 @@ import android.content.Context
 import android.content.ContextWrapper
 import android.content.res.Configuration
 import android.view.View
+import androidx.annotation.AttrRes
 import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.WindowInsetsControllerCompat
@@ -51,4 +52,11 @@ fun View.closeKeyboard() {
 
 fun View.openKeyboard() {
     windowInsetsControllerCompat?.show(WindowInsetsCompat.Type.ime())
+}
+
+fun Context.resolveColorAttr(@AttrRes attribute: Int): Int {
+    val typedValue = obtainStyledAttributes(intArrayOf(attribute))
+    val color = typedValue.getColor(0, 0)
+    typedValue.recycle()
+    return color
 }

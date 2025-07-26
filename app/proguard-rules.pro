@@ -24,15 +24,6 @@
 
 -keepnames class * implements com.forcetower.core.interfaces.DynamicDataSourceFactoryProvider
 
-## Bypass
--keep class in.uncod.android.bypass.Document { <init>(...); }
--keep class in.uncod.android.bypass.Element {
-    <init>(...);
-    void setChildren(...);
-    void setParent(...);
-    void addAttribute(...);
-}
-
 ## About Libraries
 -keepclasseswithmembers class **.R$* {
     public static final int define_*;
