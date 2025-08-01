@@ -49,11 +49,6 @@ class ConferenceActivity : UActivity() {
 
         binding = DataBindingUtil.setContentView(this, R.layout.activity_conference)
         WindowCompat.setDecorFitsSystemWindows(window, false)
-
-        showSnack("ABC")
-        showSnack("ABC")
-        showSnack("ABC")
-        showSnack("ABC")
     }
 
     override fun showSnack(string: String, duration: Int) {

@@ -30,7 +30,9 @@ import com.forcetower.uefs.core.model.unes.AccessToken
 import com.forcetower.uefs.core.storage.eventdatabase.EventDatabase
 import com.forcetower.uefs.core.storage.eventdatabase.accessors.SessionWithData
 import com.forcetower.uefs.core.storage.imgur.ImageUploader
+import com.forcetower.uefs.core.storage.network.BaseEdgeService
 import com.forcetower.uefs.core.storage.network.UService
+import com.forcetower.uefs.core.storage.network.adapter.ApiResponse
 import com.forcetower.uefs.core.storage.network.adapter.asLiveData
 import com.forcetower.uefs.core.storage.resource.NetworkBoundResource
 import com.forcetower.uefs.service.NotificationCreator
@@ -44,6 +46,7 @@ class SIECOMPRepository @Inject constructor(
     private val database: EventDatabase,
     private val executors: AppExecutors,
     private val service: UService,
+    private val baseEdge: BaseEdgeService,
     private val context: Context,
     private val client: OkHttpClient
 ) {
@@ -52,7 +55,9 @@ class SIECOMPRepository @Inject constructor(
     fun getAllSessions() = object : NetworkBoundResource<List<SessionWithData>, List<ServerSession>>(executors) {
         override fun loadFromDb() = database.eventDao().getAllSessions()
         override fun shouldFetch(it: List<SessionWithData>?) = true
-        override fun createCall() = service.siecompSessions().asLiveData()
+        override fun createCall(): LiveData<ApiResponse<List<ServerSession>>> {
+            return baseEdge.siecompSessions().asLiveData()
+        }
         override fun saveCallResult(value: List<ServerSession>) {
             database.eventDao().insertServerSessions(value)
         }

@@ -20,16 +20,9 @@
 
 package com.forcetower.uefs.core.model.siecomp
 
-import android.annotation.SuppressLint
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-
-private const val formatPattern = "d 'de' MMMM"
-
-@SuppressLint("ConstantLocale")
-val FORMATTER_MONTH_DAY: DateTimeFormatter =
-    DateTimeFormatter.ofPattern(formatPattern, Locale.getDefault())
 
 data class EventDay(
     val order: Int,
@@ -38,5 +31,5 @@ data class EventDay(
 ) {
     // TODO I need to come back here!
     // fun contains(session: Session) = start <= session.startTime && end >= session.endTime
-    fun formatMonthDay(): String = FORMATTER_MONTH_DAY.format(start)
+    fun formatMonthDay(): String = DateTimeFormatter.ofPattern("d MMM", Locale.getDefault()).format(start)
 }

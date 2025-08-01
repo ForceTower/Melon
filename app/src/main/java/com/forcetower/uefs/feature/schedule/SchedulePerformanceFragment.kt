@@ -20,6 +20,7 @@
 
 package com.forcetower.uefs.feature.schedule
 
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -34,6 +35,7 @@ import com.forcetower.uefs.databinding.FragmentSchedulePerformanceBinding
 import com.forcetower.uefs.feature.captcha.CaptchaResolverFragment
 import com.forcetower.uefs.feature.profile.ProfileViewModel
 import com.forcetower.uefs.feature.shared.UFragment
+import com.forcetower.uefs.feature.siecomp.SIECOMPActivity
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
@@ -86,6 +88,13 @@ class SchedulePerformanceFragment : UFragment() {
             viewLifecycleOwner,
             EventObserver {
                 onRefresh()
+            }
+        )
+
+        viewModel.onConferenceSelected.observe(
+            viewLifecycleOwner,
+            EventObserver {
+                requireActivity().startActivity(Intent(requireContext(), SIECOMPActivity::class.java))
             }
         )
 

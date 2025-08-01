@@ -26,6 +26,7 @@ object Constants {
     const val EDGE_UNES_SERVICE_BASE_URL = "edge-unes.forcetower.dev"
     const val UNES_SERVICE_URL = "https://$UNES_SERVICE_BASE_URL/api/"
     const val EDGE_UNES_SERVICE_URL = "https://$EDGE_UNES_SERVICE_BASE_URL/api/"
+    const val BASE_EDGE_UNES_SERVICE_URL = "https://$EDGE_UNES_SERVICE_BASE_URL/"
 
     const val DEVELOPER_EMAIL = "joaopaulo761@gmail.com"
     const val REMOTE_CONFIG_REFRESH = 900L

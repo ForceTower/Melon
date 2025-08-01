@@ -34,7 +34,7 @@ class SIECOMPActivity : UActivity() {
 
         if (savedInstanceState == null) {
             val preferences = PreferenceManager.getDefaultSharedPreferences(this)
-            if (TimeUtils.eventHasStarted() && preferences.getBoolean("siecomp_xxii_onboarding_completed_2", false)) {
+            if (TimeUtils.eventHasStarted() && preferences.getBoolean("siecomp_xxxiii_onboarding_completed_2", false)) {
                 startActivity(Intent(this, EventScheduleActivity::class.java))
             } else {
                 startActivity(Intent(this, OnboardingActivity::class.java))
