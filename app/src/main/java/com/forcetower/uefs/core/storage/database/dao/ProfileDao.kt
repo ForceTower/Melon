@@ -119,7 +119,10 @@ abstract class ProfileDao {
     abstract fun selectProfileByUUID(profileUUID: String): LiveData<Profile?>
 
     @Query("UPDATE Profile SET course = :courseId WHERE me = 1")
-    abstract fun updateCourse(courseId: Long)
+    abstract fun updateCourseDirect(courseId: Long)
+
+    @Query("UPDATE Profile SET course = :courseId WHERE me = 1")
+    abstract suspend fun updateCourse(courseId: Long)
 
     @Query("UPDATE Profile SET calc_score = :score WHERE me = 1")
     abstract fun updateCalculatedScore(score: Double)

@@ -4,6 +4,7 @@ import com.forcetower.uefs.core.model.edge.ServiceResponseWrapper
 import com.forcetower.uefs.core.model.edge.account.ChangePictureDTO
 import com.forcetower.uefs.core.model.edge.account.SendMessagingTokenDTO
 import com.forcetower.uefs.core.model.edge.account.ServiceAccountDTO
+import com.forcetower.uefs.core.model.edge.account.ServiceStudentDTO
 import com.forcetower.uefs.core.model.edge.auth.AssertionData
 import com.forcetower.uefs.core.model.edge.auth.CompleteAssertionData
 import com.forcetower.uefs.core.model.edge.auth.EdgeAccessTokenDTO
@@ -39,6 +40,9 @@ interface EdgeService {
 
     @GET("account/me")
     suspend fun me(): ServiceResponseWrapper<ServiceAccountDTO>
+
+    @GET("student/me")
+    suspend fun studentMe(): ServiceResponseWrapper<ServiceStudentDTO>
 
     @POST("account/session/start")
     suspend fun sessionStart(@Body data: EdgeLoginBody)

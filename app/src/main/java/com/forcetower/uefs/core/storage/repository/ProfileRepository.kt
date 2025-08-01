@@ -103,7 +103,7 @@ class ProfileRepository @Inject constructor(
 
     fun updateUserCourse(course: Course) {
         executors.diskIO().execute {
-            database.profileDao().updateCourse(course.id)
+            database.profileDao().updateCourseDirect(course.id)
             val profile = database.profileDao().selectMeDirect() ?: return@execute
             try {
                 service.setupProfile(profile).execute()

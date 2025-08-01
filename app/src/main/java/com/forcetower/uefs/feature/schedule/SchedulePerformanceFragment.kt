@@ -26,6 +26,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.activityViewModels
 import com.forcetower.core.lifecycle.EventObserver
 import com.forcetower.sagres.Constants
@@ -98,17 +99,11 @@ class SchedulePerformanceFragment : UFragment() {
             }
         )
 
-        if (TimeUtils.eventHasEnded() || remoteConfig.getBoolean("siecomp_xxxiii_disabled")) {
-            binding.btnConferenceSchedule.visibility = View.GONE
-        } else {
-            profileViewModel.commonProfile.observe(
-                viewLifecycleOwner
-            ) {
-                val course = it?.course ?: 1L
-                if (course == 1L && preferences.isStudentFromUEFS()) {
-                    binding.btnConferenceSchedule.visibility = View.VISIBLE
-                }
-            }
+        profileViewModel.commonProfile.observe(viewLifecycleOwner) {
+            val course = it?.course ?: 1L
+            val eligible = course == 1L && preferences.isStudentFromUEFS()
+            val eventDisabled = TimeUtils.eventHasEnded() || remoteConfig.getBoolean("siecomp_xxxiii_disabled")
+            binding.btnConferenceSchedule.isVisible = !eventDisabled && eligible
         }
     }
 
