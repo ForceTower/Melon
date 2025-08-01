@@ -28,6 +28,7 @@ import com.forcetower.uefs.BuildConfig
 import com.forcetower.uefs.core.constants.Constants
 import com.forcetower.uefs.core.storage.cookies.CachedCookiePersistor
 import com.forcetower.uefs.core.storage.database.UDatabase
+import com.forcetower.uefs.core.storage.network.BaseEdgeService
 import com.forcetower.uefs.core.storage.network.EdgeService
 import com.forcetower.uefs.core.storage.network.ParadoxService
 import com.forcetower.uefs.core.storage.network.UService
@@ -211,6 +212,17 @@ object NetworkModule {
             .addConverterFactory(GsonConverterFactory.create(gson))
             .build()
             .create(EdgeService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideBaseEdgeService(client: OkHttpClient, gson: Gson): BaseEdgeService {
+        return Retrofit.Builder()
+            .baseUrl(Constants.BASE_EDGE_UNES_SERVICE_URL)
+            .client(client)
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
+            .create(BaseEdgeService::class.java)
     }
 
     @Provides

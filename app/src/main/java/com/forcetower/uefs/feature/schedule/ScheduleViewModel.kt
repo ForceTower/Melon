@@ -55,6 +55,9 @@ class ScheduleViewModel @Inject constructor(
     val schedule = innerScheduleMaster.asLiveData(Dispatchers.IO)
     val scheduleLine = innerScheduleMaster.map { buildScheduleLine(it) }.asLiveData(Dispatchers.IO)
 
+    private val _onConferenceSelected = MutableLiveData<Event<Unit>>()
+    val onConferenceSelected: LiveData<Event<Unit>> = _onConferenceSelected
+
     private val _onRefresh = MutableLiveData<Event<Unit>>()
     val onRefresh: LiveData<Event<Unit>> = _onRefresh
 
@@ -75,6 +78,10 @@ class ScheduleViewModel @Inject constructor(
         val context = view.context
         val intent = DisciplineDetailsActivity.startIntent(context, group.classData.clazz.uid, group.group.uid)
         context.startActivity(intent)
+    }
+
+    override fun onConferenceSchedule() {
+        _onConferenceSelected.value = Event(Unit)
     }
 
     fun doRefreshData(gToken: String?, snowpiercer: Boolean) {

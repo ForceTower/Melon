@@ -29,4 +29,5 @@ interface ScheduleActions {
     fun onClick(view: View, group: ClassGroupWithData)
     fun refreshData()
     fun onLocationClick(view: View, location: ClassLocationWithData)
+    fun onConferenceSchedule()
 }

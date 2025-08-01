@@ -186,6 +186,7 @@
             android:layout_marginBottom="16dp"
             android:visibility="gone"
             android:text="@string/btn_siecomp_schedule"
+            android:onClick="@{() -> actions.onConferenceSchedule()}"
             android:textAllCaps="false"
             android:textColor="@android:color/white"
             android:textSize="14sp"

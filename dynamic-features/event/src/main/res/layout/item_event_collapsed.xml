@@ -78,7 +78,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/image"
-                tools:text="XXII Semana de Integração de Engenharia de Computação" />
+                tools:text="XXXIII Semana de Integração de Engenharia de Computação" />
 
             <TextView
                 android:id="@+id/textView8"

@@ -76,7 +76,7 @@ class OnboardingFragment : UFragment() {
             viewLifecycleOwner,
             EventObserver {
                 requireActivity().run {
-                    preferences.edit().putBoolean("siecomp_xxii_onboarding_completed_2", true).apply()
+                    preferences.edit().putBoolean("siecomp_xxxiii_onboarding_completed_2", true).apply()
                     startActivity(Intent(this, EventScheduleActivity::class.java))
                     finish()
                 }
