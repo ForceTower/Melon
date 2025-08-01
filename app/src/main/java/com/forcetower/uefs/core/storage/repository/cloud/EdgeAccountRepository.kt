@@ -1,6 +1,8 @@
 package com.forcetower.uefs.core.storage.repository.cloud
 
+import android.content.SharedPreferences
 import android.util.Base64
+import androidx.core.content.edit
 import com.forcetower.uefs.core.model.edge.account.ChangePictureDTO
 import com.forcetower.uefs.core.model.edge.auth.EdgeLoginBody
 import com.forcetower.uefs.core.model.unes.EdgeAccessToken
@@ -17,7 +19,8 @@ import timber.log.Timber
 @Reusable
 class EdgeAccountRepository @Inject constructor(
     private val service: EdgeService,
-    private val database: UDatabase
+    private val database: UDatabase,
+    private val preferences: SharedPreferences
 ) {
     fun getAccount() = database.edgeServiceAccount.me().filterNotNull()
 
@@ -34,6 +37,13 @@ class EdgeAccountRepository @Inject constructor(
             me = true
         )
         database.edgeServiceAccount.insertOrUpdate(value)
+
+        val student = service.studentMe().data
+        // This is a hack!
+        preferences.edit { putString("edge_course_id", student.courseId) }
+        if (student.courseId == "5c6d29fd-9de3-4140-acf2-dc5847942e32") {
+            database.profileDao().updateCourse(1)
+        }
     }
 
     suspend fun startSession() {
