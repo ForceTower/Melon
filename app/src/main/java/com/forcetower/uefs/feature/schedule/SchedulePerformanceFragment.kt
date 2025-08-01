@@ -98,7 +98,7 @@ class SchedulePerformanceFragment : UFragment() {
             }
         )
 
-        if (TimeUtils.eventHasEnded()) {
+        if (TimeUtils.eventHasEnded() || remoteConfig.getBoolean("siecomp_xxxiii_disabled")) {
             binding.btnConferenceSchedule.visibility = View.GONE
         } else {
             profileViewModel.commonProfile.observe(
