@@ -31,6 +31,7 @@ import android.os.Build
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.preference.PreferenceManager
 import com.bumptech.glide.Glide
 import com.forcetower.uefs.R
@@ -49,7 +50,6 @@ import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import timber.log.Timber
-import androidx.core.net.toUri
 
 object NotificationCreator {
 
