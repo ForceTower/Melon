@@ -49,6 +49,7 @@ import com.forcetower.uefs.feature.home.HomeActivity
 import com.forcetower.uefs.feature.messages.MessagesFragment
 import com.forcetower.uefs.feature.shared.extensions.toTitleCase
 import timber.log.Timber
+import androidx.core.net.toUri
 
 object NotificationCreator {
 
@@ -447,7 +448,7 @@ object NotificationCreator {
                 builder.setVibrate(longArrayOf(150, 300, 150, 300))
             }
 
-            val ringtone = Uri.parse(preferences.getString("notifications_new_message_ringtone", "content://settings/system/notification_sound"))
+            val ringtone = preferences.getString("notifications_new_message_ringtone", "content://settings/system/notification_sound")?.toUri()
             builder.setSound(ringtone)
         }
     }
@@ -456,7 +457,7 @@ object NotificationCreator {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_GRADES_DIRECTION)
         }
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
@@ -467,7 +468,7 @@ object NotificationCreator {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_MESSAGES_SAGRES_DIRECTION)
         }
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
@@ -480,7 +481,7 @@ object NotificationCreator {
             putExtra(MessagesFragment.EXTRA_MESSAGES_FLAG, fragmentIndex)
         }
 
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
 
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
@@ -493,7 +494,7 @@ object NotificationCreator {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_BIGTRAY_DIRECTION)
         }
 
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
 
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
@@ -505,7 +506,7 @@ object NotificationCreator {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, HomeActivity.EXTRA_DEMAND_DIRECTION)
         }
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
@@ -519,25 +520,16 @@ object NotificationCreator {
             putExtra(DisciplineDetailsActivity.CLASS_GROUP_ID, classGroup.uid)
             putExtra(DisciplineDetailsActivity.CLASS_ID, classGroup.classId)
         }
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(context)
             .addParentStack(DisciplineDetailsActivity::class.java)
             .addNextIntent(intent)
             .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or concatFlags)
     }
 
-//    private fun createHourglassIntent(ctx: Context): PendingIntent {
-//        val intent = Intent(ctx, HourglassActivity::class.java)
-//
-//        return TaskStackBuilder.create(ctx)
-//                .addParentStack(HourglassActivity::class.java)
-//                .addNextIntent(intent)
-//                .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT)
-//    }
-
     private fun createOpenIntent(ctx: Context): PendingIntent {
         val intent = Intent(ctx, HomeActivity::class.java)
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
@@ -548,7 +540,7 @@ object NotificationCreator {
         val intent = Intent(ctx, HomeActivity::class.java).apply {
             putExtra(HomeActivity.EXTRA_FRAGMENT_DIRECTIONS, direction)
         }
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val concatFlags = PendingIntent.FLAG_IMMUTABLE
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)

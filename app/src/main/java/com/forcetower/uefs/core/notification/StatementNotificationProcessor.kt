@@ -37,11 +37,10 @@ object StatementNotificationProcessor {
     @JvmStatic
     fun openProfileIntent(ctx: Context, userId: String): PendingIntent {
         val intent = ProfileActivity.startIntent(ctx, userId)
-        val concatFlags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
         return TaskStackBuilder.create(ctx)
             .addParentStack(HomeActivity::class.java)
             .addNextIntent(intent)
-            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or concatFlags)
+            .getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
     }
 
     @JvmStatic
