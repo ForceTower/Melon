@@ -78,13 +78,17 @@ class BigTrayService : LifecycleService() {
         if (!running) {
             running = true
             Timber.d("Start action!")
-            startForeground(NOTIFICATION_BIG_TRAY, createNotification())
+            runCatching {
+                startForeground(NOTIFICATION_BIG_TRAY, createNotification())
+            }
             repository.beginWith(7000).observe(
                 this,
                 Observer {
                     if (trayData != it) {
                         trayData = it
-                        startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                        runCatching {
+                            startForeground(NOTIFICATION_BIG_TRAY, createNotification(it))
+                        }
                     }
                 }
             )
@@ -103,7 +107,7 @@ class BigTrayService : LifecycleService() {
         val intent = Intent(this, BigTrayService::class.java).apply {
             action = STOP_SERVICE_ACTION
         }
-        val flags = if (Build.VERSION.SDK_INT >= 23) PendingIntent.FLAG_IMMUTABLE else 0
+        val flags = PendingIntent.FLAG_IMMUTABLE
         val pending = PendingIntent.getService(this, 0, intent, flags)
         return NotificationCreator.showBigTrayNotification(this, data, pending)
     }

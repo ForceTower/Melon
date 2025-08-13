@@ -26,6 +26,7 @@ import android.view.View
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import com.forcetower.uefs.R
@@ -55,7 +56,10 @@ class BigTrayFragment : UFragment() {
             textToolbarTitle.text = getString(R.string.label_big_tray)
             appBar.elevation = 0f
         }
-        binding.btnNotification.setOnClickListener { BigTrayService.startService(requireContext()) }
+        binding.btnNotification.isVisible = false
+        binding.btnNotification.setOnClickListener {
+            BigTrayService.startService(requireContext())
+        }
     }
 
     override fun onStart() {
