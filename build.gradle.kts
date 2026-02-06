@@ -79,6 +79,7 @@ subprojects {
         compilerOptions {
             jvmTarget.set(JvmTarget.JVM_17)
             freeCompilerArgs.add("-Xstring-concat=inline")
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
         }
     }
 
