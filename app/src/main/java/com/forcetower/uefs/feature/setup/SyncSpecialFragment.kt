@@ -42,7 +42,6 @@ import com.forcetower.uefs.databinding.FragmentSetupSpecialConfigBinding
 import com.forcetower.uefs.feature.shared.UFragment
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.firebase.analytics.FirebaseAnalytics
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 import javax.inject.Inject
@@ -72,16 +71,6 @@ class SyncSpecialFragment : UFragment() {
         val bundle = bundleOf("manufacturer" to manufacturer)
         if (savedInstanceState == null) {
             analytics.logEvent("special_settings", bundle)
-        }
-
-        binding.btnConfig.setOnClickListener {
-            analytics.logEvent("open_special_settings", bundle)
-            val success = AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireContext())
-            if (success) {
-                analytics.logEvent("open_special_settings_completed", bundle)
-            } else {
-                analytics.logEvent("open_special_settings_failed", bundle)
-            }
         }
 
         binding.labelAutoStartPath.setOnClickListener {

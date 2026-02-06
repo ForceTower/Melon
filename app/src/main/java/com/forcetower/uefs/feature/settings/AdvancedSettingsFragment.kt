@@ -55,7 +55,6 @@ import com.forcetower.uefs.feature.messages.MessagesDFMViewModel
 import com.forcetower.uefs.feature.web.CustomTabActivityHelper
 import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.remoteconfig.FirebaseRemoteConfig
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.util.Locale
@@ -83,16 +82,6 @@ class AdvancedSettingsFragment : PreferenceFragmentCompat() {
         } else {
             val mapOption = remoteConfig.getBoolean("feature_flag_campus_map") || BuildConfig.VERSION_NAME.contains("-beta")
             findPreference<SwitchPreference>("stg_advanced_map_tab")?.isVisible = mapOption
-        }
-
-        findPreference<Preference>("stg_advanced_auto_start")?.let {
-            it.setOnPreferenceClickListener {
-                val result = AutoStartPermissionHelper.getInstance().getAutoStartPermission(requireContext())
-                if (!result) {
-                    Snackbar.make(requireView(), getString(R.string.settings_auto_start_manager_not_found), Snackbar.LENGTH_SHORT).show()
-                }
-                true
-            }
         }
 
         findPreference<Preference>("stg_advanced_battery_optimization")?.let {

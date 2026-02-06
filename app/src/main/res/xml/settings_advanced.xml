@@ -27,12 +27,6 @@
         app:iconSpaceReserved="false"
         android:summary="@string/settings_adv_cat_execution_info">
 
-        <Preference
-            android:key="stg_advanced_auto_start"
-            app:icon="@drawable/ic_history_accent_24dp"
-            android:title="@string/settings_adv_auto_start"
-            android:summary="@string/settings_adv_auto_start_info" />
-
         <SwitchPreference
             app:key="stg_advanced_ignore_doze"
             app:title="@string/settings_adv_doze_mode"

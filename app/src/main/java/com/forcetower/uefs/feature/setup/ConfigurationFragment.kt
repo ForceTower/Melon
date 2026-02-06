@@ -31,7 +31,6 @@ import com.forcetower.uefs.R
 import com.forcetower.uefs.core.model.service.SyncFrequency
 import com.forcetower.uefs.databinding.FragmentSetupConfigurationBinding
 import com.forcetower.uefs.feature.shared.UFragment
-import com.judemanutd.autostarter.AutoStartPermissionHelper
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.Locale
 
@@ -68,12 +67,11 @@ class ConfigurationFragment : UFragment() {
     }
 
     private fun decideNext() {
-        val autoStart = AutoStartPermissionHelper.getInstance().isAutoStartPermissionAvailable(requireContext())
         val brands = when (Build.BRAND.lowercase(Locale.getDefault())) {
             "samsung" -> true
             else -> false
         }
-        if (autoStart || brands) {
+        if (brands) {
             findNavController().navigate(R.id.action_configuration_to_special)
         } else {
             findNavController().navigate(R.id.action_configuration_to_home)
