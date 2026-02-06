@@ -1,24 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  ~ This file is part of the UNES Open Source Project.
-  ~ UNES is licensed under the GNU GPLv3.
-  ~
-  ~ Copyright (c) 2020. João Paulo Sena <joaopaulo761@gmail.com>
-  ~
-  ~ This program is free software: you can redistribute it and/or modify
-  ~ it under the terms of the GNU General Public License as published by
-  ~ the Free Software Foundation, either version 3 of the License, or
-  ~ any later version.
-  ~
-  ~ This program is distributed in the hope that it will be useful,
-  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
-  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-  ~ GNU General Public License for more details.
-  ~
-  ~ You should have received a copy of the GNU General Public License
-  ~ along with this program.  If not, see <https://www.gnu.org/licenses/>.
-  -->
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
@@ -28,10 +8,12 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" android:maxSdkVersion="28"/>
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        android:maxSdkVersion="28" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
     <uses-permission android:name="android.permission.REQUEST_IGNORE_BATTERY_OPTIMIZATIONS" />
-    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
     <uses-permission android:name="android.permission.FOREGROUND_SERVICE_DATA_SYNC" />
 
     <application
@@ -45,9 +27,14 @@
         android:theme="@style/UTheme"
         android:usesCleartextTraffic="true">
         <activity
+            android:name=".feature.enrollment.EnrollmentActivity"
+            android:exported="false"
+            android:label="@string/title_activity_enrollment"
+            android:theme="@style/UTheme.Compose" />
+        <activity
             android:name=".LauncherActivity"
-            android:theme="@style/UTheme.LightNav.Launcher"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/UTheme.LightNav.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -62,8 +49,8 @@
             android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.home.HomeActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/UTheme.LightNav">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
             </intent-filter>
@@ -73,19 +60,20 @@
             android:theme="@style/UTheme.Translucent.About" />
         <activity
             android:name=".feature.evaluation.EvaluationActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.evaluation.rating.RatingActivity"
-            android:theme="@style/UTheme.Translucent"
-            android:parentActivityName=".feature.evaluation.EvaluationActivity"/>
-        <activity android:name=".feature.flowchart.FlowchartActivity"
-            android:theme="@style/UTheme.LightNav"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.evaluation.EvaluationActivity"
+            android:theme="@style/UTheme.Translucent" />
+        <activity
+            android:name=".feature.flowchart.FlowchartActivity"
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.LightNav" />
         <activity
             android:name=".feature.forms.FormActivity"
-            android:theme="@style/UTheme.Translucent"
-            android:parentActivityName=".feature.home.HomeActivity"/>
+            android:parentActivityName=".feature.home.HomeActivity"
+            android:theme="@style/UTheme.Translucent" />
         <activity
             android:name=".feature.siecomp.SIECOMPActivity"
             android:parentActivityName=".feature.home.HomeActivity"
@@ -118,7 +106,7 @@
             android:theme="@style/UTheme.StudentProfile" />
         <activity
             android:name=".easter.twofoureight.Game2048Activity"
-            android:theme="@style/UTheme.NoInsets.Base"/>
+            android:theme="@style/UTheme.NoInsets.Base" />
         <activity
             android:name=".feature.reminders.RemindersActivity"
             android:parentActivityName=".feature.home.HomeActivity"
@@ -162,10 +150,9 @@
             android:value="@string/admob_app_id" />
         <meta-data
             android:name="firebase_crashlytics_collection_enabled"
-            android:value="${crashlyticsEnabled}" />
-<!--        <meta-data-->
-<!--            android:name="com.google.android.geo.API_KEY"-->
-<!--            android:value="@string/google_maps_key" />-->
+            android:value="${crashlyticsEnabled}" /> <!-- <meta-data -->
+        <!-- android:name="com.google.android.geo.API_KEY" -->
+        <!-- android:value="@string/google_maps_key" /> -->
         <meta-data
             android:name="asset_statements"
             android:resource="@string/asset_statements" />
@@ -179,7 +166,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_provider_paths" />
         </provider>
-
         <provider
             android:name="androidx.startup.InitializationProvider"
             android:authorities="${applicationId}.androidx-startup"
@@ -210,17 +196,16 @@
         <service
             android:name=".architecture.service.bigtray.BigTrayService"
             android:exported="false"
-            android:foregroundServiceType="dataSync"/>
+            android:foregroundServiceType="dataSync" />
         <service
             android:name=".architecture.service.discipline.DisciplineDetailsLoaderService"
             android:exported="false"
-            android:foregroundServiceType="dataSync"/>
-
+            android:foregroundServiceType="dataSync" />
         <service
             android:name=".architecture.service.sync.SyncService"
             android:exported="false"
-            android:foregroundServiceType="dataSync"/>
-        
+            android:foregroundServiceType="dataSync" />
+
         <receiver
             android:name=".architecture.widget.HomeClassWidget"
             android:exported="true">
@@ -232,7 +217,6 @@
                 android:name="android.appwidget.provider"
                 android:resource="@xml/widget_home_class_provider" />
         </receiver>
-
         <receiver
             android:name=".architecture.widget.HomeClassWidgetSecondary"
             android:exported="true">
