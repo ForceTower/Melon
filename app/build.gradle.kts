@@ -115,7 +115,7 @@ android {
         getByName("release") {
             manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             signingConfig = signingConfigs.getByName("release")
-            proguardFiles(getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro")
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
             resValue("string", "google_maps_key", mapsKey)
         }

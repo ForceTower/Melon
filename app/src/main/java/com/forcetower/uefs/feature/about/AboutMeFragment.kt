@@ -54,7 +54,7 @@ class AboutMeFragment : UFragment() {
         markwon = Markwon.builder(requireContext())
             .usePlugin(object : AbstractMarkwonPlugin() {
                 override fun configureTheme(builder: MarkwonTheme.Builder) {
-                    builder.linkColor(requireContext().resolveColorAttr(com.google.android.material.R.attr.colorPrimary))
+                    builder.linkColor(requireContext().resolveColorAttr(com.google.android.material.R.attr.colorPrimaryFixed))
                 }
             })
             .usePlugin(ImagesPlugin.create())
