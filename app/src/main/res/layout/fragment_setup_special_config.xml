@@ -106,18 +106,6 @@
                 app:layout_constraintVertical_chainStyle="spread_inside" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_config"
-                style="@style/UTheme.MaterialButton.Outline"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/auto_start_text"
-                app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
-                app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
-                app:layout_constraintTop_toBottomOf="@+id/label_required_permissions"
-                app:strokeColor="?attr/colorPrimary" />
-
-            <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_doze"
                 style="@style/UTheme.MaterialButton.Outline"
                 android:layout_width="wrap_content"
@@ -126,7 +114,7 @@
                 android:text="@string/doze_mode"
                 app:layout_constraintEnd_toStartOf="@+id/guideline_margin_end"
                 app:layout_constraintStart_toStartOf="@+id/guideline_margin_start"
-                app:layout_constraintTop_toBottomOf="@+id/btn_config"
+                app:layout_constraintTop_toBottomOf="@+id/label_required_permissions"
                 app:strokeColor="?attr/colorPrimary" />
 
             <com.google.android.material.button.MaterialButton

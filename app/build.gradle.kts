@@ -108,21 +108,21 @@ android {
     }
 
     buildTypes {
-        var mapsKey = System.getenv("UNES_MAPS_KEY")
-        if (mapsKey == null) {
-            mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
-        }
+//        var mapsKey = System.getenv("UNES_MAPS_KEY")
+//        if (mapsKey == null) {
+//            mapsKey = "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y"
+//        }
         getByName("release") {
             manifestPlaceholders += mapOf("crashlyticsEnabled" to true)
             signingConfig = signingConfigs.getByName("release")
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
             isMinifyEnabled = true
-            resValue("string", "google_maps_key", mapsKey)
+//            resValue("string", "google_maps_key", mapsKey)
         }
         getByName("debug") {
             manifestPlaceholders += mapOf("crashlyticsEnabled" to false)
             applicationIdSuffix = ".debug"
-            resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
+//            resValue("string", "google_maps_key", "AIzaSyAIb0g7GrjLgOwRqmKHhBxbxWKjct8IF8Y")
         }
     }
 
@@ -147,7 +147,7 @@ android {
         ":dynamic-features:dashboard",
         ":dynamic-features:conference",
         ":dynamic-features:event",
-        ":dynamic-features:map",
+//        ":dynamic-features:map",
         ":dynamic-features:disciplines"
     )
 
@@ -179,7 +179,6 @@ dependencies {
     implementation(project(":core"))
     implementation(libs.androidx.navigation.fragment.ktx)
     implementation(libs.androidx.navigation.ui.ktx)
-    implementation(libs.autostarter)
     implementation(libs.juice)
     implementation(libs.snowpiercer)
     implementation(libs.kotlin.stdlib)
