@@ -184,6 +184,7 @@ dependencies {
     implementation(libs.androidx.compose.ui.graphics)
     implementation(libs.androidx.compose.ui.tooling.preview)
     implementation(libs.androidx.compose.material3)
+    implementation(libs.androidx.compose.material.icons.extended)
     coreLibraryDesugaring(libs.android.tools.desugar)
     implementation(project(":core"))
     implementation(libs.androidx.navigation.fragment.ktx)
