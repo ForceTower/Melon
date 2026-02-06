@@ -7,5 +7,6 @@ internal sealed interface CatalogIntent {
     data class OnDepartmentSelected(val departmentId: String) : CatalogIntent
     data class OnCourseExpandToggle(val courseId: String) : CatalogIntent
     data class OnChangeClassGroup(val courseId: String, val groupIndex: Int) : CatalogIntent
+    data class OnToggleCourseSelection(val courseId: String) : CatalogIntent
     data object OnSaveEnrollment : CatalogIntent
 }

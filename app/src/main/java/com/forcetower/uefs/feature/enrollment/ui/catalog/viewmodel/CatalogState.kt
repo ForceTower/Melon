@@ -7,7 +7,7 @@ import androidx.compose.material.icons.filled.Functions
 import androidx.compose.material.icons.filled.Palette
 import androidx.compose.material.icons.filled.School
 import androidx.compose.ui.graphics.vector.ImageVector
-import dev.forcetower.breaker.model.enrollment.EnrollmentOffer
+import com.forcetower.uefs.feature.enrollment.data.EnrollmentOffer
 
 internal data class CatalogState(
     val loading: Boolean = true,
@@ -37,6 +37,7 @@ internal data class CatalogCourseItem(
     val icon: CourseIcon,
     val creditsHours: Int,
     val expanded: Boolean = false,
+    val selected: Boolean = false,
     val hasConflict: Boolean = false,
     val conflictMessage: String? = null,
     val groups: List<CourseGroupDetails> = emptyList(),
@@ -48,7 +49,14 @@ internal data class CourseGroupDetails(
     val schedule: String,
     val professor: String,
     val enrolledCount: Int,
-    val totalVacancies: Int
+    val totalVacancies: Int,
+    val allocations: List<TimeSlot> = emptyList()
+)
+
+internal data class TimeSlot(
+    val day: Int,
+    val startMinutes: Int,
+    val endMinutes: Int
 )
 
 internal enum class CourseType(val label: String) {

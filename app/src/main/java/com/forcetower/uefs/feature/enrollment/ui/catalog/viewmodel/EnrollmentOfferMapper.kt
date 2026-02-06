@@ -1,6 +1,6 @@
 package com.forcetower.uefs.feature.enrollment.ui.catalog.viewmodel
 
-import dev.forcetower.breaker.model.enrollment.EnrollmentOffer
+import com.forcetower.uefs.feature.enrollment.data.EnrollmentOffer
 
 internal data class DepartmentInfo(
     val name: String,
@@ -96,6 +96,21 @@ private fun formatTime(time: String): String {
     return time.substringBeforeLast(":")
 }
 
+private fun timeToMinutes(time: String): Int {
+    val parts = time.split(":")
+    val hours = parts.getOrNull(0)?.toIntOrNull() ?: 0
+    val minutes = parts.getOrNull(1)?.toIntOrNull() ?: 0
+    return hours * 60 + minutes
+}
+
+private fun EnrollmentOffer.Allocation.toTimeSlot(): TimeSlot {
+    return TimeSlot(
+        day = schedule.day,
+        startMinutes = timeToMinutes(schedule.start),
+        endMinutes = timeToMinutes(schedule.end)
+    )
+}
+
 internal fun formatSchedule(allocations: List<EnrollmentOffer.Allocation>): String {
     if (allocations.isEmpty()) return "Horário não definido"
 
@@ -113,6 +128,8 @@ internal fun formatSchedule(allocations: List<EnrollmentOffer.Allocation>): Stri
 
 internal fun EnrollmentOffer.toCatalogCourseItem(): CatalogCourseItem {
     val dept = resolveDepartment(activity.code)
+    val preSelectedIndex = classes.indexOfFirst { it.proposalSaved || it.enrollmentConfirmed }
+    val isPreSelected = preSelectedIndex >= 0
     return CatalogCourseItem(
         id = id.toString(),
         code = activity.code,
@@ -122,8 +139,9 @@ internal fun EnrollmentOffer.toCatalogCourseItem(): CatalogCourseItem {
         icon = dept.icon,
         creditsHours = activity.workload,
         expanded = false,
+        selected = isPreSelected,
         hasConflict = false,
-        selectedGroupIndex = 0,
+        selectedGroupIndex = if (isPreSelected) preSelectedIndex else 0,
         groups = classes.map { it.toCourseGroupDetails() }
     )
 }
@@ -143,6 +161,7 @@ internal fun EnrollmentOffer.ClassOfferItem.toCourseGroupDetails(): CourseGroupD
         schedule = formatSchedule(allAllocations),
         professor = professor,
         enrolledCount = enrolledCount,
-        totalVacancies = vacancies
+        totalVacancies = vacancies,
+        allocations = allAllocations.map { it.toTimeSlot() }
     )
 }

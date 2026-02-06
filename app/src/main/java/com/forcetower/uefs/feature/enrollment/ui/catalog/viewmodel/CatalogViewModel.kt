@@ -2,7 +2,7 @@ package com.forcetower.uefs.feature.enrollment.ui.catalog.viewmodel
 
 import com.forcetower.uefs.ui.arch.ArchViewModel
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dev.forcetower.breaker.model.enrollment.EnrollmentOffer
+import com.forcetower.uefs.feature.enrollment.data.EnrollmentOffer
 import javax.inject.Inject
 
 @HiltViewModel
@@ -13,6 +13,7 @@ internal class CatalogViewModel @Inject constructor() : ArchViewModel<CatalogSta
             is CatalogIntent.OnDepartmentSelected -> onDepartmentSelected(intent.departmentId)
             is CatalogIntent.OnCourseExpandToggle -> onCourseExpandToggle(intent.courseId)
             is CatalogIntent.OnChangeClassGroup -> onChangeClassGroup(intent.courseId, intent.groupIndex)
+            is CatalogIntent.OnToggleCourseSelection -> onToggleCourseSelection(intent.courseId)
             is CatalogIntent.OnNavigateBack -> sendEvent { CatalogEvent.NavigateBack }
             is CatalogIntent.OnFilter -> { }
             is CatalogIntent.OnSaveEnrollment -> { }
@@ -29,13 +30,14 @@ internal class CatalogViewModel @Inject constructor() : ArchViewModel<CatalogSta
         }
 
         setState { state ->
-            state.copy(
+            val initial = state.copy(
                 loading = false,
                 availableOffers = offers,
                 allCourses = allCourses,
                 courses = allCourses,
                 departments = departments
             )
+            recalculateState(initial, initial.allCourses)
         }
     }
 
@@ -85,15 +87,70 @@ internal class CatalogViewModel @Inject constructor() : ArchViewModel<CatalogSta
 
     private fun onChangeClassGroup(courseId: String, groupIndex: Int) {
         setState { state ->
-            state.copy(
-                courses = state.courses.map { course ->
-                    if (course.id == courseId) course.copy(selectedGroupIndex = groupIndex) else course
-                },
-                allCourses = state.allCourses.map { course ->
-                    if (course.id == courseId) course.copy(selectedGroupIndex = groupIndex) else course
-                }
-            )
+            val updatedAllCourses = state.allCourses.map { course ->
+                if (course.id == courseId) course.copy(selectedGroupIndex = groupIndex) else course
+            }
+            recalculateState(state, updatedAllCourses)
         }
+    }
+
+    private fun onToggleCourseSelection(courseId: String) {
+        setState { state ->
+            val updatedAllCourses = state.allCourses.map { course ->
+                if (course.id == courseId) course.copy(selected = !course.selected) else course
+            }
+            recalculateState(state, updatedAllCourses)
+        }
+    }
+
+    private fun hasTimeConflict(slotsA: List<TimeSlot>, slotsB: List<TimeSlot>): Boolean {
+        return slotsA.any { a ->
+            slotsB.any { b ->
+                a.day == b.day && a.startMinutes < b.endMinutes && b.startMinutes < a.endMinutes
+            }
+        }
+    }
+
+    private fun recalculateState(state: CatalogState, updatedAllCourses: List<CatalogCourseItem>): CatalogState {
+        val selectedCourses = updatedAllCourses.filter { it.selected }
+
+        // Build a map of courseId -> set of conflicting course names
+        val conflictMap = mutableMapOf<String, MutableSet<String>>()
+        for (i in selectedCourses.indices) {
+            val courseA = selectedCourses[i]
+            val slotsA = courseA.groups.getOrNull(courseA.selectedGroupIndex)?.allocations.orEmpty()
+            for (j in i + 1 until selectedCourses.size) {
+                val courseB = selectedCourses[j]
+                val slotsB = courseB.groups.getOrNull(courseB.selectedGroupIndex)?.allocations.orEmpty()
+                if (hasTimeConflict(slotsA, slotsB)) {
+                    conflictMap.getOrPut(courseA.id) { mutableSetOf() }.add(courseB.name)
+                    conflictMap.getOrPut(courseB.id) { mutableSetOf() }.add(courseA.name)
+                }
+            }
+        }
+
+        val allCoursesWithConflicts = updatedAllCourses.map { course ->
+            val conflictNames = conflictMap[course.id]
+            if (conflictNames != null) {
+                course.copy(
+                    hasConflict = true,
+                    conflictMessage = "Conflito de horário com ${conflictNames.joinToString(", ")}"
+                )
+            } else {
+                course.copy(hasConflict = false, conflictMessage = null)
+            }
+        }
+
+        val filtered = filterCourses(allCoursesWithConflicts, state.searchQuery, state.departments)
+        val totalCredits = selectedCourses.sumOf { it.creditsHours }
+        val selectedCount = selectedCourses.size
+
+        return state.copy(
+            allCourses = allCoursesWithConflicts,
+            courses = filtered,
+            totalCreditsHours = totalCredits,
+            selectedCount = selectedCount
+        )
     }
 
     private fun filterCourses(

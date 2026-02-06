@@ -37,6 +37,8 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Checkbox
+import androidx.compose.material3.CheckboxDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilterChip
 import androidx.compose.material3.FilterChipDefaults
@@ -76,6 +78,7 @@ private val MandatoryColor = Color(0xFF1565C0)
 private val ElectiveColor = Color(0xFF2E7D32)
 private val ConflictColor = Color(0xFFE53935)
 private val ConflictBackgroundColor = Color(0xFFFFF3F3)
+private val SelectedBackgroundColor = Color(0xFFF0F4FF)
 private val SaveButtonColor = Color(0xFF1565C0)
 
 @Composable
@@ -136,7 +139,8 @@ private fun CatalogContent(
                     onExpandToggle = { onIntent(CatalogIntent.OnCourseExpandToggle(course.id)) },
                     onChangeGroup = { groupIndex ->
                         onIntent(CatalogIntent.OnChangeClassGroup(course.id, groupIndex))
-                    }
+                    },
+                    onToggleSelection = { onIntent(CatalogIntent.OnToggleCourseSelection(course.id)) }
                 )
             }
         }
@@ -156,7 +160,7 @@ private fun CatalogTopBar(
     ) {
         Column {
             TopAppBar(
-                title = { Text("Catálogo de Disciplinas") },
+                title = { Text("Matrícula") },
                 navigationIcon = {
                     IconButton(onClick = { onIntent(CatalogIntent.OnNavigateBack) }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Voltar")
@@ -268,18 +272,20 @@ private fun CatalogFilterChips(
 private fun CatalogCourseCard(
     course: CatalogCourseItem,
     onExpandToggle: () -> Unit,
-    onChangeGroup: (Int) -> Unit
+    onChangeGroup: (Int) -> Unit,
+    onToggleSelection: () -> Unit
 ) {
     val typeColor = when (course.type) {
         CourseType.MANDATORY -> MandatoryColor
         CourseType.ELECTIVE -> ElectiveColor
     }
 
-    val cardColors = if (course.hasConflict) {
-        CardDefaults.cardColors(containerColor = ConflictBackgroundColor)
-    } else {
-        CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+    val containerColor = when {
+        course.hasConflict -> ConflictBackgroundColor
+        course.selected -> SelectedBackgroundColor
+        else -> MaterialTheme.colorScheme.surface
     }
+    val cardColors = CardDefaults.cardColors(containerColor = containerColor)
 
     Card(
         modifier = Modifier.fillMaxWidth(),
@@ -396,14 +402,29 @@ private fun CatalogCourseCard(
                 enter = expandVertically(),
                 exit = shrinkVertically()
             ) {
-                if (course.groups.isNotEmpty()) {
-                    CourseExpandedDetails(
-                        groups = course.groups,
-                        selectedGroupIndex = course.selectedGroupIndex,
-                        onChangeGroup = onChangeGroup,
-                        modifier = Modifier.padding(top = 12.dp)
-                    )
+                Column {
+                    if (course.groups.isNotEmpty()) {
+                        CourseExpandedDetails(
+                            groups = course.groups,
+                            selectedGroupIndex = course.selectedGroupIndex,
+                            onChangeGroup = onChangeGroup,
+                            modifier = Modifier.padding(top = 12.dp)
+                        )
+                    }
+
+                    if (!course.hasConflict) {
+                        Button(
+                            onClick = onToggleSelection,
+                            colors = ButtonDefaults.buttonColors(containerColor = SaveButtonColor),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(top = 12.dp)
+                        ) {
+                            Text("Selecionar disciplina")
+                        }
+                    }
                 }
+
             }
         }
     }
@@ -682,7 +703,7 @@ private val previewCourses = listOf(
     )
 )
 
-@Preview(showBackground = true, showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun CatalogContentPreview() {
     MelonTheme(dynamicColor = false) {
@@ -692,7 +713,7 @@ private fun CatalogContentPreview() {
                 searchQuery = "",
                 departments = previewDepartments,
                 courses = previewCourses,
-                semesterLabel = "2025.1",
+                semesterLabel = "2026.1",
                 totalCreditsHours = 210,
                 maxCreditsHours = 360,
                 selectedCount = 4
@@ -707,9 +728,10 @@ private fun CatalogContentPreview() {
 private fun CatalogCourseCardExpandedPreview() {
     MelonTheme(dynamicColor = false) {
         CatalogCourseCard(
-            course = previewCourses[0],
+            course = previewCourses[0].copy(selected = true),
             onExpandToggle = {},
-            onChangeGroup = {}
+            onChangeGroup = {},
+            onToggleSelection = {}
         )
     }
 }
@@ -719,9 +741,10 @@ private fun CatalogCourseCardExpandedPreview() {
 private fun CatalogCourseCardConflictPreview() {
     MelonTheme(dynamicColor = false) {
         CatalogCourseCard(
-            course = previewCourses[1],
+            course = previewCourses[1].copy(selected = true),
             onExpandToggle = {},
-            onChangeGroup = {}
+            onChangeGroup = {},
+            onToggleSelection = {}
         )
     }
 }
