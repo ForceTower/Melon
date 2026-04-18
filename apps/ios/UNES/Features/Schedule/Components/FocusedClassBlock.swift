@@ -114,15 +114,15 @@ struct FocusedClassBlock: View {
             .padding(.trailing, 14)
         }
         .frame(maxWidth: .infinity, alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(isNow ? cls.color : UNESColor.card)
+        // Same NOW-vs-idle pattern as `DayListCard`: vibrant discipline color
+        // when now, neutral card tint otherwise. On iOS 26+ both become
+        // Liquid Glass, with the colored tint preserving the NOW state's pop.
+        .cardSurface(
+            RoundedRectangle(cornerRadius: 20, style: .continuous),
+            fill: isNow ? cls.color : UNESColor.card,
+            stroke: isNow ? Color.clear : UNESColor.cardLine
         )
         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
-        .overlay(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .strokeBorder(isNow ? Color.clear : UNESColor.cardLine, lineWidth: 1)
-        )
         .shadow(
             color: isNow ? cls.color.opacity(0.2) : Color.black.opacity(0.03),
             radius: isNow ? 14 : 1,

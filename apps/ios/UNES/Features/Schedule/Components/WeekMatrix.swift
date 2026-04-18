@@ -23,14 +23,7 @@ struct WeekMatrix: View {
         .padding(.horizontal, 12)
         .padding(.top, 14)
         .padding(.bottom, 12)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .shadow(color: Color.black.opacity(0.03), radius: 1, y: 1)
         .padding(.horizontal, 16)
     }

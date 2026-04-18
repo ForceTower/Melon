@@ -26,7 +26,7 @@ struct DisciplineAttachmentsBlock: View {
                         .foregroundStyle(UNESColor.ink3)
                         .frame(maxWidth: .infinity, alignment: .center)
                         .padding(20)
-                        .background(cardBackground)
+                        .cardSurface(attachmentsShape)
                 } else {
                     VStack(spacing: 0) {
                         ForEach(Array(visible.enumerated()), id: \.element.id) { idx, att in
@@ -42,7 +42,7 @@ struct DisciplineAttachmentsBlock: View {
                             }
                         }
                     }
-                    .background(cardBackground)
+                    .cardSurface(attachmentsShape)
                 }
             }
             .padding(.horizontal, 16)
@@ -50,13 +50,8 @@ struct DisciplineAttachmentsBlock: View {
         }
     }
 
-    private var cardBackground: some View {
+    private var attachmentsShape: RoundedRectangle {
         RoundedRectangle(cornerRadius: 16, style: .continuous)
-            .fill(UNESColor.card)
-            .overlay(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-            )
     }
 }
 

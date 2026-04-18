@@ -124,11 +124,7 @@ struct MessageDetailView: View {
             starButton
         }
         .padding(14)
-        .background(UNESColor.card)
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .stroke(UNESColor.cardLine, lineWidth: 1)
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 

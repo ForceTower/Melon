@@ -37,14 +37,7 @@ struct TodayTimeline: View {
             .padding(.vertical, 4)
         }
         .padding(.bottom, 6)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 24, style: .continuous))
     }
 }
 

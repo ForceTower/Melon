@@ -66,13 +66,6 @@ struct DetailStatCard<Icon: View>: View {
         }
         .frame(maxWidth: .infinity, alignment: .leading)
         .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
     }
 }

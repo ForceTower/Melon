@@ -67,14 +67,7 @@ struct DisciplineGradesBlock: View {
             .frame(maxWidth: .infinity, alignment: .leading)
         }
         .padding(16)
-        .background(
-            RoundedRectangle(cornerRadius: 20, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 20, style: .continuous))
     }
 
     private func neededText(needed: NeededProjection) -> Text {
@@ -129,14 +122,7 @@ struct DisciplineGradesBlock: View {
                     }
                 }
             }
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 }

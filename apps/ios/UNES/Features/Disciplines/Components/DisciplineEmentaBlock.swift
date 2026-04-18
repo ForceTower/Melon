@@ -42,7 +42,13 @@ struct DisciplineEmentaBlock: View {
                 .background {
                     let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
                     ZStack(alignment: .leading) {
-                        shape.fill(UNESColor.card)
+                        if #available(iOS 26.0, *) {
+                            shape
+                                .fill(Color.clear)
+                                .glassEffect(.regular.tint(UNESColor.card), in: shape)
+                        } else {
+                            shape.fill(UNESColor.card)
+                        }
                         Rectangle()
                             .fill(discipline.color)
                             .frame(width: 3)

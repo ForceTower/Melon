@@ -207,10 +207,20 @@ struct ActiveDisciplineCard: View {
     /// Composite background — fill + color rail inside the clipped rounded
     /// rectangle, border + shadow outside so neither gets clipped. Keeping the
     /// rail inside the clip is what stops it from poking past the corners.
+    /// On iOS 26+ the base fill swaps to Liquid Glass tinted with `card`; the
+    /// rail, border, and shadow stay identical across both runtimes.
     private var cardBackground: some View {
         let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
         return ZStack(alignment: .leading) {
-            shape.fill(UNESColor.card)
+            Group {
+                if #available(iOS 26.0, *) {
+                    shape
+                        .fill(Color.clear)
+                        .glassEffect(.regular.tint(UNESColor.card), in: shape)
+                } else {
+                    shape.fill(UNESColor.card)
+                }
+            }
             Rectangle()
                 .fill(discipline.color)
                 .frame(width: 3)

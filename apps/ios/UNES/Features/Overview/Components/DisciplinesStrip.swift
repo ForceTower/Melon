@@ -81,14 +81,7 @@ private struct DisciplineCard: View {
             .padding(14)
         }
         .frame(width: 142, height: 168, alignment: .topLeading)
-        .background(
-            RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
 }

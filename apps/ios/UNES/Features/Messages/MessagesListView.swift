@@ -165,14 +165,7 @@ struct MessagesListView: View {
                     }
                 }
             }
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .stroke(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .padding(.horizontal, 12)
         }

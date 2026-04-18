@@ -25,13 +25,10 @@ private struct TileShell<Content: View>: View {
         content()
             .padding(14)
             .frame(maxWidth: .infinity, minHeight: 150, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .fill(background)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 22, style: .continuous)
-                            .strokeBorder(border, lineWidth: 1)
-                    )
+            .cardSurface(
+                RoundedRectangle(cornerRadius: 22, style: .continuous),
+                fill: background,
+                stroke: border
             )
             .foregroundStyle(foreground)
             .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))

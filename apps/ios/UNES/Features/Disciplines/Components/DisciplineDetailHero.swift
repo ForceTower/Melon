@@ -166,14 +166,7 @@ private struct GroupSegmented: View {
             }
         }
         .padding(3)
-        .background(
-            RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-        )
+        .cardSurface(RoundedRectangle(cornerRadius: 14, style: .continuous))
         .fixedSize()
     }
 }

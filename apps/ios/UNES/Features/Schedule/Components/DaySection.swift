@@ -133,10 +133,14 @@ struct DayListCard: View {
             .padding(.vertical, 12)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .background(isNow ? cls.color : UNESColor.card)
-        .overlay(
-            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .strokeBorder(isNow ? Color.clear : UNESColor.cardLine, lineWidth: 1)
+        // `fill` carries the vibrant discipline color for the NOW state and
+        // the neutral `card` tint otherwise. On iOS 26+ both tints render as
+        // Liquid Glass — the colored tint reads as a colored glass, keeping
+        // the NOW pop while gaining the material's depth cues.
+        .cardSurface(
+            RoundedRectangle(cornerRadius: 18, style: .continuous),
+            fill: isNow ? cls.color : UNESColor.card,
+            stroke: isNow ? Color.clear : UNESColor.cardLine
         )
         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
         .opacity(isDone ? 0.55 : 1)

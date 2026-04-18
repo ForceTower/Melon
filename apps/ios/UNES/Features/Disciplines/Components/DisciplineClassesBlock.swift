@@ -25,14 +25,7 @@ struct DisciplineClassesBlock: View {
                     .foregroundStyle(UNESColor.ink3)
                     .frame(maxWidth: .infinity, alignment: .center)
                     .padding(20)
-                    .background(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .fill(UNESColor.card)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                            )
-                    )
+                    .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
             } else {
                 timeline
             }
@@ -123,13 +116,10 @@ private struct ClassRow: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal, 14)
             .padding(.vertical, 10)
-            .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                    .fill(isNext ? accent.opacity(0.06) : UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .strokeBorder(isNext ? accent.opacity(0.33) : UNESColor.cardLine, lineWidth: 1)
-                    )
+            .cardSurface(
+                RoundedRectangle(cornerRadius: 14, style: .continuous),
+                fill: isNext ? accent.opacity(0.06) : UNESColor.card,
+                stroke: isNext ? accent.opacity(0.33) : UNESColor.cardLine
             )
         }
     }

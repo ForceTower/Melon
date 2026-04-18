@@ -100,14 +100,7 @@ struct PastSemesterCard: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
     }
@@ -157,7 +150,13 @@ struct PastDisciplineRow: View {
             .background {
                 let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
                 ZStack(alignment: .leading) {
-                    shape.fill(UNESColor.card)
+                    if #available(iOS 26.0, *) {
+                        shape
+                            .fill(Color.clear)
+                            .glassEffect(.regular.tint(UNESColor.card), in: shape)
+                    } else {
+                        shape.fill(UNESColor.card)
+                    }
                     Rectangle()
                         .fill(discipline.color)
                         .opacity(passed ? 1 : 0.4)
@@ -243,15 +242,25 @@ struct UndownloadedSemesterCard: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
-                            .foregroundStyle(UNESColor.cardLine)
-                    )
-            )
+            .background {
+                // Liquid Glass on iOS 26+, solid fill below — dashed stroke
+                // reused on both branches so the "not yet downloaded" affordance
+                // stays consistent.
+                let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+                let dashed = RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .strokeBorder(style: StrokeStyle(lineWidth: 1, dash: [4, 4]))
+                    .foregroundStyle(UNESColor.cardLine)
+                if #available(iOS 26.0, *) {
+                    shape
+                        .fill(Color.clear)
+                        .glassEffect(.regular.tint(UNESColor.card), in: shape)
+                        .overlay(dashed)
+                } else {
+                    shape
+                        .fill(UNESColor.card)
+                        .overlay(dashed)
+                }
+            }
         }
         .buttonStyle(.plain)
         .disabled(state != .idle)

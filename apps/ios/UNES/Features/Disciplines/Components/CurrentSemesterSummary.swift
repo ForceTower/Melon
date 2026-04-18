@@ -79,14 +79,7 @@ struct CurrentSemesterSummary: View {
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(.horizontal, 12)
             .padding(.vertical, 11)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 16, style: .continuous))
         }
     }
 }

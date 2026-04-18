@@ -76,14 +76,7 @@ struct DisciplineFaltasBlock: View {
                 }
             }
             .padding(16)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .padding(.horizontal, 16)
         .padding(.bottom, 18)
