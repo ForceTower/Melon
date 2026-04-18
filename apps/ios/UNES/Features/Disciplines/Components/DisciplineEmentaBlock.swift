@@ -39,19 +39,16 @@ struct DisciplineEmentaBlock: View {
                 .padding(.horizontal, 16)
                 .padding(.vertical, 14)
                 .frame(maxWidth: .infinity, alignment: .leading)
-                .background(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(UNESColor.card)
-                        .overlay(
-                            RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                        )
-                )
-                .overlay(alignment: .leading) {
-                    Rectangle()
-                        .fill(discipline.color)
-                        .frame(width: 3)
-                        .clipShape(RoundedRectangle(cornerRadius: 2, style: .continuous))
+                .background {
+                    let shape = RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    ZStack(alignment: .leading) {
+                        shape.fill(UNESColor.card)
+                        Rectangle()
+                            .fill(discipline.color)
+                            .frame(width: 3)
+                    }
+                    .clipShape(shape)
+                    .overlay(shape.strokeBorder(UNESColor.cardLine, lineWidth: 1))
                 }
             }
             .padding(.horizontal, 16)

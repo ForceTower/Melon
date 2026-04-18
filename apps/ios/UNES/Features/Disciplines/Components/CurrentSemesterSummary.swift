@@ -28,7 +28,11 @@ struct CurrentSemesterSummary: View {
     private var attention: Int { atRiskCount + lowGradeCount }
 
     var body: some View {
-        HStack(spacing: 8) {
+        // `alignment: .top` + `.fixedSize(...vertical: false)` off and
+        // `.frame(maxHeight: .infinity)` per cell lets each cell expand
+        // to match the tallest sibling, so the subtitle on "Atenção"
+        // doesn't make it taller than the others.
+        HStack(alignment: .top, spacing: 8) {
             Cell(label: "Média parcial",
                  value: mean.map { String(format: "%.1f", $0) } ?? "—",
                  color: mean.map { DisciplineScoreColor.color(for: $0) } ?? UNESColor.ink3,
@@ -44,6 +48,7 @@ struct CurrentSemesterSummary: View {
                  color: attention > 0 ? DisciplineScoreColor.caution : UNESColor.ink,
                  subtitle: attention > 0 ? "itens" : "nada")
         }
+        .fixedSize(horizontal: false, vertical: true)
         .padding(.horizontal, 16)
     }
 
@@ -71,7 +76,7 @@ struct CurrentSemesterSummary: View {
                         .padding(.top, 2)
                 }
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
+            .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .topLeading)
             .padding(.horizontal, 12)
             .padding(.vertical, 11)
             .background(

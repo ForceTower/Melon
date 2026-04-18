@@ -38,13 +38,6 @@ struct ActiveDisciplineCard: View {
         }
         .padding(16)
         .background(cardBackground)
-        .overlay(alignment: .leading) {
-            Rectangle()
-                .fill(discipline.color)
-                .frame(width: 3)
-                .clipShape(RoundedRectangle(cornerRadius: 2, style: .continuous))
-                .padding(.vertical, 14)
-        }
     }
 
     // MARK: - Top row
@@ -211,14 +204,21 @@ struct ActiveDisciplineCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 
+    /// Composite background — fill + color rail inside the clipped rounded
+    /// rectangle, border + shadow outside so neither gets clipped. Keeping the
+    /// rail inside the clip is what stops it from poking past the corners.
     private var cardBackground: some View {
-        RoundedRectangle(cornerRadius: 22, style: .continuous)
-            .fill(UNESColor.card)
-            .overlay(
-                RoundedRectangle(cornerRadius: 22, style: .continuous)
-                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-            )
-            .shadow(color: Color.black.opacity(0.04), radius: 1, x: 0, y: 1)
+        let shape = RoundedRectangle(cornerRadius: 22, style: .continuous)
+        return ZStack(alignment: .leading) {
+            shape.fill(UNESColor.card)
+            Rectangle()
+                .fill(discipline.color)
+                .frame(width: 3)
+                .padding(.vertical, 14)
+        }
+        .clipShape(shape)
+        .overlay(shape.strokeBorder(UNESColor.cardLine, lineWidth: 1))
+        .shadow(color: Color.black.opacity(0.04), radius: 1, x: 0, y: 1)
     }
 }
 
@@ -244,49 +244,74 @@ struct FlowLayout: Layout {
     var spacing: CGFloat = 6
     var rowSpacing: CGFloat = 6
 
-    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) -> CGSize {
-        let width = proposal.width ?? .infinity
-        var rows: [[CGSize]] = [[]]
-        var rowWidth: CGFloat = 0
-        for s in subviews {
-            let size = s.sizeThatFits(.unspecified)
-            let additional = rows[rows.count - 1].isEmpty ? size.width : size.width + spacing
-            if rowWidth + additional > width, !rows[rows.count - 1].isEmpty {
-                rows.append([size])
-                rowWidth = size.width
-            } else {
-                rows[rows.count - 1].append(size)
-                rowWidth += additional
-            }
-        }
-        let height = rows.enumerated().reduce(CGFloat(0)) { acc, pair in
-            let rowHeight = pair.element.map(\.height).max() ?? 0
-            return acc + rowHeight + (pair.offset == 0 ? 0 : rowSpacing)
-        }
-        let usedWidth = rows.map { row -> CGFloat in
-            guard !row.isEmpty else { return 0 }
-            return row.map(\.width).reduce(0, +) + CGFloat(row.count - 1) * spacing
-        }.max() ?? 0
-        return CGSize(width: min(width, usedWidth), height: height)
+    /// Cache the subview intrinsic sizes so `sizeThatFits` and
+    /// `placeSubviews` always agree on row assignments — preventing the case
+    /// where a wrapped row is invisible to the parent and overlaps the next
+    /// sibling.
+    struct LayoutCache {
+        var sizes: [CGSize] = []
     }
 
-    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout ()) {
-        var x = bounds.minX
+    func makeCache(subviews: Subviews) -> LayoutCache {
+        LayoutCache(sizes: subviews.map { $0.sizeThatFits(.unspecified) })
+    }
+
+    func updateCache(_ cache: inout LayoutCache, subviews: Subviews) {
+        cache.sizes = subviews.map { $0.sizeThatFits(.unspecified) }
+    }
+
+    func sizeThatFits(proposal: ProposedViewSize, subviews: Subviews, cache: inout LayoutCache) -> CGSize {
+        let maxWidth = proposal.width ?? .infinity
+        let rows = arrange(sizes: cache.sizes, maxWidth: maxWidth)
+        let height = rows.reduce(CGFloat(0)) { $0 + $1.height }
+            + CGFloat(max(0, rows.count - 1)) * rowSpacing
+        // Report the proposed width when it's finite so the parent VStack
+        // reserves the correct row allocation. Falling back to usedWidth
+        // only for truly unbounded proposals.
+        let usedWidth = rows.map(\.width).max() ?? 0
+        let reportedWidth = maxWidth.isFinite ? maxWidth : usedWidth
+        return CGSize(width: reportedWidth, height: height)
+    }
+
+    func placeSubviews(in bounds: CGRect, proposal: ProposedViewSize, subviews: Subviews, cache: inout LayoutCache) {
+        let rows = arrange(sizes: cache.sizes, maxWidth: bounds.width)
+        var idx = 0
         var y = bounds.minY
-        var rowHeight: CGFloat = 0
-        let maxX = bounds.maxX
-        for s in subviews {
-            let size = s.sizeThatFits(.unspecified)
-            if x + size.width > maxX, x > bounds.minX {
-                x = bounds.minX
-                y += rowHeight + rowSpacing
-                rowHeight = 0
+        for row in rows {
+            var x = bounds.minX
+            for size in row.sizes {
+                subviews[idx].place(at: CGPoint(x: x, y: y),
+                                    anchor: .topLeading,
+                                    proposal: ProposedViewSize(size))
+                x += size.width + spacing
+                idx += 1
             }
-            s.place(at: CGPoint(x: x, y: y),
-                    anchor: .topLeading,
-                    proposal: ProposedViewSize(size))
-            x += size.width + spacing
-            rowHeight = max(rowHeight, size.height)
+            y += row.height + rowSpacing
         }
     }
+
+    private struct Row {
+        var sizes: [CGSize] = []
+        var width: CGFloat = 0
+        var height: CGFloat = 0
+    }
+
+    private func arrange(sizes: [CGSize], maxWidth: CGFloat) -> [Row] {
+        var rows: [Row] = []
+        var current = Row()
+        for size in sizes {
+            let delta = current.sizes.isEmpty ? size.width : size.width + spacing
+            if current.width + delta > maxWidth, !current.sizes.isEmpty {
+                rows.append(current)
+                current = Row(sizes: [size], width: size.width, height: size.height)
+            } else {
+                current.sizes.append(size)
+                current.width += delta
+                current.height = max(current.height, size.height)
+            }
+        }
+        if !current.sizes.isEmpty { rows.append(current) }
+        return rows
+    }
 }
+

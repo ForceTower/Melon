@@ -154,21 +154,18 @@ struct PastDisciplineRow: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
-            .background(
-                RoundedRectangle(cornerRadius: 16, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 16, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
-            .overlay(alignment: .leading) {
-                Rectangle()
-                    .fill(discipline.color)
-                    .opacity(passed ? 1 : 0.4)
-                    .frame(width: 3)
-                    .clipShape(RoundedRectangle(cornerRadius: 2, style: .continuous))
-                    .padding(.vertical, 10)
+            .background {
+                let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
+                ZStack(alignment: .leading) {
+                    shape.fill(UNESColor.card)
+                    Rectangle()
+                        .fill(discipline.color)
+                        .opacity(passed ? 1 : 0.4)
+                        .frame(width: 3)
+                        .padding(.vertical, 10)
+                }
+                .clipShape(shape)
+                .overlay(shape.strokeBorder(UNESColor.cardLine, lineWidth: 1))
             }
         }
         .buttonStyle(.plain)

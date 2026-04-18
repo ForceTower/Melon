@@ -6,34 +6,13 @@ import SwiftUI
 struct DisciplineDetailHero: View {
     let discipline: Discipline
     @Binding var selectedGroup: String?
-    let onBack: () -> Void
 
     var body: some View {
-        ZStack(alignment: .topLeading) {
-            LinearGradient(
-                stops: [
-                    .init(color: discipline.color.opacity(0.13), location: 0),
-                    .init(color: .clear, location: 0.8),
-                ],
-                startPoint: .top,
-                endPoint: .bottom
-            )
-
-            VStack(alignment: .leading, spacing: 0) {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 13, weight: .semibold))
-                        .foregroundStyle(UNESColor.ink)
-                        .frame(width: 38, height: 38)
-                        .background(
-                            Circle()
-                                .fill(UNESColor.card)
-                                .overlay(Circle().strokeBorder(UNESColor.cardLine, lineWidth: 1))
-                        )
-                }
-                .buttonStyle(.plain)
-                .padding(.bottom, 18)
-
+        // The discipline-tinted wash lives in `DisciplineDetailView` (as a
+        // radial gradient behind the whole screen, extending into the safe
+        // area). The hero here is just content — the system nav bar handles
+        // the back button.
+        VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 8) {
                     Text(discipline.fullCode)
                         .font(UNESFont.mono(10, weight: .bold))
@@ -67,11 +46,10 @@ struct DisciplineDetailHero: View {
                     )
                     .padding(.top, 14)
                 }
-            }
-            .padding(.horizontal, 18)
-            .padding(.top, 60)
-            .padding(.bottom, 20)
         }
+        .padding(.horizontal, 18)
+        .padding(.top, 12)
+        .padding(.bottom, 20)
     }
 }
 

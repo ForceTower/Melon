@@ -41,24 +41,30 @@ struct DisciplineClassesBlock: View {
         .padding(.bottom, 18)
     }
 
+    /// Width of the left "dot rail" column. The continuous spine passes
+    /// through the horizontal center of this column, and each row's dot is
+    /// also centered within it — keeping the line running exactly through
+    /// the middle of every dot.
+    private let railWidth: CGFloat = 22
+
     private var timeline: some View {
         ZStack(alignment: .topLeading) {
-            // Spine
+            // Continuous spine, centered in the dot rail.
             Rectangle()
                 .fill(UNESColor.line)
                 .frame(width: 1)
-                .padding(.leading, 6)
-                .padding(.vertical, 10)
+                .offset(x: railWidth / 2)
+                .padding(.vertical, 14)
 
             VStack(spacing: 10) {
                 ForEach(Array(classes.enumerated()), id: \.element.id) { idx, c in
                     ClassRow(entry: c,
                              accent: discipline.color,
-                             isNext: idx == nextIndex)
+                             isNext: idx == nextIndex,
+                             railWidth: railWidth)
                 }
             }
         }
-        .padding(.leading, 22)
     }
 }
 
@@ -66,9 +72,10 @@ private struct ClassRow: View {
     let entry: ClassEntry
     let accent: Color
     let isNext: Bool
+    let railWidth: CGFloat
 
     var body: some View {
-        HStack(alignment: .top, spacing: 0) {
+        HStack(alignment: .top, spacing: 10) {
             ZStack {
                 if isNext {
                     Circle()
@@ -82,9 +89,8 @@ private struct ClassRow: View {
                     )
                     .frame(width: 13, height: 13)
             }
-            .frame(width: 21, height: 21, alignment: .center)
+            .frame(width: railWidth, height: 22, alignment: .center)
             .padding(.top, 12)
-            .offset(x: -22)
 
             VStack(alignment: .leading, spacing: 3) {
                 if isNext {
@@ -125,7 +131,6 @@ private struct ClassRow: View {
                             .strokeBorder(isNext ? accent.opacity(0.33) : UNESColor.cardLine, lineWidth: 1)
                     )
             )
-            .padding(.leading, -12)
         }
     }
 }

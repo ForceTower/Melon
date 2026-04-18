@@ -8,7 +8,6 @@ import SwiftUI
 struct DisciplineDetailView: View {
     let discipline: Discipline
 
-    @Environment(\.dismiss) private var dismiss
     @State private var selectedGroup: String?
 
     var body: some View {
@@ -36,8 +35,7 @@ struct DisciplineDetailView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     DisciplineDetailHero(
                         discipline: discipline,
-                        selectedGroup: $selectedGroup,
-                        onBack: { dismiss() }
+                        selectedGroup: $selectedGroup
                     )
 
                     statsRow
@@ -63,7 +61,10 @@ struct DisciplineDetailView: View {
                 .padding(.bottom, 40)
             }
         }
-        .toolbar(.hidden, for: .navigationBar)
+        // Keep the system nav bar (so the back chevron + interactive swipe
+        // gesture both work), but let the hero's color wash show through.
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     // MARK: - Stats row
