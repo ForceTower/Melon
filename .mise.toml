@@ -1,4 +1,4 @@
 [tools]
 bun = "1.2"
 java = "temurin-21"
-gradle = "8.12"
+gradle = "9.4.1"
