@@ -5,6 +5,11 @@ import SwiftUI
 /// onboarding flow.
 struct ConnectedView: View {
     @State private var activeTab: ConnectedTab = .overview
+    @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
+
+    private var scheduleVariant: ScheduleVariant {
+        ScheduleVariant(rawValue: scheduleVariantRaw) ?? .default
+    }
 
     var body: some View {
         TabView(selection: $activeTab) {
@@ -12,7 +17,10 @@ struct ConnectedView: View {
                 OverviewView()
             }
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
-                ScheduleGridView()
+                switch scheduleVariant {
+                case .grid:    ScheduleGridView()
+                case .focused: ScheduleFocusedView()
+                }
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {
                 PlaceholderTab(title: ConnectedTab.classes.label)
