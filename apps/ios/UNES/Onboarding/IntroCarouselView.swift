@@ -179,19 +179,11 @@ struct IntroCarouselView: View {
             case .grades:
                 Text("Acompanhe")
                     .foregroundStyle(UNESColor.ink)
-                (Text("seu ")
-                    .foregroundStyle(UNESColor.ink)
-                 + Text("desempenho.")
-                    .italic()
-                    .foregroundStyle(slide.accentColor))
+                Text("\(Text("seu ").foregroundStyle(UNESColor.ink))\(Text("desempenho.").italic().foregroundStyle(slide.accentColor))")
             case .messages:
                 Text("Tudo o que")
                     .foregroundStyle(UNESColor.ink)
-                (Text("você ")
-                    .foregroundStyle(UNESColor.ink)
-                 + Text("precisa saber.")
-                    .italic()
-                    .foregroundStyle(slide.accentColor))
+                Text("\(Text("você ").foregroundStyle(UNESColor.ink))\(Text("precisa saber.").italic().foregroundStyle(slide.accentColor))")
             }
         }
     }

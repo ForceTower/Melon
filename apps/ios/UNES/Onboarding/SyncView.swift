@@ -64,15 +64,10 @@ struct SyncView: View {
         .onAppear(perform: advance)
     }
 
-    @ViewBuilder
-    private var headline: some View {
-        (Text("Quase lá,\n")
-            .foregroundStyle(UNESColor.surface)
-         + Text("\(userId).")
-            .italic()
-            .foregroundStyle(UNESColor.amber))
-        .font(UNESFont.serif(44))
-        .tracking(-1.1)
+    private var headline: Text {
+        Text("\(Text("Quase lá,\n").foregroundStyle(UNESColor.surface))\(Text("\(userId).").italic().foregroundStyle(UNESColor.amber))")
+            .font(UNESFont.serif(44))
+            .tracking(-1.1)
     }
 
     @ViewBuilder

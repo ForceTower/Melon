@@ -85,13 +85,8 @@ struct ReadyView: View {
         }
     }
 
-    @ViewBuilder
-    private var titleText: some View {
-        (Text("Prontinho,\n")
-            .foregroundStyle(UNESColor.ink)
-         + Text("\(userName).")
-            .italic()
-            .foregroundStyle(UNESColor.accent))
+    private var titleText: Text {
+        Text("\(Text("Prontinho,\n").foregroundStyle(UNESColor.ink))\(Text("\(userName).").italic().foregroundStyle(UNESColor.accent))")
     }
 
     @ViewBuilder

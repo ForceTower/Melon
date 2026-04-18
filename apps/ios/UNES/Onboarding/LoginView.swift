@@ -97,13 +97,8 @@ struct LoginView: View {
         }
     }
 
-    @ViewBuilder
-    private var titleText: some View {
-        (Text("Entre com seu\n")
-            .foregroundStyle(UNESColor.ink)
-         + Text("usuário.")
-            .italic()
-            .foregroundStyle(UNESColor.accent))
+    private var titleText: Text {
+        Text("\(Text("Entre com seu\n").foregroundStyle(UNESColor.ink))\(Text("usuário.").italic().foregroundStyle(UNESColor.accent))")
     }
 
     @ViewBuilder
@@ -222,14 +217,8 @@ struct LoginView: View {
             .font(.system(size: 18, weight: .regular))
     }
 
-    @ViewBuilder
-    private var termsFooter: some View {
-        Text("Ao continuar, você concorda com nossos ")
-            .foregroundStyle(UNESColor.ink4)
-        + Text("Termos").foregroundStyle(UNESColor.ink2).underline()
-        + Text(" e ").foregroundStyle(UNESColor.ink4)
-        + Text("Privacidade").foregroundStyle(UNESColor.ink2).underline()
-        + Text(".").foregroundStyle(UNESColor.ink4)
+    private var termsFooter: Text {
+        Text("\(Text("Ao continuar, você concorda com nossos ").foregroundStyle(UNESColor.ink4))\(Text("Termos").foregroundStyle(UNESColor.ink2).underline())\(Text(" e ").foregroundStyle(UNESColor.ink4))\(Text("Privacidade").foregroundStyle(UNESColor.ink2).underline())\(Text(".").foregroundStyle(UNESColor.ink4))")
     }
 
     @ViewBuilder
