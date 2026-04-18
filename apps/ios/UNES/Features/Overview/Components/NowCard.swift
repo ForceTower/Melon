@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct NowCard: View {
-    let now: HomeNowClass
+    let now: OverviewNowClass
 
     private var countdownLabel: String {
         let h = now.startsIn / 60
@@ -119,7 +119,7 @@ private struct NowMetaRow: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        NowCard(now: HomeFixtures.nowClass)
+        NowCard(now: OverviewFixtures.nowClass)
             .padding(14)
     }
 }

@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct DisciplinesStrip: View {
-    let items: [HomeDiscipline]
+    let items: [OverviewDiscipline]
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
@@ -17,10 +17,6 @@ struct DisciplinesStrip: View {
                         .tracking(-0.22)
                         .foregroundStyle(UNESColor.ink)
                 }
-                Spacer()
-                Text("\(items.count)")
-                    .font(UNESFont.mono(11))
-                    .foregroundStyle(UNESColor.ink3)
             }
             .padding(.horizontal, 18)
             .padding(.bottom, 10)
@@ -40,7 +36,7 @@ struct DisciplinesStrip: View {
 }
 
 private struct DisciplineCard: View {
-    let item: HomeDiscipline
+    let item: OverviewDiscipline
 
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -100,6 +96,6 @@ private struct DisciplineCard: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        DisciplinesStrip(items: HomeFixtures.disciplines)
+        DisciplinesStrip(items: OverviewFixtures.disciplines)
     }
 }

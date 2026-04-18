@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomeHeader: View {
+struct OverviewHeader: View {
     private let now = Date()
 
     private var greeting: String {
@@ -93,6 +93,6 @@ private struct AvatarDot: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        VStack { HomeHeader(); Spacer() }
+        VStack { OverviewHeader(); Spacer() }
     }
 }

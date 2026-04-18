@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TodayTimeline: View {
-    let items: [HomeTodayItem]
+    let items: [OverviewTodayItem]
 
     var body: some View {
         VStack(spacing: 0) {
@@ -49,7 +49,7 @@ struct TodayTimeline: View {
 }
 
 private struct TodayRow: View {
-    let item: HomeTodayItem
+    let item: OverviewTodayItem
     let isLast: Bool
 
     private var isDone: Bool { item.state == .done }
@@ -178,6 +178,6 @@ private struct TimelineDot: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        TodayTimeline(items: HomeFixtures.today).padding(14)
+        TodayTimeline(items: OverviewFixtures.today).padding(14)
     }
 }

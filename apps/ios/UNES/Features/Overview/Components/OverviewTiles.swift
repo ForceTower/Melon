@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomeTileGrid: View {
+struct OverviewTileGrid: View {
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
@@ -64,10 +64,10 @@ private struct GradeTile: View {
                 HStack(spacing: 4) {
                     Image(systemName: "arrow.up.right")
                         .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(HomeFixtures.successIcon)
+                        .foregroundStyle(OverviewFixtures.successIcon)
                     Text("+0,3")
                         .font(UNESFont.sans(11, weight: .medium))
-                        .foregroundStyle(HomeFixtures.success)
+                        .foregroundStyle(OverviewFixtures.success)
                     Text("vs 2025.2")
                         .font(UNESFont.sans(11))
                         .foregroundStyle(UNESColor.ink3)
@@ -180,6 +180,6 @@ private struct StreakTile: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        HomeTileGrid().padding(14)
+        OverviewTileGrid().padding(14)
     }
 }

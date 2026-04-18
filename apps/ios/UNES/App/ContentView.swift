@@ -2,7 +2,7 @@ import SwiftUI
 
 private enum AppRoute {
     case onboarding
-    case home
+    case connected
 }
 
 struct ContentView: View {
@@ -14,7 +14,7 @@ struct ContentView: View {
             case .onboarding:
                 OnboardingFlow(onComplete: {
                     withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
-                        route = .home
+                        route = .connected
                     }
                 })
                 .transition(
@@ -23,8 +23,8 @@ struct ContentView: View {
                         removal: .opacity.combined(with: .move(edge: .leading))
                     )
                 )
-            case .home:
-                HomeView()
+            case .connected:
+                ConnectedView()
                     .transition(
                         .asymmetric(
                             insertion: .opacity.combined(with: .move(edge: .trailing)),

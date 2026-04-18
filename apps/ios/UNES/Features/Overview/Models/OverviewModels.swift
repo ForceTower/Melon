@@ -1,6 +1,6 @@
 import SwiftUI
 
-struct HomeNowClass {
+struct OverviewNowClass {
     let code: String
     let title: String
     let prof: String
@@ -12,54 +12,22 @@ struct HomeNowClass {
     let meshVariant: MeshVariant
 }
 
-enum HomeClassState {
+enum OverviewClassState {
     case done, now, next, later
 }
 
-struct HomeTodayItem: Identifiable {
+struct OverviewTodayItem: Identifiable {
     let id = UUID()
     let time: String
     let code: String
     let title: String
     let room: String
     let color: Color
-    let state: HomeClassState
+    let state: OverviewClassState
     let topic: String?
 }
 
-enum HomeTabKey: String, CaseIterable {
-    case home, schedule, classes, messages, me
-
-    var label: String {
-        switch self {
-        case .home:     return "Hoje"
-        case .schedule: return "Horário"
-        case .classes:  return "Turmas"
-        case .messages: return "Recados"
-        case .me:       return "Eu"
-        }
-    }
-
-    /// SF Symbols mapping (closest to the custom SVGs in the design).
-    var icon: String {
-        switch self {
-        case .home:     return "house"
-        case .schedule: return "square.grid.2x2"
-        case .classes:  return "square.stack.3d.up"
-        case .messages: return "bubble.left"
-        case .me:       return "person"
-        }
-    }
-
-    var badge: Int? {
-        switch self {
-        case .messages: return 2
-        default:        return nil
-        }
-    }
-}
-
-struct HomeDiscipline: Identifiable {
+struct OverviewDiscipline: Identifiable {
     let id = UUID()
     let code: String
     let title: String
@@ -67,13 +35,13 @@ struct HomeDiscipline: Identifiable {
     let color: Color
 }
 
-enum HomeFixtures {
+enum OverviewFixtures {
     // Match design hex values that aren't tokens in UNESColor.
     static let teal    = Color(red: 0x3B / 255, green: 0x9E / 255, blue: 0xAE / 255)
     static let success = Color(red: 0x2F / 255, green: 0x6B / 255, blue: 0x48 / 255)
     static let successIcon = Color(red: 0x4A / 255, green: 0xA6 / 255, blue: 0x79 / 255)
 
-    static let nowClass = HomeNowClass(
+    static let nowClass = OverviewNowClass(
         code: "CALC II",
         title: "Cálculo Diferencial II",
         prof: "Prof. Adriana Matos",
@@ -85,7 +53,7 @@ enum HomeFixtures {
         meshVariant: .cool
     )
 
-    static let today: [HomeTodayItem] = [
+    static let today: [OverviewTodayItem] = [
         .init(time: "08:00", code: "ALGI", title: "Algoritmos I",
               room: "LC-03", color: UNESColor.coral, state: .done,  topic: nil),
         .init(time: "10:20", code: "CALC", title: "Cálculo II",
@@ -96,7 +64,7 @@ enum HomeFixtures {
               room: "PV-22", color: UNESColor.plum,   state: .later, topic: nil),
     ]
 
-    static let disciplines: [HomeDiscipline] = [
+    static let disciplines: [OverviewDiscipline] = [
         .init(code: "ALGI", title: "Algoritmos I",        grade: "8,8", color: UNESColor.coral),
         .init(code: "CALC", title: "Cálculo II",          grade: "7,5", color: teal),
         .init(code: "LPOO", title: "POO",                 grade: "9,4", color: UNESColor.magenta),
