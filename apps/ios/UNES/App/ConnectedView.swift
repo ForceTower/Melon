@@ -12,7 +12,7 @@ struct ConnectedView: View {
                 OverviewView()
             }
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
-                PlaceholderTab(title: ConnectedTab.schedule.label)
+                ScheduleGridView()
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {
                 PlaceholderTab(title: ConnectedTab.classes.label)
