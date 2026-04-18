@@ -45,7 +45,7 @@ enum ConnectedTab: String, CaseIterable {
         case .overview: return "Hoje"
         case .schedule: return "Horário"
         case .classes:  return "Disciplinas"
-        case .messages: return "Recados"
+        case .messages: return "Mensagens"
         case .me:       return "Eu"
         }
     }

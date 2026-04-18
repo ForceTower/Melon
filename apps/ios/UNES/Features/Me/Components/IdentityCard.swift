@@ -86,8 +86,8 @@ struct IdentityCard: View {
                     .lineLimit(1)
 
                 Text(identity.campus)
-                    .font(UNESFont.mono(9.5))
-                    .tracking(0.76)
+                    .font(UNESFont.mono(9))
+                    .tracking(0.36)
                     .foregroundStyle(UNESColor.surfaceLight.opacity(0.55))
                     .lineLimit(1)
             }

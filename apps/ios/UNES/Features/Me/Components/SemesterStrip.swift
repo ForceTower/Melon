@@ -71,13 +71,13 @@ private struct WeekBlock: View {
     let totalWeeks: Int
     let currentWeek: Int
 
-    private var state: State {
+    private var phase: Phase {
         if index < currentWeek - 1 { return .done }
         if index == currentWeek - 1 { return .current }
         return .upcoming
     }
 
-    enum State { case done, current, upcoming }
+    enum Phase { case done, current, upcoming }
 
     /// Past weeks fade from dim → recent, so the eye reads a gradient
     /// tracking how close we are to "now" (same trick as the CSS prototype).
@@ -86,24 +86,44 @@ private struct WeekBlock: View {
     }
 
     var body: some View {
-        ZStack {
-            RoundedRectangle(cornerRadius: 4, style: .continuous)
-                .fill(fillColor)
-                .opacity(state == .done ? doneOpacity : 1)
+        RoundedRectangle(cornerRadius: 4, style: .continuous)
+            .fill(fillColor)
+            .opacity(phase == .done ? doneOpacity : 1)
+            .frame(maxWidth: .infinity)
+            .frame(height: 22)
+            .overlay {
+                if phase == .current { currentRing }
+            }
+    }
 
-            if state == .current {
+    /// Pulse driven by `TimelineView(.animation)` so opacity and scale are
+    /// both computed explicitly per frame instead of going through SwiftUI's
+    /// implicit `.animation(value:)` + `repeatForever` path. The scale only
+    /// reads as diagonal when its anchor disagrees with the rendered center
+    /// (which happened earlier with `.padding(-3)` on a non-square block);
+    /// here the ring's size is pinned via `.frame(w+6, h+6)` and the scale
+    /// applies inside that known frame with an explicit `.center` anchor.
+    private var currentRing: some View {
+        GeometryReader { proxy in
+            TimelineView(.animation) { timeline in
+                let t = timeline.date.timeIntervalSinceReferenceDate
+                let cycle = 1.6
+                let phase = t.truncatingRemainder(dividingBy: cycle) / cycle
+                let ease = (1 - cos(phase * 2 * .pi)) / 2
+                let alpha = 0.55 - 0.3 * ease
+                let scale = 1.0 - 0.05 * ease
+
                 RoundedRectangle(cornerRadius: 6, style: .continuous)
-                    .strokeBorder(UNESColor.accent.opacity(0.5), lineWidth: 1.5)
-                    .padding(-3)
-                    .pulseForever()
+                    .strokeBorder(UNESColor.accent.opacity(alpha), lineWidth: 1.5)
+                    .frame(width: proxy.size.width + 6, height: proxy.size.height + 6)
+                    .scaleEffect(scale, anchor: .center)
+                    .position(x: proxy.size.width / 2, y: proxy.size.height / 2)
             }
         }
-        .frame(maxWidth: .infinity)
-        .frame(height: 22)
     }
 
     private var fillColor: Color {
-        switch state {
+        switch phase {
         case .done:     return UNESColor.ink
         case .current:  return UNESColor.accent
         case .upcoming: return UNESColor.surface3
