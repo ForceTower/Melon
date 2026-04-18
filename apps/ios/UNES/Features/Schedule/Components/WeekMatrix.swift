@@ -15,8 +15,9 @@ struct WeekMatrix: View {
         VStack(spacing: 4) {
             headerRow
                 .padding(.bottom, 4)
-            ForEach(ScheduleFixtures.slots, id: \.self) { slot in
+            ForEach(Array(ScheduleFixtures.slots.enumerated()), id: \.element) { index, slot in
                 slotRow(slot)
+                    .fadeUpOnAppear(delay: 0.22 + Double(index) * 0.05, distance: 8, duration: 0.45)
             }
         }
         .padding(.horizontal, 12)

@@ -36,9 +36,14 @@ struct ScheduleGridView: View {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 0) {
                     header
+                        .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)
                     WeekMatrix(activeIdx: $activeIdx, onPick: { activeIdx = $0 })
                         .padding(.bottom, 24)
-                    ForEach([0, 1, 2, 3, 4], id: \.self) { DaySection(dayIdx: $0) }
+                        .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
+                    ForEach([0, 1, 2, 3, 4], id: \.self) { i in
+                        DaySection(dayIdx: i)
+                            .fadeUpOnAppear(delay: 0.32 + Double(i) * 0.07, distance: 14, duration: 0.55)
+                    }
                 }
                 .padding(.bottom, 100)
             }
