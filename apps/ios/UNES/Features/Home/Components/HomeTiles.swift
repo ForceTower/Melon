@@ -58,16 +58,9 @@ private struct GradeTile: View {
             VStack(alignment: .leading, spacing: 0) {
                 TileEyebrow(label: "coeficiente")
                 Spacer(minLength: 0)
-                (
-                    Text("8")
-                        .foregroundStyle(UNESColor.ink)
-                    + Text(",")
-                        .foregroundStyle(UNESColor.ink4)
-                    + Text("5")
-                        .foregroundStyle(UNESColor.ink)
-                )
-                .font(UNESFont.serif(52))
-                .tracking(-1.56)
+                Text("\(Text("8").foregroundStyle(UNESColor.ink))\(Text(",").foregroundStyle(UNESColor.ink4))\(Text("5").foregroundStyle(UNESColor.ink))")
+                    .font(UNESFont.serif(52))
+                    .tracking(-1.56)
                 HStack(spacing: 4) {
                     Image(systemName: "arrow.up.right")
                         .font(.system(size: 8, weight: .bold))
@@ -159,15 +152,8 @@ private struct StreakTile: View {
             VStack(alignment: .leading, spacing: 0) {
                 TileEyebrow(label: "frequência")
                 Spacer(minLength: 0)
-                (
-                    Text("96")
-                        .foregroundStyle(UNESColor.ink)
-                        .font(UNESFont.serif(32))
-                    + Text("%")
-                        .foregroundStyle(UNESColor.ink3)
-                        .font(UNESFont.serif(18))
-                )
-                .tracking(-0.64)
+                Text("\(Text("96").font(UNESFont.serif(32)).foregroundStyle(UNESColor.ink))\(Text("%").font(UNESFont.serif(18)).foregroundStyle(UNESColor.ink3))")
+                    .tracking(-0.64)
 
                 HStack(spacing: 2) {
                     ForEach(Array(days.enumerated()), id: \.offset) { i, present in

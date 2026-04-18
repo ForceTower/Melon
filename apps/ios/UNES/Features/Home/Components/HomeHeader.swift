@@ -1,35 +1,41 @@
 import SwiftUI
 
 struct HomeHeader: View {
-    private let hour = Calendar.current.component(.hour, from: Date())
+    private let now = Date()
 
     private var greeting: String {
-        switch hour {
+        switch Calendar.current.component(.hour, from: now) {
         case ..<12:  return "Bom dia"
         case ..<18:  return "Boa tarde"
         default:     return "Boa noite"
         }
     }
 
+    private var dateEyebrow: String {
+        let fmt = DateFormatter()
+        fmt.locale = Locale(identifier: "pt_BR")
+        fmt.dateFormat = "EEEE · d MMM"
+        let raw = fmt.string(from: now)
+        // "quinta-feira" → "quinta", strip trailing period on abbreviated month.
+        return raw
+            .replacingOccurrences(of: "-feira", with: "")
+            .replacingOccurrences(of: ".", with: "")
+            .lowercased()
+    }
+
     var body: some View {
         HStack(alignment: .center) {
             VStack(alignment: .leading, spacing: 6) {
-                Text("◦ olá")
+                Text("◦ \(dateEyebrow)")
                     .font(UNESFont.sans(12, weight: .medium))
                     .tracking(1.44)
                     .textCase(.uppercase)
                     .foregroundStyle(UNESColor.ink3)
 
-                (
-                    Text("\(greeting), ")
-                        .foregroundStyle(UNESColor.ink)
-                    + Text("Mariana")
-                        .italic()
-                        .foregroundStyle(UNESColor.ink)
-                )
-                .font(UNESFont.serif(30))
-                .tracking(-0.6)
-                .lineSpacing(4.5)
+                Text("\(Text("\(greeting), ").foregroundStyle(UNESColor.ink))\(Text("Mariana").italic().foregroundStyle(UNESColor.accent))")
+                    .font(UNESFont.serif(30))
+                    .tracking(-0.6)
+                    .lineSpacing(4.5)
             }
 
             Spacer()

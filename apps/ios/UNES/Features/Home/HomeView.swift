@@ -7,22 +7,25 @@ struct HomeView: View {
         ZStack(alignment: .bottom) {
             UNESColor.surface.ignoresSafeArea()
 
-            // Ambient mesh at the top, fading into the surface.
-            ZStack {
-                MeshGradientView(variant: .warm, intensity: 0.55)
-                LinearGradient(
-                    stops: [
-                        .init(color: .clear, location: 0),
-                        .init(color: UNESColor.surface, location: 0.9),
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
+            // Ambient mesh pinned to the top. Dimness is baked into the mesh
+            // intensity so the gradient can fade all the way to fully-opaque
+            // surface at the bottom — avoids a seam where the block ends.
+            VStack(spacing: 0) {
+                ZStack {
+                    MeshGradientView(variant: .warm, intensity: 0.2)
+                    LinearGradient(
+                        stops: [
+                            .init(color: .clear, location: 0.0),
+                            .init(color: UNESColor.surface, location: 1.0),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .frame(height: 260)
+                Spacer(minLength: 0)
             }
-            .frame(height: 300)
-            .opacity(0.35)
-            .offset(y: -60)
-            .frame(maxHeight: .infinity, alignment: .top)
+            .frame(maxWidth: .infinity)
             .ignoresSafeArea(edges: .top)
             .allowsHitTesting(false)
 
