@@ -104,7 +104,7 @@ struct ScheduleIllustration: View {
                         .font(UNESFont.mono(7))
                         .opacity(0.8)
                 }
-                .foregroundStyle(UNESColor.surface)
+                .foregroundStyle(UNESColor.surfaceLight)
                 .padding(8)
                 .frame(width: 71, height: CGFloat(b.h * 40 - 2), alignment: .topLeading)
                 .background(b.color, in: RoundedRectangle(cornerRadius: 10, style: .continuous))

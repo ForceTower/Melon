@@ -23,12 +23,12 @@ struct WelcomeView: View {
 
                 VStack(alignment: .leading, spacing: 0) {
                     Text("Seu semestre,")
-                        .foregroundStyle(UNESColor.surface)
+                        .foregroundStyle(UNESColor.surfaceLight)
                     Text("num só")
                         .italic()
                         .foregroundStyle(UNESColor.amber)
                     Text("lugar.")
-                        .foregroundStyle(UNESColor.surface)
+                        .foregroundStyle(UNESColor.surfaceLight)
                 }
                 .font(UNESFont.serif(54))
                 .tracking(-1.3)
@@ -39,7 +39,7 @@ struct WelcomeView: View {
                     .font(UNESFont.sans(17))
                     .tracking(-0.17)
                     .lineSpacing(3)
-                    .foregroundStyle(Color.white.opacity(0.72))
+                    .foregroundStyle(UNESColor.surfaceLight.opacity(0.72))
                     .frame(maxWidth: 320, alignment: .leading)
                     .padding(.top, 22)
                     .fadeUpOnAppear(delay: 0.45)
@@ -49,8 +49,8 @@ struct WelcomeView: View {
                 VStack(spacing: 10) {
                     PrimaryButton(
                         title: "Conhecer o app",
-                        background: UNESColor.surface,
-                        foreground: UNESColor.ink,
+                        background: UNESColor.surfaceLight,
+                        foreground: UNESColor.inkFixed,
                         action: onPrimary
                     )
                     GlassButton(title: "Já tenho matrícula", action: onSecondary)

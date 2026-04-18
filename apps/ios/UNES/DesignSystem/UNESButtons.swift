@@ -73,7 +73,7 @@ struct GlassButton: View {
             Text(title)
                 .font(UNESFont.sans(17, weight: .medium))
                 .tracking(-0.17)
-                .foregroundStyle(UNESColor.surface)
+                .foregroundStyle(UNESColor.surfaceLight)
                 .frame(maxWidth: .infinity)
                 .frame(height: 54)
                 .modifier(LiquidGlassCapsule())
@@ -88,7 +88,7 @@ private struct LiquidGlassCapsule: ViewModifier {
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
-                .glassEffect(.regular.tint(.white.opacity(0.08)), in: Capsule(style: .continuous))
+                .glassEffect(.regular.tint(UNESColor.surface.opacity(0.08)), in: Capsule(style: .continuous))
                 .overlay(
                     Capsule(style: .continuous)
                         .strokeBorder(.white.opacity(0.14), lineWidth: 1)

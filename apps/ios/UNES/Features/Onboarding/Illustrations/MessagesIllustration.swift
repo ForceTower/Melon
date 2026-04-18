@@ -27,7 +27,7 @@ struct MessagesIllustration: View {
                             .fill(m.color)
                         Text(String(m.from.prefix(1)))
                             .font(UNESFont.serif(18))
-                            .foregroundStyle(UNESColor.surface)
+                            .foregroundStyle(UNESColor.surfaceLight)
                     }
                     .frame(width: 40, height: 40)
 
@@ -58,11 +58,11 @@ struct MessagesIllustration: View {
                 .padding(.vertical, 12)
                 .background(
                     RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(UNESColor.surface)
-                        .shadow(color: UNESColor.ink.opacity(0.05), radius: 8, y: 4)
+                        .fill(UNESColor.card)
+                        .shadow(color: Color.black.opacity(0.05), radius: 8, y: 4)
                         .overlay(
                             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                                .strokeBorder(UNESColor.ink.opacity(0.06), lineWidth: 1)
+                                .strokeBorder(UNESColor.cardLine, lineWidth: 1)
                         )
                 )
                 .rotationEffect(.degrees(i.isMultiple(of: 2) ? -1.5 : 1.5))

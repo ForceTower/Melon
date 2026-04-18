@@ -138,7 +138,7 @@ struct LoginView: View {
         }
         .background(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(Color.white)
+                .fill(UNESColor.card)
         )
         .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
@@ -148,7 +148,7 @@ struct LoginView: View {
                 )
         )
         .shadow(
-            color: focusedField != nil ? UNESColor.ink.opacity(0.06) : .clear,
+            color: focusedField != nil ? Color.black.opacity(0.06) : .clear,
             radius: 4
         )
         .animation(.easeInOut(duration: 0.2), value: focusedField)

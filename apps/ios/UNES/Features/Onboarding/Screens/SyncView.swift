@@ -65,7 +65,7 @@ struct SyncView: View {
     }
 
     private var headline: Text {
-        Text("\(Text("Quase lá,\n").foregroundStyle(UNESColor.surface))\(Text("\(userId).").italic().foregroundStyle(UNESColor.amber))")
+        Text("\(Text("Quase lá,\n").foregroundStyle(UNESColor.surfaceLight))\(Text("\(userId).").italic().foregroundStyle(UNESColor.amber))")
             .font(UNESFont.serif(44))
             .tracking(-1.1)
     }
@@ -98,7 +98,7 @@ struct SyncView: View {
                     Text("\(Int(progress * 100))")
                         .font(UNESFont.serif(44))
                         .tracking(-1.3)
-                        .foregroundStyle(UNESColor.surface)
+                        .foregroundStyle(UNESColor.surfaceLight)
                     Text("%")
                         .font(UNESFont.serif(20))
                         .foregroundStyle(Color.white.opacity(0.55))
@@ -128,7 +128,7 @@ struct SyncView: View {
                         .font(UNESFont.sans(14, weight: isActive ? .medium : .regular))
                         .tracking(-0.07)
                         .foregroundStyle(
-                            isDone ? Color.white.opacity(0.55) : UNESColor.surface
+                            isDone ? Color.white.opacity(0.55) : UNESColor.surfaceLight
                         )
                         .strikethrough(isDone, color: Color.white.opacity(0.3))
 

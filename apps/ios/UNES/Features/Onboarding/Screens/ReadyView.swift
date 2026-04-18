@@ -81,7 +81,7 @@ struct ReadyView: View {
                 .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
                 .frame(width: 96, height: 96)
 
-            DrawingCheckmark(size: 54, strokeColor: UNESColor.surface, drawCircle: true)
+            DrawingCheckmark(size: 54, strokeColor: UNESColor.surfaceLight, drawCircle: true)
         }
     }
 
@@ -122,11 +122,11 @@ struct ReadyView: View {
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 22, style: .continuous)
-                .fill(Color.white)
-                .shadow(color: UNESColor.ink.opacity(0.06), radius: 20, y: 10)
+                .fill(UNESColor.card)
+                .shadow(color: Color.black.opacity(0.06), radius: 20, y: 10)
                 .overlay(
                     RoundedRectangle(cornerRadius: 22, style: .continuous)
-                        .strokeBorder(UNESColor.line, lineWidth: 1)
+                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
                 )
         )
     }

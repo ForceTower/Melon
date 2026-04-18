@@ -20,7 +20,7 @@ struct SplashView: View {
                     Text("unes")
                         .font(UNESFont.serif(88))
                         .tracking(-3.5)
-                        .foregroundStyle(UNESColor.surface)
+                        .foregroundStyle(UNESColor.surfaceLight)
                     Circle()
                         .fill(UNESColor.amber)
                         .frame(width: 10, height: 10)
