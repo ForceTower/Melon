@@ -1,0 +1,26 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  // Base settings use oxfmt defaults:
+  // - printWidth: 100
+  // - tabWidth: 2
+  // - useTabs: false
+  // - semi: true
+  // - singleQuote: false (double quotes)
+  // - arrowParens: "always"
+  // - endOfLine: "lf"
+  "ignorePatterns": [
+    ".claude/**/*",
+    ".codex/**/*",
+    ".vscode/**/*",
+    "**/.output/**/*",
+    "**/worker-configuration.d.ts"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/api/**/*"],
+      "options": {
+        "printWidth": 120
+      }
+    }
+  ]
+}

@@ -1,0 +1,58 @@
+{
+  "$schema": "./node_modules/oxlint/configuration_schema.json",
+  "plugins": ["typescript", "import", "unicorn"],
+  "categories": {},
+  "rules": {
+    "no-unused-vars": "off",
+    "no-unused-expressions": "off",
+    "no-thenable": "off",
+    "no-explicit-any": "off",
+    "no-param-reassign": "off",
+    "prefer-as-const": "error",
+    "default-param-last": "off",
+    "prefer-number-properties": "error",
+    "no-else-return": "error",
+    "no-default-export": "error",
+    "no-empty-pattern": "off",
+    "no-this-alias": "off",
+    "unbound-method": "off",
+    "no-ex-assign": "off",
+    "no-floating-promises": "off",
+    "restrict-template-expressions": "off",
+    "no-base-to-string": "off",
+    "no-redundant-type-constituents": "off",
+    "require-array-sort-compare": "off"
+  },
+  "ignorePatterns": [
+    ".claude/**/*",
+    ".vscode/**/*",
+    "**/.output/**/*",
+    "**/build/**/*",
+    "**/dist/**/*",
+    "**/node_modules/**/*"
+  ],
+  "overrides": [
+    {
+      "files": ["apps/api/**/*"],
+      "rules": {
+        "no-explicit-any": "error",
+        "no-unused-vars": "error"
+      }
+    },
+    {
+      "files": ["apps/api/scripts/**/*"],
+      "rules": {
+        "no-explicit-any": "off"
+      }
+    },
+    {
+      "files": [
+        "**/*.config.*",
+        "**/app/routes.ts"
+      ],
+      "rules": {
+        "no-default-export": "off"
+      }
+    }
+  ]
+}
