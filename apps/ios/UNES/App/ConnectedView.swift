@@ -23,7 +23,7 @@ struct ConnectedView: View {
                 }
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {
-                PlaceholderTab(title: ConnectedTab.classes.label)
+                DisciplinesListView()
             }
             Tab(ConnectedTab.messages.label, systemImage: ConnectedTab.messages.icon, value: .messages) {
                 PlaceholderTab(title: ConnectedTab.messages.label)
@@ -44,7 +44,7 @@ enum ConnectedTab: String, CaseIterable {
         switch self {
         case .overview: return "Hoje"
         case .schedule: return "Horário"
-        case .classes:  return "Turmas"
+        case .classes:  return "Disciplinas"
         case .messages: return "Recados"
         case .me:       return "Eu"
         }
