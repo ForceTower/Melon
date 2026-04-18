@@ -17,4 +17,8 @@ dependencyResolutionManagement {
 
 rootProject.name = "melon"
 
-// KMP modules will be included in a subsequent commit
+include(":packages:shared-kmp:core:network")
+include(":packages:shared-kmp:core:database")
+include(":packages:shared-kmp:features:auth")
+include(":packages:shared-kmp:features:dashboard")
+include(":packages:shared-kmp:umbrella")
