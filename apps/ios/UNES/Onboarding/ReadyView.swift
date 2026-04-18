@@ -1,0 +1,142 @@
+import SwiftUI
+
+struct ReadyView: View {
+    let userName: String
+    let onEnter: () -> Void
+
+    var body: some View {
+        ZStack(alignment: .top) {
+            UNESColor.surface.ignoresSafeArea()
+
+            // hero mesh — top-half fully visible, fades to surface over the
+            // bottom half (matches the web `linear-gradient(180deg,
+            // transparent 50%, var(--surface) 100%)`).
+            ZStack {
+                MeshGradientView(variant: .fresh, intensity: 0.9)
+                LinearGradient(
+                    stops: [
+                        .init(color: .clear, location: 0.5),
+                        .init(color: UNESColor.surface, location: 1.0)
+                    ],
+                    startPoint: .top,
+                    endPoint: .bottom
+                )
+            }
+            .frame(maxWidth: .infinity)
+            .frame(height: 420)
+            .ignoresSafeArea(edges: .top)
+            .allowsHitTesting(false)
+
+            VStack(spacing: 0) {
+                Spacer().frame(height: 120)
+
+                checkBadge
+                    .scaleInOnAppear(delay: 0.1)
+
+                Text("◦ conectado")
+                    .font(UNESFont.sans(12, weight: .medium))
+                    .tracking(1.4)
+                    .textCase(.uppercase)
+                    .foregroundStyle(Color.white.opacity(0.7))
+                    .padding(.top, 20)
+                    .fadeUpOnAppear(delay: 1.1)
+
+                Spacer().frame(height: 60)
+
+                titleText
+                    .font(UNESFont.serif(44))
+                    .tracking(-1.1)
+                    .multilineTextAlignment(.center)
+                    .fadeUpOnAppear(delay: 1.2)
+
+                Text("6 turmas · 24 créditos · semestre 2026.1")
+                    .font(UNESFont.sans(15))
+                    .lineSpacing(3)
+                    .foregroundStyle(UNESColor.ink3)
+                    .padding(.top, 10)
+                    .fadeUpOnAppear(delay: 1.3)
+
+                Spacer()
+
+                previewCard
+                    .padding(.horizontal, 28)
+                    .fadeUpOnAppear(delay: 1.4)
+
+                Spacer()
+
+                PrimaryButton(title: "Ver meu semestre", action: onEnter)
+                    .padding(.horizontal, 28)
+                    .fadeUpOnAppear(delay: 1.5)
+                    .padding(.bottom, 40)
+            }
+        }
+    }
+
+    @ViewBuilder
+    private var checkBadge: some View {
+        ZStack {
+            Circle()
+                .fill(Color.white.opacity(0.15))
+                .background(.ultraThinMaterial, in: Circle())
+                .overlay(Circle().stroke(Color.white.opacity(0.25), lineWidth: 1))
+                .frame(width: 96, height: 96)
+
+            DrawingCheckmark(size: 54, strokeColor: UNESColor.surface, drawCircle: true)
+        }
+    }
+
+    @ViewBuilder
+    private var titleText: some View {
+        (Text("Prontinho,\n")
+            .foregroundStyle(UNESColor.ink)
+         + Text("\(userName).")
+            .italic()
+            .foregroundStyle(UNESColor.accent))
+    }
+
+    @ViewBuilder
+    private var previewCard: some View {
+        VStack(alignment: .leading, spacing: 10) {
+            HStack {
+                Text("Próxima aula")
+                    .font(UNESFont.mono(10))
+                    .tracking(1.5)
+                    .textCase(.uppercase)
+                    .foregroundStyle(UNESColor.ink3)
+                Spacer()
+                Text("em 1h 12min")
+                    .font(UNESFont.mono(11))
+                    .foregroundStyle(UNESColor.accent)
+            }
+
+            HStack(spacing: 12) {
+                MeshChip(variant: .cool, size: 48, radius: 14)
+
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Cálculo Diferencial II")
+                        .font(UNESFont.serif(20))
+                        .tracking(-0.2)
+                        .foregroundStyle(UNESColor.ink)
+                    Text("10:20 · sala MT-14 · Prof. Adriana")
+                        .font(UNESFont.sans(13))
+                        .foregroundStyle(UNESColor.ink3)
+                }
+                Spacer()
+            }
+        }
+        .padding(18)
+        .background(
+            RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .fill(Color.white)
+                .shadow(color: UNESColor.ink.opacity(0.06), radius: 20, y: 10)
+                .overlay(
+                    RoundedRectangle(cornerRadius: 22, style: .continuous)
+                        .strokeBorder(UNESColor.line, lineWidth: 1)
+                )
+        )
+    }
+}
+
+#Preview {
+    ReadyView(userName: "Mariana", onEnter: {})
+}
