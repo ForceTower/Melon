@@ -109,7 +109,7 @@ struct LoginView: View {
                 placeholder: "nome123",
                 text: $studentId,
                 field: .id,
-                keyboard: .numberPad,
+                keyboard: .default,
                 isSecure: false,
                 trailing: {
                     Image(systemName: "person.text.rectangle")

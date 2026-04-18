@@ -22,7 +22,7 @@ private enum IntroSlide: Int, CaseIterable, Identifiable {
 
     var accentColor: Color {
         switch self {
-        case .schedule: return Color(red: 0x88 / 255, green: 0xD4 / 255, blue: 0xC1 / 255)
+        case .schedule: return UNESColor.amber
         case .grades:   return UNESColor.amber
         case .messages: return UNESColor.amber
         }
