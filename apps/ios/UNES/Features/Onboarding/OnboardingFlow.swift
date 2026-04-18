@@ -16,6 +16,8 @@ final class OnboardingState {
 }
 
 struct OnboardingFlow: View {
+    var onComplete: () -> Void = {}
+
     @State private var state = OnboardingState()
 
     var body: some View {
@@ -54,7 +56,7 @@ struct OnboardingFlow: View {
             case .ready:
                 ReadyView(
                     userName: state.userName,
-                    onEnter: { state.go(to: .splash) }
+                    onEnter: onComplete
                 )
                 .transition(screenTransition)
             }
