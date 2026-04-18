@@ -29,6 +29,7 @@ struct DisciplinesListView: View {
                 .navigationDestination(for: Discipline.self) { discipline in
                     DisciplineDetailView(discipline: discipline)
                 }
+                .navigationTitle("Disciplinas")
                 .toolbar(.hidden, for: .navigationBar)
         }
     }

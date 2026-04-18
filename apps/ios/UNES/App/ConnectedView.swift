@@ -26,9 +26,9 @@ struct ConnectedView: View {
                 DisciplinesListView()
             }
             Tab(ConnectedTab.messages.label, systemImage: ConnectedTab.messages.icon, value: .messages) {
-                PlaceholderTab(title: ConnectedTab.messages.label)
+                MessagesListView()
             }
-            .badge(ConnectedTab.messages.badge ?? 0)
+            .badge(MessageFixtures.messages.filter(\.unread).count)
             Tab(ConnectedTab.me.label, systemImage: ConnectedTab.me.icon, value: .me) {
                 PlaceholderTab(title: ConnectedTab.me.label)
             }
@@ -61,12 +61,6 @@ enum ConnectedTab: String, CaseIterable {
         }
     }
 
-    var badge: Int? {
-        switch self {
-        case .messages: return 2
-        default:        return nil
-        }
-    }
 }
 
 private struct PlaceholderTab: View {

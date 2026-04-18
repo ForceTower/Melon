@@ -65,6 +65,9 @@ struct DisciplineDetailView: View {
         // gesture both work), but let the hero's color wash show through.
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) { EmptyView() }
+        }
     }
 
     // MARK: - Stats row
