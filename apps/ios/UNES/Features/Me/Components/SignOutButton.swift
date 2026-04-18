@@ -18,6 +18,19 @@ struct SignOutButton: View {
             .foregroundStyle(MeColors.signOut)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 13)
+            .background {
+                if #available(iOS 26.0, *) {
+                    // Liquid Glass with a whisper of the destructive tint —
+                    // enough to read as a dedicated action, not so much that
+                    // it competes with real CTAs higher up the screen.
+                    RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        .fill(Color.clear)
+                        .glassEffect(
+                            .regular.tint(MeColors.signOut.opacity(0.08)),
+                            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
+                        )
+                }
+            }
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
                     .strokeBorder(UNESColor.line, lineWidth: 1)

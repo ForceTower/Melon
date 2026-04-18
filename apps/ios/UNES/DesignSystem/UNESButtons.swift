@@ -64,43 +64,78 @@ extension GhostButton where Leading == EmptyView {
     }
 }
 
-struct GlassButton: View {
+/// Liquid Glass pill button. Generic over a leading view so callers can pass
+/// an icon (matches `GhostButton`). Colors default to the `onDark` palette
+/// (white text + whisper-white stroke + subtle surface tint) so it reads
+/// well over the welcome mesh; pass `foreground/tint/stroke` for screens
+/// with light surfaces — see `LoginView` for a light-scheme example.
+struct GlassButton<Leading: View>: View {
     let title: String
+    var foreground: Color = UNESColor.surfaceLight
+    var tint: Color = UNESColor.surface.opacity(0.08)
+    var stroke: Color = .white.opacity(0.14)
+    @ViewBuilder var leading: () -> Leading
     let action: () -> Void
 
     var body: some View {
         Button(action: action) {
-            Text(title)
-                .font(UNESFont.sans(17, weight: .medium))
-                .tracking(-0.17)
-                .foregroundStyle(UNESColor.surfaceLight)
-                .frame(maxWidth: .infinity)
-                .frame(height: 54)
-                .modifier(LiquidGlassCapsule())
+            HStack(spacing: 10) {
+                leading()
+                Text(title)
+                    .font(UNESFont.sans(17, weight: .medium))
+                    .tracking(-0.17)
+            }
+            .foregroundStyle(foreground)
+            .frame(maxWidth: .infinity)
+            .frame(height: 54)
+            .modifier(LiquidGlassCapsule(tint: tint, stroke: stroke))
         }
         .buttonStyle(PressScaleStyle())
     }
 }
 
+extension GlassButton where Leading == EmptyView {
+    init(
+        title: String,
+        foreground: Color = UNESColor.surfaceLight,
+        tint: Color = UNESColor.surface.opacity(0.08),
+        stroke: Color = .white.opacity(0.14),
+        action: @escaping () -> Void
+    ) {
+        self.init(
+            title: title,
+            foreground: foreground,
+            tint: tint,
+            stroke: stroke,
+            leading: { EmptyView() },
+            action: action
+        )
+    }
+}
+
 /// Applies native iOS 26+ Liquid Glass when available, with a blurred-material
-/// fallback on older runtimes.
+/// fallback on older runtimes. Tint is reused as the fallback fill so both
+/// branches share a single visual parameter.
 private struct LiquidGlassCapsule: ViewModifier {
+    var tint: Color = UNESColor.surface.opacity(0.08)
+    var stroke: Color = .white.opacity(0.14)
+
     func body(content: Content) -> some View {
         if #available(iOS 26.0, *) {
             content
-                .glassEffect(.regular.tint(UNESColor.surface.opacity(0.08)), in: Capsule(style: .continuous))
+                .glassEffect(.regular.tint(tint), in: Capsule(style: .continuous))
                 .overlay(
                     Capsule(style: .continuous)
-                        .strokeBorder(.white.opacity(0.14), lineWidth: 1)
+                        .strokeBorder(stroke, lineWidth: 1)
                 )
         } else {
             content.background(
                 Capsule(style: .continuous)
-                    .fill(.white.opacity(0.08))
+                    .fill(tint)
                     .background(.ultraThinMaterial, in: Capsule(style: .continuous))
                     .overlay(
                         Capsule(style: .continuous)
-                            .strokeBorder(.white.opacity(0.14), lineWidth: 1)
+                            .strokeBorder(stroke, lineWidth: 1)
                     )
             )
         }

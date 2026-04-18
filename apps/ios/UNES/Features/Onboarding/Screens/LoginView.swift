@@ -77,8 +77,11 @@ struct LoginView: View {
                         .padding(.vertical, 18)
                         .fadeInOnAppear(delay: 0.55)
 
-                    GhostButton(
+                    GlassButton(
                         title: "Entrar com passkey",
+                        foreground: UNESColor.ink,
+                        tint: UNESColor.ink.opacity(0.05),
+                        stroke: UNESColor.line,
                         leading: { passkeyIcon },
                         action: passkey
                     )

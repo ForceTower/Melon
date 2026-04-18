@@ -49,14 +49,7 @@ struct ShortcutTile: View {
             .padding(.top, 12)
             .padding(.bottom, 11)
             .frame(maxWidth: .infinity, minHeight: 94, alignment: .topLeading)
-            .background(
-                RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(UNESColor.card)
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 18, style: .continuous)
-                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                    )
-            )
+            .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(PressScaleStyle())
     }

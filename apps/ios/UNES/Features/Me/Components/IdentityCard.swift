@@ -3,12 +3,19 @@ import SwiftUI
 /// Hero card at the top of the Me screen — rose mesh background, avatar,
 /// student name/course/campus, and a three-column stat rail (CR, credits,
 /// semester week).
+///
+/// On iOS 26+ the dark base swaps from a flat `MeColors.heroBg` fill to a
+/// Liquid Glass surface tinted with the same color — the rose mesh sitting
+/// on top is only partially opaque (each blob renders at ~0.77 alpha), so
+/// the glass's specular highlights and environmental refraction read
+/// through the gaps between blobs and give the card a living feel. On
+/// older runtimes the solid color renders as before.
 struct IdentityCard: View {
     let identity: ProfileIdentity
 
     var body: some View {
         ZStack(alignment: .topLeading) {
-            MeColors.heroBg
+            baseSurface
             MeshGradientView(variant: .rose, intensity: 0.9)
             LinearGradient(
                 colors: [MeColors.heroBg.opacity(0.15), MeColors.heroBg.opacity(0.6)],
@@ -30,6 +37,20 @@ struct IdentityCard: View {
         }
         .clipShape(RoundedRectangle(cornerRadius: 28, style: .continuous))
         .shadow(color: Color.black.opacity(0.15), radius: 20, x: 0, y: 16)
+    }
+
+    @ViewBuilder
+    private var baseSurface: some View {
+        if #available(iOS 26.0, *) {
+            Rectangle()
+                .fill(Color.clear)
+                .glassEffect(
+                    .regular.tint(MeColors.heroBg),
+                    in: RoundedRectangle(cornerRadius: 28, style: .continuous)
+                )
+        } else {
+            MeColors.heroBg
+        }
     }
 
     private var eyebrowRow: some View {

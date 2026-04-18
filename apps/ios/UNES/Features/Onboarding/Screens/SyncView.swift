@@ -143,18 +143,36 @@ struct SyncView: View {
         }
         .padding(.vertical, 6)
         .padding(.horizontal, 4)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(Color.white.opacity(0.06))
-                .background(
-                    .ultraThinMaterial.opacity(0.35),
-                    in: RoundedRectangle(cornerRadius: 24, style: .continuous)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 24, style: .continuous)
-                        .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
-                )
-        )
+        .background {
+            // Liquid Glass on iOS 26+, ultra-thin material fallback below.
+            // Inlined (rather than using `.cardSurface`) because this card
+            // sits on the dark onboarding mesh and wants the material backdrop
+            // on older runtimes — the shared card modifier targets the
+            // on-light card pattern and doesn't carry a material.
+            if #available(iOS 26.0, *) {
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(Color.clear)
+                    .glassEffect(
+                        .regular.tint(Color.white.opacity(0.06)),
+                        in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+                    )
+            } else {
+                RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    .fill(Color.white.opacity(0.06))
+                    .background(
+                        .ultraThinMaterial.opacity(0.35),
+                        in: RoundedRectangle(cornerRadius: 24, style: .continuous)
+                    )
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 24, style: .continuous)
+                            .strokeBorder(Color.white.opacity(0.08), lineWidth: 1)
+                    )
+            }
+        }
     }
 
     @ViewBuilder
