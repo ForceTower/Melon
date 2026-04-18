@@ -87,7 +87,7 @@ struct PulseAnimation: ViewModifier {
         content
             .scaleEffect(pulsing ? 0.95 : 1)
             .opacity(pulsing ? 0.6 : 1)
-            .animation(.easeInOut(duration: 1).repeatForever(autoreverses: true), value: pulsing)
+            .animation(.easeInOut(duration: 0.8).repeatForever(autoreverses: true), value: pulsing)
             .onAppear { pulsing = true }
     }
 }
