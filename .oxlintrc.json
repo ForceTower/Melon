@@ -46,10 +46,7 @@
       }
     },
     {
-      "files": [
-        "**/*.config.*",
-        "**/app/routes.ts"
-      ],
+      "files": ["**/*.config.*", "**/app/routes.ts"],
       "rules": {
         "no-default-export": "off"
       }

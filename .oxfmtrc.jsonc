@@ -13,14 +13,14 @@
     ".codex/**/*",
     ".vscode/**/*",
     "**/.output/**/*",
-    "**/worker-configuration.d.ts"
+    "**/worker-configuration.d.ts",
   ],
   "overrides": [
     {
       "files": ["apps/api/**/*"],
       "options": {
-        "printWidth": 120
-      }
-    }
-  ]
+        "printWidth": 120,
+      },
+    },
+  ],
 }
