@@ -178,6 +178,7 @@ struct MatrixBlock: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .frame(minHeight: 42)
+            .clipShape(RoundedRectangle(cornerRadius: 8, style: .continuous))
         }
         .buttonStyle(.plain)
         .opacity(isDone ? 0.55 : 1)
