@@ -4,7 +4,31 @@ struct HomeView: View {
     @State private var activeTab: HomeTabKey = .home
 
     var body: some View {
-        ZStack(alignment: .bottom) {
+        TabView(selection: $activeTab) {
+            Tab(HomeTabKey.home.label, systemImage: HomeTabKey.home.icon, value: .home) {
+                HomeTabContent()
+            }
+            Tab(HomeTabKey.schedule.label, systemImage: HomeTabKey.schedule.icon, value: .schedule) {
+                PlaceholderTab(title: HomeTabKey.schedule.label)
+            }
+            Tab(HomeTabKey.classes.label, systemImage: HomeTabKey.classes.icon, value: .classes) {
+                PlaceholderTab(title: HomeTabKey.classes.label)
+            }
+            Tab(HomeTabKey.messages.label, systemImage: HomeTabKey.messages.icon, value: .messages) {
+                PlaceholderTab(title: HomeTabKey.messages.label)
+            }
+            .badge(HomeTabKey.messages.badge ?? 0)
+            Tab(HomeTabKey.me.label, systemImage: HomeTabKey.me.icon, value: .me) {
+                PlaceholderTab(title: HomeTabKey.me.label)
+            }
+        }
+        .tint(UNESColor.accent)
+    }
+}
+
+private struct HomeTabContent: View {
+    var body: some View {
+        ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
 
             // Ambient mesh pinned to the top. Dimness is baked into the mesh
@@ -49,11 +73,19 @@ struct HomeView: View {
                         .padding(.top, 8)
                         .padding(.bottom, 24)
                 }
-                .padding(.bottom, 110)
             }
+        }
+    }
+}
 
-            LiquidTabBar(active: $activeTab)
-                .padding(.bottom, 22)
+private struct PlaceholderTab: View {
+    let title: String
+    var body: some View {
+        ZStack {
+            UNESColor.surface.ignoresSafeArea()
+            Text(title)
+                .font(UNESFont.serif(32))
+                .foregroundStyle(UNESColor.ink3)
         }
     }
 }

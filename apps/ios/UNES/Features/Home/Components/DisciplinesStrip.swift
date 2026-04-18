@@ -31,7 +31,7 @@ struct DisciplinesStrip: View {
                         DisciplineCard(item: item)
                     }
                 }
-                .padding(.horizontal, 24)
+                .padding(.horizontal, 14)
                 .padding(.top, 4)
                 .padding(.bottom, 12)
             }
