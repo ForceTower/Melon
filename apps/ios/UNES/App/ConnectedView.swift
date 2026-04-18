@@ -30,7 +30,7 @@ struct ConnectedView: View {
             }
             .badge(MessageFixtures.messages.filter(\.unread).count)
             Tab(ConnectedTab.me.label, systemImage: ConnectedTab.me.icon, value: .me) {
-                PlaceholderTab(title: ConnectedTab.me.label)
+                MeView()
             }
         }
         .tint(UNESColor.accent)

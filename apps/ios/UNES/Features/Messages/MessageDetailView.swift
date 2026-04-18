@@ -20,15 +20,31 @@ struct MessageDetailView: View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
 
-            // Origin-tinted ambient glow near the top of the screen.
-            RadialGradient(
-                colors: [message.meta.color.opacity(0.165), .clear],
-                center: .top,
-                startRadius: 0,
-                endRadius: 320
-            )
-            .frame(height: 260)
-            .frame(maxWidth: .infinity, alignment: .top)
+            // Origin-tinted ambient glow near the top of the screen. A linear
+            // fade to `UNESColor.surface` rides on top of the radial so the
+            // bottom of the frame ends on the exact surface color that's
+            // painted below — without it, the radial still carries a trace
+            // of tint at the cutoff and reads as a visible seam.
+            VStack(spacing: 0) {
+                ZStack {
+                    RadialGradient(
+                        colors: [message.meta.color.opacity(0.165), .clear],
+                        center: .top,
+                        startRadius: 0,
+                        endRadius: 320
+                    )
+                    LinearGradient(
+                        stops: [
+                            .init(color: .clear, location: 0),
+                            .init(color: UNESColor.surface, location: 1.0),
+                        ],
+                        startPoint: .top,
+                        endPoint: .bottom
+                    )
+                }
+                .frame(height: 260)
+                Spacer(minLength: 0)
+            }
             .ignoresSafeArea(edges: .top)
             .allowsHitTesting(false)
 
