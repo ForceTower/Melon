@@ -45,7 +45,7 @@ struct LoginView: View {
                         .padding(.top, 10)
                         .fadeUpOnAppear(delay: 0.15)
 
-                    Text("As mesmas credenciais que você usa pra entrar no SAGRES. Nada fica no nosso servidor.")
+                    Text("As mesmas credenciais que você usa pra entrar no Portal. Nada fica no nosso servidor.")
                         .font(UNESFont.sans(15))
                         .lineSpacing(3)
                         .foregroundStyle(UNESColor.ink3)
@@ -89,8 +89,8 @@ struct LoginView: View {
                         .fadeInOnAppear(delay: 0.7)
                 }
                 .padding(.horizontal, 28)
-                .padding(.top, 60)
-                .padding(.bottom, 40)
+                .padding(.top, 13)
+                .padding(.bottom, 6)
             }
 
             backButton
@@ -99,9 +99,9 @@ struct LoginView: View {
 
     @ViewBuilder
     private var titleText: some View {
-        (Text("Entre com sua\n")
+        (Text("Entre com seu\n")
             .foregroundStyle(UNESColor.ink)
-         + Text("matrícula.")
+         + Text("usuário.")
             .italic()
             .foregroundStyle(UNESColor.accent))
     }
@@ -110,8 +110,8 @@ struct LoginView: View {
     private var inputGroup: some View {
         VStack(spacing: 0) {
             inputRow(
-                label: "Matrícula",
-                placeholder: "202300000",
+                label: "Usuário",
+                placeholder: "nome123",
                 text: $studentId,
                 field: .id,
                 keyboard: .numberPad,
@@ -247,7 +247,7 @@ struct LoginView: View {
                 )
         }
         .padding(.leading, 14)
-        .padding(.top, 58)
+        .padding(.top, 11)
         .buttonStyle(.plain)
     }
 

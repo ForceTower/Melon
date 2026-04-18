@@ -58,8 +58,8 @@ struct SyncView: View {
                     .padding(.top, 20)
             }
             .padding(.horizontal, 28)
-            .padding(.top, 120)
-            .padding(.bottom, 60)
+            .padding(.top, 73)
+            .padding(.bottom, 26)
         }
         .onAppear(perform: advance)
     }

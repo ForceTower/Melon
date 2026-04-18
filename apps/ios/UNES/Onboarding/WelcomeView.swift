@@ -10,7 +10,7 @@ struct WelcomeView: View {
             MeshGradientView(variant: .warm).ignoresSafeArea()
 
             VStack(alignment: .leading, spacing: 0) {
-                Spacer().frame(height: 90)
+                Spacer().frame(height: 43)
 
                 Text("◦ Boas vindas ao UNES")
                     .font(UNESFont.mono(11))
@@ -58,7 +58,7 @@ struct WelcomeView: View {
                 .fadeUpOnAppear(delay: 0.65)
             }
             .padding(.horizontal, 28)
-            .padding(.bottom, 50)
+            .padding(.bottom, 16)
         }
     }
 }

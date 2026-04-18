@@ -60,7 +60,6 @@ struct OnboardingFlow: View {
             }
         }
         .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.4), value: state.step)
-        .ignoresSafeArea()
     }
 
     private var screenTransition: AnyTransition {

@@ -28,7 +28,7 @@ struct ReadyView: View {
             .allowsHitTesting(false)
 
             VStack(spacing: 0) {
-                Spacer().frame(height: 120)
+                Spacer().frame(height: 73)
 
                 checkBadge
                     .scaleInOnAppear(delay: 0.1)
@@ -67,7 +67,7 @@ struct ReadyView: View {
                 PrimaryButton(title: "Ver meu semestre", action: onEnter)
                     .padding(.horizontal, 28)
                     .fadeUpOnAppear(delay: 1.5)
-                    .padding(.bottom, 40)
+                    .padding(.bottom, 6)
             }
         }
     }

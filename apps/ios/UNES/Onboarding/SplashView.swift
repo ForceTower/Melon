@@ -54,7 +54,7 @@ struct SplashView: View {
                 }
                 .font(UNESFont.sans(13))
                 .opacity(creditShown ? 1 : 0)
-                .padding(.bottom, 50)
+                .padding(.bottom, 16)
             }
         }
         .onAppear {
