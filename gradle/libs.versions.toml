@@ -2,6 +2,7 @@
 kotlin = "2.3.20"
 ksp = "2.3.6"
 metro = "1.0.0-RC2"
+skie = "0.10.11"
 room = "2.8.4"
 sqlite = "2.6.2"
 ktor = "3.2.0"
@@ -40,4 +41,5 @@ kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref 
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
+skie = { id = "co.touchlab.skie", version.ref = "skie" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
