@@ -202,6 +202,13 @@ struct LoginView: View {
                 .font(UNESFont.sans(17))
                 .foregroundStyle(UNESColor.ink)
                 .focused($focusedField, equals: field)
+                .submitLabel(field == .password ? .done : .next)
+                .onSubmit {
+                    switch field {
+                    case .id: focusedField = .password
+                    case .password: submit()
+                    }
+                }
             }
 
             Spacer()
