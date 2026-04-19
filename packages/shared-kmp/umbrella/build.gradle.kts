@@ -38,8 +38,10 @@ kotlin {
             api(project(":packages:shared-kmp:core:database"))
             api(project(":packages:shared-kmp:core:storage"))
             api(project(":packages:shared-kmp:core:session"))
+            api(project(":packages:shared-kmp:core:sync"))
             api(project(":packages:shared-kmp:features:auth"))
             api(project(":packages:shared-kmp:features:dashboard"))
+            api(project(":packages:shared-kmp:features:sync"))
         }
     }
 }
