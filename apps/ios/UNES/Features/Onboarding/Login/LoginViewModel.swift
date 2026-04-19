@@ -19,29 +19,29 @@ final class LoginViewModel {
         !studentId.isEmpty && !password.isEmpty && !isLoading
     }
 
-    func submit() async -> Bool {
-        guard canSubmit, let loginUseCase else { return false }
+    func submit() async -> SessionUser? {
+        guard canSubmit, let loginUseCase else { return nil }
 
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
 
-        let outcome: CommonOutcome<KotlinUnit, AuthLoginError>
+        let outcome: CommonOutcome<SessionUser, AuthLoginError>
         do {
             outcome = try await loginUseCase.invoke(username: studentId, password: password)
         } catch is CancellationError {
-            return false
+            return nil
         } catch {
             errorMessage = Self.unexpectedMessage
-            return false
+            return nil
         }
 
         switch onEnum(of: outcome) {
-        case .ok:
-            return true
+        case .ok(let user):
+            return user.value
         case .err(let wrapper):
             errorMessage = wrapper.error.map(Self.describe) ?? Self.unexpectedMessage
-            return false
+            return nil
         }
     }
 

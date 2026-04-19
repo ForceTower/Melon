@@ -3,19 +3,16 @@ import Umbrella
 
 struct LoginView: View {
     let onSubmit: (String) -> Void
-    let onBack: () -> Void
 
     @State private var viewModel: LoginViewModel
     @FocusState private var focusedField: Field?
 
     init(
         loginUseCase: AuthLoginUseCase?,
-        onSubmit: @escaping (String) -> Void,
-        onBack: @escaping () -> Void
+        onSubmit: @escaping (String) -> Void
     ) {
         _viewModel = State(initialValue: LoginViewModel(loginUseCase: loginUseCase))
         self.onSubmit = onSubmit
-        self.onBack = onBack
     }
 
     enum Field { case id, password }
@@ -43,7 +40,7 @@ struct LoginView: View {
                         .tracking(1.4)
                         .textCase(.uppercase)
                         .foregroundStyle(UNESColor.ink3)
-                        .padding(.top, 60)
+                        .padding(.top, 16)
                         .fadeUpOnAppear(delay: 0.05)
 
                     titleText
@@ -111,9 +108,9 @@ struct LoginView: View {
                 .padding(.top, 13)
                 .padding(.bottom, 6)
             }
-
-            backButton
         }
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .tint(UNESColor.ink)
         .animation(.easeInOut(duration: 0.2), value: viewModel.errorMessage)
     }
 
@@ -241,30 +238,11 @@ struct LoginView: View {
         Text("\(Text("Ao continuar, você concorda com nossos ").foregroundStyle(UNESColor.ink4))\(Text("Termos").foregroundStyle(UNESColor.ink2).underline())\(Text(" e ").foregroundStyle(UNESColor.ink4))\(Text("Privacidade").foregroundStyle(UNESColor.ink2).underline())\(Text(".").foregroundStyle(UNESColor.ink4))")
     }
 
-    @ViewBuilder
-    private var backButton: some View {
-        Button(action: onBack) {
-            Image(systemName: "chevron.left")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(UNESColor.ink)
-                .frame(width: 40, height: 40)
-                .background(
-                    Circle()
-                        .fill(UNESColor.surface.opacity(0.6))
-                        .background(.ultraThinMaterial, in: Circle())
-                        .overlay(Circle().stroke(UNESColor.ink.opacity(0.06), lineWidth: 1))
-                )
-        }
-        .padding(.leading, 14)
-        .padding(.top, 11)
-        .buttonStyle(.plain)
-    }
-
     private func submit() {
         focusedField = nil
         Task {
-            if await viewModel.submit() {
-                onSubmit(viewModel.studentId)
+            if let user = await viewModel.submit() {
+                onSubmit(user.name)
             }
         }
     }
@@ -280,5 +258,7 @@ struct LoginView: View {
 }
 
 #Preview {
-    LoginView(loginUseCase: nil, onSubmit: { _ in }, onBack: {})
+    NavigationStack {
+        LoginView(loginUseCase: nil, onSubmit: { _ in })
+    }
 }

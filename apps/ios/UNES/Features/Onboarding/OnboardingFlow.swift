@@ -1,77 +1,61 @@
 import SwiftUI
 import Umbrella
 
-enum OnboardingStep: Int, CaseIterable {
-    case splash, welcome, intro, login, sync, ready
-}
-
-@Observable
-final class OnboardingState {
-    var step: OnboardingStep = .splash
-    var studentId: String = ""
-    var userName: String = "Mariana"
-
-    func go(to next: OnboardingStep) {
-        step = next
-    }
+private enum OnboardingRoute: Hashable {
+    case intro
+    case login
+    case sync(studentId: String)
+    case ready(userName: String)
 }
 
 struct OnboardingFlow: View {
     var onComplete: () -> Void = {}
 
     @Environment(\.umbrella) private var umbrella
-    @State private var state = OnboardingState()
+    @State private var path: [OnboardingRoute] = []
 
     var body: some View {
-        ZStack {
-            switch state.step {
-            case .splash:
-                SplashView { state.go(to: .welcome) }
-                    .transition(screenTransition)
-            case .welcome:
-                WelcomeView(
-                    onPrimary: { state.go(to: .intro) },
-                    onSecondary: { state.go(to: .login) }
-                )
-                .transition(screenTransition)
-            case .intro:
-                IntroCarouselView(
-                    onDone: { state.go(to: .login) },
-                    onBack: { state.go(to: .welcome) }
-                )
-                .transition(screenTransition)
-            case .login:
-                LoginView(
-                    loginUseCase: umbrella?.loginUseCase,
-                    onSubmit: { id in
-                        state.studentId = id
-                        state.go(to: .sync)
-                    },
-                    onBack: { state.go(to: .intro) }
-                )
-                .transition(screenTransition)
-            case .sync:
-                SyncView(
-                    userId: state.studentId.isEmpty ? "estudante" : state.studentId,
-                    onDone: { state.go(to: .ready) }
-                )
-                .transition(screenTransition)
-            case .ready:
-                ReadyView(
-                    userName: state.userName,
-                    onEnter: onComplete
-                )
-                .transition(screenTransition)
-            }
+        NavigationStack(path: $path) {
+            WelcomeView(
+                onPrimary: { path.append(.intro) },
+                onSecondary: { path.append(.login) }
+            )
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationDestination(for: OnboardingRoute.self, destination: destination)
         }
-        .animation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.4), value: state.step)
     }
 
-    private var screenTransition: AnyTransition {
-        .asymmetric(
-            insertion: .opacity.combined(with: .move(edge: .trailing)),
-            removal:   .opacity.combined(with: .move(edge: .leading))
-        )
+    @ViewBuilder
+    private func destination(for route: OnboardingRoute) -> some View {
+        switch route {
+        case .intro:
+            IntroCarouselView(
+                onDone: { path.append(.login) },
+                onBack: pop
+            )
+            .toolbar(.hidden, for: .navigationBar)
+        case .login:
+            LoginView(
+                loginUseCase: umbrella?.loginUseCase,
+                onSubmit: { id in path.append(.sync(studentId: id)) }
+            )
+        case .sync(let studentId):
+            SyncView(
+                userId: studentId.isEmpty ? "estudante" : studentId,
+                onDone: { path.append(.ready(userName: "Mariana")) }
+            )
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationBarBackButtonHidden()
+        case .ready(let userName):
+            ReadyView(userName: userName, onEnter: onComplete)
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden()
+        }
+    }
+
+    private func pop() {
+        guard !path.isEmpty else { return }
+        path.removeLast()
     }
 }
 

@@ -3,6 +3,7 @@ package dev.forcetower.melon.feature.auth.data.repository
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.feature.auth.domain.model.LoginError
 import dev.forcetower.melon.feature.auth.data.network.AuthService
 import dev.forcetower.melon.feature.auth.data.dto.LoginRequest
@@ -26,9 +27,9 @@ internal class AuthRepositoryImpl(
     private val sessionStore: SessionStore,
 ) : AuthRepository {
 
-    override suspend fun login(username: String, password: String): Outcome<Unit, LoginError> = try {
+    override suspend fun login(username: String, password: String): Outcome<User, LoginError> = try {
         val response = api.login(LoginRequest(username, password))
-        handleLoginResponse(response)
+        return handleLoginResponse(response)
     } catch (cancellation: CancellationException) {
         throw cancellation
     } catch (_: SerializationException) {
@@ -37,7 +38,7 @@ internal class AuthRepositoryImpl(
         Outcome.Err(LoginError.Kind.NoConnection)
     }
 
-    private suspend fun handleLoginResponse(response: HttpResponse): Outcome<Unit, LoginError> {
+    private suspend fun handleLoginResponse(response: HttpResponse): Outcome<User, LoginError> {
         val status = response.status.value
         return when (status) {
             in 200..299 -> persistSession(response.body())
@@ -50,13 +51,14 @@ internal class AuthRepositoryImpl(
         }
     }
 
-    private suspend fun persistSession(envelope: ApiEnvelope<LoginResponse>): Outcome<Unit, LoginError> {
+    private suspend fun persistSession(envelope: ApiEnvelope<LoginResponse>): Outcome<User, LoginError> {
         val payload = envelope.data ?: return Outcome.Err(LoginError.Kind.Unexpected)
+        val user = payload.user.toDomain()
         sessionStore.persist(
             accessToken = payload.accessToken,
             refreshToken = payload.refreshToken,
-            user = payload.user.toDomain(),
+            user = user,
         )
-        return Outcome.Ok(Unit)
+        return Outcome.Ok(user)
     }
 }
