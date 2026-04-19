@@ -13,7 +13,7 @@ struct UNESApp: App {
 
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            RootView()
                 .environment(\.umbrella, appDelegate.graph)
         }
     }

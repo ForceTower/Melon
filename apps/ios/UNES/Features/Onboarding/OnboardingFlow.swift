@@ -1,4 +1,5 @@
 import SwiftUI
+import Umbrella
 
 enum OnboardingStep: Int, CaseIterable {
     case splash, welcome, intro, login, sync, ready
@@ -18,6 +19,7 @@ final class OnboardingState {
 struct OnboardingFlow: View {
     var onComplete: () -> Void = {}
 
+    @Environment(\.umbrella) private var umbrella
     @State private var state = OnboardingState()
 
     var body: some View {
@@ -40,6 +42,7 @@ struct OnboardingFlow: View {
                 .transition(screenTransition)
             case .login:
                 LoginView(
+                    loginUseCase: umbrella?.loginUseCase,
                     onSubmit: { id in
                         state.studentId = id
                         state.go(to: .sync)

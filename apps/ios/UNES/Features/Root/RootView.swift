@@ -5,7 +5,7 @@ private enum AppRoute {
     case connected
 }
 
-struct ContentView: View {
+struct RootView: View {
     @State private var route: AppRoute = .onboarding
 
     var body: some View {
@@ -38,5 +38,5 @@ struct ContentView: View {
 }
 
 #Preview {
-    ContentView()
+    RootView()
 }

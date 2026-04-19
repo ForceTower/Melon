@@ -1,14 +1,22 @@
 import SwiftUI
+import Umbrella
 
 struct LoginView: View {
     let onSubmit: (String) -> Void
     let onBack: () -> Void
 
-    @State private var studentId = ""
-    @State private var password  = ""
-    @State private var showPassword = false
+    @State private var viewModel: LoginViewModel
     @FocusState private var focusedField: Field?
-    @State private var isLoading = false
+
+    init(
+        loginUseCase: AuthLoginUseCase?,
+        onSubmit: @escaping (String) -> Void,
+        onBack: @escaping () -> Void
+    ) {
+        _viewModel = State(initialValue: LoginViewModel(loginUseCase: loginUseCase))
+        self.onSubmit = onSubmit
+        self.onBack = onBack
+    }
 
     enum Field { case id, password }
 
@@ -62,15 +70,23 @@ struct LoginView: View {
                         .padding(.top, 10)
                         .fadeUpOnAppear(delay: 0.45)
 
+                    if let errorMessage = viewModel.errorMessage {
+                        Text(errorMessage)
+                            .font(UNESFont.sans(13, weight: .medium))
+                            .foregroundStyle(UNESColor.accent)
+                            .padding(.top, 14)
+                            .transition(.opacity)
+                    }
+
                     Spacer().frame(height: 28)
 
                     PrimaryButton(
                         title: "Entrar",
-                        isLoading: isLoading,
+                        isLoading: viewModel.isLoading,
                         action: submit
                     )
-                    .opacity((studentId.isEmpty || password.isEmpty) && !isLoading ? 0.3 : 1)
-                    .disabled(studentId.isEmpty || password.isEmpty || isLoading)
+                    .opacity(viewModel.canSubmit || viewModel.isLoading ? 1 : 0.3)
+                    .disabled(!viewModel.canSubmit)
                     .fadeUpOnAppear(delay: 0.5)
 
                     dividerRow
@@ -98,6 +114,7 @@ struct LoginView: View {
 
             backButton
         }
+        .animation(.easeInOut(duration: 0.2), value: viewModel.errorMessage)
     }
 
     private var titleText: Text {
@@ -110,7 +127,7 @@ struct LoginView: View {
             inputRow(
                 label: "Usuário",
                 placeholder: "nome123",
-                text: $studentId,
+                text: $viewModel.studentId,
                 field: .id,
                 keyboard: .default,
                 isSecure: false,
@@ -125,15 +142,15 @@ struct LoginView: View {
             inputRow(
                 label: "Senha",
                 placeholder: "••••••••",
-                text: $password,
+                text: $viewModel.password,
                 field: .password,
                 keyboard: .default,
-                isSecure: !showPassword,
+                isSecure: !viewModel.showPassword,
                 trailing: {
                     Button {
-                        showPassword.toggle()
+                        viewModel.showPassword.toggle()
                     } label: {
-                        Image(systemName: showPassword ? "eye.slash" : "eye")
+                        Image(systemName: viewModel.showPassword ? "eye.slash" : "eye")
                             .font(.system(size: 14, weight: .regular))
                     }
                 }
@@ -244,21 +261,24 @@ struct LoginView: View {
     }
 
     private func submit() {
-        guard !isLoading else { return }
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) {
-            onSubmit(studentId)
+        focusedField = nil
+        Task {
+            if await viewModel.submit() {
+                onSubmit(viewModel.studentId)
+            }
         }
     }
 
     private func passkey() {
-        isLoading = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.4) {
+        viewModel.isLoading = true
+        Task {
+            try? await Task.sleep(for: .seconds(1.4))
+            viewModel.isLoading = false
             onSubmit("passkey")
         }
     }
 }
 
 #Preview {
-    LoginView(onSubmit: { _ in }, onBack: {})
+    LoginView(loginUseCase: nil, onSubmit: { _ in }, onBack: {})
 }
