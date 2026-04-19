@@ -1,4 +1,5 @@
 import SwiftUI
+import Umbrella
 
 private enum RootDestination {
     case splash
@@ -10,10 +11,8 @@ private enum RootDestination {
 final class RootViewModel {
     fileprivate var destination: RootDestination = .splash
 
-    func splashFinished() {
-        // TODO: inspect session/credentials and route to .connected when the
-        // user is already signed in. Hardcoded to .onboarding for now.
-        destination = .onboarding
+    func splashFinished(hasSession: Bool) {
+        destination = hasSession ? .connected : .onboarding
     }
 
     func onboardingCompleted() {
@@ -22,15 +21,16 @@ final class RootViewModel {
 }
 
 struct RootView: View {
+    @Environment(\.umbrella) private var umbrella
     @State private var viewModel = RootViewModel()
 
     var body: some View {
         ZStack {
             switch viewModel.destination {
             case .splash:
-                SplashView {
+                SplashView(sessionStore: umbrella?.sessionStore) { hasSession in
                     withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
-                        viewModel.splashFinished()
+                        viewModel.splashFinished(hasSession: hasSession)
                     }
                 }
                 .transition(.opacity)

@@ -1,12 +1,19 @@
 import SwiftUI
+import Umbrella
 
 struct SplashView: View {
-    let onDone: () -> Void
+    let onDone: (Bool) -> Void
 
+    @State private var viewModel: SplashViewModel
     @State private var wordmarkShown = false
     @State private var dotShown = false
     @State private var captionShown = false
     @State private var creditShown = false
+
+    init(sessionStore: SessionSessionStore?, onDone: @escaping (Bool) -> Void) {
+        _viewModel = State(initialValue: SplashViewModel(sessionStore: sessionStore))
+        self.onDone = onDone
+    }
 
     var body: some View {
         ZStack {
@@ -63,11 +70,16 @@ struct SplashView: View {
             withAnimation(.easeOut(duration: 0.8).delay(0.6)) { captionShown = true }
             withAnimation(.easeOut(duration: 0.6).delay(1.2)) { creditShown = true }
 
-            DispatchQueue.main.asyncAfter(deadline: .now() + 2.6) { onDone() }
+            Task {
+                async let dwell: Void = Task.sleep(for: .seconds(2))
+                let hasSession = await viewModel.hasStoredSession()
+                _ = try? await dwell
+                onDone(hasSession)
+            }
         }
     }
 }
 
 #Preview {
-    SplashView(onDone: {})
+    SplashView(sessionStore: nil, onDone: { _ in })
 }
