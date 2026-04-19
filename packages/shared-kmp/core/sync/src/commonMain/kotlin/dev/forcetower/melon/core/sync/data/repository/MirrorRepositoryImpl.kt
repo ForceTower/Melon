@@ -99,6 +99,8 @@ internal class MirrorRepositoryImpl(
                     studentClasses = p.studentClasses.map { it.toEntity() },
                     evaluations = p.evaluations.map { it.toEntity() },
                     grades = p.studentGrades.map { it.toEntity() },
+                    lectures = p.lectures.map { it.toEntity() },
+                    lectureMaterials = p.lectureMaterials.map { it.toEntity() },
                 )
                 Outcome.Ok(Unit)
             }

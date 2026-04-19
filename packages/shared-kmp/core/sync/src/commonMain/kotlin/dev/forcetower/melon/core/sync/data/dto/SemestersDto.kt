@@ -32,6 +32,8 @@ internal data class SemesterPayloadResponse(
     val studentClasses: List<StudentClassDto>,
     val evaluations: List<EvaluationDto>,
     val studentGrades: List<StudentGradeDto>,
+    val lectures: List<LectureDto>,
+    val lectureMaterials: List<LectureMaterialDto>,
 )
 
 @Serializable
@@ -145,4 +147,24 @@ internal data class StudentGradeDto(
     val weight: String,
     val value: String?,
     val date: String?,
+)
+
+@Serializable
+internal data class LectureDto(
+    val id: String,
+    val classId: String,
+    val ordinal: Int,
+    val situation: Int,
+    val date: String?,
+    val subject: String?,
+)
+
+@Serializable
+internal data class LectureMaterialDto(
+    val id: String,
+    val lectureId: String,
+    val platformId: Int,
+    val description: String?,
+    val url: String,
+    val position: Int,
 )

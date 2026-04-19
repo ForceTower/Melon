@@ -3,10 +3,12 @@ package dev.forcetower.melon.core.sync.data.mapper
 import dev.forcetower.melon.core.database.entity.ClassAllocationEntity
 import dev.forcetower.melon.core.database.entity.ClassEntity
 import dev.forcetower.melon.core.database.entity.ClassEvaluationEntity
+import dev.forcetower.melon.core.database.entity.ClassLectureEntity
 import dev.forcetower.melon.core.database.entity.ClassSpaceEntity
 import dev.forcetower.melon.core.database.entity.ClassTeacherEntity
 import dev.forcetower.melon.core.database.entity.DisciplineEntity
 import dev.forcetower.melon.core.database.entity.DisciplineOfferEntity
+import dev.forcetower.melon.core.database.entity.LectureMaterialEntity
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
@@ -17,6 +19,8 @@ import dev.forcetower.melon.core.sync.data.dto.ClassTeacherDto
 import dev.forcetower.melon.core.sync.data.dto.DisciplineDto
 import dev.forcetower.melon.core.sync.data.dto.DisciplineOfferDto
 import dev.forcetower.melon.core.sync.data.dto.EvaluationDto
+import dev.forcetower.melon.core.sync.data.dto.LectureDto
+import dev.forcetower.melon.core.sync.data.dto.LectureMaterialDto
 import dev.forcetower.melon.core.sync.data.dto.SemesterDto
 import dev.forcetower.melon.core.sync.data.dto.SemesterListItemDto
 import dev.forcetower.melon.core.sync.data.dto.SpaceDto
@@ -139,4 +143,24 @@ internal fun StudentGradeDto.toEntity(): StudentGradeEntity =
         weight = weight,
         value = value,
         date = date,
+    )
+
+internal fun LectureDto.toEntity(): ClassLectureEntity =
+    ClassLectureEntity(
+        id = id,
+        classId = classId,
+        ordinal = ordinal,
+        situation = situation,
+        date = date,
+        subject = subject,
+    )
+
+internal fun LectureMaterialDto.toEntity(): LectureMaterialEntity =
+    LectureMaterialEntity(
+        id = id,
+        lectureId = lectureId,
+        platformId = platformId,
+        description = description,
+        url = url,
+        position = position,
     )
