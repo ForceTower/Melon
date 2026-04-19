@@ -1,8 +1,16 @@
 import UIKit
 import Umbrella
+import FirebaseCore
+import FirebaseCrashlytics
+import FirebaseMessaging
+import FirebaseRemoteConfig
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     var graph: UmbrellaGraph?
+    
+    private var isPreview: Bool {
+        ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
+    }
     
     func application(
         _ application: UIApplication,
@@ -10,6 +18,47 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         let config = UmbrellaConfig(baseUrl: "https://netherlands-dev.forcetower.dev")
         graph = UmbrellaGraph(config: config)
+        
+        guard !isPreview else { return true }
+        FirebaseApp.configure()
+#if DEBUG
+        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
+#endif
+        
+        UNUserNotificationCenter.current().delegate = self
+        Messaging.messaging().delegate = self
+        application.registerForRemoteNotifications()
+        
+        RemoteConfig.remoteConfig().fetchAndActivate()
+        
         return true
+    }
+    
+    func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        // TODO received a data notification
+//        Task {
+//            let sync: ServerSyncDataUseCase = AppDIContainer.shared.resolve()
+//            await sync.execute()
+//            completionHandler(.newData)
+//        }
+    }
+
+}
+
+extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
+    func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        Messaging.messaging().apnsToken = deviceToken
+    }
+    
+    nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
+        if let fcmToken = fcmToken {
+            UserDefaults.standard.set(fcmToken, forKey: "messaging_notification_token")
+            // TODO: Send token to backend
+            // graph?.syncFirebaseToken(token: fcmToken)
+        }
+    }
+    
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void) {
+        completionHandler([.list, .sound, .banner])
     }
 }
