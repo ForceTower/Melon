@@ -33,9 +33,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -68,17 +66,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_Student_courseId",
             "unique": false,
-            "columnNames": [
-              "courseId"
-            ],
+            "columnNames": ["courseId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Student_courseId` ON `${TABLE_NAME}` (`courseId`)"
           }
@@ -88,12 +82,8 @@
             "table": "Course",
             "onDelete": "SET NULL",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "courseId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["courseId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -128,9 +118,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -181,9 +169,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -232,9 +218,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -278,26 +262,20 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_DisciplineOffer_disciplineId",
             "unique": false,
-            "columnNames": [
-              "disciplineId"
-            ],
+            "columnNames": ["disciplineId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_DisciplineOffer_disciplineId` ON `${TABLE_NAME}` (`disciplineId`)"
           },
           {
             "name": "index_DisciplineOffer_semesterId",
             "unique": false,
-            "columnNames": [
-              "semesterId"
-            ],
+            "columnNames": ["semesterId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_DisciplineOffer_semesterId` ON `${TABLE_NAME}` (`semesterId`)"
           }
@@ -307,23 +285,15 @@
             "table": "Discipline",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "disciplineId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["disciplineId"],
+            "referencedColumns": ["id"]
           },
           {
             "table": "Semester",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "semesterId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["semesterId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -352,9 +322,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -399,9 +367,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         }
       },
       {
@@ -452,17 +418,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_Class_offerId",
             "unique": false,
-            "columnNames": [
-              "offerId"
-            ],
+            "columnNames": ["offerId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Class_offerId` ON `${TABLE_NAME}` (`offerId`)"
           }
@@ -472,12 +434,8 @@
             "table": "DisciplineOffer",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "offerId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["offerId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -500,18 +458,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "classId",
-            "teacherId"
-          ]
+          "columnNames": ["classId", "teacherId"]
         },
         "indices": [
           {
             "name": "index_ClassTeacher_teacherId",
             "unique": false,
-            "columnNames": [
-              "teacherId"
-            ],
+            "columnNames": ["teacherId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassTeacher_teacherId` ON `${TABLE_NAME}` (`teacherId`)"
           }
@@ -521,23 +474,15 @@
             "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "classId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["classId"],
+            "referencedColumns": ["id"]
           },
           {
             "table": "Teacher",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "teacherId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["teacherId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -585,26 +530,20 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_ClassAllocation_classId",
             "unique": false,
-            "columnNames": [
-              "classId"
-            ],
+            "columnNames": ["classId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassAllocation_classId` ON `${TABLE_NAME}` (`classId`)"
           },
           {
             "name": "index_ClassAllocation_spaceId",
             "unique": false,
-            "columnNames": [
-              "spaceId"
-            ],
+            "columnNames": ["spaceId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassAllocation_spaceId` ON `${TABLE_NAME}` (`spaceId`)"
           }
@@ -614,23 +553,15 @@
             "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "classId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["classId"],
+            "referencedColumns": ["id"]
           },
           {
             "table": "ClassSpace",
             "onDelete": "SET NULL",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "spaceId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["spaceId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -690,17 +621,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_StudentClass_classId",
             "unique": false,
-            "columnNames": [
-              "classId"
-            ],
+            "columnNames": ["classId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_StudentClass_classId` ON `${TABLE_NAME}` (`classId`)"
           }
@@ -710,12 +637,8 @@
             "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "classId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["classId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -755,17 +678,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_ClassEvaluation_classId",
             "unique": false,
-            "columnNames": [
-              "classId"
-            ],
+            "columnNames": ["classId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassEvaluation_classId` ON `${TABLE_NAME}` (`classId`)"
           }
@@ -775,12 +694,8 @@
             "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "classId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["classId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -848,26 +763,20 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_StudentGrade_studentClassId",
             "unique": false,
-            "columnNames": [
-              "studentClassId"
-            ],
+            "columnNames": ["studentClassId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_StudentGrade_studentClassId` ON `${TABLE_NAME}` (`studentClassId`)"
           },
           {
             "name": "index_StudentGrade_evaluationId",
             "unique": false,
-            "columnNames": [
-              "evaluationId"
-            ],
+            "columnNames": ["evaluationId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_StudentGrade_evaluationId` ON `${TABLE_NAME}` (`evaluationId`)"
           }
@@ -877,23 +786,15 @@
             "table": "StudentClass",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "studentClassId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["studentClassId"],
+            "referencedColumns": ["id"]
           },
           {
             "table": "ClassEvaluation",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "evaluationId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["evaluationId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -938,27 +839,20 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_ClassLecture_classId",
             "unique": false,
-            "columnNames": [
-              "classId"
-            ],
+            "columnNames": ["classId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_ClassLecture_classId` ON `${TABLE_NAME}` (`classId`)"
           },
           {
             "name": "index_ClassLecture_classId_ordinal",
             "unique": true,
-            "columnNames": [
-              "classId",
-              "ordinal"
-            ],
+            "columnNames": ["classId", "ordinal"],
             "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_ClassLecture_classId_ordinal` ON `${TABLE_NAME}` (`classId`, `ordinal`)"
           }
@@ -968,12 +862,8 @@
             "table": "Class",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "classId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["classId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -1019,27 +909,20 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_LectureMaterial_lectureId",
             "unique": false,
-            "columnNames": [
-              "lectureId"
-            ],
+            "columnNames": ["lectureId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_LectureMaterial_lectureId` ON `${TABLE_NAME}` (`lectureId`)"
           },
           {
             "name": "index_LectureMaterial_lectureId_platformId",
             "unique": true,
-            "columnNames": [
-              "lectureId",
-              "platformId"
-            ],
+            "columnNames": ["lectureId", "platformId"],
             "orders": [],
             "createSql": "CREATE UNIQUE INDEX IF NOT EXISTS `index_LectureMaterial_lectureId_platformId` ON `${TABLE_NAME}` (`lectureId`, `platformId`)"
           }
@@ -1049,12 +932,8 @@
             "table": "ClassLecture",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "lectureId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["lectureId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -1116,22 +995,14 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_Message_timestamp_id",
             "unique": false,
-            "columnNames": [
-              "timestamp",
-              "id"
-            ],
-            "orders": [
-              "DESC",
-              "DESC"
-            ],
+            "columnNames": ["timestamp", "id"],
+            "orders": ["DESC", "DESC"],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_Message_timestamp_id` ON `${TABLE_NAME}` (`timestamp` DESC, `id` DESC)"
           }
         ]
@@ -1191,17 +1062,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_MessageScope_messageId",
             "unique": false,
-            "columnNames": [
-              "messageId"
-            ],
+            "columnNames": ["messageId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_MessageScope_messageId` ON `${TABLE_NAME}` (`messageId`)"
           }
@@ -1211,12 +1078,8 @@
             "table": "Message",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "messageId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["messageId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -1262,17 +1125,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_MessageAttachment_messageId",
             "unique": false,
-            "columnNames": [
-              "messageId"
-            ],
+            "columnNames": ["messageId"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_MessageAttachment_messageId` ON `${TABLE_NAME}` (`messageId`)"
           }
@@ -1282,12 +1141,8 @@
             "table": "Message",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "messageId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["messageId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -1321,21 +1176,15 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "messageId"
-          ]
+          "columnNames": ["messageId"]
         },
         "foreignKeys": [
           {
             "table": "Message",
             "onDelete": "CASCADE",
             "onUpdate": "NO ACTION",
-            "columns": [
-              "messageId"
-            ],
-            "referencedColumns": [
-              "id"
-            ]
+            "columns": ["messageId"],
+            "referencedColumns": ["id"]
           }
         ]
       },
@@ -1358,9 +1207,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "key"
-          ]
+          "columnNames": ["key"]
         }
       },
       {
@@ -1382,9 +1229,7 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "key"
-          ]
+          "columnNames": ["key"]
         }
       },
       {
@@ -1434,17 +1279,13 @@
         ],
         "primaryKey": {
           "autoGenerate": false,
-          "columnNames": [
-            "id"
-          ]
+          "columnNames": ["id"]
         },
         "indices": [
           {
             "name": "index_PendingMutation_createdAt",
             "unique": false,
-            "columnNames": [
-              "createdAt"
-            ],
+            "columnNames": ["createdAt"],
             "orders": [],
             "createSql": "CREATE INDEX IF NOT EXISTS `index_PendingMutation_createdAt` ON `${TABLE_NAME}` (`createdAt`)"
           }

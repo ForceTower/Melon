@@ -4,7 +4,13 @@ import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshActiveSemestersUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides
@@ -16,6 +22,14 @@ interface UmbrellaGraph {
     val refreshUseCase: RefreshActiveSemestersUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore
+
+    // SyncView orchestration surface (iOS). Each step calls one of these.
+    val syncProfileUseCase: SyncProfileUseCase
+    val syncSemesterListUseCase: SyncSemesterListUseCase
+    val syncSemesterUseCase: SyncSemesterUseCase
+    val syncMessagesUseCase: SyncMessagesUseCase
+    val fetchOnboardingStatusUseCase: FetchOnboardingStatusUseCase
+    val pingActivityUseCase: PingActivityUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

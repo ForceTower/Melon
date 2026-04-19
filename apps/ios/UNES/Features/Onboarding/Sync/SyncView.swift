@@ -1,30 +1,12 @@
 import SwiftUI
 
-private struct SyncStep: Identifiable {
-    let id = UUID()
-    let key: String
-    let label: String
-}
-
-private let SYNC_STEPS: [SyncStep] = [
-    .init(key: "auth",     label: "Verificando matrícula"),
-    .init(key: "profile",  label: "Carregando seu perfil"),
-    .init(key: "classes",  label: "Conectando às suas turmas"),
-    .init(key: "schedule", label: "Montando seu horário"),
-    .init(key: "grades",   label: "Baixando notas do semestre"),
-    .init(key: "msgs",     label: "Sincronizando recados"),
-]
-
 struct SyncView: View {
     let name: String
-    let onDone: () -> Void
-
-    @State private var currentStep: Int = 0
-    @State private var doneKeys: Set<String> = []
+    @State var viewModel: SyncViewModel
 
     private var progress: Double {
         guard !SYNC_STEPS.isEmpty else { return 0 }
-        return min(1, Double(doneKeys.count) / Double(SYNC_STEPS.count))
+        return min(1, Double(viewModel.doneKeys.count) / Double(SYNC_STEPS.count))
     }
 
     var body: some View {
@@ -61,7 +43,7 @@ struct SyncView: View {
             .padding(.top, 73)
             .padding(.bottom, 26)
         }
-        .onAppear(perform: advance)
+        .onAppear { viewModel.start() }
     }
 
     private var headline: Text {
@@ -103,7 +85,7 @@ struct SyncView: View {
                         .font(UNESFont.serif(20))
                         .foregroundStyle(Color.white.opacity(0.55))
                 }
-                Text("\(doneKeys.count)/\(SYNC_STEPS.count)")
+                Text("\(viewModel.doneKeys.count)/\(SYNC_STEPS.count)")
                     .font(UNESFont.mono(9))
                     .tracking(1.6)
                     .textCase(.uppercase)
@@ -117,9 +99,9 @@ struct SyncView: View {
     private var stepList: some View {
         VStack(spacing: 0) {
             ForEach(Array(SYNC_STEPS.enumerated()), id: \.element.id) { i, step in
-                let isDone    = doneKeys.contains(step.key)
-                let isActive  = currentStep == i
-                let isPending = i > currentStep
+                let isDone    = viewModel.doneKeys.contains(step.key)
+                let isActive  = viewModel.currentStep == i
+                let isPending = i > viewModel.currentStep
 
                 HStack(spacing: 12) {
                     stepIndicator(isDone: isDone, isActive: isActive)
@@ -138,7 +120,7 @@ struct SyncView: View {
                 .padding(.vertical, 10)
                 .opacity(isPending ? 0.35 : 1)
                 .animation(.easeInOut(duration: 0.3), value: isDone)
-                .animation(.easeInOut(duration: 0.3), value: currentStep)
+                .animation(.easeInOut(duration: 0.3), value: viewModel.currentStep)
             }
         }
         .padding(.vertical, 6)
@@ -197,23 +179,4 @@ struct SyncView: View {
         }
         .frame(width: 20, height: 20)
     }
-
-    private func advance() {
-        if currentStep >= SYNC_STEPS.count {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.7) { onDone() }
-            return
-        }
-        let delay: Double = currentStep == 0 ? 0.9 : 0.8 + Double.random(in: 0...0.4)
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
-            withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
-                doneKeys.insert(SYNC_STEPS[currentStep].key)
-                currentStep += 1
-            }
-            advance()
-        }
-    }
-}
-
-#Preview {
-    SyncView(name: "Mariana", onDone: {})
 }

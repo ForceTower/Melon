@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <style type="text/css"><![CDATA[
+      @import url('https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@1,144,900&amp;display=swap');
+      .u {
+        font-family: 'Fraunces', 'Instrument Serif', Georgia, serif;
+        font-style: italic;
+        font-weight: 900;
+        font-size: 920px;
+        font-variation-settings: "opsz" 144;
+        letter-spacing: -0.02em;
+      }
+    ]]></style>
+  </defs>
+  <text x="512" y="780" text-anchor="middle" class="u" fill="#2D1B4E">U</text>
+</svg>

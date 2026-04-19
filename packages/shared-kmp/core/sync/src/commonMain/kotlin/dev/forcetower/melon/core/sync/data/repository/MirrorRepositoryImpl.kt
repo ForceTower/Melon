@@ -2,15 +2,21 @@ package dev.forcetower.melon.core.sync.data.repository
 
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.network.ApiEnvelope
+import dev.forcetower.melon.core.sync.data.dto.MessagePageResponse
+import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
 import dev.forcetower.melon.core.sync.data.dto.ProfileResponse
 import dev.forcetower.melon.core.sync.data.dto.SemesterListResponse
 import dev.forcetower.melon.core.sync.data.dto.SemesterPayloadResponse
+import dev.forcetower.melon.core.sync.data.mapper.toDomain
 import dev.forcetower.melon.core.sync.data.mapper.toEntity
 import dev.forcetower.melon.core.sync.data.network.MirrorApi
+import dev.forcetower.melon.core.sync.domain.model.MessagePageResult
+import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus
 import dev.forcetower.melon.core.sync.domain.model.SemesterSummary
 import dev.forcetower.melon.core.sync.domain.model.SyncError
 import dev.forcetower.melon.core.sync.domain.repository.MirrorRepository
@@ -32,6 +38,7 @@ internal class MirrorRepositoryImpl(
     private val studentDao: StudentDao,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
+    private val messageDao: MessageDao,
 ) : MirrorRepository {
 
     override suspend fun syncProfile(): Outcome<Unit, SyncError> = callNetwork {
@@ -104,6 +111,49 @@ internal class MirrorRepositoryImpl(
                 )
                 Outcome.Ok(Unit)
             }
+        }
+    }
+
+    override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> = callNetwork {
+        val response = api.getOnboardingStatus()
+        when (val mapped = classifyResponse<OnboardingStatusResponse>(response)) {
+            is Outcome.Err -> mapped
+            is Outcome.Ok -> Outcome.Ok(mapped.value.toDomain())
+        }
+    }
+
+    override suspend fun syncMessages(
+        since: String?,
+        cursor: String?,
+    ): Outcome<MessagePageResult, SyncError> = callNetwork {
+        val response = api.getMessages(since, cursor)
+        when (val mapped = classifyResponse<MessagePageResponse>(response)) {
+            is Outcome.Err -> mapped
+            is Outcome.Ok -> {
+                val page = mapped.value
+                // Read/starred state is per-student locally but server-merged
+                // across all linked students — without a 1:1 student mapping
+                // we skip persisting MessageState here. Fresh inbox lands as
+                // unread; a later state-sync pass can reconcile.
+                messageDao.applyMessagePage(
+                    messages = page.messages.map { it.toEntity() },
+                    scopes = page.messages.flatMap { msg -> msg.scopes.map { it.toEntity(msg.id) } },
+                    attachments = page.messages.flatMap { msg ->
+                        msg.attachments.map { it.toEntity(msg.id) }
+                    },
+                )
+                Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
+            }
+        }
+    }
+
+    override suspend fun pingActivity(): Outcome<Unit, SyncError> = callNetwork {
+        val statusCode = api.ping().status.value
+        when (statusCode) {
+            in 200..299 -> Outcome.Ok(Unit)
+            401 -> Outcome.Err(SyncError.Unauthorized)
+            in 500..599 -> Outcome.Err(SyncError.Server(null))
+            else -> Outcome.Err(SyncError.Unexpected)
         }
     }
 

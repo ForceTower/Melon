@@ -39,14 +39,26 @@ struct OnboardingFlow: View {
             )
         case .sync(let name):
             let firstName = String(name.split(separator: " ").first ?? "")
-            SyncView(
-                name: firstName.isEmpty ? "estudante" : firstName,
-                onDone: { path.append(.ready(userName: name)) }
-            )
-            .toolbar(.hidden, for: .navigationBar)
-            .navigationBarBackButtonHidden()
+            syncDestination(name: name, displayName: firstName.isEmpty ? "estudante" : firstName)
         case .ready(let userName):
-            ReadyView(userName: userName, onEnter: onComplete)
+            let firstName = String(userName.split(separator: " ").first ?? "")
+            ReadyView(userName: firstName, onEnter: onComplete)
+                .toolbar(.hidden, for: .navigationBar)
+                .navigationBarBackButtonHidden()
+        }
+    }
+
+    @ViewBuilder
+    private func syncDestination(name: String, displayName: String) -> some View {
+        if let umbrella {
+            let viewModel = SyncViewModel(
+                graph: umbrella,
+                onDone: { path.append(.ready(userName: name)) },
+                // Auth broke mid-onboarding (rare). Bounce back to login by
+                // resetting the stack — the user re-authenticates from scratch.
+                onAuthFailed: { path.removeAll() }
+            )
+            SyncView(name: displayName, viewModel: viewModel)
                 .toolbar(.hidden, for: .navigationBar)
                 .navigationBarBackButtonHidden()
         }
