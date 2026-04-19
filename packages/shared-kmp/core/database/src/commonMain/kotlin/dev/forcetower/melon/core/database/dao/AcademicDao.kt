@@ -7,10 +7,12 @@ import androidx.room.Upsert
 import dev.forcetower.melon.core.database.entity.ClassAllocationEntity
 import dev.forcetower.melon.core.database.entity.ClassEntity
 import dev.forcetower.melon.core.database.entity.ClassEvaluationEntity
+import dev.forcetower.melon.core.database.entity.ClassLectureEntity
 import dev.forcetower.melon.core.database.entity.ClassSpaceEntity
 import dev.forcetower.melon.core.database.entity.ClassTeacherEntity
 import dev.forcetower.melon.core.database.entity.DisciplineEntity
 import dev.forcetower.melon.core.database.entity.DisciplineOfferEntity
+import dev.forcetower.melon.core.database.entity.LectureMaterialEntity
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
@@ -57,6 +59,12 @@ abstract class AcademicDao {
     abstract suspend fun upsertGrades(items: List<StudentGradeEntity>)
 
     @Upsert
+    abstract suspend fun upsertLectures(items: List<ClassLectureEntity>)
+
+    @Upsert
+    abstract suspend fun upsertLectureMaterials(items: List<LectureMaterialEntity>)
+
+    @Upsert
     abstract suspend fun upsertSemester(semester: SemesterEntity)
 
     // Cascade-wipes the semester's subtree. FK cascades handle Class ->
@@ -78,6 +86,8 @@ abstract class AcademicDao {
         studentClasses: List<StudentClassEntity>,
         evaluations: List<ClassEvaluationEntity>,
         grades: List<StudentGradeEntity>,
+        lectures: List<ClassLectureEntity>,
+        lectureMaterials: List<LectureMaterialEntity>,
     ) {
         wipeSemesterSubtree(semesterId)
         // Catalog first so FKs resolve on the inserts that follow.
@@ -93,6 +103,8 @@ abstract class AcademicDao {
         upsertStudentClasses(studentClasses)
         upsertEvaluations(evaluations)
         upsertGrades(grades)
+        upsertLectures(lectures)
+        upsertLectureMaterials(lectureMaterials)
     }
 
     @Query("DELETE FROM Discipline")

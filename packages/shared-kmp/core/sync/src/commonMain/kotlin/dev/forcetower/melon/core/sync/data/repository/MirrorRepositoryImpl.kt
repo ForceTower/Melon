@@ -106,7 +106,7 @@ internal class MirrorRepositoryImpl(
     }
 
     private suspend inline fun <T> callNetwork(
-        block: () -> Outcome<T, SyncError>,
+        block: suspend () -> Outcome<T, SyncError>,
     ): Outcome<T, SyncError> = try {
         block()
     } catch (cancellation: CancellationException) {

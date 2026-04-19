@@ -15,11 +15,13 @@ import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.entity.ClassAllocationEntity
 import dev.forcetower.melon.core.database.entity.ClassEntity
 import dev.forcetower.melon.core.database.entity.ClassEvaluationEntity
+import dev.forcetower.melon.core.database.entity.ClassLectureEntity
 import dev.forcetower.melon.core.database.entity.ClassSpaceEntity
 import dev.forcetower.melon.core.database.entity.ClassTeacherEntity
 import dev.forcetower.melon.core.database.entity.CourseEntity
 import dev.forcetower.melon.core.database.entity.DisciplineEntity
 import dev.forcetower.melon.core.database.entity.DisciplineOfferEntity
+import dev.forcetower.melon.core.database.entity.LectureMaterialEntity
 import dev.forcetower.melon.core.database.entity.MessageAttachmentEntity
 import dev.forcetower.melon.core.database.entity.MessageEntity
 import dev.forcetower.melon.core.database.entity.MessageScopeEntity
@@ -50,6 +52,8 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         StudentClassEntity::class,
         ClassEvaluationEntity::class,
         StudentGradeEntity::class,
+        ClassLectureEntity::class,
+        LectureMaterialEntity::class,
         MessageEntity::class,
         MessageScopeEntity::class,
         MessageAttachmentEntity::class,
@@ -58,7 +62,7 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         SyncStateEntity::class,
         PendingMutationEntity::class,
     ],
-    version = 2,
+    version = 3,
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {
