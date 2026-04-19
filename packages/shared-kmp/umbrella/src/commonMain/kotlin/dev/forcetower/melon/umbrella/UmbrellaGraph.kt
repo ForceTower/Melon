@@ -10,16 +10,16 @@ import dev.zacsweers.metro.Provides
 import dev.zacsweers.metro.createGraphFactory
 
 @DependencyGraph(AppScope::class)
-interface SharedGraph {
+interface UmbrellaGraph {
     val loginUseCase: LoginUseCase
     val refreshUseCase: RefreshActiveSemestersUseCase
     val sessionStore: SessionStore
 
     @DependencyGraph.Factory
     fun interface Factory {
-        fun create(@Provides baseUrl: BaseUrl): SharedGraph
+        fun create(@Provides baseUrl: BaseUrl): UmbrellaGraph
     }
 }
 
-fun SharedGraph(config: SharedConfig): SharedGraph =
-    createGraphFactory<SharedGraph.Factory>().create(BaseUrl(config.baseUrl))
+fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph =
+    createGraphFactory<UmbrellaGraph.Factory>().create(BaseUrl(config.baseUrl))

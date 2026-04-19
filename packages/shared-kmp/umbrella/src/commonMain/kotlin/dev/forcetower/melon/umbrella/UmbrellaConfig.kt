@@ -1,5 +1,5 @@
 package dev.forcetower.melon.umbrella
 
-data class SharedConfig(
+data class UmbrellaConfig(
     val baseUrl: String,
 )

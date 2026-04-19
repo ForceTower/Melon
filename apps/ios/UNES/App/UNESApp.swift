@@ -9,9 +9,12 @@ import SwiftUI
 
 @main
 struct UNESApp: App {
+    @UIApplicationDelegateAdaptor(AppDelegate.self) private var appDelegate
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environment(\.umbrella, appDelegate.graph)
         }
     }
 }

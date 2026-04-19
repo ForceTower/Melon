@@ -73,28 +73,6 @@
 		};
 /* End PBXNativeTarget section */
 
-/* Begin PBXShellScriptBuildPhase section */
-		6CUM01002F930600005557AF /* Build Kotlin Umbrella framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build Kotlin Umbrella framework";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :packages:shared-kmp:umbrella:embedAndSignAppleFrameworkForXcode\n";
-		};
-/* End PBXShellScriptBuildPhase section */
-
 /* Begin PBXProject section */
 		6C3995DF2F930600005557AF /* Project object */ = {
 			isa = PBXProject;
@@ -136,6 +114,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		6CUM01002F930600005557AF /* Build Kotlin Umbrella framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Kotlin Umbrella framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :packages:shared-kmp:umbrella:embedAndSignAppleFrameworkForXcode\n";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		6C3995E32F930600005557AF /* Sources */ = {
