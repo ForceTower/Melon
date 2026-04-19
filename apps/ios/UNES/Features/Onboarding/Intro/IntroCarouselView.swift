@@ -39,8 +39,8 @@ private enum IntroSlide: Int, CaseIterable, Identifiable {
 
 struct IntroCarouselView: View {
     let onDone: () -> Void
-    let onBack: () -> Void
 
+    @Environment(\.dismiss) private var dismiss
     @State private var index: Int = 0
     @State private var contentKey: Int = 0
 
@@ -67,6 +67,7 @@ struct IntroCarouselView: View {
             }
             .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         }
+        .toolbar(.hidden, for: .navigationBar)
     }
 
     @ViewBuilder
@@ -206,11 +207,13 @@ struct IntroCarouselView: View {
                 contentKey += 1
             }
         } else {
-            onBack()
+            dismiss()
         }
     }
 }
 
 #Preview {
-    IntroCarouselView(onDone: {}, onBack: {})
+    NavigationStack {
+        IntroCarouselView(onDone: {})
+    }
 }

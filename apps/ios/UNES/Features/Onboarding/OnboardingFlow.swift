@@ -30,19 +30,18 @@ struct OnboardingFlow: View {
         switch route {
         case .intro:
             IntroCarouselView(
-                onDone: { path.append(.login) },
-                onBack: pop
+                onDone: { path.append(.login) }
             )
-            .toolbar(.hidden, for: .navigationBar)
         case .login:
             LoginView(
                 loginUseCase: umbrella?.loginUseCase,
                 onSubmit: { id in path.append(.sync(studentId: id)) }
             )
-        case .sync(let studentId):
+        case .sync(let name):
+            let firstName = String(name.split(separator: " ").first ?? "")
             SyncView(
-                userId: studentId.isEmpty ? "estudante" : studentId,
-                onDone: { path.append(.ready(userName: "Mariana")) }
+                name: firstName.isEmpty ? "estudante" : firstName,
+                onDone: { path.append(.ready(userName: name)) }
             )
             .toolbar(.hidden, for: .navigationBar)
             .navigationBarBackButtonHidden()

@@ -16,7 +16,7 @@ private let SYNC_STEPS: [SyncStep] = [
 ]
 
 struct SyncView: View {
-    let userId: String
+    let name: String
     let onDone: () -> Void
 
     @State private var currentStep: Int = 0
@@ -65,7 +65,7 @@ struct SyncView: View {
     }
 
     private var headline: Text {
-        Text("\(Text("Quase lá,\n").foregroundStyle(UNESColor.surfaceLight))\(Text("\(userId).").italic().foregroundStyle(UNESColor.amber))")
+        Text("\(Text("Quase lá,\n").foregroundStyle(UNESColor.surfaceLight))\(Text("\(name).").italic().foregroundStyle(UNESColor.amber))")
             .font(UNESFont.serif(44))
             .tracking(-1.1)
     }
@@ -215,5 +215,5 @@ struct SyncView: View {
 }
 
 #Preview {
-    SyncView(userId: "202312345", onDone: {})
+    SyncView(name: "Mariana", onDone: {})
 }
