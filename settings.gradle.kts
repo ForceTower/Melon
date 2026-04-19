@@ -15,10 +15,12 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "melon"
+rootProject.name = "Melon"
 
 include(":packages:shared-kmp:core:network")
 include(":packages:shared-kmp:core:database")
+include(":packages:shared-kmp:core:storage")
+include(":packages:shared-kmp:core:session")
 include(":packages:shared-kmp:features:auth")
 include(":packages:shared-kmp:features:dashboard")
 include(":packages:shared-kmp:umbrella")
