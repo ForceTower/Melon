@@ -21,6 +21,7 @@ interface JvmDatabaseGraph {
             return Room.databaseBuilder<MelonDatabase>(name = dbFile.absolutePath)
                 .setDriver(BundledSQLiteDriver())
                 .setQueryCoroutineContext(Dispatchers.Default)
+                .fallbackToDestructiveMigration(true)
                 .build()
         }
     }
