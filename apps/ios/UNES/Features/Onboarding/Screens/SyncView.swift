@@ -9,8 +9,8 @@ private struct SyncStep: Identifiable {
 private let SYNC_STEPS: [SyncStep] = [
     .init(key: "auth",     label: "Verificando matrícula"),
     .init(key: "profile",  label: "Carregando seu perfil"),
-    .init(key: "schedule", label: "Montando seu horário"),
     .init(key: "classes",  label: "Conectando às suas turmas"),
+    .init(key: "schedule", label: "Montando seu horário"),
     .init(key: "grades",   label: "Baixando notas do semestre"),
     .init(key: "msgs",     label: "Sincronizando recados"),
 ]
@@ -50,7 +50,7 @@ struct SyncView: View {
 
                 stepList
 
-                Text("Isso leva cerca de 12 segundos na sua conexão.")
+                Text("Isso levará alguns segundos na sua conexão.")
                     .font(UNESFont.mono(10))
                     .tracking(1)
                     .foregroundStyle(Color.white.opacity(0.4))

@@ -30,7 +30,7 @@ struct LoginView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: 0) {
-                    Text("◦ UEFS · SAGRES")
+                    Text("◦ UEFS · UNES")
                         .font(UNESFont.sans(12, weight: .medium))
                         .tracking(1.4)
                         .textCase(.uppercase)
