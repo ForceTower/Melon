@@ -1,5 +1,5 @@
 import UIKit
-import Umbrella
+@preconcurrency import Umbrella
 import FirebaseCore
 import FirebaseCrashlytics
 import FirebaseMessaging
@@ -51,10 +51,24 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     }
     
     nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        if let fcmToken = fcmToken {
-            UserDefaults.standard.set(fcmToken, forKey: "messaging_notification_token")
-            // TODO: Send token to backend
-            // graph?.syncFirebaseToken(token: fcmToken)
+        guard let fcmToken else { return }
+        UserDefaults.standard.set(fcmToken, forKey: "messaging_notification_token")
+
+        Task { @MainActor in
+            guard let graph else { return }
+            guard (try? await graph.sessionStore.getAccessToken()) != nil else { return }
+
+            let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
+            let deviceName = UIDevice.current.name
+            let locale = Locale.current.identifier
+
+            _ = try? await graph.registerNotificationTokenUseCase.invoke(
+                token: fcmToken,
+                platform: "ios",
+                deviceName: deviceName,
+                appVersion: appVersion,
+                locale: locale
+            )
         }
     }
     
