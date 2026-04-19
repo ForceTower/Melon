@@ -1,10 +1,14 @@
 package dev.forcetower.melon.feature.auth
 
+import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.AuthTokenSource
-import dev.forcetower.melon.core.session.AuthState
-import dev.forcetower.melon.core.session.SessionStore
-import dev.forcetower.melon.core.session.User
-import dev.forcetower.melon.feature.auth.data.AuthApi
+import dev.forcetower.melon.core.session.domain.model.AuthState
+import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.User
+import dev.forcetower.melon.feature.auth.data.network.AuthService
+import dev.forcetower.melon.feature.auth.data.repository.AuthRepositoryImpl
+import dev.forcetower.melon.feature.auth.domain.model.LoginError
+import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.mock.MockEngine
 import io.ktor.client.engine.mock.MockRequestHandleScope
@@ -73,7 +77,7 @@ class LoginFlowTest {
 
         val result = useCase("alice", "wrong")
 
-        assertEquals(Outcome.Err(DomainError.InvalidCredentials), result)
+        assertEquals(Outcome.Err(LoginError.Kind.InvalidCredentials), result)
         assertNull(sessionStore.lastAccessToken)
     }
 
@@ -85,7 +89,7 @@ class LoginFlowTest {
             expectSuccess = false
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
         }
-        return LoginUseCase(AuthRepositoryImpl(AuthApi(client), sessionStore))
+        return LoginUseCase(AuthRepositoryImpl(AuthService(client), sessionStore))
     }
 
     private fun MockRequestHandleScope.jsonResponse(body: String, status: HttpStatusCode): HttpResponseData =

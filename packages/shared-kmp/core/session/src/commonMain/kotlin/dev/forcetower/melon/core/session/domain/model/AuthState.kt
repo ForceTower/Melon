@@ -1,4 +1,4 @@
-package dev.forcetower.melon.core.session
+package dev.forcetower.melon.core.session.domain.model
 
 sealed class AuthState {
     data class Authenticated(val user: User) : AuthState()

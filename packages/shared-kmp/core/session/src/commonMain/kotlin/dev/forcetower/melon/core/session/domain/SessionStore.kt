@@ -1,6 +1,8 @@
-package dev.forcetower.melon.core.session
+package dev.forcetower.melon.core.session.domain
 
 import dev.forcetower.melon.core.network.AuthTokenSource
+import dev.forcetower.melon.core.session.domain.model.AuthState
+import dev.forcetower.melon.core.session.domain.model.User
 import kotlinx.coroutines.flow.StateFlow
 
 interface SessionStore : AuthTokenSource {

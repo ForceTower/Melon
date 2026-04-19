@@ -1,8 +1,8 @@
 package dev.forcetower.melon.umbrella
 
 import dev.forcetower.melon.core.network.BaseUrl
-import dev.forcetower.melon.core.session.SessionStore
-import dev.forcetower.melon.feature.auth.LoginUseCase
+import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.DependencyGraph
 import dev.zacsweers.metro.Provides

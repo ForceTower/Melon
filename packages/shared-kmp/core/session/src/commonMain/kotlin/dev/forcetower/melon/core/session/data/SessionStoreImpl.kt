@@ -1,8 +1,17 @@
-package dev.forcetower.melon.core.session
+package dev.forcetower.melon.core.session.data
 
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.entity.UserEntity
+import dev.forcetower.melon.core.network.AuthTokenSource
+import dev.forcetower.melon.core.session.domain.model.AuthState
+import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.core.session.domain.model.User
 import dev.forcetower.melon.core.storage.KeyValueStorage
+import dev.zacsweers.metro.AppScope
+import dev.zacsweers.metro.ContributesBinding
+import dev.zacsweers.metro.Inject
+import dev.zacsweers.metro.SingleIn
+import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
@@ -14,6 +23,10 @@ import kotlinx.coroutines.launch
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
 
+@Inject
+@SingleIn(AppScope::class)
+@ContributesBinding(AppScope::class)
+@ContributesBinding(AppScope::class, binding = binding<AuthTokenSource>())
 internal class SessionStoreImpl(
     private val storage: KeyValueStorage,
     private val userDao: UserDao,

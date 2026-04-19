@@ -6,13 +6,14 @@ plugins {
 }
 
 kotlin {
-    val xcf = XCFramework("SharedKmp")
-    iosX64 { binaries.framework { baseName = "SharedKmp"; xcf.add(this) } }
-    iosArm64 { binaries.framework { baseName = "SharedKmp"; xcf.add(this) } }
-    iosSimulatorArm64 { binaries.framework { baseName = "SharedKmp"; xcf.add(this) } }
+    val xcf = XCFramework("Umbrella")
+    iosX64 { binaries.framework { baseName = "Umbrella"; xcf.add(this) } }
+    iosArm64 { binaries.framework { baseName = "Umbrella"; xcf.add(this) } }
+    iosSimulatorArm64 { binaries.framework { baseName = "Umbrella"; xcf.add(this) } }
 
     sourceSets {
         commonMain.dependencies {
+            api(project(":packages:shared-kmp:core:common"))
             api(project(":packages:shared-kmp:core:network"))
             api(project(":packages:shared-kmp:core:database"))
             api(project(":packages:shared-kmp:core:storage"))

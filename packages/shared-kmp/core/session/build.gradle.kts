@@ -3,6 +3,10 @@ plugins {
     alias(libs.plugins.metro)
 }
 
+metro {
+    generateContributionProviders.set(true)
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {

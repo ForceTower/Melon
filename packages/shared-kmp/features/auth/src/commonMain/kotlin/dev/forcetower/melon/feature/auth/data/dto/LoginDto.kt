@@ -1,4 +1,4 @@
-package dev.forcetower.melon.feature.auth.data
+package dev.forcetower.melon.feature.auth.data.dto
 
 import kotlinx.serialization.Serializable
 
@@ -20,12 +20,4 @@ internal data class LoginUserDto(
     val id: String,
     val name: String,
     val imageUrl: String?,
-)
-
-@Serializable
-internal data class ApiEnvelope<T>(
-    val ok: Boolean,
-    val message: String? = null,
-    val data: T? = null,
-    val error: String? = null,
 )

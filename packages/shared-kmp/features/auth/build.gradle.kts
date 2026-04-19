@@ -4,9 +4,14 @@ plugins {
     alias(libs.plugins.metro)
 }
 
+metro {
+    generateContributionProviders.set(true)
+}
+
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(project(":packages:shared-kmp:core:common"))
             implementation(project(":packages:shared-kmp:core:network"))
             implementation(project(":packages:shared-kmp:core:session"))
             implementation(libs.kotlinx.coroutines.core)
