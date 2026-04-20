@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Umbrella
 
 @main
 struct UNESApp: App {
@@ -13,8 +14,11 @@ struct UNESApp: App {
 
     var body: some Scene {
         WindowGroup {
-            RootView()
-                .environment(\.umbrella, appDelegate.graph)
+            let graph = appDelegate.graph
+            RootView(
+                sessionStore: graph.sessionStore,
+                onboarding: graph.onboardingFactory
+            )
         }
     }
 }

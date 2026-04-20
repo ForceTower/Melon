@@ -1,5 +1,4 @@
 import SwiftUI
-import Umbrella
 
 private enum OnboardingRoute: Hashable {
     case intro
@@ -9,9 +8,9 @@ private enum OnboardingRoute: Hashable {
 }
 
 struct OnboardingFlow: View {
+    let factory: OnboardingFactory
     var onComplete: () -> Void = {}
 
-    @Environment(\.umbrella) private var umbrella
     @State private var path: [OnboardingRoute] = []
 
     var body: some View {
@@ -33,44 +32,23 @@ struct OnboardingFlow: View {
                 onDone: { path.append(.login) }
             )
         case .login:
-            LoginView(
-                loginUseCase: umbrella?.loginUseCase,
-                onSubmit: { id in path.append(.sync(studentId: id)) }
-            )
+            factory.makeLogin { id in path.append(.sync(studentId: id)) }
         case .sync(let name):
             let firstName = String(name.split(separator: " ").first ?? "")
-            syncDestination(name: name, displayName: firstName.isEmpty ? "estudante" : firstName)
-        case .ready(let userName):
-            let firstName = String(userName.split(separator: " ").first ?? "")
-            let viewModel = ReadyViewModel(useCase: umbrella?.getReadyOverviewUseCase)
-            ReadyView(userName: firstName, onEnter: onComplete, viewModel: viewModel)
-                .toolbar(.hidden, for: .navigationBar)
-                .navigationBarBackButtonHidden()
-        }
-    }
-
-    @ViewBuilder
-    private func syncDestination(name: String, displayName: String) -> some View {
-        if let umbrella {
-            let viewModel = SyncViewModel(
-                graph: umbrella,
+            factory.makeSync(
+                displayName: firstName.isEmpty ? "estudante" : firstName,
                 onDone: { path.append(.ready(userName: name)) },
                 // Auth broke mid-onboarding (rare). Bounce back to login by
                 // resetting the stack — the user re-authenticates from scratch.
                 onAuthFailed: { path.removeAll() }
             )
-            SyncView(name: displayName, viewModel: viewModel)
+            .toolbar(.hidden, for: .navigationBar)
+            .navigationBarBackButtonHidden()
+        case .ready(let userName):
+            let firstName = String(userName.split(separator: " ").first ?? "")
+            factory.makeReady(userName: firstName, onEnter: onComplete)
                 .toolbar(.hidden, for: .navigationBar)
                 .navigationBarBackButtonHidden()
         }
     }
-
-    private func pop() {
-        guard !path.isEmpty else { return }
-        path.removeLast()
-    }
-}
-
-#Preview {
-    OnboardingFlow()
 }

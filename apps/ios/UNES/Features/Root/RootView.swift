@@ -1,5 +1,5 @@
 import SwiftUI
-import Umbrella
+@preconcurrency import Umbrella
 
 private enum RootDestination {
     case splash
@@ -21,25 +21,30 @@ final class RootViewModel {
 }
 
 struct RootView: View {
-    @Environment(\.umbrella) private var umbrella
+    let sessionStore: SessionSessionStore
+    let onboarding: OnboardingFactory
+
     @State private var viewModel = RootViewModel()
 
     var body: some View {
         ZStack {
             switch viewModel.destination {
             case .splash:
-                SplashView(sessionStore: umbrella?.sessionStore) { hasSession in
+                SplashView(sessionStore: sessionStore) { hasSession in
                     withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
                         viewModel.splashFinished(hasSession: hasSession)
                     }
                 }
                 .transition(.opacity)
             case .onboarding:
-                OnboardingFlow(onComplete: {
-                    withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
-                        viewModel.onboardingCompleted()
+                OnboardingFlow(
+                    factory: onboarding,
+                    onComplete: {
+                        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
+                            viewModel.onboardingCompleted()
+                        }
                     }
-                })
+                )
                 .transition(
                     .asymmetric(
                         insertion: .opacity,
@@ -58,8 +63,4 @@ struct RootView: View {
         }
         .statusBarHidden(false)
     }
-}
-
-#Preview {
-    RootView()
 }

@@ -35,7 +35,7 @@ final class SyncViewModel {
     private(set) var currentStep: Int = 0
     private(set) var doneKeys: Set<String> = []
 
-    private let graph: UmbrellaGraph
+    private let useCases: SyncUseCases
     private let onDone: () -> Void
     private let onAuthFailed: () -> Void
 
@@ -57,11 +57,11 @@ final class SyncViewModel {
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "sync")
 
     init(
-        graph: UmbrellaGraph,
+        useCases: SyncUseCases,
         onDone: @escaping () -> Void,
         onAuthFailed: @escaping () -> Void,
     ) {
-        self.graph = graph
+        self.useCases = useCases
         self.onDone = onDone
         self.onAuthFailed = onAuthFailed
     }
@@ -99,7 +99,7 @@ final class SyncViewModel {
 
     private func sendPing() async {
         do {
-            let outcome = try await graph.pingActivityUseCase.invoke()
+            let outcome = try await useCases.ping.invoke()
             recordAuthIfFailed(outcome)
         } catch is CancellationError {
             return
@@ -114,7 +114,7 @@ final class SyncViewModel {
         let deviceName = UIDevice.current.name
         let locale = Locale.current.identifier
         do {
-            _ = try await graph.registerNotificationTokenUseCase.invoke(
+            _ = try await useCases.registerToken.invoke(
                 token: token,
                 platform: "ios",
                 deviceName: deviceName,
@@ -134,7 +134,7 @@ final class SyncViewModel {
         // one or two extra polls is enough in the common case.
         for attempt in 0...2 {
             do {
-                let outcome = try await graph.syncProfileUseCase.invoke()
+                let outcome = try await useCases.profile.invoke()
                 switch onEnum(of: outcome) {
                 case .ok:
                     if attempt == 2 { return .ok }
@@ -158,7 +158,7 @@ final class SyncViewModel {
 
     private func shouldRetryProfileForCourse() async -> Bool {
         do {
-            let outcome = try await graph.fetchOnboardingStatusUseCase.invoke()
+            let outcome = try await useCases.onboardingStatus.invoke()
             switch onEnum(of: outcome) {
             case .ok(let wrapper):
                 guard let status = wrapper.value else { return false }
@@ -180,7 +180,7 @@ final class SyncViewModel {
         // terminal state (new student, between semesters) — accept it.
         for iteration in 0..<5 {
             do {
-                let outcome = try await graph.syncSemesterListUseCase.invoke()
+                let outcome = try await useCases.semesterList.invoke()
                 switch onEnum(of: outcome) {
                 case .ok(let wrapper):
                     let list = (wrapper.value as? [SyncSemesterSummary]) ?? []
@@ -211,7 +211,7 @@ final class SyncViewModel {
 
     private func semestersAreStillBackfilling() async -> Bool {
         do {
-            let outcome = try await graph.fetchOnboardingStatusUseCase.invoke()
+            let outcome = try await useCases.onboardingStatus.invoke()
             switch onEnum(of: outcome) {
             case .ok(let wrapper):
                 guard let state = wrapper.value?.semesters.state else { return false }
@@ -243,7 +243,7 @@ final class SyncViewModel {
             // Detached so they outlive the view; the umbrella graph owns the
             // network + DAOs they touch.
             let extraIds = extras.map(\.id)
-            let semesterUseCase = graph.syncSemesterUseCase
+            let semesterUseCase = useCases.semester
             Task.detached {
                 for id in extraIds {
                     _ = try? await semesterUseCase.invoke(semesterId: id)
@@ -252,7 +252,7 @@ final class SyncViewModel {
         }
 
         do {
-            let primaryOutcome = try await graph.syncSemesterUseCase.invoke(semesterId: primary.id)
+            let primaryOutcome = try await useCases.semester.invoke(semesterId: primary.id)
             switch onEnum(of: primaryOutcome) {
             case .ok:
                 return .ok
@@ -271,11 +271,11 @@ final class SyncViewModel {
 
     private func runMessagesStep() async -> StepResult {
         do {
-            let firstPage = try await graph.syncMessagesUseCase.invoke(since: nil, cursor: nil)
+            let firstPage = try await useCases.messages.invoke(since: nil, cursor: nil)
             switch onEnum(of: firstPage) {
             case .ok(let wrapper):
                 if let next = wrapper.value?.nextCursor {
-                    let messagesUseCase = graph.syncMessagesUseCase
+                    let messagesUseCase = useCases.messages
                     Task.detached {
                         var cursor: String? = next
                         var pages = 0

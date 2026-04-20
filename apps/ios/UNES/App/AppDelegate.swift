@@ -6,19 +6,21 @@ import FirebaseMessaging
 import FirebaseRemoteConfig
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
-    var graph: UmbrellaGraph?
-    
+    lazy var graph: UmbrellaGraph = {
+        let config = UmbrellaConfig(baseUrl: "https://netherlands-dev.forcetower.dev")
+        return UmbrellaGraph(config: config)
+    }()
+
     private var isPreview: Bool {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"
     }
-    
+
     func application(
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
-        let config = UmbrellaConfig(baseUrl: "https://netherlands-dev.forcetower.dev")
-        graph = UmbrellaGraph(config: config)
-        
+        _ = graph
+
         guard !isPreview else { return true }
         FirebaseApp.configure()
 #if DEBUG
@@ -55,7 +57,6 @@ extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
         UserDefaults.standard.set(fcmToken, forKey: "messaging_notification_token")
 
         Task { @MainActor in
-            guard let graph else { return }
             guard (try? await graph.sessionStore.getAccessToken()) != nil else { return }
 
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
