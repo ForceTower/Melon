@@ -20,4 +20,20 @@ extension UmbrellaGraph {
             )
         )
     }
+
+    @MainActor
+    var overviewFactory: OverviewFactory {
+        OverviewFactory(
+            useCases: OverviewUseCases(
+                header: observeOverviewHeaderUseCase,
+                nowClass: observeNowClassUseCase,
+                today: observeTodayTimelineUseCase,
+                disciplines: observeDisciplinesUseCase,
+                messagesTile: observeUnreadMessagesTileUseCase,
+                nextTestTile: observeNextTestTileUseCase,
+                attendanceTile: observeAttendanceTileUseCase,
+                lastSync: observeLastSyncUseCase
+            )
+        )
+    }
 }

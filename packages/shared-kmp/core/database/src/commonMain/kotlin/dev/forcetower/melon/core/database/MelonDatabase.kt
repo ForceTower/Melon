@@ -62,7 +62,7 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         SyncStateEntity::class,
         PendingMutationEntity::class,
     ],
-    version = 3,
+    version = 4,
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {

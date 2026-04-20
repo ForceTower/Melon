@@ -8,6 +8,7 @@ import dev.forcetower.melon.core.database.entity.MessageAttachmentEntity
 import dev.forcetower.melon.core.database.entity.MessageEntity
 import dev.forcetower.melon.core.database.entity.MessageScopeEntity
 import dev.forcetower.melon.core.database.entity.MessageStateEntity
+import dev.forcetower.melon.core.database.query.UnreadMessageHeadRow
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -20,6 +21,33 @@ abstract class MessageDao {
 
     @Query("SELECT * FROM MessageState WHERE messageId IN (:ids)")
     abstract fun observeStates(ids: List<String>): Flow<List<MessageStateEntity>>
+
+    // Count of unread messages — a missing MessageState row counts as unread
+    // (matches MirrorRepositoryImpl, which applies messages without states
+    // during initial sync).
+    @Query(
+        """
+        SELECT COUNT(*) FROM Message m
+          LEFT JOIN MessageState ms ON ms.messageId = m.id
+         WHERE ms.readAt IS NULL
+        """,
+    )
+    abstract fun observeUnreadCount(): Flow<Int>
+
+    // Latest unread message head — for the Overview "recados" tile preview.
+    @Query(
+        """
+        SELECT m.senderName AS senderName,
+               m.subject AS subject,
+               m.content AS content
+          FROM Message m
+          LEFT JOIN MessageState ms ON ms.messageId = m.id
+         WHERE ms.readAt IS NULL
+         ORDER BY m.timestamp DESC, m.id DESC
+         LIMIT 1
+        """,
+    )
+    abstract fun observeLatestUnread(): Flow<UnreadMessageHeadRow?>
 
     @Upsert
     abstract suspend fun upsertMessages(messages: List<MessageEntity>)

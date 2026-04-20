@@ -4,6 +4,8 @@ import SwiftUI
 /// and routes to each feature. Named for the "◦ conectado" moment in the
 /// onboarding flow.
 struct ConnectedView: View {
+    let overview: OverviewFactory
+
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
 
@@ -14,7 +16,7 @@ struct ConnectedView: View {
     var body: some View {
         TabView(selection: $activeTab) {
             Tab(ConnectedTab.overview.label, systemImage: ConnectedTab.overview.icon, value: .overview) {
-                OverviewView()
+                OverviewView(factory: overview)
             }
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
                 switch scheduleVariant {
@@ -73,8 +75,4 @@ private struct PlaceholderTab: View {
                 .foregroundStyle(UNESColor.ink3)
         }
     }
-}
-
-#Preview {
-    ConnectedView()
 }

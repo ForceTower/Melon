@@ -1,6 +1,12 @@
 import SwiftUI
 
 struct OverviewView: View {
+    @State private var viewModel: OverviewViewModel
+
+    init(factory: OverviewFactory) {
+        _viewModel = State(initialValue: factory.makeViewModel())
+    }
+
     var body: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
@@ -29,23 +35,38 @@ struct OverviewView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 14) {
-                    OverviewHeader()
-                        .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)
+                    OverviewHeader(
+                        greeting: viewModel.greeting,
+                        dateEyebrow: viewModel.dateEyebrow,
+                        name: viewModel.userName ?? "—",
+                        avatarInitial: viewModel.avatarInitial
+                    )
+                    .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)
 
                     VStack(spacing: 14) {
-                        NowCard(now: OverviewFixtures.nowClass)
-                            .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
-                        TodayTimeline(items: OverviewFixtures.today)
+                        if let now = viewModel.now {
+                            NowCard(now: now)
+                                .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
+                        }
+                        TodayTimeline(items: viewModel.today)
                             .fadeUpOnAppear(delay: 0.24, distance: 14, duration: 0.55)
-                        OverviewTileGrid()
-                            .fadeUpOnAppear(delay: 0.34, distance: 14, duration: 0.55)
+                        OverviewTileGrid(
+                            grade: viewModel.gradeTile,
+                            messages: viewModel.messagesTile,
+                            nextTest: viewModel.nextTestTile,
+                            attendance: viewModel.attendanceTile
+                        )
+                        .fadeUpOnAppear(delay: 0.34, distance: 14, duration: 0.55)
                     }
                     .padding(.horizontal, 14)
 
-                    DisciplinesStrip(items: OverviewFixtures.disciplines)
-                        .fadeUpOnAppear(delay: 0.44, distance: 14, duration: 0.55)
+                    DisciplinesStrip(
+                        items: viewModel.disciplines,
+                        semesterLabel: viewModel.semesterLabel
+                    )
+                    .fadeUpOnAppear(delay: 0.44, distance: 14, duration: 0.55)
 
-                    Text("◦ ATUALIZADO HÁ 2 MIN ◦")
+                    Text(viewModel.lastUpdatedLabel)
                         .font(UNESFont.mono(9))
                         .tracking(1.26)
                         .foregroundStyle(UNESColor.ink4)
@@ -55,9 +76,8 @@ struct OverviewView: View {
                 }
             }
         }
+        .task {
+            await viewModel.observe()
+        }
     }
-}
-
-#Preview {
-    OverviewView()
 }

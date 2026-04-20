@@ -53,7 +53,7 @@ internal class MirrorRepositoryImpl(
                 // here though, so straight upsert is acceptable too.
                 userDao.upsert(payload.user.toEntity())
                 payload.course?.let { studentDao.upsertCourse(it.toEntity()) }
-                studentDao.upsertStudent(payload.student.toEntity())
+                studentDao.upsertStudent(payload.student.toEntity(payload.lastSyncCompletedAt))
                 Outcome.Ok(Unit)
             }
         }

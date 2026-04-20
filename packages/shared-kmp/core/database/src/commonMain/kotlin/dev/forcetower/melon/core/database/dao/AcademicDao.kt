@@ -17,8 +17,14 @@ import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
 import dev.forcetower.melon.core.database.entity.TeacherEntity
-import dev.forcetower.melon.core.database.query.SemesterClassAggregate
+import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
+import dev.forcetower.melon.core.database.query.RecentLectureRow
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
+import dev.forcetower.melon.core.database.query.SemesterClassAggregate
+import dev.forcetower.melon.core.database.query.StudentDisciplineRow
+import dev.forcetower.melon.core.database.query.TodayLectureRow
+import dev.forcetower.melon.core.database.query.UpcomingEvaluationRow
+import kotlinx.coroutines.flow.Flow
 
 // The single choke point for applying a server semester payload. The
 // @Transaction method on applySemesterPayload guarantees the wipe-then-insert
@@ -132,31 +138,147 @@ abstract class AcademicDao {
     abstract suspend fun getSemesterAggregate(semesterId: String): SemesterClassAggregate
 
     // Every allocation (day + time slot) for the semester joined with its
-    // discipline, first teacher, and room. Caller picks "next" from this list
-    // — cheap to do in memory vs. SQL-heavy date math that would vary by
-    // platform.
+    // discipline, first teacher, and room. Caller picks "next" / "now" from
+    // this list — cheap to do in memory vs. SQL-heavy date math that would
+    // vary by platform.
+    @Query(ALLOCATIONS_SQL)
+    abstract suspend fun listSemesterAllocations(semesterId: String): List<SemesterAllocationRow>
+
+    // Reactive variant of [listSemesterAllocations]. Re-emits on any write to
+    // the joined tables (allocations, classes, offers, disciplines, teachers,
+    // spaces) so Overview's "now" / "today" flows track sync activity.
+    @Query(ALLOCATIONS_SQL)
+    abstract fun observeSemesterAllocations(semesterId: String): Flow<List<SemesterAllocationRow>>
+
+    // One row per enrolled discipline in the semester. `weightedAverage` is
+    // SUM(value × weight) / SUM(weight) across graded rows only — null when no
+    // grade has landed. `finalGrade` stays the authoritative "done" grade.
     @Query(
         """
-        SELECT a.id AS allocationId,
-               c.id AS classId,
-               d.name AS disciplineName,
-               a.day AS day,
-               a.startTime AS startTime,
-               a.endTime AS endTime,
-               s.location AS spaceLocation,
+        SELECT d.id AS disciplineId,
+               d.code AS code,
+               d.name AS name,
+               sc.finalGrade AS finalGrade,
+               sc.approved AS approved,
                (
-                 SELECT t.name FROM Teacher t
-                  JOIN ClassTeacher ct ON ct.teacherId = t.id
-                  WHERE ct.classId = c.id
-                  LIMIT 1
-               ) AS teacherName
-          FROM ClassAllocation a
-          JOIN Class c ON c.id = a.classId
+                 SELECT SUM(CAST(sg.value AS REAL) * CAST(sg.weight AS REAL))
+                        / NULLIF(SUM(CAST(sg.weight AS REAL)), 0)
+                   FROM StudentGrade sg
+                  WHERE sg.studentClassId = sc.id
+                    AND sg.value IS NOT NULL
+                    AND sg.value != ''
+               ) AS weightedAverage
+          FROM StudentClass sc
+          JOIN Class c ON c.id = sc.classId
           JOIN DisciplineOffer o ON o.id = c.offerId
           JOIN Discipline d ON d.id = o.disciplineId
-          LEFT JOIN ClassSpace s ON s.id = a.spaceId
+         WHERE o.semesterId = :semesterId
+         ORDER BY d.code ASC
+        """,
+    )
+    abstract fun observeStudentDisciplines(semesterId: String): Flow<List<StudentDisciplineRow>>
+
+    // Today's lectures, filtered to a semester+date, carrying only the topic
+    // (subject). Used to enrich NowCard / Timeline rows with what's being
+    // taught in each slot. `date` is an ISO-8601 day string.
+    @Query(
+        """
+        SELECT c.id AS classId,
+               cl.subject AS subject
+          FROM ClassLecture cl
+          JOIN Class c ON c.id = cl.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.semesterId = :semesterId AND cl.date = :date
+        """,
+    )
+    abstract fun observeTodayLecturesForSemester(
+        semesterId: String,
+        date: String,
+    ): Flow<List<TodayLectureRow>>
+
+    // Closest upcoming evaluation. Heuristic: a StudentGrade row whose date
+    // hasn't passed and whose value is still empty is an un-graded future
+    // test. Ordered ascending so LIMIT 1 is the nearest one.
+    @Query(
+        """
+        SELECT sg.date AS date,
+               e.name AS evaluationName,
+               d.code AS disciplineCode,
+               d.name AS disciplineName
+          FROM StudentGrade sg
+          JOIN ClassEvaluation e ON e.id = sg.evaluationId
+          JOIN StudentClass sc ON sc.id = sg.studentClassId
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+          JOIN Discipline d ON d.id = o.disciplineId
+         WHERE o.semesterId = :semesterId
+           AND sg.date IS NOT NULL
+           AND sg.date >= :today
+           AND (sg.value IS NULL OR sg.value = '')
+         ORDER BY sg.date ASC
+         LIMIT 1
+        """,
+    )
+    abstract fun observeClosestUpcomingEvaluation(
+        semesterId: String,
+        today: String,
+    ): Flow<UpcomingEvaluationRow?>
+
+    // Semester-wide miss/hours aggregate. Percentage (100 - missed/hours*100)
+    // and allowed-absences (hours * 0.25) are derived on the client.
+    @Query(
+        """
+        SELECT COALESCE(SUM(sc.missedClasses), 0) AS totalMissed,
+               COALESCE(SUM(c.hours), 0) AS totalHours
+          FROM StudentClass sc
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
          WHERE o.semesterId = :semesterId
         """,
     )
-    abstract suspend fun listSemesterAllocations(semesterId: String): List<SemesterAllocationRow>
+    abstract fun observeAttendanceSummary(semesterId: String): Flow<AttendanceSummaryRow>
+
+    // Most recent N lectures for the semester with their upstream situation
+    // code. ViewModel maps situation -> present/absent for the 14-day strip.
+    @Query(
+        """
+        SELECT cl.date AS date,
+               cl.situation AS situation
+          FROM ClassLecture cl
+          JOIN Class c ON c.id = cl.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.semesterId = :semesterId AND cl.date IS NOT NULL
+         ORDER BY cl.date DESC
+         LIMIT :limit
+        """,
+    )
+    abstract fun observeRecentLectures(
+        semesterId: String,
+        limit: Int,
+    ): Flow<List<RecentLectureRow>>
+
+    private companion object {
+        const val ALLOCATIONS_SQL = """
+            SELECT a.id AS allocationId,
+                   c.id AS classId,
+                   d.code AS disciplineCode,
+                   d.name AS disciplineName,
+                   a.day AS day,
+                   a.startTime AS startTime,
+                   a.endTime AS endTime,
+                   s.location AS spaceLocation,
+                   (
+                     SELECT t.name FROM Teacher t
+                      JOIN ClassTeacher ct ON ct.teacherId = t.id
+                      WHERE ct.classId = c.id
+                      LIMIT 1
+                   ) AS teacherName
+              FROM ClassAllocation a
+              JOIN Class c ON c.id = a.classId
+              JOIN DisciplineOffer o ON o.id = c.offerId
+              JOIN Discipline d ON d.id = o.disciplineId
+              LEFT JOIN ClassSpace s ON s.id = a.spaceId
+             WHERE o.semesterId = :semesterId
+        """
+    }
 }

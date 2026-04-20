@@ -23,6 +23,7 @@ final class RootViewModel {
 struct RootView: View {
     let sessionStore: SessionSessionStore
     let onboarding: OnboardingFactory
+    let overview: OverviewFactory
 
     @State private var viewModel = RootViewModel()
 
@@ -52,7 +53,7 @@ struct RootView: View {
                     )
                 )
             case .connected:
-                ConnectedView()
+                ConnectedView(overview: overview)
                     .transition(
                         .asymmetric(
                             insertion: .opacity.combined(with: .move(edge: .trailing)),

@@ -7,6 +7,7 @@ internal data class ProfileResponse(
     val user: UserDto,
     val student: StudentDto,
     val course: CourseDto?,
+    val lastSyncCompletedAt: String? = null,
 )
 
 @Serializable

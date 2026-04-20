@@ -1,15 +1,20 @@
 import SwiftUI
 
 struct OverviewTileGrid: View {
+    var grade: OverviewGradeTileData? = nil
+    var messages: OverviewMessagesTileData? = nil
+    var nextTest: OverviewNextTestTileData? = nil
+    var attendance: OverviewAttendanceTileData? = nil
+
     var body: some View {
         VStack(spacing: 10) {
             HStack(spacing: 10) {
-                GradeTile()
-                MessagesTile()
+                GradeTile(data: grade)
+                MessagesTile(data: messages)
             }
             HStack(spacing: 10) {
-                TestsTile()
-                StreakTile()
+                TestsTile(data: nextTest)
+                StreakTile(data: attendance)
             }
         }
     }
@@ -50,34 +55,75 @@ private struct TileEyebrow: View {
 // MARK: - Grade (coeficiente)
 
 private struct GradeTile: View {
+    let data: OverviewGradeTileData?
+
     var body: some View {
         TileShell {
             VStack(alignment: .leading, spacing: 0) {
                 TileEyebrow(label: "coeficiente")
                 Spacer(minLength: 0)
-                Text("\(Text("8").foregroundStyle(UNESColor.ink))\(Text(",").foregroundStyle(UNESColor.ink4))\(Text("5").foregroundStyle(UNESColor.ink))")
-                    .font(UNESFont.serif(52))
-                    .tracking(-1.56)
-                HStack(spacing: 4) {
-                    Image(systemName: "arrow.up.right")
-                        .font(.system(size: 8, weight: .bold))
-                        .foregroundStyle(OverviewFixtures.successIcon)
-                    Text("+0,3")
-                        .font(UNESFont.sans(11, weight: .medium))
-                        .foregroundStyle(OverviewFixtures.success)
-                    Text("vs 2025.2")
+                if let data {
+                    GradeValue(value: data.value)
+                    GradeDelta(delta: data.delta, comparisonSemester: data.comparisonSemester)
+                        .padding(.top, 4)
+                } else {
+                    Text("—")
+                        .font(UNESFont.serif(52))
+                        .tracking(-1.56)
+                        .foregroundStyle(UNESColor.ink4)
+                    Text("em breve")
                         .font(UNESFont.sans(11))
                         .foregroundStyle(UNESColor.ink3)
+                        .padding(.top, 4)
                 }
-                .padding(.top, 4)
             }
         }
+    }
+}
+
+private struct GradeValue: View {
+    let value: Double
+    var body: some View {
+        let scaled = Int((value * 10).rounded())
+        let whole = String(scaled / 10)
+        let tenth = String(scaled % 10)
+        Text("\(Text(whole).foregroundStyle(UNESColor.ink))\(Text(",").foregroundStyle(UNESColor.ink4))\(Text(tenth).foregroundStyle(UNESColor.ink))")
+            .font(UNESFont.serif(52))
+            .tracking(-1.56)
+    }
+}
+
+private struct GradeDelta: View {
+    let delta: Double
+    let comparisonSemester: String
+
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: delta >= 0 ? "arrow.up.right" : "arrow.down.right")
+                .font(.system(size: 8, weight: .bold))
+                .foregroundStyle(OverviewFixtures.successIcon)
+            Text(formatDelta(delta))
+                .font(UNESFont.sans(11, weight: .medium))
+                .foregroundStyle(OverviewFixtures.success)
+            Text("vs \(comparisonSemester)")
+                .font(UNESFont.sans(11))
+                .foregroundStyle(UNESColor.ink3)
+        }
+    }
+
+    private func formatDelta(_ v: Double) -> String {
+        let sign = v >= 0 ? "+" : "-"
+        let abs = Swift.abs(v)
+        let scaled = Int((abs * 10).rounded())
+        return "\(sign)\(scaled / 10),\(scaled % 10)"
     }
 }
 
 // MARK: - Messages (always-dark mesh card)
 
 private struct MessagesTile: View {
+    let data: OverviewMessagesTileData?
+
     var body: some View {
         ZStack(alignment: .topLeading) {
             Color(red: 0x1A / 255, green: 0x0F / 255, blue: 0x28 / 255)
@@ -87,7 +133,7 @@ private struct MessagesTile: View {
                 TileEyebrow(label: "recados", tint: Color.white.opacity(0.7))
                 Spacer(minLength: 0)
                 HStack(alignment: .firstTextBaseline, spacing: 8) {
-                    Text("2")
+                    Text("\(data?.unreadCount ?? 0)")
                         .font(UNESFont.serif(48))
                         .tracking(-1.44)
                         .foregroundStyle(UNESColor.surfaceLight)
@@ -95,7 +141,7 @@ private struct MessagesTile: View {
                         .font(UNESFont.sans(12))
                         .foregroundStyle(Color.white.opacity(0.7))
                 }
-                Text("Prof. Adriana · Gabarito da P1")
+                Text(previewLine)
                     .font(UNESFont.sans(11))
                     .foregroundStyle(Color.white.opacity(0.75))
                     .lineLimit(1)
@@ -107,33 +153,58 @@ private struct MessagesTile: View {
         .frame(maxWidth: .infinity, minHeight: 150)
         .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
     }
+
+    private var previewLine: String {
+        guard let data else { return "sem mensagens" }
+        switch (data.lastSender, data.lastPreview) {
+        case let (sender?, preview?): return "\(sender) · \(preview)"
+        case let (sender?, nil): return sender
+        case let (nil, preview?): return preview
+        default: return "caixa de entrada em dia"
+        }
+    }
 }
 
 // MARK: - Tests (próxima prova)
 
 private struct TestsTile: View {
+    let data: OverviewNextTestTileData?
+
     var body: some View {
         TileShell {
             VStack(alignment: .leading, spacing: 0) {
                 TileEyebrow(label: "próxima prova")
                 Spacer(minLength: 0)
-                HStack(alignment: .firstTextBaseline, spacing: 4) {
-                    Text("5")
-                        .font(UNESFont.serif(48))
+                if let data {
+                    HStack(alignment: .firstTextBaseline, spacing: 4) {
+                        Text("\(data.daysUntil)")
+                            .font(UNESFont.serif(48))
+                            .foregroundStyle(UNESColor.ink)
+                        Text(data.daysUntil == 1 ? "dia" : "dias")
+                            .font(UNESFont.serif(18))
+                            .foregroundStyle(UNESColor.ink3)
+                    }
+                    .tracking(-0.96)
+                    Text("\(data.label) · \(data.disciplineName)")
+                        .font(UNESFont.sans(12, weight: .medium))
                         .foregroundStyle(UNESColor.ink)
-                    Text("dias")
-                        .font(UNESFont.serif(18))
+                        .lineLimit(1)
+                        .truncationMode(.tail)
+                        .padding(.top, 4)
+                    Text(data.dateLabel)
+                        .font(UNESFont.sans(11))
                         .foregroundStyle(UNESColor.ink3)
+                        .padding(.top, 1)
+                } else {
+                    Text("—")
+                        .font(UNESFont.serif(48))
+                        .foregroundStyle(UNESColor.ink4)
+                        .tracking(-0.96)
+                    Text("sem provas agendadas")
+                        .font(UNESFont.sans(11))
+                        .foregroundStyle(UNESColor.ink3)
+                        .padding(.top, 4)
                 }
-                .tracking(-0.96)
-                Text("P2 · Algoritmos I")
-                    .font(UNESFont.sans(12, weight: .medium))
-                    .foregroundStyle(UNESColor.ink)
-                    .padding(.top, 4)
-                Text("22 abr · 08:00")
-                    .font(UNESFont.sans(11))
-                    .foregroundStyle(UNESColor.ink3)
-                    .padding(.top, 1)
             }
         }
     }
@@ -142,21 +213,21 @@ private struct TestsTile: View {
 // MARK: - Streak (frequência)
 
 private struct StreakTile: View {
-    private let days: [Bool] = (0..<14).map { $0 < 12 }
+    let data: OverviewAttendanceTileData?
 
     var body: some View {
         TileShell {
             VStack(alignment: .leading, spacing: 0) {
                 TileEyebrow(label: "frequência")
                 Spacer(minLength: 0)
-                Text("\(Text("96").font(UNESFont.serif(32)).foregroundStyle(UNESColor.ink))\(Text("%").font(UNESFont.serif(18)).foregroundStyle(UNESColor.ink3))")
-                    .tracking(-0.64)
+                percentageLabel
 
                 HStack(spacing: 2) {
+                    let days = paddedDays
                     ForEach(Array(days.enumerated()), id: \.offset) { i, present in
                         let base: Color = present ? UNESColor.amber : UNESColor.surface3
                         let opacity: Double = present
-                            ? (0.4 + Double(i) / Double(days.count) * 0.6)
+                            ? (0.4 + Double(i) / Double(max(days.count, 1)) * 0.6)
                             : 1.0
                         RoundedRectangle(cornerRadius: 3, style: .continuous)
                             .fill(base.opacity(opacity))
@@ -165,18 +236,65 @@ private struct StreakTile: View {
                 }
                 .padding(.top, 10)
 
-                Text("14 dias · 2 faltas permitidas")
+                Text(footer)
                     .font(UNESFont.sans(11))
                     .foregroundStyle(UNESColor.ink3)
                     .padding(.top, 4)
             }
         }
     }
+
+    @ViewBuilder
+    private var percentageLabel: some View {
+        if let pct = data?.percentage {
+            Text("\(Text("\(pct)").font(UNESFont.serif(32)).foregroundStyle(UNESColor.ink))\(Text("%").font(UNESFont.serif(18)).foregroundStyle(UNESColor.ink3))")
+                .tracking(-0.64)
+        } else {
+            Text("—")
+                .font(UNESFont.serif(32))
+                .foregroundStyle(UNESColor.ink4)
+                .tracking(-0.64)
+        }
+    }
+
+    private var paddedDays: [Bool] {
+        let period = data?.periodDays ?? 14
+        let days = data?.days ?? []
+        if days.count >= period { return Array(days.prefix(period)) }
+        return days + Array(repeating: false, count: period - days.count)
+    }
+
+    private var footer: String {
+        let period = data?.periodDays ?? 14
+        let allowed = data?.allowedAbsences ?? 0
+        let faltasLabel = allowed == 1 ? "1 falta permitida" : "\(allowed) faltas permitidas"
+        return "\(period) dias · \(faltasLabel)"
+    }
 }
 
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        OverviewTileGrid().padding(14)
+        OverviewTileGrid(
+            grade: OverviewGradeTileData(value: 8.5, delta: 0.3, comparisonSemester: "2025.2"),
+            messages: OverviewMessagesTileData(
+                unreadCount: 2,
+                lastSender: "Prof. Adriana",
+                lastPreview: "Gabarito da P1"
+            ),
+            nextTest: OverviewNextTestTileData(
+                label: "P2",
+                disciplineName: "Algoritmos I",
+                daysUntil: 5,
+                dateLabel: "22 abr"
+            ),
+            attendance: OverviewAttendanceTileData(
+                percentage: 96,
+                days: (0..<14).map { $0 < 12 },
+                allowedAbsences: 2,
+                periodDays: 14
+            )
+        )
+        .padding(14)
     }
 }

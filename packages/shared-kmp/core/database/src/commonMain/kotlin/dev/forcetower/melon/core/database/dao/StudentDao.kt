@@ -12,6 +12,9 @@ interface StudentDao {
     @Query("SELECT * FROM Student LIMIT 1")
     fun observeCurrent(): Flow<StudentEntity?>
 
+    @Query("SELECT lastSyncCompletedAt FROM Student LIMIT 1")
+    fun observeLastSyncCompletedAt(): Flow<String?>
+
     @Query("SELECT * FROM Student LIMIT 1")
     suspend fun getCurrent(): StudentEntity?
 

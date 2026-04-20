@@ -2,12 +2,13 @@ import SwiftUI
 
 struct DisciplinesStrip: View {
     let items: [OverviewDiscipline]
+    var semesterLabel: String = ""
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack(alignment: .firstTextBaseline) {
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("◦ semestre 2026.1")
+                    Text("◦ semestre \(semesterLabel)")
                         .font(UNESFont.sans(12, weight: .medium))
                         .tracking(1.44)
                         .textCase(.uppercase)
@@ -67,7 +68,7 @@ private struct DisciplineCard: View {
 
                 Spacer(minLength: 0)
 
-                Text("PARCIAL")
+                Text(item.statusLabel)
                     .font(UNESFont.mono(9))
                     .tracking(1.08)
                     .foregroundStyle(UNESColor.ink3)
@@ -89,6 +90,6 @@ private struct DisciplineCard: View {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        DisciplinesStrip(items: OverviewFixtures.disciplines)
+        DisciplinesStrip(items: OverviewFixtures.disciplines, semesterLabel: "2026.1")
     }
 }

@@ -22,4 +22,7 @@ data class StudentEntity(
     val platformId: Long,
     val name: String,
     val courseId: String?,
+    // When the server last successfully fetched this student's data from
+    // upstream. Stored as ISO-8601; nullable until the first completed sync.
+    val lastSyncCompletedAt: String? = null,
 )

@@ -5,6 +5,14 @@ import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshActiveSemestersUseCase
@@ -34,6 +42,16 @@ interface UmbrellaGraph {
 
     // Dashboard read-side: end-of-onboarding snapshot.
     val getReadyOverviewUseCase: GetReadyOverviewUseCase
+
+    // Overview (Hoje) reactive surfaces — one flow per UI section.
+    val observeOverviewHeaderUseCase: ObserveOverviewHeaderUseCase
+    val observeNowClassUseCase: ObserveNowClassUseCase
+    val observeTodayTimelineUseCase: ObserveTodayTimelineUseCase
+    val observeDisciplinesUseCase: ObserveDisciplinesUseCase
+    val observeUnreadMessagesTileUseCase: ObserveUnreadMessagesTileUseCase
+    val observeNextTestTileUseCase: ObserveNextTestTileUseCase
+    val observeAttendanceTileUseCase: ObserveAttendanceTileUseCase
+    val observeLastSyncUseCase: ObserveLastSyncUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

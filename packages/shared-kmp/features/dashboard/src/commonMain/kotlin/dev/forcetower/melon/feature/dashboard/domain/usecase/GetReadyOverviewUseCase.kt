@@ -1,5 +1,9 @@
 package dev.forcetower.melon.feature.dashboard.domain.usecase
 
+import dev.forcetower.melon.core.common.parseHhMm
+import dev.forcetower.melon.core.common.toUpstreamDay
+import dev.forcetower.melon.core.common.weekSlot
+import dev.forcetower.melon.core.common.weekSlotDelta
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
@@ -8,7 +12,6 @@ import dev.forcetower.melon.feature.dashboard.domain.model.NextClassInfo
 import dev.forcetower.melon.feature.dashboard.domain.model.ReadyOverview
 import dev.zacsweers.metro.Inject
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DayOfWeek
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
@@ -48,52 +51,24 @@ class GetReadyOverviewUseCase internal constructor(
     private fun pickNextClass(rows: List<SemesterAllocationRow>, timeZone: TimeZone): NextClassInfo? {
         if (rows.isEmpty()) return null
         val now = Clock.System.now().toLocalDateTime(timeZone)
-        val nowSlot = now.dayOfWeek.upstreamDay() * SLOTS_IN_DAY + now.hour * 60 + now.minute
-        val WEEK = 7 * SLOTS_IN_DAY
+        val nowSlot = weekSlot(now.dayOfWeek.toUpstreamDay(), now.hour * 60 + now.minute)
 
-        data class Scored(val row: SemesterAllocationRow, val deltaMinutes: Int)
+        val winner = rows
+            .mapNotNull { row ->
+                val day = row.day ?: return@mapNotNull null
+                val startMinutes = parseHhMm(row.startTime) ?: return@mapNotNull null
+                row to weekSlotDelta(nowSlot, weekSlot(day, startMinutes))
+            }
+            .minByOrNull { it.second }
+            ?: return null
 
-        val scored = rows.mapNotNull { row ->
-            val day = row.day ?: return@mapNotNull null
-            val startMinutes = parseHhMm(row.startTime) ?: return@mapNotNull null
-            val rowSlot = day * SLOTS_IN_DAY + startMinutes
-            val delta = ((rowSlot - nowSlot) % WEEK + WEEK) % WEEK
-            Scored(row, delta)
-        }
-
-        val winner = scored.minByOrNull { it.deltaMinutes } ?: return null
         return NextClassInfo(
-            disciplineName = winner.row.disciplineName,
-            startTime = winner.row.startTime.orEmpty(),
-            endTime = winner.row.endTime,
-            spaceLocation = winner.row.spaceLocation,
-            teacherName = winner.row.teacherName,
-            startsInMinutes = winner.deltaMinutes,
+            disciplineName = winner.first.disciplineName,
+            startTime = winner.first.startTime.orEmpty(),
+            endTime = winner.first.endTime,
+            spaceLocation = winner.first.spaceLocation,
+            teacherName = winner.first.teacherName,
+            startsInMinutes = winner.second,
         )
-    }
-
-    // Upstream `dia` encoding is 1=Sunday..7=Saturday (PT-BR convention).
-    // Translate ISO DayOfWeek to match so comparisons stay in one space.
-    private fun DayOfWeek.upstreamDay(): Int = when (this) {
-        DayOfWeek.SUNDAY -> 1
-        DayOfWeek.MONDAY -> 2
-        DayOfWeek.TUESDAY -> 3
-        DayOfWeek.WEDNESDAY -> 4
-        DayOfWeek.THURSDAY -> 5
-        DayOfWeek.FRIDAY -> 6
-        DayOfWeek.SATURDAY -> 7
-    }
-
-    private fun parseHhMm(value: String?): Int? {
-        if (value.isNullOrBlank()) return null
-        val parts = value.split(":")
-        if (parts.size < 2) return null
-        val h = parts[0].toIntOrNull() ?: return null
-        val m = parts[1].take(2).toIntOrNull() ?: return null
-        return h * 60 + m
-    }
-
-    private companion object {
-        const val SLOTS_IN_DAY = 24 * 60
     }
 }

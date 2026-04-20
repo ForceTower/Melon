@@ -17,7 +17,8 @@ struct UNESApp: App {
             let graph = appDelegate.graph
             RootView(
                 sessionStore: graph.sessionStore,
-                onboarding: graph.onboardingFactory
+                onboarding: graph.onboardingFactory,
+                overview: graph.overviewFactory
             )
         }
     }
