@@ -3,6 +3,7 @@ import SwiftUI
 struct ReadyView: View {
     let userName: String
     let onEnter: () -> Void
+    let viewModel: ReadyViewModel
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -49,7 +50,7 @@ struct ReadyView: View {
                     .multilineTextAlignment(.center)
                     .fadeUpOnAppear(delay: 1.2)
 
-                Text("6 turmas · 24 créditos · semestre 2026.1")
+                Text(viewModel.semesterLine)
                     .font(UNESFont.sans(15))
                     .lineSpacing(3)
                     .foregroundStyle(UNESColor.ink3)
@@ -58,9 +59,11 @@ struct ReadyView: View {
 
                 Spacer()
 
-                previewCard
-                    .padding(.horizontal, 28)
-                    .fadeUpOnAppear(delay: 1.4)
+                if let next = viewModel.nextClass {
+                    previewCard(for: next)
+                        .padding(.horizontal, 28)
+                        .fadeUpOnAppear(delay: 1.4)
+                }
 
                 Spacer()
 
@@ -70,6 +73,7 @@ struct ReadyView: View {
                     .padding(.bottom, 6)
             }
         }
+        .task { await viewModel.load() }
     }
 
     @ViewBuilder
@@ -90,7 +94,7 @@ struct ReadyView: View {
     }
 
     @ViewBuilder
-    private var previewCard: some View {
+    private func previewCard(for next: ReadyNextClass) -> some View {
         VStack(alignment: .leading, spacing: 10) {
             HStack {
                 Text("Próxima aula")
@@ -99,7 +103,7 @@ struct ReadyView: View {
                     .textCase(.uppercase)
                     .foregroundStyle(UNESColor.ink3)
                 Spacer()
-                Text("em 1h 12min")
+                Text(next.startsInLabel)
                     .font(UNESFont.mono(11))
                     .foregroundStyle(UNESColor.accent)
             }
@@ -108,11 +112,11 @@ struct ReadyView: View {
                 MeshChip(variant: .cool, size: 48, radius: 14)
 
                 VStack(alignment: .leading, spacing: 2) {
-                    Text("Cálculo Diferencial II")
+                    Text(next.disciplineName)
                         .font(UNESFont.serif(20))
                         .tracking(-0.2)
                         .foregroundStyle(UNESColor.ink)
-                    Text("10:20 · sala MT-14 · Prof. Adriana")
+                    Text(secondaryLine(for: next))
                         .font(UNESFont.sans(13))
                         .foregroundStyle(UNESColor.ink3)
                 }
@@ -123,8 +127,25 @@ struct ReadyView: View {
         .cardSurface(RoundedRectangle(cornerRadius: 22, style: .continuous))
         .shadow(color: Color.black.opacity(0.06), radius: 20, y: 10)
     }
+
+    private func secondaryLine(for next: ReadyNextClass) -> String {
+        var parts: [String] = [next.startTime]
+        if let room = next.spaceLocation, !room.isEmpty {
+            parts.append("sala \(room)")
+        }
+        if let teacher = next.teacherName, !teacher.isEmpty {
+            parts.append(shortTeacherName(teacher))
+        }
+        return parts.joined(separator: " · ")
+    }
+
+    // "Prof. Adriana" from a full name like "Adriana Silva Souza".
+    private func shortTeacherName(_ full: String) -> String {
+        let first = full.split(separator: " ").first.map(String.init) ?? full
+        return "Prof. \(first)"
+    }
 }
 
 #Preview {
-    ReadyView(userName: "Mariana", onEnter: {})
+    ReadyView(userName: "Mariana", onEnter: {}, viewModel: ReadyViewModel(useCase: nil))
 }

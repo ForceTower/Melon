@@ -42,7 +42,8 @@ struct OnboardingFlow: View {
             syncDestination(name: name, displayName: firstName.isEmpty ? "estudante" : firstName)
         case .ready(let userName):
             let firstName = String(userName.split(separator: " ").first ?? "")
-            ReadyView(userName: firstName, onEnter: onComplete)
+            let viewModel = ReadyViewModel(useCase: umbrella?.getReadyOverviewUseCase)
+            ReadyView(userName: firstName, onEnter: onComplete, viewModel: viewModel)
                 .toolbar(.hidden, for: .navigationBar)
                 .navigationBarBackButtonHidden()
         }

@@ -3,6 +3,7 @@ package dev.forcetower.melon.umbrella
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
+import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
@@ -30,6 +31,9 @@ interface UmbrellaGraph {
     val syncMessagesUseCase: SyncMessagesUseCase
     val fetchOnboardingStatusUseCase: FetchOnboardingStatusUseCase
     val pingActivityUseCase: PingActivityUseCase
+
+    // Dashboard read-side: end-of-onboarding snapshot.
+    val getReadyOverviewUseCase: GetReadyOverviewUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

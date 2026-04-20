@@ -17,6 +17,8 @@ import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
 import dev.forcetower.melon.core.database.entity.TeacherEntity
+import dev.forcetower.melon.core.database.query.SemesterClassAggregate
+import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 
 // The single choke point for applying a server semester payload. The
 // @Transaction method on applySemesterPayload guarantees the wipe-then-insert
@@ -115,4 +117,46 @@ abstract class AcademicDao {
 
     @Query("DELETE FROM ClassSpace")
     abstract suspend fun clearSpaces()
+
+    // Read side: projected queries for UI. Kept alongside the writes so the
+    // joins reference the same topology the inserts rely on.
+
+    @Query(
+        """
+        SELECT COUNT(*) AS classCount, COALESCE(SUM(c.hours), 0) AS totalHours
+          FROM Class c
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.semesterId = :semesterId
+        """,
+    )
+    abstract suspend fun getSemesterAggregate(semesterId: String): SemesterClassAggregate
+
+    // Every allocation (day + time slot) for the semester joined with its
+    // discipline, first teacher, and room. Caller picks "next" from this list
+    // — cheap to do in memory vs. SQL-heavy date math that would vary by
+    // platform.
+    @Query(
+        """
+        SELECT a.id AS allocationId,
+               c.id AS classId,
+               d.name AS disciplineName,
+               a.day AS day,
+               a.startTime AS startTime,
+               a.endTime AS endTime,
+               s.location AS spaceLocation,
+               (
+                 SELECT t.name FROM Teacher t
+                  JOIN ClassTeacher ct ON ct.teacherId = t.id
+                  WHERE ct.classId = c.id
+                  LIMIT 1
+               ) AS teacherName
+          FROM ClassAllocation a
+          JOIN Class c ON c.id = a.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+          JOIN Discipline d ON d.id = o.disciplineId
+          LEFT JOIN ClassSpace s ON s.id = a.spaceId
+         WHERE o.semesterId = :semesterId
+        """,
+    )
+    abstract suspend fun listSemesterAllocations(semesterId: String): List<SemesterAllocationRow>
 }
