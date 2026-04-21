@@ -24,7 +24,7 @@ struct DisciplineDetailHero: View {
                             RoundedRectangle(cornerRadius: 5, style: .continuous)
                                 .fill(discipline.color.opacity(0.13))
                         )
-                    Text("Departamento de \(discipline.dept)")
+                    Text("\(discipline.dept)")
                         .font(UNESFont.sans(11))
                         .foregroundStyle(UNESColor.ink3)
                 }
