@@ -5,13 +5,19 @@ import SwiftUI
 /// alternative to `ScheduleGridView` that trades the at-a-glance matrix for
 /// a deeper read on the currently-selected day.
 struct ScheduleFocusedView: View {
-    @State private var activeIdx: Int = ScheduleFixtures.todayIdx
+    @State private var viewModel: ScheduleFocusedViewModel
+    @State private var activeIdx: Int
     @State private var entering: Bool = true
     @State private var hasEntered: Bool = false
 
-    private var weekRange: String {
-        "\(ScheduleFixtures.dates.first ?? 0) – \(ScheduleFixtures.dates.last ?? 0) abr"
+    init(factory: ScheduleFocusedFactory) {
+        _viewModel = State(initialValue: factory.makeViewModel())
+        // Seed the active pill with today's Mon..Sun index so the view renders
+        // in the right place before the KMP flow emits its first snapshot.
+        _activeIdx = State(initialValue: Self.todayMondayFirstIndex())
     }
+
+    private var weekRange: String { viewModel.weekRangeLabel }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -42,12 +48,26 @@ struct ScheduleFocusedView: View {
                 VStack(alignment: .leading, spacing: 0) {
                     header
                         .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.5)
-                    WeekSpine(activeIdx: $activeIdx, entering: entering)
-                    DayColumn(dayIdx: activeIdx, entering: entering)
-                        .id(activeIdx)
+                    WeekSpine(
+                        activeIdx: $activeIdx,
+                        week: viewModel.week,
+                        dates: viewModel.dates,
+                        todayIdx: viewModel.todayIdx,
+                        entering: entering
+                    )
+                    DayColumn(
+                        classes: classesForActiveDay,
+                        isToday: activeIdx == viewModel.todayIdx,
+                        nowMin: viewModel.nowMin,
+                        entering: entering
+                    )
+                    .id(activeIdx)
                 }
                 .padding(.bottom, 100)
             }
+        }
+        .task {
+            await viewModel.observe()
         }
         .onAppear {
             guard !hasEntered else { return }
@@ -58,12 +78,25 @@ struct ScheduleFocusedView: View {
         }
     }
 
+    private var classesForActiveDay: [ScheduleClass] {
+        guard viewModel.week.indices.contains(activeIdx) else { return [] }
+        return viewModel.week[activeIdx]
+    }
+
+    // Mon(0)..Sun(6) index of today, derived from the Cocoa weekday field
+    // which is 1=Sunday..7=Saturday — the offset `(w + 5) % 7` lands on
+    // Monday-first indexing without a lookup table.
+    private static func todayMondayFirstIndex() -> Int {
+        let weekday = Calendar.current.component(.weekday, from: Date())
+        return (weekday + 5) % 7
+    }
+
     // MARK: - Header
 
     private var header: some View {
         HStack(alignment: .bottom, spacing: 12) {
             VStack(alignment: .leading, spacing: 4) {
-                Text("◦ SEMANA \(String(format: "%02d", ScheduleFixtures.weekNumber))")
+                Text("◦ SEMANA \(String(format: "%02d", viewModel.weekNumber))")
                     .font(UNESFont.mono(10, weight: .medium))
                     .tracking(1.2)
                     .foregroundStyle(UNESColor.ink3)
@@ -80,10 +113,10 @@ struct ScheduleFocusedView: View {
 
             Spacer(minLength: 8)
 
-            if activeIdx != ScheduleFixtures.todayIdx {
+            if viewModel.todayIdx != -1 && activeIdx != viewModel.todayIdx {
                 Button {
                     withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
-                        activeIdx = ScheduleFixtures.todayIdx
+                        activeIdx = viewModel.todayIdx
                     }
                 } label: {
                     HStack(spacing: 6) {
@@ -116,6 +149,3 @@ struct ScheduleFocusedView: View {
     }
 }
 
-#Preview {
-    ScheduleFocusedView()
-}

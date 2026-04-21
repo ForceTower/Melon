@@ -18,7 +18,8 @@ struct UNESApp: App {
             RootView(
                 sessionStore: graph.sessionStore,
                 onboarding: graph.onboardingFactory,
-                overview: graph.overviewFactory
+                overview: graph.overviewFactory,
+                scheduleFocused: graph.scheduleFocusedFactory
             )
         }
     }

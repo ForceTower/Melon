@@ -36,4 +36,13 @@ extension UmbrellaGraph {
             )
         )
     }
+
+    @MainActor
+    var scheduleFocusedFactory: ScheduleFocusedFactory {
+        ScheduleFocusedFactory(
+            useCases: ScheduleFocusedUseCases(
+                scheduleWeek: observeScheduleWeekUseCase
+            )
+        )
+    }
 }

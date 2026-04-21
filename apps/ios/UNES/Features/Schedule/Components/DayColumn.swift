@@ -3,12 +3,11 @@ import SwiftUI
 /// Expanded class list for a single weekday. Shows gap markers between
 /// sessions and an empty state for free days. Used by `ScheduleFocusedView`.
 struct DayColumn: View {
-    let dayIdx: Int
+    let classes: [ScheduleClass]
+    let isToday: Bool
+    let nowMin: Int
     var showGaps: Bool = true
     var entering: Bool = false
-
-    private var classes: [ScheduleClass] { ScheduleFixtures.week[dayIdx] }
-    private var isToday: Bool { dayIdx == ScheduleFixtures.todayIdx }
 
     var body: some View {
         if classes.isEmpty {
@@ -24,7 +23,7 @@ struct DayColumn: View {
                     let baseDelay = entering ? 0.32 + Double(i) * 0.08 : Double(i) * 0.04
                     FocusedClassBlock(
                         cls: cls,
-                        state: ScheduleFixtures.state(for: cls, isToday: isToday),
+                        state: stateFor(cls, isToday: isToday, nowMin: nowMin),
                         showGap: showGaps && i > 0,
                         gapMin: gapMin
                     )
@@ -34,6 +33,17 @@ struct DayColumn: View {
             .padding(.horizontal, 10)
             .padding(.bottom, 20)
         }
+    }
+
+    // Local counterpart to `ScheduleFixtures.state(for:isToday:)` that uses a
+    // live `nowMin` instead of a static fixture constant — so the NOW chip
+    // flips in real time as the clock advances.
+    private func stateFor(_ cls: ScheduleClass, isToday: Bool, nowMin: Int) -> ScheduleClassState {
+        guard isToday else { return .future }
+        if nowMin >= cls.endMin { return .done }
+        if nowMin >= cls.startMin { return .now }
+        if cls.startMin - nowMin < 60 { return .next }
+        return .later
     }
 
     private var emptyState: some View {

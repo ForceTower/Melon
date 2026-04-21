@@ -9,9 +9,12 @@ data class SemesterClassAggregate(
 )
 
 // One row per ClassAllocation, pre-joined with the enclosing class's
-// discipline, primary teacher, and room. `day` follows the upstream encoding
-// (stored as-is from the source platform). `disciplineCode` is the short
-// code shown as a badge (e.g. "CALC II") — already present on Discipline.
+// discipline, primary teacher, and space. `day` follows the upstream encoding
+// (stored as-is from the source platform, 1=Sunday..7=Saturday).
+// `disciplineCode` is the short code shown as a badge (e.g. "CALC II") —
+// already present on Discipline. Space fields are LEFT-joined and null when
+// the allocation has no space attached (e.g. online classes before the
+// campus/modulo resolve).
 data class SemesterAllocationRow(
     val allocationId: String,
     val classId: String,
@@ -21,7 +24,19 @@ data class SemesterAllocationRow(
     val startTime: String?,
     val endTime: String?,
     val spaceLocation: String?,
+    val spaceCampus: String?,
+    val spaceModulo: String?,
     val teacherName: String?,
+)
+
+// Per-lecture projection for a date range — used by the Schedule week view to
+// enrich each day's allocations with the lecture topic for that exact date.
+// Joined on (classId, date) client-side; no assumption of uniqueness since
+// the same class can have multiple lectures on a given day.
+data class WeekLectureRow(
+    val classId: String,
+    val date: String,
+    val subject: String?,
 )
 
 // Per-enrollment discipline projection for the Overview disciplines strip and

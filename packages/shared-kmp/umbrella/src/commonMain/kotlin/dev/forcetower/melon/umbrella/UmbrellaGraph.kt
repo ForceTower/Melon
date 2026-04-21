@@ -13,6 +13,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCa
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshActiveSemestersUseCase
@@ -52,6 +53,10 @@ interface UmbrellaGraph {
     val observeNextTestTileUseCase: ObserveNextTestTileUseCase
     val observeAttendanceTileUseCase: ObserveAttendanceTileUseCase
     val observeLastSyncUseCase: ObserveLastSyncUseCase
+
+    // Schedule (Horário) reactive surface — one flow emitting the whole
+    // Mon–Sun week of the active semester.
+    val observeScheduleWeekUseCase: ObserveScheduleWeekUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

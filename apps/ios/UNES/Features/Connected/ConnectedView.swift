@@ -5,6 +5,7 @@ import SwiftUI
 /// onboarding flow.
 struct ConnectedView: View {
     let overview: OverviewFactory
+    let scheduleFocused: ScheduleFocusedFactory
 
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
@@ -21,7 +22,7 @@ struct ConnectedView: View {
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
                 switch scheduleVariant {
                 case .grid:    ScheduleGridView()
-                case .focused: ScheduleFocusedView()
+                case .focused: ScheduleFocusedView(factory: scheduleFocused)
                 }
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {

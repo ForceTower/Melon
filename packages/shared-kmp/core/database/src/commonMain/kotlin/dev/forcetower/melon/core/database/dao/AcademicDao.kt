@@ -24,6 +24,7 @@ import dev.forcetower.melon.core.database.query.SemesterClassAggregate
 import dev.forcetower.melon.core.database.query.StudentDisciplineRow
 import dev.forcetower.melon.core.database.query.TodayLectureRow
 import dev.forcetower.melon.core.database.query.UpcomingEvaluationRow
+import dev.forcetower.melon.core.database.query.WeekLectureRow
 import kotlinx.coroutines.flow.Flow
 
 // The single choke point for applying a server semester payload. The
@@ -257,6 +258,29 @@ abstract class AcademicDao {
         limit: Int,
     ): Flow<List<RecentLectureRow>>
 
+    // Lectures (subjects) for every class in the semester that landed within
+    // a date range. The Schedule week view reads this to pin each allocation
+    // to the lecture topic scheduled for that exact date; the join happens
+    // client-side on (classId, date) so the SQL stays cache-friendly.
+    @Query(
+        """
+        SELECT c.id AS classId,
+               cl.date AS date,
+               cl.subject AS subject
+          FROM ClassLecture cl
+          JOIN Class c ON c.id = cl.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.semesterId = :semesterId
+           AND cl.date IS NOT NULL
+           AND cl.date BETWEEN :start AND :end
+        """,
+    )
+    abstract fun observeLecturesInRange(
+        semesterId: String,
+        start: String,
+        end: String,
+    ): Flow<List<WeekLectureRow>>
+
     private companion object {
         const val ALLOCATIONS_SQL = """
             SELECT a.id AS allocationId,
@@ -267,6 +291,8 @@ abstract class AcademicDao {
                    a.startTime AS startTime,
                    a.endTime AS endTime,
                    s.location AS spaceLocation,
+                   s.campus AS spaceCampus,
+                   s.modulo AS spaceModulo,
                    (
                      SELECT t.name FROM Teacher t
                       JOIN ClassTeacher ct ON ct.teacherId = t.id

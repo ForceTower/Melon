@@ -5,6 +5,9 @@ import SwiftUI
 /// filled with ink, the today marker shows as an accent dot when inactive.
 struct WeekSpine: View {
     @Binding var activeIdx: Int
+    let week: [[ScheduleClass]]
+    let dates: [Int]
+    let todayIdx: Int
     var entering: Bool
 
     var body: some View {
@@ -25,9 +28,10 @@ struct WeekSpine: View {
 
     private func pill(for i: Int) -> some View {
         let isActive = i == activeIdx
-        let isToday  = i == ScheduleFixtures.todayIdx
+        let isToday  = i == todayIdx
         let isWeekend = i >= 5
-        let count = ScheduleFixtures.week[i].count
+        let count = week.indices.contains(i) ? week[i].count : 0
+        let dayOfMonth = dates.indices.contains(i) ? dates[i] : 0
 
         return Button {
             withAnimation(.spring(response: 0.32, dampingFraction: 0.78)) {
@@ -41,7 +45,7 @@ struct WeekSpine: View {
                         .tracking(0.8)
                         .foregroundStyle(pillPrimary(isActive: isActive, isWeekend: isWeekend))
                         .opacity(isActive ? 0.7 : 0.6)
-                    Text("\(ScheduleFixtures.dates[i])")
+                    Text("\(dayOfMonth)")
                         .font(UNESFont.serif(20))
                         .tracking(-0.2)
                         .foregroundStyle(pillPrimary(isActive: isActive, isWeekend: isWeekend))
