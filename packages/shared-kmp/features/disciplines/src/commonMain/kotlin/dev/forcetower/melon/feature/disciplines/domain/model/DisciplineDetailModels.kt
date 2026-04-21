@@ -65,7 +65,10 @@ data class DisciplineDetailGrade(
 
 // One ClassLecture row. `situation` is the upstream attendance code (0 = present).
 // `attachmentCount` matches the number of LectureMaterial rows for this lecture
-// and drives the paperclip indicator on the classes timeline.
+// and drives the paperclip indicator on the classes timeline. `isPast` and
+// `isCurrent` are classified by the use case against `Clock.System.now()` —
+// exposing them as flags keeps the native clients from having to agree on a
+// clock (iOS's `DisciplineDate.today` is pinned for fixtures, for instance).
 data class DisciplineDetailLecture(
     val lectureId: String,
     val classId: String,
@@ -74,6 +77,8 @@ data class DisciplineDetailLecture(
     val dateIso: String?,
     val subject: String?,
     val attachmentCount: Int,
+    val isPast: Boolean,
+    val isCurrent: Boolean,
 )
 
 // One LectureMaterial row with its owning class/group resolved. The native

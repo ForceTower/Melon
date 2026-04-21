@@ -163,9 +163,18 @@ internal class MirrorRepositoryImpl(
         block()
     } catch (cancellation: CancellationException) {
         throw cancellation
-    } catch (_: SerializationException) {
+    } catch (ex: SerializationException) {
+        // Response envelope didn't match the expected DTO shape — most often a
+        // backend field drift that wasn't mirrored on the KMP side. Surface
+        // the concrete exception so we don't guess at the schema mismatch.
+        logSyncFailure("SerializationException", ex)
         Outcome.Err(SyncError.Unexpected)
-    } catch (_: Throwable) {
+    } catch (ex: Throwable) {
+        // All other throwables land here as `NoConnection` — used to include
+        // everything from transport failures to Ktor body-parse errors, with
+        // no signal. Log the real cause (class + message) so failures are
+        // diagnosable from the Xcode console / logcat.
+        logSyncFailure(ex::class.simpleName ?: "Throwable", ex)
         Outcome.Err(SyncError.NoConnection)
     }
 
@@ -173,17 +182,41 @@ internal class MirrorRepositoryImpl(
         val statusCode = response.status.value
         return when (statusCode) {
             in 200..299 -> {
+                // Body-decode failures (schema drift, type mismatch, etc.)
+                // propagate to `callNetwork`, which logs + classifies them —
+                // SerializationException → Unexpected, everything else →
+                // NoConnection. Handling this here would split the logging.
                 val envelope = response.body<ApiEnvelope<T>>()
                 val payload = envelope.data
-                if (payload != null) Outcome.Ok(payload) else Outcome.Err(SyncError.Unexpected)
+                if (payload != null) {
+                    Outcome.Ok(payload)
+                } else {
+                    logSyncIssue("2xx envelope had null `data` (message=${envelope.message})")
+                    Outcome.Err(SyncError.Unexpected)
+                }
             }
             401 -> Outcome.Err(SyncError.Unauthorized)
             404 -> Outcome.Err(SyncError.NotFound)
             in 500..599 -> {
                 val envelope = runCatching { response.body<ApiEnvelope<T>>() }.getOrNull()
+                logSyncIssue("server $statusCode: ${envelope?.message ?: "<no message>"}")
                 Outcome.Err(SyncError.Server(envelope?.message))
             }
-            else -> Outcome.Err(SyncError.Unexpected)
+            else -> {
+                logSyncIssue("unexpected status $statusCode")
+                Outcome.Err(SyncError.Unexpected)
+            }
         }
     }
+}
+
+// Routed to stdout so Xcode's console picks it up on iOS and logcat on
+// Android. Keep tag + payload compact — this runs on every sync failure.
+private fun logSyncFailure(kind: String, ex: Throwable) {
+    println("[MirrorRepository] $kind: ${ex.message ?: "<no message>"}")
+    ex.printStackTrace()
+}
+
+private fun logSyncIssue(message: String) {
+    println("[MirrorRepository] $message")
 }

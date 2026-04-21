@@ -20,7 +20,9 @@ import androidx.room.PrimaryKey
 data class LectureMaterialEntity(
     @PrimaryKey val id: String,
     val lectureId: String,
-    val platformId: Int,
+    // Long — upstream SAGRES material ids overflow Int (e.g. 8_000_011_956).
+    // Backend column is `bigint`; mirrored here as Long to match.
+    val platformId: Long,
     val description: String?,
     val url: String,
     val position: Int,

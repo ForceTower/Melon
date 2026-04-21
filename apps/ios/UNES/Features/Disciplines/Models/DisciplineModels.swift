@@ -60,6 +60,15 @@ struct Attachment: Identifiable, Hashable {
     let kind: AttachmentKind
     let added: String
     let group: String?
+    let url: String?
+
+    init(name: String, kind: AttachmentKind, added: String, group: String?, url: String? = nil) {
+        self.name = name
+        self.kind = kind
+        self.added = added
+        self.group = group
+        self.url = url
+    }
 }
 
 struct DisciplineGroup: Identifiable, Hashable {

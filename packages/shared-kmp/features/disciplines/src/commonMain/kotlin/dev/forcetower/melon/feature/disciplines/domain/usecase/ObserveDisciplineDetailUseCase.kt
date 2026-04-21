@@ -16,6 +16,9 @@ import kotlin.math.ceil
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.datetime.Clock
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toLocalDateTime
 
 // Reactive detail feed for the `DisciplineDetailView`. Composes four scoped
 // DAO flows — enrollments (class/group rows), grades, lectures, attachments —
@@ -108,17 +111,40 @@ private fun build(
 
     val classIdToGroupName = classRows.associate { it.classId to it.groupName }
 
-    val mappedLectures = lectures.map { row ->
-        DisciplineDetailLecture(
-            lectureId = row.lectureId,
-            classId = row.classId,
-            ordinal = row.ordinal,
-            situation = row.situation,
-            dateIso = row.date,
-            subject = row.subject,
-            attachmentCount = row.attachmentCount,
-        )
+    // Native side needs a narrow window of "interesting" lectures, not the
+    // full semester dump. Filter out placeholder rows (no subject and no
+    // materials — upstream emits these for cancelled / TBD slots), then
+    // window to 1 past + 1 current + 3 upcoming around today so both native
+    // targets render the same slice without duplicating the logic.
+    // `isPast` / `isCurrent` are classified here against real today so the
+    // native layer doesn't need its own clock to agree with ours.
+    val today = Clock.System
+        .now()
+        .toLocalDateTime(TimeZone.currentSystemDefault())
+        .date
+        .toString()
+    val filteredRows = lectures
+        .filter { !it.subject.isNullOrBlank() || it.attachmentCount > 0 }
+    val anchorIndex = filteredRows.indexOfFirst {
+        val d = it.date
+        d != null && d >= today
     }
+    val mappedLectures = filteredRows
+        .mapIndexed { idx, row ->
+            val date = row.date
+            DisciplineDetailLecture(
+                lectureId = row.lectureId,
+                classId = row.classId,
+                ordinal = row.ordinal,
+                situation = row.situation,
+                dateIso = date,
+                subject = row.subject,
+                attachmentCount = row.attachmentCount,
+                isPast = date != null && date < today,
+                isCurrent = idx == anchorIndex,
+            )
+        }
+        .let { windowAroundToday(it, anchorIndex) }
 
     val mappedAttachments = materials.map { row ->
         DisciplineDetailAttachment(
@@ -149,6 +175,21 @@ private fun build(
         lectures = mappedLectures,
         attachments = mappedAttachments,
     )
+}
+
+// Returns at most 5 lectures: 1 past + the "current" (anchor) + 3 upcoming.
+// If every dated lecture is already in the past (anchor < 0) we fall back to
+// the 5 most recent entries. `lectures` must already be ordered by
+// (date ASC, ordinal ASC) — the DAO query guarantees this.
+internal fun windowAroundToday(
+    lectures: List<DisciplineDetailLecture>,
+    anchor: Int,
+): List<DisciplineDetailLecture> {
+    if (lectures.size <= 5) return lectures
+    if (anchor < 0) return lectures.takeLast(5)
+    val start = (anchor - 1).coerceAtLeast(0)
+    val end = (anchor + 4).coerceAtMost(lectures.size)
+    return lectures.subList(start, end)
 }
 
 private fun toDetailGrade(row: DisciplineDetailGradeRow): DisciplineDetailGrade =

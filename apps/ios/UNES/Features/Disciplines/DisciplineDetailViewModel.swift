@@ -1,6 +1,5 @@
 import Foundation
 import Observation
-import OSLog
 import SwiftUI
 @preconcurrency import Umbrella
 
@@ -27,8 +26,6 @@ final class DisciplineDetailViewModel {
 
     private let useCases: DisciplinesUseCases?
     private var didStart = false
-
-    private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "disciplines")
 
     init(seed: Discipline, useCases: DisciplinesUseCases?) {
         self.discipline = seed
@@ -117,37 +114,18 @@ final class DisciplineDetailViewModel {
         )
     }
 
-    // Lectures ordered by ISO date ascending (nulls last, ordinal as the
-    // tiebreaker). `past` = strictly before today; `isNext` = first index
-    // whose date is on or after today. Uses the UI's pinned "today" so the
-    // detail view's notion of "próxima aula" matches the list card.
+    // KMP delivers lectures pre-ordered by (date ASC, ordinal ASC),
+    // pre-filtered, pre-windowed to at most 5 entries, and pre-classified
+    // against real today — so the native layer just maps the flags through.
     private static func mapLectures(_ rows: [KmpDetailLecture]) -> [ClassEntry] {
-        let sorted = rows.sorted { lhs, rhs in
-            switch (lhs.dateIso, rhs.dateIso) {
-            case let (l?, r?) where l != r:
-                return l < r
-            case (nil, .some):
-                return false
-            case (.some, nil):
-                return true
-            default:
-                return lhs.ordinal < rhs.ordinal
-            }
-        }
-        let today = iso(from: DisciplineDate.today)
-        let nextIndex = sorted.firstIndex { ($0.dateIso ?? "") >= today && $0.dateIso != nil }
-        return sorted.enumerated().map { idx, row in
-            let isPast: Bool = {
-                guard let d = row.dateIso else { return false }
-                return d < today
-            }()
+        rows.map { row in
             let count = Int(row.attachmentCount)
             return ClassEntry(
                 date: DisciplineDateFormatting.ddMmYyyy(iso: row.dateIso),
                 title: row.subject ?? "",
                 attachments: count > 0 ? count : nil,
-                past: isPast,
-                isNext: idx == nextIndex
+                past: row.isPast,
+                isNext: row.isCurrent
             )
         }
     }
@@ -163,7 +141,8 @@ final class DisciplineDetailViewModel {
             name: name,
             kind: inferKind(url: raw.url),
             added: DisciplineDateFormatting.ddMm(iso: raw.lectureDateIso) ?? "",
-            group: showGroup ? (resolvedGroupName ?? raw.groupName) : nil
+            group: showGroup ? (resolvedGroupName ?? raw.groupName) : nil,
+            url: raw.url
         )
     }
 
@@ -199,18 +178,5 @@ final class DisciplineDetailViewModel {
             if !last.isEmpty, last != "/" { return last }
         }
         return url
-    }
-
-    // `DisciplineDate.today` is pinned (2026-04-18) to match the rest of the
-    // fixtures-driven rendering. Producing an ISO string here keeps the
-    // comparison on the same format KMP emits.
-    private static func iso(from date: Date) -> String {
-        let c = Calendar.current.dateComponents([.year, .month, .day], from: date)
-        return String(
-            format: "%04d-%02d-%02d",
-            c.year ?? 0,
-            c.month ?? 0,
-            c.day ?? 0
-        )
     }
 }

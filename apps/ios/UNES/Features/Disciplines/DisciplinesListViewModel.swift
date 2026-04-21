@@ -55,18 +55,26 @@ final class DisciplinesListViewModel {
         downloadError = nil
         defer { downloading.remove(semesterCode) }
 
+        Self.logger.info("semester sync start: code=\(semesterCode, privacy: .public) dbId=\(dbId, privacy: .public)")
         do {
             let outcome = try await useCases.syncSemester.invoke(semesterId: dbId)
             switch onEnum(of: outcome) {
             case .ok:
                 // DB write triggers the flow to re-emit and reclassify this
                 // semester into `past` / `current`; no local mutation needed.
+                Self.logger.info("semester sync ok: code=\(semesterCode, privacy: .public)")
                 return
             case .err(let wrapper):
                 downloadError = wrapper.error.map(Self.describe) ?? "Falha ao baixar o semestre."
             }
         } catch {
-            Self.logger.error("semester sync threw: \(error.localizedDescription, privacy: .public)")
+            // Bridging error from KMP — rare, since SyncSemesterUseCase wraps
+            // failures in Outcome.Err. Log the full NSError payload so we can
+            // see what slipped past the sealed-class envelope.
+            let ns = error as NSError
+            Self.logger.error(
+                "semester sync threw: code=\(semesterCode, privacy: .public) domain=\(ns.domain, privacy: .public) code=\(ns.code, privacy: .public) desc=\(error.localizedDescription, privacy: .public) userInfo=\(String(describing: ns.userInfo), privacy: .public)",
+            )
             downloadError = "Falha ao baixar o semestre."
         }
     }
@@ -195,9 +203,24 @@ final class DisciplinesListViewModel {
     }
 
     private static func describe(_ error: SyncSyncError) -> String {
-        // Error classification shapes are in flux across features; fall back
-        // to a generic message and surface details via logs.
-        Self.logger.error("semester sync failed: \(String(describing: error), privacy: .public)")
+        // KMP `SyncError` arrives as a sealed-subclass instance; its runtime
+        // class name (e.g. "SyncSyncErrorNoConnection") identifies the
+        // variant without depending on SKIE's `onEnum` bridging for this
+        // type. `String(describing:)` on the instance includes data-class
+        // payloads like `Server(message=...)`; use that so the backend's
+        // message ends up in the log when present. For the catch-all
+        // NoConnection case, cross-ref the `[MirrorRepository]` println the
+        // KMP layer now emits — that's where the real throwable lives.
+        let rendered = String(describing: error)
+        let hint: String
+        if rendered.contains("NoConnection") {
+            hint = " (see `[MirrorRepository]` log in Xcode console for the caught throwable)"
+        } else if rendered.contains("Unexpected") {
+            hint = " (envelope decode or null data — see `[MirrorRepository]` log)"
+        } else {
+            hint = ""
+        }
+        Self.logger.error("semester sync failed: \(rendered, privacy: .public)\(hint, privacy: .public)")
         return "Falha ao baixar o semestre."
     }
 }

@@ -60,49 +60,66 @@ private struct AttachmentRow: View {
     let accent: Color
     let showGroupBadge: Bool
 
+    @Environment(\.openURL) private var openURL
+
     var body: some View {
-        HStack(spacing: 12) {
-            ZStack {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(accent.opacity(0.13))
-                Image(systemName: iconName)
-                    .font(.system(size: 14, weight: .medium))
-                    .foregroundStyle(accent)
-            }
-            .frame(width: 36, height: 36)
+        Button(action: open) {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .fill(accent.opacity(0.13))
+                    Image(systemName: iconName)
+                        .font(.system(size: 14, weight: .medium))
+                        .foregroundStyle(accent)
+                }
+                .frame(width: 36, height: 36)
 
-            VStack(alignment: .leading, spacing: 2) {
-                Text(attachment.name)
-                    .font(UNESFont.sans(13, weight: .medium))
-                    .foregroundStyle(UNESColor.ink)
-                    .lineLimit(1)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text(attachment.name)
+                        .font(UNESFont.sans(13, weight: .medium))
+                        .foregroundStyle(UNESColor.ink)
+                        .lineLimit(1)
 
-                HStack(spacing: 6) {
-                    Text("\(attachment.kind.label) · adicionado em \(attachment.added)")
-                        .font(UNESFont.mono(10))
-                        .foregroundStyle(UNESColor.ink4)
-                    if showGroupBadge, let group = attachment.group {
-                        Text(group)
-                            .font(UNESFont.mono(9, weight: .semibold))
-                            .tracking(0.54)
-                            .foregroundStyle(UNESColor.ink3)
-                            .padding(.horizontal, 5)
-                            .padding(.vertical, 1)
-                            .background(
-                                RoundedRectangle(cornerRadius: 3, style: .continuous)
-                                    .fill(UNESColor.surface2)
-                            )
+                    HStack(spacing: 6) {
+                        Text("\(attachment.kind.label) · adicionado em \(attachment.added)")
+                            .font(UNESFont.mono(10))
+                            .foregroundStyle(UNESColor.ink4)
+                        if showGroupBadge, let group = attachment.group {
+                            Text(group)
+                                .font(UNESFont.mono(9, weight: .semibold))
+                                .tracking(0.54)
+                                .foregroundStyle(UNESColor.ink3)
+                                .padding(.horizontal, 5)
+                                .padding(.vertical, 1)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 3, style: .continuous)
+                                        .fill(UNESColor.surface2)
+                                )
+                        }
                     }
                 }
-            }
-            .frame(maxWidth: .infinity, alignment: .leading)
+                .frame(maxWidth: .infinity, alignment: .leading)
 
-            Image(systemName: "chevron.right")
-                .font(.system(size: 11, weight: .semibold))
-                .foregroundStyle(UNESColor.ink3)
+                Image(systemName: "chevron.right")
+                    .font(.system(size: 11, weight: .semibold))
+                    .foregroundStyle(UNESColor.ink3)
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 12)
+            .contentShape(Rectangle())
         }
-        .padding(.horizontal, 14)
-        .padding(.vertical, 12)
+        .buttonStyle(.plain)
+        .disabled(resolvedURL == nil)
+    }
+
+    private var resolvedURL: URL? {
+        guard let raw = attachment.url, !raw.isEmpty else { return nil }
+        return URL(string: raw)
+    }
+
+    private func open() {
+        guard let url = resolvedURL else { return }
+        openURL(url)
     }
 
     private var iconName: String {
