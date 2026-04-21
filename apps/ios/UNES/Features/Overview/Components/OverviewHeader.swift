@@ -27,11 +27,6 @@ struct OverviewHeader: View {
 
             HStack(spacing: 8) {
                 IconButton {
-                    Image(systemName: "magnifyingglass")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(UNESColor.ink)
-                }
-                IconButton {
                     AvatarDot(initial: avatarInitial)
                 }
             }
