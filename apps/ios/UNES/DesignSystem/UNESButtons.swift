@@ -89,6 +89,7 @@ struct GlassButton<Leading: View>: View {
             .frame(maxWidth: .infinity)
             .frame(height: 54)
             .modifier(LiquidGlassCapsule(tint: tint, stroke: stroke))
+            .contentShape(Capsule(style: .continuous))
         }
         .buttonStyle(PressScaleStyle())
     }
