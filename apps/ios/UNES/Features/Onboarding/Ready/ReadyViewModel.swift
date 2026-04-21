@@ -56,7 +56,7 @@ final class ReadyViewModel {
         if let info = overview.nextClass {
             nextClass = ReadyNextClass(
                 disciplineName: info.disciplineName,
-                startTime: info.startTime,
+                startTime: Self.trimTime(info.startTime),
                 spaceLocation: info.spaceLocation,
                 teacherName: info.teacherName,
                 startsInLabel: Self.formatStartsIn(Int(info.startsInMinutes)),
@@ -64,6 +64,12 @@ final class ReadyViewModel {
         } else {
             nextClass = nil
         }
+    }
+
+    // Upstream ships HH:mm or HH:mm:ss — trim to five chars so the preview
+    // card renders minutes only, matching ScheduleFocusedViewModel.
+    private static func trimTime(_ value: String) -> String {
+        String(value.prefix(5))
     }
 
     private static func formatSemesterLine(classCount: Int, totalCredits: Int, semesterCode: String?) -> String {

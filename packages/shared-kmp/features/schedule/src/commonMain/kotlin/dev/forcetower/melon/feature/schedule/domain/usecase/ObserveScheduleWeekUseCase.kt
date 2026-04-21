@@ -91,10 +91,12 @@ internal fun buildScheduleWeek(
             .asSequence()
             .mapNotNull { row ->
                 val day = row.day ?: return@mapNotNull null
-                // Upstream encoding is 1=Sunday..7=Saturday; Schedule's UI
-                // indexes Monday..Sunday. `(day + 5) % 7` maps cleanly:
-                // 2→0 (Mon), 3→1, ..., 7→5 (Sat), 1→6 (Sun).
-                val rowIdx = (day + 5) % 7
+                // ClassAllocation.day is 0=Sunday..6=Saturday (see
+                // ClassAllocationEntity.day — upstream Snowpiercer
+                // `time.day` is persisted untransformed by apps/api).
+                // Schedule's UI indexes Monday..Sunday, so shift by 6:
+                //   1 (Mon) → 0, 2 (Tue) → 1, ..., 6 (Sat) → 5, 0 (Sun) → 6.
+                val rowIdx = (day + 6) % 7
                 if (rowIdx != idx) return@mapNotNull null
                 if (parseHhMm(row.startTime) == null) return@mapNotNull null
                 row

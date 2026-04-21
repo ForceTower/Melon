@@ -28,6 +28,10 @@ data class ClassAllocationEntity(
     val classId: String,
     val spaceId: String?,
     val timePlatformId: Long?,
+    // Day-of-week encoded as 0=Sunday..6=Saturday (Snowpiercer `time.day`,
+    // stored untransformed by apps/api sync). NOT ISO weekday and NOT the
+    // Java Calendar.DAY_OF_WEEK convention — consumers targeting a
+    // Monday..Sunday layout must shift, e.g. `(day + 6) % 7`.
     val day: Int?,
     val startTime: String?,
     val endTime: String?,
