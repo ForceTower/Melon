@@ -56,4 +56,15 @@ extension UmbrellaGraph {
             )
         )
     }
+
+    @MainActor
+    var messagesFactory: MessagesFactory {
+        MessagesFactory(
+            useCases: MessagesUseCases(
+                observeInbox: observeMessagesInboxUseCase,
+                observeDetail: observeMessageDetailUseCase,
+                markRead: markMessageAsReadUseCase
+            )
+        )
+    }
 }

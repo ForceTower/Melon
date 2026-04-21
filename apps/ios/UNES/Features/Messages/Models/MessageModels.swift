@@ -141,8 +141,11 @@ extension Message {
         }
     }
 
-    /// Look up a discipline's accent color by short code across all semesters
-    /// in `DisciplineFixtures`. Falls back to a neutral when not found.
+    /// Look up a discipline's accent color by short code. Fixtures win first
+    /// (so `#Preview`s and legacy mock screens keep their hand-picked accents),
+    /// and anything else routes through `ColorFor.discipline` — the same
+    /// stable-hash palette used by Overview/Schedule/Disciplines so colors
+    /// stay consistent across the app regardless of data source.
     private static func disciplineColor(code: String?) -> Color {
         guard let code else { return Color(red: 0x6B/255, green: 0x5E/255, blue: 0x70/255) }
         for sem in DisciplineFixtures.semesters {
@@ -155,7 +158,7 @@ extension Message {
                 return d.color
             }
         }
-        return Color(red: 0x6B/255, green: 0x5E/255, blue: 0x70/255)
+        return ColorFor.discipline(code: code)
     }
 
     private static func moduleMeta(moduleId: String?) -> (String, Color) {

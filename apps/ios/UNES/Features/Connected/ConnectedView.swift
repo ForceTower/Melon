@@ -7,6 +7,7 @@ struct ConnectedView: View {
     let overview: OverviewFactory
     let scheduleFocused: ScheduleFocusedFactory
     let disciplines: DisciplinesFactory
+    let messages: MessagesFactory
 
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
@@ -30,9 +31,8 @@ struct ConnectedView: View {
                 DisciplinesListView(factory: disciplines)
             }
             Tab(ConnectedTab.messages.label, systemImage: ConnectedTab.messages.icon, value: .messages) {
-                MessagesListView()
+                MessagesListView(factory: messages)
             }
-            .badge(MessageFixtures.messages.filter(\.unread).count)
             Tab(ConnectedTab.me.label, systemImage: ConnectedTab.me.icon, value: .me) {
                 MeView()
             }

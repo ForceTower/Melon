@@ -5,19 +5,33 @@ import SwiftUI
 ///
 /// Mirrors `MessagesScreen` in `screens-messages.jsx`.
 struct MessagesListView: View {
-    @State private var filter: MessageFilter = .all
-    @State private var messages: [Message] = MessageFixtures.messages
+    @State private var viewModel: MessagesListViewModel
+    // `MessagesFactory` is surfaced in `.task` closures — hold it on the view
+    // so detail screens can grab their own VM off the same use cases.
+    private let factory: MessagesFactory?
+
+    init(factory: MessagesFactory) {
+        self._viewModel = State(initialValue: factory.makeListViewModel())
+        self.factory = factory
+    }
+
+    // Factory-less init — retained for `#Preview` so the canvas keeps
+    // rendering against `MessageFixtures` without wiring a full graph.
+    init() {
+        self._viewModel = State(initialValue: MessagesListViewModel())
+        self.factory = nil
+    }
 
     private var counts: [MessageFilter: Int] {
         var out: [MessageFilter: Int] = [:]
         for f in MessageFilter.allCases {
-            out[f] = messages.filter { f.matches($0) }.count
+            out[f] = viewModel.messages.filter { f.matches($0) }.count
         }
         return out
     }
 
     private var filtered: [Message] {
-        messages.filter { filter.matches($0) }
+        viewModel.messages.filter { viewModel.filter.matches($0) }
     }
 
     private struct Bucket: Identifiable {
@@ -38,7 +52,7 @@ struct MessagesListView: View {
     }
 
     private var unreadCount: Int {
-        messages.filter(\.unread).count
+        viewModel.messages.filter(\.unread).count
     }
 
     var body: some View {
@@ -46,6 +60,7 @@ struct MessagesListView: View {
             screenBody
                 .navigationTitle("Mensagens")
                 .toolbar(.hidden, for: .navigationBar)
+                .task { await viewModel.observe() }
         }
     }
 
@@ -77,7 +92,7 @@ struct MessagesListView: View {
                     header
                         .fadeUpOnAppear(delay: 0.02, distance: 10, duration: 0.55)
 
-                    FilterChipRow(active: $filter, counts: counts)
+                    FilterChipRow(active: $viewModel.filter, counts: counts)
                         .padding(.top, 10)
                         .padding(.bottom, 4)
                         .fadeUpOnAppear(delay: 0.1, distance: 10, duration: 0.55)
@@ -152,7 +167,7 @@ struct MessagesListView: View {
             VStack(spacing: 0) {
                 ForEach(Array(b.items.enumerated()), id: \.element.id) { i, m in
                     NavigationLink {
-                        MessageDetailView(message: m, onMarkRead: { markRead($0) })
+                        detailView(for: m)
                     } label: {
                         MessageRow(message: m)
                     }
@@ -165,7 +180,14 @@ struct MessagesListView: View {
                     }
                 }
             }
-            .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
+            .background(
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(UNESColor.card)
+                    .overlay(
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .strokeBorder(UNESColor.cardLine, lineWidth: 1)
+                    )
+            )
             .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .padding(.horizontal, 12)
         }
@@ -201,11 +223,15 @@ struct MessagesListView: View {
             .padding(.vertical, 80)
     }
 
-    // MARK: - Actions
+    // MARK: - Navigation
 
-    private func markRead(_ m: Message) {
-        guard m.unread, let idx = messages.firstIndex(where: { $0.id == m.id }) else { return }
-        messages[idx].unread = false
+    @ViewBuilder
+    private func detailView(for message: Message) -> some View {
+        if let factory {
+            MessageDetailView(factory: factory, seed: message)
+        } else {
+            MessageDetailView(seed: message)
+        }
     }
 }
 

@@ -6,6 +6,9 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -70,6 +73,13 @@ interface UmbrellaGraph {
     // ementa). The native detail screen subscribes with the offerId it
     // received on navigation.
     val observeDisciplineDetailUseCase: ObserveDisciplineDetailUseCase
+
+    // Mensagens (Recados) reactive surfaces — one flow for the grouped
+    // inbox, one per-message detail flow for the reader, and a suspend
+    // mutation that persists readAt to MessageState on first view.
+    val observeMessagesInboxUseCase: ObserveMessagesInboxUseCase
+    val observeMessageDetailUseCase: ObserveMessageDetailUseCase
+    val markMessageAsReadUseCase: MarkMessageAsReadUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

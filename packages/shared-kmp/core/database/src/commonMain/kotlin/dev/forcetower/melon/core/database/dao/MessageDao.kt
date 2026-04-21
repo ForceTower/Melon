@@ -16,6 +16,24 @@ abstract class MessageDao {
     @Query("SELECT * FROM Message ORDER BY timestamp DESC, id DESC")
     abstract fun observeInbox(): Flow<List<MessageEntity>>
 
+    @Query("SELECT * FROM Message WHERE id = :id")
+    abstract fun observeMessage(id: String): Flow<MessageEntity?>
+
+    @Query("SELECT * FROM MessageScope")
+    abstract fun observeAllScopes(): Flow<List<MessageScopeEntity>>
+
+    @Query("SELECT * FROM MessageAttachment ORDER BY position ASC")
+    abstract fun observeAllAttachments(): Flow<List<MessageAttachmentEntity>>
+
+    @Query("SELECT * FROM MessageState")
+    abstract fun observeAllStates(): Flow<List<MessageStateEntity>>
+
+    @Query("SELECT * FROM MessageScope WHERE messageId = :messageId")
+    abstract fun observeScopesFor(messageId: String): Flow<List<MessageScopeEntity>>
+
+    @Query("SELECT * FROM MessageAttachment WHERE messageId = :messageId ORDER BY position ASC")
+    abstract fun observeAttachmentsFor(messageId: String): Flow<List<MessageAttachmentEntity>>
+
     @Query("SELECT * FROM MessageState WHERE messageId = :messageId")
     abstract suspend fun getState(messageId: String): MessageStateEntity?
 

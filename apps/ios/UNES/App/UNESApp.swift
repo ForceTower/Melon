@@ -20,7 +20,8 @@ struct UNESApp: App {
                 onboarding: graph.onboardingFactory,
                 overview: graph.overviewFactory,
                 scheduleFocused: graph.scheduleFocusedFactory,
-                disciplines: graph.disciplinesFactory
+                disciplines: graph.disciplinesFactory,
+                messages: graph.messagesFactory
             )
         }
     }

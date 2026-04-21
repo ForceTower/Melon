@@ -5,8 +5,19 @@ import SwiftUI
 ///
 /// Mirrors `MessageDetailScreen` in `screens-message-detail.jsx`.
 struct MessageDetailView: View {
-    let message: Message
-    var onMarkRead: (Message) -> Void = { _ in }
+    @State private var viewModel: MessageDetailViewModel
+
+    init(factory: MessagesFactory, seed: Message) {
+        self._viewModel = State(initialValue: factory.makeDetailViewModel(seed: seed))
+    }
+
+    // Factory-less init for `#Preview` — seeds the VM with the fixture
+    // message and skips the KMP subscription.
+    init(seed: Message) {
+        self._viewModel = State(initialValue: MessageDetailViewModel(seed: seed))
+    }
+
+    private var message: Message { viewModel.message }
 
     private var images: [MessageAttachment] {
         message.attachments.filter { $0.kind == .image }
@@ -92,7 +103,8 @@ struct MessageDetailView: View {
         .toolbar {
             ToolbarItem(placement: .principal) { EmptyView() }
         }
-        .onAppear { onMarkRead(message) }
+        .task { await viewModel.observe() }
+        .onAppear { viewModel.markReadOnAppear() }
     }
 
     // MARK: - Sender card
@@ -181,7 +193,9 @@ struct MessageDetailView: View {
     }
 
     /// Builds an `AttributedString` where URL-like tokens are tinted in the
-    /// origin accent color. Matches the `linkify()` helper from the prototype.
+    /// origin accent color AND carry a `.link` attribute so SwiftUI's `Text`
+    /// treats them as tappable. Bare hostnames (`drive.google.com/...`) get a
+    /// synthesized `https://` scheme so `URL(string:)` accepts them.
     private func linkifiedBody(_ text: String, accent: Color) -> Text {
         var out = AttributedString()
         let pattern = #"(https?://[^\s]+|www\.[^\s]+|[a-z0-9.-]+\.(?:br|com|org|edu|net|io)/[^\s]*)"#
@@ -197,9 +211,13 @@ struct MessageDetailView: View {
                 let before = ns.substring(with: NSRange(location: cursor, length: r.location - cursor))
                 out += AttributedString(before)
             }
-            var link = AttributedString(ns.substring(with: r))
+            let raw = ns.substring(with: r)
+            var link = AttributedString(raw)
             link.foregroundColor = accent
             link.underlineStyle = .single
+            if let url = normalizedURL(raw) {
+                link.link = url
+            }
             out += link
             cursor = r.location + r.length
         }
@@ -207,6 +225,14 @@ struct MessageDetailView: View {
             out += AttributedString(ns.substring(from: cursor))
         }
         return Text(out)
+    }
+
+    private func normalizedURL(_ raw: String) -> URL? {
+        let lower = raw.lowercased()
+        if lower.hasPrefix("http://") || lower.hasPrefix("https://") {
+            return URL(string: raw)
+        }
+        return URL(string: "https://\(raw)")
     }
 
     // MARK: - Images gallery
@@ -245,6 +271,6 @@ struct MessageDetailView: View {
 
 #Preview {
     NavigationStack {
-        MessageDetailView(message: MessageFixtures.messages[1])
+        MessageDetailView(seed: MessageFixtures.messages[1])
     }
 }
