@@ -22,19 +22,6 @@ struct MeHeader: View {
             }
 
             Spacer()
-
-            Button(action: onSettings) {
-                Image(systemName: "gearshape")
-                    .font(.system(size: 16, weight: .medium))
-                    .foregroundStyle(UNESColor.ink)
-                    .frame(width: 38, height: 38)
-                    .background(
-                        Circle()
-                            .fill(UNESColor.card.opacity(0.72))
-                            .overlay(Circle().strokeBorder(UNESColor.line, lineWidth: 1))
-                    )
-            }
-            .buttonStyle(PressScaleStyle())
         }
         .padding(.horizontal, 20)
         .padding(.top, 16)
