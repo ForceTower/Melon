@@ -1,38 +1,38 @@
 import SwiftUI
+import UserNotifications
 
 private enum IntroSlide: Int, CaseIterable, Identifiable {
-    case schedule, grades, messages
+    case schedule, grades, messages, notifications
     var id: Int { rawValue }
 
     var eyebrow: String {
         switch self {
-        case .schedule: return "horário"
-        case .grades:   return "notas"
-        case .messages: return "recados"
+        case .schedule:      return "horário"
+        case .grades:        return "notas"
+        case .messages:      return "recados"
+        case .notifications: return "notificações"
         }
     }
 
     var variant: MeshVariant {
         switch self {
-        case .schedule: return .cool
-        case .grades:   return .sun
-        case .messages: return .rose
+        case .schedule:      return .cool
+        case .grades:        return .sun
+        case .messages:      return .rose
+        case .notifications: return .warm
         }
     }
 
     var accentColor: Color {
-        switch self {
-        case .schedule: return UNESColor.amber
-        case .grades:   return UNESColor.amber
-        case .messages: return UNESColor.amber
-        }
+        UNESColor.amber
     }
 
     var body: String {
         switch self {
-        case .schedule: return "A grade da UEFS puxada direto do Portal. Aulas canceladas, salas trocadas e provas — tudo em tempo real."
-        case .grades:   return "Notas parciais, coeficiente e histórico. Sem precisar entrar no Portal pelo navegador toda semana."
-        case .messages: return "Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes."
+        case .schedule:      return "A grade da UEFS puxada direto do Portal. Aulas canceladas, salas trocadas e provas — tudo em tempo real."
+        case .grades:        return "Notas parciais, coeficiente e histórico. Sem precisar entrar no Portal pelo navegador toda semana."
+        case .messages:      return "Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes."
+        case .notifications: return "Nota nova, recado de professor, material publicado, sala trocada — um toque no bolso antes de você abrir o app."
         }
     }
 }
@@ -118,9 +118,10 @@ struct IntroCarouselView: View {
 
             Group {
                 switch slide {
-                case .schedule: ScheduleIllustration()
-                case .grades:   GradesIllustration()
-                case .messages: MessagesIllustration()
+                case .schedule:      ScheduleIllustration()
+                case .grades:        GradesIllustration()
+                case .messages:      MessagesIllustration()
+                case .notifications: NotificationsIllustration()
                 }
             }
             .id("illust-\(contentKey)")
@@ -185,6 +186,10 @@ struct IntroCarouselView: View {
                 Text("Tudo o que")
                     .foregroundStyle(UNESColor.ink)
                 Text("\(Text("você ").foregroundStyle(UNESColor.ink))\(Text("precisa saber.").italic().foregroundStyle(slide.accentColor))")
+            case .notifications:
+                Text("\(Text("Avisa no ").foregroundStyle(UNESColor.ink))\(Text("instante").italic().foregroundStyle(slide.accentColor))")
+                Text("que acontece.")
+                    .foregroundStyle(UNESColor.ink)
             }
         }
     }
@@ -196,8 +201,14 @@ struct IntroCarouselView: View {
                 contentKey += 1
             }
         } else {
-            onDone()
+            Task { await requestNotificationsAndFinish() }
         }
+    }
+
+    private func requestNotificationsAndFinish() async {
+        _ = try? await UNUserNotificationCenter.current()
+            .requestAuthorization(options: [.alert, .badge, .sound])
+        await MainActor.run { onDone() }
     }
 
     private func goBack() {
