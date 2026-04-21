@@ -15,7 +15,7 @@ struct NotificationsIllustration: View {
     }
 
     private let pushes: [Push] = [
-        .init(app: "Nota publicada",     title: "CÁLCULO II · P2",  body: "8,7 lançado por Prof. Ribamar",   chip: UNESColor.amber,   glyph: .grade),
+        .init(app: "Nota publicada",     title: "SINAIS · T1",  body: "8,7 lançado por Prof. Sanca",   chip: UNESColor.amber,   glyph: .grade),
         .init(app: "Novo recado",        title: "Prof. Adriana Souza", body: "Gabarito da P1 está disponível no mural.", chip: UNESColor.magenta, glyph: .message),
         .init(app: "Mudança de horário", title: "ALGI II · quinta", body: "Remanejada: PAT12 → PAT70", chip: UNESColor.coral,   glyph: .schedule),
         .init(app: "Material novo",      title: "FÍSICA II",        body: "Lista de exercícios · cap. 7",    chip: UNESColor.plum,    glyph: .material),

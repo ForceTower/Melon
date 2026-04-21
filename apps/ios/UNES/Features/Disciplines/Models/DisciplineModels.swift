@@ -96,6 +96,11 @@ struct Discipline: Identifiable, Hashable {
     let groups: [DisciplineGroup]
     let finalGrade: Double?
 
+    // Weighted partial average computed upstream. When nil, `partialAverage`
+    // falls back to the unweighted mean of released scores — enough for
+    // preview fixtures where every eval carries equal weight.
+    let storedPartialAverage: Double?
+
     // Keys carried for the detail-view handoff. Populated when the data
     // originates from the KMP feed; nil for preview fixtures.
     let disciplineId: String?
@@ -118,6 +123,7 @@ struct Discipline: Identifiable, Hashable {
         ementa: String? = nil,
         groups: [DisciplineGroup] = [],
         finalGrade: Double? = nil,
+        storedPartialAverage: Double? = nil,
         disciplineId: String? = nil,
         offerId: String? = nil,
         semesterId: String? = nil
@@ -137,6 +143,7 @@ struct Discipline: Identifiable, Hashable {
         self.ementa = ementa
         self.groups = groups
         self.finalGrade = finalGrade
+        self.storedPartialAverage = storedPartialAverage
         self.disciplineId = disciplineId
         self.offerId = offerId
         self.semesterId = semesterId
@@ -164,8 +171,10 @@ extension Discipline {
         sections.flatMap(\.grades)
     }
 
-    /// Mean of all completed grades across sections. Nil when nothing's been released.
+    /// Weighted upstream average when available, otherwise the unweighted
+    /// mean of released grade scores. Nil when nothing's been released.
     var partialAverage: Double? {
+        if let stored = storedPartialAverage { return stored }
         let scores = allGrades.compactMap(\.score)
         guard !scores.isEmpty else { return nil }
         return scores.reduce(0, +) / Double(scores.count)

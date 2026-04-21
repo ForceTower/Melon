@@ -40,10 +40,22 @@ data class DisciplineListItem(
     // "Te · Pr" when the discipline has more than one group (class type);
     // null when the student is enrolled in a single group.
     val groupsLabel: String?,
-    val totalEvaluations: Int,
-    val completedEvaluations: Int,
-    val nextEvaluationTitle: String?,
-    val nextEvaluationDateIso: String?,
+    // Per-evaluation detail in natural semester order (by ordinal). Released
+    // entries carry a numeric `value`; pending ones leave it null.
+    val grades: List<ListGradeEntry>,
+)
+
+// Card-ready evaluation row. String fields are already parsed into Doubles so
+// clients don't re-duplicate the comma/number fix-ups.
+data class ListGradeEntry(
+    val name: String,
+    val nameShort: String?,
+    // ISO yyyy-MM-dd; null when upstream hasn't scheduled it yet.
+    val date: String?,
+    // Parsed from the String upstream stores; null when unreleased or blank.
+    val value: Double?,
+    // Parsed weight; null when upstream sent a malformed value.
+    val weight: Double?,
 )
 
 enum class DisciplineStatusKind {

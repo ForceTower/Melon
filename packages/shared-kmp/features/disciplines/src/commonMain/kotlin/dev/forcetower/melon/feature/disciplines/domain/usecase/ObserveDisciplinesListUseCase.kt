@@ -8,6 +8,7 @@ import dev.forcetower.melon.core.database.query.PartialGradeRow
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineListItem
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplineStatusKind
 import dev.forcetower.melon.feature.disciplines.domain.model.DisciplinesListState
+import dev.forcetower.melon.feature.disciplines.domain.model.ListGradeEntry
 import dev.forcetower.melon.feature.disciplines.domain.model.PendingSemester
 import dev.forcetower.melon.feature.disciplines.domain.model.SemesterDisciplines
 import dev.zacsweers.metro.Inject
@@ -99,12 +100,10 @@ private fun buildItem(
     val missedHours = rows.sumOf { it.missedClasses ?: 0 }
     val allowedMissedHours = ceil(hours * 0.25).toInt()
 
-    val allGrades = studentClassIds.flatMap { gradesByStudentClass[it].orEmpty() }
+    val allGrades = studentClassIds
+        .flatMap { gradesByStudentClass[it].orEmpty() }
+        .sortedBy { it.ordinal }
     val partialAverage = weightedAverage(allGrades)
-    val completedEvaluations = allGrades.count { it.parsedValue() != null }
-    val nextEvaluation = allGrades
-        .filter { it.parsedValue() == null && !it.date.isNullOrBlank() }
-        .minByOrNull { it.date!! }
 
     // finalGrade / approved typically land on one of the StudentClass rows
     // (the discipline's main group). Take the first non-null.
@@ -135,12 +134,17 @@ private fun buildItem(
             partialAverage = partialAverage,
         ),
         groupsLabel = groupsLabel,
-        totalEvaluations = allGrades.size,
-        completedEvaluations = completedEvaluations,
-        nextEvaluationTitle = nextEvaluation?.let { it.nameShort ?: it.name },
-        nextEvaluationDateIso = nextEvaluation?.date,
+        grades = allGrades.map { it.toListEntry() },
     )
 }
+
+private fun PartialGradeRow.toListEntry(): ListGradeEntry = ListGradeEntry(
+    name = name,
+    nameShort = nameShort,
+    date = date?.takeIf { it.isNotBlank() },
+    value = parsedValue(),
+    weight = weight.replace(",", ".").toDoubleOrNull(),
+)
 
 private fun weightedAverage(grades: List<PartialGradeRow>): Double? {
     var weightedSum = 0.0

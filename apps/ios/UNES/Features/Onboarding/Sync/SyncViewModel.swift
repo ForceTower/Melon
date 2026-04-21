@@ -174,25 +174,33 @@ final class SyncViewModel {
     }
 
     private func runClassesStep() async -> StepResult {
-        // List the student's enrolled semesters, with a retry gate so the
-        // animation doesn't move on with an empty list while the backfill
-        // worker is still running. Empty-list with `done` is a legitimate
-        // terminal state (new student, between semesters) — accept it.
+        // Gate on the *target* semester being resolvable, not on list
+        // non-emptiness. Historical-semester jobs often finish before the
+        // currently-active one during initial backfill, so a non-empty list
+        // can still be missing the semester we actually care about —
+        // consulting onboarding-status (see semestersAreStillBackfilling)
+        // lets us wait that out instead of racing past with a stale list.
+        //
+        // Resolution rules:
+        //   - An active-by-date semester is in the list → resolved.
+        //   - Backend reports backfill done and no active semester → genuine
+        //     between-terms; fall through to the historical fallback in
+        //     pickActiveSemestersInOrder.
+        //   - Otherwise (still backfilling) → sleep and retry.
         for iteration in 0..<5 {
             do {
                 let outcome = try await useCases.semesterList.invoke()
                 switch onEnum(of: outcome) {
                 case .ok(let wrapper):
                     let list = (wrapper.value as? [SyncSemesterSummary]) ?? []
-                    if !list.isEmpty || iteration == 4 {
-                        summaries = list
-                        return .ok
-                    }
-                    let keepWaiting = await semestersAreStillBackfilling()
-                    if !keepWaiting {
-                        summaries = list
-                        return .ok
-                    }
+                    summaries = list
+
+                    if !activeSemesters(in: list).isEmpty { return .ok }
+
+                    let stillBackfilling = await semestersAreStillBackfilling()
+                    if !stillBackfilling { return .ok }
+                    if iteration == 4 { return .ok }
+
                     try? await Task.sleep(nanoseconds: 1_000_000_000)
                 case .err(let wrapper):
                     let authBroken = isUnauthorized(wrapper.error)
@@ -207,6 +215,11 @@ final class SyncViewModel {
             }
         }
         return .ok
+    }
+
+    private func activeSemesters(in list: [SyncSemesterSummary]) -> [SyncSemesterSummary] {
+        let today = Self.today()
+        return list.filter { Self.contains(today, $0.startDate, $0.endDate) }
     }
 
     private func semestersAreStillBackfilling() async -> Bool {

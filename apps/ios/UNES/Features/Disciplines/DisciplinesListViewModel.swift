@@ -11,6 +11,7 @@ private typealias KmpState = DisciplinesDisciplinesListState
 private typealias KmpSemester = DisciplinesSemesterDisciplines
 private typealias KmpPending = DisciplinesPendingSemester
 private typealias KmpItem = DisciplinesDisciplineListItem
+private typealias KmpGrade = DisciplinesListGradeEntry
 private typealias KmpStatus = DisciplinesDisciplineStatusKind
 
 // Drives `DisciplinesListView`. Subscribes to a single KMP flow that carries
@@ -111,14 +112,13 @@ final class DisciplinesListViewModel {
 
     private static func map(item raw: KmpItem) -> Discipline {
         let code = raw.code
-        // Pack the KMP grade list into a single GradeSection so the iOS card's
-        // derived helpers (`allGrades`, `partialAverage`, `nextEvaluation`,
-        // `completedCount`, `totalEvaluations`) all resolve correctly. Full
-        // section/group decomposition is a detail-view concern.
+        // Per-evaluation detail from upstream in semester order. Packed into a
+        // single "Geral" section here — section/group decomposition is a
+        // detail-view concern.
         let section = GradeSection(
             name: "Geral",
             group: nil,
-            grades: buildGrades(for: raw)
+            grades: raw.grades.map(map(grade:))
         )
         let groups = buildGroups(from: raw.groupsLabel)
         return Discipline(
@@ -137,60 +137,20 @@ final class DisciplinesListViewModel {
             ementa: nil,
             groups: groups,
             finalGrade: raw.finalGrade?.doubleValue,
+            storedPartialAverage: raw.partialAverage?.doubleValue,
             disciplineId: raw.disciplineId,
             offerId: raw.offerId,
             semesterId: raw.semesterId
         )
     }
 
-    // Builds a fake-but-coherent evaluation list sized to `totalEvaluations`.
-    // KMP only hands us `nextEvaluationTitle`/`Date` + the completed count, so
-    // we synthesize placeholder rows for the completed grades (untitled, no
-    // date — they feed `partialAverage` via a single weighted value) and a
-    // titled row for the next upcoming evaluation. This is enough to satisfy
-    // every computed helper on `Discipline` that the list card reads. The
-    // detail view will re-query real evaluation data when it's wired up.
-    private static func buildGrades(for raw: KmpItem) -> [GradeEntry] {
-        var entries: [GradeEntry] = []
-        let completed = Int(raw.completedEvaluations)
-        let total = Int(raw.totalEvaluations)
-        let average = raw.partialAverage?.doubleValue
-
-        for _ in 0..<completed {
-            entries.append(
-                GradeEntry(
-                    label: "",
-                    title: "",
-                    date: nil,
-                    score: average
-                )
-            )
-        }
-
-        let pending = max(0, total - completed)
-        if pending > 0 {
-            // First pending slot carries the real next-evaluation metadata so
-            // `nextEvaluation` on Discipline surfaces the correct title/date.
-            entries.append(
-                GradeEntry(
-                    label: "",
-                    title: raw.nextEvaluationTitle ?? "",
-                    date: DisciplineDateFormatting.ddMmYyyy(iso: raw.nextEvaluationDateIso),
-                    score: nil
-                )
-            )
-            for _ in 1..<pending {
-                entries.append(
-                    GradeEntry(
-                        label: "",
-                        title: "",
-                        date: nil,
-                        score: nil
-                    )
-                )
-            }
-        }
-        return entries
+    private static func map(grade raw: KmpGrade) -> GradeEntry {
+        GradeEntry(
+            label: (raw.nameShort ?? raw.name),
+            title: raw.name,
+            date: DisciplineDateFormatting.ddMmYyyy(iso: raw.date),
+            score: raw.value?.doubleValue
+        )
     }
 
     private static func buildGroups(from label: String?) -> [DisciplineGroup] {
