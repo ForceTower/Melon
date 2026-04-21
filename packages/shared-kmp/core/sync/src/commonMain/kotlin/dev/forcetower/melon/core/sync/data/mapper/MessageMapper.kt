@@ -12,12 +12,20 @@ internal fun MessageDto.toEntity(): MessageEntity = MessageEntity(
     platformId = platformId,
     source = source,
     subject = subject,
-    content = content,
+    content = if (source == "upstream") content.cleanUpstreamContent() else content,
     senderName = senderName,
     senderType = senderType,
     timestamp = timestamp,
     createdAt = createdAt,
 )
+
+// SAGRES occasionally emits content where real line breaks were serialized
+// as literal two-char sequences ("\\n", "\\r") — a round-trip bug inherited
+// from the legacy scraper. Mirrors the legacy v1 Android fix (unescape at
+// insert time so every downstream reader sees the same clean text).
+// Scoped to upstream so app-authored content passes through untouched.
+private fun String.cleanUpstreamContent(): String =
+    replace("\\n", "\n").replace("\\r", "\r")
 
 internal fun MessageScopeDto.toEntity(messageId: String): MessageScopeEntity = MessageScopeEntity(
     id = id,

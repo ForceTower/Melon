@@ -14,7 +14,6 @@ final class MessagesListViewModel {
     private(set) var messages: [Message]
 
     @ObservationIgnored private let useCases: MessagesUseCases?
-    @ObservationIgnored private var didStart = false
 
     init(useCases: MessagesUseCases?) {
         self.useCases = useCases
@@ -28,9 +27,14 @@ final class MessagesListViewModel {
         self.init(useCases: nil)
     }
 
+    // Re-subscribes on every `.task` invocation. Unlike list screens whose
+    // data is only mutated elsewhere (Overview, Disciplines), Messages
+    // mutates list-visible state (readAt) from its detail push — so when the
+    // list's `.task` is cancelled under the detail and restarts on pop-back,
+    // we need a fresh subscription to pick up the write that landed while
+    // we were away. Room's Flow emits the current DB state on subscribe, so
+    // reconnecting is cheap.
     func observe() async {
-        guard !didStart else { return }
-        didStart = true
         guard let useCases else { return }
         for await items in useCases.observeInbox.invoke() {
             messages = items.map(MessageMapping.map)
