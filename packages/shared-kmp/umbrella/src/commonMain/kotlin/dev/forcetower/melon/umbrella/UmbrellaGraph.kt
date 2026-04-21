@@ -4,6 +4,7 @@ import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
+import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
@@ -63,6 +64,12 @@ interface UmbrellaGraph {
     // current-semester cards, downloaded past semesters, and placeholders
     // for semesters whose payload hasn't been pulled yet.
     val observeDisciplinesListUseCase: ObserveDisciplinesListUseCase
+
+    // Disciplinas detail — one flow emitting the full payload for a single
+    // DisciplineOffer (groups, grade sections, classes timeline, attachments,
+    // ementa). The native detail screen subscribes with the offerId it
+    // received on navigation.
+    val observeDisciplineDetailUseCase: ObserveDisciplineDetailUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

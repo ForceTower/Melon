@@ -18,6 +18,10 @@ import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
 import dev.forcetower.melon.core.database.entity.TeacherEntity
 import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
+import dev.forcetower.melon.core.database.query.DisciplineDetailEnrollmentRow
+import dev.forcetower.melon.core.database.query.DisciplineDetailGradeRow
+import dev.forcetower.melon.core.database.query.DisciplineDetailLectureRow
+import dev.forcetower.melon.core.database.query.DisciplineDetailMaterialRow
 import dev.forcetower.melon.core.database.query.EnrolledDisciplineRow
 import dev.forcetower.melon.core.database.query.PartialGradeRow
 import dev.forcetower.melon.core.database.query.RecentLectureRow
@@ -339,6 +343,128 @@ abstract class AcademicDao {
         """,
     )
     abstract fun observeAllPartialGrades(): Flow<List<PartialGradeRow>>
+
+    // Every StudentClass row bound to a single DisciplineOffer, joined with its
+    // class/offer/discipline and primary teacher. The detail-view use case
+    // groups these by classId to produce one "group" (theory / practice) per
+    // row. `disciplineProgram` carries the ementa — upstream's `ementa` field
+    // is mapped into `Discipline.program` by the TS mappers, so reading
+    // `d.program` here is the syllabus source of truth.
+    @Query(
+        """
+        SELECT o.id AS offerId,
+               o.semesterId AS semesterId,
+               o.hours AS offerHours,
+               d.id AS disciplineId,
+               d.code AS disciplineCode,
+               d.name AS disciplineName,
+               d.hours AS disciplineHours,
+               d.program AS disciplineProgram,
+               d.department AS department,
+               sc.id AS studentClassId,
+               c.id AS classId,
+               c.type AS classType,
+               c.groupName AS groupName,
+               c.hours AS classHours,
+               sc.finalGrade AS finalGrade,
+               sc.approved AS approved,
+               sc.missedClasses AS missedClasses,
+               (
+                 SELECT t.name FROM Teacher t
+                  JOIN ClassTeacher ct ON ct.teacherId = t.id
+                  WHERE ct.classId = c.id
+                  LIMIT 1
+               ) AS teacherName
+          FROM StudentClass sc
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+          JOIN Discipline d ON d.id = o.disciplineId
+         WHERE o.id = :offerId
+         ORDER BY c.type ASC, c.groupName ASC
+        """,
+    )
+    abstract fun observeDisciplineOfferEnrollments(
+        offerId: String,
+    ): Flow<List<DisciplineDetailEnrollmentRow>>
+
+    // Per-evaluation grade rows scoped to the offer, carrying evaluation name +
+    // position so the use case can emit one section per class with grades in
+    // their canonical evaluation order.
+    @Query(
+        """
+        SELECT sg.id AS gradeId,
+               sg.studentClassId AS studentClassId,
+               c.id AS classId,
+               e.id AS evaluationId,
+               e.name AS evaluationName,
+               e.position AS evaluationPosition,
+               sg.name AS gradeName,
+               sg.nameShort AS gradeNameShort,
+               sg.ordinal AS ordinal,
+               sg.weight AS weight,
+               sg.value AS value,
+               sg.date AS date
+          FROM StudentGrade sg
+          JOIN ClassEvaluation e ON e.id = sg.evaluationId
+          JOIN StudentClass sc ON sc.id = sg.studentClassId
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.id = :offerId
+         ORDER BY c.id ASC, e.position ASC, sg.ordinal ASC
+        """,
+    )
+    abstract fun observeDisciplineOfferGrades(
+        offerId: String,
+    ): Flow<List<DisciplineDetailGradeRow>>
+
+    // ClassLecture rows for every class under the offer. Attachment count uses
+    // a correlated subquery so the result stays one-row-per-lecture; joining
+    // against LectureMaterial directly would duplicate.
+    @Query(
+        """
+        SELECT cl.id AS lectureId,
+               c.id AS classId,
+               cl.ordinal AS ordinal,
+               cl.situation AS situation,
+               cl.date AS date,
+               cl.subject AS subject,
+               (
+                 SELECT COUNT(*) FROM LectureMaterial lm
+                  WHERE lm.lectureId = cl.id
+               ) AS attachmentCount
+          FROM ClassLecture cl
+          JOIN Class c ON c.id = cl.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.id = :offerId
+         ORDER BY cl.date ASC, cl.ordinal ASC
+        """,
+    )
+    abstract fun observeDisciplineOfferLectures(
+        offerId: String,
+    ): Flow<List<DisciplineDetailLectureRow>>
+
+    // LectureMaterial rows for the offer, carrying the enclosing classId + the
+    // lecture's date so the UI can group by class and label each with "added
+    // on". Ordered newest-first to match the attachments block's layout.
+    @Query(
+        """
+        SELECT lm.id AS materialId,
+               lm.lectureId AS lectureId,
+               c.id AS classId,
+               cl.date AS lectureDate,
+               lm.description AS caption,
+               lm.url AS url
+          FROM LectureMaterial lm
+          JOIN ClassLecture cl ON cl.id = lm.lectureId
+          JOIN Class c ON c.id = cl.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.id = :offerId
+         ORDER BY cl.date DESC, lm.position ASC
+        """,
+    )
+    abstract fun observeDisciplineOfferMaterials(
+        offerId: String,
+    ): Flow<List<DisciplineDetailMaterialRow>>
 
     private companion object {
         const val ALLOCATIONS_SQL = """

@@ -8,11 +8,13 @@ import SwiftUI
 /// pushes the detail screen — satisfying the "use NavigationStack for proper
 /// navigation" requirement from the hand-off.
 struct DisciplinesListView: View {
+    private let factory: DisciplinesFactory
     @State private var viewModel: DisciplinesListViewModel
     @State private var path = NavigationPath()
     @State private var justDownloaded: Set<String> = []
 
     init(factory: DisciplinesFactory) {
+        self.factory = factory
         _viewModel = State(initialValue: factory.makeViewModel())
     }
 
@@ -20,7 +22,7 @@ struct DisciplinesListView: View {
         NavigationStack(path: $path) {
             screenBody
                 .navigationDestination(for: Discipline.self) { discipline in
-                    DisciplineDetailView(discipline: discipline)
+                    DisciplineDetailView(seed: discipline, factory: factory)
                 }
                 .navigationTitle("Disciplinas")
                 .toolbar(.hidden, for: .navigationBar)

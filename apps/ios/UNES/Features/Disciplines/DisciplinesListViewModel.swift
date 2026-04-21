@@ -167,7 +167,7 @@ final class DisciplinesListViewModel {
                 GradeEntry(
                     label: "",
                     title: raw.nextEvaluationTitle ?? "",
-                    date: formatDdMmYyyy(iso: raw.nextEvaluationDateIso),
+                    date: DisciplineDateFormatting.ddMmYyyy(iso: raw.nextEvaluationDateIso),
                     score: nil
                 )
             )
@@ -192,17 +192,6 @@ final class DisciplinesListViewModel {
             .map { kind in
                 DisciplineGroup(code: "", kind: kind, prof: "")
             }
-    }
-
-    // KMP emits ISO "yyyy-MM-dd"; the iOS card reads "dd/MM/yyyy" strings
-    // via `DisciplineDate.daysUntil`. Convert here so the existing helpers
-    // don't have to special-case format.
-    private static func formatDdMmYyyy(iso: String?) -> String? {
-        guard let iso, iso.count >= 10 else { return nil }
-        let year = iso.prefix(4)
-        let month = iso.dropFirst(5).prefix(2)
-        let day = iso.dropFirst(8).prefix(2)
-        return "\(day)/\(month)/\(year)"
     }
 
     private static func describe(_ error: SyncSyncError) -> String {

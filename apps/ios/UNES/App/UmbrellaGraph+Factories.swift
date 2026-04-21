@@ -51,6 +51,7 @@ extension UmbrellaGraph {
         DisciplinesFactory(
             useCases: DisciplinesUseCases(
                 observeList: observeDisciplinesListUseCase,
+                observeDetail: observeDisciplineDetailUseCase,
                 syncSemester: syncSemesterUseCase
             )
         )

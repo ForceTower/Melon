@@ -128,3 +128,73 @@ data class PartialGradeRow(
     val value: String?,
     val date: String?,
 )
+
+// One row per StudentClass enrolled under a single DisciplineOffer — the
+// detail-view use case aggregates these by classId so multi-group disciplines
+// (theory + practice) produce one entry per class. `disciplineProgram` carries
+// the ementa (upstream `ementa` is mapped into `program` by the TS mappers).
+data class DisciplineDetailEnrollmentRow(
+    val offerId: String,
+    val semesterId: String,
+    val disciplineId: String,
+    val disciplineCode: String,
+    val disciplineName: String,
+    val disciplineHours: Int,
+    val disciplineProgram: String?,
+    val department: String?,
+    val offerHours: Int?,
+    val studentClassId: String,
+    val classId: String,
+    val classType: String,
+    val groupName: String,
+    val classHours: Int,
+    val finalGrade: String?,
+    val approved: Boolean?,
+    val missedClasses: Int?,
+    val teacherName: String?,
+)
+
+// StudentGrade rows joined with their ClassEvaluation metadata, scoped to a
+// single DisciplineOffer. Ordered (classId, evaluation.position, ordinal) so
+// the use case can slice by classId and preserve evaluation order for the UI.
+data class DisciplineDetailGradeRow(
+    val gradeId: String,
+    val studentClassId: String,
+    val classId: String,
+    val evaluationId: String,
+    val evaluationName: String?,
+    val evaluationPosition: Int,
+    val gradeName: String,
+    val gradeNameShort: String?,
+    val ordinal: Int,
+    val weight: String,
+    val value: String?,
+    val date: String?,
+)
+
+// One row per ClassLecture in the offer with the attachment count pulled in via
+// a correlated subquery — keeps the projection one-row-per-lecture instead of
+// fanning out across materials.
+data class DisciplineDetailLectureRow(
+    val lectureId: String,
+    val classId: String,
+    val ordinal: Int,
+    val situation: Int,
+    val date: String?,
+    val subject: String?,
+    val attachmentCount: Int,
+)
+
+// LectureMaterial joined with its lecture's date + enclosing classId. The
+// detail view renders these as the attachments block and groups them by
+// class when the discipline runs multiple groups. `caption` is aliased from
+// the `description` column to keep the SKIE-generated Swift API clear of
+// `NSObject.description` ambiguity.
+data class DisciplineDetailMaterialRow(
+    val materialId: String,
+    val lectureId: String,
+    val classId: String,
+    val lectureDate: String?,
+    val caption: String?,
+    val url: String,
+)

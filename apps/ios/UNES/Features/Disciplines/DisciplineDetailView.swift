@@ -4,11 +4,27 @@ import SwiftUI
 /// hero / stats row / grades / ementa / classes / attachments / presença.
 ///
 /// Pushed by `DisciplinesListView`'s `NavigationStack` — navigation state
-/// lives in the parent so back is just a `dismiss()`.
+/// lives in the parent so back is just a `dismiss()`. The view owns a
+/// `DisciplineDetailViewModel` seeded with the tapped list-card `Discipline`;
+/// while the DB flow hydrates, the screen renders against the seed.
 struct DisciplineDetailView: View {
-    let discipline: Discipline
+    @State private var viewModel: DisciplineDetailViewModel
 
     @State private var selectedGroup: String?
+
+    init(seed: Discipline, factory: DisciplinesFactory) {
+        _viewModel = State(initialValue: factory.makeDetailViewModel(seed: seed))
+    }
+
+    #if DEBUG
+        // Factory-less init for `#Preview`. Skips the KMP subscription; the
+        // screen renders against the seed fixture alone.
+        fileprivate init(previewSeed seed: Discipline) {
+            _viewModel = State(initialValue: DisciplineDetailViewModel(seed: seed))
+        }
+    #endif
+
+    private var discipline: Discipline { viewModel.discipline }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -68,6 +84,9 @@ struct DisciplineDetailView: View {
         .toolbar {
             ToolbarItem(placement: .principal) { EmptyView() }
         }
+        .task {
+            await viewModel.observe()
+        }
     }
 
     // MARK: - Stats row
@@ -106,12 +125,14 @@ struct DisciplineDetailView: View {
     }
 }
 
-#Preview {
-    NavigationStack {
-        DisciplineDetailView(
-            discipline: DisciplineFixtures.semesters
-                .first(where: { $0.id == DisciplineFixtures.currentSemesterId })!
-                .disciplines.first!
-        )
+#if DEBUG
+    #Preview {
+        NavigationStack {
+            DisciplineDetailView(
+                previewSeed: DisciplineFixtures.semesters
+                    .first(where: { $0.id == DisciplineFixtures.currentSemesterId })!
+                    .disciplines.first!
+            )
+        }
     }
-}
+#endif
