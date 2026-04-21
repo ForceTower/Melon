@@ -16,7 +16,7 @@ struct MeHeader: View {
                     .tracking(1.44)
                     .foregroundStyle(UNESColor.ink3)
 
-                Text("\(Text("Olá, ").foregroundStyle(UNESColor.ink))\(Text(identity.firstName.lowercased()).italic().foregroundStyle(UNESColor.accent))")
+                Text("\(Text("Olá, ").foregroundStyle(UNESColor.ink))\(Text(identity.firstName).italic().foregroundStyle(UNESColor.accent))")
                     .font(UNESFont.serif(32))
                     .tracking(-0.64)
             }
@@ -37,7 +37,7 @@ struct MeHeader: View {
             .buttonStyle(PressScaleStyle())
         }
         .padding(.horizontal, 20)
-        .padding(.top, 60)
+        .padding(.top, 16)
         .padding(.bottom, 18)
     }
 }

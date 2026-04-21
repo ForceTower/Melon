@@ -50,7 +50,7 @@ struct OverviewView: View {
                     OverviewHeader(
                         greeting: viewModel.greeting,
                         dateEyebrow: viewModel.dateEyebrow,
-                        name: viewModel.userName ?? "—",
+                        name: viewModel.firstName,
                         avatarInitial: viewModel.avatarInitial
                     )
                     .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)

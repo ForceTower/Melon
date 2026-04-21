@@ -219,6 +219,10 @@ final class OverviewViewModel {
     }
 
     // MARK: - Derived state (read by the view)
+    
+    var firstName: String {
+        userName?.split(separator: " ").first.map { String($0) } ?? "-"
+    }
 
     var avatarInitial: String {
         userName?.first.map { String($0).uppercased() } ?? "?"

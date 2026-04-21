@@ -135,7 +135,7 @@ struct MessagesListView: View {
                 .foregroundStyle(UNESColor.ink)
         }
         .padding(.horizontal, 20)
-        .padding(.top, 60)
+        .padding(.top, 16)
         .padding(.bottom, 14)
     }
 
