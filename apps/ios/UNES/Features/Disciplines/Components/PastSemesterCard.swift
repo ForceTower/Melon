@@ -100,6 +100,7 @@ struct PastSemesterCard: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .cardSurface(RoundedRectangle(cornerRadius: 18, style: .continuous))
         }
         .buttonStyle(.plain)
@@ -147,6 +148,7 @@ struct PastDisciplineRow: View {
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 12)
+            .contentShape(RoundedRectangle(cornerRadius: 16, style: .continuous))
             .background {
                 let shape = RoundedRectangle(cornerRadius: 16, style: .continuous)
                 ZStack(alignment: .leading) {
@@ -240,6 +242,7 @@ struct UndownloadedSemesterCard: View {
             }
             .padding(.horizontal, 16)
             .padding(.vertical, 14)
+            .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .background {
                 // Liquid Glass on iOS 26+, solid fill below — dashed stroke
                 // reused on both branches so the "not yet downloaded" affordance

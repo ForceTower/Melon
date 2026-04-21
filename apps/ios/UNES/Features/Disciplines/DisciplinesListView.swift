@@ -70,6 +70,7 @@ struct DisciplinesListView: View {
                             ForEach(Array(current.disciplines.enumerated()), id: \.element.id) { idx, d in
                                 NavigationLink(value: d) {
                                     ActiveDisciplineCard(discipline: d)
+                                        .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
                                 }
                                 .buttonStyle(.plain)
                                 .fadeUpOnAppear(delay: 0.15 + Double(idx) * 0.06,

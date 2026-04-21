@@ -388,11 +388,14 @@ abstract class AcademicDao {
     ): Flow<List<DisciplineDetailEnrollmentRow>>
 
     // Per-evaluation grade rows scoped to the offer, carrying evaluation name +
-    // position so the use case can emit one section per class with grades in
-    // their canonical evaluation order.
+    // position and the upstream `gradePlatformId`. `gradePlatformId` is stable
+    // across the per-class replication the backend does in `applyDiscipline` —
+    // the use case uses it to dedup grades back to the upstream's single
+    // shared set for multi-group disciplines.
     @Query(
         """
         SELECT sg.id AS gradeId,
+               sg.platformId AS gradePlatformId,
                sg.studentClassId AS studentClassId,
                c.id AS classId,
                e.id AS evaluationId,

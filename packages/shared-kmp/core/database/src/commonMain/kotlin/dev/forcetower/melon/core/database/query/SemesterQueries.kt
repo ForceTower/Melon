@@ -157,8 +157,13 @@ data class DisciplineDetailEnrollmentRow(
 // StudentGrade rows joined with their ClassEvaluation metadata, scoped to a
 // single DisciplineOffer. Ordered (classId, evaluation.position, ordinal) so
 // the use case can slice by classId and preserve evaluation order for the UI.
+// `gradePlatformId` is the upstream grade id — stable across the per-class
+// replication that `applyDiscipline` performs on the backend, so it's the
+// dedup key the use case uses to collapse multi-group disciplines' grades
+// back to the upstream's single shared set.
 data class DisciplineDetailGradeRow(
     val gradeId: String,
+    val gradePlatformId: String,
     val studentClassId: String,
     val classId: String,
     val evaluationId: String,

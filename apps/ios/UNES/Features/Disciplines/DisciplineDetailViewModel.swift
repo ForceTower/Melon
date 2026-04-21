@@ -58,7 +58,7 @@ final class DisciplineDetailViewModel {
             uniqueKeysWithValues: raw.groups.map { ($0.classId, $0.code) }
         )
         let groups = raw.groups.map(mapGroup)
-        let sections = raw.sections.map { mapSection($0, showGroup: hasMultipleGroups) }
+        let sections = raw.sections.map(mapSection)
         let classes = mapLectures(raw.lectures)
         let attachments = raw.attachments.map {
             mapAttachment(
@@ -98,10 +98,14 @@ final class DisciplineDetailViewModel {
         )
     }
 
-    private static func mapSection(_ raw: KmpDetailSection, showGroup: Bool) -> GradeSection {
-        GradeSection(
-            name: kindLabel(raw.kind),
-            group: showGroup ? raw.groupName : nil,
+    // KMP now emits a single merged section per discipline (groupName nil,
+    // kind = "" on multi-group). The UI's section header reads `name`, so a
+    // blank `kind` falls back to "Notas".
+    private static func mapSection(_ raw: KmpDetailSection) -> GradeSection {
+        let name = raw.kind.isEmpty ? "Notas" : kindLabel(raw.kind)
+        return GradeSection(
+            name: name,
+            group: raw.groupName,
             grades: raw.grades.map { g in
                 GradeEntry(
                     label: g.gradeNameShort ?? "",

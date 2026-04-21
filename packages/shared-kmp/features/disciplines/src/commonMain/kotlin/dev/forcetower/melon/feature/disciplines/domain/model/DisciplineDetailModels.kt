@@ -37,12 +37,16 @@ data class DisciplineDetailGroup(
     val teacherName: String?,
 )
 
-// One grade section per class. `groupName` lets the view show a group badge
-// on each section when the discipline has multiple groups.
+// One grade section per discipline. Upstream exposes evaluations at the
+// discipline level — the backend replicates them per class for schema
+// reasons (see `applyDiscipline`), so the use case dedupes by the upstream
+// grade id and emits a single section. `classId` / `groupName` stay null
+// for the merged section so the UI renders it regardless of which group
+// pill is selected.
 data class DisciplineDetailSection(
-    val classId: String,
+    val classId: String?,
     val kind: String,
-    val groupName: String,
+    val groupName: String?,
     val grades: List<DisciplineDetailGrade>,
 )
 

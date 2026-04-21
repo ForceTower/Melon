@@ -49,7 +49,17 @@ private fun build(
     materials: List<DisciplineDetailMaterialRow>,
 ): DisciplineDetail {
     val head = enrollments.first()
-    val hours = head.offerHours ?: head.disciplineHours
+
+    // Deduplicate by classId while preserving the SQL ordering (type, groupName).
+    val classRows = enrollments.distinctBy { it.classId }
+
+    // Sum hours across the enrolled groups — mirrors `ObserveDisciplinesList
+    // UseCase`'s rule. Multi-group disciplines (theory + practice) deliver
+    // full class load per group, so the total hours is the sum, not the offer
+    // column (which upstream only fills with the discipline's nominal hours).
+    val hours = classRows.sumOf { it.classHours }.takeIf { it > 0 }
+        ?: head.offerHours
+        ?: head.disciplineHours
     val missedHours = enrollments
         .distinctBy { it.studentClassId }
         .sumOf { it.missedClasses ?: 0 }
@@ -58,9 +68,6 @@ private fun build(
     val finalGrade = finalGradeString?.replace(",", ".")?.toDoubleOrNull()
     val approved = enrollments.firstOrNull { it.approved != null }?.approved
 
-    // Deduplicate by classId while preserving the SQL ordering (type, groupName).
-    val classRows = enrollments
-        .distinctBy { it.classId }
     val groups = classRows.map { row ->
         DisciplineDetailGroup(
             classId = row.classId,
@@ -70,13 +77,32 @@ private fun build(
         )
     }
 
-    val gradesByClassId = grades.groupBy { it.classId }
-    val sections = classRows.map { row ->
-        DisciplineDetailSection(
-            classId = row.classId,
-            kind = row.classType,
-            groupName = row.groupName,
-            grades = gradesByClassId[row.classId].orEmpty().map(::toDetailGrade),
+    // Dedup grades by the upstream id (`gradePlatformId`). Backend writes the
+    // same grade set once per class row — see `applyDiscipline` — but upstream
+    // exposes a single shared list. Collapse back to that single list so the
+    // UI doesn't show N copies of every grade on multi-group disciplines.
+    // `distinctBy` keeps the first occurrence, and SQL already orders by
+    // (classId, evaluation.position, ordinal), so "first" lands on the
+    // alphabetically-first class's copy — arbitrary but consistent.
+    val dedupedGrades = grades
+        .distinctBy { it.gradePlatformId }
+        .sortedWith(compareBy({ it.evaluationPosition }, { it.ordinal }))
+
+    // One merged section; null classId / groupName make it render across
+    // every group pill (iOS filters `section.group == selected || == nil`).
+    // Multi-group: `kind` stays blank so the section header reads as plain
+    // "NOTAS" rather than picking one group's label arbitrarily.
+    val sectionKind = if (classRows.size == 1) classRows.first().classType else ""
+    val sections = if (dedupedGrades.isEmpty()) {
+        emptyList()
+    } else {
+        listOf(
+            DisciplineDetailSection(
+                classId = null,
+                kind = sectionKind,
+                groupName = null,
+                grades = dedupedGrades.map(::toDetailGrade),
+            ),
         )
     }
 
