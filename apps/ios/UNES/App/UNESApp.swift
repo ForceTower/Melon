@@ -21,7 +21,8 @@ struct UNESApp: App {
                 overview: graph.overviewFactory,
                 scheduleFocused: graph.scheduleFocusedFactory,
                 disciplines: graph.disciplinesFactory,
-                messages: graph.messagesFactory
+                messages: graph.messagesFactory,
+                me: graph.meFactory
             )
         }
     }

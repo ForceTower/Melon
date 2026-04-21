@@ -6,6 +6,7 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
@@ -80,6 +81,10 @@ interface UmbrellaGraph {
     val observeMessagesInboxUseCase: ObserveMessagesInboxUseCase
     val observeMessageDetailUseCase: ObserveMessageDetailUseCase
     val markMessageAsReadUseCase: MarkMessageAsReadUseCase
+
+    // Eu (Me) reactive surface — emits the hero identity, semester strip data,
+    // CR/hours rollup, and the closest upcoming evaluation as one snapshot.
+    val observeMeProfileUseCase: ObserveMeProfileUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

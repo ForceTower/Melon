@@ -27,6 +27,7 @@ import dev.forcetower.melon.core.database.query.PartialGradeRow
 import dev.forcetower.melon.core.database.query.RecentLectureRow
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.core.database.query.SemesterClassAggregate
+import dev.forcetower.melon.core.database.query.SemesterHoursProgressRow
 import dev.forcetower.melon.core.database.query.StudentDisciplineRow
 import dev.forcetower.melon.core.database.query.TodayLectureRow
 import dev.forcetower.melon.core.database.query.UpcomingEvaluationRow
@@ -230,6 +231,36 @@ abstract class AcademicDao {
         semesterId: String,
         today: String,
     ): Flow<UpcomingEvaluationRow?>
+
+    // Class-hours elapsed vs. total for the semester. Elapsed is lecture-count
+    // weighted per class: `c.hours * (lecturesBefore:today / lecturesTotal)`.
+    // Classes with no lectures recorded contribute zero to `completedHours`,
+    // matching the "nothing's been taught yet" reality — UI falls back to a
+    // plain `0 / total` rather than inventing proportional hours.
+    @Query(
+        """
+        SELECT COALESCE(SUM(c.hours), 0) AS totalHours,
+               COALESCE(SUM(
+                 CAST(c.hours AS REAL) * (
+                   SELECT COUNT(*) FROM ClassLecture cl
+                    WHERE cl.classId = c.id
+                      AND cl.date IS NOT NULL
+                      AND cl.date <= :today
+                 ) * 1.0 / NULLIF((
+                   SELECT COUNT(*) FROM ClassLecture cl2
+                    WHERE cl2.classId = c.id
+                      AND cl2.date IS NOT NULL
+                 ), 0)
+               ), 0.0) AS completedHours
+          FROM Class c
+          JOIN DisciplineOffer o ON o.id = c.offerId
+         WHERE o.semesterId = :semesterId
+        """,
+    )
+    abstract fun observeSemesterHoursProgress(
+        semesterId: String,
+        today: String,
+    ): Flow<SemesterHoursProgressRow>
 
     // Semester-wide miss/hours aggregate. Percentage (100 - missed/hours*100)
     // and allowed-absences (hours * 0.25) are derived on the client.

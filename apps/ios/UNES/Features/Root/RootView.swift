@@ -27,6 +27,7 @@ struct RootView: View {
     let scheduleFocused: ScheduleFocusedFactory
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
+    let me: MeFactory
 
     @State private var viewModel = RootViewModel()
 
@@ -60,7 +61,8 @@ struct RootView: View {
                     overview: overview,
                     scheduleFocused: scheduleFocused,
                     disciplines: disciplines,
-                    messages: messages
+                    messages: messages,
+                    me: me
                 )
                     .transition(
                         .asymmetric(

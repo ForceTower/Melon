@@ -6,15 +6,33 @@ import SwiftUI
 /// `screens-me.jsx`; the tweak-panel toggles live in Settings instead of an
 /// in-screen overlay.
 struct MeView: View {
-    private let identity = MeFixtures.identity
+    @State private var viewModel: MeViewModel
+    // Shortcut grid + settings rows are UI affordances, not user data — they
+    // keep reading from `MeFixtures`. Only the hero / semester strip / CR /
+    // credits are viewmodel-driven.
     private let pinned = MeFixtures.pinned(from: MeFixtures.defaultPinned)
     private let settings = MeFixtures.settingsRows
+
+    init(factory: MeFactory) {
+        _viewModel = State(initialValue: factory.makeViewModel())
+    }
+
+    // Factory-less init — retained so `#Preview` keeps rendering against
+    // `MeFixtures` without a live graph.
+    init() {
+        _viewModel = State(initialValue: MeViewModel())
+    }
+
+    private var identity: ProfileIdentity {
+        viewModel.identity ?? MeFixtures.identity
+    }
 
     var body: some View {
         NavigationStack {
             screenBody
                 .navigationTitle("Eu")
                 .toolbar(.hidden, for: .navigationBar)
+                .task { await viewModel.observe() }
         }
     }
 

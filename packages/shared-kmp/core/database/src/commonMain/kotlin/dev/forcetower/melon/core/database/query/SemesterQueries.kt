@@ -75,6 +75,15 @@ data class AttendanceSummaryRow(
     val totalHours: Int,
 )
 
+// Semester-wide class-hours tally paired with the hours already elapsed. Each
+// class contributes `c.hours × (past lectures / total lectures)` to
+// `completedHours`; classes without scheduled lectures contribute zero. The Me
+// tab renders this as "X de Y horas" for the current semester.
+data class SemesterHoursProgressRow(
+    val totalHours: Int,
+    val completedHours: Double,
+)
+
 // Raw recent lectures (situation = upstream attendance code). Client bucks
 // these into a "past N class-days" strip. situation==0 means present.
 data class RecentLectureRow(

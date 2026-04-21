@@ -67,4 +67,13 @@ extension UmbrellaGraph {
             )
         )
     }
+
+    @MainActor
+    var meFactory: MeFactory {
+        MeFactory(
+            useCases: MeUseCases(
+                observeProfile: observeMeProfileUseCase
+            )
+        )
+    }
 }

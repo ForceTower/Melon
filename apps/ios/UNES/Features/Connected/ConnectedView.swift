@@ -8,6 +8,7 @@ struct ConnectedView: View {
     let scheduleFocused: ScheduleFocusedFactory
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
+    let me: MeFactory
 
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
@@ -34,7 +35,7 @@ struct ConnectedView: View {
                 MessagesListView(factory: messages)
             }
             Tab(ConnectedTab.me.label, systemImage: ConnectedTab.me.icon, value: .me) {
-                MeView()
+                MeView(factory: me)
             }
         }
         .tint(UNESColor.accent)
