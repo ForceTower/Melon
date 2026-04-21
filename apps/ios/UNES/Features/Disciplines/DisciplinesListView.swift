@@ -32,6 +32,18 @@ struct DisciplinesListView: View {
         }
     }
 
+    // Between semesters (today outside any semester's start..end), upstream
+    // returns no running semester. In that case promote the most-recent past
+    // into the "current" slot so the screen still opens with a meaningful
+    // card stack instead of an empty header.
+    private var effectiveCurrent: Semester? {
+        viewModel.current ?? viewModel.past.first
+    }
+
+    private var effectivePast: [Semester] {
+        viewModel.current != nil ? viewModel.past : Array(viewModel.past.dropFirst())
+    }
+
     private var screenBody: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
@@ -61,7 +73,7 @@ struct DisciplinesListView: View {
                     header
                         .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)
 
-                    if let current = viewModel.current {
+                    if let current = effectiveCurrent {
                         CurrentSemesterSummary(disciplines: current.disciplines)
                             .padding(.bottom, 14)
                             .fadeUpOnAppear(delay: 0.08, distance: 14, duration: 0.55)
@@ -84,7 +96,7 @@ struct DisciplinesListView: View {
                         .fadeUpOnAppear(delay: 0.5, distance: 10, duration: 0.55)
 
                     VStack(spacing: 10) {
-                        ForEach(Array(viewModel.past.enumerated()), id: \.element.id) { idx, sem in
+                        ForEach(Array(effectivePast.enumerated()), id: \.element.id) { idx, sem in
                             PastSemesterCard(
                                 semesterId: sem.id,
                                 disciplines: sem.disciplines,
@@ -114,7 +126,7 @@ struct DisciplinesListView: View {
 
     private var header: some View {
         VStack(alignment: .leading, spacing: 4) {
-            Text("◦ SEMESTRE \(viewModel.current?.id ?? "—")")
+            Text("◦ SEMESTRE \(effectiveCurrent?.id ?? "—")")
                 .font(UNESFont.mono(10, weight: .medium))
                 .tracking(1.2)
                 .foregroundStyle(UNESColor.ink3)
@@ -149,7 +161,7 @@ struct DisciplinesListView: View {
     /// downloaded a newer semester (which takes precedence).
     private func shouldAutoOpen(_ sem: Semester, at idx: Int) -> Bool {
         if justDownloaded.contains(sem.id) { return true }
-        return idx == 0 && !justDownloaded.contains(viewModel.past.first?.id ?? "")
+        return idx == 0 && !justDownloaded.contains(effectivePast.first?.id ?? "")
     }
 
     private func handleDownload(_ semesterId: String) {

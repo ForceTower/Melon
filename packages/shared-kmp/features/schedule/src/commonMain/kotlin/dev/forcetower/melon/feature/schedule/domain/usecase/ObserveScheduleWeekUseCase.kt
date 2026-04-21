@@ -23,9 +23,11 @@ import kotlinx.datetime.minus
 import kotlinx.datetime.plus
 
 // Drives the week-focused Schedule view. Pipeline:
-//   (semester list, ticker) → pick semester active for today, anchor on
-//   today's Monday → resubscribe (flatMapLatest) to the semester's
-//   allocations + the week's lectures → bucket into 7 days.
+//   (semester list, ticker) → pick semester active for today (falling back
+//   to the most recent past when nothing is currently running), anchor on
+//   today's Monday — or on the fallback semester's final week — →
+//   resubscribe (flatMapLatest) to the semester's allocations + the week's
+//   lectures → bucket into 7 days.
 // Ticker fires every 60s; the real work only resubscribes on day-roll or
 // semester-change thanks to distinctUntilChanged on the key.
 @OptIn(ExperimentalCoroutinesApi::class)
@@ -40,14 +42,21 @@ class ObserveScheduleWeekUseCase internal constructor(
             ticker(),
         ) { semesters, now ->
             val today = now.date
-            val monday = today.minus(DatePeriod(days = today.dayOfWeek.ordinal))
             val todayIso = today.toString()
-            // Only consider a semester "active" for the Schedule view when
-            // today actually falls inside its window — showing phantom
-            // allocations from a fallback semester would be misleading on a
-            // calendar-week grid.
-            val active = semesters.firstOrNull { todayIso in it.startDate..it.endDate }
-            WeekKey(active, today, monday)
+            val running = semesters.firstOrNull { todayIso in it.startDate..it.endDate }
+            // Between semesters the view still shows the last one the student
+            // attended, anchored on that semester's final week so the column
+            // reflects real allocations instead of a phantom today.
+            val semester = running ?: semesters
+                .filter { runCatching { LocalDate.parse(it.endDate) }.isSuccess }
+                .maxByOrNull { it.endDate }
+            val anchorDay = when {
+                running != null -> today
+                semester != null -> LocalDate.parse(semester.endDate)
+                else -> today
+            }
+            val monday = anchorDay.minus(DatePeriod(days = anchorDay.dayOfWeek.ordinal))
+            WeekKey(semester, today, monday)
         }.distinctUntilChanged()
 
         return keyFlow.flatMapLatest { key ->
@@ -107,12 +116,14 @@ internal fun buildScheduleWeek(
         ScheduleDay(dayIndex = idx, dateIso = dateIso, classes = rows)
     }
 
+    val sunday = monday.plus(DatePeriod(days = 6))
+    val todayInWeek = today in monday..sunday
     return ScheduleWeek(
         semesterId = semester.id,
         semesterCode = semester.code,
-        weekNumber = weekOfSemester(semester, today),
+        weekNumber = weekOfSemester(semester, if (todayInWeek) today else monday),
         weekStartIso = monday.toString(),
-        todayDayIndex = today.dayOfWeek.ordinal,
+        todayDayIndex = today.dayOfWeek.ordinal.takeIf { todayInWeek },
         days = days,
     )
 }
@@ -134,13 +145,19 @@ internal fun emptyWeek(today: LocalDate, monday: LocalDate): ScheduleWeek {
     )
 }
 
-// Week count since semester.startDate, 1-based. Returns 0 when today is
-// outside the semester window — the UI treats that as "hide the counter".
-internal fun weekOfSemester(semester: SemesterEntity, today: LocalDate): Int {
+// Week count since semester.startDate, 1-based. The reference date is
+// clamped into the semester window so the fallback between-semesters path
+// (where the anchor sits at the semester's final week) still reports a
+// meaningful week number instead of 0.
+internal fun weekOfSemester(semester: SemesterEntity, reference: LocalDate): Int {
     val start = runCatching { LocalDate.parse(semester.startDate) }.getOrNull() ?: return 0
     val end = runCatching { LocalDate.parse(semester.endDate) }.getOrNull() ?: return 0
-    if (today < start || today > end) return 0
-    val days = today.toEpochDays() - start.toEpochDays()
+    val clamped = when {
+        reference < start -> start
+        reference > end -> end
+        else -> reference
+    }
+    val days = clamped.toEpochDays() - start.toEpochDays()
     return (days / 7) + 1
 }
 
