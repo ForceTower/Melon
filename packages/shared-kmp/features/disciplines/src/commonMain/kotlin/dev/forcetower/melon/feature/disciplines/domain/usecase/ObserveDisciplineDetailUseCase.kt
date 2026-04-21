@@ -56,13 +56,11 @@ private fun build(
     // Deduplicate by classId while preserving the SQL ordering (type, groupName).
     val classRows = enrollments.distinctBy { it.classId }
 
-    // Sum hours across the enrolled groups — mirrors `ObserveDisciplinesList
-    // UseCase`'s rule. Multi-group disciplines (theory + practice) deliver
-    // full class load per group, so the total hours is the sum, not the offer
-    // column (which upstream only fills with the discipline's nominal hours).
-    val hours = classRows.sumOf { it.classHours }.takeIf { it > 0 }
-        ?: head.offerHours
-        ?: head.disciplineHours
+    // Upstream repeats the discipline's nominal `cargaHoraria` on every class
+    // group (verified against the legacy DB: multi-group disciplines like
+    // FIS110 carry the same 90h on each class row). Summing would double-count
+    // multi-group disciplines, so read straight from the offer/catalog hours.
+    val hours = head.offerHours ?: head.disciplineHours
     val missedHours = enrollments
         .distinctBy { it.studentClassId }
         .sumOf { it.missedClasses ?: 0 }

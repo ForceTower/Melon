@@ -54,6 +54,13 @@ final class SyncViewModel {
     private var summaries: [SyncSemesterSummary] = []
     private var anyAuthBroken = false
 
+    // Incremented by driveAnimation each time a step ticks. Poll loops watch
+    // this: each animation tick resets their "iterations since last tick"
+    // counter, so as long as the animation is still making visible progress,
+    // the polls keep extending their budget. Once the animation settles they
+    // get one final window before giving up.
+    private var animTickEpoch = 0
+
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "sync")
 
     init(
@@ -69,6 +76,7 @@ final class SyncViewModel {
     func start() {
         guard !didStart else { return }
         didStart = true
+        Self.logger.info("sync: start")
         kickOffWork()
         Task { await driveAnimation() }
     }
@@ -174,47 +182,108 @@ final class SyncViewModel {
     }
 
     private func runClassesStep() async -> StepResult {
-        // Gate on the *target* semester being resolvable, not on list
-        // non-emptiness. Historical-semester jobs often finish before the
-        // currently-active one during initial backfill, so a non-empty list
-        // can still be missing the semester we actually care about —
-        // consulting onboarding-status (see semestersAreStillBackfilling)
-        // lets us wait that out instead of racing past with a stale list.
+        // Poll onboarding-status until the backend reports the target
+        // semester's backfill job has reached a terminal state
+        // (activeSemesterReady=true), or backfill is no longer making
+        // progress. Then fetch the list once.
         //
-        // Resolution rules:
-        //   - An active-by-date semester is in the list → resolved.
-        //   - Backend reports backfill done and no active semester → genuine
-        //     between-terms; fall through to the historical fallback in
-        //     pickActiveSemestersInOrder.
-        //   - Otherwise (still backfilling) → sleep and retry.
-        for iteration in 0..<5 {
+        // The iteration cap is **per animation tick**, not global — each
+        // step tick resets `iterationsSinceTick` so the poll keeps going
+        // as long as the animation is still advancing. This gives the
+        // worker room to finish its batch even on slow cold-start backfills
+        // without hard-coding a large absolute budget.
+        var iterationsSinceTick = 0
+        var lastSeenEpoch = animTickEpoch
+        var totalIterations = 0
+
+        while true {
+            let currentEpoch = animTickEpoch
+            if currentEpoch != lastSeenEpoch {
+                Self.logger.info("classes: anim tick observed (\(currentEpoch)), resetting counter")
+                lastSeenEpoch = currentEpoch
+                iterationsSinceTick = 0
+            }
+
             do {
-                let outcome = try await useCases.semesterList.invoke()
+                let outcome = try await useCases.onboardingStatus.invoke()
                 switch onEnum(of: outcome) {
                 case .ok(let wrapper):
-                    let list = (wrapper.value as? [SyncSemesterSummary]) ?? []
-                    summaries = list
-
-                    if !activeSemesters(in: list).isEmpty { return .ok }
-
-                    let stillBackfilling = await semestersAreStillBackfilling()
-                    if !stillBackfilling { return .ok }
-                    if iteration == 4 { return .ok }
-
-                    try? await Task.sleep(nanoseconds: 1_000_000_000)
+                    if let status = wrapper.value {
+                        let sem = status.semesters
+                        Self.logger
+                            .info(
+                                "classes: iter=\(totalIterations) sinceTick=\(iterationsSinceTick) state=\(String(describing: sem.state)) total=\(sem.total) done=\(sem.done) failed=\(sem.failed) ready=\(status.activeSemesterReady)"
+                            )
+                        if status.activeSemesterReady {
+                            Self.logger.info("classes: active ready -> fetching list")
+                            return await fetchSemesterListAndStore()
+                        }
+                        let stillBackfilling = sem.state == .pending || sem.state == .running
+                        if !stillBackfilling {
+                            Self.logger.info("classes: backfill settled without ready -> fetching list")
+                            return await fetchSemesterListAndStore()
+                        }
+                    } else {
+                        Self.logger.info("classes: iter=\(totalIterations) status nil")
+                    }
                 case .err(let wrapper):
                     let authBroken = isUnauthorized(wrapper.error)
-                    if authBroken { anyAuthBroken = true }
-                    return .fail(authBroken: authBroken)
+                    Self.logger
+                        .warning(
+                            "classes: status err iter=\(totalIterations) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
+                        )
+                    if authBroken {
+                        anyAuthBroken = true
+                        return .fail(authBroken: true)
+                    }
                 }
             } catch is CancellationError {
+                Self.logger.info("classes: cancelled")
                 return .fail(authBroken: false)
             } catch {
-                Self.logger.warning("semester list threw: \(String(describing: error))")
-                return .fail(authBroken: false)
+                Self.logger.warning("classes: status threw \(String(describing: error))")
             }
+
+            iterationsSinceTick += 1
+            totalIterations += 1
+            if iterationsSinceTick >= 15 {
+                Self.logger
+                    .info(
+                        "classes: \(iterationsSinceTick) iterations without an anim tick -> fetching list"
+                    )
+                return await fetchSemesterListAndStore()
+            }
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
         }
-        return .ok
+    }
+
+    private func fetchSemesterListAndStore() async -> StepResult {
+        do {
+            let outcome = try await useCases.semesterList.invoke()
+            switch onEnum(of: outcome) {
+            case .ok(let wrapper):
+                let list = (wrapper.value as? [SyncSemesterSummary]) ?? []
+                summaries = list
+                let today = Self.today()
+                let summary = list
+                    .map { "\($0.id)[\($0.startDate)..\($0.endDate)]" }
+                    .joined(separator: ",")
+                Self.logger.info("classes: list count=\(list.count) today=\(today) list=[\(summary)]")
+                return .ok
+            case .err(let wrapper):
+                let authBroken = isUnauthorized(wrapper.error)
+                Self.logger
+                    .warning("classes: list err authBroken=\(authBroken) err=\(String(describing: wrapper.error))")
+                if authBroken { anyAuthBroken = true }
+                return .fail(authBroken: authBroken)
+            }
+        } catch is CancellationError {
+            Self.logger.info("classes: list fetch cancelled")
+            return .fail(authBroken: false)
+        } catch {
+            Self.logger.warning("classes: list fetch threw \(String(describing: error))")
+            return .fail(authBroken: false)
+        }
     }
 
     private func activeSemesters(in list: [SyncSemesterSummary]) -> [SyncSemesterSummary] {
@@ -222,34 +291,22 @@ final class SyncViewModel {
         return list.filter { Self.contains(today, $0.startDate, $0.endDate) }
     }
 
-    private func semestersAreStillBackfilling() async -> Bool {
-        do {
-            let outcome = try await useCases.onboardingStatus.invoke()
-            switch onEnum(of: outcome) {
-            case .ok(let wrapper):
-                guard let state = wrapper.value?.semesters.state else { return false }
-                return state == .pending || state == .running
-            case .err:
-                return false
-            }
-        } catch {
-            return false
-        }
-    }
-
     private func runScheduleStep() async -> StepResult {
         guard let classes = classesTask else { return .ok }
         let classesResult = await classes.value
         if case .fail(let authBroken) = classesResult, authBroken {
+            Self.logger.warning("schedule: classes auth broken, bailing")
             return .fail(authBroken: true)
         }
 
         let prioritized = pickActiveSemestersInOrder(summaries)
         guard let primary = prioritized.first else {
-            // No semesters at all — common for brand-new accounts. Nothing
-            // to pull; let downstream UI show its empty state.
+            Self.logger.info("schedule: no semesters to pull (empty summaries)")
             return .ok
         }
+
+        let hasActiveByDate = !activeSemesters(in: summaries).isEmpty
+        Self.logger.info("schedule: picked primary=\(primary.id) startDate=\(primary.startDate) endDate=\(primary.endDate) hasActiveByDate=\(hasActiveByDate) total=\(prioritized.count)")
 
         let extras = Array(prioritized.dropFirst())
         if !extras.isEmpty {
@@ -257,6 +314,7 @@ final class SyncViewModel {
             // network + DAOs they touch.
             let extraIds = extras.map(\.id)
             let semesterUseCase = useCases.semester
+            Self.logger.info("schedule: extras=[\(extraIds.joined(separator: ","))]")
             Task.detached {
                 for id in extraIds {
                     _ = try? await semesterUseCase.invoke(semesterId: id)
@@ -268,13 +326,16 @@ final class SyncViewModel {
             let primaryOutcome = try await useCases.semester.invoke(semesterId: primary.id)
             switch onEnum(of: primaryOutcome) {
             case .ok:
+                Self.logger.info("schedule: primary fetch ok id=\(primary.id)")
                 return .ok
             case .err(let wrapper):
                 let authBroken = isUnauthorized(wrapper.error)
+                Self.logger.warning("schedule: primary fetch err id=\(primary.id) authBroken=\(authBroken) err=\(String(describing: wrapper.error))")
                 if authBroken { anyAuthBroken = true }
                 return .fail(authBroken: authBroken)
             }
         } catch is CancellationError {
+            Self.logger.info("schedule: cancelled")
             return .fail(authBroken: false)
         } catch {
             Self.logger.warning("primary semester fetch threw: \(String(describing: error))")
@@ -283,11 +344,79 @@ final class SyncViewModel {
     }
 
     private func runMessagesStep() async -> StepResult {
+        // `/sync/messages` reads from the server's mirror, which is empty
+        // until the messages backfill job populates it. Poll status until
+        // that job reaches a terminal state before fetching the first page —
+        // otherwise we persist an empty page locally and the home screen
+        // shows an empty inbox even though the user has unread messages.
+        //
+        // Same reset-on-tick policy as runClassesStep: each animation step
+        // tick refreshes our 15-iteration budget, so we keep polling as long
+        // as sync is visibly progressing.
+        var iterationsSinceTick = 0
+        var lastSeenEpoch = animTickEpoch
+        var totalIterations = 0
+
+        pollLoop: while true {
+            let currentEpoch = animTickEpoch
+            if currentEpoch != lastSeenEpoch {
+                Self.logger.info("msgs: anim tick observed (\(currentEpoch)), resetting counter")
+                lastSeenEpoch = currentEpoch
+                iterationsSinceTick = 0
+            }
+
+            do {
+                let outcome = try await useCases.onboardingStatus.invoke()
+                switch onEnum(of: outcome) {
+                case .ok(let wrapper):
+                    if let status = wrapper.value {
+                        let state = status.messages.state
+                        Self.logger
+                            .info(
+                                "msgs: iter=\(totalIterations) sinceTick=\(iterationsSinceTick) state=\(String(describing: state))"
+                            )
+                        if state == .done || state == .failed {
+                            break pollLoop
+                        }
+                    }
+                case .err(let wrapper):
+                    let authBroken = isUnauthorized(wrapper.error)
+                    Self.logger
+                        .warning(
+                            "msgs: status err iter=\(totalIterations) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
+                        )
+                    if authBroken {
+                        anyAuthBroken = true
+                        return .fail(authBroken: true)
+                    }
+                }
+            } catch is CancellationError {
+                Self.logger.info("msgs: cancelled during status poll")
+                return .fail(authBroken: false)
+            } catch {
+                Self.logger.warning("msgs: status threw \(String(describing: error))")
+            }
+
+            iterationsSinceTick += 1
+            totalIterations += 1
+            if iterationsSinceTick >= 15 {
+                Self.logger
+                    .info(
+                        "msgs: \(iterationsSinceTick) iterations without an anim tick, proceeding anyway"
+                    )
+                break pollLoop
+            }
+            try? await Task.sleep(nanoseconds: 1_000_000_000)
+        }
+
         do {
+            Self.logger.info("msgs: requesting first page")
             let firstPage = try await useCases.messages.invoke(since: nil, cursor: nil)
             switch onEnum(of: firstPage) {
             case .ok(let wrapper):
-                if let next = wrapper.value?.nextCursor {
+                let nextCursor = wrapper.value?.nextCursor
+                Self.logger.info("msgs: first page ok nextCursor=\(nextCursor ?? "<nil>")")
+                if let next = nextCursor {
                     let messagesUseCase = useCases.messages
                     Task.detached {
                         var cursor: String? = next
@@ -308,10 +437,12 @@ final class SyncViewModel {
                 return .ok
             case .err(let wrapper):
                 let authBroken = isUnauthorized(wrapper.error)
+                Self.logger.warning("msgs: first page err authBroken=\(authBroken) err=\(String(describing: wrapper.error))")
                 if authBroken { anyAuthBroken = true }
                 return .fail(authBroken: authBroken)
             }
         } catch is CancellationError {
+            Self.logger.info("msgs: cancelled")
             return .fail(authBroken: false)
         } catch {
             Self.logger.warning("messages first page threw: \(String(describing: error))")
@@ -324,15 +455,20 @@ final class SyncViewModel {
     private func driveAnimation() async {
         for (idx, step) in SYNC_STEPS.enumerated() {
             currentStep = idx
+            Self.logger.info("anim: step=\(step.key) begin")
             await waitForStep(step)
+            Self.logger.info("anim: step=\(step.key) tick")
             _ = withAnimation(.spring(response: 0.5, dampingFraction: 0.75)) {
                 doneKeys.insert(step.key)
             }
+            animTickEpoch += 1
         }
         await waitForReadiness()
         if anyAuthBroken {
+            Self.logger.info("sync: finish -> onAuthFailed")
             onAuthFailed()
         } else {
+            Self.logger.info("sync: finish -> onDone")
             onDone()
         }
     }
@@ -344,6 +480,9 @@ final class SyncViewModel {
             await waitOrTimeout(task, seconds: step.maxDuration)
         }
         let elapsed = Date().timeIntervalSince(started)
+        if elapsed >= step.maxDuration {
+            Self.logger.info("anim: step=\(step.key) TIMED_OUT after \(String(format: "%.2f", elapsed))s")
+        }
         let remaining = step.minDuration - elapsed
         if remaining > 0 {
             try? await Task.sleep(nanoseconds: UInt64(remaining * 1_000_000_000))
@@ -351,12 +490,21 @@ final class SyncViewModel {
     }
 
     private func waitForReadiness() async {
+        Self.logger.info("readiness: awaiting profile + schedule + msgs")
         if let profileTask {
             _ = await profileTask.value
         }
         if let scheduleTask {
             await waitOrTimeout(scheduleTask, seconds: 2.0)
         }
+        // Messages is "nice to have" per the onboarding design, but on the
+        // happy path backfill lands within a few seconds of the semester
+        // payload. A short grace window keeps onDone from firing right
+        // before the msgs task persists its first page.
+        if let msgsTask {
+            await waitOrTimeout(msgsTask, seconds: 3.0)
+        }
+        Self.logger.info("readiness: done")
     }
 
     private func task(for key: String) -> Task<StepResult, Never>? {

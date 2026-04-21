@@ -9,6 +9,7 @@ internal fun OnboardingStatusResponse.toDomain(): OnboardingStatus = OnboardingS
     courseLinked = courseLinked,
     semesters = semesters.toDomain(),
     messages = messages.toDomain(),
+    activeSemesterReady = activeSemesterReady,
 )
 
 private fun OnboardingSemestersStatusDto.toDomain(): OnboardingStatus.PhaseStatus =

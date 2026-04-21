@@ -7,6 +7,10 @@ internal data class OnboardingStatusResponse(
     val courseLinked: Boolean,
     val semesters: OnboardingSemestersStatusDto,
     val messages: OnboardingMessagesStatusDto,
+    // Defaulted for resilience against older server builds that predate the
+    // field; pre-field servers behave as if nothing is ready, which matches
+    // the gate's wait-and-retry behavior.
+    val activeSemesterReady: Boolean = false,
 )
 
 @Serializable

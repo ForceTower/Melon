@@ -7,6 +7,11 @@ data class OnboardingStatus(
     val courseLinked: Boolean,
     val semesters: PhaseStatus,
     val messages: PhaseStatus,
+    // True once the backfill job for the semester SyncView is going to
+    // download (active-by-date, or most-recent as between-terms fallback)
+    // has reached a terminal state. Lets iOS gate on the precise thing it
+    // cares about instead of inferring from `semesters.state`.
+    val activeSemesterReady: Boolean,
 ) {
     data class PhaseStatus(
         val state: State,

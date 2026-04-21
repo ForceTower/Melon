@@ -96,7 +96,7 @@ private fun buildItem(
 ): DisciplineListItem {
     val head = rows.first()
     val studentClassIds = rows.map { it.studentClassId }
-    val hours = rows.sumOf { it.classHours }.takeIf { it > 0 } ?: head.disciplineHours
+    val hours = head.disciplineHours
     val missedHours = rows.sumOf { it.missedClasses ?: 0 }
     val allowedMissedHours = ceil(hours * 0.25).toInt()
 
