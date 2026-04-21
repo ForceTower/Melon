@@ -12,6 +12,7 @@ struct OverviewUseCases {
     let messagesTile: OverviewObserveUnreadMessagesTileUseCase
     let nextTestTile: OverviewObserveNextTestTileUseCase
     let attendanceTile: OverviewObserveAttendanceTileUseCase
+    let gradeTile: OverviewObserveGradeTileUseCase
     let lastSync: OverviewObserveLastSyncUseCase
 }
 

@@ -32,6 +32,7 @@ extension UmbrellaGraph {
                 messagesTile: observeUnreadMessagesTileUseCase,
                 nextTestTile: observeNextTestTileUseCase,
                 attendanceTile: observeAttendanceTileUseCase,
+                gradeTile: observeGradeTileUseCase,
                 lastSync: observeLastSyncUseCase
             )
         )

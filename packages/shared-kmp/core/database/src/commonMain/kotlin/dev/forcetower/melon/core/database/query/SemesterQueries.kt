@@ -39,11 +39,15 @@ data class WeekLectureRow(
     val subject: String?,
 )
 
-// Per-enrollment discipline projection for the Overview disciplines strip and
-// for grade-status classification. `weightedAverage` sums only graded rows,
-// so it's the running partial grade — null when no grade has landed yet.
+// Per-offer discipline projection for the Overview disciplines strip and
+// for grade-status classification. One row per DisciplineOffer (not per
+// StudentClass) — theory + practice groups collapse to one card.
+// `weightedAverage` sums graded rows across every enrolled class in the
+// offer; null when no grade has landed yet. `offerId` is carried so the UI
+// can seed the detail screen on tap.
 data class StudentDisciplineRow(
     val disciplineId: String,
+    val offerId: String,
     val code: String,
     val name: String,
     val finalGrade: String?,

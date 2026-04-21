@@ -158,29 +158,56 @@ abstract class AcademicDao {
     @Query(ALLOCATIONS_SQL)
     abstract fun observeSemesterAllocations(semesterId: String): Flow<List<SemesterAllocationRow>>
 
-    // One row per enrolled discipline in the semester. `weightedAverage` is
-    // SUM(value × weight) / SUM(weight) across graded rows only — null when no
-    // grade has landed. `finalGrade` stays the authoritative "done" grade.
+    // One row per DisciplineOffer in the semester the student is enrolled in.
+    // Aggregation is at the offer level so disciplines with multiple groups
+    // (theory + practice) collapse to a single card. `weightedAverage` is
+    // SUM(value × weight) / SUM(weight) across graded rows from every class
+    // the student has in the offer — null when no grade has landed.
+    // `finalGrade` / `approved` are the first non-null value across the
+    // offer's StudentClass rows (the discipline's main group typically
+    // carries both).
     @Query(
         """
         SELECT d.id AS disciplineId,
+               o.id AS offerId,
                d.code AS code,
                d.name AS name,
-               sc.finalGrade AS finalGrade,
-               sc.approved AS approved,
+               (
+                 SELECT sc.finalGrade
+                   FROM StudentClass sc
+                   JOIN Class c ON c.id = sc.classId
+                  WHERE c.offerId = o.id
+                    AND sc.finalGrade IS NOT NULL
+                    AND sc.finalGrade != ''
+                  LIMIT 1
+               ) AS finalGrade,
+               (
+                 SELECT sc.approved
+                   FROM StudentClass sc
+                   JOIN Class c ON c.id = sc.classId
+                  WHERE c.offerId = o.id
+                    AND sc.approved IS NOT NULL
+                  LIMIT 1
+               ) AS approved,
                (
                  SELECT SUM(CAST(sg.value AS REAL) * CAST(sg.weight AS REAL))
                         / NULLIF(SUM(CAST(sg.weight AS REAL)), 0)
                    FROM StudentGrade sg
-                  WHERE sg.studentClassId = sc.id
+                   JOIN StudentClass sc ON sc.id = sg.studentClassId
+                   JOIN Class c ON c.id = sc.classId
+                  WHERE c.offerId = o.id
                     AND sg.value IS NOT NULL
                     AND sg.value != ''
                ) AS weightedAverage
-          FROM StudentClass sc
-          JOIN Class c ON c.id = sc.classId
-          JOIN DisciplineOffer o ON o.id = c.offerId
+          FROM DisciplineOffer o
           JOIN Discipline d ON d.id = o.disciplineId
          WHERE o.semesterId = :semesterId
+           AND EXISTS (
+             SELECT 1
+               FROM StudentClass sc
+               JOIN Class c ON c.id = sc.classId
+              WHERE c.offerId = o.id
+           )
          ORDER BY d.code ASC
         """,
     )

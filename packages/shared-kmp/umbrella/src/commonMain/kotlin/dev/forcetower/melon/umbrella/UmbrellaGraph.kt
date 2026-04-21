@@ -13,6 +13,7 @@ import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInbox
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
@@ -58,6 +59,7 @@ interface UmbrellaGraph {
     val observeUnreadMessagesTileUseCase: ObserveUnreadMessagesTileUseCase
     val observeNextTestTileUseCase: ObserveNextTestTileUseCase
     val observeAttendanceTileUseCase: ObserveAttendanceTileUseCase
+    val observeGradeTileUseCase: ObserveGradeTileUseCase
     val observeLastSyncUseCase: ObserveLastSyncUseCase
 
     // Schedule (Horário) reactive surface — one flow emitting the whole

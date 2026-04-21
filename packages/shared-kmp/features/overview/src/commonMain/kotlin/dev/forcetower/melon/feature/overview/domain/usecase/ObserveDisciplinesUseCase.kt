@@ -49,6 +49,7 @@ private fun StudentDisciplineRow.toDomain(semesterCode: String): OverviewDiscipl
     val label = displayValue?.let { formatGrade(it) } ?: "—"
     return OverviewDiscipline(
         disciplineId = disciplineId,
+        offerId = offerId,
         code = code,
         title = name,
         gradeLabel = label,

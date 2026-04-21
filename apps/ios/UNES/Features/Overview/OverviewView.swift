@@ -2,12 +2,24 @@ import SwiftUI
 
 struct OverviewView: View {
     @State private var viewModel: OverviewViewModel
+    private let disciplinesFactory: DisciplinesFactory
 
-    init(factory: OverviewFactory) {
+    init(factory: OverviewFactory, disciplinesFactory: DisciplinesFactory) {
         _viewModel = State(initialValue: factory.makeViewModel())
+        self.disciplinesFactory = disciplinesFactory
     }
 
     var body: some View {
+        NavigationStack {
+            screenBody
+                .navigationDestination(for: Discipline.self) { seed in
+                    DisciplineDetailView(seed: seed, factory: disciplinesFactory)
+                }
+                .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+
+    private var screenBody: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
 

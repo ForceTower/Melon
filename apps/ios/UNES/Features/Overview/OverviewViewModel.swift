@@ -19,8 +19,8 @@ final class OverviewViewModel {
     private(set) var messagesTile: OverviewMessagesTileData?
     private(set) var nextTestTile: OverviewNextTestTileData?
     private(set) var attendanceTile: OverviewAttendanceTileData?
-    // CR tile pending client-side calculation; keep nil so the tile renders
-    // its empty state without extra flags.
+    // Mirrors the CR the "Eu" hero renders. Nil until the active semester
+    // has at least one graded row; tile falls back to its "em breve" state.
     private(set) var gradeTile: OverviewGradeTileData?
     private(set) var lastSyncIso: String?
     // Ticked every 30s so greeting / date / relative labels refresh without
@@ -50,10 +50,11 @@ final class OverviewViewModel {
         async let m: Void = observeMessagesTile()
         async let x: Void = observeNextTestTile()
         async let a: Void = observeAttendanceTile()
+        async let g: Void = observeGradeTile()
         async let l: Void = observeLastSync()
         async let c: Void = runClockTicker()
 
-        _ = await (h, n, t, d, m, x, a, l, c)
+        _ = await (h, n, t, d, m, x, a, g, l, c)
     }
 
     private func observeHeader() async {
@@ -95,6 +96,12 @@ final class OverviewViewModel {
     private func observeAttendanceTile() async {
         for await value in useCases.attendanceTile.invoke() {
             apply(attendanceTile: value)
+        }
+    }
+
+    private func observeGradeTile() async {
+        for await value in useCases.gradeTile.invoke() {
+            apply(gradeTile: value)
         }
     }
 
@@ -158,6 +165,7 @@ final class OverviewViewModel {
                 title: raw.title,
                 grade: raw.gradeLabel,
                 color: ColorFor.discipline(code: raw.code),
+                offerId: raw.offerId,
                 statusLabel: Self.statusLabel(for: raw.status)
             )
         }
@@ -191,6 +199,18 @@ final class OverviewViewModel {
             days: raw.lastDays.map { $0.boolValue },
             allowedAbsences: Int(raw.allowedAbsences),
             periodDays: Int(raw.periodDays)
+        )
+    }
+
+    private func apply(gradeTile raw: OverviewOverviewGradeTile?) {
+        guard let raw else {
+            gradeTile = nil
+            return
+        }
+        gradeTile = OverviewGradeTileData(
+            value: raw.cr,
+            delta: raw.crDelta?.doubleValue,
+            comparisonSemester: raw.comparisonSemesterCode
         )
     }
 
@@ -331,12 +351,13 @@ struct OverviewAttendanceTileData {
     let periodDays: Int
 }
 
-// Placeholder for the deferred coeficiente tile. Shape matches the fixture's
-// fields so when CR is wired up later we only need to plug a source.
+// Coeficiente tile payload. `delta` / `comparisonSemester` are nil when
+// there's no prior semester to compare against — the tile then renders just
+// the CR value without the delta chip.
 struct OverviewGradeTileData {
     let value: Double
-    let delta: Double
-    let comparisonSemester: String
+    let delta: Double?
+    let comparisonSemester: String?
 }
 
 // Maps a discipline code to a stable visual color + mesh variant. Keeps all

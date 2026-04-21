@@ -25,7 +25,17 @@ struct DisciplinesStrip: View {
             ScrollView(.horizontal, showsIndicators: false) {
                 HStack(spacing: 10) {
                     ForEach(items) { item in
-                        DisciplineCard(item: item)
+                        if let seed = detailSeed(for: item) {
+                            NavigationLink(value: seed) {
+                                DisciplineCard(item: item)
+                                    .contentShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
+                            }
+                            .buttonStyle(.plain)
+                        } else {
+                            // No offerId yet (fixture / pre-sync) — render the
+                            // card without navigation so it still looks right.
+                            DisciplineCard(item: item)
+                        }
                     }
                 }
                 .padding(.horizontal, 14)
@@ -33,6 +43,26 @@ struct DisciplinesStrip: View {
                 .padding(.bottom, 12)
             }
         }
+    }
+
+    // Minimal seed for the detail-view handoff. `DisciplineDetailViewModel`
+    // swaps this out with a hydrated Discipline as soon as its KMP flow
+    // emits, so the blanks only show for a frame or two.
+    private func detailSeed(for item: OverviewDiscipline) -> Discipline? {
+        guard let offerId = item.offerId else { return nil }
+        return Discipline(
+            code: item.code,
+            fullCode: item.code,
+            title: item.title,
+            dept: "",
+            prof: "",
+            color: item.color,
+            hours: 0,
+            absences: 0,
+            allowedAbsences: 0,
+            sections: [],
+            offerId: offerId
+        )
     }
 }
 

@@ -64,8 +64,10 @@ private struct GradeTile: View {
                 Spacer(minLength: 0)
                 if let data {
                     GradeValue(value: data.value)
-                    GradeDelta(delta: data.delta, comparisonSemester: data.comparisonSemester)
-                        .padding(.top, 4)
+                    if let delta = data.delta, let comparison = data.comparisonSemester {
+                        GradeDelta(delta: delta, comparisonSemester: comparison)
+                            .padding(.top, 4)
+                    }
                 } else {
                     Text("—")
                         .font(UNESFont.serif(52))
@@ -185,7 +187,7 @@ private struct TestsTile: View {
                             .foregroundStyle(UNESColor.ink3)
                     }
                     .tracking(-0.96)
-                    Text("\(data.label) · \(data.disciplineName)")
+                    Text("\(data.disciplineName)")
                         .font(UNESFont.sans(12, weight: .medium))
                         .foregroundStyle(UNESColor.ink)
                         .lineLimit(1)

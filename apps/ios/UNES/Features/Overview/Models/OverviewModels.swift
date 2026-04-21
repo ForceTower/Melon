@@ -33,7 +33,26 @@ struct OverviewDiscipline: Identifiable {
     let title: String
     let grade: String
     let color: Color
+    // DisciplineOffer id — carried through from KMP so tapping the card can
+    // seed `DisciplineDetailView`. Nil for fixture rows used in previews.
+    let offerId: String?
     var statusLabel: String = "PARCIAL"
+
+    init(
+        code: String,
+        title: String,
+        grade: String,
+        color: Color,
+        offerId: String? = nil,
+        statusLabel: String = "PARCIAL"
+    ) {
+        self.code = code
+        self.title = title
+        self.grade = grade
+        self.color = color
+        self.offerId = offerId
+        self.statusLabel = statusLabel
+    }
 }
 
 enum OverviewFixtures {
