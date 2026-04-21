@@ -19,7 +19,8 @@ struct UNESApp: App {
                 sessionStore: graph.sessionStore,
                 onboarding: graph.onboardingFactory,
                 overview: graph.overviewFactory,
-                scheduleFocused: graph.scheduleFocusedFactory
+                scheduleFocused: graph.scheduleFocusedFactory,
+                disciplines: graph.disciplinesFactory
             )
         }
     }

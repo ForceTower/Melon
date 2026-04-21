@@ -41,6 +41,7 @@ kotlin {
             api(project(":packages:shared-kmp:core:sync"))
             api(project(":packages:shared-kmp:features:auth"))
             api(project(":packages:shared-kmp:features:dashboard"))
+            api(project(":packages:shared-kmp:features:disciplines"))
             api(project(":packages:shared-kmp:features:notifications"))
             api(project(":packages:shared-kmp:features:overview"))
             api(project(":packages:shared-kmp:features:schedule"))

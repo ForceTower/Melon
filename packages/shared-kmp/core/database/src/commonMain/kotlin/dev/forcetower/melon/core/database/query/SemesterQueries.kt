@@ -90,3 +90,41 @@ data class UnreadMessageHeadRow(
     val subject: String?,
     val content: String,
 )
+
+// One row per StudentClass (the student's enrollment in a class/group). The
+// disciplines list view aggregates these in Kotlin by (semesterId, offerId)
+// because a single discipline may have multiple groups (theory + practice)
+// the student is enrolled in at once. `disciplineHours` is the offer's hours
+// when present and falls back to the catalog discipline's hours.
+data class EnrolledDisciplineRow(
+    val studentClassId: String,
+    val classId: String,
+    val classType: String,
+    val groupName: String,
+    val classHours: Int,
+    val offerId: String,
+    val semesterId: String,
+    val disciplineHours: Int,
+    val disciplineId: String,
+    val disciplineCode: String,
+    val disciplineName: String,
+    val department: String?,
+    val finalGrade: String?,
+    val approved: Boolean?,
+    val missedClasses: Int?,
+    val teacherName: String?,
+)
+
+// Every StudentGrade row — the local DB only stores the signed-in student's
+// grades so no filter is needed. `value` and `weight` are strings upstream,
+// parsed client-side. `date` is ISO yyyy-MM-dd.
+data class PartialGradeRow(
+    val gradeId: String,
+    val studentClassId: String,
+    val name: String,
+    val nameShort: String?,
+    val ordinal: Int,
+    val weight: String,
+    val value: String?,
+    val date: String?,
+)

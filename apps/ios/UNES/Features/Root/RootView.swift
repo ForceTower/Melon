@@ -25,6 +25,7 @@ struct RootView: View {
     let onboarding: OnboardingFactory
     let overview: OverviewFactory
     let scheduleFocused: ScheduleFocusedFactory
+    let disciplines: DisciplinesFactory
 
     @State private var viewModel = RootViewModel()
 
@@ -54,7 +55,11 @@ struct RootView: View {
                     )
                 )
             case .connected:
-                ConnectedView(overview: overview, scheduleFocused: scheduleFocused)
+                ConnectedView(
+                    overview: overview,
+                    scheduleFocused: scheduleFocused,
+                    disciplines: disciplines
+                )
                     .transition(
                         .asymmetric(
                             insertion: .opacity.combined(with: .move(edge: .trailing)),

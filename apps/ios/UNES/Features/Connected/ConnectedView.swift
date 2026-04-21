@@ -6,6 +6,7 @@ import SwiftUI
 struct ConnectedView: View {
     let overview: OverviewFactory
     let scheduleFocused: ScheduleFocusedFactory
+    let disciplines: DisciplinesFactory
 
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
@@ -26,7 +27,7 @@ struct ConnectedView: View {
                 }
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {
-                DisciplinesListView()
+                DisciplinesListView(factory: disciplines)
             }
             Tab(ConnectedTab.messages.label, systemImage: ConnectedTab.messages.icon, value: .messages) {
                 MessagesListView()

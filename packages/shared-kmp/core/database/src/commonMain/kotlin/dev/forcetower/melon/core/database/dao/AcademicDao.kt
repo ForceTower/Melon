@@ -18,6 +18,8 @@ import dev.forcetower.melon.core.database.entity.StudentClassEntity
 import dev.forcetower.melon.core.database.entity.StudentGradeEntity
 import dev.forcetower.melon.core.database.entity.TeacherEntity
 import dev.forcetower.melon.core.database.query.AttendanceSummaryRow
+import dev.forcetower.melon.core.database.query.EnrolledDisciplineRow
+import dev.forcetower.melon.core.database.query.PartialGradeRow
 import dev.forcetower.melon.core.database.query.RecentLectureRow
 import dev.forcetower.melon.core.database.query.SemesterAllocationRow
 import dev.forcetower.melon.core.database.query.SemesterClassAggregate
@@ -280,6 +282,63 @@ abstract class AcademicDao {
         start: String,
         end: String,
     ): Flow<List<WeekLectureRow>>
+
+    // Every StudentClass the signed-in user is enrolled in, joined with its
+    // class/offer/discipline and primary teacher. The Disciplines list screen
+    // groups these rows by (semesterId, offerId) to produce one card per
+    // discipline — disciplines that run multiple groups (e.g. theory +
+    // practice) appear as multiple rows here and are aggregated in Kotlin.
+    @Query(
+        """
+        SELECT sc.id AS studentClassId,
+               c.id AS classId,
+               c.type AS classType,
+               c.groupName AS groupName,
+               c.hours AS classHours,
+               o.id AS offerId,
+               o.semesterId AS semesterId,
+               COALESCE(o.hours, d.hours) AS disciplineHours,
+               d.id AS disciplineId,
+               d.code AS disciplineCode,
+               d.name AS disciplineName,
+               d.department AS department,
+               sc.finalGrade AS finalGrade,
+               sc.approved AS approved,
+               sc.missedClasses AS missedClasses,
+               (
+                 SELECT t.name FROM Teacher t
+                  JOIN ClassTeacher ct ON ct.teacherId = t.id
+                  WHERE ct.classId = c.id
+                  LIMIT 1
+               ) AS teacherName
+          FROM StudentClass sc
+          JOIN Class c ON c.id = sc.classId
+          JOIN DisciplineOffer o ON o.id = c.offerId
+          JOIN Discipline d ON d.id = o.disciplineId
+         ORDER BY o.semesterId DESC, d.code ASC
+        """,
+    )
+    abstract fun observeAllEnrolledDisciplines(): Flow<List<EnrolledDisciplineRow>>
+
+    // Raw StudentGrade rows across every enrolled class. Paired with
+    // [observeAllEnrolledDisciplines] in the use case so evaluation counts,
+    // weighted averages, and "next evaluation" all derive from one grouped
+    // dataset instead of N subqueries.
+    @Query(
+        """
+        SELECT sg.id AS gradeId,
+               sg.studentClassId AS studentClassId,
+               sg.name AS name,
+               sg.nameShort AS nameShort,
+               sg.ordinal AS ordinal,
+               sg.weight AS weight,
+               sg.value AS value,
+               sg.date AS date
+          FROM StudentGrade sg
+         ORDER BY sg.studentClassId ASC, sg.ordinal ASC
+        """,
+    )
+    abstract fun observeAllPartialGrades(): Flow<List<PartialGradeRow>>
 
     private companion object {
         const val ALLOCATIONS_SQL = """

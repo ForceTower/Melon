@@ -87,6 +87,12 @@ struct Discipline: Identifiable, Hashable {
     let groups: [DisciplineGroup]
     let finalGrade: Double?
 
+    // Keys carried for the detail-view handoff. Populated when the data
+    // originates from the KMP feed; nil for preview fixtures.
+    let disciplineId: String?
+    let offerId: String?
+    let semesterId: String?
+
     init(
         code: String,
         fullCode: String,
@@ -102,7 +108,10 @@ struct Discipline: Identifiable, Hashable {
         attachments: [Attachment] = [],
         ementa: String? = nil,
         groups: [DisciplineGroup] = [],
-        finalGrade: Double? = nil
+        finalGrade: Double? = nil,
+        disciplineId: String? = nil,
+        offerId: String? = nil,
+        semesterId: String? = nil
     ) {
         self.code = code
         self.fullCode = fullCode
@@ -119,6 +128,9 @@ struct Discipline: Identifiable, Hashable {
         self.ementa = ementa
         self.groups = groups
         self.finalGrade = finalGrade
+        self.disciplineId = disciplineId
+        self.offerId = offerId
+        self.semesterId = semesterId
     }
 }
 
@@ -222,16 +234,26 @@ extension Discipline {
 // MARK: - Semester container
 
 struct Semester: Identifiable, Hashable {
-    let id: String      // e.g. "2026.1"
+    let id: String      // display code, e.g. "2026.1"
     var disciplines: [Discipline]
     var isDownloaded: Bool
     var estimatedCount: Int?
+    // Opaque DB primary key used by SyncSemesterUseCase. Nil for preview
+    // fixtures; populated when the data comes from the KMP feed.
+    let dbSemesterId: String?
 
-    init(id: String, disciplines: [Discipline] = [], isDownloaded: Bool = true, estimatedCount: Int? = nil) {
+    init(
+        id: String,
+        disciplines: [Discipline] = [],
+        isDownloaded: Bool = true,
+        estimatedCount: Int? = nil,
+        dbSemesterId: String? = nil
+    ) {
         self.id = id
         self.disciplines = disciplines
         self.isDownloaded = isDownloaded
         self.estimatedCount = estimatedCount
+        self.dbSemesterId = dbSemesterId
     }
 }
 

@@ -45,4 +45,14 @@ extension UmbrellaGraph {
             )
         )
     }
+
+    @MainActor
+    var disciplinesFactory: DisciplinesFactory {
+        DisciplinesFactory(
+            useCases: DisciplinesUseCases(
+                observeList: observeDisciplinesListUseCase,
+                syncSemester: syncSemesterUseCase
+            )
+        )
+    }
 }

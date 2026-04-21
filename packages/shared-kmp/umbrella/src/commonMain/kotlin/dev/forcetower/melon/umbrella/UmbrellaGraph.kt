@@ -4,6 +4,7 @@ import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
+import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -57,6 +58,11 @@ interface UmbrellaGraph {
     // Schedule (Horário) reactive surface — one flow emitting the whole
     // Mon–Sun week of the active semester.
     val observeScheduleWeekUseCase: ObserveScheduleWeekUseCase
+
+    // Disciplinas (Boletim) reactive surface — one flow emitting the
+    // current-semester cards, downloaded past semesters, and placeholders
+    // for semesters whose payload hasn't been pulled yet.
+    val observeDisciplinesListUseCase: ObserveDisciplinesListUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

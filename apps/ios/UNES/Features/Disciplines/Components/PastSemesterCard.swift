@@ -176,7 +176,7 @@ struct PastDisciplineRow: View {
 /// fires so the parent can swap in the real list.
 struct UndownloadedSemesterCard: View {
     let semesterId: String
-    let estimatedCount: Int
+    let estimatedCount: Int?
     let onDownload: (String) -> Void
 
     private enum LoadState { case idle, loading, done }
@@ -210,9 +210,7 @@ struct UndownloadedSemesterCard: View {
                             .font(UNESFont.serif(18))
                             .tracking(-0.18)
                             .foregroundStyle(state == .loading ? UNESColor.ink3 : UNESColor.ink)
-                        Text(state == .loading
-                             ? "baixando…"
-                             : "~\(estimatedCount) disciplina\(estimatedCount != 1 ? "s" : "")")
+                        Text(countLabel)
                             .font(UNESFont.mono(10))
                             .tracking(0.8)
                             .foregroundStyle(UNESColor.ink4)
@@ -267,6 +265,14 @@ struct UndownloadedSemesterCard: View {
     }
 
     @State private var spinning = false
+
+    // Subtitle copy: "baixando…" while fetching, a disciplines count when
+    // we have one, or a neutral "não baixado" when the count is unknown.
+    private var countLabel: String {
+        if state == .loading { return "baixando…" }
+        guard let count = estimatedCount else { return "não baixado" }
+        return "~\(count) disciplina\(count != 1 ? "s" : "")"
+    }
 
     private func tap() {
         guard state == .idle else { return }
