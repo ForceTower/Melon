@@ -25,7 +25,8 @@ interface NetworkGraph {
             engine: HttpClientEngine,
             baseUrl: BaseUrl,
             authTokenSource: AuthTokenSource,
+            machineIdSource: MachineIdSource,
             json: Json,
-        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, json)
+        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, machineIdSource, json)
     }
 }

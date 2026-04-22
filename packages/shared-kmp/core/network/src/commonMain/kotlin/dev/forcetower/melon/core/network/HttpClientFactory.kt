@@ -24,10 +24,24 @@ internal class AuthInterceptorConfig {
     var authTokenSource: AuthTokenSource? = null
 }
 
+internal val MachineIdInterceptor = createClientPlugin("MachineIdInterceptor", ::MachineIdInterceptorConfig) {
+    val source = pluginConfig.machineIdSource
+        ?: error("MachineIdInterceptor requires a MachineIdSource")
+    onRequest { request, _ ->
+        val machineId = source.getMachineId()
+        request.headers { append("X-Machine-Id", machineId) }
+    }
+}
+
+internal class MachineIdInterceptorConfig {
+    var machineIdSource: MachineIdSource? = null
+}
+
 fun buildHttpClient(
     engine: HttpClientEngine,
     baseUrl: BaseUrl,
     authTokenSource: AuthTokenSource,
+    machineIdSource: MachineIdSource,
     json: Json,
 ): HttpClient = HttpClient(engine) {
     expectSuccess = false
@@ -37,5 +51,8 @@ fun buildHttpClient(
     }
     install(AuthInterceptor) {
         this.authTokenSource = authTokenSource
+    }
+    install(MachineIdInterceptor) {
+        this.machineIdSource = machineIdSource
     }
 }
