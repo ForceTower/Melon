@@ -75,7 +75,7 @@ internal class MirrorRepositoryImpl(
                         SemesterSummary(
                             id = it.id,
                             code = it.code,
-                            description = it.description,
+                            desc = it.description,
                             startDate = it.startDate,
                             endDate = it.endDate,
                             track = it.track,
@@ -126,11 +126,18 @@ internal class MirrorRepositoryImpl(
         since: String?,
         cursor: String?,
     ): Outcome<MessagePageResult, SyncError> = callNetwork {
+        println("[MirrorRepository] syncMessages: request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}")
         val response = api.getMessages(since, cursor)
         when (val mapped = classifyResponse<MessagePageResponse>(response)) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> {
                 val page = mapped.value
+                val scopesCount = page.messages.sumOf { it.scopes.size }
+                val attachmentsCount = page.messages.sumOf { it.attachments.size }
+                println(
+                    "[MirrorRepository] syncMessages: server returned messages=${page.messages.size} " +
+                        "scopes=$scopesCount attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}",
+                )
                 // Read/starred state is per-student locally but server-merged
                 // across all linked students — without a 1:1 student mapping
                 // we skip persisting MessageState here. Fresh inbox lands as
@@ -142,6 +149,7 @@ internal class MirrorRepositoryImpl(
                         msg.attachments.map { it.toEntity(msg.id) }
                     },
                 )
+                println("[MirrorRepository] syncMessages: persisted ${page.messages.size} messages to local DB")
                 Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
             }
         }

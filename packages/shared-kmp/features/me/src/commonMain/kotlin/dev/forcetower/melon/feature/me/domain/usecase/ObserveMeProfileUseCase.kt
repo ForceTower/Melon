@@ -172,7 +172,11 @@ class ObserveMeProfileUseCase internal constructor(
         gradesByStudentClass: Map<String, List<PartialGradeRow>>,
     ): Double? {
         val rows = enrollments ?: return null
-        val grades = rows.flatMap { gradesByStudentClass[it.studentClassId].orEmpty() }
+        // Dedup by upstream id so multi-group disciplines (same grade set
+        // replicated per StudentClass) aren't double-weighted in CR.
+        val grades = rows
+            .flatMap { gradesByStudentClass[it.studentClassId].orEmpty() }
+            .distinctBy { it.gradePlatformId }
         return weightedAverage(grades)
     }
 

@@ -15,13 +15,21 @@ struct SyncStep: Identifiable {
 
 // Per-step durations are starting points from `docs/ios-sync-view-integration.md`
 // §4. Tune after observing real-world latencies.
+//
+// Phase 1 can take a while for alumni users: Snowpiercer's listSemesters
+// filters by student but is often missing semesters, so Phase 1 falls
+// back to probing DB-known candidates until it finds the student's
+// actual last enrollment. classes/schedule/grades are each generous
+// enough to stage the wait visibly rather than bailing. grades in
+// particular keeps polling until the backend reports appliedSemesters
+// > 0, so the next screen opens with real data.
 let SYNC_STEPS: [SyncStep] = [
     .init(key: "auth",     label: "Verificando matrícula",   minDuration: 1.2, maxDuration: 3.0),
     .init(key: "profile",  label: "Carregando seu perfil",   minDuration: 0.8, maxDuration: 4.0),
-    .init(key: "classes",  label: "Conectando às suas turmas", minDuration: 0.8, maxDuration: 8.0),
-    .init(key: "schedule", label: "Montando seu horário",    minDuration: 0.8, maxDuration: 8.0),
-    .init(key: "grades",   label: "Baixando notas do semestre", minDuration: 0.8, maxDuration: 1.5),
-    .init(key: "msgs",     label: "Sincronizando recados",   minDuration: 0.8, maxDuration: 6.0),
+    .init(key: "classes",  label: "Conectando às suas turmas", minDuration: 0.8, maxDuration: 30.0),
+    .init(key: "schedule", label: "Montando seu horário",    minDuration: 0.8, maxDuration: 30.0),
+    .init(key: "grades",   label: "Baixando notas do semestre", minDuration: 0.8, maxDuration: 60.0),
+    .init(key: "msgs",     label: "Sincronizando recados",   minDuration: 0.8, maxDuration: 90.0),
 ]
 
 private enum StepResult {
@@ -49,6 +57,7 @@ final class SyncViewModel {
     private var profileTask: Task<StepResult, Never>?
     private var classesTask: Task<StepResult, Never>?
     private var scheduleTask: Task<StepResult, Never>?
+    private var gradesTask: Task<StepResult, Never>?
     private var msgsTask: Task<StepResult, Never>?
 
     private var summaries: [SyncSemesterSummary] = []
@@ -88,6 +97,7 @@ final class SyncViewModel {
         profileTask = Task { await runProfileStep() }
         classesTask = Task { await runClassesStep() }
         scheduleTask = Task { await runScheduleStep() }
+        gradesTask = Task { await runGradesStep() }
         msgsTask = Task { await runMessagesStep() }
     }
 
@@ -182,55 +192,55 @@ final class SyncViewModel {
     }
 
     private func runClassesStep() async -> StepResult {
-        // Poll onboarding-status until the backend reports the target
-        // semester's backfill job has reached a terminal state
-        // (activeSemesterReady=true), or backfill is no longer making
-        // progress. Then fetch the list once.
-        //
-        // The iteration cap is **per animation tick**, not global — each
-        // step tick resets `iterationsSinceTick` so the poll keeps going
-        // as long as the animation is still advancing. This gives the
-        // worker room to finish its batch even on slow cold-start backfills
-        // without hard-coding a large absolute budget.
-        var iterationsSinceTick = 0
-        var lastSeenEpoch = animTickEpoch
-        var totalIterations = 0
+        // Polls onboarding-status until Phase 1 reaches a terminal state
+        // (initial.state == .done or .failed), then fetches the semester
+        // list. 20 ticks × 1.5s = 30s budget; if Phase 1 hasn't settled
+        // by then, schedule + grades keep polling, so we fall through
+        // and fetch whatever list exists (possibly empty — grades will
+        // block until the backend confirms a semester is on disk).
+        let result = await pollUntilInitialTerminal(
+            step: "classes",
+            maxTicks: 20,
+            tickInterval: 1_500_000_000,
+        )
+        if case .fail(let authBroken) = result, authBroken {
+            return .fail(authBroken: true)
+        }
+        return await fetchSemesterListAndStore()
+    }
 
-        while true {
-            let currentEpoch = animTickEpoch
-            if currentEpoch != lastSeenEpoch {
-                Self.logger.info("classes: anim tick observed (\(currentEpoch)), resetting counter")
-                lastSeenEpoch = currentEpoch
-                iterationsSinceTick = 0
-            }
-
+    // Shared polling helper: waits up to `maxTicks` iterations (sleeping
+    // `tickInterval` ns between each) for Phase 1 (initial) to reach a
+    // terminal state. Returns .ok on terminal or budget exhaustion;
+    // .fail(authBroken: true) only on server-side auth failure.
+    private func pollUntilInitialTerminal(
+        step: String,
+        maxTicks: Int,
+        tickInterval: UInt64,
+    ) async -> StepResult {
+        for iter in 0..<maxTicks {
             do {
                 let outcome = try await useCases.onboardingStatus.invoke()
                 switch onEnum(of: outcome) {
                 case .ok(let wrapper):
                     if let status = wrapper.value {
-                        let sem = status.semesters
+                        let state = status.initial.state
+                        let applied = status.initial.appliedSemesters
                         Self.logger
                             .info(
-                                "classes: iter=\(totalIterations) sinceTick=\(iterationsSinceTick) state=\(String(describing: sem.state)) total=\(sem.total) done=\(sem.done) failed=\(sem.failed) ready=\(status.activeSemesterReady)"
+                                "\(step): iter=\(iter) initial=\(String(describing: state)) applied=\(applied)"
                             )
-                        if status.activeSemesterReady {
-                            Self.logger.info("classes: active ready -> fetching list")
-                            return await fetchSemesterListAndStore()
-                        }
-                        let stillBackfilling = sem.state == .pending || sem.state == .running
-                        if !stillBackfilling {
-                            Self.logger.info("classes: backfill settled without ready -> fetching list")
-                            return await fetchSemesterListAndStore()
+                        if state == .done || state == .failed {
+                            return .ok
                         }
                     } else {
-                        Self.logger.info("classes: iter=\(totalIterations) status nil")
+                        Self.logger.info("\(step): iter=\(iter) status nil")
                     }
                 case .err(let wrapper):
                     let authBroken = isUnauthorized(wrapper.error)
                     Self.logger
                         .warning(
-                            "classes: status err iter=\(totalIterations) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
+                            "\(step): status err iter=\(iter) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
                         )
                     if authBroken {
                         anyAuthBroken = true
@@ -238,23 +248,15 @@ final class SyncViewModel {
                     }
                 }
             } catch is CancellationError {
-                Self.logger.info("classes: cancelled")
+                Self.logger.info("\(step): cancelled during poll")
                 return .fail(authBroken: false)
             } catch {
-                Self.logger.warning("classes: status threw \(String(describing: error))")
+                Self.logger.warning("\(step): status threw \(String(describing: error))")
             }
-
-            iterationsSinceTick += 1
-            totalIterations += 1
-            if iterationsSinceTick >= 15 {
-                Self.logger
-                    .info(
-                        "classes: \(iterationsSinceTick) iterations without an anim tick -> fetching list"
-                    )
-                return await fetchSemesterListAndStore()
-            }
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+            try? await Task.sleep(nanoseconds: tickInterval)
         }
+        Self.logger.info("\(step): \(maxTicks) ticks exhausted without phase 1 terminal")
+        return .ok
     }
 
     private func fetchSemesterListAndStore() async -> StepResult {
@@ -297,6 +299,23 @@ final class SyncViewModel {
         if case .fail(let authBroken) = classesResult, authBroken {
             Self.logger.warning("schedule: classes auth broken, bailing")
             return .fail(authBroken: true)
+        }
+
+        // If classes timed out before Phase 1 settled (alumni path with
+        // many empty probes), summaries is still empty. Keep polling for
+        // another 30s so the user sees visible progress through the
+        // schedule step; then re-fetch the list once.
+        if summaries.isEmpty {
+            Self.logger.info("schedule: summaries empty after classes; continuing to poll")
+            let result = await pollUntilInitialTerminal(
+                step: "schedule",
+                maxTicks: 20,
+                tickInterval: 1_500_000_000,
+            )
+            if case .fail(let authBroken) = result, authBroken {
+                return .fail(authBroken: true)
+            }
+            _ = await fetchSemesterListAndStore()
         }
 
         let prioritized = pickActiveSemestersInOrder(summaries)
@@ -343,47 +362,39 @@ final class SyncViewModel {
         }
     }
 
-    private func runMessagesStep() async -> StepResult {
-        // `/sync/messages` reads from the server's mirror, which is empty
-        // until the messages backfill job populates it. Poll status until
-        // that job reaches a terminal state before fetching the first page —
-        // otherwise we persist an empty page locally and the home screen
-        // shows an empty inbox even though the user has unread messages.
-        //
-        // Same reset-on-tick policy as runClassesStep: each animation step
-        // tick refreshes our 15-iteration budget, so we keep polling as long
-        // as sync is visibly progressing.
-        var iterationsSinceTick = 0
-        var lastSeenEpoch = animTickEpoch
-        var totalIterations = 0
-
-        pollLoop: while true {
-            let currentEpoch = animTickEpoch
-            if currentEpoch != lastSeenEpoch {
-                Self.logger.info("msgs: anim tick observed (\(currentEpoch)), resetting counter")
-                lastSeenEpoch = currentEpoch
-                iterationsSinceTick = 0
-            }
-
+    // Gates onDone on "the backend has actually put a semester on disk
+    // for this student." For enrolled students this is true immediately
+    // after Phase 1 finishes; for alumni it may take tens of seconds
+    // while Phase 1 probes through many empty newer candidates. Polls
+    // indefinitely on 1.5s intervals — there's no "give up" budget here
+    // since advancing would open the next screen onto empty data. The
+    // only early exit is initial.state == .failed (Phase 1 genuinely
+    // can't find anything, e.g. credentials became invalid).
+    private func runGradesStep() async -> StepResult {
+        var iter = 0
+        while true {
             do {
                 let outcome = try await useCases.onboardingStatus.invoke()
                 switch onEnum(of: outcome) {
                 case .ok(let wrapper):
                     if let status = wrapper.value {
-                        let state = status.messages.state
+                        let state = status.initial.state
+                        let applied = status.initial.appliedSemesters
                         Self.logger
-                            .info(
-                                "msgs: iter=\(totalIterations) sinceTick=\(iterationsSinceTick) state=\(String(describing: state))"
-                            )
-                        if state == .done || state == .failed {
-                            break pollLoop
+                            .info("grades: iter=\(iter) initial=\(String(describing: state)) applied=\(applied)")
+                        if applied > 0 {
+                            return .ok
+                        }
+                        if state == .failed {
+                            Self.logger.info("grades: phase 1 failed with no applied semesters -> proceeding")
+                            return .ok
                         }
                     }
                 case .err(let wrapper):
                     let authBroken = isUnauthorized(wrapper.error)
                     Self.logger
                         .warning(
-                            "msgs: status err iter=\(totalIterations) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
+                            "grades: status err iter=\(iter) authBroken=\(authBroken) err=\(String(describing: wrapper.error))"
                         )
                     if authBroken {
                         anyAuthBroken = true
@@ -391,22 +402,31 @@ final class SyncViewModel {
                     }
                 }
             } catch is CancellationError {
-                Self.logger.info("msgs: cancelled during status poll")
+                Self.logger.info("grades: cancelled")
                 return .fail(authBroken: false)
             } catch {
-                Self.logger.warning("msgs: status threw \(String(describing: error))")
+                Self.logger.warning("grades: status threw \(String(describing: error))")
             }
+            iter += 1
+            try? await Task.sleep(nanoseconds: 1_500_000_000)
+        }
+    }
 
-            iterationsSinceTick += 1
-            totalIterations += 1
-            if iterationsSinceTick >= 15 {
-                Self.logger
-                    .info(
-                        "msgs: \(iterationsSinceTick) iterations without an anim tick, proceeding anyway"
-                    )
-                break pollLoop
-            }
-            try? await Task.sleep(nanoseconds: 1_000_000_000)
+    private func runMessagesStep() async -> StepResult {
+        // Phase 1 fetches the first 20 messages synchronously as its
+        // last step, then finalizes. grades may release on
+        // appliedSemesters > 0 before that fetch lands (apply-semester
+        // bumps the count mid-Phase-1; messages come after). Poll
+        // initial.state terminal here so the first page we fetch
+        // actually contains Phase 1's messages. Phase 2's deep-
+        // pagination runs in the background and isn't gated on.
+        let result = await pollUntilInitialTerminal(
+            step: "msgs",
+            maxTicks: 60,
+            tickInterval: 1_500_000_000,
+        )
+        if case .fail(let authBroken) = result, authBroken {
+            return .fail(authBroken: true)
         }
 
         do {
@@ -414,24 +434,50 @@ final class SyncViewModel {
             let firstPage = try await useCases.messages.invoke(since: nil, cursor: nil)
             switch onEnum(of: firstPage) {
             case .ok(let wrapper):
+                let appliedCount = wrapper.value?.appliedCount ?? 0
                 let nextCursor = wrapper.value?.nextCursor
-                Self.logger.info("msgs: first page ok nextCursor=\(nextCursor ?? "<nil>")")
+                Self.logger
+                    .info(
+                        "msgs: first page ok applied=\(appliedCount) nextCursor=\(nextCursor ?? "<nil>")"
+                    )
+                if appliedCount == 0 {
+                    Self.logger
+                        .warning(
+                            "msgs: first page returned zero messages — server mirror empty or user has no inbox-matching scopes"
+                        )
+                }
                 if let next = nextCursor {
                     let messagesUseCase = useCases.messages
+                    let logger = Self.logger
                     Task.detached {
                         var cursor: String? = next
                         var pages = 0
+                        var totalApplied = 0
                         let maxPages = 20
                         while let c = cursor, pages < maxPages {
-                            guard let outcome = try? await messagesUseCase.invoke(since: nil, cursor: c) else { break }
+                            guard let outcome = try? await messagesUseCase.invoke(since: nil, cursor: c) else {
+                                logger.warning("msgs: background page \(pages + 1) threw or cancelled")
+                                break
+                            }
                             switch onEnum(of: outcome) {
                             case .ok(let w):
+                                let applied = Int(w.value?.appliedCount ?? 0)
+                                totalApplied += applied
                                 cursor = w.value?.nextCursor
-                            case .err:
+                                logger
+                                    .info(
+                                        "msgs: background page \(pages + 1) applied=\(applied) nextCursor=\(cursor ?? "<nil>")"
+                                    )
+                            case .err(let w):
+                                logger
+                                    .warning(
+                                        "msgs: background page \(pages + 1) err=\(String(describing: w.error))"
+                                    )
                                 return
                             }
                             pages += 1
                         }
+                        logger.info("msgs: background pagination done pages=\(pages) totalApplied=\(totalApplied)")
                     }
                 }
                 return .ok
@@ -490,12 +536,18 @@ final class SyncViewModel {
     }
 
     private func waitForReadiness() async {
-        Self.logger.info("readiness: awaiting profile + schedule + msgs")
+        Self.logger.info("readiness: awaiting profile + schedule + grades + msgs")
         if let profileTask {
             _ = await profileTask.value
         }
         if let scheduleTask {
             await waitOrTimeout(scheduleTask, seconds: 2.0)
+        }
+        // Grades blocks onDone until the backend confirms a semester is
+        // on disk. This is the critical gate — opening the next screen
+        // onto empty data is worse than a longer sync view.
+        if let gradesTask {
+            _ = await gradesTask.value
         }
         // Messages is "nice to have" per the onboarding design, but on the
         // happy path backfill lands within a few seconds of the semester
@@ -512,10 +564,11 @@ final class SyncViewModel {
         case "auth":     return authTask
         case "profile":  return profileTask
         case "classes":  return classesTask
-        // grades shares the schedule task — both UI rows finish when the
-        // first active semester's payload lands (see doc §3.3).
         case "schedule": return scheduleTask
-        case "grades":   return scheduleTask
+        // grades now has its own polling task — it waits until the backend
+        // reports appliedSemesters > 0 (or Phase 1 permanently failed)
+        // before letting onDone fire.
+        case "grades":   return gradesTask
         case "msgs":     return msgsTask
         default:         return nil
         }

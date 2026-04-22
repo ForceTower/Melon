@@ -6,7 +6,7 @@ package dev.forcetower.melon.core.sync.domain.model
 data class SemesterSummary(
     val id: String,
     val code: String,
-    val description: String,
+    val desc: String,
     val startDate: String,
     val endDate: String,
     val track: String?,

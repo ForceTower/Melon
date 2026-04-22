@@ -388,6 +388,7 @@ abstract class AcademicDao {
     @Query(
         """
         SELECT sg.id AS gradeId,
+               sg.platformId AS gradePlatformId,
                sg.studentClassId AS studentClassId,
                sg.name AS name,
                sg.nameShort AS nameShort,

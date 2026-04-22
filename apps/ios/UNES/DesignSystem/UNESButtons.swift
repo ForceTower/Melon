@@ -89,7 +89,6 @@ struct GlassButton<Leading: View>: View {
             .frame(maxWidth: .infinity)
             .frame(height: 54)
             .modifier(LiquidGlassCapsule(tint: tint, stroke: stroke))
-            .contentShape(Capsule(style: .continuous))
         }
         .buttonStyle(PressScaleStyle())
     }
@@ -130,15 +129,17 @@ private struct LiquidGlassCapsule: ViewModifier {
                         .strokeBorder(stroke, lineWidth: 1)
                 )
         } else {
-            content.background(
-                Capsule(style: .continuous)
-                    .fill(tint)
-                    .background(.ultraThinMaterial, in: Capsule(style: .continuous))
-                    .overlay(
-                        Capsule(style: .continuous)
-                            .strokeBorder(stroke, lineWidth: 1)
-                    )
-            )
+            content
+                .contentShape(Capsule(style: .continuous))
+                .background(
+                    Capsule(style: .continuous)
+                        .fill(tint)
+                        .background(.ultraThinMaterial, in: Capsule(style: .continuous))
+                        .overlay(
+                            Capsule(style: .continuous)
+                                .strokeBorder(stroke, lineWidth: 1)
+                        )
+                )
         }
     }
 }

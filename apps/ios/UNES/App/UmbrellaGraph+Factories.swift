@@ -74,7 +74,8 @@ extension UmbrellaGraph {
         MeFactory(
             useCases: MeUseCases(
                 observeProfile: observeMeProfileUseCase
-            )
+            ),
+            sessionStore: sessionStore
         )
     }
 }

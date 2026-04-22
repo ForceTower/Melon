@@ -9,6 +9,7 @@ struct ConnectedView: View {
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
     let me: MeFactory
+    var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
@@ -35,7 +36,7 @@ struct ConnectedView: View {
                 MessagesListView(factory: messages)
             }
             Tab(ConnectedTab.me.label, systemImage: ConnectedTab.me.icon, value: .me) {
-                MeView(factory: me)
+                MeView(factory: me, onLoggedOut: onLoggedOut)
             }
         }
         .tint(UNESColor.accent)

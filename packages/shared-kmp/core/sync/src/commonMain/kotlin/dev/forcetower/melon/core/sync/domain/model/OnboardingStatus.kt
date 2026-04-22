@@ -5,14 +5,25 @@ package dev.forcetower.melon.core.sync.domain.model
 // reflects "still warming up" vs. "genuinely empty / failed".
 data class OnboardingStatus(
     val courseLinked: Boolean,
+    // Phase 1 (current semester + first 20 messages). The iOS classes/msgs
+    // steps gate on this — Phase 2 historicals don't block the client.
+    val initial: InitialStatus,
     val semesters: PhaseStatus,
     val messages: PhaseStatus,
-    // True once the backfill job for the semester SyncView is going to
-    // download (active-by-date, or most-recent as between-terms fallback)
-    // has reached a terminal state. Lets iOS gate on the precise thing it
-    // cares about instead of inferring from `semesters.state`.
+    // True once Phase 1 is terminal (done or failed). Equivalent to
+    // `initial.state in {Done, Failed}` but kept as a top-level flag so
+    // the gate's single-field read doesn't need to know about enums.
     val activeSemesterReady: Boolean,
 ) {
+    // Phase 1 is singular (one job per student), so no total/done/failed —
+    // just the state the gate cares about plus the number of semesters
+    // the student has actually synced class data in. The iOS `grades`
+    // step waits for appliedSemesters > 0 before advancing.
+    data class InitialStatus(
+        val state: PhaseStatus.State,
+        val appliedSemesters: Int,
+    )
+
     data class PhaseStatus(
         val state: State,
         val total: Int = 0,

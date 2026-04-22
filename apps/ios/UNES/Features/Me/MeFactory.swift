@@ -11,8 +11,9 @@ struct MeUseCases {
 @MainActor
 struct MeFactory {
     let useCases: MeUseCases
+    let sessionStore: SessionSessionStore
 
     func makeViewModel() -> MeViewModel {
-        MeViewModel(useCases: useCases)
+        MeViewModel(useCases: useCases, sessionStore: sessionStore)
     }
 }

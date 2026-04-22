@@ -1,5 +1,11 @@
 package dev.forcetower.melon.core.session.data
 
+import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.MessageDao
+import dev.forcetower.melon.core.database.dao.SemesterDao
+import dev.forcetower.melon.core.database.dao.SettingsDao
+import dev.forcetower.melon.core.database.dao.StudentDao
+import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.entity.UserEntity
 import dev.forcetower.melon.core.network.AuthTokenSource
@@ -30,6 +36,12 @@ internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
 internal class SessionStoreImpl(
     private val storage: KeyValueStorage,
     private val userDao: UserDao,
+    private val studentDao: StudentDao,
+    private val semesterDao: SemesterDao,
+    private val academicDao: AcademicDao,
+    private val messageDao: MessageDao,
+    private val settingsDao: SettingsDao,
+    private val syncStateDao: SyncStateDao,
     private val scope: CoroutineScope,
 ) : SessionStore {
 
@@ -59,6 +71,22 @@ internal class SessionStoreImpl(
     override suspend fun logout() {
         storage.remove(ACCESS_TOKEN_KEY)
         storage.remove(REFRESH_TOKEN_KEY)
+        // Wipe user-scoped local data on logout. We deliberately keep
+        // `PendingMutation` so optimistic writes queued before logout can
+        // still replay when the same user signs back in. Most deletes
+        // cascade: `MessageDao.clear` takes scopes/attachments/states with
+        // it, and clearing `Discipline` + `Semester` wipes the whole
+        // academic subtree (DisciplineOffer → Class → StudentClass /
+        // Lecture / Grade / ...).
+        messageDao.clear()
+        academicDao.clearDisciplines()
+        academicDao.clearTeachers()
+        academicDao.clearSpaces()
+        semesterDao.clear()
+        studentDao.clearStudents()
+        studentDao.clearCourses()
+        settingsDao.clear()
+        syncStateDao.clear()
         userDao.clear()
         tokenPresent.value = false
     }

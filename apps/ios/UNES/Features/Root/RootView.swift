@@ -18,6 +18,10 @@ final class RootViewModel {
     func onboardingCompleted() {
         destination = .connected
     }
+
+    func userLoggedOut() {
+        destination = .onboarding
+    }
 }
 
 struct RootView: View {
@@ -62,7 +66,12 @@ struct RootView: View {
                     scheduleFocused: scheduleFocused,
                     disciplines: disciplines,
                     messages: messages,
-                    me: me
+                    me: me,
+                    onLoggedOut: {
+                        withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
+                            viewModel.userLoggedOut()
+                        }
+                    }
                 )
                     .transition(
                         .asymmetric(

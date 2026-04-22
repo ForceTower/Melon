@@ -9,18 +9,30 @@ import Observation
 @MainActor
 @Observable
 final class MeViewModel {
+    /// Where we are in the logout flow. `confirming` pushes the sheet,
+    /// `flashing` drives the brief transition overlay, and `loggedOut`
+    /// shows the goodbye screen — the only terminal state that requires
+    /// the caller to flip the root destination back to onboarding.
+    enum LogoutStep {
+        case idle, confirming, flashing, loggedOut
+    }
+
     private(set) var identity: ProfileIdentity?
+    private(set) var logoutStep: LogoutStep = .idle
+    private(set) var logoutName: String = "Estudante"
 
     @ObservationIgnored private let useCases: MeUseCases?
+    @ObservationIgnored private let sessionStore: SessionSessionStore?
 
-    init(useCases: MeUseCases?) {
+    init(useCases: MeUseCases?, sessionStore: SessionSessionStore? = nil) {
         self.useCases = useCases
+        self.sessionStore = sessionStore
     }
 
     // Factory-less init — retained so `MeView()` and its `#Preview` keep
     // working against `MeFixtures` until a real graph is wired.
     convenience init() {
-        self.init(useCases: nil)
+        self.init(useCases: nil, sessionStore: nil)
     }
 
     func observe() async {
@@ -28,6 +40,32 @@ final class MeViewModel {
         for await snapshot in useCases.observeProfile.invoke() {
             identity = Self.map(profile: snapshot)
         }
+    }
+
+    // MARK: - Logout flow
+
+    func beginLogout() {
+        logoutStep = .confirming
+    }
+
+    func cancelLogout() {
+        logoutStep = .idle
+    }
+
+    /// Clears the KMP session and walks the UI through the flash → logged-out
+    /// states. `keepData` is captured for a future branch in `SessionStore`
+    /// (keep-local-prefs vs. wipe everything); today it's UI-only.
+    func confirmLogout(keepData _: Bool) async {
+        logoutStep = .flashing
+        logoutName = identity?.firstName ?? "Estudante"
+        do {
+            try await sessionStore?.logout()
+        } catch {
+            // Logout is idempotent from the UI's perspective — if the KMP
+            // call fails we still want to drop the session on this device.
+        }
+        try? await Task.sleep(nanoseconds: 900_000_000)
+        logoutStep = .loggedOut
     }
 
     // MARK: - Mapping

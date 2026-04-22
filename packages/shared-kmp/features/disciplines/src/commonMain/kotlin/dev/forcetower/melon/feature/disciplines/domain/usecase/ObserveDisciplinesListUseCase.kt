@@ -100,8 +100,13 @@ private fun buildItem(
     val missedHours = rows.sumOf { it.missedClasses ?: 0 }
     val allowedMissedHours = ceil(hours * 0.25).toInt()
 
+    // Dedup by upstream id: multi-group disciplines have the same grade set
+    // replicated into every StudentClass (see `applyDiscipline`), so without
+    // this the list card would show N copies and the weighted average would
+    // over-weight multi-group disciplines when rolled up into CR.
     val allGrades = studentClassIds
         .flatMap { gradesByStudentClass[it].orEmpty() }
+        .distinctBy { it.gradePlatformId }
         .sortedBy { it.ordinal }
     val partialAverage = weightedAverage(allGrades)
 

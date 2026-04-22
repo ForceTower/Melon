@@ -12,15 +12,22 @@ struct MeView: View {
     // credits are viewmodel-driven.
     private let pinned = MeFixtures.pinned(from: MeFixtures.defaultPinned)
     private let settings = MeFixtures.settingsRows
+    private let onLoggedOut: () -> Void
+    // Initial guess used on first present; swapped for the measured height
+    // once `LogoutConfirmationSheet` reports its intrinsic size so the
+    // detent never leaves empty space below the buttons.
+    @State private var logoutSheetHeight: CGFloat = 380
 
-    init(factory: MeFactory) {
+    init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
+        self.onLoggedOut = onLoggedOut
     }
 
     // Factory-less init — retained so `#Preview` keeps rendering against
     // `MeFixtures` without a live graph.
     init() {
         _viewModel = State(initialValue: MeViewModel())
+        self.onLoggedOut = {}
     }
 
     private var identity: ProfileIdentity {
@@ -33,6 +40,67 @@ struct MeView: View {
                 .navigationTitle("Eu")
                 .toolbar(.hidden, for: .navigationBar)
                 .task { await viewModel.observe() }
+                .sheet(isPresented: logoutSheetBinding) {
+                    logoutSheet
+                }
+                .overlay {
+                    if viewModel.logoutStep == .flashing {
+                        LogoutFlashView()
+                            .transition(.opacity)
+                    }
+                }
+                .fullScreenCover(isPresented: loggedOutCoverBinding) {
+                    LoggedOutView(firstName: viewModel.logoutName) {
+                        onLoggedOut()
+                    }
+                }
+        }
+    }
+
+    private var logoutSheetBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.logoutStep == .confirming },
+            set: { showing in
+                if !showing, viewModel.logoutStep == .confirming {
+                    viewModel.cancelLogout()
+                }
+            }
+        )
+    }
+
+    private var loggedOutCoverBinding: Binding<Bool> {
+        Binding(
+            get: { viewModel.logoutStep == .loggedOut },
+            set: { _ in }
+        )
+    }
+
+    @ViewBuilder
+    private var logoutSheet: some View {
+        if #available(iOS 16.4, *) {
+            LogoutConfirmationSheet(
+                identity: identity,
+                onCancel: { viewModel.cancelLogout() },
+                onConfirm: { keepData in
+                    Task { await viewModel.confirmLogout(keepData: keepData) }
+                },
+                measuredHeight: $logoutSheetHeight
+            )
+            .presentationDetents([.height(logoutSheetHeight)])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(UNESColor.surface)
+            .presentationCornerRadius(28)
+        } else {
+            LogoutConfirmationSheet(
+                identity: identity,
+                onCancel: { viewModel.cancelLogout() },
+                onConfirm: { keepData in
+                    Task { await viewModel.confirmLogout(keepData: keepData) }
+                },
+                measuredHeight: $logoutSheetHeight
+            )
+            .presentationDetents([.height(logoutSheetHeight)])
+            .presentationDragIndicator(.visible)
         }
     }
 
@@ -88,7 +156,7 @@ struct MeView: View {
                         }
                         .fadeUpOnAppear(delay: 0.38, distance: 12, duration: 0.55)
 
-                        SignOutButton()
+                        SignOutButton(action: { viewModel.beginLogout() })
                             .fadeUpOnAppear(delay: 0.46, distance: 12, duration: 0.55)
 
                         footer

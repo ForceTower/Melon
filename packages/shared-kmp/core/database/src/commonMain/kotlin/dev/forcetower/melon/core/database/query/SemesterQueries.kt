@@ -129,9 +129,13 @@ data class EnrolledDisciplineRow(
 
 // Every StudentGrade row — the local DB only stores the signed-in student's
 // grades so no filter is needed. `value` and `weight` are strings upstream,
-// parsed client-side. `date` is ISO yyyy-MM-dd.
+// parsed client-side. `date` is ISO yyyy-MM-dd. `gradePlatformId` is the
+// upstream grade id — stable across the per-class replication that
+// `applyDiscipline` performs on the backend, so consumers dedup on it to
+// collapse multi-group disciplines' grades back to the single shared set.
 data class PartialGradeRow(
     val gradeId: String,
+    val gradePlatformId: String,
     val studentClassId: String,
     val name: String,
     val nameShort: String?,
