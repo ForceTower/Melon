@@ -7,5 +7,7 @@ interface SyncStateRepository {
     suspend fun setLastActiveSemesterPulledAt(epochMillis: Long)
     suspend fun getOnboardingComplete(): Boolean
     suspend fun setOnboardingComplete(value: Boolean)
+    suspend fun getBackfillMirrorComplete(): Boolean
+    suspend fun setBackfillMirrorComplete(value: Boolean)
     suspend fun reset()
 }

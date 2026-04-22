@@ -10,6 +10,7 @@ import dev.zacsweers.metro.SingleIn
 
 internal const val KEY_LAST_ACTIVE_SEMESTER_PULLED_AT = "sync.last_active_semester_pulled_at"
 internal const val KEY_ONBOARDING_COMPLETE = "sync.onboarding_complete"
+internal const val KEY_BACKFILL_MIRROR_COMPLETE = "sync.backfill_mirror_complete"
 
 @Inject
 @SingleIn(AppScope::class)
@@ -28,6 +29,13 @@ internal class SyncStateRepositoryImpl(private val dao: SyncStateDao) : SyncStat
 
     override suspend fun setOnboardingComplete(value: Boolean) {
         dao.put(SyncStateEntity(key = KEY_ONBOARDING_COMPLETE, value = value.toString()))
+    }
+
+    override suspend fun getBackfillMirrorComplete(): Boolean =
+        dao.get(KEY_BACKFILL_MIRROR_COMPLETE) == "true"
+
+    override suspend fun setBackfillMirrorComplete(value: Boolean) {
+        dao.put(SyncStateEntity(key = KEY_BACKFILL_MIRROR_COMPLETE, value = value.toString()))
     }
 
     override suspend fun reset() {

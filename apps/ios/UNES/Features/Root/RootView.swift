@@ -32,6 +32,8 @@ struct RootView: View {
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
     let me: MeFactory
+    let refreshSemesters: SyncRefreshActiveSemestersUseCase
+    let backfillMirror: SyncBackfillMirrorUseCase
 
     @State private var viewModel = RootViewModel()
 
@@ -67,6 +69,8 @@ struct RootView: View {
                     disciplines: disciplines,
                     messages: messages,
                     me: me,
+                    refreshSemesters: refreshSemesters,
+                    backfillMirror: backfillMirror,
                     onLoggedOut: {
                         withAnimation(.timingCurve(0.2, 0.8, 0.2, 1, duration: 0.5)) {
                             viewModel.userLoggedOut()

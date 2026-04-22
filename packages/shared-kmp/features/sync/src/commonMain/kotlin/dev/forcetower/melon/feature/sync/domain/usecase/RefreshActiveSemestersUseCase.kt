@@ -12,9 +12,11 @@ import kotlinx.datetime.toLocalDateTime
 
 private const val ONE_HOUR_MILLIS = 60L * 60L * 1000L
 
-// Client-side freshness gate. If the 1h throttle has elapsed since the last
-// active-semester pull, refreshes the list + every semester currently in
-// range. Pull-to-refresh bypasses this via SyncSemesterUseCase directly.
+// Client-side freshness gate. Always refreshes the semester list — it's a
+// cheap call and we want the sidebar/picker to reflect the server's latest
+// state on every app open. The 1h throttle gates only the expensive
+// per-semester payload pulls; pull-to-refresh bypasses that via
+// SyncSemesterUseCase directly.
 @Inject
 class RefreshActiveSemestersUseCase internal constructor(
     private val mirror: MirrorRepository,
@@ -23,15 +25,16 @@ class RefreshActiveSemestersUseCase internal constructor(
     suspend operator fun invoke(force: Boolean = false): Outcome<Unit, SyncError> {
         val now = Clock.System.now()
         val nowEpoch = now.toEpochMilliseconds()
-        if (!force) {
-            val last = syncState.getLastActiveSemesterPulledAt()
-            if (last != null && nowEpoch - last < ONE_HOUR_MILLIS) return Outcome.Ok(Unit)
-        }
 
         val listOutcome = mirror.syncSemesterList()
         val summaries = when (listOutcome) {
             is Outcome.Err -> return listOutcome
             is Outcome.Ok -> listOutcome.value
+        }
+
+        if (!force) {
+            val last = syncState.getLastActiveSemesterPulledAt()
+            if (last != null && nowEpoch - last < ONE_HOUR_MILLIS) return Outcome.Ok(Unit)
         }
 
         val today = now.toLocalDateTime(TimeZone.currentSystemDefault()).date

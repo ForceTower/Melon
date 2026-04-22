@@ -21,6 +21,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshActiveSemestersUseCase
@@ -37,6 +38,7 @@ import dev.zacsweers.metro.createGraphFactory
 interface UmbrellaGraph {
     val loginUseCase: LoginUseCase
     val refreshUseCase: RefreshActiveSemestersUseCase
+    val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore
 

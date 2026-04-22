@@ -1,4 +1,5 @@
 import SwiftUI
+@preconcurrency import Umbrella
 
 /// Authenticated shell shown after onboarding completes. Hosts the tab bar
 /// and routes to each feature. Named for the "◦ conectado" moment in the
@@ -9,6 +10,8 @@ struct ConnectedView: View {
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
     let me: MeFactory
+    let refreshSemesters: SyncRefreshActiveSemestersUseCase
+    let backfillMirror: SyncBackfillMirrorUseCase
     var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
@@ -40,6 +43,17 @@ struct ConnectedView: View {
             }
         }
         .tint(UNESColor.accent)
+        .task {
+            // Fires once per authenticated session entry (fresh launch or
+            // logout→login). The list call is cheap and unthrottled; the
+            // per-semester payload pulls behind it are still gated by the
+            // 1h throttle inside the use case.
+            _ = try? await refreshSemesters.invoke(force: false)
+            // Fills in historical semesters + full message archive once
+            // server Phase 2 finalizes. No-op after first successful run
+            // (flag persisted in SyncState, wiped on logout).
+            _ = try? await backfillMirror.invoke()
+        }
     }
 }
 
