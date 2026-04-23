@@ -27,6 +27,7 @@ final class ScheduleFocusedViewModel {
 
     private let useCases: ScheduleFocusedUseCases
     private var didStart = false
+    private let log = Log.scoped("ScheduleFocusedViewModel")
 
     init(useCases: ScheduleFocusedUseCases) {
         self.useCases = useCases
@@ -35,6 +36,7 @@ final class ScheduleFocusedViewModel {
     func observe() async {
         guard !didStart else { return }
         didStart = true
+        log.info("subscribing to schedule week")
 
         async let w: Void = observeWeek()
         async let c: Void = runClockTicker()

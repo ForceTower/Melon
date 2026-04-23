@@ -12,6 +12,7 @@ kotlin {
         commonMain.dependencies {
             api(project(":packages:shared-kmp:core:common"))
             api(project(":packages:shared-kmp:core:sync"))
+            implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.datetime)
         }

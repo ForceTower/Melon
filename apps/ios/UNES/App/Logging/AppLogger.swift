@@ -10,7 +10,7 @@
 
 import Foundation
 
-public protocol AppLogger: Sendable {
+public nonisolated protocol AppLogger: Sendable {
     func debug(_ tag: StaticString, _ message: String)
     func info(_ tag: StaticString, _ message: String)
     func warn(_ tag: StaticString, _ message: String, error: Error?)
@@ -18,15 +18,15 @@ public protocol AppLogger: Sendable {
 }
 
 public extension AppLogger {
-    func warn(_ tag: StaticString, _ message: String) { warn(tag, message, error: nil) }
-    func error(_ tag: StaticString, _ message: String) { error(tag, message, error: nil) }
+    nonisolated func warn(_ tag: StaticString, _ message: String) { warn(tag, message, error: nil) }
+    nonisolated func error(_ tag: StaticString, _ message: String) { error(tag, message, error: nil) }
 
     /// Binds this logger to a fixed tag so call sites don't have to repeat it.
     /// Store the returned value as a `let` on the type that owns the tag:
     ///
     ///     private let log = Log.scoped("DisciplinesListVM")
     ///     log.info("loaded \(count) disciplines")
-    func scoped(_ tag: StaticString) -> ScopedAppLogger {
+    nonisolated func scoped(_ tag: StaticString) -> ScopedAppLogger {
         ScopedAppLogger(base: self, tag: tag)
     }
 }
@@ -34,7 +34,7 @@ public extension AppLogger {
 /// A tag-bound view over an `AppLogger`. Obtain one via `Log.scoped(_:)` or
 /// `AppLogger.scoped(_:)`; forwards every call to its base logger with the
 /// captured tag applied.
-public struct ScopedAppLogger: Sendable {
+public nonisolated struct ScopedAppLogger: Sendable {
     private let base: AppLogger
     private let tag: StaticString
 

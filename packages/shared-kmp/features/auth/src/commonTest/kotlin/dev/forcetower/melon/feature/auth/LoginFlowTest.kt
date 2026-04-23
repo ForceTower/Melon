@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.auth
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.AuthTokenSource
 import dev.forcetower.melon.core.session.domain.model.AuthState
@@ -89,7 +90,7 @@ class LoginFlowTest {
             expectSuccess = false
             install(ContentNegotiation) { json(Json { ignoreUnknownKeys = true }) }
         }
-        return LoginUseCase(AuthRepositoryImpl(AuthService(client), sessionStore))
+        return LoginUseCase(AuthRepositoryImpl(AuthService(client), sessionStore, Logger))
     }
 
     private fun MockRequestHandleScope.jsonResponse(body: String, status: HttpStatusCode): HttpResponseData =

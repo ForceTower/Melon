@@ -17,7 +17,7 @@
 import Foundation
 import os
 
-public enum Log {
+public nonisolated enum Log {
     fileprivate static let storage = LoggerStorage()
 
     /// Install the real logger. Call once from `AppDelegate` after the
@@ -43,7 +43,7 @@ public enum Log {
     }
 }
 
-final class LoggerStorage: Sendable {
+nonisolated final class LoggerStorage: Sendable {
     private let lock = OSAllocatedUnfairLock<AppLogger>(initialState: PrintAppLogger())
 
     func set(_ logger: AppLogger) {
@@ -58,7 +58,7 @@ final class LoggerStorage: Sendable {
 /// Resolves to the currently-installed logger on every call, so scoped
 /// loggers captured before `Log.bootstrap` still route correctly once the
 /// real logger is installed.
-struct ProxyAppLogger: AppLogger {
+nonisolated struct ProxyAppLogger: AppLogger {
     let storage: LoggerStorage
 
     func debug(_ tag: StaticString, _ message: String) {
@@ -78,7 +78,7 @@ struct ProxyAppLogger: AppLogger {
 /// Fallback used before `Log.bootstrap` installs the real logger. Keeps
 /// previews and early-init logs visible without dragging in the Umbrella
 /// graph.
-struct PrintAppLogger: AppLogger {
+nonisolated struct PrintAppLogger: AppLogger {
     func debug(_ tag: StaticString, _ message: String) { emit("DEBUG", tag, message, error: nil) }
     func info(_ tag: StaticString, _ message: String) { emit("INFO", tag, message, error: nil) }
     func warn(_ tag: StaticString, _ message: String, error: Error?) { emit("WARN", tag, message, error: error) }

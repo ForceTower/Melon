@@ -71,6 +71,7 @@ final class SyncViewModel {
     private var animTickEpoch = 0
 
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "sync")
+    private let log = Log.scoped("SyncViewModel")
 
     init(
         useCases: SyncUseCases,
@@ -85,6 +86,7 @@ final class SyncViewModel {
     func start() {
         guard !didStart else { return }
         didStart = true
+        log.info("onboarding sync start")
         Self.logger.info("sync: start")
         kickOffWork()
         Task { await driveAnimation() }
@@ -511,9 +513,11 @@ final class SyncViewModel {
         }
         await waitForReadiness()
         if anyAuthBroken {
+            log.warn("onboarding sync finished with broken auth")
             Self.logger.info("sync: finish -> onAuthFailed")
             onAuthFailed()
         } else {
+            log.info("onboarding sync finished ok")
             Self.logger.info("sync: finish -> onDone")
             onDone()
         }

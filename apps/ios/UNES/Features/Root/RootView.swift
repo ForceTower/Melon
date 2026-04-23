@@ -10,16 +10,20 @@ private enum RootDestination {
 @Observable
 final class RootViewModel {
     fileprivate var destination: RootDestination = .splash
+    private let log = Log.scoped("RootViewModel")
 
     func splashFinished(hasSession: Bool) {
+        log.info("splash finished hasSession=\(hasSession) -> \(hasSession ? "connected" : "onboarding")")
         destination = hasSession ? .connected : .onboarding
     }
 
     func onboardingCompleted() {
+        log.info("onboarding completed -> connected")
         destination = .connected
     }
 
     func userLoggedOut() {
+        log.info("user logged out -> onboarding")
         destination = .onboarding
     }
 }

@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.session.data
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
@@ -43,8 +44,10 @@ internal class SessionStoreImpl(
     private val settingsDao: SettingsDao,
     private val syncStateDao: SyncStateDao,
     private val scope: CoroutineScope,
+    logger: Logger,
 ) : SessionStore {
 
+    private val log = logger.withTag("SessionStoreImpl")
     private val tokenPresent = MutableStateFlow(false)
 
     override val authState: StateFlow<AuthState> =
@@ -55,7 +58,9 @@ internal class SessionStoreImpl(
 
     init {
         scope.launch {
-            tokenPresent.value = storage.get(ACCESS_TOKEN_KEY) != null
+            val present = storage.get(ACCESS_TOKEN_KEY) != null
+            tokenPresent.value = present
+            log.i { "session bootstrapped tokenPresent=$present" }
         }
     }
 
@@ -66,9 +71,11 @@ internal class SessionStoreImpl(
         storage.put(REFRESH_TOKEN_KEY, refreshToken)
         userDao.upsert(UserEntity(id = user.id, name = user.name, imageUrl = user.imageUrl))
         tokenPresent.value = true
+        log.i { "session persisted userId=${user.id}" }
     }
 
     override suspend fun logout() {
+        log.i { "logout start" }
         storage.remove(ACCESS_TOKEN_KEY)
         storage.remove(REFRESH_TOKEN_KEY)
         // Wipe user-scoped local data on logout. We deliberately keep
@@ -89,6 +96,7 @@ internal class SessionStoreImpl(
         syncStateDao.clear()
         userDao.clear()
         tokenPresent.value = false
+        log.i { "logout complete: local data wiped" }
     }
 }
 

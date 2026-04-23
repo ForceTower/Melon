@@ -13,6 +13,7 @@ kotlin {
             api(project(":packages:shared-kmp:core:network"))
             implementation(project(":packages:shared-kmp:core:storage"))
             implementation(project(":packages:shared-kmp:core:database"))
+            implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
         }
     }

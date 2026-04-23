@@ -23,6 +23,7 @@ final class MeViewModel {
 
     @ObservationIgnored private let useCases: MeUseCases?
     @ObservationIgnored private let sessionStore: SessionSessionStore?
+    @ObservationIgnored private let log = Log.scoped("MeViewModel")
 
     init(useCases: MeUseCases?, sessionStore: SessionSessionStore? = nil) {
         self.useCases = useCases
@@ -37,6 +38,7 @@ final class MeViewModel {
 
     func observe() async {
         guard let useCases else { return }
+        log.info("subscribing to profile")
         for await snapshot in useCases.observeProfile.invoke() {
             identity = Self.map(profile: snapshot)
         }
@@ -45,6 +47,7 @@ final class MeViewModel {
     // MARK: - Logout flow
 
     func beginLogout() {
+        log.info("begin logout")
         logoutStep = .confirming
     }
 
@@ -56,13 +59,16 @@ final class MeViewModel {
     /// states. `keepData` is captured for a future branch in `SessionStore`
     /// (keep-local-prefs vs. wipe everything); today it's UI-only.
     func confirmLogout(keepData _: Bool) async {
+        log.info("confirm logout")
         logoutStep = .flashing
         logoutName = identity?.firstName ?? "Estudante"
         do {
             try await sessionStore?.logout()
+            log.info("session logout ok")
         } catch {
             // Logout is idempotent from the UI's perspective — if the KMP
             // call fails we still want to drop the session on this device.
+            log.warn("session logout failed; continuing", error: error)
         }
         try? await Task.sleep(nanoseconds: 900_000_000)
         logoutStep = .loggedOut

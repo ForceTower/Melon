@@ -27,6 +27,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     }()
 
     lazy var logger: AppLogger = KermitAppLogger(logger: graph.logger)
+    private let log = Log.scoped("AppDelegate")
 
     private static var environmentName: String {
 #if DEBUG
@@ -46,23 +47,26 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     ) -> Bool {
         _ = graph
         Log.bootstrap(logger)
+        log.info("app launching env=\(AppDelegate.environmentName) preview=\(isPreview)")
 
         guard !isPreview else { return true }
         FirebaseApp.configure()
 #if DEBUG
         Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
 #endif
-        
+
         UNUserNotificationCenter.current().delegate = self
         Messaging.messaging().delegate = self
         application.registerForRemoteNotifications()
-        
+
         RemoteConfig.remoteConfig().fetchAndActivate()
-        
+
+        log.info("app launch finished")
         return true
     }
-    
+
     func application(_ application: UIApplication, didReceiveRemoteNotification userInfo: [AnyHashable : Any], fetchCompletionHandler completionHandler: @escaping (UIBackgroundFetchResult) -> Void) {
+        log.info("remote notification received keys=\(userInfo.keys.map { String(describing: $0) }.joined(separator: ","))")
         // TODO received a data notification
 //        Task {
 //            let sync: ServerSyncDataUseCase = AppDIContainer.shared.resolve()
@@ -75,27 +79,41 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
 
 extension AppDelegate: UNUserNotificationCenterDelegate, MessagingDelegate {
     func application(_ application: UIApplication, didRegisterForRemoteNotificationsWithDeviceToken deviceToken: Data) {
+        log.info("APNS token registered bytes=\(deviceToken.count)")
         Messaging.messaging().apnsToken = deviceToken
     }
-    
+
     nonisolated func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String?) {
-        guard let fcmToken else { return }
+        let nlog = Log.scoped("AppDelegate")
+        guard let fcmToken else {
+            nlog.warn("FCM token was nil")
+            return
+        }
+        nlog.info("FCM token received length=\(fcmToken.count)")
         UserDefaults.standard.set(fcmToken, forKey: "messaging_notification_token")
 
         Task { @MainActor in
-            guard (try? await graph.sessionStore.getAccessToken()) != nil else { return }
+            guard (try? await graph.sessionStore.getAccessToken()) != nil else {
+                self.log.info("FCM token skip register — no session yet")
+                return
+            }
 
             let appVersion = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String
             let deviceName = UIDevice.current.name
             let locale = Locale.current.identifier
 
-            _ = try? await graph.registerNotificationTokenUseCase.invoke(
-                token: fcmToken,
-                platform: "ios",
-                deviceName: deviceName,
-                appVersion: appVersion,
-                locale: locale
-            )
+            do {
+                _ = try await graph.registerNotificationTokenUseCase.invoke(
+                    token: fcmToken,
+                    platform: "ios",
+                    deviceName: deviceName,
+                    appVersion: appVersion,
+                    locale: locale
+                )
+                self.log.info("FCM token registered with backend")
+            } catch {
+                self.log.warn("FCM token backend register failed", error: error)
+            }
         }
     }
     

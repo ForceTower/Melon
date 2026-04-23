@@ -17,6 +17,8 @@ struct ConnectedView: View {
     @State private var activeTab: ConnectedTab = .overview
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
 
+    private let log = Log.scoped("ConnectedView")
+
     private var scheduleVariant: ScheduleVariant {
         ScheduleVariant(rawValue: scheduleVariantRaw) ?? .default
     }
@@ -48,11 +50,26 @@ struct ConnectedView: View {
             // logout→login). The list call is cheap and unthrottled; the
             // per-semester payload pulls behind it are still gated by the
             // 1h throttle inside the use case.
-            _ = try? await refreshSemesters.invoke(force: false)
+            log.info("connected entry — refreshing active semesters")
+            do {
+                _ = try await refreshSemesters.invoke(force: false)
+                log.info("active semesters refresh ok")
+            } catch is CancellationError {
+                // view left before work completed
+            } catch {
+                log.warn("active semesters refresh failed", error: error)
+            }
             // Fills in historical semesters + full message archive once
             // server Phase 2 finalizes. No-op after first successful run
             // (flag persisted in SyncState, wiped on logout).
-            _ = try? await backfillMirror.invoke()
+            do {
+                _ = try await backfillMirror.invoke()
+                log.info("mirror backfill ok")
+            } catch is CancellationError {
+                // view left before work completed
+            } catch {
+                log.warn("mirror backfill failed", error: error)
+            }
         }
     }
 }

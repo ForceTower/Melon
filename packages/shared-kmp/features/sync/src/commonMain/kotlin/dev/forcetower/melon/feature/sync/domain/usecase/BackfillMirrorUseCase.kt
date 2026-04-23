@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.sync.domain.usecase
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus
 import dev.forcetower.melon.core.sync.domain.model.OnboardingStatus.PhaseStatus.State
@@ -23,36 +24,57 @@ import kotlinx.coroutines.delay
 class BackfillMirrorUseCase internal constructor(
     private val mirror: MirrorRepository,
     private val syncState: SyncStateRepository,
+    logger: Logger,
 ) {
+    private val log = logger.withTag("BackfillMirrorUseCase")
+
     suspend operator fun invoke(): Outcome<Unit, SyncError> {
-        if (syncState.getBackfillMirrorComplete()) return Outcome.Ok(Unit)
+        if (syncState.getBackfillMirrorComplete()) {
+            log.d { "backfill skipped: already complete" }
+            return Outcome.Ok(Unit)
+        }
+        log.i { "backfill start" }
 
         // Wait for the server's Phase 2 to finish before pulling payloads —
         // mirroring mid-flight would produce an incomplete snapshot that
         // looks "done" to the flag.
         when (val result = awaitTerminalStatus()) {
-            is Outcome.Err -> return result
+            is Outcome.Err -> {
+                log.w { "backfill aborted waiting for terminal onboarding status err=${result.error}" }
+                return result
+            }
             is Outcome.Ok -> Unit
         }
 
         val summaries = when (val result = mirror.syncSemesterList()) {
-            is Outcome.Err -> return result
+            is Outcome.Err -> {
+                log.w { "backfill aborted at semester list err=${result.error}" }
+                return result
+            }
             is Outcome.Ok -> result.value
         }
 
+        log.i { "backfill mirroring semesters count=${summaries.size}" }
         for (summary in summaries) {
             when (val result = mirror.syncSemester(summary.id)) {
-                is Outcome.Err -> return result
+                is Outcome.Err -> {
+                    log.w { "backfill failed on semester id=${summary.id} err=${result.error}" }
+                    return result
+                }
                 is Outcome.Ok -> Unit
             }
         }
 
         when (val result = paginateMessages()) {
-            is Outcome.Err -> return result
+            is Outcome.Err -> {
+                log.w { "backfill failed paginating messages err=${result.error}" }
+                return result
+            }
             is Outcome.Ok -> Unit
         }
 
         syncState.setBackfillMirrorComplete(true)
+        log.i { "backfill complete" }
         return Outcome.Ok(Unit)
     }
 
@@ -62,29 +84,38 @@ class BackfillMirrorUseCase internal constructor(
     // next launch will re-poll, and a server stuck in `running` for 5
     // minutes is operator-visible via /sync/onboarding-status directly.
     private suspend fun awaitTerminalStatus(): Outcome<Unit, SyncError> {
-        repeat(MAX_POLL_ITERATIONS) {
+        repeat(MAX_POLL_ITERATIONS) { iteration ->
             when (val result = mirror.fetchOnboardingStatus()) {
                 is Outcome.Err -> return result
                 is Outcome.Ok -> if (isTerminal(result.value)) return Outcome.Ok(Unit)
             }
             delay(POLL_INTERVAL_MILLIS)
+            if (iteration == MAX_POLL_ITERATIONS - 1) {
+                log.w { "backfill polling hit cap without terminal status" }
+            }
         }
         return Outcome.Ok(Unit)
     }
 
     private suspend fun paginateMessages(): Outcome<Unit, SyncError> {
         var cursor: String? = null
+        var pages = 0
         repeat(MAX_MESSAGE_PAGES) {
             val result = mirror.syncMessages(since = null, cursor = cursor)
             when (result) {
                 is Outcome.Err -> return result
                 is Outcome.Ok -> {
+                    pages += 1
                     val next = result.value.nextCursor
-                    if (next == null) return Outcome.Ok(Unit)
+                    if (next == null) {
+                        log.i { "backfill messages pagination done pages=$pages" }
+                        return Outcome.Ok(Unit)
+                    }
                     cursor = next
                 }
             }
         }
+        log.w { "backfill messages pagination hit page cap=$MAX_MESSAGE_PAGES" }
         return Outcome.Ok(Unit)
     }
 

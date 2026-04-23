@@ -31,6 +31,7 @@ final class OverviewViewModel {
     private var didStart = false
 
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "overview")
+    private let log = Log.scoped("OverviewViewModel")
 
     init(useCases: OverviewUseCases) {
         self.useCases = useCases
@@ -42,6 +43,7 @@ final class OverviewViewModel {
     func observe() async {
         guard !didStart else { return }
         didStart = true
+        log.info("subscribing to overview flows")
 
         async let h: Void = observeHeader()
         async let n: Void = observeNowClass()

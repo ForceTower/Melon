@@ -22,6 +22,7 @@ final class ReadyViewModel {
     private var didLoad = false
 
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "ready")
+    private let log = Log.scoped("ReadyViewModel")
 
     init(useCase: DashboardGetReadyOverviewUseCase?) {
         self.useCase = useCase
@@ -36,12 +37,15 @@ final class ReadyViewModel {
             return
         }
 
+        log.info("loading ready overview")
         do {
             let overview = try await useCase.invoke()
+            log.info("ready overview loaded classes=\(overview.classCount) semester=\(overview.semesterCode ?? "<nil>")")
             apply(overview)
         } catch is CancellationError {
             return
         } catch {
+            log.warn("ready overview load failed", error: error)
             Self.logger.warning("ready overview load failed: \(String(describing: error))")
         }
         isLoading = false

@@ -15,6 +15,7 @@ kotlin {
             implementation(project(":packages:shared-kmp:core:network"))
             implementation(project(":packages:shared-kmp:core:database"))
             implementation(project(":packages:shared-kmp:core:session"))
+            implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
             implementation(libs.kotlinx.serialization.json)
             implementation(libs.ktor.client.core)

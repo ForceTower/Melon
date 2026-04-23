@@ -33,6 +33,7 @@ final class DisciplinesListViewModel {
     private var didStart = false
 
     private static let logger = Logger(subsystem: "dev.forcetower.melon", category: "disciplines")
+    private let log = Log.scoped("DisciplinesListViewModel")
 
     init(useCases: DisciplinesUseCases) {
         self.useCases = useCases
@@ -41,6 +42,7 @@ final class DisciplinesListViewModel {
     func observe() async {
         guard !didStart else { return }
         didStart = true
+        log.info("subscribing to disciplines list")
         for await value in useCases.observeList.invoke() {
             apply(state: value)
         }
@@ -48,6 +50,7 @@ final class DisciplinesListViewModel {
 
     func download(_ semesterCode: String) async {
         guard let dbId = pending.first(where: { $0.id == semesterCode })?.dbSemesterId else {
+            log.warn("download requested for unknown semester code=\(semesterCode)")
             Self.logger.error("download requested for unknown semester: \(semesterCode, privacy: .public)")
             return
         }
@@ -56,6 +59,7 @@ final class DisciplinesListViewModel {
         downloadError = nil
         defer { downloading.remove(semesterCode) }
 
+        log.info("semester sync start code=\(semesterCode) dbId=\(dbId)")
         Self.logger.info("semester sync start: code=\(semesterCode, privacy: .public) dbId=\(dbId, privacy: .public)")
         do {
             let outcome = try await useCases.syncSemester.invoke(semesterId: dbId)
@@ -63,9 +67,12 @@ final class DisciplinesListViewModel {
             case .ok:
                 // DB write triggers the flow to re-emit and reclassify this
                 // semester into `past` / `current`; no local mutation needed.
+                log.info("semester sync ok code=\(semesterCode)")
                 Self.logger.info("semester sync ok: code=\(semesterCode, privacy: .public)")
                 return
             case .err(let wrapper):
+                let rendered = wrapper.error.map { String(describing: $0) } ?? "<nil>"
+                log.warn("semester sync failed code=\(semesterCode) err=\(rendered)")
                 downloadError = wrapper.error.map(Self.describe) ?? "Falha ao baixar o semestre."
             }
         } catch {
@@ -73,6 +80,7 @@ final class DisciplinesListViewModel {
             // failures in Outcome.Err. Log the full NSError payload so we can
             // see what slipped past the sealed-class envelope.
             let ns = error as NSError
+            log.error("semester sync threw code=\(semesterCode)", error: error)
             Self.logger.error(
                 "semester sync threw: code=\(semesterCode, privacy: .public) domain=\(ns.domain, privacy: .public) code=\(ns.code, privacy: .public) desc=\(error.localizedDescription, privacy: .public) userInfo=\(String(describing: ns.userInfo), privacy: .public)",
             )

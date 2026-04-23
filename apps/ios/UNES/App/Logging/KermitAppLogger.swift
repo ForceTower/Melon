@@ -26,9 +26,9 @@ import Foundation
 // SKIE exports Kermit's `co.touchlab.kermit.Logger` as `KermitLogger` so
 // there's no clash with Apple's `os.Logger`. The throwable parameter is
 // `KotlinThrowable?` — plain `nil` needs an explicit type.
-private let noThrowable: KotlinThrowable? = nil
+private nonisolated let noThrowable: KotlinThrowable? = nil
 
-public final class KermitAppLogger: AppLogger, @unchecked Sendable {
+public nonisolated final class KermitAppLogger: AppLogger, @unchecked Sendable {
     private let logger: KermitLogger
 
     public init(logger: KermitLogger) {

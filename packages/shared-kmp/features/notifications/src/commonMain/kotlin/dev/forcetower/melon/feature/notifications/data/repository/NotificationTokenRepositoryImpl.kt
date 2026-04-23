@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.notifications.data.repository
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.feature.notifications.data.dto.RegisterNotificationTokenRequest
@@ -20,30 +21,46 @@ import kotlinx.serialization.SerializationException
 @ContributesBinding(AppScope::class)
 internal class NotificationTokenRepositoryImpl(
     private val api: NotificationTokenService,
+    logger: Logger,
 ) : NotificationTokenRepository {
+
+    private val log = logger.withTag("NotificationTokenRepositoryImpl")
 
     override suspend fun register(
         request: RegisterNotificationTokenRequest,
     ): Outcome<Unit, NotificationTokenError> = try {
+        log.i { "register start platform=${request.platform}" }
         classifyResponse(api.registerToken(request))
     } catch (cancellation: CancellationException) {
         throw cancellation
-    } catch (_: SerializationException) {
+    } catch (ex: SerializationException) {
+        log.e(throwable = ex) { "register failed: envelope deserialization" }
         Outcome.Err(NotificationTokenError.Kind.Unexpected)
-    } catch (_: Throwable) {
+    } catch (ex: Throwable) {
+        log.w(throwable = ex) { "register failed: transport" }
         Outcome.Err(NotificationTokenError.Kind.NoConnection)
     }
 
     private suspend fun classifyResponse(response: HttpResponse): Outcome<Unit, NotificationTokenError> {
         val status = response.status.value
         return when (status) {
-            in 200..299 -> Outcome.Ok(Unit)
-            401 -> Outcome.Err(NotificationTokenError.Kind.Unauthorized)
+            in 200..299 -> {
+                log.i { "register ok" }
+                Outcome.Ok(Unit)
+            }
+            401 -> {
+                log.w { "register unauthorized" }
+                Outcome.Err(NotificationTokenError.Kind.Unauthorized)
+            }
             in 500..599 -> {
                 val envelope = runCatching { response.body<ApiEnvelope<Unit>>() }.getOrNull()
+                log.w { "register server $status message=${envelope?.message ?: "<none>"}" }
                 Outcome.Err(NotificationTokenError.Server(envelope?.message))
             }
-            else -> Outcome.Err(NotificationTokenError.Kind.Unexpected)
+            else -> {
+                log.w { "register unexpected status $status" }
+                Outcome.Err(NotificationTokenError.Kind.Unexpected)
+            }
         }
     }
 }

@@ -26,6 +26,7 @@ final class DisciplineDetailViewModel {
 
     private let useCases: DisciplinesUseCases?
     private var didStart = false
+    private let log = Log.scoped("DisciplineDetailViewModel")
 
     init(seed: Discipline, useCases: DisciplinesUseCases?) {
         self.discipline = seed
@@ -41,6 +42,7 @@ final class DisciplineDetailViewModel {
         guard !didStart else { return }
         didStart = true
         guard let useCases, let offerId = discipline.offerId else { return }
+        log.info("subscribing to discipline detail offerId=\(offerId) code=\(discipline.code)")
         for await detail in useCases.observeDetail.invoke(offerId: offerId) {
             guard let detail else { continue }
             discipline = Self.map(detail: detail, seed: discipline)

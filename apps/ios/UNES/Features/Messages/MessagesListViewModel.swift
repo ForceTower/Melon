@@ -14,6 +14,7 @@ final class MessagesListViewModel {
     private(set) var messages: [Message]
 
     @ObservationIgnored private let useCases: MessagesUseCases?
+    @ObservationIgnored private let log = Log.scoped("MessagesListViewModel")
 
     init(useCases: MessagesUseCases?) {
         self.useCases = useCases
@@ -36,6 +37,7 @@ final class MessagesListViewModel {
     // reconnecting is cheap.
     func observe() async {
         guard let useCases else { return }
+        log.info("subscribing to messages inbox")
         for await items in useCases.observeInbox.invoke() {
             messages = items.map(MessageMapping.map)
         }
@@ -50,6 +52,7 @@ final class MessagesListViewModel {
         }
         messages[idx].unread = false
         guard let useCases else { return }
+        log.info("mark message read id=\(message.id)")
         Task { try? await useCases.markRead.invoke(messageId: message.id) }
     }
 }

@@ -1,5 +1,6 @@
 package dev.forcetower.melon.feature.auth.data.repository
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.core.session.domain.SessionStore
@@ -25,16 +26,22 @@ import kotlinx.serialization.SerializationException
 internal class AuthRepositoryImpl(
     private val api: AuthService,
     private val sessionStore: SessionStore,
+    logger: Logger,
 ) : AuthRepository {
 
+    private val log = logger.withTag("AuthRepositoryImpl")
+
     override suspend fun login(username: String, password: String): Outcome<User, LoginError> = try {
+        log.i { "login attempt username=$username" }
         val response = api.login(LoginRequest(username, password))
         return handleLoginResponse(response)
     } catch (cancellation: CancellationException) {
         throw cancellation
-    } catch (_: SerializationException) {
+    } catch (ex: SerializationException) {
+        log.e(throwable = ex) { "login failed: envelope deserialization" }
         Outcome.Err(LoginError.Kind.Unexpected)
-    } catch (_: Throwable) {
+    } catch (ex: Throwable) {
+        log.w(throwable = ex) { "login failed: transport" }
         Outcome.Err(LoginError.Kind.NoConnection)
     }
 
@@ -42,23 +49,34 @@ internal class AuthRepositoryImpl(
         val status = response.status.value
         return when (status) {
             in 200..299 -> persistSession(response.body())
-            400 -> Outcome.Err(LoginError.Kind.InvalidCredentials)
+            400 -> {
+                log.w { "login rejected: invalid credentials" }
+                Outcome.Err(LoginError.Kind.InvalidCredentials)
+            }
             in 500..599 -> {
                 val envelope = runCatching { response.body<ApiEnvelope<LoginResponse>>() }.getOrNull()
+                log.w { "login server $status message=${envelope?.message ?: "<none>"}" }
                 Outcome.Err(LoginError.Server(envelope?.message))
             }
-            else -> Outcome.Err(LoginError.Kind.Unexpected)
+            else -> {
+                log.w { "login unexpected status $status" }
+                Outcome.Err(LoginError.Kind.Unexpected)
+            }
         }
     }
 
     private suspend fun persistSession(envelope: ApiEnvelope<LoginResponse>): Outcome<User, LoginError> {
-        val payload = envelope.data ?: return Outcome.Err(LoginError.Kind.Unexpected)
+        val payload = envelope.data ?: run {
+            log.w { "login 2xx with null data (message=${envelope.message})" }
+            return Outcome.Err(LoginError.Kind.Unexpected)
+        }
         val user = payload.user.toDomain()
         sessionStore.persist(
             accessToken = payload.accessToken,
             refreshToken = payload.refreshToken,
             user = user,
         )
+        log.i { "login ok userId=${user.id}" }
         return Outcome.Ok(user)
     }
 }

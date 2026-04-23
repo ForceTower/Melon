@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.sync.data.repository
 
+import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.MessageDao
@@ -39,11 +40,14 @@ internal class MirrorRepositoryImpl(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val messageDao: MessageDao,
+    logger: Logger,
 ) : MirrorRepository {
 
-    override suspend fun syncProfile(): Outcome<Unit, SyncError> = callNetwork {
+    private val log = logger.withTag("MirrorRepositoryImpl")
+
+    override suspend fun syncProfile(): Outcome<Unit, SyncError> = callNetwork("syncProfile") {
         val response = api.getProfile()
-        when (val mapped = classifyResponse<ProfileResponse>(response)) {
+        when (val mapped = classifyResponse<ProfileResponse>(response, "syncProfile")) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> {
                 val payload = mapped.value
@@ -54,14 +58,15 @@ internal class MirrorRepositoryImpl(
                 userDao.upsert(payload.user.toEntity())
                 payload.course?.let { studentDao.upsertCourse(it.toEntity()) }
                 studentDao.upsertStudent(payload.student.toEntity(payload.lastSyncCompletedAt))
+                log.i { "syncProfile ok userId=${payload.user.id} studentId=${payload.student.id}" }
                 Outcome.Ok(Unit)
             }
         }
     }
 
-    override suspend fun syncSemesterList(): Outcome<List<SemesterSummary>, SyncError> = callNetwork {
+    override suspend fun syncSemesterList(): Outcome<List<SemesterSummary>, SyncError> = callNetwork("syncSemesterList") {
         val response = api.getSemesters()
-        when (val mapped = classifyResponse<SemesterListResponse>(response)) {
+        when (val mapped = classifyResponse<SemesterListResponse>(response, "syncSemesterList")) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> {
                 val items = mapped.value.semesters
@@ -70,6 +75,7 @@ internal class MirrorRepositoryImpl(
                 // classes, grades) lands on each per-semester fetch.
                 semesterDao.upsertAll(items.map { it.toEntity() })
                 semesterDao.deleteMissing(items.map { it.id })
+                log.i { "syncSemesterList ok count=${items.size}" }
                 Outcome.Ok(
                     items.map {
                         SemesterSummary(
@@ -87,9 +93,10 @@ internal class MirrorRepositoryImpl(
         }
     }
 
-    override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> = callNetwork {
+    override suspend fun syncSemester(semesterId: String): Outcome<Unit, SyncError> = callNetwork("syncSemester") {
+        log.d { "syncSemester start id=$semesterId" }
         val response = api.getSemesterPayload(semesterId)
-        when (val mapped = classifyResponse<SemesterPayloadResponse>(response)) {
+        when (val mapped = classifyResponse<SemesterPayloadResponse>(response, "syncSemester id=$semesterId")) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> {
                 val p = mapped.value
@@ -109,14 +116,18 @@ internal class MirrorRepositoryImpl(
                     lectures = p.lectures.map { it.toEntity() },
                     lectureMaterials = p.lectureMaterials.map { it.toEntity() },
                 )
+                log.i {
+                    "syncSemester ok id=$semesterId disciplines=${p.disciplines.size} " +
+                        "classes=${p.classes.size} grades=${p.studentGrades.size}"
+                }
                 Outcome.Ok(Unit)
             }
         }
     }
 
-    override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> = callNetwork {
+    override suspend fun fetchOnboardingStatus(): Outcome<OnboardingStatus, SyncError> = callNetwork("fetchOnboardingStatus") {
         val response = api.getOnboardingStatus()
-        when (val mapped = classifyResponse<OnboardingStatusResponse>(response)) {
+        when (val mapped = classifyResponse<OnboardingStatusResponse>(response, "fetchOnboardingStatus")) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> Outcome.Ok(mapped.value.toDomain())
         }
@@ -125,19 +136,15 @@ internal class MirrorRepositoryImpl(
     override suspend fun syncMessages(
         since: String?,
         cursor: String?,
-    ): Outcome<MessagePageResult, SyncError> = callNetwork {
-        println("[MirrorRepository] syncMessages: request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}")
+    ): Outcome<MessagePageResult, SyncError> = callNetwork("syncMessages") {
+        log.d { "syncMessages request since=${since ?: "<nil>"} cursor=${cursor ?: "<nil>"}" }
         val response = api.getMessages(since, cursor)
-        when (val mapped = classifyResponse<MessagePageResponse>(response)) {
+        when (val mapped = classifyResponse<MessagePageResponse>(response, "syncMessages")) {
             is Outcome.Err -> mapped
             is Outcome.Ok -> {
                 val page = mapped.value
                 val scopesCount = page.messages.sumOf { it.scopes.size }
                 val attachmentsCount = page.messages.sumOf { it.attachments.size }
-                println(
-                    "[MirrorRepository] syncMessages: server returned messages=${page.messages.size} " +
-                        "scopes=$scopesCount attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}",
-                )
                 // Read/starred state is per-student locally but server-merged
                 // across all linked students — without a 1:1 student mapping
                 // we skip persisting MessageState here. Fresh inbox lands as
@@ -149,23 +156,36 @@ internal class MirrorRepositoryImpl(
                         msg.attachments.map { it.toEntity(msg.id) }
                     },
                 )
-                println("[MirrorRepository] syncMessages: persisted ${page.messages.size} messages to local DB")
+                log.i {
+                    "syncMessages ok messages=${page.messages.size} scopes=$scopesCount " +
+                        "attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}"
+                }
                 Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
             }
         }
     }
 
-    override suspend fun pingActivity(): Outcome<Unit, SyncError> = callNetwork {
+    override suspend fun pingActivity(): Outcome<Unit, SyncError> = callNetwork("pingActivity") {
         val statusCode = api.ping().status.value
         when (statusCode) {
             in 200..299 -> Outcome.Ok(Unit)
-            401 -> Outcome.Err(SyncError.Unauthorized)
-            in 500..599 -> Outcome.Err(SyncError.Server(null))
-            else -> Outcome.Err(SyncError.Unexpected)
+            401 -> {
+                log.w { "pingActivity unauthorized" }
+                Outcome.Err(SyncError.Unauthorized)
+            }
+            in 500..599 -> {
+                log.w { "pingActivity server $statusCode" }
+                Outcome.Err(SyncError.Server(null))
+            }
+            else -> {
+                log.w { "pingActivity unexpected status $statusCode" }
+                Outcome.Err(SyncError.Unexpected)
+            }
         }
     }
 
     private suspend inline fun <T> callNetwork(
+        op: String,
         block: suspend () -> Outcome<T, SyncError>,
     ): Outcome<T, SyncError> = try {
         block()
@@ -175,18 +195,20 @@ internal class MirrorRepositoryImpl(
         // Response envelope didn't match the expected DTO shape — most often a
         // backend field drift that wasn't mirrored on the KMP side. Surface
         // the concrete exception so we don't guess at the schema mismatch.
-        logSyncFailure("SerializationException", ex)
+        log.e(throwable = ex) { "$op serialization failure" }
         Outcome.Err(SyncError.Unexpected)
     } catch (ex: Throwable) {
-        // All other throwables land here as `NoConnection` — used to include
-        // everything from transport failures to Ktor body-parse errors, with
-        // no signal. Log the real cause (class + message) so failures are
-        // diagnosable from the Xcode console / logcat.
-        logSyncFailure(ex::class.simpleName ?: "Throwable", ex)
+        // All other throwables land here as `NoConnection` — transport
+        // failures, Ktor body-parse errors, etc. Log with the real cause so
+        // failures are diagnosable from the Xcode console / logcat.
+        log.w(throwable = ex) { "$op transport failure" }
         Outcome.Err(SyncError.NoConnection)
     }
 
-    private suspend inline fun <reified T> classifyResponse(response: HttpResponse): Outcome<T, SyncError> {
+    private suspend inline fun <reified T> classifyResponse(
+        response: HttpResponse,
+        op: String,
+    ): Outcome<T, SyncError> {
         val statusCode = response.status.value
         return when (statusCode) {
             in 200..299 -> {
@@ -199,32 +221,27 @@ internal class MirrorRepositoryImpl(
                 if (payload != null) {
                     Outcome.Ok(payload)
                 } else {
-                    logSyncIssue("2xx envelope had null `data` (message=${envelope.message})")
+                    log.w { "$op 2xx envelope had null data (message=${envelope.message})" }
                     Outcome.Err(SyncError.Unexpected)
                 }
             }
-            401 -> Outcome.Err(SyncError.Unauthorized)
-            404 -> Outcome.Err(SyncError.NotFound)
+            401 -> {
+                log.w { "$op unauthorized" }
+                Outcome.Err(SyncError.Unauthorized)
+            }
+            404 -> {
+                log.w { "$op not found" }
+                Outcome.Err(SyncError.NotFound)
+            }
             in 500..599 -> {
                 val envelope = runCatching { response.body<ApiEnvelope<T>>() }.getOrNull()
-                logSyncIssue("server $statusCode: ${envelope?.message ?: "<no message>"}")
+                log.w { "$op server $statusCode message=${envelope?.message ?: "<none>"}" }
                 Outcome.Err(SyncError.Server(envelope?.message))
             }
             else -> {
-                logSyncIssue("unexpected status $statusCode")
+                log.w { "$op unexpected status $statusCode" }
                 Outcome.Err(SyncError.Unexpected)
             }
         }
     }
-}
-
-// Routed to stdout so Xcode's console picks it up on iOS and logcat on
-// Android. Keep tag + payload compact — this runs on every sync failure.
-private fun logSyncFailure(kind: String, ex: Throwable) {
-    println("[MirrorRepository] $kind: ${ex.message ?: "<no message>"}")
-    ex.printStackTrace()
-}
-
-private fun logSyncIssue(message: String) {
-    println("[MirrorRepository] $message")
 }

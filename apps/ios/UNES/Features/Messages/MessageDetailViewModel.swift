@@ -15,6 +15,7 @@ final class MessageDetailViewModel {
     @ObservationIgnored private let useCases: MessagesUseCases?
     @ObservationIgnored private var didStart = false
     @ObservationIgnored private var didMarkRead = false
+    @ObservationIgnored private let log = Log.scoped("MessageDetailViewModel")
 
     init(seed: Message, useCases: MessagesUseCases?) {
         self.message = seed
@@ -30,6 +31,7 @@ final class MessageDetailViewModel {
         guard !didStart else { return }
         didStart = true
         guard let useCases else { return }
+        log.info("subscribing to message detail id=\(message.id)")
         for await detail in useCases.observeDetail.invoke(messageId: message.id) {
             guard let detail else { continue }
             message = MessageMapping.map(detail)
@@ -41,6 +43,7 @@ final class MessageDetailViewModel {
         didMarkRead = true
         if message.unread { message.unread = false }
         guard let useCases else { return }
+        log.info("mark message read on appear id=\(message.id)")
         Task { try? await useCases.markRead.invoke(messageId: message.id) }
     }
 }

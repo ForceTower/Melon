@@ -4,6 +4,7 @@ import Observation
 @Observable
 final class SplashViewModel {
     private let sessionStore: SessionSessionStore?
+    private let log = Log.scoped("SplashViewModel")
 
     init(sessionStore: SessionSessionStore?) {
         self.sessionStore = sessionStore
@@ -14,10 +15,13 @@ final class SplashViewModel {
 
         do {
             let token = try await sessionStore.getAccessToken()
-            return token != nil
+            let present = token != nil
+            log.info("splash session check hasSession=\(present)")
+            return present
         } catch is CancellationError {
             return false
         } catch {
+            log.warn("splash session check failed", error: error)
             return false
         }
     }

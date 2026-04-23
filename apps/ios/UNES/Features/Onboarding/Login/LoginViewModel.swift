@@ -10,6 +10,7 @@ final class LoginViewModel {
     var errorMessage: String?
 
     private let loginUseCase: AuthLoginUseCase?
+    private let log = Log.scoped("LoginViewModel")
 
     init(loginUseCase: AuthLoginUseCase?) {
         self.loginUseCase = loginUseCase
@@ -22,6 +23,7 @@ final class LoginViewModel {
     func submit() async -> SessionUser? {
         guard canSubmit, let loginUseCase else { return nil }
 
+        log.info("login submit for student=\(studentId)")
         isLoading = true
         errorMessage = nil
         defer { isLoading = false }
@@ -30,16 +32,21 @@ final class LoginViewModel {
         do {
             outcome = try await loginUseCase.invoke(username: studentId, password: password)
         } catch is CancellationError {
+            log.info("login cancelled for student=\(studentId)")
             return nil
         } catch {
+            log.error("login threw unexpectedly for student=\(studentId)", error: error)
             errorMessage = Self.unexpectedMessage
             return nil
         }
 
         switch onEnum(of: outcome) {
         case .ok(let user):
+            log.info("login ok for student=\(studentId)")
             return user.value
         case .err(let wrapper):
+            let rendered = wrapper.error.map { String(describing: $0) } ?? "<nil>"
+            log.warn("login failed for student=\(studentId) err=\(rendered)")
             errorMessage = wrapper.error.map(Self.describe) ?? Self.unexpectedMessage
             return nil
         }
