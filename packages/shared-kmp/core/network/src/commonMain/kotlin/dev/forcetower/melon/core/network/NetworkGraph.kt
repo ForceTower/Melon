@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.network
 
+import co.touchlab.kermit.Logger
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
@@ -27,6 +28,7 @@ interface NetworkGraph {
             authTokenSource: AuthTokenSource,
             machineIdSource: MachineIdSource,
             json: Json,
-        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, machineIdSource, json)
+            logger: Logger,
+        ): HttpClient = buildHttpClient(engine, baseUrl, authTokenSource, machineIdSource, json, logger)
     }
 }

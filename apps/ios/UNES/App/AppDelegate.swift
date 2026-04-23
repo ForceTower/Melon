@@ -7,9 +7,34 @@ import FirebaseRemoteConfig
 
 final class AppDelegate: NSObject, UIApplicationDelegate {
     lazy var graph: UmbrellaGraph = {
-        let config = UmbrellaConfig(baseUrl: "https://melon.forcetower.dev")
+        let config = UmbrellaConfig(
+            baseUrl: "https://melon.forcetower.dev",
+            logging: LoggingLoggingConfig(
+                serviceName: "melon-ios",
+                serviceVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,
+                deploymentEnvironment: AppDelegate.environmentName,
+                otlpEndpoint: "https://o.forcetower.dev",
+                otlpHeaders: [:],
+                minLocalSeverity: Kermit_coreSeverity.verbose,
+                minRemoteSeverity: Kermit_coreSeverity.info,
+                minCrashBreadcrumbSeverity: Kermit_coreSeverity.info,
+                minCrashReportSeverity: Kermit_coreSeverity.warn,
+                enableRemote: true,
+                enableCrashReporting: true
+            )
+        )
         return UmbrellaGraph(config: config)
     }()
+
+    lazy var logger: AppLogger = KermitAppLogger(logger: graph.logger)
+
+    private static var environmentName: String {
+#if DEBUG
+        return "debug"
+#else
+        return "release"
+#endif
+    }
 
     private var isPreview: Bool {
         ProcessInfo.processInfo.environment["XCODE_RUNNING_FOR_PLAYGROUNDS"] == "1"

@@ -1,5 +1,7 @@
 package dev.forcetower.melon.umbrella
 
+import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
@@ -41,6 +43,7 @@ interface UmbrellaGraph {
     val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore
+    val logger: Logger
 
     // SyncView orchestration surface (iOS). Each step calls one of these.
     val syncProfileUseCase: SyncProfileUseCase
@@ -92,9 +95,13 @@ interface UmbrellaGraph {
 
     @DependencyGraph.Factory
     fun interface Factory {
-        fun create(@Provides baseUrl: BaseUrl): UmbrellaGraph
+        fun create(
+            @Provides baseUrl: BaseUrl,
+            @Provides loggingConfig: LoggingConfig,
+        ): UmbrellaGraph
     }
 }
 
 fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph =
-    createGraphFactory<UmbrellaGraph.Factory>().create(BaseUrl(config.baseUrl))
+    createGraphFactory<UmbrellaGraph.Factory>()
+        .create(BaseUrl(config.baseUrl), config.logging)

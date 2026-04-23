@@ -18,6 +18,7 @@ dependencyResolutionManagement {
 rootProject.name = "Melon"
 
 include(":packages:shared-kmp:core:common")
+include(":packages:shared-kmp:core:logging")
 include(":packages:shared-kmp:core:network")
 include(":packages:shared-kmp:core:database")
 include(":packages:shared-kmp:core:storage")

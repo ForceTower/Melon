@@ -1,10 +1,15 @@
 package dev.forcetower.melon.core.network
 
+import co.touchlab.kermit.Logger as KermitLogger
+import co.touchlab.kermit.Severity
 import io.ktor.client.HttpClient
 import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.DefaultRequest
 import io.ktor.client.plugins.api.createClientPlugin
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
+import io.ktor.client.plugins.logging.LogLevel
+import io.ktor.client.plugins.logging.Logger as KtorLogger
+import io.ktor.client.plugins.logging.Logging
 import io.ktor.client.request.headers
 import io.ktor.http.HttpHeaders
 import io.ktor.serialization.kotlinx.json.json
@@ -43,9 +48,14 @@ fun buildHttpClient(
     authTokenSource: AuthTokenSource,
     machineIdSource: MachineIdSource,
     json: Json,
+    logger: KermitLogger,
 ): HttpClient = HttpClient(engine) {
     expectSuccess = false
     install(ContentNegotiation) { json(json) }
+    install(Logging) {
+        this.logger = logger.asKtorLogger()
+        level = LogLevel.INFO
+    }
     install(DefaultRequest) {
         url(baseUrl.value)
     }
@@ -54,5 +64,14 @@ fun buildHttpClient(
     }
     install(MachineIdInterceptor) {
         this.machineIdSource = machineIdSource
+    }
+}
+
+private fun KermitLogger.asKtorLogger(): KtorLogger {
+    val scoped = this.withTag("ktor")
+    return object : KtorLogger {
+        override fun log(message: String) {
+            scoped.log(severity = Severity.Info, tag = "ktor", throwable = null, message = message)
+        }
     }
 }
