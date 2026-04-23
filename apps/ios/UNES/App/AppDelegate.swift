@@ -45,6 +45,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
         _ = graph
+        Log.bootstrap(logger)
 
         guard !isPreview else { return true }
         FirebaseApp.configure()
