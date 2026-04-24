@@ -130,7 +130,7 @@ struct FinalCountdownView: View {
                         .font(UNESFont.serif(20))
                         .foregroundColor(UNESColor.ink)
                     +
-                    Text("já rolou")
+                    Text("já tirou")
                         .font(UNESFont.serif(20, italic: true))
                         .foregroundColor(UNESColor.accent)
                 )
@@ -236,7 +236,7 @@ struct FinalCountdownView: View {
     }
 
     private var legendText: Text {
-        Text("Cálculo não oficial. A regra varia por departamento — a UFF considera aprovação direta com média ")
+        Text("Cálculo não oficial. A regra varia por departamento — a UEFS considera aprovação direta com média ")
         + Text("≥ 7,0").font(UNESFont.sans(11.5, weight: .semibold)).foregroundColor(UNESColor.ink)
         + Text(", final para ")
         + Text("3,0 ≤ m < 7,0").font(UNESFont.sans(11.5, weight: .semibold)).foregroundColor(UNESColor.ink)

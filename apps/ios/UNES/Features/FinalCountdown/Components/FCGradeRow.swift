@@ -2,8 +2,8 @@ import SwiftUI
 
 /// Editable row in the "suas avaliações" list. Label (editable, 5-char cap),
 /// serif score field that accepts a comma-decimal 0–10, optional weight
-/// stepper (weighted mode only), star toggle for the wildcard flag, and a
-/// trailing delete button when more than one row exists.
+/// stepper (weighted mode only), and a trailing delete button when more than
+/// one row exists.
 struct FCGradeRow: View {
     @Binding var row: FCRow
     let weighted: Bool
@@ -64,8 +64,6 @@ struct FCGradeRow: View {
                 weightStepper
             }
 
-            wildcardToggle
-
             if canRemove {
                 Button(action: onRemove) {
                     Image(systemName: "xmark")
@@ -109,63 +107,35 @@ struct FCGradeRow: View {
                 row.weight = max(1, row.weight - 1)
             } label: {
                 Image(systemName: "minus")
-                    .font(.system(size: 9, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(UNESColor.ink3)
-                    .frame(width: 18, height: 20)
+                    .frame(width: 28, height: 32)
             }
             .buttonStyle(.plain)
 
             Text("×\(row.weight)")
-                .font(UNESFont.mono(10, weight: .semibold))
+                .font(UNESFont.mono(13, weight: .semibold))
                 .foregroundStyle(UNESColor.ink)
-                .frame(minWidth: 16)
+                .frame(minWidth: 22)
 
             Button {
                 row.weight = min(9, row.weight + 1)
             } label: {
                 Image(systemName: "plus")
-                    .font(.system(size: 9, weight: .semibold))
+                    .font(.system(size: 12, weight: .semibold))
                     .foregroundStyle(UNESColor.ink3)
-                    .frame(width: 18, height: 20)
+                    .frame(width: 28, height: 32)
             }
             .buttonStyle(.plain)
         }
-        .padding(1)
+        .padding(2)
         .background(
-            RoundedRectangle(cornerRadius: 9, style: .continuous)
+            RoundedRectangle(cornerRadius: 11, style: .continuous)
                 .fill(UNESColor.surface2)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 9, style: .continuous)
+                    RoundedRectangle(cornerRadius: 11, style: .continuous)
                         .strokeBorder(UNESColor.line, lineWidth: 1)
                 )
         )
-    }
-
-    private var wildcardToggle: some View {
-        Button {
-            withAnimation(.spring(response: 0.35, dampingFraction: 0.7)) {
-                row.wildcard.toggle()
-            }
-        } label: {
-            Image(systemName: row.wildcard ? "star.fill" : "star")
-                .font(.system(size: 13, weight: .medium))
-                .foregroundStyle(row.wildcard
-                                 ? Color(red: 0x2D/255, green: 0x1B/255, blue: 0x4E/255)
-                                 : UNESColor.ink4)
-                .frame(width: 28, height: 28)
-                .background(
-                    RoundedRectangle(cornerRadius: 8, style: .continuous)
-                        .fill(row.wildcard
-                              ? Color(red: 0xF4/255, green: 0xA2/255, blue: 0x3C/255)
-                              : UNESColor.surface2)
-                )
-                .shadow(
-                    color: row.wildcard
-                        ? Color(red: 0xF4/255, green: 0xA2/255, blue: 0x3C/255).opacity(0.35)
-                        : .clear,
-                    radius: 6, x: 0, y: 3
-                )
-        }
-        .buttonStyle(.plain)
     }
 }
