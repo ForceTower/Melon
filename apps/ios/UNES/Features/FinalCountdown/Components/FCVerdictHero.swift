@@ -34,16 +34,27 @@ struct FCVerdictHero: View {
             RoundedRectangle(cornerRadius: 24, style: .continuous)
                 .fill(backgroundGradient)
         )
-        .overlay(alignment: .topTrailing) {
-            // Decorative corner glow — picks up the verdict's tone.
-            RadialGradient(
-                colors: [copy.tone.bg.opacity(0.33), .clear],
-                center: .center,
-                startRadius: 0,
-                endRadius: 110
-            )
-            .frame(width: 160, height: 160)
-            .offset(x: 30, y: -30)
+        .overlay {
+            // Decorative corner glow — picks up the verdict's tone. Matches
+            // the JS `radial-gradient(circle, tone 0%, transparent 70%)` on
+            // a 160×160 div sitting at `top: -30, right: -30` with
+            // `border-radius: 50%`: the glow's center lands 50 px inside
+            // from the card's trailing edge and 50 px down from the top,
+            // half of its circle spilling past the corner (clipped by the
+            // card's rounded-rect mask applied below).
+            GeometryReader { geo in
+                Circle()
+                    .fill(
+                        RadialGradient(
+                            colors: [copy.tone.bg.opacity(0.33), .clear],
+                            center: .center,
+                            startRadius: 0,
+                            endRadius: 80
+                        )
+                    )
+                    .frame(width: 160, height: 160)
+                    .position(x: geo.size.width - 50, y: 50)
+            }
             .allowsHitTesting(false)
         }
         .clipShape(RoundedRectangle(cornerRadius: 24, style: .continuous))

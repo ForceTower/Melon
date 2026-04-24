@@ -12,8 +12,6 @@ struct FinalCountdownView: View {
     let seed: Discipline?
     let forcedMode: ForcedMode?
 
-    @Environment(\.dismiss) private var dismiss
-
     @State private var rows: [FCRow] = Self.defaultRows
     @State private var weighted: Bool = false
 
@@ -52,7 +50,7 @@ struct FinalCountdownView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 0) {
-                    FCHeader(onBack: { dismiss() })
+                    FCHeader()
                         .fadeUpOnAppear(delay: 0.02, distance: 14, duration: 0.55)
 
                     VStack(alignment: .leading, spacing: 12) {
@@ -103,7 +101,14 @@ struct FinalCountdownView: View {
                 }
             }
         }
-        .toolbar(.hidden, for: .navigationBar)
+        // Keep the system nav bar (preserves the back chevron and the
+        // interactive swipe gesture) but let the header's warm-mesh wash
+        // show through behind it.
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) { EmptyView() }
+        }
         .onAppear { applyForcedMode() }
         .onChange(of: forcedMode) { _, _ in applyForcedMode() }
     }
@@ -343,26 +348,17 @@ extension FinalCountdownView {
 
 // MARK: - Header + Chip + Toggle
 
-/// Screen-level header: glass back button, "CALCULADORA · OFFLINE" badge,
-/// and the "Dá pra fechar?" display title.
+/// Screen-level header: eyebrow + "CALCULADORA · OFFLINE" badge on the top
+/// row, then the "Dá pra fechar?" display title. The back chevron comes from
+/// the system nav bar, so there's no custom button here.
 private struct FCHeader: View {
-    let onBack: () -> Void
-
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack {
-                Button(action: onBack) {
-                    Image(systemName: "chevron.left")
-                        .font(.system(size: 15, weight: .semibold))
-                        .foregroundStyle(UNESColor.ink)
-                        .frame(width: 40, height: 40)
-                        .background(
-                            Circle()
-                                .fill(UNESColor.surface.opacity(0.72))
-                                .overlay(Circle().strokeBorder(UNESColor.line, lineWidth: 1))
-                        )
-                }
-                .buttonStyle(.plain)
+            HStack(alignment: .firstTextBaseline) {
+                Text("◦ FINAL COUNTDOWN")
+                    .font(UNESFont.mono(10, weight: .medium))
+                    .tracking(1.2)
+                    .foregroundStyle(UNESColor.ink3)
 
                 Spacer()
 
@@ -376,13 +372,7 @@ private struct FCHeader: View {
                         .foregroundStyle(UNESColor.ink4)
                 }
             }
-            .padding(.bottom, 18)
-
-            Text("◦ FINAL COUNTDOWN")
-                .font(UNESFont.mono(10, weight: .medium))
-                .tracking(1.2)
-                .foregroundStyle(UNESColor.ink3)
-                .padding(.bottom, 8)
+            .padding(.bottom, 8)
 
             (
                 Text("Dá pra")
@@ -403,7 +393,7 @@ private struct FCHeader: View {
                 .frame(maxWidth: 300, alignment: .leading)
         }
         .padding(.horizontal, 20)
-        .padding(.top, 14)
+        .padding(.top, 4)
         .padding(.bottom, 14)
     }
 }

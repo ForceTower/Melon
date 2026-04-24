@@ -4,6 +4,11 @@ import SwiftUI
 /// reprovação (0–3, coral), final (3–7, amber), aprovação (7–10, green).
 /// Ticks every integer, labels on 0/3/5/7/10. Needle + hub draw once the
 /// average is non-nil. Mirrors the `Meter` component from the prototype.
+///
+/// The meter lives inside the verdict hero, which is always painted with
+/// dark gradients regardless of the system theme — so every ink/needle
+/// color here is a *fixed* light value (not `UNESColor.ink`, which flips
+/// dark in light mode and would render invisibly on the hero).
 struct FCMeter: View {
     let avg: Double?
     let tone: FCTone
@@ -12,6 +17,13 @@ struct FCMeter: View {
     private let radius: CGFloat = 82
     private let startAngle: Double = -210
     private let endAngle: Double = 30
+
+    // Hero-fixed palette: the hero card is always dark, so text + needle
+    // must stay light regardless of the system appearance.
+    private let heroInk     = Color(red: 0xFB/255, green: 0xF7/255, blue: 0xF2/255)
+    private let heroInkSoft = Color(red: 0xFB/255, green: 0xF7/255, blue: 0xF2/255).opacity(0.55)
+    private let heroInkFaint = Color(red: 0xFB/255, green: 0xF7/255, blue: 0xF2/255).opacity(0.4)
+    private let heroTrack    = Color.white.opacity(0.08)
 
     private var sweep: Double { endAngle - startAngle }
 
@@ -25,22 +37,35 @@ struct FCMeter: View {
     }
 
     var body: some View {
+        // Inner container runs in the full `size × size` canvas coord
+        // system — `.position(x:y:)` then lets us place the center label
+        // by its *center* directly in those coordinates. The outer frame
+        // collapses the flow height to `size * 0.78` (so the next block
+        // butts against the last tick row), while the extra canvas tail
+        // below just overdraws — nothing's clipped.
         ZStack {
             meterShapes
-                .frame(width: size, height: size)
+
             centerLabel
-                .frame(width: size)
-                .offset(y: (center.y - size / 2) - 36)
+                .position(x: size / 2, y: center.y)
         }
-        .frame(width: size, height: size * 0.78)
+        .frame(width: size, height: size)
+        .frame(height: size * 0.78, alignment: .top)
     }
 
     private var meterShapes: some View {
+        baseMeter
+            .frame(width: size, height: size)
+            .overlay(ticksLayer)
+            .overlay(needleLayer)
+    }
+
+    private var baseMeter: some View {
         Canvas { ctx, _ in
             // Track
             ctx.stroke(
                 arcPath(from: 0, to: 1),
-                with: .color(UNESColor.surface3),
+                with: .color(heroTrack),
                 style: StrokeStyle(lineWidth: 10, lineCap: .round)
             )
             // Zones — painted over the track so they read as tinted bands.
@@ -68,8 +93,6 @@ struct FCMeter: View {
                 )
             }
         }
-        .overlay(ticksLayer)
-        .overlay(needleLayer)
     }
 
     private var ticksLayer: some View {
@@ -91,7 +114,7 @@ struct FCMeter: View {
                 ))
                 ctx.stroke(
                     tickPath,
-                    with: .color(UNESColor.ink3.opacity(major ? 0.8 : 0.45)),
+                    with: .color(major ? heroInkSoft : heroInkFaint),
                     style: StrokeStyle(lineWidth: major ? 1.4 : 1, lineCap: .round)
                 )
 
@@ -104,7 +127,7 @@ struct FCMeter: View {
                     let resolved = ctx.resolve(
                         Text("\(v)")
                             .font(UNESFont.mono(9))
-                            .foregroundColor(UNESColor.ink3)
+                            .foregroundColor(heroInkSoft)
                     )
                     let measured = resolved.measure(in: CGSize(width: 40, height: 20))
                     ctx.draw(
@@ -130,16 +153,16 @@ struct FCMeter: View {
                 var needle = Path()
                 needle.move(to: center)
                 needle.addLine(to: tip)
-                ctx.stroke(needle, with: .color(UNESColor.ink), style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
+                ctx.stroke(needle, with: .color(heroInk), style: StrokeStyle(lineWidth: 2.4, lineCap: .round))
 
                 ctx.fill(Path(ellipseIn: CGRect(x: center.x - 6, y: center.y - 6, width: 12, height: 12)),
-                         with: .color(UNESColor.ink))
+                         with: .color(heroInk))
                 ctx.fill(Path(ellipseIn: CGRect(x: center.x - 2.5, y: center.y - 2.5, width: 5, height: 5)),
-                         with: .color(UNESColor.surface))
+                         with: .color(tone.bg))
 
                 ctx.stroke(
                     Path(ellipseIn: CGRect(x: tip.x - 3.5, y: tip.y - 3.5, width: 7, height: 7)),
-                    with: .color(UNESColor.surface),
+                    with: .color(heroInk),
                     style: StrokeStyle(lineWidth: 1.5)
                 )
                 ctx.fill(Path(ellipseIn: CGRect(x: tip.x - 3.5, y: tip.y - 3.5, width: 7, height: 7)),
@@ -154,11 +177,11 @@ struct FCMeter: View {
             Text("MÉDIA ATUAL")
                 .font(UNESFont.mono(9))
                 .tracking(1.62)
-                .foregroundStyle(UNESColor.ink4)
+                .foregroundStyle(heroInkFaint)
             Text(FinalCountdownMath.formatGrade(avg))
                 .font(UNESFont.serif(52))
                 .tracking(-1.56)
-                .foregroundStyle(UNESColor.ink)
+                .foregroundStyle(heroInk)
                 .lineLimit(1)
                 .minimumScaleFactor(0.7)
         }
