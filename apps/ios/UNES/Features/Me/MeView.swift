@@ -208,7 +208,7 @@ struct MeView: View {
     }
 
     private var footer: some View {
-        Text("◦ UNES V4.2.1 · FEITO COM ♥ EM FEIRA DE SANTANA ◦")
+        Text("◦ UNES V\(Bundle.main.appVersion) · FEITO COM ♥ EM FEIRA DE SANTANA ◦")
             .font(UNESFont.mono(9))
             .tracking(1.26)
             .foregroundStyle(UNESColor.ink4)
