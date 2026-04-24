@@ -138,7 +138,7 @@ enum FinalCountdownCopy {
         case .passed:
             return FCVerdictCopy(
                 eyebrow: "aprovada",
-                titleLines: ["Fechou!", "Você passou.", "Sem drama."],
+                titleLines: ["Parabens!", "Você passou.", "Sem drama."],
                 headline: FinalCountdownMath.formatGrade(verdict.avg),
                 sub: "média final · acima de 7,0",
                 message: "Pode respirar. A média de \(FinalCountdownMath.formatGrade(verdict.avg)) já garante aprovação direta sem ir para a Final.",

@@ -263,7 +263,7 @@ struct FinalCountdownView: View {
 
     private func addRow() {
         withAnimation(.spring(response: 0.4, dampingFraction: 0.78)) {
-            rows.append(FCRow(label: "VA\(rows.count + 1)"))
+            rows.append(FCRow(label: "AV\(rows.count + 1)"))
         }
     }
 
@@ -308,38 +308,38 @@ extension FinalCountdownView {
                 return []
             case .passed:
                 return [
-                    FCRow(label: "VA1", score: 8.5),
-                    FCRow(label: "VA2", score: 7.8),
+                    FCRow(label: "AV1", score: 8.5),
+                    FCRow(label: "AV2", score: 7.8),
                     FCRow(label: "Trab", score: 9.0, wildcard: true),
                 ]
             case .final:
                 return [
-                    FCRow(label: "VA1", score: 5.5),
-                    FCRow(label: "VA2", score: 4.0),
+                    FCRow(label: "AV1", score: 5.5),
+                    FCRow(label: "AV2", score: 4.0),
                     FCRow(label: "Trab", score: 6.2, wildcard: true),
                 ]
             case .failed:
                 return [
-                    FCRow(label: "VA1", score: 1.5),
-                    FCRow(label: "VA2", score: 2.0),
+                    FCRow(label: "AV1", score: 1.5),
+                    FCRow(label: "AV2", score: 2.0),
                     FCRow(label: "Trab", score: 2.8, wildcard: true),
                 ]
             case .impossible:
                 return [
-                    FCRow(label: "VA1", score: 2.0),
-                    FCRow(label: "VA2", score: 3.0),
+                    FCRow(label: "AV1", score: 2.0),
+                    FCRow(label: "AV2", score: 3.0),
                     FCRow(label: "Trab", score: 3.5, wildcard: true),
                 ]
             case .borderline:
                 return [
-                    FCRow(label: "VA1", score: 6.5),
-                    FCRow(label: "VA2", score: 5.2),
+                    FCRow(label: "AV1", score: 6.5),
+                    FCRow(label: "AV2", score: 5.2),
                     FCRow(label: "Trab", score: nil, wildcard: true),
                 ]
             case .onTrack:
                 return [
-                    FCRow(label: "VA1", score: 8.0),
-                    FCRow(label: "VA2", score: 7.5),
+                    FCRow(label: "AV1", score: 8.0),
+                    FCRow(label: "AV2", score: 7.5),
                     FCRow(label: "Trab", score: nil, wildcard: true),
                 ]
             }
