@@ -26,7 +26,7 @@ import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekU
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
-import dev.forcetower.melon.feature.sync.domain.usecase.RefreshActiveSemestersUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
@@ -39,7 +39,7 @@ import dev.zacsweers.metro.createGraphFactory
 @DependencyGraph(AppScope::class)
 interface UmbrellaGraph {
     val loginUseCase: LoginUseCase
-    val refreshUseCase: RefreshActiveSemestersUseCase
+    val refreshSessionUseCase: RefreshSessionUseCase
     val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase
     val sessionStore: SessionStore

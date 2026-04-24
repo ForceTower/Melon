@@ -12,7 +12,7 @@ import kotlinx.datetime.Clock
 // payload. Serial on purpose — server filters by the caller's student and
 // backfill ordering matters less than bounded concurrency at this scale.
 // Flips `onboardingComplete` on success so subsequent app launches take the
-// incremental path via RefreshActiveSemestersUseCase.
+// incremental path via RefreshSessionUseCase.
 @Inject
 class FullSyncUseCase internal constructor(
     private val mirror: MirrorRepository,

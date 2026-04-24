@@ -13,23 +13,38 @@ import kotlinx.datetime.toLocalDateTime
 
 private const val ONE_HOUR_MILLIS = 60L * 60L * 1000L
 
-// Client-side freshness gate. Always refreshes the semester list — it's a
-// cheap call and we want the sidebar/picker to reflect the server's latest
-// state on every app open. The 1h throttle gates only the expensive
-// per-semester payload pulls; pull-to-refresh bypasses that via
-// SyncSemesterUseCase directly.
+// Per-session refresh fired on every authenticated shell entry (fresh launch
+// or logout→login). Profile + first-page messages run unthrottled — they're
+// cheap single requests, and profile is what unsticks the overview footer's
+// "sincronizando" label by importing the server's lastSyncCompletedAt.
+// Per-semester payload pulls stay behind the 1h throttle; pull-to-refresh
+// bypasses via SyncSemesterUseCase directly.
+//
+// Profile + messages errors are logged and swallowed so a hiccup in one
+// subsystem doesn't cancel the others. Per-semester payload errors still
+// short-circuit because a partial tree is worse than none.
 @Inject
-class RefreshActiveSemestersUseCase internal constructor(
+class RefreshSessionUseCase internal constructor(
     private val mirror: MirrorRepository,
     private val syncState: SyncStateRepository,
     logger: Logger,
 ) {
-    private val log = logger.withTag("RefreshActiveSemestersUseCase")
+    private val log = logger.withTag("RefreshSessionUseCase")
 
     suspend operator fun invoke(force: Boolean = false): Outcome<Unit, SyncError> {
-        log.i { "refresh active semesters start force=$force" }
+        log.i { "refresh session start force=$force" }
         val now = Clock.System.now()
         val nowEpoch = now.toEpochMilliseconds()
+
+        when (val result = mirror.syncProfile()) {
+            is Outcome.Err -> log.w { "profile refresh failed (ignored) err=${result.error}" }
+            is Outcome.Ok -> Unit
+        }
+
+        when (val result = mirror.syncMessages(since = null, cursor = null)) {
+            is Outcome.Err -> log.w { "messages first-page refresh failed (ignored) err=${result.error}" }
+            is Outcome.Ok -> log.d { "messages first-page ok applied=${result.value.appliedCount}" }
+        }
 
         val listOutcome = mirror.syncSemesterList()
         val summaries = when (listOutcome) {
@@ -43,7 +58,7 @@ class RefreshActiveSemestersUseCase internal constructor(
         if (!force) {
             val last = syncState.getLastActiveSemesterPulledAt()
             if (last != null && nowEpoch - last < ONE_HOUR_MILLIS) {
-                log.d { "refresh throttled lastPulledAt=$last deltaMs=${nowEpoch - last}" }
+                log.d { "per-semester pull throttled lastPulledAt=$last deltaMs=${nowEpoch - last}" }
                 return Outcome.Ok(Unit)
             }
         }

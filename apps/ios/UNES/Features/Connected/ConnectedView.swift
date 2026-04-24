@@ -10,7 +10,7 @@ struct ConnectedView: View {
     let disciplines: DisciplinesFactory
     let messages: MessagesFactory
     let me: MeFactory
-    let refreshSemesters: SyncRefreshActiveSemestersUseCase
+    let refreshSession: SyncRefreshSessionUseCase
     let backfillMirror: SyncBackfillMirrorUseCase
     var onLoggedOut: () -> Void = {}
 
@@ -47,17 +47,17 @@ struct ConnectedView: View {
         .tint(UNESColor.accent)
         .task {
             // Fires once per authenticated session entry (fresh launch or
-            // logout→login). The list call is cheap and unthrottled; the
-            // per-semester payload pulls behind it are still gated by the
-            // 1h throttle inside the use case.
-            log.info("connected entry — refreshing active semesters")
+            // logout→login). Profile + first-page messages are unthrottled
+            // (cheap); per-semester payload pulls behind them are gated by
+            // the 1h throttle inside the use case.
+            log.info("connected entry — refreshing session")
             do {
-                _ = try await refreshSemesters.invoke(force: false)
-                log.info("active semesters refresh ok")
+                _ = try await refreshSession.invoke(force: false)
+                log.info("session refresh ok")
             } catch is CancellationError {
                 // view left before work completed
             } catch {
-                log.warn("active semesters refresh failed", error: error)
+                log.warn("session refresh failed", error: error)
             }
             // Fills in historical semesters + full message archive once
             // server Phase 2 finalizes. No-op after first successful run

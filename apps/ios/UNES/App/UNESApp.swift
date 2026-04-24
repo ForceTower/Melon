@@ -23,7 +23,7 @@ struct UNESApp: App {
                 disciplines: graph.disciplinesFactory,
                 messages: graph.messagesFactory,
                 me: graph.meFactory,
-                refreshSemesters: graph.refreshUseCase,
+                refreshSession: graph.refreshSessionUseCase,
                 backfillMirror: graph.backfillMirrorUseCase
             )
         }
