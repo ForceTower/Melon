@@ -1,5 +1,5 @@
+import LocalAuthentication
 import SwiftUI
-import UIKit
 
 /// Credential vault card — a grouped pair of rows (matrícula + senha) plumbed
 /// into a reveal/hide toggle. Password masking runs locally; the copy button
@@ -69,9 +69,7 @@ struct CredentialCard: View {
 
             Spacer(minLength: 0)
 
-            Button {
-                withAnimation(.easeOut(duration: 0.2)) { revealed.toggle() }
-            } label: {
+            Button(action: toggleReveal) {
                 HStack(spacing: 6) {
                     Image(systemName: revealed ? "eye.slash" : "eye")
                         .font(.system(size: 12, weight: .medium))
@@ -92,6 +90,36 @@ struct CredentialCard: View {
                 )
             }
             .buttonStyle(.plain)
+        }
+    }
+
+    /// Hiding is free; revealing demands a live biometric/passcode check so a
+    /// borrowed phone can't expose the password. If the device has no auth set
+    /// up (simulator, wiped passcode) we let the reveal through rather than
+    /// strand the user — `canEvaluatePolicy` being false is a config state,
+    /// not a failed attempt.
+    private func toggleReveal() {
+        if revealed {
+            withAnimation(.easeOut(duration: 0.2)) { revealed = false }
+            return
+        }
+        let context = LAContext()
+        var error: NSError?
+        guard context.canEvaluatePolicy(.deviceOwnerAuthentication, error: &error) else {
+            withAnimation(.easeOut(duration: 0.2)) { revealed = true }
+            return
+        }
+        Task { @MainActor in
+            let success = await withCheckedContinuation { continuation in
+                context.evaluatePolicy(
+                    .deviceOwnerAuthentication,
+                    localizedReason: "Autentique para visualizar a senha"
+                ) { success, _ in
+                    continuation.resume(returning: success)
+                }
+            }
+            guard success else { return }
+            withAnimation(.easeOut(duration: 0.2)) { revealed = true }
         }
     }
 }
