@@ -10,8 +10,6 @@ struct SettingsView: View {
     @State private var state = SettingsState()
     @State private var spoilerOpen = false
 
-    @Environment(\.dismiss) private var dismiss
-
     var body: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
@@ -40,11 +38,8 @@ struct SettingsView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    SettingsHeader(
-                        lastSyncLabel: SettingsFixtures.lastSyncLabel,
-                        onBack: { dismiss() }
-                    )
-                    .fadeUpOnAppear(delay: 0.02, distance: 12, duration: 0.55)
+                    SettingsHeader(lastSyncLabel: SettingsFixtures.lastSyncLabel)
+                        .fadeUpOnAppear(delay: 0.02, distance: 12, duration: 0.55)
 
                     VStack(spacing: 22) {
                         accountSection
@@ -64,8 +59,12 @@ struct SettingsView: View {
                 }
             }
         }
-        .navigationBarBackButtonHidden(true)
-        .toolbar(.hidden, for: .navigationBar)
+        // Keep the system nav bar for the native back chevron and the
+        // interactive pop gesture; only hide its background so the warm
+        // mesh reads continuously behind the header. Same treatment as
+        // `FinalCountdownView`.
+        .toolbarBackground(.hidden, for: .navigationBar)
+        .navigationBarTitleDisplayMode(.inline)
     }
 
     // MARK: - Sections

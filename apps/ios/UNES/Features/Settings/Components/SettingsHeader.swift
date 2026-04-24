@@ -1,17 +1,15 @@
 import SwiftUI
 
 /// Top chrome of the Settings screen. Mirrors `CfgHeader` in
-/// `screens-settings.jsx`: a 40×40 back pill, a monospaced sync stamp on the
-/// right, then the display-sized "Configurações" wordmark.
+/// `screens-settings.jsx`, but the custom back pill has been dropped in
+/// favour of the system nav bar's native chevron — only the right-aligned
+/// sync stamp remains on the top row, followed by the editorial title.
 struct SettingsHeader: View {
     let lastSyncLabel: String
-    let onBack: () -> Void
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                backButton
-
                 Spacer()
 
                 Text("◦ SINC. \(lastSyncLabel)")
@@ -19,7 +17,7 @@ struct SettingsHeader: View {
                     .tracking(1.33)
                     .foregroundStyle(UNESColor.ink4)
             }
-            .padding(.bottom, 22)
+            .padding(.bottom, 10)
 
             Text("◦ PREFERÊNCIAS · V4.2.1")
                 .font(UNESFont.sans(12, weight: .medium))
@@ -42,23 +40,8 @@ struct SettingsHeader: View {
                 .frame(maxWidth: 290, alignment: .leading)
         }
         .padding(.horizontal, 20)
-        .padding(.top, 18)
+        .padding(.top, 4)
         .padding(.bottom, 18)
-    }
-
-    private var backButton: some View {
-        Button(action: onBack) {
-            Image(systemName: "chevron.left")
-                .font(.system(size: 15, weight: .semibold))
-                .foregroundStyle(UNESColor.ink)
-                .frame(width: 40, height: 40)
-                .background(
-                    Circle()
-                        .fill(UNESColor.surface2)
-                        .overlay(Circle().strokeBorder(UNESColor.line, lineWidth: 1))
-                )
-        }
-        .buttonStyle(.plain)
     }
 }
 

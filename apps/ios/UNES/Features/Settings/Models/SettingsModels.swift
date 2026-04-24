@@ -17,18 +17,18 @@ enum SpoilerMode: String, CaseIterable, Hashable, Identifiable {
 
     var hint: String {
         switch self {
-        case .value:   return "Cálc. Dif. B2 · 8,5"
-        case .comment: return "\"nova nota em Cálc. Dif. B2\""
-        case .posted:  return "\"uma nota foi publicada\""
+        case .value:   return "Cálc. II · 8,5"
+        case .comment: return "\"Uma boa nota em Calc. II\""
+        case .posted:  return "\"Nova nota em Cálc. II\""
         }
     }
 
     /// The full body text the lock-screen preview renders.
     var previewText: String {
         switch self {
-        case .value:   return "Cálculo Diferencial B2 · 8,5"
-        case .comment: return "nova nota em Cálc. Diferencial B2"
-        case .posted:  return "uma nota foi publicada"
+        case .value:   return "Você tirou 8,5 em Cálc. II"
+        case .comment: return "Nova nota em Cálc. II. Muito bom!"
+        case .posted:  return "Nova nota em Cálc. II"
         }
     }
 }

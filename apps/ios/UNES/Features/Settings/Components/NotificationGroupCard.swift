@@ -89,10 +89,12 @@ struct NotificationToggleRow: View {
                 }
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-                SettingsToggle(isOn: $isOn)
+                Toggle("", isOn: $isOn)
+                    .labelsHidden()
+                    .tint(UNESColor.accent)
             }
             .padding(.horizontal, 16)
-            .padding(.vertical, 12)
+            .padding(.vertical, 10)
 
             if showSeparator {
                 Rectangle()
@@ -100,34 +102,5 @@ struct NotificationToggleRow: View {
                     .frame(height: 1)
             }
         }
-    }
-}
-
-/// Custom pill toggle — 34×20 with an animated knob. Smaller than the stock
-/// `Toggle`; picks up the accent color when on. Mirrors the `Toggle` in
-/// `screens-settings.jsx`.
-struct SettingsToggle: View {
-    @Binding var isOn: Bool
-
-    var body: some View {
-        Button {
-            withAnimation(.spring(response: 0.28, dampingFraction: 0.8)) {
-                isOn.toggle()
-            }
-        } label: {
-            ZStack(alignment: isOn ? .trailing : .leading) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .fill(isOn ? UNESColor.accent : UNESColor.surface3)
-                    .frame(width: 34, height: 20)
-
-                Circle()
-                    .fill(UNESColor.surface)
-                    .frame(width: 16, height: 16)
-                    .padding(.horizontal, 2)
-                    .shadow(color: .black.opacity(0.2), radius: 1, x: 0, y: 1)
-            }
-            .frame(width: 34, height: 20)
-        }
-        .buttonStyle(.plain)
     }
 }
