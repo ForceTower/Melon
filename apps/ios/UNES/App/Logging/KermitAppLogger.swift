@@ -8,7 +8,7 @@
 //  Kermit's `Logger` is a Kotlin class (ergo non-Sendable under strict
 //  concurrency) but its `log*` methods are safe to call from any thread —
 //  each underlying LogWriter handles its own thread-safety (OSLog is
-//  thread-safe; our OtlpLogWriter funnels through a Channel; the
+//  thread-safe; our ApiLogWriter funnels through a Channel; the
 //  Crashlytics writer forwards to FIRCrashlytics which is documented
 //  thread-safe). Locking here would add contention for zero correctness
 //  benefit, so we bypass the checker explicitly and keep this opt-out

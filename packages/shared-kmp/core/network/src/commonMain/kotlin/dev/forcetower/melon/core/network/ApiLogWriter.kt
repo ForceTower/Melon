@@ -1,10 +1,11 @@
-package dev.forcetower.melon.core.logging
+package dev.forcetower.melon.core.network
 
 import co.touchlab.kermit.LogWriter
 import co.touchlab.kermit.Severity
+import dev.forcetower.melon.core.logging.LoggingConfig
 import io.ktor.client.HttpClient
+import io.ktor.client.engine.HttpClientEngine
 import io.ktor.client.plugins.contentnegotiation.ContentNegotiation
-import io.ktor.client.request.header
 import io.ktor.client.request.post
 import io.ktor.client.request.setBody
 import io.ktor.client.statement.bodyAsText
@@ -22,24 +23,32 @@ import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import kotlinx.datetime.Clock
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.json.Json
 
-// LogWriter that ships log records to an OTLP/HTTP (JSON) collector. Runs a
+// LogWriter that ships log records to the Melon API's /api/logs endpoint,
+// which proxies the records to the OTel backend server-side. Runs a
 // dedicated drain coroutine that batches records by count or time, whichever
 // comes first. Backpressure strategy is "drop newest" — logging must never
 // block the caller or cascade into the caller's scope.
-class OtlpLogWriter internal constructor(
+//
+// Uses its own HttpClient — NOT the shared one from NetworkGraph — because
+// that client installs Ktor's Logging plugin, which would feed every outbound
+// request back into this writer and spiral. The client here carries only the
+// two plugins we actually need: ContentNegotiation (JSON body) and
+// MachineIdInterceptor (so the server can attribute records to a device).
+class ApiLogWriter internal constructor(
     private val scope: CoroutineScope,
     private val http: HttpClient,
     private val endpoint: String,
-    private val extraHeaders: Map<String, String>,
-    private val resourceAttributes: List<OtlpKeyValue>,
+    private val service: String,
     private val minSeverity: Severity,
     private val batchSize: Int,
     private val flushInterval: Duration,
     queueCapacity: Int,
 ) : LogWriter() {
 
-    private val queue = Channel<OtlpLogRecord>(capacity = queueCapacity)
+    private val queue = Channel<ApiLogRecord>(capacity = queueCapacity)
 
     init {
         scope.launch { drain() }
@@ -48,19 +57,19 @@ class OtlpLogWriter internal constructor(
     override fun isLoggable(tag: String, severity: Severity): Boolean = severity >= minSeverity
 
     override fun log(severity: Severity, message: String, tag: String, throwable: Throwable?) {
-        val record = OtlpLogRecord(
-            timeUnixNano = Clock.System.now().nanosecondsSinceEpoch().toString(),
-            severityNumber = severity.toOtelSeverityNumber(),
-            severityText = severity.name.uppercase(),
-            body = stringValue(message),
-            attributes = buildList {
-                add(OtlpKeyValue("log.tag", stringValue(tag)))
-                throwable?.let {
-                    add(OtlpKeyValue("exception.type", stringValue(it::class.simpleName ?: "Throwable")))
-                    it.message?.let { msg -> add(OtlpKeyValue("exception.message", stringValue(msg))) }
-                    add(OtlpKeyValue("exception.stacktrace", stringValue(it.stackTraceToString())))
-                }
-            },
+        val attributes = buildMap {
+            put("log.tag", tag)
+            throwable?.let {
+                put("exception.type", it::class.simpleName ?: "Throwable")
+                it.message?.let { msg -> put("exception.message", msg) }
+                put("exception.stacktrace", it.stackTraceToString())
+            }
+        }
+        val record = ApiLogRecord(
+            timestamp = Clock.System.now().toEpochMilliseconds(),
+            severity = severity.toApiSeverity(),
+            message = message,
+            attributes = attributes,
         )
         // trySend is non-blocking; if the queue is full we drop silently. A
         // blocked producer would be worse than a dropped log.
@@ -68,7 +77,7 @@ class OtlpLogWriter internal constructor(
     }
 
     private suspend fun drain() {
-        val batch = ArrayList<OtlpLogRecord>(batchSize)
+        val batch = ArrayList<ApiLogRecord>(batchSize)
         while (scope.isActive) {
             try {
                 batch += queue.receive()
@@ -94,25 +103,11 @@ class OtlpLogWriter internal constructor(
         }
     }
 
-    private suspend fun postBatch(records: List<OtlpLogRecord>) {
+    private suspend fun postBatch(records: List<ApiLogRecord>) {
         if (records.isEmpty()) return
-        val payload = OtlpLogsRequest(
-            resourceLogs = listOf(
-                OtlpResourceLogs(
-                    resource = OtlpResource(resourceAttributes),
-                    scopeLogs = listOf(
-                        OtlpScopeLogs(
-                            scope = OtlpScope(name = "co.touchlab.kermit", version = "2.0.4"),
-                            logRecords = records,
-                        ),
-                    ),
-                ),
-            ),
-        )
         val response = http.post(endpoint) {
             contentType(ContentType.Application.Json)
-            for ((name, value) in extraHeaders) header(name, value)
-            setBody(payload)
+            setBody(ApiLogsRequest(service = service, records = records))
         }
         if (!response.status.isSuccess()) {
             // Swallow body to release the connection; we don't log the failure
@@ -129,21 +124,15 @@ class OtlpLogWriter internal constructor(
             batchSize: Int = 50,
             flushInterval: Duration = 5.seconds,
             queueCapacity: Int = 1024,
-        ): OtlpLogWriter {
-            val endpoint = requireNotNull(config.otlpEndpoint) {
-                "LoggingConfig.otlpEndpoint is null — gate on LoggingConfig.enableRemote before calling"
-            }.trimEnd('/') + "/v1/logs"
-            val resource = buildList {
-                add(OtlpKeyValue("service.name", stringValue(config.serviceName)))
-                kvString("service.version", config.serviceVersion)?.let(::add)
-                kvString("deployment.environment", config.deploymentEnvironment)?.let(::add)
-            }
-            return OtlpLogWriter(
+        ): ApiLogWriter {
+            val baseUrl = requireNotNull(config.apiBaseUrl) {
+                "LoggingConfig.apiBaseUrl is null — gate on enableRemote && apiBaseUrl before calling"
+            }.trimEnd('/')
+            return ApiLogWriter(
                 scope = scope,
                 http = http,
-                endpoint = endpoint,
-                extraHeaders = config.otlpHeaders,
-                resourceAttributes = resource,
+                endpoint = "$baseUrl/api/logs",
+                service = config.serviceName,
                 minSeverity = config.minRemoteSeverity,
                 batchSize = batchSize,
                 flushInterval = flushInterval,
@@ -152,23 +141,36 @@ class OtlpLogWriter internal constructor(
         }
 
         fun buildHttpClient(
-            engine: io.ktor.client.engine.HttpClientEngine,
-            json: kotlinx.serialization.json.Json,
+            engine: HttpClientEngine,
+            json: Json,
+            machineIdSource: MachineIdSource,
         ): HttpClient = HttpClient(engine) {
             expectSuccess = false
             install(ContentNegotiation) { json(json) }
+            install(MachineIdInterceptor) { this.machineIdSource = machineIdSource }
         }
     }
 }
 
-private fun Severity.toOtelSeverityNumber(): Int = when (this) {
-    Severity.Verbose -> 1   // TRACE
-    Severity.Debug -> 5     // DEBUG
-    Severity.Info -> 9      // INFO
-    Severity.Warn -> 13     // WARN
-    Severity.Error -> 17    // ERROR
-    Severity.Assert -> 21   // FATAL
-}
+@Serializable
+internal data class ApiLogsRequest(
+    val service: String,
+    val records: List<ApiLogRecord>,
+)
 
-private fun kotlinx.datetime.Instant.nanosecondsSinceEpoch(): Long =
-    epochSeconds * 1_000_000_000L + nanosecondsOfSecond
+@Serializable
+internal data class ApiLogRecord(
+    val timestamp: Long,
+    val severity: String,
+    val message: String,
+    val attributes: Map<String, String> = emptyMap(),
+)
+
+private fun Severity.toApiSeverity(): String = when (this) {
+    Severity.Verbose -> "trace"
+    Severity.Debug -> "debug"
+    Severity.Info -> "info"
+    Severity.Warn -> "warn"
+    Severity.Error -> "error"
+    Severity.Assert -> "fatal"
+}

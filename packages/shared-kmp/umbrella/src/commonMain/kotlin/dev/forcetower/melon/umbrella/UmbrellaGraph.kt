@@ -102,6 +102,10 @@ interface UmbrellaGraph {
     }
 }
 
-fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph =
-    createGraphFactory<UmbrellaGraph.Factory>()
-        .create(BaseUrl(config.baseUrl), config.logging)
+fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph {
+    // Thread the API base URL into the logging config so ApiLogWriter knows
+    // where to POST — the caller only has to set it once on UmbrellaConfig.
+    val logging = config.logging.copy(apiBaseUrl = config.baseUrl)
+    return createGraphFactory<UmbrellaGraph.Factory>()
+        .create(BaseUrl(config.baseUrl), logging)
+}
