@@ -28,6 +28,7 @@ data class ScheduleDay(
 data class ScheduleClass(
     val allocationId: String,
     val classId: String,
+    val offerId: String,
     val code: String,
     val title: String,
     val startTime: String,

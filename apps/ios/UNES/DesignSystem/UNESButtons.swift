@@ -121,24 +121,24 @@ private struct LiquidGlassCapsule: ViewModifier {
     var stroke: Color = .white.opacity(0.14)
 
     func body(content: Content) -> some View {
+        // `contentShape` on both branches so the full capsule is a press
+        // target — otherwise iOS 26's Liquid Glass paints over a surface
+        // that doesn't participate in hit-testing, and the button is only
+        // tappable on its label text.
+        let capsule = Capsule(style: .continuous)
         if #available(iOS 26.0, *) {
             content
-                .glassEffect(.regular.tint(tint), in: Capsule(style: .continuous))
-                .overlay(
-                    Capsule(style: .continuous)
-                        .strokeBorder(stroke, lineWidth: 1)
-                )
+                .contentShape(capsule)
+                .glassEffect(.regular.tint(tint), in: capsule)
+                .overlay(capsule.strokeBorder(stroke, lineWidth: 1))
         } else {
             content
-                .contentShape(Capsule(style: .continuous))
+                .contentShape(capsule)
                 .background(
-                    Capsule(style: .continuous)
+                    capsule
                         .fill(tint)
-                        .background(.ultraThinMaterial, in: Capsule(style: .continuous))
-                        .overlay(
-                            Capsule(style: .continuous)
-                                .strokeBorder(stroke, lineWidth: 1)
-                        )
+                        .background(.ultraThinMaterial, in: capsule)
+                        .overlay(capsule.strokeBorder(stroke, lineWidth: 1))
                 )
         }
     }

@@ -21,18 +21,46 @@ struct DayColumn: View {
                     let prev = i > 0 ? classes[i - 1] : nil
                     let gapMin = prev.map { cls.startMin - $0.endMin } ?? 0
                     let baseDelay = entering ? 0.32 + Double(i) * 0.08 : Double(i) * 0.04
-                    FocusedClassBlock(
+                    let block = FocusedClassBlock(
                         cls: cls,
                         state: stateFor(cls, isToday: isToday, nowMin: nowMin),
                         showGap: showGaps && i > 0,
                         gapMin: gapMin
                     )
-                    .fadeUpOnAppear(delay: baseDelay, distance: 10, duration: 0.45)
+                    if let seed = detailSeed(for: cls) {
+                        NavigationLink(value: seed) { block }
+                            .buttonStyle(.plain)
+                            .fadeUpOnAppear(delay: baseDelay, distance: 10, duration: 0.45)
+                    } else {
+                        block
+                            .fadeUpOnAppear(delay: baseDelay, distance: 10, duration: 0.45)
+                    }
                 }
             }
             .padding(.horizontal, 10)
             .padding(.bottom, 20)
         }
+    }
+
+    // Minimal seed for `DisciplineDetailView` — the detail view model swaps
+    // this out with a hydrated Discipline as soon as its KMP flow emits, so
+    // only offerId and display-chrome fields need to be right here. Without
+    // an offerId (fixture / pre-sync), the row renders non-tappable.
+    private func detailSeed(for cls: ScheduleClass) -> Discipline? {
+        guard let offerId = cls.offerId else { return nil }
+        return Discipline(
+            code: cls.code,
+            fullCode: cls.code,
+            title: cls.title,
+            dept: "",
+            prof: cls.prof,
+            color: cls.color,
+            hours: 0,
+            absences: 0,
+            allowedAbsences: 0,
+            sections: [],
+            offerId: offerId
+        )
     }
 
     // Local counterpart to `ScheduleFixtures.state(for:isToday:)` that uses a

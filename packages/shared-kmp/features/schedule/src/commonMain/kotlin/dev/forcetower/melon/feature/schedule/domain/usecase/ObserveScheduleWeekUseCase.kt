@@ -167,6 +167,7 @@ private fun topicFor(classId: String, dateIso: String, lectures: List<WeekLectur
 private fun SemesterAllocationRow.toScheduleClass(topic: String?): ScheduleClass = ScheduleClass(
     allocationId = allocationId,
     classId = classId,
+    offerId = offerId,
     code = disciplineCode,
     title = disciplineName,
     startTime = startTime.orEmpty(),

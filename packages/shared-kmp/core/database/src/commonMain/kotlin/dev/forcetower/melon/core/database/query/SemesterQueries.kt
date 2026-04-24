@@ -18,6 +18,7 @@ data class SemesterClassAggregate(
 data class SemesterAllocationRow(
     val allocationId: String,
     val classId: String,
+    val offerId: String,
     val disciplineCode: String,
     val disciplineName: String,
     val day: Int?,

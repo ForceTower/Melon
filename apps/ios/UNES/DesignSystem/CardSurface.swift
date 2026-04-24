@@ -17,18 +17,25 @@ struct CardSurface<S: InsettableShape>: ViewModifier {
     var strokeWidth: CGFloat = 1
 
     func body(content: Content) -> some View {
-        content.background {
-            if #available(iOS 26.0, *) {
-                shape
-                    .fill(Color.clear)
-                    .glassEffect(.regular.tint(fill), in: shape)
-                    .overlay(shape.strokeBorder(stroke, lineWidth: strokeWidth))
-            } else {
-                shape
-                    .fill(fill)
-                    .overlay(shape.strokeBorder(stroke, lineWidth: strokeWidth))
+        // `glassEffect` paints over a clear-filled shape, which doesn't
+        // register for hit-testing — without an explicit `contentShape`,
+        // a button wrapping this surface would only be tappable where its
+        // text/icon content sits. Anchoring the hit-test to the card
+        // shape makes the whole surface a press target on both runtimes.
+        content
+            .contentShape(shape)
+            .background {
+                if #available(iOS 26.0, *) {
+                    shape
+                        .fill(Color.clear)
+                        .glassEffect(.regular.tint(fill), in: shape)
+                        .overlay(shape.strokeBorder(stroke, lineWidth: strokeWidth))
+                } else {
+                    shape
+                        .fill(fill)
+                        .overlay(shape.strokeBorder(stroke, lineWidth: strokeWidth))
+                }
             }
-        }
     }
 }
 

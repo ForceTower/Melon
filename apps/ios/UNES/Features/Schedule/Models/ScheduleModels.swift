@@ -12,6 +12,35 @@ struct ScheduleClass: Identifiable, Hashable {
     let room: String?
     let campus: String?
     let topic: String?
+    // Carried for the detail-screen handoff. Populated when the class
+    // originates from the KMP feed; nil for preview fixtures.
+    let offerId: String?
+
+    init(
+        start: String,
+        end: String,
+        code: String,
+        title: String,
+        prof: String,
+        color: Color,
+        modulo: String?,
+        room: String?,
+        campus: String?,
+        topic: String?,
+        offerId: String? = nil
+    ) {
+        self.start = start
+        self.end = end
+        self.code = code
+        self.title = title
+        self.prof = prof
+        self.color = color
+        self.modulo = modulo
+        self.room = room
+        self.campus = campus
+        self.topic = topic
+        self.offerId = offerId
+    }
 
     var startMin: Int { ScheduleTime.toMin(start) }
     var endMin: Int { ScheduleTime.toMin(end) }

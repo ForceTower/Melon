@@ -90,7 +90,8 @@ final class ScheduleFocusedViewModel {
             modulo: raw.modulo,
             room: raw.room,
             campus: raw.campus,
-            topic: raw.topic
+            topic: raw.topic,
+            offerId: raw.offerId
         )
     }
 

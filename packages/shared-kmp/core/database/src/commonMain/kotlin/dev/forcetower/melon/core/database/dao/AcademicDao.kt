@@ -530,6 +530,7 @@ abstract class AcademicDao {
         const val ALLOCATIONS_SQL = """
             SELECT a.id AS allocationId,
                    c.id AS classId,
+                   o.id AS offerId,
                    d.code AS disciplineCode,
                    d.name AS disciplineName,
                    a.day AS day,

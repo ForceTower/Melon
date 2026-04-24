@@ -5,12 +5,14 @@ import SwiftUI
 /// alternative to `ScheduleGridView` that trades the at-a-glance matrix for
 /// a deeper read on the currently-selected day.
 struct ScheduleFocusedView: View {
+    private let disciplinesFactory: DisciplinesFactory
     @State private var viewModel: ScheduleFocusedViewModel
     @State private var activeIdx: Int
     @State private var entering: Bool = true
     @State private var hasEntered: Bool = false
 
-    init(factory: ScheduleFocusedFactory) {
+    init(factory: ScheduleFocusedFactory, disciplinesFactory: DisciplinesFactory) {
+        self.disciplinesFactory = disciplinesFactory
         _viewModel = State(initialValue: factory.makeViewModel())
         // Seed the active pill with today's Mon..Sun index so the view renders
         // in the right place before the KMP flow emits its first snapshot.
@@ -20,6 +22,16 @@ struct ScheduleFocusedView: View {
     private var weekRange: String { viewModel.weekRangeLabel }
 
     var body: some View {
+        NavigationStack {
+            screenBody
+                .navigationDestination(for: Discipline.self) { seed in
+                    DisciplineDetailView(seed: seed, factory: disciplinesFactory)
+                }
+                .toolbar(.hidden, for: .navigationBar)
+        }
+    }
+
+    private var screenBody: some View {
         ZStack(alignment: .top) {
             UNESColor.surface.ignoresSafeArea()
 

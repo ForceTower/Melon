@@ -31,7 +31,7 @@ struct ConnectedView: View {
             Tab(ConnectedTab.schedule.label, systemImage: ConnectedTab.schedule.icon, value: .schedule) {
                 switch scheduleVariant {
                 case .grid:    ScheduleGridView()
-                case .focused: ScheduleFocusedView(factory: scheduleFocused)
+                case .focused: ScheduleFocusedView(factory: scheduleFocused, disciplinesFactory: disciplines)
                 }
             }
             Tab(ConnectedTab.classes.label, systemImage: ConnectedTab.classes.icon, value: .classes) {
