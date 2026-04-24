@@ -16,6 +16,7 @@ struct FCVerdictHero: View {
                 .padding(.bottom, 14)
 
             FCMeter(avg: verdict.avg, tone: copy.tone)
+                .frame(maxWidth: .infinity, alignment: .center)
 
             titleBlock
                 .padding(.top, 4)

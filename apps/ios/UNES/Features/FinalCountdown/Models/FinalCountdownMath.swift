@@ -4,8 +4,8 @@ import Foundation
 ///
 /// UEFS-style rules:
 /// - média ≥ 7,0           → aprovação direta
-/// - 3,0 ≤ média < 7,0     → VF; precisa de F tal que 0,6·m + 0,4·F ≥ 5
-/// - média < 3,0           → reprovação direta, sem direito a VF
+/// - 3,0 ≤ média < 7,0     → Final; precisa de F tal que 0,6·m + 0,4·F ≥ 5
+/// - média < 3,0           → reprovação direta, sem direito a Final
 enum FinalCountdownMath {
     static let passThreshold: Double = 7
     static let failThreshold: Double = 3
@@ -38,7 +38,7 @@ enum FinalCountdownMath {
         return average(projected, weighted: weighted)
     }
 
-    /// Grade required on the VF to close at `finalCutoff` (5). Solved from
+    /// Grade required on the Final to close at `finalCutoff` (5). Solved from
     /// 0,6·m + 0,4·F ≥ 5 → F ≥ (5 − 0,6·m) / 0,4.
     static func neededFinal(avg: Double) -> Double {
         (finalCutoff - finalAvgWeight * avg) / finalExamWeight
@@ -126,7 +126,7 @@ enum FinalCountdownCopy {
                 titleLines: ["Fechou!", "Você passou.", "Sem drama."],
                 headline: FinalCountdownMath.formatGrade(verdict.avg),
                 sub: "média final · acima de 7,0",
-                message: "Pode respirar. A média de \(FinalCountdownMath.formatGrade(verdict.avg)) já garante aprovação direta sem ir para a VF.",
+                message: "Pode respirar. A média de \(FinalCountdownMath.formatGrade(verdict.avg)) já garante aprovação direta sem ir para a Final.",
                 tone: .green, icon: "trophy.fill"
             )
         case .ontrack:
@@ -147,17 +147,17 @@ enum FinalCountdownCopy {
                 eyebrow: "dá pra fechar",
                 titleLines: ["Dá pra fechar!", "Precisa focar no trabalho.", ""],
                 headline: need,
-                sub: "necessário no curinga pra evitar VF",
+                sub: "necessário no curinga pra evitar a Final",
                 message: "Tá apertado mas é possível. Você precisa de \(need) ou mais na última avaliação pra não ir pra final.",
                 tone: .amber, icon: "bolt.fill"
             )
         case .borderlineFinal:
             return FCVerdictCopy(
                 eyebrow: "rumo à final",
-                titleLines: ["Vai ter VF.", "Sem tragédia.", ""],
+                titleLines: ["Vai ter Final.", "Sem tragédia.", ""],
                 headline: "> 10",
                 sub: "curinga não resolve sozinho",
-                message: "Mesmo com 10 na última avaliação a média não chega em 7,0. A VF vai acontecer — mas ainda é passável.",
+                message: "Mesmo com 10 na última avaliação a média não chega em 7,0. A Final vai acontecer — mas ainda é passável.",
                 tone: .coral, icon: "flag.fill"
             )
         case .final:
@@ -165,10 +165,10 @@ enum FinalCountdownCopy {
             let need = FinalCountdownMath.formatGrade(verdict.need)
             return FCVerdictCopy(
                 eyebrow: "indo pra final",
-                titleLines: ["Calma.", "Dá pra fechar na VF.", ""],
+                titleLines: ["Calma.", "Dá pra fechar na Final.", ""],
                 headline: need,
                 sub: "necessário na final pra passar",
-                message: "Com média \(avg), você precisa de \(need) na VF. A fórmula é 0,6·média + 0,4·final ≥ 5.",
+                message: "Com média \(avg), você precisa de \(need) na Final. A fórmula é 0,6·média + 0,4·final ≥ 5.",
                 tone: .coral, icon: "flag.fill"
             )
         case .impossible:
@@ -179,7 +179,7 @@ enum FinalCountdownCopy {
                 titleLines: ["Não rola.", "Nem com 10 na final.", ""],
                 headline: "10",
                 sub: "insuficiente — reprovação mesmo com nota máxima",
-                message: "Com média \(avg), seria necessário \(need) na VF. Como o máximo é 10, não é mais possível passar pela final.",
+                message: "Com média \(avg), seria necessário \(need) na Final. Como o máximo é 10, não é mais possível passar pela Final.",
                 tone: .plum, icon: "skull.fill"
             )
         case .failed:
@@ -188,8 +188,8 @@ enum FinalCountdownCopy {
                 eyebrow: "reprovada",
                 titleLines: ["Ciclo encerrado.", "Volta em 2026.2.", ""],
                 headline: avg,
-                sub: "abaixo de 3,0 · sem VF",
-                message: "Média abaixo do piso de 3,0 — não há direito à VF. Disciplina reprovada, mas não é o fim do mundo. Na próxima.",
+                sub: "abaixo de 3,0 · sem Final",
+                message: "Média abaixo do piso de 3,0 — não há direito à Final. Disciplina reprovada, mas não é o fim do mundo. Na próxima.",
                 tone: .plum, icon: "skull.fill"
             )
         case .failingTrack:
@@ -199,7 +199,7 @@ enum FinalCountdownCopy {
                 titleLines: ["Complicado.", "Acerte o curinga.", ""],
                 headline: best,
                 sub: "melhor cenário possível",
-                message: "Mesmo tirando 10 no curinga, a média ficaria em \(best). Dá pra ir pra VF, mas é preciso caprichar.",
+                message: "Mesmo tirando 10 no curinga, a média ficaria em \(best). Dá pra ir pra Final, mas é preciso caprichar.",
                 tone: .coral, icon: "flag.fill"
             )
         case .empty:

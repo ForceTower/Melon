@@ -1,8 +1,8 @@
 import SwiftUI
 
 /// "◦ composição" card — one horizontal bar per row showing the absolute
-/// score (0–10), followed by the three rule pills (piso VF / aprovação /
-/// fórmula VF). Unfilled rows show a striped placeholder, wildcards get the
+/// score (0–10), followed by the three rule pills (piso final / aprovação /
+/// fórmula final). Unfilled rows show a striped placeholder, wildcards get the
 /// amber tint, and bars pick a color from the score band.
 struct FCBreakdown: View {
     let rows: [FCRow]
@@ -32,9 +32,9 @@ struct FCBreakdown: View {
                 .overlay(UNESColor.line)
 
             HStack(spacing: 6) {
-                rulePill(label: "PISO VF", value: "3,0", tone: .coral)
+                rulePill(label: "PISO FINAL", value: "3,0", tone: .coral)
                 rulePill(label: "APROVAÇÃO", value: "7,0", tone: .green)
-                rulePill(label: "FÓRMULA VF", value: "0,6m + 0,4f", tone: .teal)
+                rulePill(label: "FÓRMULA FINAL", value: "0,6m + 0,4f", tone: .teal)
             }
         }
         .padding(14)

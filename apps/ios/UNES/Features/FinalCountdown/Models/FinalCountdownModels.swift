@@ -25,12 +25,12 @@ struct FCRow: Identifiable, Hashable {
 ///
 /// - `passed`: all rows filled, avg ≥ 7 (or best-case ≥ 7 with one missing).
 /// - `ontrack`: one row missing, but the avg is comfortably above 7.
-/// - `borderline`: one row missing; needs ≥ X on that row to skip VF.
-/// - `borderlineFinal`: even a 10 on the missing row won't reach 7 — VF
+/// - `borderline`: one row missing; needs ≥ X on that row to skip the Final.
+/// - `borderlineFinal`: even a 10 on the missing row won't reach 7 — Final
 ///   inevitable but still winnable.
-/// - `final`: all filled, 3 ≤ avg < 7, needs `need` on VF to close at 5.
-/// - `impossible`: all filled, VF math needs > 10 — reprovação mesmo.
-/// - `failed`: all filled, avg < 3, no right to VF.
+/// - `final`: all filled, 3 ≤ avg < 7, needs `need` on the Final to close at 5.
+/// - `impossible`: all filled, Final math needs > 10 — reprovação mesmo.
+/// - `failed`: all filled, avg < 3, no right to the Final.
 /// - `failingTrack`: one missing, even best case stays below 3.
 /// - `empty`: nothing to compute.
 enum FCVerdictKind: String, Hashable {
@@ -44,7 +44,7 @@ struct FCVerdict: Hashable {
     let worst: Double?
     /// Grade required on the wildcard row to close at 7 (partial-fill states).
     let wildcardNeeded: Double?
-    /// Grade required on the VF to close at 5 (`final` state).
+    /// Grade required on the Final to close at 5 (`final` state).
     let need: Double?
 }
 

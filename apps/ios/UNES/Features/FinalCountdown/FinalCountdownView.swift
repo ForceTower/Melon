@@ -2,7 +2,7 @@ import SwiftUI
 
 /// Grade calculator ("Final Countdown"). Given a discipline and a set of
 /// evaluation rows, the screen tells the student their verdict — passed,
-/// indo pra VF, reprovada, etc. — and what they still need to do.
+/// indo pra Final, reprovada, etc. — and what they still need to do.
 ///
 /// This is an offline/what-if tool: state lives entirely in the view. The
 /// `seed` discipline only drives the context chip at the top; the math
@@ -250,7 +250,7 @@ struct FinalCountdownView: View {
                 .font(UNESFont.serif(15, italic: true))
                 .tracking(-0.08)
                 .foregroundStyle(UNESColor.ink3)
-            Text("FAÇA AS CONTAS ANTES QUE A VF FAÇA VOCÊ")
+            Text("FAÇA AS CONTAS ANTES QUE A FINAL FAÇA VOCÊ")
                 .font(UNESFont.mono(9))
                 .tracking(1.26)
                 .foregroundStyle(UNESColor.ink4)
