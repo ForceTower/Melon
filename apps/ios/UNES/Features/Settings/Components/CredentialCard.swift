@@ -14,7 +14,7 @@ struct CredentialCard: View {
             header
 
             VStack(spacing: 0) {
-                CredentialField(label: "matrícula", value: credentials.username, canCopy: true)
+                CredentialField(label: "usuário", value: credentials.username, canCopy: true)
 
                 Rectangle()
                     .fill(UNESColor.line)
@@ -56,7 +56,7 @@ struct CredentialCard: View {
             .shadow(color: SettingsTone.plum.background.opacity(0.28), radius: 6, x: 0, y: 4)
 
             VStack(alignment: .leading, spacing: 2) {
-                Text("Credenciais idUFF")
+                Text("Credenciais Portal")
                     .font(UNESFont.sans(13, weight: .semibold))
                     .tracking(-0.07)
                     .foregroundStyle(UNESColor.ink)

@@ -72,7 +72,7 @@ struct SettingsView: View {
 
     private var accountSection: some View {
         VStack(spacing: 0) {
-            SettingsSectionHeader(eyebrow: "capítulo 1", title: "Conta", meta: "idUFF")
+            SettingsSectionHeader(eyebrow: "capítulo 1", title: "Conta", meta: "UEFS")
             CredentialCard(
                 credentials: SettingsFixtures.credentials,
                 revealed: $state.credentialsRevealed
