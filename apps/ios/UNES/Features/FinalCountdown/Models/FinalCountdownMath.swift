@@ -44,6 +44,19 @@ enum FinalCountdownMath {
         (finalCutoff - finalAvgWeight * avg) / finalExamWeight
     }
 
+    /// Truncate to one decimal. Matches how the university records grades —
+    /// a raw 6,95 becomes 6,9, not 7,0.
+    static func floorToTenth(_ value: Double) -> Double {
+        (value * 10).rounded(.down) / 10
+    }
+
+    /// Round up to one decimal. Used for "grade needed" values so that a raw
+    /// requirement of 6,47 surfaces as 6,5 — the student scoring exactly the
+    /// displayed value still clears the cutoff after truncation.
+    static func ceilToTenth(_ value: Double) -> Double {
+        (value * 10).rounded(.up) / 10
+    }
+
     /// If exactly one row is missing, the score it would need to hit `target`
     /// overall. Returns nil when the count doesn't match the single-empty
     /// shape, since the UI doesn't solve for multi-empty cases (that branch
@@ -68,11 +81,13 @@ enum FinalCountdownMath {
 
     static func verdict(for rows: [FCRow], weighted: Bool) -> FCVerdict {
         let allFilled = rows.allSatisfy { $0.score != nil }
-        let avg = average(rows, weighted: weighted)
 
-        guard let avg else {
+        guard let rawAvg = average(rows, weighted: weighted) else {
             return FCVerdict(kind: .empty, avg: nil, best: nil, worst: nil, wildcardNeeded: nil, need: nil)
         }
+        // Everything compared or displayed uses the truncated grade — a raw
+        // 6,95 never gets rounded up to 7,0 and sneaks past the cutoff.
+        let avg = floorToTenth(rawAvg)
 
         if allFilled {
             if avg >= passThreshold {
@@ -81,7 +96,7 @@ enum FinalCountdownMath {
             if avg < failThreshold {
                 return FCVerdict(kind: .failed, avg: avg, best: nil, worst: nil, wildcardNeeded: nil, need: nil)
             }
-            let need = neededFinal(avg: avg)
+            let need = ceilToTenth(neededFinal(avg: avg))
             if need > 10 {
                 return FCVerdict(kind: .impossible, avg: avg, best: nil, worst: nil, wildcardNeeded: nil, need: need)
             }
@@ -89,9 +104,9 @@ enum FinalCountdownMath {
         }
 
         // Partial: project best/worst and solve for the single-empty case.
-        let best = projectAverage(rows, weighted: weighted, wildcardValue: 10)
-        let worst = projectAverage(rows, weighted: weighted, wildcardValue: 0)
-        let wildcardNeeded = neededForPass(rows, weighted: weighted)
+        let best = projectAverage(rows, weighted: weighted, wildcardValue: 10).map(floorToTenth)
+        let worst = projectAverage(rows, weighted: weighted, wildcardValue: 0).map(floorToTenth)
+        let wildcardNeeded = neededForPass(rows, weighted: weighted).map(ceilToTenth)
 
         if let best, best < failThreshold {
             return FCVerdict(kind: .failingTrack, avg: avg, best: best, worst: worst, wildcardNeeded: nil, need: nil)
@@ -135,7 +150,7 @@ enum FinalCountdownCopy {
                 eyebrow: "no caminho",
                 titleLines: ["Tá firme.", "Só não entregue zerada.", ""],
                 headline: "OK",
-                sub: needed.map { "mande ≥ \(FinalCountdownMath.formatGrade($0)) e fecha em 7,0" } ?? "termine as avaliações",
+                sub: needed.map { "mande ≥ \(FinalCountdownMath.formatGrade($0)) e passa em 7,0" } ?? "termine as avaliações",
                 message: needed.map {
                     "Com a média atual, qualquer coisa acima de \(FinalCountdownMath.formatGrade($0)) na última avaliação te dá aprovação direta."
                 } ?? "A média provável vai te levar pra aprovação direta. Continue assim.",
@@ -144,8 +159,8 @@ enum FinalCountdownCopy {
         case .borderline:
             let need = FinalCountdownMath.formatGrade(verdict.wildcardNeeded)
             return FCVerdictCopy(
-                eyebrow: "dá pra fechar",
-                titleLines: ["Dá pra fechar!", "Precisa focar no trabalho.", ""],
+                eyebrow: "dá pra passar",
+                titleLines: ["Dá pra passar!", "Precisa focar no trabalho.", ""],
                 headline: need,
                 sub: "necessário no curinga pra evitar a Final",
                 message: "Tá apertado mas é possível. Você precisa de \(need) ou mais na última avaliação pra não ir pra final.",
@@ -165,7 +180,7 @@ enum FinalCountdownCopy {
             let need = FinalCountdownMath.formatGrade(verdict.need)
             return FCVerdictCopy(
                 eyebrow: "indo pra final",
-                titleLines: ["Calma.", "Dá pra fechar na Final.", ""],
+                titleLines: ["Calma.", "Dá pra passar na Final.", ""],
                 headline: need,
                 sub: "necessário na final pra passar",
                 message: "Com média \(avg), você precisa de \(need) na Final. A fórmula é 0,6·média + 0,4·final ≥ 5.",

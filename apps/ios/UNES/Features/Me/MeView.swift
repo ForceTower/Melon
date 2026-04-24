@@ -17,6 +17,7 @@ struct MeView: View {
     // once `LogoutConfirmationSheet` reports its intrinsic size so the
     // detent never leaves empty space below the buttons.
     @State private var logoutSheetHeight: CGFloat = 380
+    @State private var shortcutPath: [Shortcut.Kind] = []
 
     init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
@@ -35,10 +36,18 @@ struct MeView: View {
     }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $shortcutPath) {
             screenBody
                 .navigationTitle("Eu")
                 .toolbar(.hidden, for: .navigationBar)
+                .navigationDestination(for: Shortcut.Kind.self) { kind in
+                    switch kind {
+                    case .countdown:
+                        FinalCountdownView()
+                    default:
+                        EmptyView()
+                    }
+                }
                 .task { await viewModel.observe() }
                 .sheet(isPresented: logoutSheetBinding) {
                     logoutSheet
@@ -146,7 +155,7 @@ struct MeView: View {
 
                         VStack(spacing: 0) {
                             MeSectionLabel(label: "atalhos fixados", actionLabel: "gerenciar")
-                            ShortcutGrid(shortcuts: pinned)
+                            ShortcutGrid(shortcuts: pinned, onTap: handleShortcutTap)
                         }
                         .fadeUpOnAppear(delay: 0.3, distance: 12, duration: 0.55)
 
@@ -166,6 +175,15 @@ struct MeView: View {
                     .padding(.bottom, 24)
                 }
             }
+        }
+    }
+
+    private func handleShortcutTap(_ kind: Shortcut.Kind) {
+        switch kind {
+        case .countdown:
+            shortcutPath.append(kind)
+        default:
+            break
         }
     }
 

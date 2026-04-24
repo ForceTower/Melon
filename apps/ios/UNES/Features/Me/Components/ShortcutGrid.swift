@@ -5,6 +5,7 @@ import SwiftUI
 /// iOS this will eventually hang off a "gerenciar" sheet).
 struct ShortcutGrid: View {
     let shortcuts: [Shortcut]
+    var onTap: (Shortcut.Kind) -> Void = { _ in }
 
     private let columns: [GridItem] = Array(
         repeating: GridItem(.flexible(), spacing: 8, alignment: .topLeading),
@@ -14,7 +15,7 @@ struct ShortcutGrid: View {
     var body: some View {
         LazyVGrid(columns: columns, spacing: 8) {
             ForEach(shortcuts) { shortcut in
-                ShortcutTile(shortcut: shortcut)
+                ShortcutTile(shortcut: shortcut) { onTap(shortcut.id) }
             }
         }
     }
@@ -22,12 +23,10 @@ struct ShortcutGrid: View {
 
 struct ShortcutTile: View {
     let shortcut: Shortcut
+    var onTap: () -> Void = {}
 
     var body: some View {
-        Button {
-            // Wiring to individual destinations will happen per-shortcut;
-            // for now each tile is a press target with no action.
-        } label: {
+        Button(action: onTap) {
             VStack(alignment: .leading, spacing: 0) {
                 iconBadge
                     .padding(.bottom, 10)

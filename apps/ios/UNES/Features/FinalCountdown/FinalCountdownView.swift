@@ -100,6 +100,7 @@ struct FinalCountdownView: View {
                     .padding(.bottom, 110)
                 }
             }
+            .scrollDismissesKeyboard(.immediately)
         }
         // Keep the system nav bar (preserves the back chevron and the
         // interactive swipe gesture) but let the header's warm-mesh wash
@@ -349,7 +350,7 @@ extension FinalCountdownView {
 // MARK: - Header + Chip + Toggle
 
 /// Screen-level header: eyebrow + "CALCULADORA · OFFLINE" badge on the top
-/// row, then the "Dá pra fechar?" display title. The back chevron comes from
+/// row, then the "Dá pra passar?" display title. The back chevron comes from
 /// the system nav bar, so there's no custom button here.
 private struct FCHeader: View {
     var body: some View {
@@ -379,7 +380,7 @@ private struct FCHeader: View {
                     .font(UNESFont.serif(38, italic: true))
                     .foregroundColor(UNESColor.accent)
                 +
-                Text(" fechar?")
+                Text(" passar?")
                     .font(UNESFont.serif(38))
                     .foregroundColor(UNESColor.ink)
             )
