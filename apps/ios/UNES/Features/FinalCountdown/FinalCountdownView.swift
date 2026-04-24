@@ -77,7 +77,7 @@ struct FinalCountdownView: View {
                                 FCGradeRow(
                                     row: $row,
                                     weighted: weighted,
-                                    canRemove: rows.count > 1,
+                                    canRemove: true,
                                     onRemove: { remove(row) }
                                 )
                             }
@@ -289,9 +289,7 @@ struct FinalCountdownView: View {
 
     private static var defaultRows: [FCRow] {
         [
-            FCRow(label: "VA1", score: 6.5),
-            FCRow(label: "VA2", score: 5.2),
-            FCRow(label: "Trab", score: nil, wildcard: true),
+            
         ]
     }
 }
@@ -302,10 +300,12 @@ extension FinalCountdownView {
     /// Canned row sets used to screenshot each verdict state. Matches
     /// `FORCED_ROWS` in `screens-final-countdown.jsx`.
     enum ForcedMode: Hashable {
-        case passed, onTrack, borderline, final, impossible, failed
+        case passed, onTrack, borderline, final, impossible, failed, empty
 
         var rows: [FCRow] {
             switch self {
+            case .empty:
+                return []
             case .passed:
                 return [
                     FCRow(label: "VA1", score: 8.5),
@@ -554,6 +554,17 @@ private struct FCWeightedToggle: View {
                     .first(where: { $0.id == DisciplineFixtures.currentSemesterId })?
                     .disciplines.first,
                 forcedMode: .impossible
+            )
+        }
+    }
+
+    #Preview("Empty") {
+        NavigationStack {
+            FinalCountdownView(
+                seed: DisciplineFixtures.semesters
+                    .first(where: { $0.id == DisciplineFixtures.currentSemesterId })?
+                    .disciplines.first,
+                forcedMode: .empty
             )
         }
     }
