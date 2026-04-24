@@ -64,7 +64,7 @@ enum MeFixtures {
         .init(id: .sync,     label: "Registro de sincronização",
               hint: "última: há 2 min",              systemImage: "arrow.triangle.2.circlepath", statusOK: true),
         .init(id: .about,    label: "Sobre o aplicativo",
-              hint: "versão 4.2.1 · build 1842",     systemImage: "info.circle"),
+              hint: "versão \(Bundle.main.appVersion) · build \(Bundle.main.buildNumber)", systemImage: "info.circle"),
         .init(id: .feedback, label: "Erros & sugestões",
               hint: "fale com os mantenedores",      systemImage: "ladybug"),
         .init(id: .licenses, label: "Licenças open source",

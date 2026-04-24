@@ -19,7 +19,7 @@ struct SettingsHeader: View {
             }
             .padding(.bottom, 10)
 
-            Text("◦ PREFERÊNCIAS · V4.2.1")
+            Text("◦ PREFERÊNCIAS · V\(Bundle.main.appVersion)")
                 .font(UNESFont.sans(12, weight: .medium))
                 .tracking(1.44)
                 .foregroundStyle(UNESColor.ink3)

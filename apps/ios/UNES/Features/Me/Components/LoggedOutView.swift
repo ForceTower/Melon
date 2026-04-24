@@ -83,7 +83,7 @@ struct LoggedOutView: View {
             )
             .fadeUpOnAppear(delay: 0.4, distance: 12, duration: 0.55)
 
-            Text("◦ UNES V4.2.1 ◦")
+            Text("◦ UNES V\(Bundle.main.appVersion) ◦")
                 .font(UNESFont.mono(9))
                 .tracking(1.26)
                 .textCase(.uppercase)
