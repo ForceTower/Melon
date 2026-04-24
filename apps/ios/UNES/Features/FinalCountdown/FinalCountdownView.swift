@@ -174,44 +174,23 @@ struct FinalCountdownView: View {
     }
 
     private var quickActions: some View {
-        HStack(spacing: 8) {
-            Button(action: { /* TODO: persist scenario */ }) {
-                HStack(spacing: 6) {
-                    Image(systemName: "sparkles")
-                        .font(.system(size: 12, weight: .semibold))
-                    Text("Salvar cenário")
-                        .font(UNESFont.sans(12.5, weight: .semibold))
-                        .tracking(-0.06)
-                }
-                .foregroundStyle(UNESColor.surface)
+        Button(action: reset) {
+            Text("Limpar")
+                .font(UNESFont.sans(12.5, weight: .medium))
+                .tracking(-0.06)
+                .foregroundStyle(UNESColor.ink2)
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 11)
-                .padding(.horizontal, 14)
                 .background(
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
-                        .fill(UNESColor.ink)
+                        .fill(UNESColor.card)
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 14, style: .continuous)
+                                .strokeBorder(UNESColor.cardLine, lineWidth: 1)
+                        )
                 )
-            }
-            .buttonStyle(.plain)
-
-            Button(action: reset) {
-                Text("Limpar")
-                    .font(UNESFont.sans(12.5, weight: .medium))
-                    .tracking(-0.06)
-                    .foregroundStyle(UNESColor.ink2)
-                    .padding(.vertical, 11)
-                    .padding(.horizontal, 18)
-                    .background(
-                        RoundedRectangle(cornerRadius: 14, style: .continuous)
-                            .fill(UNESColor.card)
-                            .overlay(
-                                RoundedRectangle(cornerRadius: 14, style: .continuous)
-                                    .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                            )
-                    )
-            }
-            .buttonStyle(.plain)
         }
+        .buttonStyle(.plain)
     }
 
     private var legendFooter: some View {
@@ -242,7 +221,10 @@ struct FinalCountdownView: View {
         + Text("3,0 ≤ m < 7,0").font(UNESFont.sans(11.5, weight: .semibold)).foregroundColor(UNESColor.ink)
         + Text(" e reprovação direta para ")
         + Text("m < 3,0").font(UNESFont.sans(11.5, weight: .semibold)).foregroundColor(UNESColor.ink)
-        + Text(". Marque uma avaliação como ★ curinga para ver o que falta.")
+        + Text(", contudo, sua experiência pode variar, eu já ouvi histórias que mesmo tendo média ")
+        + Text("m >= 2.4").font(UNESFont.sans(11.5, weight: .semibold)).foregroundColor(UNESColor.ink)
+        + Text(" você ainda consegue fazer a final, mas vai precisar de um literal 10 para passar")
+        + Text(". Deixe uma avaliação em branco para ver quanto precisa tirar nela.")
     }
 
     private var signature: some View {

@@ -17,7 +17,10 @@ struct MeView: View {
     // once `LogoutConfirmationSheet` reports its intrinsic size so the
     // detent never leaves empty space below the buttons.
     @State private var logoutSheetHeight: CGFloat = 380
-    @State private var shortcutPath: [Shortcut.Kind] = []
+    // Type-erased path — the Me hub can push both `Shortcut.Kind` (from the
+    // shortcut grid) and `MeSettingsRow.Kind` (from the settings list) onto
+    // the same stack.
+    @State private var path = NavigationPath()
 
     init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
@@ -36,7 +39,7 @@ struct MeView: View {
     }
 
     var body: some View {
-        NavigationStack(path: $shortcutPath) {
+        NavigationStack(path: $path) {
             screenBody
                 .navigationTitle("Eu")
                 .toolbar(.hidden, for: .navigationBar)
@@ -44,6 +47,14 @@ struct MeView: View {
                     switch kind {
                     case .countdown:
                         FinalCountdownView()
+                    default:
+                        EmptyView()
+                    }
+                }
+                .navigationDestination(for: MeSettingsRow.Kind.self) { kind in
+                    switch kind {
+                    case .settings:
+                        SettingsView()
                     default:
                         EmptyView()
                     }
@@ -161,7 +172,7 @@ struct MeView: View {
 
                         VStack(spacing: 0) {
                             MeSectionLabel(label: "definições")
-                            SettingsCard(rows: settings)
+                            SettingsCard(rows: settings, onTap: handleSettingsRowTap)
                         }
                         .fadeUpOnAppear(delay: 0.38, distance: 12, duration: 0.55)
 
@@ -181,7 +192,16 @@ struct MeView: View {
     private func handleShortcutTap(_ kind: Shortcut.Kind) {
         switch kind {
         case .countdown:
-            shortcutPath.append(kind)
+            path.append(kind)
+        default:
+            break
+        }
+    }
+
+    private func handleSettingsRowTap(_ row: MeSettingsRow) {
+        switch row.id {
+        case .settings:
+            path.append(row.id)
         default:
             break
         }

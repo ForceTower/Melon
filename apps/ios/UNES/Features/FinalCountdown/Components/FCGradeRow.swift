@@ -102,19 +102,20 @@ struct FCGradeRow: View {
     }
 
     private var weightStepper: some View {
-        HStack(spacing: 0) {
+        HStack(spacing: 2) {
             Button {
                 row.weight = max(1, row.weight - 1)
             } label: {
                 Image(systemName: "minus")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(UNESColor.ink3)
-                    .frame(width: 28, height: 32)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
 
             Text("×\(row.weight)")
-                .font(UNESFont.mono(13, weight: .semibold))
+                .font(UNESFont.mono(12, weight: .semibold))
                 .foregroundStyle(UNESColor.ink)
                 .frame(minWidth: 22)
 
@@ -122,18 +123,19 @@ struct FCGradeRow: View {
                 row.weight = min(9, row.weight + 1)
             } label: {
                 Image(systemName: "plus")
-                    .font(.system(size: 12, weight: .semibold))
+                    .font(.system(size: 14, weight: .semibold))
                     .foregroundStyle(UNESColor.ink3)
-                    .frame(width: 28, height: 32)
+                    .frame(width: 32, height: 32)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
         }
-        .padding(2)
+        .padding(3)
         .background(
-            RoundedRectangle(cornerRadius: 11, style: .continuous)
+            RoundedRectangle(cornerRadius: 12, style: .continuous)
                 .fill(UNESColor.surface2)
                 .overlay(
-                    RoundedRectangle(cornerRadius: 11, style: .continuous)
+                    RoundedRectangle(cornerRadius: 12, style: .continuous)
                         .strokeBorder(UNESColor.line, lineWidth: 1)
                 )
         )
