@@ -23,7 +23,7 @@ struct SemesterStrip: View {
             HStack {
                 Text(identity.semesterStart)
                 Spacer()
-                Text(identity.finalExam)
+                Text(identity.semesterEnd)
             }
             .font(UNESFont.mono(9))
             .tracking(0.72)

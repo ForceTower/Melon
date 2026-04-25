@@ -66,7 +66,7 @@ struct LogoutConfirmationSheet: View {
                     .tracking(-0.33)
                     .foregroundStyle(UNESColor.ink)
 
-                Text("sessão · \(identity.enrollment)")
+                Text("id · \(identity.enrollment)")
                     .font(UNESFont.mono(10))
                     .tracking(0.8)
                     .textCase(.uppercase)
@@ -88,7 +88,7 @@ struct LogoutConfirmationSheet: View {
                     .lineLimit(1)
                     .truncationMode(.tail)
 
-                Text("matrícula · \(identity.enrollment)")
+                Text("usuario · \(identity.username)")
                     .font(UNESFont.mono(9.5))
                     .tracking(0.57)
                     .foregroundStyle(UNESColor.ink4)

@@ -140,6 +140,7 @@ final class MeViewModel {
             creditsDone: Int(raw.enrollment.completedHours),
             creditsRequired: Int(raw.enrollment.totalHours),
             semesterStart: formatSemesterStart(semester?.startDate),
+            semesterEnd: formatSemesterEnd(semester?.endDate),
             finalExam: formatFinalExam(raw.nextExam)
         )
     }
@@ -166,6 +167,11 @@ final class MeViewModel {
     private static func formatSemesterStart(_ iso: String?) -> String {
         guard let iso, let date = isoDayFormatter.date(from: iso) else { return "" }
         return "início · \(shortDateFormatter.string(from: date))"
+    }
+
+    private static func formatSemesterEnd(_ iso: String?) -> String {
+        guard let iso, let date = isoDayFormatter.date(from: iso) else { return "" }
+        return "fim · \(shortDateFormatter.string(from: date))"
     }
 
     private static func formatFinalExam(_ exam: MeMeNextExam?) -> String {

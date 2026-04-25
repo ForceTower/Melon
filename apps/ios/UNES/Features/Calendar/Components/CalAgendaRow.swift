@@ -108,16 +108,13 @@ struct CalAgendaRow: View {
             .padding(.trailing, 14)
             .frame(maxWidth: .infinity, alignment: .leading)
         }
-        .padding(.bottom, 10)
-        .background(
+        .background(UNESColor.card)
+        .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
+        .overlay(
             RoundedRectangle(cornerRadius: 18, style: .continuous)
-                .fill(UNESColor.card)
-                .overlay(
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .strokeBorder(UNESColor.cardLine, lineWidth: 1)
-                )
-                .padding(.bottom, 10)
+                .strokeBorder(UNESColor.cardLine, lineWidth: 1)
         )
+        .padding(.bottom, 10)
     }
 
     private var metaRow: some View {

@@ -98,7 +98,7 @@ struct LoggedOutView: View {
     }
 
     private var firstNameStylized: String {
-        firstName.lowercased()
+        firstName
     }
 
     private var localDataCard: some View {

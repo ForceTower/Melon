@@ -20,6 +20,7 @@ struct ProfileIdentity {
     let creditsDone: Int
     let creditsRequired: Int
     let semesterStart: String
+    let semesterEnd: String
     let finalExam: String
 }
 

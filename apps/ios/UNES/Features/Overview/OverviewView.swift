@@ -60,8 +60,12 @@ struct OverviewView: View {
                             NowCard(now: now)
                                 .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
                         }
-                        TodayTimeline(items: viewModel.today)
-                            .fadeUpOnAppear(delay: 0.24, distance: 14, duration: 0.55)
+                      
+                        if !viewModel.today.isEmpty {
+                            TodayTimeline(items: viewModel.today)
+                                .fadeUpOnAppear(delay: 0.24, distance: 14, duration: 0.55)
+                        }
+                      
                         OverviewTileGrid(
                             grade: viewModel.gradeTile,
                             messages: viewModel.messagesTile,

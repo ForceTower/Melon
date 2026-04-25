@@ -10,7 +10,7 @@ struct MeView: View {
     // Shortcut grid + settings rows are UI affordances, not user data — they
     // keep reading from `MeFixtures`. Only the hero / semester strip / CR /
     // credits are viewmodel-driven.
-    private let pinned = MeFixtures.pinned(from: [.calendar, .countdown, .account])
+    private let pinned = MeFixtures.pinned(from: [.calendar, .countdown])
     private let settingsFactory: SettingsFactory?
     private let calendarFactory: CalendarFactory?
     private let onLoggedOut: () -> Void
@@ -204,7 +204,7 @@ struct MeView: View {
                             .fadeUpOnAppear(delay: 0.22, distance: 12, duration: 0.55)
 
                         VStack(spacing: 0) {
-                            MeSectionLabel(label: "atalhos fixados", actionLabel: "gerenciar")
+                            MeSectionLabel(label: "atalhos fixados")
                             ShortcutGrid(shortcuts: pinned, onTap: handleShortcutTap)
                         }
                         .fadeUpOnAppear(delay: 0.3, distance: 12, duration: 0.55)

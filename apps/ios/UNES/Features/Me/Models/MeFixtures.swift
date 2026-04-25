@@ -18,6 +18,7 @@ enum MeFixtures {
         creditsDone: 142,
         creditsRequired: 240,
         semesterStart: "início · 24 fev",
+        semesterEnd: "fim · 17 de jul",
         finalExam: "prova final · 07 jul"
     )
 
@@ -34,7 +35,7 @@ enum MeFixtures {
                              systemImage: "fork.knife",         tone: .amber),
         .calendar:  Shortcut(id: .calendar,  label: "Calendário",      hint: "datas acadêmicas",
                              systemImage: "calendar",           tone: .coral),
-        .countdown: Shortcut(id: .countdown, label: "Final Countdown", hint: "semestre · 11 sem",
+        .countdown: Shortcut(id: .countdown, label: "Final Countdown", hint: "dá para passar?",
                              systemImage: "timer",              tone: .plum),
         .request:   Shortcut(id: .request,   label: "Requerimentos",   hint: "secretaria",
                              systemImage: "doc.text",           tone: .teal),
@@ -65,13 +66,13 @@ enum MeFixtures {
     static func settingsRows(syncHint: String) -> [MeSettingsRow] {
         [
             .init(id: .settings, label: "Configurações",
-                  hint: "tema, notificações, dados",    systemImage: "gearshape"),
-            .init(id: .sync,     label: "Registro de sincronização",
-                  hint: syncHint,                        systemImage: "arrow.triangle.2.circlepath", statusOK: true),
+                  hint: "conta, exibição, notificações",    systemImage: "gearshape"),
+//            .init(id: .sync,     label: "Registro de sincronização",
+//                  hint: syncHint,                        systemImage: "arrow.triangle.2.circlepath", statusOK: true),
             .init(id: .about,    label: "Sobre o aplicativo",
                   hint: "versão \(Bundle.main.appVersion) · build \(Bundle.main.buildNumber)", systemImage: "info.circle"),
             .init(id: .feedback, label: "Erros & sugestões",
-                  hint: "fale com os mantenedores",      systemImage: "ladybug"),
+                  hint: "fale com o desenvolvedor",      systemImage: "ladybug"),
             .init(id: .licenses, label: "Licenças open source",
                   hint: licensesHint,                   systemImage: "c.circle"),
         ]

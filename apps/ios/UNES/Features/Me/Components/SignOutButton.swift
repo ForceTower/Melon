@@ -18,22 +18,10 @@ struct SignOutButton: View {
             .foregroundStyle(MeColors.signOut)
             .frame(maxWidth: .infinity)
             .padding(.vertical, 13)
-            // Liquid Glass paints over a clear-filled shape which doesn't
-            // hit-test — without this the button would only be tappable
-            // on the icon + text. Anchor the press target to the pill.
             .contentShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
             .background {
-                if #available(iOS 26.0, *) {
-                    // Liquid Glass with a whisper of the destructive tint —
-                    // enough to read as a dedicated action, not so much that
-                    // it competes with real CTAs higher up the screen.
-                    RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        .fill(Color.clear)
-                        .glassEffect(
-                            .regular.tint(MeColors.signOut.opacity(0.08)),
-                            in: RoundedRectangle(cornerRadius: 18, style: .continuous)
-                        )
-                }
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(MeColors.signOut.opacity(0.08))
             }
             .overlay(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
