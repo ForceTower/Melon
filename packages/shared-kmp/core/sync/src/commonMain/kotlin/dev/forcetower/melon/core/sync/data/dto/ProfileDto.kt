@@ -15,18 +15,21 @@ internal data class ProfileResponse(
 // duplicated here so `core/sync` doesn't have to depend on the settings
 // feature module (and risk a cyclic graph). The mapper in
 // `ProfileMapper.toEntity` is the only place that needs this shape.
+//
+// Defaults mirror migration `016_user_settings_preferences` so the client
+// stays usable against an older API that hasn't shipped those columns yet.
 @Serializable
 internal data class ProfileSettingsDto(
-    val gradeSpoiler: Int,
-    val notifMsgBroadcast: Boolean,
-    val notifMsgClass: Boolean,
-    val notifMsgDirect: Boolean,
-    val notifGradePosted: Boolean,
-    val notifGradeChanged: Boolean,
-    val notifGradeDateChanged: Boolean,
-    val notifClassLocation: Boolean,
-    val notifClassMaterial: Boolean,
-    val notifClassSubject: Boolean,
+    val gradeSpoiler: Int = 1,
+    val notifMsgBroadcast: Boolean = true,
+    val notifMsgClass: Boolean = true,
+    val notifMsgDirect: Boolean = true,
+    val notifGradePosted: Boolean = true,
+    val notifGradeChanged: Boolean = true,
+    val notifGradeDateChanged: Boolean = false,
+    val notifClassLocation: Boolean = true,
+    val notifClassMaterial: Boolean = true,
+    val notifClassSubject: Boolean = false,
 )
 
 @Serializable
