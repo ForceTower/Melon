@@ -13,11 +13,17 @@ data class MeProfile(
 
 // Student-facing profile fields. `campus` is intentionally absent: every
 // upstream today is UEFS, so the iOS mapping hardcodes it.
+//
+// `username` is the typed login string from the credentials row; nullable for
+// the brief window between the user upserting and the credentials flow
+// catching up (and for the legacy v4 → v5 destructive migration where the
+// user is sent back to onboarding anyway).
 data class MeIdentity(
     val userName: String,
     val firstName: String,
     val courseName: String?,
     val enrollmentNumber: String,
+    val username: String?,
     val avatarUrl: String?,
 )
 

@@ -55,7 +55,7 @@ struct IdentityCard: View {
 
     private var eyebrowRow: some View {
         HStack {
-            Text("matrícula · \(identity.enrollment)")
+            Text("usuário · \(identity.username)")
                 .font(UNESFont.mono(10))
                 .tracking(1.8)
                 .textCase(.uppercase)

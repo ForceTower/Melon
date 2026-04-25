@@ -6,6 +6,7 @@ import dev.forcetower.melon.core.network.AuthTokenSource
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.User
+import dev.forcetower.melon.core.session.domain.model.UserCredentials
 import dev.forcetower.melon.feature.auth.data.network.AuthService
 import dev.forcetower.melon.feature.auth.data.repository.AuthRepositoryImpl
 import dev.forcetower.melon.feature.auth.domain.model.LoginError
@@ -22,8 +23,10 @@ import io.ktor.http.HttpStatusCode
 import io.ktor.http.headersOf
 import io.ktor.serialization.kotlinx.json.json
 import io.ktor.utils.io.ByteReadChannel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.test.runTest
 import kotlinx.serialization.json.Json
 import kotlin.test.Test
@@ -60,6 +63,8 @@ class LoginFlowTest {
         assertEquals("access-123", sessionStore.lastAccessToken)
         assertEquals("refresh-456", sessionStore.lastRefreshToken)
         assertEquals(User("user-1", "Alice", null), sessionStore.lastUser)
+        assertEquals("alice", sessionStore.lastUsername)
+        assertEquals("hunter2", sessionStore.lastPassword)
         assertEquals(
             AuthState.Authenticated(User("user-1", "Alice", null)),
             sessionStore.authState.value,
@@ -105,6 +110,8 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
     var lastAccessToken: String? = null
     var lastRefreshToken: String? = null
     var lastUser: User? = null
+    var lastUsername: String? = null
+    var lastPassword: String? = null
     var loggedOut: Boolean = false
 
     private val _authState = MutableStateFlow<AuthState>(AuthState.Unauthenticated)
@@ -112,17 +119,31 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
 
     override suspend fun getAccessToken(): String? = lastAccessToken
 
-    override suspend fun persist(accessToken: String, refreshToken: String, user: User) {
+    override suspend fun persist(
+        accessToken: String,
+        refreshToken: String,
+        user: User,
+        username: String,
+        password: String,
+    ) {
         lastAccessToken = accessToken
         lastRefreshToken = refreshToken
         lastUser = user
+        lastUsername = username
+        lastPassword = password
         _authState.value = AuthState.Authenticated(user)
     }
+
+    override suspend fun getCredentials(): UserCredentials? = null
+
+    override fun observeCredentials(): Flow<UserCredentials?> = flowOf(null)
 
     override suspend fun logout() {
         lastAccessToken = null
         lastRefreshToken = null
         lastUser = null
+        lastUsername = null
+        lastPassword = null
         loggedOut = true
         _authState.value = AuthState.Unauthenticated
     }

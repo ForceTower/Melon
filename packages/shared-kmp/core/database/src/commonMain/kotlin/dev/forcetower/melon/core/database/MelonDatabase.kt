@@ -5,6 +5,7 @@ import androidx.room.Database
 import androidx.room.RoomDatabase
 import androidx.room.RoomDatabaseConstructor
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PendingMutationDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
@@ -19,6 +20,7 @@ import dev.forcetower.melon.core.database.entity.ClassLectureEntity
 import dev.forcetower.melon.core.database.entity.ClassSpaceEntity
 import dev.forcetower.melon.core.database.entity.ClassTeacherEntity
 import dev.forcetower.melon.core.database.entity.CourseEntity
+import dev.forcetower.melon.core.database.entity.CredentialsEntity
 import dev.forcetower.melon.core.database.entity.DisciplineEntity
 import dev.forcetower.melon.core.database.entity.DisciplineOfferEntity
 import dev.forcetower.melon.core.database.entity.LectureMaterialEntity
@@ -41,6 +43,7 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         UserEntity::class,
         StudentEntity::class,
         CourseEntity::class,
+        CredentialsEntity::class,
         SemesterEntity::class,
         DisciplineEntity::class,
         DisciplineOfferEntity::class,
@@ -62,7 +65,7 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         SyncStateEntity::class,
         PendingMutationEntity::class,
     ],
-    version = 4,
+    version = 5,
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {
@@ -72,6 +75,7 @@ abstract class MelonDatabase : RoomDatabase() {
     abstract fun academicDao(): AcademicDao
     abstract fun messageDao(): MessageDao
     abstract fun settingsDao(): SettingsDao
+    abstract fun credentialsDao(): CredentialsDao
     abstract fun syncStateDao(): SyncStateDao
     abstract fun pendingMutationDao(): PendingMutationDao
 }

@@ -75,7 +75,17 @@ extension UmbrellaGraph {
             useCases: MeUseCases(
                 observeProfile: observeMeProfileUseCase
             ),
-            sessionStore: sessionStore
+            sessionStore: sessionStore,
+            settingsFactory: settingsFactory
+        )
+    }
+
+    @MainActor
+    var settingsFactory: SettingsFactory {
+        SettingsFactory(
+            useCases: SettingsUseCases(
+                observeCredentials: observeCurrentCredentialsUseCase
+            )
         )
     }
 }

@@ -91,6 +91,9 @@ final class MeViewModel {
             course: raw.identity.courseName ?? "",
             campus: "Universidade Estadual de Feira de Santana",
             enrollment: raw.identity.enrollmentNumber,
+            // Empty-string fallback so the eyebrow renders blank rather than
+            // "nil" while the credentials flow hasn't emitted yet.
+            username: raw.identity.username ?? "",
             avatarInitial: avatarInitial,
             semester: semester?.code ?? "",
             semesterWeek: Int(semester?.currentWeek ?? 0),

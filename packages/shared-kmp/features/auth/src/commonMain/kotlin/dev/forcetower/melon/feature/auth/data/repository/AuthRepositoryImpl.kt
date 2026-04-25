@@ -34,7 +34,7 @@ internal class AuthRepositoryImpl(
     override suspend fun login(username: String, password: String): Outcome<User, LoginError> = try {
         log.i { "login attempt username=$username" }
         val response = api.login(LoginRequest(username, password))
-        return handleLoginResponse(response)
+        return handleLoginResponse(response, username, password)
     } catch (cancellation: CancellationException) {
         throw cancellation
     } catch (ex: SerializationException) {
@@ -45,10 +45,14 @@ internal class AuthRepositoryImpl(
         Outcome.Err(LoginError.Kind.NoConnection)
     }
 
-    private suspend fun handleLoginResponse(response: HttpResponse): Outcome<User, LoginError> {
+    private suspend fun handleLoginResponse(
+        response: HttpResponse,
+        username: String,
+        password: String,
+    ): Outcome<User, LoginError> {
         val status = response.status.value
         return when (status) {
-            in 200..299 -> persistSession(response.body())
+            in 200..299 -> persistSession(response.body(), username, password)
             400 -> {
                 log.w { "login rejected: invalid credentials" }
                 Outcome.Err(LoginError.Kind.InvalidCredentials)
@@ -65,7 +69,11 @@ internal class AuthRepositoryImpl(
         }
     }
 
-    private suspend fun persistSession(envelope: ApiEnvelope<LoginResponse>): Outcome<User, LoginError> {
+    private suspend fun persistSession(
+        envelope: ApiEnvelope<LoginResponse>,
+        username: String,
+        password: String,
+    ): Outcome<User, LoginError> {
         val payload = envelope.data ?: run {
             log.w { "login 2xx with null data (message=${envelope.message})" }
             return Outcome.Err(LoginError.Kind.Unexpected)
@@ -75,6 +83,8 @@ internal class AuthRepositoryImpl(
             accessToken = payload.accessToken,
             refreshToken = payload.refreshToken,
             user = user,
+            username = username,
+            password = password,
         )
         log.i { "login ok userId=${user.id}" }
         return Outcome.Ok(user)

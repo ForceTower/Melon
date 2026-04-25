@@ -48,15 +48,8 @@ struct LoginView: View {
                         .tracking(-1.05)
                         .foregroundStyle(UNESColor.ink)
                         .padding(.top, 10)
-                        .fadeUpOnAppear(delay: 0.15)
-
-                    Text("As mesmas credenciais que você usa pra entrar no Portal. Nada fica no nosso servidor.")
-                        .font(UNESFont.sans(15))
-                        .lineSpacing(3)
-                        .foregroundStyle(UNESColor.ink3)
-                        .padding(.top, 8)
                         .padding(.bottom, 28)
-                        .fadeUpOnAppear(delay: 0.25)
+                        .fadeUpOnAppear(delay: 0.15)
 
                     inputGroup
                         .fadeUpOnAppear(delay: 0.35)

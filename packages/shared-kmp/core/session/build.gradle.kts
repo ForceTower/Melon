@@ -15,6 +15,7 @@ kotlin {
             implementation(project(":packages:shared-kmp:core:database"))
             implementation(libs.kermit)
             implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.kotlinx.datetime)
         }
     }
 }

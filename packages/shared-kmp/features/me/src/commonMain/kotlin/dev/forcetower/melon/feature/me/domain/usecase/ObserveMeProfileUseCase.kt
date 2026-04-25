@@ -1,6 +1,7 @@
 package dev.forcetower.melon.feature.me.domain.usecase
 
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.UserDao
@@ -43,33 +44,43 @@ class ObserveMeProfileUseCase internal constructor(
     private val studentDao: StudentDao,
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
+    private val credentialsDao: CredentialsDao,
 ) {
     private val timeZone = TimeZone.currentSystemDefault()
 
-    operator fun invoke(): Flow<MeProfile> = combine(
-        userDao.observeCurrent(),
-        studentDao.observeCurrent(),
-        semesterDao.observeAll(),
-        academicDao.observeAllEnrolledDisciplines(),
-        academicDao.observeAllPartialGrades(),
-    ) { user, student, semesters, enrollments, grades ->
-        ProfileSlice(user, student, semesters, enrollments, grades)
-    }.flatMapLatest { slice ->
-        val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
-        val active = pickActiveSemester(slice.semesters, today)
-        if (active == null) {
-            flow {
-                emit(buildProfile(slice, active = null, hours = null, nextExam = null, today = today))
-            }
-        } else {
-            combine(
-                academicDao.observeSemesterHoursProgress(active.id, today),
-                academicDao.observeClosestUpcomingEvaluation(active.id, today),
-            ) { hours, next ->
-                buildProfile(slice, active = active, hours = hours, nextExam = next, today = today)
+    operator fun invoke(): Flow<MeProfile> {
+        val baseProfile = combine(
+            userDao.observeCurrent(),
+            studentDao.observeCurrent(),
+            semesterDao.observeAll(),
+            academicDao.observeAllEnrolledDisciplines(),
+            academicDao.observeAllPartialGrades(),
+        ) { user, student, semesters, enrollments, grades ->
+            ProfileSlice(user, student, semesters, enrollments, grades)
+        }.flatMapLatest { slice ->
+            val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
+            val active = pickActiveSemester(slice.semesters, today)
+            if (active == null) {
+                flow {
+                    emit(buildProfile(slice, active = null, hours = null, nextExam = null, today = today))
+                }
+            } else {
+                combine(
+                    academicDao.observeSemesterHoursProgress(active.id, today),
+                    academicDao.observeClosestUpcomingEvaluation(active.id, today),
+                ) { hours, next ->
+                    buildProfile(slice, active = active, hours = hours, nextExam = next, today = today)
+                }
             }
         }
-    }.distinctUntilChanged()
+        // Folded in as an outer combine rather than a sixth source on the
+        // base-slice combine: the `combine` overload tops out at five typed
+        // args, and the credentials row is independent of the active-semester
+        // flatMap branch.
+        return combine(baseProfile, credentialsDao.observeCurrent()) { profile, credentials ->
+            profile.copy(identity = profile.identity.copy(username = credentials?.username))
+        }.distinctUntilChanged()
+    }
 
     private suspend fun buildProfile(
         slice: ProfileSlice,
@@ -107,6 +118,8 @@ class ObserveMeProfileUseCase internal constructor(
             firstName = first,
             courseName = courseName,
             enrollmentNumber = student?.platformId?.toString().orEmpty(),
+            // Filled in by the outer combine over `credentialsDao.observeCurrent()`.
+            username = null,
             avatarUrl = user?.imageUrl,
         )
     }

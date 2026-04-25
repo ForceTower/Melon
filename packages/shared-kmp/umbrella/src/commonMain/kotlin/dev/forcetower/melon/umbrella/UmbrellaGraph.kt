@@ -10,6 +10,7 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -94,6 +95,10 @@ interface UmbrellaGraph {
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.
     val observeMeProfileUseCase: ObserveMeProfileUseCase
+
+    // Configurações reactive surface — emits the active session's typed
+    // upstream credentials so the Settings vault card can render them.
+    val observeCurrentCredentialsUseCase: ObserveCurrentCredentialsUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {

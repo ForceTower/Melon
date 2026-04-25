@@ -110,10 +110,12 @@ struct SettingsCredentials {
 }
 
 enum SettingsFixtures {
-    static let credentials = SettingsCredentials(
-        username: "118.104.072",
-        password: "ma·nogue!ra·2024"
-    )
+    #if DEBUG
+        static let credentials = SettingsCredentials(
+            username: "118.104.072",
+            password: "ma·nogue!ra·2024"
+        )
+    #endif
 
     static let lastSyncLabel = "há 2 min"
 }

@@ -12,6 +12,9 @@ struct MeUseCases {
 struct MeFactory {
     let useCases: MeUseCases
     let sessionStore: SessionSessionStore
+    // Carried so `MeView` can hand it down to the pushed Settings screen
+    // without `MeView` itself depending on `UmbrellaGraph`.
+    let settingsFactory: SettingsFactory
 
     func makeViewModel() -> MeViewModel {
         MeViewModel(useCases: useCases, sessionStore: sessionStore)

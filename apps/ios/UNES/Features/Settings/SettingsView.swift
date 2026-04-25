@@ -7,8 +7,19 @@ import SwiftUI
 /// screen only exposes what the client still decides. Mirrors
 /// `SettingsScreen` in `screens-settings.jsx`.
 struct SettingsView: View {
+    @State private var viewModel: SettingsViewModel
     @State private var state = SettingsState()
     @State private var spoilerOpen = false
+
+    init(factory: SettingsFactory) {
+        _viewModel = State(initialValue: factory.makeViewModel())
+    }
+
+    // Factory-less init — retained so `#Preview` keeps rendering against
+    // `SettingsFixtures` without a live graph.
+    init() {
+        _viewModel = State(initialValue: SettingsViewModel())
+    }
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -65,6 +76,7 @@ struct SettingsView: View {
         // `FinalCountdownView`.
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)
+        .task { await viewModel.observe() }
     }
 
     // MARK: - Sections
@@ -73,11 +85,19 @@ struct SettingsView: View {
         VStack(spacing: 0) {
             SettingsSectionHeader(eyebrow: "capítulo 1", title: "Conta", meta: "UEFS")
             CredentialCard(
-                credentials: SettingsFixtures.credentials,
+                // Real credentials win once the flow emits; the loading
+                // placeholder keeps the card laid out so the section doesn't
+                // collapse on first paint.
+                credentials: viewModel.credentials ?? Self.loadingPlaceholder,
                 revealed: $state.credentialsRevealed
             )
         }
     }
+
+    // Empty pair shown for the brief window between view appearance and the
+    // first credentials emission. The card renders blanks rather than fixture
+    // data so a release build never leaks the design-time username/password.
+    private static let loadingPlaceholder = SettingsCredentials(username: "", password: "")
 
     private var displaySection: some View {
         VStack(spacing: 10) {

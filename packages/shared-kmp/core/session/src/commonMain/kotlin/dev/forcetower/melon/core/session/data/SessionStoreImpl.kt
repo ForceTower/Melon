@@ -2,17 +2,20 @@ package dev.forcetower.melon.core.session.data
 
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
+import dev.forcetower.melon.core.database.entity.CredentialsEntity
 import dev.forcetower.melon.core.database.entity.UserEntity
 import dev.forcetower.melon.core.network.AuthTokenSource
 import dev.forcetower.melon.core.session.domain.model.AuthState
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.core.session.domain.model.User
+import dev.forcetower.melon.core.session.domain.model.UserCredentials
 import dev.forcetower.melon.core.storage.KeyValueStorage
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesBinding
@@ -20,12 +23,15 @@ import dev.zacsweers.metro.Inject
 import dev.zacsweers.metro.SingleIn
 import dev.zacsweers.metro.binding
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.datetime.Clock
 
 internal const val ACCESS_TOKEN_KEY = "melon.access_token"
 internal const val REFRESH_TOKEN_KEY = "melon.refresh_token"
@@ -42,6 +48,7 @@ internal class SessionStoreImpl(
     private val academicDao: AcademicDao,
     private val messageDao: MessageDao,
     private val settingsDao: SettingsDao,
+    private val credentialsDao: CredentialsDao,
     private val syncStateDao: SyncStateDao,
     private val scope: CoroutineScope,
     logger: Logger,
@@ -66,13 +73,33 @@ internal class SessionStoreImpl(
 
     override suspend fun getAccessToken(): String? = storage.get(ACCESS_TOKEN_KEY)
 
-    override suspend fun persist(accessToken: String, refreshToken: String, user: User) {
+    override suspend fun persist(
+        accessToken: String,
+        refreshToken: String,
+        user: User,
+        username: String,
+        password: String,
+    ) {
         storage.put(ACCESS_TOKEN_KEY, accessToken)
         storage.put(REFRESH_TOKEN_KEY, refreshToken)
         userDao.upsert(UserEntity(id = user.id, name = user.name, imageUrl = user.imageUrl))
+        credentialsDao.upsert(
+            CredentialsEntity(
+                userId = user.id,
+                username = username,
+                password = password,
+                updatedAt = Clock.System.now().toString(),
+            )
+        )
         tokenPresent.value = true
         log.i { "session persisted userId=${user.id}" }
     }
+
+    override suspend fun getCredentials(): UserCredentials? =
+        credentialsDao.getCurrent()?.toDomain()
+
+    override fun observeCredentials(): Flow<UserCredentials?> =
+        credentialsDao.observeCurrent().map { it?.toDomain() }
 
     override suspend fun logout() {
         log.i { "logout start" }
@@ -84,7 +111,9 @@ internal class SessionStoreImpl(
         // cascade: `MessageDao.clear` takes scopes/attachments/states with
         // it, and clearing `Discipline` + `Semester` wipes the whole
         // academic subtree (DisciplineOffer → Class → StudentClass /
-        // Lecture / Grade / ...).
+        // Lecture / Grade / ...). `credentialsDao.clear()` runs before the
+        // user row is deleted so the teardown reads top-down even though
+        // the FK cascade would also catch it.
         messageDao.clear()
         academicDao.clearDisciplines()
         academicDao.clearTeachers()
@@ -93,6 +122,7 @@ internal class SessionStoreImpl(
         studentDao.clearStudents()
         studentDao.clearCourses()
         settingsDao.clear()
+        credentialsDao.clear()
         syncStateDao.clear()
         userDao.clear()
         tokenPresent.value = false
@@ -101,3 +131,6 @@ internal class SessionStoreImpl(
 }
 
 private fun UserEntity.toDomain() = User(id = id, name = name, imageUrl = imageUrl)
+
+private fun CredentialsEntity.toDomain() =
+    UserCredentials(username = username, password = password, updatedAt = updatedAt)

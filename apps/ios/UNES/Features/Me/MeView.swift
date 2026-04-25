@@ -12,6 +12,7 @@ struct MeView: View {
     // credits are viewmodel-driven.
     private let pinned = MeFixtures.pinned(from: MeFixtures.defaultPinned)
     private let settings = MeFixtures.settingsRows
+    private let settingsFactory: SettingsFactory?
     private let onLoggedOut: () -> Void
     // Initial guess used on first present; swapped for the measured height
     // once `LogoutConfirmationSheet` reports its intrinsic size so the
@@ -24,6 +25,7 @@ struct MeView: View {
 
     init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
+        self.settingsFactory = factory.settingsFactory
         self.onLoggedOut = onLoggedOut
     }
 
@@ -31,6 +33,7 @@ struct MeView: View {
     // `MeFixtures` without a live graph.
     init() {
         _viewModel = State(initialValue: MeViewModel())
+        self.settingsFactory = nil
         self.onLoggedOut = {}
     }
 
@@ -54,7 +57,12 @@ struct MeView: View {
                 .navigationDestination(for: MeSettingsRow.Kind.self) { kind in
                     switch kind {
                     case .settings:
-                        SettingsView()
+                        if let settingsFactory {
+                            SettingsView(factory: settingsFactory)
+                        } else {
+                            // Factory-less preview / fixture path.
+                            SettingsView()
+                        }
                     default:
                         EmptyView()
                     }

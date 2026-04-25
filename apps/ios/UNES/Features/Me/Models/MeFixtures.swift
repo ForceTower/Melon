@@ -7,6 +7,7 @@ enum MeFixtures {
         course: "Engenharia de Computação",
         campus: "Universidade Estadual de Feira de Santana",
         enrollment: "26111463",
+        username: "mariana.nogueira",
         avatarInitial: "M",
         semester: "2026.1",
         semesterWeek: 7,

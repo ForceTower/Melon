@@ -9,6 +9,7 @@ struct ProfileIdentity {
     let course: String
     let campus: String
     let enrollment: String
+    let username: String
     let avatarInitial: String
     let semester: String
     let semesterWeek: Int
