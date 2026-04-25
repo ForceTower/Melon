@@ -9,10 +9,10 @@ struct DayColumn: View {
     var showGaps: Bool = true
     var entering: Bool = false
 
-    // Easter egg: tapping the "Nenhuma aula" copy on a free day opens the
-    // Folio runner. State lives here (not in the parent) so it doesn't
-    // leak into days that have classes — the empty state is the only
-    // entry point.
+    // Easter egg: long-pressing the empty-state mascot on a free day
+    // opens the Folio runner. State lives here (not in the parent) so it
+    // doesn't leak into days that have classes — the empty state is the
+    // only entry point.
     @State private var showFolioRunner = false
 
     var body: some View {
@@ -22,7 +22,10 @@ struct DayColumn: View {
                 .padding(.horizontal, 30)
                 .padding(.vertical, 60)
                 .contentShape(Rectangle())
-                .onTapGesture { showFolioRunner = true }
+                .onLongPressGesture(minimumDuration: 0.55) {
+                    showFolioRunner = true
+                }
+                .sensoryFeedback(.impact(weight: .medium), trigger: showFolioRunner)
                 .fullScreenCover(isPresented: $showFolioRunner) {
                     FolioRunnerView()
                 }
@@ -87,10 +90,8 @@ struct DayColumn: View {
 
     private var emptyState: some View {
         VStack(spacing: 6) {
-            Text("—")
-                .font(UNESFont.serif(42, italic: true))
-                .foregroundStyle(UNESColor.ink3)
-                .opacity(0.3)
+            BlinkingFolio(size: 96)
+                .opacity(0.85)
                 .padding(.bottom, 6)
             Text("Nenhuma aula")
                 .font(UNESFont.serif(20))

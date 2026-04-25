@@ -15,11 +15,16 @@ enum FolioSprite {
     static func draw(
         in ctx: GraphicsContext,
         pose: FolioPose,
-        frame: CGRect
+        frame: CGRect,
+        blink: Bool = false
     ) {
         let cfg = config(for: pose)
         let isJump = pose == .jump
         let isDuck = pose == .duck
+        // Eyes are drawn closed in duck (matches the squash) or whenever
+        // the caller asks for a blink — the game uses duck only, the
+        // empty-state mascot uses blink.
+        let eyesClosed = isDuck || blink
 
         var sprite = ctx
         sprite.translateBy(x: frame.minX, y: frame.minY)
@@ -105,7 +110,7 @@ enum FolioSprite {
             )
         }
 
-        if !isDuck {
+        if !eyesClosed {
             body.fill(
                 Path(ellipseIn: CGRect(x: 98 - 3.5, y: 86 - 3.5, width: 7, height: 7)),
                 with: .color(ink)
@@ -123,16 +128,20 @@ enum FolioSprite {
                 with: .color(cream)
             )
         } else {
+            // Sit the lids at the open-eye Y in non-duck poses so a blink
+            // looks like eyes shutting in place; duck keeps its lower
+            // squashed-head position.
+            let lidY: CGFloat = isDuck ? 92 : 86
             var leftLid = Path()
-            leftLid.move(to: CGPoint(x: 94, y: 92))
-            leftLid.addLine(to: CGPoint(x: 102, y: 92))
+            leftLid.move(to: CGPoint(x: 94, y: lidY))
+            leftLid.addLine(to: CGPoint(x: 102, y: lidY))
             body.stroke(
                 leftLid, with: .color(ink),
                 style: StrokeStyle(lineWidth: 2.5, lineCap: .round)
             )
             var rightLid = Path()
-            rightLid.move(to: CGPoint(x: 116, y: 92))
-            rightLid.addLine(to: CGPoint(x: 124, y: 92))
+            rightLid.move(to: CGPoint(x: 116, y: lidY))
+            rightLid.addLine(to: CGPoint(x: 124, y: lidY))
             body.stroke(
                 rightLid, with: .color(ink),
                 style: StrokeStyle(lineWidth: 2.5, lineCap: .round)
@@ -211,15 +220,52 @@ enum FolioSprite {
 struct FolioSpriteView: View {
     var pose: FolioPose
     var size: CGFloat = 90
+    var blink: Bool = false
 
     var body: some View {
         Canvas { ctx, _ in
             FolioSprite.draw(
                 in: ctx,
                 pose: pose,
-                frame: CGRect(x: 0, y: 0, width: size, height: size)
+                frame: CGRect(x: 0, y: 0, width: size, height: size),
+                blink: blink
             )
         }
         .frame(width: size, height: size)
+    }
+}
+
+/// Idle Folio that closes its eyes once or twice every ~25 seconds.
+/// Used as the empty-state mascot in `DayColumn` — also acts as the
+/// long-press target for the runner easter egg.
+struct BlinkingFolio: View {
+    var size: CGFloat = 96
+
+    @State private var blink = false
+
+    var body: some View {
+        FolioSpriteView(pose: .idle, size: size, blink: blink)
+            .task { await runBlinkLoop() }
+    }
+
+    private func runBlinkLoop() async {
+        while !Task.isCancelled {
+            // Random gap (avg ~25s) between blink events. Re-rolled each
+            // loop so the rhythm doesn't feel mechanical.
+            try? await Task.sleep(for: .seconds(.random(in: 18 ... 32)))
+            await singleBlink()
+            // Roughly a third of the time, follow up with a quick double
+            // blink — feels natural without becoming twitchy.
+            if Int.random(in: 0 ..< 3) == 0 {
+                try? await Task.sleep(for: .milliseconds(110))
+                await singleBlink()
+            }
+        }
+    }
+
+    private func singleBlink() async {
+        blink = true
+        try? await Task.sleep(for: .milliseconds(140))
+        blink = false
     }
 }
