@@ -46,6 +46,16 @@ class BackfillMirrorUseCase internal constructor(
             is Outcome.Ok -> Unit
         }
 
+        // Backfill the local Credentials row from server state. Critical for
+        // passkey-login users who never typed username + password locally.
+        // Failure is logged but not fatal — password-login users already have
+        // credentials cached locally, and a missing creds row only degrades
+        // background re-auth (the foreground session keeps working).
+        when (val result = mirror.syncMyCredentials()) {
+            is Outcome.Err -> log.w { "backfill credentials sync failed err=${result.error} (continuing)" }
+            is Outcome.Ok -> Unit
+        }
+
         val summaries = when (val result = mirror.syncSemesterList()) {
             is Outcome.Err -> {
                 log.w { "backfill aborted at semester list err=${result.error}" }

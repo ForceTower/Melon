@@ -6,6 +6,8 @@ import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.logging.NoopCrashReporter
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
+import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
+import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
@@ -47,6 +49,8 @@ import dev.zacsweers.metro.createGraphFactory
 @DependencyGraph(AppScope::class)
 interface UmbrellaGraph {
     val loginUseCase: LoginUseCase
+    val beginPasskeyLoginUseCase: BeginPasskeyLoginUseCase
+    val completePasskeyLoginUseCase: CompletePasskeyLoginUseCase
     val refreshSessionUseCase: RefreshSessionUseCase
     val backfillMirrorUseCase: BackfillMirrorUseCase
     val registerNotificationTokenUseCase: RegisterNotificationTokenUseCase

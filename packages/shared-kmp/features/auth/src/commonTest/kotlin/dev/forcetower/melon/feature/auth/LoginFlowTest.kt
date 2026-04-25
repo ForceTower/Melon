@@ -123,8 +123,8 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
         accessToken: String,
         refreshToken: String,
         user: User,
-        username: String,
-        password: String,
+        username: String?,
+        password: String?,
     ) {
         lastAccessToken = accessToken
         lastRefreshToken = refreshToken
@@ -137,6 +137,11 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
     override suspend fun getCredentials(): UserCredentials? = null
 
     override fun observeCredentials(): Flow<UserCredentials?> = flowOf(null)
+
+    override suspend fun updateUpstreamCredentials(username: String, password: String) {
+        lastUsername = username
+        lastPassword = password
+    }
 
     override suspend fun logout() {
         lastAccessToken = null

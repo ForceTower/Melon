@@ -29,4 +29,9 @@ internal class MirrorApi(private val client: HttpClient) {
     // Bumps users.last_active_at server-side. Co-located here for now to avoid
     // a separate API surface for one tiny fire-and-forget endpoint.
     suspend fun ping(): HttpResponse = client.post("api/me/ping")
+
+    // Returns the cached upstream Snowpiercer credentials for the current
+    // user — used during initial mirror sync to backfill the local Credentials
+    // row for clients that signed in via passkey.
+    suspend fun getMyCredentials(): HttpResponse = client.get("api/me/credentials")
 }

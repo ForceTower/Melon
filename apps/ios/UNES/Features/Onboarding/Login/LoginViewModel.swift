@@ -1,3 +1,4 @@
+import AuthenticationServices
 import Observation
 @preconcurrency import Umbrella
 
@@ -10,10 +11,18 @@ final class LoginViewModel {
     var errorMessage: String?
 
     private let loginUseCase: AuthLoginUseCase?
+    private let beginPasskeyLogin: AuthBeginPasskeyLoginUseCase?
+    private let completePasskeyLogin: AuthCompletePasskeyLoginUseCase?
     private let log = Log.scoped("LoginViewModel")
 
-    init(loginUseCase: AuthLoginUseCase?) {
+    init(
+        loginUseCase: AuthLoginUseCase?,
+        beginPasskeyLogin: AuthBeginPasskeyLoginUseCase?,
+        completePasskeyLogin: AuthCompletePasskeyLoginUseCase?
+    ) {
         self.loginUseCase = loginUseCase
+        self.beginPasskeyLogin = beginPasskeyLogin
+        self.completePasskeyLogin = completePasskeyLogin
     }
 
     var canSubmit: Bool {
@@ -49,6 +58,93 @@ final class LoginViewModel {
             log.warn("login failed for student=\(studentId) err=\(rendered)")
             errorMessage = wrapper.error.map(Self.describe) ?? Self.unexpectedMessage
             return nil
+        }
+    }
+
+    func loginWithPasskey(anchor: ASPresentationAnchor) async -> SessionUser? {
+        guard let beginPasskeyLogin, let completePasskeyLogin else { return nil }
+
+        log.info("passkey login start")
+        isLoading = true
+        errorMessage = nil
+        defer { isLoading = false }
+
+        // 1. Fetch challenge from server.
+        let challenge: AuthPasskeyChallenge
+        switch await beginPasskey(useCase: beginPasskeyLogin) {
+        case .success(let value):
+            challenge = value
+        case .failure(let message):
+            errorMessage = message
+            return nil
+        case .none:
+            return nil
+        }
+
+        // 2. Drive ASAuthorization on the platform.
+        let assertion: AuthPasskeyAssertion
+        do {
+            assertion = try await PasskeyAuthenticator().assert(challenge: challenge, anchor: anchor)
+        } catch PasskeyError.cancelled {
+            log.info("passkey cancelled by user")
+            return nil
+        } catch let passkeyError as PasskeyError {
+            log.warn("passkey native flow failed: \(passkeyError.errorDescription ?? "<nil>")")
+            errorMessage = passkeyError.errorDescription ?? Self.unexpectedMessage
+            return nil
+        } catch {
+            log.error("passkey native flow threw", error: error)
+            errorMessage = Self.unexpectedMessage
+            return nil
+        }
+
+        // 3. Submit assertion to server, persist the session.
+        let outcome: CommonOutcome<SessionUser, AuthLoginError>
+        do {
+            outcome = try await completePasskeyLogin.invoke(sessionId: challenge.sessionId, assertion: assertion)
+        } catch is CancellationError {
+            return nil
+        } catch {
+            log.error("passkey complete threw unexpectedly", error: error)
+            errorMessage = Self.unexpectedMessage
+            return nil
+        }
+
+        switch onEnum(of: outcome) {
+        case .ok(let user):
+            log.info("passkey ok")
+            return user.value
+        case .err(let wrapper):
+            let rendered = wrapper.error.map { String(describing: $0) } ?? "<nil>"
+            log.warn("passkey failed err=\(rendered)")
+            errorMessage = wrapper.error.map(Self.describe) ?? Self.unexpectedMessage
+            return nil
+        }
+    }
+
+    private enum BeginResult {
+        case success(AuthPasskeyChallenge)
+        case failure(String)
+        case none
+    }
+
+    private func beginPasskey(useCase: AuthBeginPasskeyLoginUseCase) async -> BeginResult {
+        let outcome: CommonOutcome<AuthPasskeyChallenge, AuthLoginError>
+        do {
+            outcome = try await useCase.invoke(username: nil)
+        } catch is CancellationError {
+            return .none
+        } catch {
+            log.error("passkey begin threw unexpectedly", error: error)
+            return .failure(Self.unexpectedMessage)
+        }
+
+        switch onEnum(of: outcome) {
+        case .ok(let challenge):
+            guard let value = challenge.value else { return .failure(Self.unexpectedMessage) }
+            return .success(value)
+        case .err(let wrapper):
+            return .failure(wrapper.error.map(Self.describe) ?? Self.unexpectedMessage)
         }
     }
 

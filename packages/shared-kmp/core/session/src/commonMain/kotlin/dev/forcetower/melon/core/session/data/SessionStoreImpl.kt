@@ -79,22 +79,24 @@ internal class SessionStoreImpl(
         accessToken: String,
         refreshToken: String,
         user: User,
-        username: String,
-        password: String,
+        username: String?,
+        password: String?,
     ) {
         storage.put(ACCESS_TOKEN_KEY, accessToken)
         storage.put(REFRESH_TOKEN_KEY, refreshToken)
         userDao.upsert(UserEntity(id = user.id, name = user.name, imageUrl = user.imageUrl))
-        credentialsDao.upsert(
-            CredentialsEntity(
-                userId = user.id,
-                username = username,
-                password = password,
-                updatedAt = Clock.System.now().toString(),
+        if (username != null && password != null) {
+            credentialsDao.upsert(
+                CredentialsEntity(
+                    userId = user.id,
+                    username = username,
+                    password = password,
+                    updatedAt = Clock.System.now().toString(),
+                )
             )
-        )
+        }
         tokenPresent.value = true
-        log.i { "session persisted userId=${user.id}" }
+        log.i { "session persisted userId=${user.id} hasUpstreamCreds=${username != null && password != null}" }
     }
 
     override suspend fun getCredentials(): UserCredentials? =
@@ -102,6 +104,22 @@ internal class SessionStoreImpl(
 
     override fun observeCredentials(): Flow<UserCredentials?> =
         credentialsDao.observeCurrent().map { it?.toDomain() }
+
+    override suspend fun updateUpstreamCredentials(username: String, password: String) {
+        val current = userDao.getCurrent() ?: run {
+            log.w { "updateUpstreamCredentials skipped: no current user" }
+            return
+        }
+        credentialsDao.upsert(
+            CredentialsEntity(
+                userId = current.id,
+                username = username,
+                password = password,
+                updatedAt = Clock.System.now().toString(),
+            )
+        )
+        log.i { "upstream credentials backfilled userId=${current.id}" }
+    }
 
     override suspend fun logout() {
         log.i { "logout start" }

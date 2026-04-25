@@ -1,4 +1,6 @@
+import AuthenticationServices
 import SwiftUI
+import UIKit
 import Umbrella
 
 struct LoginView: View {
@@ -9,9 +11,15 @@ struct LoginView: View {
 
     init(
         loginUseCase: AuthLoginUseCase?,
+        beginPasskeyLogin: AuthBeginPasskeyLoginUseCase?,
+        completePasskeyLogin: AuthCompletePasskeyLoginUseCase?,
         onSubmit: @escaping (String) -> Void
     ) {
-        _viewModel = State(initialValue: LoginViewModel(loginUseCase: loginUseCase))
+        _viewModel = State(initialValue: LoginViewModel(
+            loginUseCase: loginUseCase,
+            beginPasskeyLogin: beginPasskeyLogin,
+            completePasskeyLogin: completePasskeyLogin
+        ))
         self.onSubmit = onSubmit
     }
 
@@ -248,17 +256,31 @@ struct LoginView: View {
     }
 
     private func passkey() {
-        viewModel.isLoading = true
+        focusedField = nil
+        let anchor = Self.keyWindow() ?? ASPresentationAnchor()
         Task {
-            try? await Task.sleep(for: .seconds(1.4))
-            viewModel.isLoading = false
-            onSubmit("passkey")
+            if let user = await viewModel.loginWithPasskey(anchor: anchor) {
+                onSubmit(user.name)
+            }
         }
+    }
+
+    @MainActor
+    private static func keyWindow() -> UIWindow? {
+        UIApplication.shared.connectedScenes
+            .compactMap { $0 as? UIWindowScene }
+            .flatMap(\.windows)
+            .first(where: \.isKeyWindow)
     }
 }
 
 #Preview {
     NavigationStack {
-        LoginView(loginUseCase: nil, onSubmit: { _ in })
+        LoginView(
+            loginUseCase: nil,
+            beginPasskeyLogin: nil,
+            completePasskeyLogin: nil,
+            onSubmit: { _ in }
+        )
     }
 }

@@ -28,4 +28,11 @@ interface MirrorRepository {
     // Bumps last_active_at on the server. Fire-and-forget; the only failure
     // anyone cares about is auth — surfaced via Outcome like everything else.
     suspend fun pingActivity(): Outcome<Unit, SyncError>
+
+    // Mirrors the server's view of the user's upstream Snowpiercer credentials
+    // into the local Credentials row. Critical for passkey-login users, who
+    // never typed username + password locally — without this, background
+    // re-authentication has nothing to replay. Returns Ok when the server
+    // reports no credentials on file.
+    suspend fun syncMyCredentials(): Outcome<Unit, SyncError>
 }

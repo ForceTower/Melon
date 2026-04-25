@@ -14,11 +14,18 @@ struct SyncUseCases {
 @MainActor
 struct OnboardingFactory {
     let loginUseCase: AuthLoginUseCase
+    let beginPasskeyLogin: AuthBeginPasskeyLoginUseCase
+    let completePasskeyLogin: AuthCompletePasskeyLoginUseCase
     let getReadyOverviewUseCase: DashboardGetReadyOverviewUseCase
     let syncUseCases: SyncUseCases
 
     func makeLogin(onSubmit: @escaping (String) -> Void) -> LoginView {
-        LoginView(loginUseCase: loginUseCase, onSubmit: onSubmit)
+        LoginView(
+            loginUseCase: loginUseCase,
+            beginPasskeyLogin: beginPasskeyLogin,
+            completePasskeyLogin: completePasskeyLogin,
+            onSubmit: onSubmit
+        )
     }
 
     func makeSync(

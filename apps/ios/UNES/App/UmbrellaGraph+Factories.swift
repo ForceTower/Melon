@@ -8,6 +8,8 @@ extension UmbrellaGraph {
     var onboardingFactory: OnboardingFactory {
         OnboardingFactory(
             loginUseCase: loginUseCase,
+            beginPasskeyLogin: beginPasskeyLoginUseCase,
+            completePasskeyLogin: completePasskeyLoginUseCase,
             getReadyOverviewUseCase: getReadyOverviewUseCase,
             syncUseCases: SyncUseCases(
                 ping: pingActivityUseCase,
