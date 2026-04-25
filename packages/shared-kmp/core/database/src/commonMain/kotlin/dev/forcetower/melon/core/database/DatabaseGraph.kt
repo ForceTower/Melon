@@ -9,6 +9,7 @@ import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
+import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.zacsweers.metro.AppScope
 import dev.zacsweers.metro.ContributesTo
 import dev.zacsweers.metro.Provides
@@ -24,6 +25,7 @@ interface DatabaseGraph {
         @Provides fun academicDao(database: MelonDatabase): AcademicDao = database.academicDao()
         @Provides fun messageDao(database: MelonDatabase): MessageDao = database.messageDao()
         @Provides fun settingsDao(database: MelonDatabase): SettingsDao = database.settingsDao()
+        @Provides fun userSettingsDao(database: MelonDatabase): UserSettingsDao = database.userSettingsDao()
         @Provides fun credentialsDao(database: MelonDatabase): CredentialsDao = database.credentialsDao()
         @Provides fun syncStateDao(database: MelonDatabase): SyncStateDao = database.syncStateDao()
         @Provides fun pendingMutationDao(database: MelonDatabase): PendingMutationDao = database.pendingMutationDao()

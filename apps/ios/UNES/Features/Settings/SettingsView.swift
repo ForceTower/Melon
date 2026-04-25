@@ -8,7 +8,10 @@ import SwiftUI
 /// `SettingsScreen` in `screens-settings.jsx`.
 struct SettingsView: View {
     @State private var viewModel: SettingsViewModel
-    @State private var state = SettingsState()
+    // Reveal stays UI-only: every screen visit re-presents Face ID. Persisting
+    // it would let a backgrounded app surface the password without a fresh
+    // unlock, which is the wrong default for a credential vault.
+    @State private var credentialsRevealed = false
     @State private var spoilerOpen = false
 
     init(factory: SettingsFactory) {
@@ -89,7 +92,7 @@ struct SettingsView: View {
                 // placeholder keeps the card laid out so the section doesn't
                 // collapse on first paint.
                 credentials: viewModel.credentials ?? Self.loadingPlaceholder,
-                revealed: $state.credentialsRevealed
+                revealed: $credentialsRevealed
             )
         }
     }
@@ -102,12 +105,13 @@ struct SettingsView: View {
     private var displaySection: some View {
         VStack(spacing: 10) {
             SettingsSectionHeader(eyebrow: "capítulo 2", title: "Exibição", meta: "spoiler")
-            NotificationPreview(spoiler: state.spoiler)
-            SpoilerPickerRow(value: $state.spoiler, isOpen: $spoilerOpen)
+            NotificationPreview(spoiler: viewModel.state.spoiler)
+            SpoilerPickerRow(value: viewModel.spoilerBinding(), isOpen: $spoilerOpen)
         }
     }
 
     private var notificationsSection: some View {
+        let state = viewModel.state
         let activeTotal = state.allNotificationKeyPaths.filter { state[keyPath: $0] }.count
 
         return VStack(spacing: 10) {
@@ -124,7 +128,8 @@ struct SettingsView: View {
     }
 
     private var messagesGroup: some View {
-        NotificationGroupCard(
+        let state = viewModel.state
+        return NotificationGroupCard(
             kicker: "§ 1",
             title: "Mensagens",
             activeCount: state.messageKeyPaths.filter { state[keyPath: $0] }.count,
@@ -133,24 +138,25 @@ struct SettingsView: View {
             NotificationToggleRow(
                 icon: "megaphone", tone: .amber,
                 label: "Broadcasts", hint: "Avisos da universidade",
-                isOn: $state.notifMsgBroadcast
+                isOn: viewModel.toggleBinding(\.notifMsgBroadcast)
             )
             NotificationToggleRow(
                 icon: "person.2", tone: .teal,
                 label: "Da turma", hint: "Mensagens enviadas à classe",
-                isOn: $state.notifMsgClass
+                isOn: viewModel.toggleBinding(\.notifMsgClass)
             )
             NotificationToggleRow(
                 icon: "envelope", tone: .plum,
                 label: "Diretas", hint: "Professor ou secretaria · você",
-                isOn: $state.notifMsgDirect,
+                isOn: viewModel.toggleBinding(\.notifMsgDirect),
                 showSeparator: false
             )
         }
     }
 
     private var gradesGroup: some View {
-        NotificationGroupCard(
+        let state = viewModel.state
+        return NotificationGroupCard(
             kicker: "§ 2",
             title: "Notas",
             activeCount: state.gradeKeyPaths.filter { state[keyPath: $0] }.count,
@@ -159,24 +165,25 @@ struct SettingsView: View {
             NotificationToggleRow(
                 icon: "sparkles", tone: .coral,
                 label: "Publicada", hint: "Uma nota nova apareceu",
-                isOn: $state.notifGradePosted
+                isOn: viewModel.toggleBinding(\.notifGradePosted)
             )
             NotificationToggleRow(
                 icon: "pencil", tone: .magenta,
                 label: "Alterada", hint: "O valor foi corrigido",
-                isOn: $state.notifGradeChanged
+                isOn: viewModel.toggleBinding(\.notifGradeChanged)
             )
             NotificationToggleRow(
                 icon: "calendar", tone: .plum,
                 label: "Data alterada", hint: "Prazo ou marco da avaliação",
-                isOn: $state.notifGradeDateChanged,
+                isOn: viewModel.toggleBinding(\.notifGradeDateChanged),
                 showSeparator: false
             )
         }
     }
 
     private var classesGroup: some View {
-        NotificationGroupCard(
+        let state = viewModel.state
+        return NotificationGroupCard(
             kicker: "§ 3",
             title: "Aulas",
             activeCount: state.classKeyPaths.filter { state[keyPath: $0] }.count,
@@ -185,17 +192,17 @@ struct SettingsView: View {
             NotificationToggleRow(
                 icon: "mappin.and.ellipse", tone: .teal,
                 label: "Sala alterada", hint: "Mudança de localização",
-                isOn: $state.notifClassLocation
+                isOn: viewModel.toggleBinding(\.notifClassLocation)
             )
             NotificationToggleRow(
                 icon: "book", tone: .amber,
                 label: "Material publicado", hint: "Slides, enunciados, lista",
-                isOn: $state.notifClassMaterial
+                isOn: viewModel.toggleBinding(\.notifClassMaterial)
             )
             NotificationToggleRow(
                 icon: "tag", tone: .coral,
                 label: "Assunto da aula", hint: "O tópico previsto mudou",
-                isOn: $state.notifClassSubject,
+                isOn: viewModel.toggleBinding(\.notifClassSubject),
                 showSeparator: false
             )
         }

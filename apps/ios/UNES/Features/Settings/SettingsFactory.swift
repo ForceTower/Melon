@@ -8,6 +8,8 @@
 struct SettingsUseCases {
     let observeCredentials: MeObserveCurrentCredentialsUseCase
     let observeLastSync: OverviewObserveLastSyncUseCase
+    let observeSettings: SettingsObserveSettingsUseCase
+    let updateSettings: SettingsUpdateSettingsUseCase
 }
 
 @MainActor

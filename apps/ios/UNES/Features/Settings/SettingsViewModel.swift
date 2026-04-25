@@ -1,11 +1,12 @@
 import Foundation
 import Observation
+import SwiftUI
 @preconcurrency import Umbrella
 
 // Drives `SettingsView`. Subscribes to the credentials flow and surfaces
-// the latest pair as `SettingsCredentials` for `CredentialCard`. Mirrors
-// `MeViewModel` so factory-less init keeps `#Preview` rendering against
-// `SettingsFixtures`.
+// the latest pair as `SettingsCredentials` for `CredentialCard`. Also owns
+// the toggles + spoiler picker state — observe-on-flow + mutate-via-use-case
+// keeps the screen reactive across devices via the profile mirror.
 @MainActor
 @Observable
 final class SettingsViewModel {
@@ -14,6 +15,11 @@ final class SettingsViewModel {
     // Ticked every 30s so the "há X min" label refreshes without forcing
     // KMP flows to re-emit. Mirrors the ticker in `OverviewViewModel`.
     private(set) var clock: Date = Date()
+
+    // Toggles + spoiler. Hydrated by the settings flow on first emission;
+    // every UI mutation goes through `setSpoiler`/`setToggle` so the local
+    // value flips optimistically and the network PATCH lands afterwards.
+    private(set) var state = SettingsState()
 
     @ObservationIgnored private let useCases: SettingsUseCases?
     @ObservationIgnored private let log = Log.scoped("SettingsViewModel")
@@ -34,9 +40,10 @@ final class SettingsViewModel {
 
         async let c: Void = observeCredentials(useCases: useCases)
         async let l: Void = observeLastSync(useCases: useCases)
+        async let s: Void = observeSettings(useCases: useCases)
         async let t: Void = runClockTicker()
 
-        _ = await (c, l, t)
+        _ = await (c, l, s, t)
     }
 
     private func observeCredentials(useCases: SettingsUseCases) async {
@@ -53,11 +60,89 @@ final class SettingsViewModel {
         }
     }
 
+    private func observeSettings(useCases: SettingsUseCases) async {
+        for await snapshot in useCases.observeSettings.invoke() {
+            guard let snapshot else { continue }
+            state = Self.applySnapshot(snapshot, onto: state)
+        }
+    }
+
     private func runClockTicker() async {
         while !Task.isCancelled {
             clock = Date()
             try? await Task.sleep(nanoseconds: 30 * 1_000_000_000)
         }
+    }
+
+    // MARK: - Mutations
+    //
+    // Each method optimistically writes to `state`, then forwards the change
+    // to the KMP `UpdateSettingsUseCase` in a detached task. The KMP layer
+    // does its own local DAO write + network PATCH, and the resulting flow
+    // re-emit overwrites `state` with the canonical server values — which
+    // is a no-op for boolean toggles but matters if the server clamps a
+    // spoiler int (defense-in-depth against a stale client).
+
+    func setSpoiler(_ value: SpoilerMode) {
+        state.spoiler = value
+        guard let useCases else { return }
+        Task { [log] in
+            let outcome = await useCases.updateSettings.invoke(
+                gradeSpoiler: KotlinInt(int: value.serverInt),
+                notifMsgBroadcast: nil,
+                notifMsgClass: nil,
+                notifMsgDirect: nil,
+                notifGradePosted: nil,
+                notifGradeChanged: nil,
+                notifGradeDateChanged: nil,
+                notifClassLocation: nil,
+                notifClassMaterial: nil,
+                notifClassSubject: nil
+            )
+            if case .err(let err) = onEnum(of: outcome) {
+                log.error("setSpoiler push failed: \(err.value)")
+            }
+        }
+    }
+
+    func setToggle(_ keyPath: WritableKeyPath<SettingsState, Bool>, _ value: Bool) {
+        state[keyPath: keyPath] = value
+        guard let useCases else { return }
+        let kbool = KotlinBoolean(bool: value)
+        Task { [log] in
+            let outcome = await useCases.updateSettings.invoke(
+                gradeSpoiler: nil,
+                notifMsgBroadcast: keyPath == \.notifMsgBroadcast ? kbool : nil,
+                notifMsgClass: keyPath == \.notifMsgClass ? kbool : nil,
+                notifMsgDirect: keyPath == \.notifMsgDirect ? kbool : nil,
+                notifGradePosted: keyPath == \.notifGradePosted ? kbool : nil,
+                notifGradeChanged: keyPath == \.notifGradeChanged ? kbool : nil,
+                notifGradeDateChanged: keyPath == \.notifGradeDateChanged ? kbool : nil,
+                notifClassLocation: keyPath == \.notifClassLocation ? kbool : nil,
+                notifClassMaterial: keyPath == \.notifClassMaterial ? kbool : nil,
+                notifClassSubject: keyPath == \.notifClassSubject ? kbool : nil
+            )
+            if case .err(let err) = onEnum(of: outcome) {
+                log.error("setToggle push failed: \(err.value)")
+            }
+        }
+    }
+
+    // SwiftUI bindings that read live from `state` and pipe writes through
+    // the appropriate mutator. Components stay binding-flavored even though
+    // `state` is `private(set)`.
+    func toggleBinding(_ keyPath: WritableKeyPath<SettingsState, Bool>) -> Binding<Bool> {
+        Binding(
+            get: { self.state[keyPath: keyPath] },
+            set: { self.setToggle(keyPath, $0) }
+        )
+    }
+
+    func spoilerBinding() -> Binding<SpoilerMode> {
+        Binding(
+            get: { self.state.spoiler },
+            set: { self.setSpoiler($0) }
+        )
     }
 
     // Relative "há 2 min" stamp the Settings header renders after the
@@ -87,5 +172,20 @@ final class SettingsViewModel {
         if hours < 24 { return "há \(hours) h" }
         let days = hours / 24
         return "há \(days) d"
+    }
+
+    private static func applySnapshot(_ snapshot: SettingsUserSettings, onto current: SettingsState) -> SettingsState {
+        var next = current
+        next.spoiler = SpoilerMode(serverInt: Int(snapshot.gradeSpoiler)) ?? current.spoiler
+        next.notifMsgBroadcast = snapshot.notifMsgBroadcast
+        next.notifMsgClass = snapshot.notifMsgClass
+        next.notifMsgDirect = snapshot.notifMsgDirect
+        next.notifGradePosted = snapshot.notifGradePosted
+        next.notifGradeChanged = snapshot.notifGradeChanged
+        next.notifGradeDateChanged = snapshot.notifGradeDateChanged
+        next.notifClassLocation = snapshot.notifClassLocation
+        next.notifClassMaterial = snapshot.notifClassMaterial
+        next.notifClassSubject = snapshot.notifClassSubject
+        return next
     }
 }

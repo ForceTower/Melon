@@ -9,6 +9,7 @@ import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
+import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.database.entity.CredentialsEntity
 import dev.forcetower.melon.core.database.entity.UserEntity
 import dev.forcetower.melon.core.network.AuthTokenSource
@@ -48,6 +49,7 @@ internal class SessionStoreImpl(
     private val academicDao: AcademicDao,
     private val messageDao: MessageDao,
     private val settingsDao: SettingsDao,
+    private val userSettingsDao: UserSettingsDao,
     private val credentialsDao: CredentialsDao,
     private val syncStateDao: SyncStateDao,
     private val scope: CoroutineScope,
@@ -122,6 +124,7 @@ internal class SessionStoreImpl(
         studentDao.clearStudents()
         studentDao.clearCourses()
         settingsDao.clear()
+        userSettingsDao.clear()
         credentialsDao.clear()
         syncStateDao.clear()
         userDao.clear()

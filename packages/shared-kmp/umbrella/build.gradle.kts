@@ -48,6 +48,7 @@ kotlin {
             api(project(":packages:shared-kmp:features:notifications"))
             api(project(":packages:shared-kmp:features:overview"))
             api(project(":packages:shared-kmp:features:schedule"))
+            api(project(":packages:shared-kmp:features:settings"))
             api(project(":packages:shared-kmp:features:sync"))
         }
     }

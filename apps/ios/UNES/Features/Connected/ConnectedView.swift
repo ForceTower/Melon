@@ -15,6 +15,8 @@ struct ConnectedView: View {
     var onLoggedOut: () -> Void = {}
 
     @State private var activeTab: ConnectedTab = .overview
+    @State private var refreshInFlight = false
+    @Environment(\.scenePhase) private var scenePhase
     @AppStorage(ScheduleVariant.storageKey) private var scheduleVariantRaw: String = ScheduleVariant.default.rawValue
 
     private let log = Log.scoped("ConnectedView")
@@ -50,15 +52,7 @@ struct ConnectedView: View {
             // logout→login). Profile + first-page messages are unthrottled
             // (cheap); per-semester payload pulls behind them are gated by
             // the 1h throttle inside the use case.
-            log.info("connected entry — refreshing session")
-            do {
-                _ = try await refreshSession.invoke(force: false)
-                log.info("session refresh ok")
-            } catch is CancellationError {
-                // view left before work completed
-            } catch {
-                log.warn("session refresh failed", error: error)
-            }
+            await runSessionRefresh(reason: "connected entry")
             // Fills in historical semesters + full message archive once
             // server Phase 2 finalizes. No-op after first successful run
             // (flag persisted in SyncState, wiped on logout).
@@ -70,6 +64,35 @@ struct ConnectedView: View {
             } catch {
                 log.warn("mirror backfill failed", error: error)
             }
+        }
+        .onChange(of: scenePhase) { oldPhase, newPhase in
+            // SwiftUI's `.task` only fires the first time the view mounts, so
+            // a backgrounded-then-foregrounded app would otherwise keep
+            // showing stale data until the user force-quit. Re-fire on the
+            // .background → .active transition only — .inactive → .active
+            // covers transient interruptions (control center, incoming call)
+            // that don't warrant a network round-trip.
+            guard oldPhase == .background, newPhase == .active else { return }
+            Task { await runSessionRefresh(reason: "foreground") }
+        }
+    }
+
+    private func runSessionRefresh(reason: String) async {
+        guard !refreshInFlight else {
+            log.info("skip session refresh — already in flight reason=\(reason)")
+            return
+        }
+        refreshInFlight = true
+        defer { refreshInFlight = false }
+
+        log.info("refreshing session reason=\(reason)")
+        do {
+            _ = try await refreshSession.invoke(force: false)
+            log.info("session refresh ok reason=\(reason)")
+        } catch is CancellationError {
+            // view left before work completed
+        } catch {
+            log.warn("session refresh failed reason=\(reason)", error: error)
         }
     }
 }

@@ -10,13 +10,16 @@ struct MeView: View {
     // Shortcut grid + settings rows are UI affordances, not user data — they
     // keep reading from `MeFixtures`. Only the hero / semester strip / CR /
     // credits are viewmodel-driven.
-    private let pinned = MeFixtures.pinned(from: MeFixtures.defaultPinned)
+    private let pinned = MeFixtures.pinned(from: [.calendar, .countdown, .account])
     private let settingsFactory: SettingsFactory?
     private let onLoggedOut: () -> Void
     // Initial guess used on first present; swapped for the measured height
     // once `LogoutConfirmationSheet` reports its intrinsic size so the
     // detent never leaves empty space below the buttons.
     @State private var logoutSheetHeight: CGFloat = 380
+    // Same intrinsic-height pattern for the "Sobre o aplicativo" sheet.
+    @State private var aboutSheetHeight: CGFloat = 540
+    @State private var aboutPresented: Bool = false
     // Type-erased path — the Me hub can push both `Shortcut.Kind` (from the
     // shortcut grid) and `MeSettingsRow.Kind` (from the settings list) onto
     // the same stack.
@@ -70,6 +73,9 @@ struct MeView: View {
                 .sheet(isPresented: logoutSheetBinding) {
                     logoutSheet
                 }
+                .sheet(isPresented: $aboutPresented) {
+                    aboutSheetBody
+                }
                 .overlay {
                     if viewModel.logoutStep == .flashing {
                         LogoutFlashView()
@@ -100,6 +106,21 @@ struct MeView: View {
             get: { viewModel.logoutStep == .loggedOut },
             set: { _ in }
         )
+    }
+
+    @ViewBuilder
+    private var aboutSheetBody: some View {
+        if #available(iOS 16.4, *) {
+            AboutSheet(info: AppInfo.current, measuredHeight: $aboutSheetHeight)
+                .presentationDetents([.height(aboutSheetHeight)])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(UNESColor.surface)
+                .presentationCornerRadius(28)
+        } else {
+            AboutSheet(info: AppInfo.current, measuredHeight: $aboutSheetHeight)
+                .presentationDetents([.height(aboutSheetHeight)])
+                .presentationDragIndicator(.visible)
+        }
     }
 
     @ViewBuilder
@@ -212,8 +233,25 @@ struct MeView: View {
         switch row.id {
         case .settings:
             path.append(row.id)
+        case .about:
+            aboutPresented = true
+        case .feedback:
+            sendFeedbackSMS()
         default:
             break
+        }
+    }
+
+    private func sendFeedbackSMS() {
+        let app = AppInfo.current
+        let info = """
+        UNES \(app.version)(\(app.build)) - \(AppInfo.modelIdentifier()) \(Locale.current.identifier)
+        id: \(app.machineId)
+        Os dados acima me ajudam a encontrar o erro, não apaga se puder :)
+        """.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
+        guard let url = URL(string: "sms:joaopaulo761@gmail.com?&body=\(info)") else { return }
+        if UIApplication.shared.canOpenURL(url) {
+            UIApplication.shared.open(url)
         }
     }
 

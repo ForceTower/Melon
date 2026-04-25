@@ -7,6 +7,7 @@ import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.UserDao
+import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.network.ApiEnvelope
 import dev.forcetower.melon.core.sync.data.dto.MessagePageResponse
 import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
@@ -40,6 +41,7 @@ internal class MirrorRepositoryImpl(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val messageDao: MessageDao,
+    private val userSettingsDao: UserSettingsDao,
     logger: Logger,
 ) : MirrorRepository {
 
@@ -58,6 +60,7 @@ internal class MirrorRepositoryImpl(
                 userDao.upsert(payload.user.toEntity())
                 payload.course?.let { studentDao.upsertCourse(it.toEntity()) }
                 studentDao.upsertStudent(payload.student.toEntity(payload.lastSyncCompletedAt))
+                userSettingsDao.upsert(payload.settings.toEntity(payload.user.id))
                 log.i { "syncProfile ok userId=${payload.user.id} studentId=${payload.student.id}" }
                 Outcome.Ok(Unit)
             }

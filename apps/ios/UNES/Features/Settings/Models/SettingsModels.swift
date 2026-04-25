@@ -7,6 +7,26 @@ enum SpoilerMode: String, CaseIterable, Hashable, Identifiable {
 
     var id: String { rawValue }
 
+    /// Wire encoding for `user_settings.grade_spoiler`. Stable contract with
+    /// the API and Room — server-side validation clamps incoming PATCHes
+    /// to this same range.
+    var serverInt: Int32 {
+        switch self {
+        case .value:   return 0
+        case .comment: return 1
+        case .posted:  return 2
+        }
+    }
+
+    init?(serverInt: Int) {
+        switch serverInt {
+        case 0: self = .value
+        case 1: self = .comment
+        case 2: self = .posted
+        default: return nil
+        }
+    }
+
     var label: String {
         switch self {
         case .value:   return "Valor"
@@ -63,11 +83,12 @@ enum SettingsColors {
 }
 
 /// Flat state bag for the Settings screen. One-to-one with `SETTINGS_DEFAULTS`
-/// in `screens-settings.jsx`. Held as `@State` by `SettingsView` — persistence
-/// will land once the keys move to the shared prefs store.
+/// in `screens-settings.jsx`. Owned by `SettingsViewModel` and hydrated from
+/// the KMP `ObserveSettingsUseCase` flow; mutations go through
+/// `UpdateSettingsUseCase`, which writes locally first and forwards to the
+/// `PATCH /api/me/settings` endpoint.
 struct SettingsState {
     var spoiler: SpoilerMode = .comment
-    var credentialsRevealed: Bool = false
 
     // messages
     var notifMsgBroadcast: Bool = true

@@ -13,6 +13,7 @@ import dev.forcetower.melon.core.database.dao.SettingsDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.SyncStateDao
 import dev.forcetower.melon.core.database.dao.UserDao
+import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.database.entity.ClassAllocationEntity
 import dev.forcetower.melon.core.database.entity.ClassEntity
 import dev.forcetower.melon.core.database.entity.ClassEvaluationEntity
@@ -37,6 +38,7 @@ import dev.forcetower.melon.core.database.entity.StudentGradeEntity
 import dev.forcetower.melon.core.database.entity.SyncStateEntity
 import dev.forcetower.melon.core.database.entity.TeacherEntity
 import dev.forcetower.melon.core.database.entity.UserEntity
+import dev.forcetower.melon.core.database.entity.UserSettingsEntity
 
 @Database(
     entities = [
@@ -62,10 +64,11 @@ import dev.forcetower.melon.core.database.entity.UserEntity
         MessageAttachmentEntity::class,
         MessageStateEntity::class,
         SettingsEntity::class,
+        UserSettingsEntity::class,
         SyncStateEntity::class,
         PendingMutationEntity::class,
     ],
-    version = 5,
+    version = 6,
 )
 @ConstructedBy(MelonDatabaseConstructor::class)
 abstract class MelonDatabase : RoomDatabase() {
@@ -75,6 +78,7 @@ abstract class MelonDatabase : RoomDatabase() {
     abstract fun academicDao(): AcademicDao
     abstract fun messageDao(): MessageDao
     abstract fun settingsDao(): SettingsDao
+    abstract fun userSettingsDao(): UserSettingsDao
     abstract fun credentialsDao(): CredentialsDao
     abstract fun syncStateDao(): SyncStateDao
     abstract fun pendingMutationDao(): PendingMutationDao

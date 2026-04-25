@@ -86,7 +86,9 @@ extension UmbrellaGraph {
         SettingsFactory(
             useCases: SettingsUseCases(
                 observeCredentials: observeCurrentCredentialsUseCase,
-                observeLastSync: observeLastSyncUseCase
+                observeLastSync: observeLastSyncUseCase,
+                observeSettings: observeSettingsUseCase,
+                updateSettings: updateSettingsUseCase
             )
         )
     }
