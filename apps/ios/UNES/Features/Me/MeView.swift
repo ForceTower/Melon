@@ -52,6 +52,8 @@ struct MeView: View {
                     switch kind {
                     case .countdown:
                         FinalCountdownView()
+                    case .calendar:
+                        CalendarView()
                     default:
                         EmptyView()
                     }
@@ -226,7 +228,7 @@ struct MeView: View {
 
     private func handleShortcutTap(_ kind: Shortcut.Kind) {
         switch kind {
-        case .countdown:
+        case .countdown, .calendar:
             path.append(kind)
         default:
             break
