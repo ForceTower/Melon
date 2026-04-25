@@ -1,0 +1,16 @@
+# Apple Universal Links — file has no extension; force JSON content-type.
+/.well-known/apple-app-site-association
+  Content-Type: application/json
+  Cache-Control: public, max-age=300, must-revalidate
+
+/.well-known/assetlinks.json
+  Content-Type: application/json
+  Cache-Control: public, max-age=300, must-revalidate
+
+# Hashed Astro assets — safe to cache forever.
+/_astro/*
+  Cache-Control: public, max-age=31536000, immutable
+
+/*
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin

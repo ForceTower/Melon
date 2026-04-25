@@ -1,0 +1,50 @@
+---
+const items = [
+  {
+    q: "É oficial da UEFS?",
+    a: "Não. UNES é um app independente, feito por estudantes da UEFS pra estudantes da UEFS. A gente conecta sua matrícula no portal oficial e organiza a informação melhor — mas todo dado vem do SAGRES e dos sistemas oficiais da universidade.",
+    open: true,
+  },
+  {
+    q: "Como conecto minha matrícula?",
+    a: "No primeiro acesso, você entra com seu número de matrícula e a mesma senha que usa no portal. A gente puxa horário, notas e mensagens em segundo plano e nunca armazena sua senha — ela vai direto pra UEFS.",
+  },
+  {
+    q: "É grátis mesmo?",
+    a: "Pra estudante, sempre vai ser. A versão pro time da coordenação tem custo institucional, mas pra você, do começo do semestre até a colação, é zero.",
+  },
+  {
+    q: "Funciona em iPhone e Android?",
+    a: "Sim, os dois. iPhone a partir do iOS 16, Android a partir do 9. Existe também uma versão web no unes.app pra quem prefere usar no notebook na biblioteca.",
+  },
+  {
+    q: "E se cair o sistema da UEFS?",
+    a: "Seu horário, suas notas e seu calendário ficam guardados localmente. Se o portal cair (e ele cai), você ainda consegue ver tudo. Quando voltar, a gente sincroniza sozinho.",
+  },
+  {
+    q: "Outras universidades já podem usar?",
+    a: "Hoje, só UEFS. Estamos construindo o suporte pra outras universidades baianas em 2026.2 — UFBA, UNEB e UESC são as próximas. Se você quer trazer pra sua, fala com a gente em oi@unes.app.",
+  },
+];
+---
+
+<section class="land" id="duvidas">
+  <div style="text-align:center;">
+    <div class="section-eyebrow">◦ dúvidas</div>
+    <h2 class="section-title">Antes de você <em>perguntar</em>.</h2>
+  </div>
+
+  <div class="faq">
+    {
+      items.map((item) => (
+        <details class="q" open={item.open}>
+          <summary>
+            {item.q}
+            <span class="ic" />
+          </summary>
+          <div class="ans">{item.a}</div>
+        </details>
+      ))
+    }
+  </div>
+</section>

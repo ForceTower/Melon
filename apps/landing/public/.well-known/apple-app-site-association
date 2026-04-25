@@ -1,0 +1,14 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "5GH6Q6KS69.dev.forcetower.unes.ios",
+        "paths": ["*"]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["5GH6Q6KS69.dev.forcetower.unes.ios"]
+  }
+}
