@@ -414,7 +414,7 @@ enum ColorFor {
     }
 
     private static func dynamic(light: UIColor, dark: UIColor) -> Color {
-        Color(uiColor: UIColor { trait in
+        Color(uiColor: UIColor { @Sendable trait in
             trait.userInterfaceStyle == .dark ? dark : light
         })
     }

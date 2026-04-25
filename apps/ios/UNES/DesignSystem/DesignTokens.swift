@@ -60,8 +60,12 @@ enum UNESColor {
         UIColor(red: CGFloat(r) / 255, green: CGFloat(g) / 255, blue: CGFloat(b) / 255, alpha: 1)
     }
 
+    /// `@Sendable` is load-bearing: SwiftUI's async render display link
+    /// resolves dynamic colors off the main thread, and an inferred
+    /// `@MainActor` closure here trips Swift 6's isolation check (SIGTRAP
+    /// inside `_swift_task_checkIsolatedSwift`).
     private static func dynamic(light: UIColor, dark: UIColor) -> Color {
-        Color(uiColor: UIColor { trait in
+        Color(uiColor: UIColor { @Sendable trait in
             trait.userInterfaceStyle == .dark ? dark : light
         })
     }
