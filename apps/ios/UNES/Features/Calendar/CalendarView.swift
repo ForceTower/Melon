@@ -11,9 +11,19 @@ import SwiftUI
 struct CalendarView: View {
     @State private var category: CalendarCategoryFilter = .all
     @State private var scope: CalendarScopeFilter = .all
+    @State private var viewModel: CalendarViewModel
 
-    private let allEvents: [CalendarEvent] = CalendarFixtures.events
-    private let semesterLabel: String = CalendarFixtures.semesterLabel
+    init(factory: CalendarFactory) {
+        _viewModel = State(initialValue: factory.makeViewModel())
+    }
+
+    // Factory-less init for `#Preview` — keeps the canvas rendering offline.
+    init() {
+        _viewModel = State(initialValue: CalendarViewModel())
+    }
+
+    private var allEvents: [CalendarEvent] { viewModel.events }
+    private var semesterLabel: String { viewModel.semesterCode ?? CalendarFixtures.semesterLabel }
 
     private var filtered: [CalendarEvent] {
         allEvents.filter { category.matches($0) && scope.matches($0) }
@@ -90,6 +100,7 @@ struct CalendarView: View {
                 }
                 .padding(.bottom, 32)
             }
+            .task { await viewModel.observe() }
         }
         .toolbarBackground(.hidden, for: .navigationBar)
         .navigationBarTitleDisplayMode(.inline)

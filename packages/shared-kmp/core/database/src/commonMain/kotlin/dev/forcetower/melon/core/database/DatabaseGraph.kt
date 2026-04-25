@@ -1,6 +1,7 @@
 package dev.forcetower.melon.core.database
 
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.CredentialsDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.PendingMutationDao
@@ -23,6 +24,7 @@ interface DatabaseGraph {
         @Provides fun studentDao(database: MelonDatabase): StudentDao = database.studentDao()
         @Provides fun semesterDao(database: MelonDatabase): SemesterDao = database.semesterDao()
         @Provides fun academicDao(database: MelonDatabase): AcademicDao = database.academicDao()
+        @Provides fun calendarEventDao(database: MelonDatabase): CalendarEventDao = database.calendarEventDao()
         @Provides fun messageDao(database: MelonDatabase): MessageDao = database.messageDao()
         @Provides fun settingsDao(database: MelonDatabase): SettingsDao = database.settingsDao()
         @Provides fun userSettingsDao(database: MelonDatabase): UserSettingsDao = database.userSettingsDao()

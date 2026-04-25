@@ -21,6 +21,10 @@ interface MirrorRepository {
     // continue paging based on `nextCursor`.
     suspend fun syncMessages(since: String?, cursor: String?): Outcome<MessagePageResult, SyncError>
 
+    // Pulls the canonical 90-day academic-calendar window and replaces the
+    // local mirror wholesale. Returns the number of events applied.
+    suspend fun syncCalendarEvents(): Outcome<Int, SyncError>
+
     // Bumps last_active_at on the server. Fire-and-forget; the only failure
     // anyone cares about is auth — surfaced via Outcome like everything else.
     suspend fun pingActivity(): Outcome<Unit, SyncError>

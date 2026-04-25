@@ -46,6 +46,11 @@ class RefreshSessionUseCase internal constructor(
             is Outcome.Ok -> log.d { "messages first-page ok applied=${result.value.appliedCount}" }
         }
 
+        when (val result = mirror.syncCalendarEvents()) {
+            is Outcome.Err -> log.w { "calendar refresh failed (ignored) err=${result.error}" }
+            is Outcome.Ok -> log.d { "calendar refresh ok applied=${result.value}" }
+        }
+
         val listOutcome = mirror.syncSemesterList()
         val summaries = when (listOutcome) {
             is Outcome.Err -> {

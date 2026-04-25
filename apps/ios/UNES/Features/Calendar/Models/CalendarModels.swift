@@ -100,15 +100,10 @@ struct CalendarEvent: Identifiable, Hashable {
 // MARK: - Helpers
 
 enum CalendarMath {
-    /// Pinned "today" — keeps the prototype's hero and progress bar
-    /// deterministic across runs.
-    static let today: Date = {
-        var c = DateComponents()
-        c.year = 2026
-        c.month = 4
-        c.day = 17
-        return Calendar.current.date(from: c)!
-    }()
+    /// Recomputed on every read so view bodies always see "now" — replacing
+    /// the prototype's pinned date that kept the hero deterministic against
+    /// the fixture set.
+    static var today: Date { Date() }
 
     /// Integer days between two dates ignoring time of day. `b - a`.
     static func daysBetween(_ a: Date, _ b: Date) -> Int {

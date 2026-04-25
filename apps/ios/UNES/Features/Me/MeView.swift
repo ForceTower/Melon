@@ -12,6 +12,7 @@ struct MeView: View {
     // credits are viewmodel-driven.
     private let pinned = MeFixtures.pinned(from: [.calendar, .countdown, .account])
     private let settingsFactory: SettingsFactory?
+    private let calendarFactory: CalendarFactory?
     private let onLoggedOut: () -> Void
     // Initial guess used on first present; swapped for the measured height
     // once `LogoutConfirmationSheet` reports its intrinsic size so the
@@ -28,6 +29,7 @@ struct MeView: View {
     init(factory: MeFactory, onLoggedOut: @escaping () -> Void = {}) {
         _viewModel = State(initialValue: factory.makeViewModel())
         self.settingsFactory = factory.settingsFactory
+        self.calendarFactory = factory.calendarFactory
         self.onLoggedOut = onLoggedOut
     }
 
@@ -36,6 +38,7 @@ struct MeView: View {
     init() {
         _viewModel = State(initialValue: MeViewModel())
         self.settingsFactory = nil
+        self.calendarFactory = nil
         self.onLoggedOut = {}
     }
 
@@ -53,7 +56,11 @@ struct MeView: View {
                     case .countdown:
                         FinalCountdownView()
                     case .calendar:
-                        CalendarView()
+                        if let calendarFactory {
+                            CalendarView(factory: calendarFactory)
+                        } else {
+                            CalendarView()
+                        }
                     default:
                         EmptyView()
                     }
@@ -121,7 +128,6 @@ struct MeView: View {
                 .presentationDetents([.height(aboutSheetHeight)])
                 .presentationDragIndicator(.visible)
                 .presentationBackground(UNESColor.surface)
-                .presentationCornerRadius(28)
         } else {
             AboutSheet(info: AppInfo.current, measuredHeight: $aboutSheetHeight)
                 .presentationDetents([.height(aboutSheetHeight)])
@@ -143,7 +149,6 @@ struct MeView: View {
             .presentationDetents([.height(logoutSheetHeight)])
             .presentationDragIndicator(.visible)
             .presentationBackground(UNESColor.surface)
-            .presentationCornerRadius(28)
         } else {
             LogoutConfirmationSheet(
                 identity: identity,

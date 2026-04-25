@@ -77,7 +77,18 @@ extension UmbrellaGraph {
                 observeLastSync: observeLastSyncUseCase
             ),
             sessionStore: sessionStore,
-            settingsFactory: settingsFactory
+            settingsFactory: settingsFactory,
+            calendarFactory: calendarFactory
+        )
+    }
+
+    @MainActor
+    var calendarFactory: CalendarFactory {
+        CalendarFactory(
+            useCases: CalendarUseCases(
+                observeEvents: observeCalendarEventsUseCase,
+                observeActiveSemesterCode: observeActiveSemesterCodeUseCase
+            )
         )
     }
 

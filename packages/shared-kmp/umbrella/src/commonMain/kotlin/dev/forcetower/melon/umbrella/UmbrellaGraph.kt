@@ -7,6 +7,8 @@ import dev.forcetower.melon.core.logging.NoopCrashReporter
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
@@ -93,6 +95,11 @@ interface UmbrellaGraph {
     val observeMessagesInboxUseCase: ObserveMessagesInboxUseCase
     val observeMessageDetailUseCase: ObserveMessageDetailUseCase
     val markMessageAsReadUseCase: MarkMessageAsReadUseCase
+
+    // Calendário (academic-calendar) reactive surfaces — events feed for the
+    // agenda, plus the active-semester code that powers the eyebrow label.
+    val observeCalendarEventsUseCase: ObserveCalendarEventsUseCase
+    val observeActiveSemesterCodeUseCase: ObserveActiveSemesterCodeUseCase
 
     // Eu (Me) reactive surface — emits the hero identity, semester strip data,
     // CR/hours rollup, and the closest upcoming evaluation as one snapshot.

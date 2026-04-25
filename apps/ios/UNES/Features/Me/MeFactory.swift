@@ -16,6 +16,8 @@ struct MeFactory {
     // Carried so `MeView` can hand it down to the pushed Settings screen
     // without `MeView` itself depending on `UmbrellaGraph`.
     let settingsFactory: SettingsFactory
+    // Same idea for the "Calendário" shortcut destination.
+    let calendarFactory: CalendarFactory
 
     func makeViewModel() -> MeViewModel {
         MeViewModel(useCases: useCases, sessionStore: sessionStore)

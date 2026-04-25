@@ -24,6 +24,8 @@ internal class MirrorApi(private val client: HttpClient) {
             cursor?.let { parameter("cursor", it) }
         }
 
+    suspend fun getCalendarEvents(): HttpResponse = client.get("api/sync/events")
+
     // Bumps users.last_active_at server-side. Co-located here for now to avoid
     // a separate API surface for one tiny fire-and-forget endpoint.
     suspend fun ping(): HttpResponse = client.post("api/me/ping")

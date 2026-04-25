@@ -3,12 +3,14 @@ package dev.forcetower.melon.core.sync.data.repository
 import co.touchlab.kermit.Logger
 import dev.forcetower.melon.core.common.Outcome
 import dev.forcetower.melon.core.database.dao.AcademicDao
+import dev.forcetower.melon.core.database.dao.CalendarEventDao
 import dev.forcetower.melon.core.database.dao.MessageDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.dao.StudentDao
 import dev.forcetower.melon.core.database.dao.UserDao
 import dev.forcetower.melon.core.database.dao.UserSettingsDao
 import dev.forcetower.melon.core.network.ApiEnvelope
+import dev.forcetower.melon.core.sync.data.dto.CalendarEventsResponse
 import dev.forcetower.melon.core.sync.data.dto.MessagePageResponse
 import dev.forcetower.melon.core.sync.data.dto.OnboardingStatusResponse
 import dev.forcetower.melon.core.sync.data.dto.ProfileResponse
@@ -41,6 +43,7 @@ internal class MirrorRepositoryImpl(
     private val semesterDao: SemesterDao,
     private val academicDao: AcademicDao,
     private val messageDao: MessageDao,
+    private val calendarEventDao: CalendarEventDao,
     private val userSettingsDao: UserSettingsDao,
     logger: Logger,
 ) : MirrorRepository {
@@ -164,6 +167,22 @@ internal class MirrorRepositoryImpl(
                         "attachments=$attachmentsCount nextCursor=${page.nextCursor ?: "<nil>"}"
                 }
                 Outcome.Ok(MessagePageResult(appliedCount = page.messages.size, nextCursor = page.nextCursor))
+            }
+        }
+    }
+
+    override suspend fun syncCalendarEvents(): Outcome<Int, SyncError> = callNetwork("syncCalendarEvents") {
+        val response = api.getCalendarEvents()
+        when (val mapped = classifyResponse<CalendarEventsResponse>(response, "syncCalendarEvents")) {
+            is Outcome.Err -> mapped
+            is Outcome.Ok -> {
+                val events = mapped.value.events.map { it.toEntity() }
+                // Server emits the canonical 90-day window each call; replace
+                // wholesale so upstream deletes propagate. The DAO wraps this
+                // in a transaction so observers never see an empty state.
+                calendarEventDao.replaceAll(events)
+                log.i { "syncCalendarEvents ok applied=${events.size}" }
+                Outcome.Ok(events.size)
             }
         }
     }
