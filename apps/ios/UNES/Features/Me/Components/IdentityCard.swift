@@ -203,7 +203,7 @@ private struct IdentityStat: View {
                 }
             }
 
-            if let accent {
+            if let accent, !accent.isEmpty {
                 HStack(spacing: 2) {
                     Image(systemName: "arrow.up")
                         .font(.system(size: 8, weight: .semibold))

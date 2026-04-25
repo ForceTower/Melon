@@ -4,7 +4,6 @@ import dev.forcetower.melon.core.database.dao.AcademicDao
 import dev.forcetower.melon.core.database.dao.SemesterDao
 import dev.forcetower.melon.core.database.entity.SemesterEntity
 import dev.forcetower.melon.core.database.query.EnrolledDisciplineRow
-import dev.forcetower.melon.core.database.query.PartialGradeRow
 import dev.forcetower.melon.feature.overview.domain.internal.pickActiveSemester
 import dev.forcetower.melon.feature.overview.domain.model.OverviewGradeTile
 import dev.zacsweers.metro.Inject
@@ -15,13 +14,13 @@ import kotlinx.datetime.Clock
 import kotlinx.datetime.TimeZone
 import kotlinx.datetime.toLocalDateTime
 
-// Mirrors the CR calculation ObserveMeProfileUseCase performs for the "Eu"
-// hero, scoped to the overview's active semester. Reading the same DAO
-// streams (enrolled disciplines + every partial grade) guarantees the number
-// stays in lockstep with the Me tab — a student sees one CR across the app.
-// The two use cases intentionally duplicate the tiny weighted-average helper
-// instead of reaching across feature modules; see the same note in
-// ObserveDisciplinesListUseCase.
+// Lifetime CR for the grade tile, plus a delta showing how much the active
+// semester is moving it. The delta is `overall − overall capped at the active
+// semester start` — i.e. the contribution of in-progress final grades.
+// `comparisonSemesterCode` is the most recent semester strictly before the
+// active one. The math mirrors CalculateOverallScoreUseCase; the helper is
+// duplicated here on purpose (cross-feature `internal` doesn't carry, and
+// the codebase already prefers small local copies over a shared module).
 @Inject
 class ObserveGradeTileUseCase internal constructor(
     private val semesterDao: SemesterDao,
@@ -32,69 +31,65 @@ class ObserveGradeTileUseCase internal constructor(
     operator fun invoke(): Flow<OverviewGradeTile?> = combine(
         semesterDao.observeAll(),
         academicDao.observeAllEnrolledDisciplines(),
-        academicDao.observeAllPartialGrades(),
-    ) { semesters, enrollments, grades ->
+    ) { semesters, enrollments ->
         val today = Clock.System.now().toLocalDateTime(timeZone).date.toString()
-        buildTile(semesters, enrollments, grades, today)
+        buildTile(semesters, enrollments, today)
     }.distinctUntilChanged()
 }
 
 private fun buildTile(
     semesters: List<SemesterEntity>,
     enrollments: List<EnrolledDisciplineRow>,
-    grades: List<PartialGradeRow>,
     todayIso: String,
 ): OverviewGradeTile? {
-    val active = pickActiveSemester(semesters, todayIso) ?: return null
-    val enrollmentsBySemester = enrollments.groupBy { it.semesterId }
-    val gradesByStudentClass = grades.groupBy { it.studentClassId }
-
-    val activeCR = semesterWeightedAverage(
-        enrollmentsBySemester[active.id],
-        gradesByStudentClass,
-    ) ?: return null
-
-    val previous = semesters
-        .asSequence()
-        .filter { it.id != active.id && it.id in enrollmentsBySemester }
-        .sortedByDescending { it.endDate }
-        .firstOrNull()
-    val previousCR = previous?.id?.let {
-        semesterWeightedAverage(enrollmentsBySemester[it], gradesByStudentClass)
+    val overall = overallScore(semesters, enrollments, capSemesterId = null) ?: return null
+    val active = pickActiveSemester(semesters, todayIso)
+    val before = active?.let { overallScore(semesters, enrollments, capSemesterId = it.id) }
+    val previousCode = active?.let { a ->
+        semesters
+            .asSequence()
+            .filter { it.id != a.id && it.startDate < a.startDate }
+            .maxByOrNull { it.startDate }
+            ?.code
     }
     return OverviewGradeTile(
-        cr = activeCR,
-        crDelta = if (previousCR != null) activeCR - previousCR else null,
-        comparisonSemesterCode = previous?.code?.takeIf { previousCR != null },
+        cr = overall,
+        crDelta = before?.let { overall - it },
+        comparisonSemesterCode = previousCode?.takeIf { before != null },
     )
 }
 
-private fun semesterWeightedAverage(
-    enrollments: List<EnrolledDisciplineRow>?,
-    gradesByStudentClass: Map<String, List<PartialGradeRow>>,
+private fun overallScore(
+    semesters: List<SemesterEntity>,
+    enrollments: List<EnrolledDisciplineRow>,
+    capSemesterId: String?,
 ): Double? {
-    val rows = enrollments ?: return null
-    // Dedup by upstream id so multi-group disciplines (same grade set replicated
-    // per StudentClass) aren't double-weighted when rolled up into CR.
-    val all = rows
-        .flatMap { gradesByStudentClass[it.studentClassId].orEmpty() }
-        .distinctBy { it.gradePlatformId }
-    return weightedAverage(all)
-}
+    val allowed: Set<String> = if (capSemesterId == null) {
+        semesters.mapTo(mutableSetOf()) { it.id }
+    } else {
+        val cap = semesters.firstOrNull { it.id == capSemesterId } ?: return null
+        semesters.asSequence()
+            .filter { it.startDate < cap.startDate }
+            .mapTo(mutableSetOf()) { it.id }
+    }
 
-// Duplicated from ObserveMeProfileUseCase — same 3-line helper; keep in
-// lockstep if the weighting ever changes.
-private fun weightedAverage(grades: List<PartialGradeRow>): Double? {
+    val contributions = enrollments
+        .asSequence()
+        .filter { it.semesterId in allowed }
+        .mapNotNull { row ->
+            val grade = row.finalGrade?.replace(",", ".")?.toDoubleOrNull() ?: return@mapNotNull null
+            row to grade
+        }
+        .distinctBy { (row, _) -> row.offerId }
+        .toList()
+
     var weightedSum = 0.0
     var weightSum = 0.0
-    for (grade in grades) {
-        val value = grade.parsedValue() ?: continue
-        val weight = grade.weight.replace(",", ".").toDoubleOrNull() ?: continue
-        weightedSum += value * weight
-        weightSum += weight
+    for ((row, grade) in contributions) {
+        val hours = row.disciplineHours
+        if (hours <= 0) continue
+        weightedSum += grade * hours
+        weightSum += hours
     }
     return if (weightSum > 0.0) weightedSum / weightSum else null
 }
-
-private fun PartialGradeRow.parsedValue(): Double? =
-    value?.takeIf { it.isNotBlank() }?.replace(",", ".")?.toDoubleOrNull()

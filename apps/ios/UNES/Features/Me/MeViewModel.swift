@@ -25,6 +25,11 @@ final class MeViewModel {
     // KMP flow to re-emit. Mirrors `OverviewViewModel`'s ticker.
     private(set) var clock: Date = Date()
 
+    // Latest profile snapshot + lifetime CR cached separately so either flow
+    // emitting refreshes `identity` against the freshest pair.
+    @ObservationIgnored private var lastProfile: MeMeProfile?
+    @ObservationIgnored private var overallScore: Double?
+
     @ObservationIgnored private let useCases: MeUseCases?
     @ObservationIgnored private let sessionStore: SessionSessionStore?
     @ObservationIgnored private let log = Log.scoped("MeViewModel")
@@ -45,15 +50,24 @@ final class MeViewModel {
         log.info("subscribing to me flows")
 
         async let p: Void = observeProfile(useCases: useCases)
+        async let s: Void = observeOverallScore(useCases: useCases)
         async let l: Void = observeLastSync(useCases: useCases)
         async let t: Void = runClockTicker()
 
-        _ = await (p, l, t)
+        _ = await (p, s, l, t)
     }
 
     private func observeProfile(useCases: MeUseCases) async {
         for await snapshot in useCases.observeProfile.invoke() {
-            identity = Self.map(profile: snapshot)
+            lastProfile = snapshot
+            rebuildIdentity()
+        }
+    }
+
+    private func observeOverallScore(useCases: MeUseCases) async {
+        for await value in useCases.overallScore.invoke(capSemesterId: nil) {
+            overallScore = value.map { Double(truncating: $0) }
+            rebuildIdentity()
         }
     }
 
@@ -61,6 +75,11 @@ final class MeViewModel {
         for await value in useCases.observeLastSync.invoke() {
             lastSyncIso = value
         }
+    }
+
+    private func rebuildIdentity() {
+        guard let lastProfile else { return }
+        identity = Self.map(profile: lastProfile, overallScore: overallScore)
     }
 
     private func runClockTicker() async {
@@ -112,14 +131,12 @@ final class MeViewModel {
 
     // MARK: - Mapping
 
-    private static func map(profile raw: MeMeProfile) -> ProfileIdentity {
+    private static func map(profile raw: MeMeProfile, overallScore: Double?) -> ProfileIdentity {
         let name = raw.identity.userName
         let firstName = raw.identity.firstName.isEmpty ? name : raw.identity.firstName
         let avatarInitial = firstName.first.map { String($0).uppercased() } ?? "?"
 
         let semester = raw.semester
-        let crValue = raw.enrollment.cr.map { Double(truncating: $0) }
-        let crDeltaValue = raw.enrollment.crDelta.map { Double(truncating: $0) }
 
         return ProfileIdentity(
             name: name,
@@ -135,33 +152,16 @@ final class MeViewModel {
             semesterWeek: Int(semester?.currentWeek ?? 0),
             semesterTotalWeeks: Int(semester?.totalWeeks ?? 0),
             progressPct: Int(semester?.progressPercent ?? 0),
-            cr: crValue ?? 0,
-            crDelta: formatCrDelta(crDeltaValue),
+            // Lifetime CR — sourced from CalculateOverallScoreUseCase, not the
+            // profile flow's per-semester partial average.
+            cr: overallScore ?? 0,
+            crDelta: "",
             creditsDone: Int(raw.enrollment.completedHours),
             creditsRequired: Int(raw.enrollment.totalHours),
             semesterStart: formatSemesterStart(semester?.startDate),
             semesterEnd: formatSemesterEnd(semester?.endDate),
             finalExam: formatFinalExam(raw.nextExam)
         )
-    }
-
-    private static func formatCrDelta(_ value: Double?) -> String {
-        guard let value else { return "" }
-        // One decimal place, comma separator, explicit sign to match the
-        // design's "+0,3" / "-0,2" chip. Zero reads as "±0,0" to keep the
-        // presence of the field obvious.
-        let scaled = (value * 10).rounded()
-        let absWhole = Int(abs(scaled)) / 10
-        let absTenth = Int(abs(scaled)) % 10
-        let sign: String
-        if scaled > 0 {
-            sign = "+"
-        } else if scaled < 0 {
-            sign = "-"
-        } else {
-            sign = "±"
-        }
-        return "\(sign)\(absWhole),\(absTenth)"
     }
 
     private static func formatSemesterStart(_ iso: String?) -> String {

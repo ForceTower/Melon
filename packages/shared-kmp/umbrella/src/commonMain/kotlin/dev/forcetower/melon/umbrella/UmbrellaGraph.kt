@@ -10,6 +10,7 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
 import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
+import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
@@ -88,6 +89,11 @@ interface UmbrellaGraph {
     // ementa). The native detail screen subscribes with the offerId it
     // received on navigation.
     val observeDisciplineDetailUseCase: ObserveDisciplineDetailUseCase
+
+    // Lifetime CR — weighted mean across every completed discipline. Powers
+    // both the Overview grade tile and the Me hero card so the value stays
+    // consistent across the app.
+    val calculateOverallScoreUseCase: CalculateOverallScoreUseCase
 
     // Mensagens (Recados) reactive surfaces — one flow for the grouped
     // inbox, one per-message detail flow for the reader, and a suspend

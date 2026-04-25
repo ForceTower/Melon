@@ -74,7 +74,8 @@ extension UmbrellaGraph {
         MeFactory(
             useCases: MeUseCases(
                 observeProfile: observeMeProfileUseCase,
-                observeLastSync: observeLastSyncUseCase
+                observeLastSync: observeLastSyncUseCase,
+                overallScore: calculateOverallScoreUseCase
             ),
             sessionStore: sessionStore,
             settingsFactory: settingsFactory,

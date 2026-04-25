@@ -7,6 +7,7 @@
 struct MeUseCases {
     let observeProfile: MeObserveMeProfileUseCase
     let observeLastSync: OverviewObserveLastSyncUseCase
+    let overallScore: DisciplinesCalculateOverallScoreUseCase
 }
 
 @MainActor
