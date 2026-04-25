@@ -883,7 +883,7 @@ section.land {
 }
 
 /* ── Showcase ── */
-.showcase {
+section.showcase {
   background: var(--night);
   color: var(--cream);
   border-radius: 32px;
@@ -1311,6 +1311,84 @@ footer.land-foot {
   letter-spacing: 0.06em;
 }
 
+/* ── Legal pages (Privacidade / Termos) ── */
+.legal {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 80px 32px 96px;
+}
+.legal-head {
+  margin-bottom: 56px;
+}
+.legal-title {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 64px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+  margin: 14px 0 18px;
+  text-wrap: balance;
+}
+.legal-title em {
+  color: var(--accent);
+  font-family: var(--font-accent);
+  font-style: var(--font-accent-style);
+  font-weight: var(--font-accent-weight);
+}
+.legal-meta {
+  font: 500 12px/1 var(--font-mono);
+  letter-spacing: 0.06em;
+  color: var(--ink-3);
+  margin: 0;
+}
+.legal-body {
+  font: 400 16px/1.65 var(--font-sans);
+  color: var(--ink-2);
+}
+.legal-body .lede {
+  font-size: 19px;
+  line-height: 1.55;
+  color: var(--ink);
+  margin: 0 0 40px;
+  text-wrap: pretty;
+}
+.legal-body h2 {
+  font-family: var(--font-serif);
+  font-weight: 400;
+  font-size: 32px;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+  margin: 48px 0 14px;
+}
+.legal-body p {
+  margin: 0 0 16px;
+}
+.legal-body ul {
+  margin: 0 0 20px;
+  padding-left: 22px;
+}
+.legal-body li {
+  margin: 0 0 10px;
+}
+.legal-body strong {
+  color: var(--ink);
+  font-weight: 600;
+}
+.legal-body a {
+  color: var(--accent);
+  text-decoration: none;
+  border-bottom: 1px solid rgba(232, 93, 78, 0.35);
+  transition:
+    color 0.15s,
+    border-color 0.15s;
+}
+.legal-body a:hover {
+  color: var(--accent-press);
+  border-color: var(--accent-press);
+}
+
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .hero-grid {
@@ -1342,7 +1420,16 @@ footer.land-foot {
   .foot-grid {
     grid-template-columns: 1fr 1fr;
   }
-  .showcase {
+  section.showcase {
     padding: 56px 28px;
+  }
+  .legal {
+    padding: 56px 24px 72px;
+  }
+  .legal-title {
+    font-size: 44px;
+  }
+  .legal-body h2 {
+    font-size: 26px;
   }
 }
