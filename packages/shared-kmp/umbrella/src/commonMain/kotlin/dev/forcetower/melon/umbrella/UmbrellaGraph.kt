@@ -26,6 +26,8 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
+import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
+import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
@@ -99,6 +101,12 @@ interface UmbrellaGraph {
     // Configurações reactive surface — emits the active session's typed
     // upstream credentials so the Settings vault card can render them.
     val observeCurrentCredentialsUseCase: ObserveCurrentCredentialsUseCase
+
+    // Configurações settings flow — emits the user's notification toggles
+    // and grade-spoiler preference, hydrated from the profile mirror and
+    // mutated via `updateSettingsUseCase`.
+    val observeSettingsUseCase: ObserveSettingsUseCase
+    val updateSettingsUseCase: UpdateSettingsUseCase
 
     @DependencyGraph.Factory
     fun interface Factory {
