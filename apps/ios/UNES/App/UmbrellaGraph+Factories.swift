@@ -73,7 +73,8 @@ extension UmbrellaGraph {
     var meFactory: MeFactory {
         MeFactory(
             useCases: MeUseCases(
-                observeProfile: observeMeProfileUseCase
+                observeProfile: observeMeProfileUseCase,
+                observeLastSync: observeLastSyncUseCase
             ),
             sessionStore: sessionStore,
             settingsFactory: settingsFactory
@@ -84,7 +85,8 @@ extension UmbrellaGraph {
     var settingsFactory: SettingsFactory {
         SettingsFactory(
             useCases: SettingsUseCases(
-                observeCredentials: observeCurrentCredentialsUseCase
+                observeCredentials: observeCurrentCredentialsUseCase,
+                observeLastSync: observeLastSyncUseCase
             )
         )
     }

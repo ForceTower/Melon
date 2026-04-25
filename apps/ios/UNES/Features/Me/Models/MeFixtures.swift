@@ -59,18 +59,23 @@ enum MeFixtures {
 
     static let defaultPinned: [Shortcut.Kind] = shortcutSets[0].pinned
 
-    static let settingsRows: [MeSettingsRow] = [
-        .init(id: .settings, label: "Configurações",
-              hint: "tema, notificações, dados",    systemImage: "gearshape"),
-        .init(id: .sync,     label: "Registro de sincronização",
-              hint: "última: há 2 min",              systemImage: "arrow.triangle.2.circlepath", statusOK: true),
-        .init(id: .about,    label: "Sobre o aplicativo",
-              hint: "versão \(Bundle.main.appVersion) · build \(Bundle.main.buildNumber)", systemImage: "info.circle"),
-        .init(id: .feedback, label: "Erros & sugestões",
-              hint: "fale com os mantenedores",      systemImage: "ladybug"),
-        .init(id: .licenses, label: "Licenças open source",
-              hint: "126 pacotes",                   systemImage: "c.circle"),
-    ]
+    /// Builds the services/settings list. The sync row's hint is live —
+    /// callers pipe `MeViewModel.lastSyncHint` in so the "última: há X min"
+    /// label tracks the real last-sync timestamp.
+    static func settingsRows(syncHint: String) -> [MeSettingsRow] {
+        [
+            .init(id: .settings, label: "Configurações",
+                  hint: "tema, notificações, dados",    systemImage: "gearshape"),
+            .init(id: .sync,     label: "Registro de sincronização",
+                  hint: syncHint,                        systemImage: "arrow.triangle.2.circlepath", statusOK: true),
+            .init(id: .about,    label: "Sobre o aplicativo",
+                  hint: "versão \(Bundle.main.appVersion) · build \(Bundle.main.buildNumber)", systemImage: "info.circle"),
+            .init(id: .feedback, label: "Erros & sugestões",
+                  hint: "fale com os mantenedores",      systemImage: "ladybug"),
+            .init(id: .licenses, label: "Licenças open source",
+                  hint: "126 pacotes",                   systemImage: "c.circle"),
+        ]
+    }
 
     /// Lookup helper for view code that holds the pinned IDs but needs the
     /// full Shortcut record.

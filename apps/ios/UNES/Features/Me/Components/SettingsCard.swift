@@ -102,7 +102,7 @@ private struct PressHighlightStyle: ButtonStyle {
 #Preview {
     ZStack {
         UNESColor.surface.ignoresSafeArea()
-        SettingsCard(rows: MeFixtures.settingsRows)
+        SettingsCard(rows: MeFixtures.settingsRows(syncHint: "última: há 2 min"))
             .padding(14)
     }
 }

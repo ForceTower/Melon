@@ -116,6 +116,4 @@ enum SettingsFixtures {
             password: "ma·nogue!ra·2024"
         )
     #endif
-
-    static let lastSyncLabel = "há 2 min"
 }

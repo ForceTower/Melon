@@ -11,7 +11,6 @@ struct MeView: View {
     // keep reading from `MeFixtures`. Only the hero / semester strip / CR /
     // credits are viewmodel-driven.
     private let pinned = MeFixtures.pinned(from: MeFixtures.defaultPinned)
-    private let settings = MeFixtures.settingsRows
     private let settingsFactory: SettingsFactory?
     private let onLoggedOut: () -> Void
     // Initial guess used on first present; swapped for the measured height
@@ -180,7 +179,10 @@ struct MeView: View {
 
                         VStack(spacing: 0) {
                             MeSectionLabel(label: "definições")
-                            SettingsCard(rows: settings, onTap: handleSettingsRowTap)
+                            SettingsCard(
+                                rows: MeFixtures.settingsRows(syncHint: viewModel.lastSyncHint),
+                                onTap: handleSettingsRowTap
+                            )
                         }
                         .fadeUpOnAppear(delay: 0.38, distance: 12, duration: 0.55)
 

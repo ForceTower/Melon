@@ -20,6 +20,10 @@ final class MeViewModel {
     private(set) var identity: ProfileIdentity?
     private(set) var logoutStep: LogoutStep = .idle
     private(set) var logoutName: String = "Estudante"
+    private(set) var lastSyncIso: String?
+    // Ticked every 30s so the "há X min" label refreshes without forcing the
+    // KMP flow to re-emit. Mirrors `OverviewViewModel`'s ticker.
+    private(set) var clock: Date = Date()
 
     @ObservationIgnored private let useCases: MeUseCases?
     @ObservationIgnored private let sessionStore: SessionSessionStore?
@@ -38,10 +42,42 @@ final class MeViewModel {
 
     func observe() async {
         guard let useCases else { return }
-        log.info("subscribing to profile")
+        log.info("subscribing to me flows")
+
+        async let p: Void = observeProfile(useCases: useCases)
+        async let l: Void = observeLastSync(useCases: useCases)
+        async let t: Void = runClockTicker()
+
+        _ = await (p, l, t)
+    }
+
+    private func observeProfile(useCases: MeUseCases) async {
         for await snapshot in useCases.observeProfile.invoke() {
             identity = Self.map(profile: snapshot)
         }
+    }
+
+    private func observeLastSync(useCases: MeUseCases) async {
+        for await value in useCases.observeLastSync.invoke() {
+            lastSyncIso = value
+        }
+    }
+
+    private func runClockTicker() async {
+        while !Task.isCancelled {
+            clock = Date()
+            try? await Task.sleep(nanoseconds: 30 * 1_000_000_000)
+        }
+    }
+
+    // Hint rendered in the "Registro de sincronização" settings row — the
+    // prefix is editorial copy, the relative part is driven by the flow.
+    // Em-dash fallback while no sync has landed.
+    var lastSyncHint: String {
+        guard let iso = lastSyncIso,
+              let relative = Self.formatRelative(iso: iso, against: clock)
+        else { return "última: —" }
+        return "última: \(relative)"
     }
 
     // MARK: - Logout flow
@@ -151,4 +187,24 @@ final class MeViewModel {
         f.dateFormat = "d MMM"
         return f
     }()
+
+    private static let isoInstantFormatter: ISO8601DateFormatter = {
+        let f = ISO8601DateFormatter()
+        f.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+        return f
+    }()
+
+    private static func formatRelative(iso: String, against now: Date) -> String? {
+        let parsed = isoInstantFormatter.date(from: iso)
+            ?? ISO8601DateFormatter().date(from: iso)
+        guard let date = parsed else { return nil }
+        let seconds = max(0, Int(now.timeIntervalSince(date)))
+        let minutes = seconds / 60
+        if minutes < 1 { return "agora mesmo" }
+        if minutes < 60 { return "há \(minutes) min" }
+        let hours = minutes / 60
+        if hours < 24 { return "há \(hours) h" }
+        let days = hours / 24
+        return "há \(days) d"
+    }
 }

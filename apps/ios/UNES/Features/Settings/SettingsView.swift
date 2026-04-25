@@ -49,7 +49,7 @@ struct SettingsView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    SettingsHeader(lastSyncLabel: SettingsFixtures.lastSyncLabel)
+                    SettingsHeader(lastSyncLabel: viewModel.lastSyncLabel)
                         .fadeUpOnAppear(delay: 0.02, distance: 12, duration: 0.55)
 
                     VStack(spacing: 22) {

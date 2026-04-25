@@ -6,6 +6,7 @@
 // mutations, sign-out flows) without churning call sites.
 struct MeUseCases {
     let observeProfile: MeObserveMeProfileUseCase
+    let observeLastSync: OverviewObserveLastSyncUseCase
 }
 
 @MainActor

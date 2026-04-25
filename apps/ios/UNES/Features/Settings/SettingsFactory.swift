@@ -7,6 +7,7 @@
 // `feature/me` for now.
 struct SettingsUseCases {
     let observeCredentials: MeObserveCurrentCredentialsUseCase
+    let observeLastSync: OverviewObserveLastSyncUseCase
 }
 
 @MainActor
