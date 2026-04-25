@@ -9,12 +9,23 @@ struct DayColumn: View {
     var showGaps: Bool = true
     var entering: Bool = false
 
+    // Easter egg: tapping the "Nenhuma aula" copy on a free day opens the
+    // Folio runner. State lives here (not in the parent) so it doesn't
+    // leak into days that have classes — the empty state is the only
+    // entry point.
+    @State private var showFolioRunner = false
+
     var body: some View {
         if classes.isEmpty {
             emptyState
                 .frame(maxWidth: .infinity)
                 .padding(.horizontal, 30)
                 .padding(.vertical, 60)
+                .contentShape(Rectangle())
+                .onTapGesture { showFolioRunner = true }
+                .fullScreenCover(isPresented: $showFolioRunner) {
+                    FolioRunnerView()
+                }
         } else {
             VStack(spacing: 0) {
                 ForEach(Array(classes.enumerated()), id: \.element.id) { i, cls in
