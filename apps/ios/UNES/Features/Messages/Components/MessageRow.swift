@@ -56,11 +56,16 @@ struct MessageRow: View {
                 .truncationMode(.tail)
                 .frame(maxWidth: .infinity, alignment: .leading)
 
-            Text(MessageDate.relativeTime(for: message.receivedAt))
-                .font(UNESFont.mono(10))
-                .tracking(0.4)
-                .foregroundStyle(UNESColor.ink4)
-                .fixedSize()
+            // Self-updating relative timestamp. Scoped to this `Text` so a long-
+            // lived list doesn't freeze on "agora" but we also don't re-render
+            // the entire row every minute.
+            TimelineView(.periodic(from: .now, by: 60)) { context in
+                Text(MessageDate.relativeTime(for: message.receivedAt, now: context.date))
+                    .font(UNESFont.mono(10))
+                    .tracking(0.4)
+                    .foregroundStyle(UNESColor.ink4)
+                    .fixedSize()
+            }
         }
         .padding(.bottom, 2)
     }

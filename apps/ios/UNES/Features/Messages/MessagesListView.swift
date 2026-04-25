@@ -40,10 +40,10 @@ struct MessagesListView: View {
         let items: [Message]
     }
 
-    private var buckets: [Bucket] {
+    private func buckets(now: Date) -> [Bucket] {
         var map: [MessageDate.Bucket: [Message]] = [:]
         for m in filtered {
-            map[MessageDate.bucket(for: m.receivedAt), default: []].append(m)
+            map[MessageDate.bucket(for: m.receivedAt, now: now), default: []].append(m)
         }
         return MessageDate.Bucket.allCases.compactMap { key in
             guard let items = map[key], !items.isEmpty else { return nil }
@@ -97,10 +97,11 @@ struct MessagesListView: View {
                         .padding(.bottom, 4)
                         .fadeUpOnAppear(delay: 0.1, distance: 10, duration: 0.55)
 
-                    if buckets.isEmpty {
+                    let bs = buckets(now: Date())
+                    if bs.isEmpty {
                         emptyState
                     } else {
-                        ForEach(Array(buckets.enumerated()), id: \.element.id) { idx, b in
+                        ForEach(Array(bs.enumerated()), id: \.element.id) { idx, b in
                             bucketCard(b, index: idx)
                                 .fadeUpOnAppear(delay: 0.18 + Double(idx) * 0.06,
                                                 distance: 10, duration: 0.55)

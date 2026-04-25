@@ -29,8 +29,19 @@ struct CalAgendaRow: View {
     private var dateGutter: some View {
         let cal = Calendar.current
         let day = cal.component(.day, from: event.start)
-        return ZStack(alignment: .top) {
-            // Connecting rail. Drawn first so the date label sits over it.
+        return VStack(alignment: .leading, spacing: 3) {
+            Text(String(format: "%02d", day))
+                .font(UNESFont.serif(22, italic: hasRange))
+                .tracking(-0.44)
+                .foregroundStyle(isActive ? category.color : UNESColor.ink)
+
+            weekdayLabel
+        }
+        .padding(.top, 14)
+        .frame(width: 60, alignment: .topLeading)
+        .overlay(alignment: .topTrailing) {
+            // Connecting rail tucked into the trailing gap so it never
+            // collides with the date digits.
             if !isLast {
                 Rectangle()
                     .fill(UNESColor.line)
@@ -38,52 +49,37 @@ struct CalAgendaRow: View {
                     .padding(.top, 44)
                     .frame(maxHeight: .infinity, alignment: .top)
             }
-
-            VStack(alignment: .leading, spacing: 3) {
-                Text(String(format: "%02d", day))
-                    .font(UNESFont.serif(22, italic: hasRange))
-                    .tracking(-0.44)
-                    .foregroundStyle(isActive ? category.color : UNESColor.ink)
-
-                weekdayLabel
-            }
-            .padding(.top, 14)
         }
-        .frame(width: 60, alignment: .topLeading)
     }
 
+    @ViewBuilder
     private var weekdayLabel: some View {
         let cal = Calendar.current
-        let startWeekday = CalendarFormat.weekday(event.start)
+        let startWeekday = CalendarFormat.weekday(event.start).uppercased()
         if let end = event.end {
             let endDay = cal.component(.day, from: end)
             let endMonth = cal.component(.month, from: end) - 1
             let startMonth = cal.component(.month, from: event.start) - 1
-            let trail: String
-            if endMonth != startMonth {
-                trail = String(format: " – %02d %@", endDay, CalendarFormat.monthsShort[endMonth])
-            } else {
-                trail = String(format: " – %02d", endDay)
+            let trail = endMonth == startMonth
+                ? String(format: "→ %02d", endDay)
+                : String(format: "→ %02d %@", endDay, CalendarFormat.monthsShort[endMonth].uppercased())
+            VStack(alignment: .leading, spacing: 2) {
+                Text(startWeekday)
+                    .font(UNESFont.mono(9.5))
+                    .tracking(0.95)
+                    .foregroundStyle(UNESColor.ink3)
+                Text(trail)
+                    .font(UNESFont.mono(9.5))
+                    .tracking(0.95)
+                    .foregroundStyle(UNESColor.ink4)
+                    .fixedSize(horizontal: true, vertical: false)
             }
-            return AnyView(
-                HStack(spacing: 0) {
-                    Text(startWeekday.uppercased())
-                        .font(UNESFont.mono(9.5))
-                        .tracking(0.95)
-                        .foregroundStyle(UNESColor.ink3)
-                    Text(trail)
-                        .font(UNESFont.mono(9.5))
-                        .tracking(0.95)
-                        .foregroundStyle(UNESColor.ink4)
-                }
-            )
-        }
-        return AnyView(
-            Text(startWeekday.uppercased())
+        } else {
+            Text(startWeekday)
                 .font(UNESFont.mono(9.5))
                 .tracking(0.95)
                 .foregroundStyle(UNESColor.ink3)
-        )
+        }
     }
 
     // MARK: - Card

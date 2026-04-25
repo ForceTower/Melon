@@ -203,12 +203,7 @@ enum MessageFilter: String, CaseIterable, Identifiable {
 
 // MARK: - Date bucketing
 
-/// Pinned "today" used by the mock data, matching the prototype.
 enum MessageDate {
-    static let today = DateComponents(
-        calendar: .current, year: 2026, month: 4, day: 18, hour: 13, minute: 20
-    ).date!
-
     enum Bucket: String, CaseIterable {
         case today      = "Hoje"
         case yesterday  = "Ontem"
@@ -217,8 +212,8 @@ enum MessageDate {
         case older      = "Mais antigas"
     }
 
-    static func bucket(for date: Date) -> Bucket {
-        let secs = today.timeIntervalSince(date)
+    static func bucket(for date: Date, now: Date = Date()) -> Bucket {
+        let secs = now.timeIntervalSince(date)
         let days = Int(floor(secs / 86_400))
         if days <= 0 { return .today }
         if days == 1 { return .yesterday }
@@ -228,8 +223,8 @@ enum MessageDate {
     }
 
     /// Short relative label for the list row timestamp.
-    static func relativeTime(for date: Date) -> String {
-        let secs = today.timeIntervalSince(date)
+    static func relativeTime(for date: Date, now: Date = Date()) -> String {
+        let secs = now.timeIntervalSince(date)
         let mins = Int(floor(secs / 60))
         if mins < 1  { return "agora" }
         if mins < 60 { return "\(mins) min" }
