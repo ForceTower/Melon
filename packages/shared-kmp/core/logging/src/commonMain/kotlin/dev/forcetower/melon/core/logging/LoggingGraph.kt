@@ -13,8 +13,24 @@ interface LoggingGraph {
     companion object {
         @Provides
         @SingleIn(AppScope::class)
-        fun loggerConfig(config: LoggingConfig, remote: RemoteLogWriters): LoggerConfig {
-            val writers = platformDefaultLogWriters(config) + remote.writers
+        fun loggerConfig(
+            config: LoggingConfig,
+            remote: RemoteLogWriters,
+            crashReporter: CrashReporter,
+        ): LoggerConfig {
+            val writers = buildList {
+                addAll(platformDefaultLogWriters(config))
+                addAll(remote.writers)
+                if (config.enableCrashReporting && crashReporter !is NoopCrashReporter) {
+                    add(
+                        CrashReporterLogWriter(
+                            reporter = crashReporter,
+                            minSeverity = config.minCrashBreadcrumbSeverity,
+                            minCrashSeverity = config.minCrashReportSeverity,
+                        ),
+                    )
+                }
+            }
             // The Logger short-circuits anything below its minSeverity before
             // asking writers — so it must be the floor of every writer's own
             // minimum, otherwise writers that want more-verbose logs never see

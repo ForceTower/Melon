@@ -9,15 +9,14 @@
 //  concurrency) but its `log*` methods are safe to call from any thread —
 //  each underlying LogWriter handles its own thread-safety (OSLog is
 //  thread-safe; our ApiLogWriter funnels through a Channel; the
-//  Crashlytics writer forwards to FIRCrashlytics which is documented
-//  thread-safe). Locking here would add contention for zero correctness
-//  benefit, so we bypass the checker explicitly and keep this opt-out
-//  confined to this file.
+//  CrashReporterLogWriter hops through FirebaseCrashReporter, which wraps
+//  FIRCrashlytics — documented thread-safe). Locking here would add
+//  contention for zero correctness benefit.
 //
 //  Swift `Error`s can't cheaply become Kotlin `Throwable`s, so for warn/error
 //  we fold the localized description into the message. Crash reporting for
-//  actual Kotlin exceptions happens on the Kotlin side (Crashlytics writer
-//  in shared-kmp/core/logging).
+//  actual Kotlin exceptions happens on the Kotlin side via the
+//  CrashReporterLogWriter in shared-kmp/core/logging.
 //
 
 import Foundation

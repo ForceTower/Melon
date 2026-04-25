@@ -9,22 +9,10 @@ plugins {
 kotlin {
     val xcf = XCFramework("Umbrella")
     val bundleId = "dev.forcetower.melon.umbrella"
-    // kermit-crashlytics cinterop references FirebaseCrashlytics Obj-C classes
-    // (FIRCrashlytics, FIRExceptionModel, FIRStackFrame, FIRCLSExceptionRecordNSException).
-    // Those live in the host iOS app (added via SPM in apps/ios), not in the KMP
-    // framework's dependency closure, so we mark them as undefined and defer
-    // resolution to the final app link step.
-    val crashlyticsUndefined = listOf(
-        "-U", "_FIRCLSExceptionRecordNSException",
-        "-U", "_OBJC_CLASS_\$_FIRCrashlytics",
-        "-U", "_OBJC_CLASS_\$_FIRExceptionModel",
-        "-U", "_OBJC_CLASS_\$_FIRStackFrame",
-    )
     iosX64 {
         binaries.framework {
             baseName = "Umbrella"
             binaryOption("bundleId", bundleId)
-            linkerOpts(crashlyticsUndefined)
             xcf.add(this)
         }
     }
@@ -32,7 +20,6 @@ kotlin {
         binaries.framework {
             baseName = "Umbrella"
             binaryOption("bundleId", bundleId)
-            linkerOpts(crashlyticsUndefined)
             xcf.add(this)
         }
     }
@@ -40,7 +27,6 @@ kotlin {
         binaries.framework {
             baseName = "Umbrella"
             binaryOption("bundleId", bundleId)
-            linkerOpts(crashlyticsUndefined)
             xcf.add(this)
         }
     }

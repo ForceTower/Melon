@@ -1,7 +1,9 @@
 package dev.forcetower.melon.umbrella
 
 import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.logging.CrashReporter
 import dev.forcetower.melon.core.logging.LoggingConfig
+import dev.forcetower.melon.core.logging.NoopCrashReporter
 import dev.forcetower.melon.core.network.BaseUrl
 import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
@@ -98,6 +100,7 @@ interface UmbrellaGraph {
         fun create(
             @Provides baseUrl: BaseUrl,
             @Provides loggingConfig: LoggingConfig,
+            @Provides crashReporter: CrashReporter,
         ): UmbrellaGraph
     }
 }
@@ -107,5 +110,9 @@ fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph {
     // where to POST — the caller only has to set it once on UmbrellaConfig.
     val logging = config.logging.copy(apiBaseUrl = config.baseUrl)
     return createGraphFactory<UmbrellaGraph.Factory>()
-        .create(BaseUrl(config.baseUrl), logging)
+        .create(
+            BaseUrl(config.baseUrl),
+            logging,
+            config.crashReporter ?: NoopCrashReporter,
+        )
 }

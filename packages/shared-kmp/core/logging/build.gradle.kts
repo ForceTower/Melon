@@ -8,8 +8,5 @@ kotlin {
         commonMain.dependencies {
             api(libs.kermit)
         }
-        iosMain.dependencies {
-            implementation(libs.kermit.crashlytics)
-        }
     }
 }

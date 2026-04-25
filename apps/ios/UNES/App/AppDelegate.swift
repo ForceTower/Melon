@@ -20,7 +20,8 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
                 minCrashReportSeverity: Kermit_coreSeverity.warn,
                 enableRemote: true,
                 enableCrashReporting: true
-            )
+            ),
+            crashReporter: FirebaseCrashReporter()
         )
         return UmbrellaGraph(config: config)
     }()
@@ -44,15 +45,21 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
         _ application: UIApplication,
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
+        // Firebase must be configured before the logger's crash-reporter
+        // breadcrumbs start flowing — otherwise Crashlytics.crashlytics() is
+        // accessed pre-init on the very first log line below.
+        if !isPreview {
+            FirebaseApp.configure()
+#if DEBUG
+            Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
+#endif
+        }
+
         _ = graph
         Log.bootstrap(logger)
         log.info("app launching env=\(AppDelegate.environmentName) preview=\(isPreview)")
 
         guard !isPreview else { return true }
-        FirebaseApp.configure()
-#if DEBUG
-        Crashlytics.crashlytics().setCrashlyticsCollectionEnabled(false)
-#endif
 
         UNUserNotificationCenter.current().delegate = self
         Messaging.messaging().delegate = self

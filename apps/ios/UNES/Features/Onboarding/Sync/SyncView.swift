@@ -43,6 +43,7 @@ struct SyncView: View {
             .padding(.top, 73)
             .padding(.bottom, 26)
         }
+        .environment(\.colorScheme, .dark)
         .onAppear { viewModel.start() }
     }
 
