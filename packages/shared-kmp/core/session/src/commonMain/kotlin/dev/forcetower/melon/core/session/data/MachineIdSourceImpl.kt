@@ -13,6 +13,10 @@ import kotlin.uuid.Uuid
 
 internal const val MACHINE_ID_KEY = "melon.machine_id"
 
+// Platforms that expose a stable, vendor-scoped device id (e.g. iOS IDFV) return it here.
+// Returning null falls back to a generated UUID persisted in storage.
+internal expect fun platformDeviceId(): String?
+
 @Inject
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
@@ -24,6 +28,10 @@ internal class MachineIdSourceImpl(
 
     @OptIn(ExperimentalUuidApi::class)
     override suspend fun getMachineId(): String = mutex.withLock {
-        storage.get(MACHINE_ID_KEY) ?: Uuid.random().toString().replace("-", "").also { storage.put(MACHINE_ID_KEY, it) }
+        storage.get(MACHINE_ID_KEY) ?: run {
+            val id = platformDeviceId() ?: Uuid.random().toString().replace("-", "")
+            storage.put(MACHINE_ID_KEY, id)
+            id
+        }
     }
 }

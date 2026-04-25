@@ -154,25 +154,6 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		6CUM01002F930600005557AF /* Build Kotlin Umbrella framework */ = {
-			isa = PBXShellScriptBuildPhase;
-			alwaysOutOfDate = 1;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-			);
-			name = "Build Kotlin Umbrella framework";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :packages:shared-kmp:umbrella:embedAndSignAppleFrameworkForXcode\n";
-		};
 		6CLP01002F930600005557AF /* Generate licenses (license-plist) */ = {
 			isa = PBXShellScriptBuildPhase;
 			alwaysOutOfDate = 1;
@@ -193,6 +174,25 @@
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
 			shellScript = "# Regenerates the bundled open-source license catalog before Sources\n# compile, so `LicensePlistLoader` always reads the artifact that\n# matches the resolved package graph for this build.\n#\n# Tooling is pinned via mise (.mise.toml). We try the user's\n# `mise` first, then a couple of well-known install locations so\n# Xcode's stripped PATH doesn't break the build.\nset -e\n\nMISE=\"$(command -v mise || true)\"\nif [ -z \"$MISE\" ]; then\n  for candidate in \"$HOME/.local/bin/mise\" /opt/homebrew/bin/mise /usr/local/bin/mise; do\n    if [ -x \"$candidate\" ]; then MISE=\"$candidate\"; break; fi\n  done\nfi\n\nif [ -z \"$MISE\" ]; then\n  echo \"warning: mise not found on PATH; skipping license-plist generation. Install mise or run 'mise exec -- license-plist ...' manually.\"\n  exit 0\nfi\n\nREPO_ROOT=\"$SRCROOT/../..\"\nOUT_DIR=\"$SRCROOT/UNES/Resources/Licenses\"\nPACKAGE_RESOLVED=\"$SRCROOT/UNES.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved\"\n\nmkdir -p \"$OUT_DIR\"\n\ncd \"$REPO_ROOT\"\n\"$MISE\" exec -- license-plist \\\n  --output-path \"$OUT_DIR\" \\\n  --package-path \"$PACKAGE_RESOLVED\" \\\n  --single-page \\\n  --suppress-opening-directory \\\n  --silence-mode\n";
+		};
+		6CUM01002F930600005557AF /* Build Kotlin Umbrella framework */ = {
+			isa = PBXShellScriptBuildPhase;
+			alwaysOutOfDate = 1;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Build Kotlin Umbrella framework";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "cd \"$SRCROOT/../..\"\n./gradlew :packages:shared-kmp:umbrella:embedAndSignAppleFrameworkForXcode\n";
 		};
 /* End PBXShellScriptBuildPhase section */
 

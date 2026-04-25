@@ -199,9 +199,9 @@ struct AboutSheet: View {
         UIPasteboard.general.string = info.debugText
         UINotificationFeedbackGenerator().notificationOccurred(.success)
         copied = true
-        Task {
+        Task { @MainActor in
             try? await Task.sleep(nanoseconds: 1_800_000_000)
-            await MainActor.run { copied = false }
+            copied = false
         }
     }
 }
