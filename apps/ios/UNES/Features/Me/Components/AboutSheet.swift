@@ -195,7 +195,6 @@ struct AboutSheet: View {
             .padding(.top, 4)
     }
 
-    @MainActor
     private func copy() {
         UIPasteboard.general.string = info.debugText
         UINotificationFeedbackGenerator().notificationOccurred(.success)
