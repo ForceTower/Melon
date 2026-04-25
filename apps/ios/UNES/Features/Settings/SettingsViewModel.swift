@@ -86,21 +86,25 @@ final class SettingsViewModel {
     func setSpoiler(_ value: SpoilerMode) {
         state.spoiler = value
         guard let useCases else { return }
-        Task { [log] in
-            let outcome = await useCases.updateSettings.invoke(
-                gradeSpoiler: KotlinInt(int: value.serverInt),
-                notifMsgBroadcast: nil,
-                notifMsgClass: nil,
-                notifMsgDirect: nil,
-                notifGradePosted: nil,
-                notifGradeChanged: nil,
-                notifGradeDateChanged: nil,
-                notifClassLocation: nil,
-                notifClassMaterial: nil,
-                notifClassSubject: nil
-            )
-            if case .err(let err) = onEnum(of: outcome) {
-                log.error("setSpoiler push failed: \(err.value)")
+        Task<Void, Never> {
+            do {
+                let outcome = try await useCases.updateSettings.invoke(
+                    gradeSpoiler: KotlinInt(int: value.serverInt),
+                    notifMsgBroadcast: nil,
+                    notifMsgClass: nil,
+                    notifMsgDirect: nil,
+                    notifGradePosted: nil,
+                    notifGradeChanged: nil,
+                    notifGradeDateChanged: nil,
+                    notifClassLocation: nil,
+                    notifClassMaterial: nil,
+                    notifClassSubject: nil
+                )
+                if case .err = onEnum(of: outcome) {
+                    self.log.error("setSpoiler push failed; will reconcile on next profile sync")
+                }
+            } catch {
+                self.log.error("setSpoiler push threw: \(error)")
             }
         }
     }
@@ -109,21 +113,25 @@ final class SettingsViewModel {
         state[keyPath: keyPath] = value
         guard let useCases else { return }
         let kbool = KotlinBoolean(bool: value)
-        Task { [log] in
-            let outcome = await useCases.updateSettings.invoke(
-                gradeSpoiler: nil,
-                notifMsgBroadcast: keyPath == \.notifMsgBroadcast ? kbool : nil,
-                notifMsgClass: keyPath == \.notifMsgClass ? kbool : nil,
-                notifMsgDirect: keyPath == \.notifMsgDirect ? kbool : nil,
-                notifGradePosted: keyPath == \.notifGradePosted ? kbool : nil,
-                notifGradeChanged: keyPath == \.notifGradeChanged ? kbool : nil,
-                notifGradeDateChanged: keyPath == \.notifGradeDateChanged ? kbool : nil,
-                notifClassLocation: keyPath == \.notifClassLocation ? kbool : nil,
-                notifClassMaterial: keyPath == \.notifClassMaterial ? kbool : nil,
-                notifClassSubject: keyPath == \.notifClassSubject ? kbool : nil
-            )
-            if case .err(let err) = onEnum(of: outcome) {
-                log.error("setToggle push failed: \(err.value)")
+        Task<Void, Never> {
+            do {
+                let outcome = try await useCases.updateSettings.invoke(
+                    gradeSpoiler: nil,
+                    notifMsgBroadcast: keyPath == \.notifMsgBroadcast ? kbool : nil,
+                    notifMsgClass: keyPath == \.notifMsgClass ? kbool : nil,
+                    notifMsgDirect: keyPath == \.notifMsgDirect ? kbool : nil,
+                    notifGradePosted: keyPath == \.notifGradePosted ? kbool : nil,
+                    notifGradeChanged: keyPath == \.notifGradeChanged ? kbool : nil,
+                    notifGradeDateChanged: keyPath == \.notifGradeDateChanged ? kbool : nil,
+                    notifClassLocation: keyPath == \.notifClassLocation ? kbool : nil,
+                    notifClassMaterial: keyPath == \.notifClassMaterial ? kbool : nil,
+                    notifClassSubject: keyPath == \.notifClassSubject ? kbool : nil
+                )
+                if case .err = onEnum(of: outcome) {
+                    self.log.error("setToggle push failed; will reconcile on next profile sync")
+                }
+            } catch {
+                self.log.error("setToggle push threw: \(error)")
             }
         }
     }
