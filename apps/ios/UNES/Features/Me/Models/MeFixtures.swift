@@ -73,9 +73,19 @@ enum MeFixtures {
             .init(id: .feedback, label: "Erros & sugestões",
                   hint: "fale com os mantenedores",      systemImage: "ladybug"),
             .init(id: .licenses, label: "Licenças open source",
-                  hint: "126 pacotes",                   systemImage: "c.circle"),
+                  hint: licensesHint,                   systemImage: "c.circle"),
         ]
     }
+
+    /// Live count of bundled third-party licenses, read once from the plist
+    /// `license-plist` writes during the build. Falls back to a generic
+    /// label when the build artifact isn't present (e.g. fresh checkout
+    /// before the Run Script phase has fired) so the row never reads as
+    /// "0 pacotes".
+    private static let licensesHint: String = {
+        let count = LicensePlistLoader.load().count
+        return count > 0 ? "\(count) pacotes" : "abrir índice"
+    }()
 
     /// Lookup helper for view code that holds the pinned IDs but needs the
     /// full Shortcut record.

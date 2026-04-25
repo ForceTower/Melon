@@ -65,6 +65,10 @@ struct MeView: View {
                             // Factory-less preview / fixture path.
                             SettingsView()
                         }
+                    case .licenses:
+                        // Reads the license-plist artifact bundled at build
+                        // time — no factory wiring needed.
+                        LicensesView()
                     default:
                         EmptyView()
                     }
@@ -231,7 +235,7 @@ struct MeView: View {
 
     private func handleSettingsRowTap(_ row: MeSettingsRow) {
         switch row.id {
-        case .settings:
+        case .settings, .licenses:
             path.append(row.id)
         case .about:
             aboutPresented = true
