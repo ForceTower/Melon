@@ -62,6 +62,8 @@ import dev.forcetower.unes.designsystem.components.MelonGhostButton
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -137,75 +139,53 @@ fun LoginScreen(
             )
         }
 
-        // Back chip
-        Box(
-            Modifier
-                .padding(top = 58.dp, start = 14.dp)
-                .size(40.dp)
-                .clip(CircleShape)
-                .background(surface.copy(alpha = 0.6f))
-                .border(1.dp, line, CircleShape)
-                .clickable(role = Role.Button, onClickLabel = "Voltar", onClick = onBack),
-            contentAlignment = Alignment.Center,
-        ) {
-            Icon(
-                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
-                tint = ink,
-                modifier = Modifier.size(16.dp),
-            )
-        }
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(start = 28.dp, end = 28.dp, top = 120.dp, bottom = 40.dp),
         ) {
-            FadeUp(delayMs = 50, durationMs = 500) {
-                Text(
-                    text = "◦ UEFS · SAGRES",
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontSize = 12.sp,
-                        letterSpacing = 1.4.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-                    color = ink3,
-                )
-            }
+            Text(
+                text = "◦ UEFS · SAGRES",
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 12.sp,
+                    letterSpacing = 1.4.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = ink3,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 50, durationMs = 500),
+            )
             Spacer(Modifier.height(10.dp))
-            FadeUp(delayMs = 150) {
-                Text(
-                    text = loginHeadline(ink, accent),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = 42.sp,
-                        lineHeight = 42.sp,
-                        letterSpacing = (-1.05).sp,
-                        fontWeight = FontWeight.Normal,
-                    ),
-                )
-            }
+            Text(
+                text = loginHeadline(ink, accent),
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = 42.sp,
+                    lineHeight = 42.sp,
+                    letterSpacing = (-1.05).sp,
+                    fontWeight = FontWeight.Normal,
+                ),
+                modifier = Modifier.fadeUpOnAppear(delayMs = 150),
+            )
             Spacer(Modifier.height(8.dp))
-            FadeUp(delayMs = 250) {
-                Text(
-                    text = "As mesmas credenciais que você usa pra entrar no SAGRES. Nada fica no nosso servidor.",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        letterSpacing = (-0.08).sp,
-                    ),
-                    color = ink3,
-                )
-            }
+            Text(
+                text = "As mesmas credenciais que você usa pra entrar no SAGRES. Nada fica no nosso servidor.",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    letterSpacing = (-0.08).sp,
+                ),
+                color = ink3,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 250),
+            )
             Spacer(Modifier.height(28.dp))
 
-            FadeUp(delayMs = 350) {
-                InputGroup(
-                    focused = focused,
-                    line = line,
-                    ink = ink,
-                    cardBg = card,
-                ) {
+            InputGroup(
+                focused = focused,
+                line = line,
+                ink = ink,
+                cardBg = card,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 350),
+            ) {
                     InputRow(
                         label = "Matrícula",
                         placeholder = "202300000",
@@ -284,86 +264,101 @@ fun LoginScreen(
                         },
                     )
                 }
-            }
 
-            FadeUp(delayMs = 450) {
-                Text(
-                    text = "Esqueci minha senha",
-                    style = MaterialTheme.typography.labelLarge.copy(
-                        fontSize = 14.sp,
-                        fontWeight = FontWeight.Medium,
-                    ),
-                    color = ink3,
-                    modifier = Modifier
-                        .padding(top = 10.dp, start = 0.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .clickable(
-                            role = Role.Button,
-                            onClickLabel = "Recuperar senha",
-                        ) {}
-                        .padding(vertical = 8.dp),
-                )
-            }
+            Text(
+                text = "Esqueci minha senha",
+                style = MaterialTheme.typography.labelLarge.copy(
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Medium,
+                ),
+                color = ink3,
+                modifier = Modifier
+                    .padding(top = 10.dp, start = 0.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .clickable(
+                        role = Role.Button,
+                        onClickLabel = "Recuperar senha",
+                    ) {}
+                    .padding(vertical = 8.dp)
+                    .fadeUpOnAppear(delayMs = 450),
+            )
 
             Spacer(Modifier.height(24.dp))
 
-            FadeUp(delayMs = 500) {
-                MelonPrimaryButton(
-                    text = "Entrar",
-                    onClick = ::submit,
-                    enabled = id.isNotBlank() && pw.isNotBlank() && !loading,
-                    isLoading = loading,
+            MelonPrimaryButton(
+                text = "Entrar",
+                onClick = ::submit,
+                enabled = id.isNotBlank() && pw.isNotBlank() && !loading,
+                isLoading = loading,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 500),
+            )
+
+            Spacer(Modifier.height(18.dp))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeInOnAppear(delayMs = 550, durationMs = 500),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+            ) {
+                Box(Modifier.weight(1f).height(1.dp).background(line))
+                Text(
+                    text = "OU",
+                    style = MaterialTheme.typography.labelSmall.copy(
+                        fontSize = 10.sp,
+                        letterSpacing = 1.5.sp,
+                        fontFamily = FontFamily.Monospace,
+                    ),
+                    color = ink4,
                 )
+                Box(Modifier.weight(1f).height(1.dp).background(line))
             }
 
             Spacer(Modifier.height(18.dp))
 
-            FadeUp(delayMs = 550, durationMs = 500) {
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(12.dp),
-                ) {
-                    Box(Modifier.weight(1f).height(1.dp).background(line))
-                    Text(
-                        text = "OU",
-                        style = MaterialTheme.typography.labelSmall.copy(
-                            fontSize = 10.sp,
-                            letterSpacing = 1.5.sp,
-                            fontFamily = FontFamily.Monospace,
-                        ),
-                        color = ink4,
+            MelonGhostButton(
+                text = "Entrar com passkey",
+                onClick = ::passkey,
+                leading = {
+                    Icon(
+                        imageVector = Icons.Filled.Key,
+                        contentDescription = null,
+                        tint = ink,
+                        modifier = Modifier.size(20.dp),
                     )
-                    Box(Modifier.weight(1f).height(1.dp).background(line))
-                }
-            }
-
-            Spacer(Modifier.height(18.dp))
-
-            FadeUp(delayMs = 600) {
-                MelonGhostButton(
-                    text = "Entrar com passkey",
-                    onClick = ::passkey,
-                    leading = {
-                        Icon(
-                            imageVector = Icons.Filled.Key,
-                            contentDescription = null,
-                            tint = ink,
-                            modifier = Modifier.size(20.dp),
-                        )
-                    },
-                )
-            }
+                },
+                modifier = Modifier.fadeUpOnAppear(delayMs = 600),
+            )
 
             Spacer(Modifier.height(16.dp))
 
-            FadeUp(delayMs = 700, durationMs = 500) {
-                Text(
-                    text = termsFooter(ink4, MaterialTheme.colorScheme.onSurface),
-                    style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            Text(
+                text = termsFooter(ink4, MaterialTheme.colorScheme.onSurface),
+                style = MaterialTheme.typography.bodySmall.copy(fontSize = 12.sp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeInOnAppear(delayMs = 700, durationMs = 500),
+            )
+        }
+
+        // Back chip — drawn last so it sits above the scrollable column.
+        Box(
+            Modifier
+                .padding(top = 58.dp, start = 14.dp)
+                .size(40.dp)
+                .clip(CircleShape)
+                .background(surface.copy(alpha = 0.6f))
+                .border(1.dp, line, CircleShape)
+                .clickable(role = Role.Button, onClickLabel = "Voltar", onClick = onBack),
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                contentDescription = "Voltar",
+                tint = ink,
+                modifier = Modifier.size(16.dp),
+            )
         }
     }
 }
@@ -374,6 +369,7 @@ private fun InputGroup(
     line: Color,
     ink: Color,
     cardBg: Color,
+    modifier: Modifier = Modifier,
     content: @Composable () -> Unit,
 ) {
     val borderColor by animateDpAsState(
@@ -382,7 +378,7 @@ private fun InputGroup(
         label = "border-w",
     )
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(18.dp))
             .background(cardBg)

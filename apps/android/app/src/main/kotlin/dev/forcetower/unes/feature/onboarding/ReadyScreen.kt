@@ -48,6 +48,7 @@ import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -147,33 +148,33 @@ fun ReadyScreen(
                 .fillMaxSize()
                 .padding(top = 320.dp, start = 28.dp, end = 28.dp, bottom = 40.dp),
         ) {
-            FadeUp(delayMs = 1200) {
-                Text(
-                    text = readyHeadline(userName, ink, accent),
-                    style = MaterialTheme.typography.displayLarge.copy(
-                        fontSize = 44.sp,
-                        lineHeight = 44.sp,
-                        letterSpacing = (-1.1).sp,
-                        fontWeight = FontWeight.Normal,
-                    ),
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            Text(
+                text = readyHeadline(userName, ink, accent),
+                style = MaterialTheme.typography.displayLarge.copy(
+                    fontSize = 44.sp,
+                    lineHeight = 44.sp,
+                    letterSpacing = (-1.1).sp,
+                    fontWeight = FontWeight.Normal,
+                ),
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeUpOnAppear(delayMs = 1200),
+            )
             Spacer(Modifier.height(10.dp))
-            FadeUp(delayMs = 1300, durationMs = 500) {
-                Text(
-                    text = "6 turmas · 24 créditos · semestre 2026.1",
-                    style = MaterialTheme.typography.bodyLarge.copy(
-                        fontSize = 15.sp,
-                        lineHeight = 22.sp,
-                        letterSpacing = (-0.08).sp,
-                    ),
-                    color = ink3,
-                    textAlign = TextAlign.Center,
-                    modifier = Modifier.fillMaxWidth(),
-                )
-            }
+            Text(
+                text = "6 turmas · 24 créditos · semestre 2026.1",
+                style = MaterialTheme.typography.bodyLarge.copy(
+                    fontSize = 15.sp,
+                    lineHeight = 22.sp,
+                    letterSpacing = (-0.08).sp,
+                ),
+                color = ink3,
+                textAlign = TextAlign.Center,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .fadeUpOnAppear(delayMs = 1300, durationMs = 500),
+            )
             Spacer(Modifier.height(22.dp))
 
             // Preview card
@@ -183,81 +184,79 @@ fun ReadyScreen(
                     .weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
-                FadeUp(delayMs = 1400) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(22.dp))
-                            .background(surface)
-                            .border(1.dp, line, RoundedCornerShape(22.dp))
-                            .padding(horizontal = 18.dp, vertical = 16.dp),
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(22.dp))
+                        .background(surface)
+                        .border(1.dp, line, RoundedCornerShape(22.dp))
+                        .padding(horizontal = 18.dp, vertical = 16.dp)
+                        .fadeUpOnAppear(delayMs = 1400),
+                ) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically,
                     ) {
-                        Row(
-                            modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically,
+                        Text(
+                            text = "PRÓXIMA AULA",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontSize = 10.sp,
+                                letterSpacing = 1.5.sp,
+                                fontFamily = FontFamily.Monospace,
+                            ),
+                            color = ink3,
+                        )
+                        Text(
+                            text = "em 1h 12min",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontSize = 11.sp,
+                                fontFamily = FontFamily.Monospace,
+                            ),
+                            color = accent,
+                        )
+                    }
+                    Spacer(Modifier.height(10.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    ) {
+                        Box(
+                            Modifier
+                                .size(48.dp)
+                                .clip(RoundedCornerShape(14.dp)),
                         ) {
-                            Text(
-                                text = "PRÓXIMA AULA",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 10.sp,
-                                    letterSpacing = 1.5.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                ),
-                                color = ink3,
-                            )
-                            Text(
-                                text = "em 1h 12min",
-                                style = MaterialTheme.typography.labelSmall.copy(
-                                    fontSize = 11.sp,
-                                    fontFamily = FontFamily.Monospace,
-                                ),
-                                color = accent,
+                            Mesh(
+                                variant = MeshVariant.Cool,
+                                modifier = Modifier.fillMaxSize(),
                             )
                         }
-                        Spacer(Modifier.height(10.dp))
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp),
-                        ) {
-                            Box(
-                                Modifier
-                                    .size(48.dp)
-                                    .clip(RoundedCornerShape(14.dp)),
-                            ) {
-                                Mesh(
-                                    variant = MeshVariant.Cool,
-                                    modifier = Modifier.fillMaxSize(),
-                                )
-                            }
-                            Column(modifier = Modifier.weight(1f)) {
-                                Text(
-                                    text = "Cálculo Diferencial II",
-                                    style = MaterialTheme.typography.headlineSmall.copy(
-                                        fontSize = 20.sp,
-                                        lineHeight = 22.sp,
-                                        letterSpacing = (-0.2).sp,
-                                    ),
-                                    color = ink,
-                                )
-                                Spacer(Modifier.height(2.dp))
-                                Text(
-                                    text = "10:20 · sala MT-14 · Prof. Adriana",
-                                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
-                                    color = ink3,
-                                )
-                            }
+                        Column(modifier = Modifier.weight(1f)) {
+                            Text(
+                                text = "Cálculo Diferencial II",
+                                style = MaterialTheme.typography.headlineSmall.copy(
+                                    fontSize = 20.sp,
+                                    lineHeight = 22.sp,
+                                    letterSpacing = (-0.2).sp,
+                                ),
+                                color = ink,
+                            )
+                            Spacer(Modifier.height(2.dp))
+                            Text(
+                                text = "10:20 · sala MT-14 · Prof. Adriana",
+                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                                color = ink3,
+                            )
                         }
                     }
                 }
             }
 
-            FadeUp(delayMs = 1500) {
-                MelonPrimaryButton(
-                    text = "Ver meu semestre",
-                    onClick = onEnter,
-                )
-            }
+            MelonPrimaryButton(
+                text = "Ver meu semestre",
+                onClick = onEnter,
+                modifier = Modifier.fadeUpOnAppear(delayMs = 1500),
+            )
         }
     }
 }

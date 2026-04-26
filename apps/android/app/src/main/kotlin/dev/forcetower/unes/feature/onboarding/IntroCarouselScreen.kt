@@ -24,6 +24,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -37,16 +38,16 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.runtime.mutableStateOf
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
 import dev.forcetower.unes.feature.onboarding.illustrations.GradesIllustration
 import dev.forcetower.unes.feature.onboarding.illustrations.MessagesIllustration
 import dev.forcetower.unes.feature.onboarding.illustrations.NotificationsIllustration
@@ -179,34 +180,35 @@ fun IntroCarouselScreen(
                 )
             }
 
-            // Illustration area — mesh backdrop + slide-specific art
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(360.dp),
-                contentAlignment = Alignment.Center,
-            ) {
+            // Illustration area — mesh backdrop + slide-specific art.
+            // The whole region is wrapped in `key(contentKey)` so a slide change
+            // remounts the children, which re-runs the on-appear modifiers.
+            key(contentKey) {
                 Box(
-                    Modifier
-                        .fillMaxSize()
-                        .padding(30.dp)
-                        .clip(RoundedCornerShape(40.dp)),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(360.dp),
+                    contentAlignment = Alignment.Center,
                 ) {
-                    Mesh(
-                        variant = slide.variant,
-                        intensity = 0.65f,
-                        modifier = Modifier.fillMaxSize(),
-                    )
-                    // Soft surface overlay so the illustration sits clean.
                     Box(
                         Modifier
                             .fillMaxSize()
-                            .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.82f)),
-                    )
-                }
-                // Re-keying via `key()` retriggers the illustration's
-                // entrance animations on slide change.
-                androidx.compose.runtime.key(contentKey) {
+                            .padding(30.dp)
+                            .clip(RoundedCornerShape(40.dp))
+                            .scaleInOnAppear(durationMs = 500),
+                    ) {
+                        Mesh(
+                            variant = slide.variant,
+                            intensity = 0.65f,
+                            modifier = Modifier.fillMaxSize(),
+                        )
+                        // Soft surface overlay so the illustration sits clean.
+                        Box(
+                            Modifier
+                                .fillMaxSize()
+                                .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.82f)),
+                        )
+                    }
                     when (slide) {
                         IntroSlide.Schedule -> ScheduleIllustration()
                         IntroSlide.Grades -> GradesIllustration()
@@ -219,65 +221,61 @@ fun IntroCarouselScreen(
             Spacer(Modifier.weight(1f))
 
             // Copy + CTA
-            androidx.compose.runtime.key(contentKey) {
+            key(contentKey) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(start = 28.dp, end = 28.dp, bottom = 50.dp),
                 ) {
-                    FadeUp(delayMs = 100, durationMs = 500) {
-                        Text(
-                            text = "◦ ${slide.eyebrow}".uppercase(),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 12.sp,
-                                letterSpacing = 1.4.sp,
-                                fontWeight = FontWeight.Medium,
-                            ),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text(
+                        text = "◦ ${slide.eyebrow}".uppercase(),
+                        style = MaterialTheme.typography.labelSmall.copy(
+                            fontSize = 12.sp,
+                            letterSpacing = 1.4.sp,
+                            fontWeight = FontWeight.Medium,
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 100, durationMs = 500),
+                    )
                     Spacer(Modifier.height(12.dp))
-                    FadeUp(delayMs = 200) {
-                        Text(
-                            text = slideHeadline(
-                                slide,
-                                ink = MaterialTheme.colorScheme.onBackground,
-                                accent = MaterialTheme.colorScheme.primary,
-                            ),
-                            style = MaterialTheme.typography.displayLarge.copy(
-                                fontSize = 44.sp,
-                                lineHeight = 44.sp,
-                                letterSpacing = (-1.1).sp,
-                                fontWeight = FontWeight.Normal,
-                            ),
-                        )
-                    }
+                    Text(
+                        text = slideHeadline(
+                            slide,
+                            ink = MaterialTheme.colorScheme.onBackground,
+                            accent = MaterialTheme.colorScheme.primary,
+                        ),
+                        style = MaterialTheme.typography.displayLarge.copy(
+                            fontSize = 44.sp,
+                            lineHeight = 44.sp,
+                            letterSpacing = (-1.1).sp,
+                            fontWeight = FontWeight.Normal,
+                        ),
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 200),
+                    )
                     Spacer(Modifier.height(14.dp))
-                    FadeUp(delayMs = 300) {
-                        Text(
-                            text = slide.body,
-                            style = MaterialTheme.typography.bodyLarge.copy(
-                                fontSize = 16.sp,
-                                lineHeight = 24.sp,
-                                letterSpacing = (-0.08).sp,
-                            ),
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
+                    Text(
+                        text = slide.body,
+                        style = MaterialTheme.typography.bodyLarge.copy(
+                            fontSize = 16.sp,
+                            lineHeight = 24.sp,
+                            letterSpacing = (-0.08).sp,
+                        ),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 300),
+                    )
                     Spacer(Modifier.height(28.dp))
-                    FadeUp(delayMs = 400) {
-                        MelonPrimaryButton(
-                            text = if (index == slides.lastIndex) "Entrar na conta" else "Continuar",
-                            onClick = {
-                                if (index < slides.lastIndex) {
-                                    index += 1
-                                    contentKey += 1
-                                } else {
-                                    onDone()
-                                }
-                            },
-                        )
-                    }
+                    MelonPrimaryButton(
+                        text = if (index == slides.lastIndex) "Entrar na conta" else "Continuar",
+                        onClick = {
+                            if (index < slides.lastIndex) {
+                                index += 1
+                                contentKey += 1
+                            } else {
+                                onDone()
+                            }
+                        },
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 400),
+                    )
                 }
             }
         }
