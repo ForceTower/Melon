@@ -19,6 +19,7 @@ import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
+import androidx.compose.ui.preferredFrameRate
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -87,7 +88,14 @@ fun Mesh(
 
     val baseAlpha = (0.85f * intensity).coerceIn(0f, 1f)
 
-    Box(modifier = modifier.clipToBounds()) {
+    // Mesh redraws every frame via `withInfiniteAnimationFrameNanos` but doesn't
+    // go through Compose's animation system, so it never votes a frame rate.
+    // On API 35+ that leaves `AndroidComposeView.currentFrameRate` at its
+    // post-draw reset of `NaN`, and Samsung verbosely logs every
+    // `setRequestedFrameRate(NaN)` call. Anchor a 30 Hz vote here — blob orbits
+    // are 11–17s with sub-50dp amplitudes, so 30 fps is visually identical to
+    // 60 and lets the panel downclock for the ambient field.
+    Box(modifier = modifier.preferredFrameRate(30f).clipToBounds()) {
         Canvas(
             modifier = Modifier
                 .fillMaxSize()
