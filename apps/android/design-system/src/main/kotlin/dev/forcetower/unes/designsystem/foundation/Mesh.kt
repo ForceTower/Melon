@@ -1,12 +1,7 @@
 package dev.forcetower.unes.designsystem.foundation
 
 import android.os.Build
-import androidx.compose.animation.core.LinearEasing
-import androidx.compose.animation.core.RepeatMode
-import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.infiniteRepeatable
-import androidx.compose.animation.core.rememberInfiniteTransition
-import androidx.compose.animation.core.tween
+import androidx.compose.animation.core.withInfiniteAnimationFrameNanos
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
@@ -14,8 +9,11 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.BlurredEdgeTreatment
 import androidx.compose.ui.draw.blur
@@ -73,19 +71,19 @@ fun Mesh(
     val brand = MaterialTheme.melon.brand
     val blobs = remember(variant, brand) { blobsFor(variant, brand) }
 
-    // Single shared phase, scaled per-blob by `period`. Loops 0→1 over a
-    // minute and is multiplied by 60 to recover seconds — long enough that
-    // any easing artifacts at the loop boundary go unnoticed.
-    val transition = rememberInfiniteTransition(label = "mesh")
-    val time by transition.animateFloat(
-        initialValue = 0f,
-        targetValue = 1f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 60_000, easing = LinearEasing),
-            repeatMode = RepeatMode.Restart,
-        ),
-        label = "mesh-time",
-    )
+    // Monotonic wall-clock seconds, mirroring iOS's `TimelineView(.animation)`
+    // + `Date().timeIntervalSince1970`. A finite tween won't work here because
+    // the blob periods (11, 13, 14, 16, 17) aren't commensurate, so any
+    // restart would snap the phases visibly when the loop wrapped.
+    var seconds by remember { mutableFloatStateOf(0f) }
+    LaunchedEffect(Unit) {
+        val start = withInfiniteAnimationFrameNanos { it }
+        while (true) {
+            withInfiniteAnimationFrameNanos { now ->
+                seconds = (now - start) / 1_000_000_000f
+            }
+        }
+    }
 
     val baseAlpha = (0.85f * intensity).coerceIn(0f, 1f)
 
@@ -100,10 +98,10 @@ fun Mesh(
         ) {
             val w = size.width
             val h = size.height
-            val seconds = time * 60f
+            val t = seconds
 
             blobs.forEach { blob ->
-                val phase = (seconds / blob.period) * (2f * Math.PI.toFloat()) + blob.phaseOffset
+                val phase = (t / blob.period) * (2f * Math.PI.toFloat()) + blob.phaseOffset
                 val dx = cos(phase) * blob.amplitudeX
                 val dy = sin(phase * blob.ySpeed) * blob.amplitudeY
                 val scale = 1f + sin(phase * 0.7f) * 0.15f
