@@ -1,5 +1,7 @@
 /* ── Design tokens ── */
 :root {
+  color-scheme: light dark;
+
   --ink: #1a1420;
   --ink-2: #3a2f42;
   --ink-3: #6b5e70;
@@ -33,9 +35,37 @@
   --night: #1a0f28;
   --night-2: #261636;
   --cream: #fbf7f2;
+  --ink-fixed: #1a1420;
+  --card: #ffffff;
   --hair: rgba(26, 20, 32, 0.08);
   --hair-2: rgba(26, 20, 32, 0.14);
   --hair-light: rgba(251, 247, 242, 0.14);
+}
+
+/* Dark mode tokens mirror apps/ios/UNES/DesignSystem/DesignTokens.swift.
+   --cream / --night / --night-2 stay fixed: they back surfaces (hero, showcase,
+   cta-band, phone mock, in-card mocks) that are intentionally dark or light in
+   both schemes, matching iOS's fixed `darkBg` / `surfaceLight`. */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --ink: #f5efe6;
+    --ink-2: #d6cec2;
+    --ink-3: #9f9386;
+    --ink-4: #6b6156;
+    --surface: #15101a;
+    --surface-2: #1e1824;
+    --surface-3: #2a2232;
+    --line: rgba(245, 239, 230, 0.09);
+
+    --accent: #f4a23c;
+    --accent-press: #e88a1d;
+
+    --page: #0c0810;
+    --page-2: #1e1824;
+    --card: #1c1624;
+    --hair: rgba(245, 239, 230, 0.09);
+    --hair-2: rgba(245, 239, 230, 0.14);
+  }
 }
 
 * {
@@ -239,7 +269,7 @@ body {
   z-index: 50;
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
-  background: rgba(237, 231, 221, 0.72);
+  background: color-mix(in oklab, var(--page) 72%, transparent);
   border-bottom: 1px solid var(--hair);
 }
 .land-nav-inner {
@@ -283,7 +313,7 @@ body {
     color 0.2s;
 }
 .land-nav-links a:hover {
-  background: rgba(26, 20, 32, 0.05);
+  background: color-mix(in oklab, var(--ink) 6%, transparent);
   color: var(--ink);
 }
 .land-cta-mini {
@@ -291,7 +321,7 @@ body {
   align-items: center;
   gap: 6px;
   background: var(--ink);
-  color: var(--cream);
+  color: var(--page);
   font: 500 14px/1 var(--font-sans);
   padding: 10px 16px;
   border-radius: 999px;
@@ -437,7 +467,7 @@ body {
   border-radius: 999px;
   border: 0;
   background: var(--cream);
-  color: var(--ink);
+  color: var(--ink-fixed);
   font: 500 16px/1 var(--font-sans);
   letter-spacing: -0.005em;
   cursor: pointer;
@@ -765,7 +795,7 @@ section.land {
   margin-top: 56px;
 }
 .pillar {
-  background: var(--cream);
+  background: var(--card);
   border: 1px solid var(--hair);
   border-radius: 28px;
   padding: 28px;
@@ -856,7 +886,7 @@ section.land {
   padding: 12px;
 }
 .art-grid > div {
-  background: var(--cream);
+  background: var(--card);
   border-radius: 4px;
 }
 .art-grid > .a {
@@ -873,7 +903,7 @@ section.land {
 }
 
 .art-grades {
-  background: var(--cream);
+  background: var(--card);
   display: flex;
   align-items: flex-end;
   padding: 18px;
@@ -1460,7 +1490,7 @@ footer.land-foot {
   padding: 12px 14px;
   font: 400 16px/1.45 var(--font-sans);
   color: var(--ink);
-  background: var(--cream);
+  background: var(--card);
   border: 1px solid var(--hair-2);
   border-radius: 12px;
   outline: none;
