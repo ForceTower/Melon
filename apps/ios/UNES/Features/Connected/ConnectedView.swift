@@ -1,4 +1,5 @@
 import SwiftUI
+import UserNotifications
 @preconcurrency import Umbrella
 
 /// Authenticated shell shown after onboarding completes. Hosts the tab bar
@@ -47,6 +48,13 @@ struct ConnectedView: View {
             }
         }
         .tint(UNESColor.accent)
+        .task {
+            // System dedupes after the first prompt — subsequent calls
+            // return the existing status without re-showing UI, so no guard
+            // needed here.
+            _ = try? await UNUserNotificationCenter.current()
+                .requestAuthorization(options: [.alert, .badge, .sound])
+        }
         .task {
             // Fires once per authenticated session entry (fresh launch or
             // logout→login). Profile + first-page messages are unthrottled
