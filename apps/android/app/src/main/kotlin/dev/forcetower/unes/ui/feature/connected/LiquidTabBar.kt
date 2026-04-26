@@ -2,6 +2,8 @@ package dev.forcetower.unes.ui.feature.connected
 
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
+import androidx.compose.animation.core.animateFloatAsState
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
@@ -30,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Rect
 import androidx.compose.ui.geometry.RoundRect
@@ -143,16 +146,34 @@ private fun TabSlot(
     val interaction = remember { MutableInteractionSource() }
     val label = stringResource(tab.labelRes)
 
-    // Icon shrinks from 22 → 18 dp when selected so the label can fit below
-    // it inside the 50dp slot height without crowding the pill chrome.
-    val iconSize by animateDpAsState(
-        targetValue = if (active) 18.dp else 22.dp,
-        animationSpec = MelonMotion.ease(),
-        label = "tab-icon-size",
+    // All three transforms drive `Modifier.graphicsLayer` rather than layout
+    // properties — that way the column never reflows on selection. The label
+    // is always laid out (its slot reserved); only its alpha animates. The
+    // icon scales + slides up via the same graphicsLayer pass, so motion
+    // reads as one smooth gesture rather than the layout snap that an
+    // `animateDpAsState`/`if (active)` toggle produced.
+    val iconScale by animateFloatAsState(
+        targetValue = if (active) 0.82f else 1f,
+        animationSpec = MelonMotion.spring(),
+        label = "tab-icon-scale",
+    )
+    val iconOffsetY by animateDpAsState(
+        // Inactive: icon translates down ~9dp so it sits at the slot's
+        // optical center (compensating for the always-reserved label space
+        // below). Active: icon settles at its natural top position so the
+        // label slots in below.
+        targetValue = if (active) 0.dp else 9.dp,
+        animationSpec = MelonMotion.spring(),
+        label = "tab-icon-offset",
+    )
+    val labelAlpha by animateFloatAsState(
+        targetValue = if (active) 1f else 0f,
+        animationSpec = tween(durationMillis = 220, easing = MelonMotion.EmphasizedEasing),
+        label = "tab-label-alpha",
     )
     val iconColor by animateColorAsState(
         targetValue = if (active) onInk else ink3,
-        animationSpec = MelonMotion.ease(),
+        animationSpec = tween(durationMillis = 220, easing = MelonMotion.EmphasizedEasing),
         label = "tab-icon-color",
     )
 
@@ -177,8 +198,17 @@ private fun TabSlot(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally,
         ) {
-            Box(modifier = Modifier.size(22.dp), contentAlignment = Alignment.Center) {
-                TabIcon(tab = tab, color = iconColor, size = iconSize, active = active)
+            Box(
+                modifier = Modifier
+                    .size(22.dp)
+                    .graphicsLayer {
+                        scaleX = iconScale
+                        scaleY = iconScale
+                        translationY = iconOffsetY.toPx()
+                    },
+                contentAlignment = Alignment.Center,
+            ) {
+                TabIcon(tab = tab, color = iconColor, size = 22.dp, active = active)
                 if (badge > 0 && !active) {
                     BadgeBubble(
                         count = badge,
@@ -188,18 +218,21 @@ private fun TabSlot(
                     )
                 }
             }
-            if (active) {
-                Text(
-                    text = label.uppercase(),
-                    style = MaterialTheme.typography.labelSmall.copy(
-                        fontSize = 9.sp,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.36.sp,
-                    ),
-                    color = onInk,
-                    modifier = Modifier.padding(top = 2.dp),
-                )
-            }
+            // Label space is always reserved; alpha animates so the column
+            // height stays constant and the icon's translation is the only
+            // vertical motion.
+            Text(
+                text = label.uppercase(),
+                style = MaterialTheme.typography.labelSmall.copy(
+                    fontSize = 9.sp,
+                    fontWeight = FontWeight.SemiBold,
+                    letterSpacing = 0.36.sp,
+                ),
+                color = onInk,
+                modifier = Modifier
+                    .padding(top = 2.dp)
+                    .graphicsLayer { alpha = labelAlpha },
+            )
         }
     }
 }
