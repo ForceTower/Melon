@@ -10,7 +10,7 @@ sealed interface AppRoute : NavKey {
     @Serializable data object Welcome : AppRoute
     @Serializable data object Intro : AppRoute
     @Serializable data object Login : AppRoute
-    @Serializable data class Sync(val userId: String) : AppRoute
-    @Serializable data class Ready(val userName: String) : AppRoute
+    @Serializable data class Sync(val firstName: String) : AppRoute
+    @Serializable data class Ready(val firstName: String) : AppRoute
     @Serializable data object Home : AppRoute
 }

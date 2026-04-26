@@ -22,6 +22,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -46,6 +47,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.compose.ui.platform.LocalContext
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
@@ -60,9 +64,13 @@ private val SurfaceLight = Color(0xFFFBF7F2)
 
 @Composable
 fun ReadyScreen(
-    userName: String,
+    firstName: String,
     onEnter: () -> Unit,
+    vm: ReadyViewModel = hiltViewModel(),
 ) {
+    val state by vm.state.collectAsStateWithLifecycle()
+    val context = LocalContext.current
+
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val accent = MaterialTheme.colorScheme.primary
@@ -151,7 +159,7 @@ fun ReadyScreen(
                 .padding(top = 320.dp, start = 28.dp, end = 28.dp, bottom = 40.dp),
         ) {
             Text(
-                text = readyHeadline(userName, ink, accent),
+                text = readyHeadline(firstName, ink, accent),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontSize = 44.sp,
                     lineHeight = 44.sp,
@@ -165,7 +173,12 @@ fun ReadyScreen(
             )
             Spacer(Modifier.height(10.dp))
             Text(
-                text = stringResource(R.string.onboarding_ready_semester_summary),
+                text = formatSemesterSummary(
+                    context = context,
+                    classCount = state.classCount,
+                    totalCredits = state.totalCredits,
+                    semesterCode = state.semesterCode,
+                ),
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
@@ -179,76 +192,84 @@ fun ReadyScreen(
             )
             Spacer(Modifier.height(22.dp))
 
-            // Preview card
+            // Preview card — only rendered when there's a real next class.
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .weight(1f),
                 contentAlignment = Alignment.Center,
             ) {
-                Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .fadeUpOnAppear(delayMs = 1400)
-                        .clip(RoundedCornerShape(22.dp))
-                        .background(surface)
-                        .border(1.dp, line, RoundedCornerShape(22.dp))
-                        .padding(horizontal = 18.dp, vertical = 16.dp),
-                ) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically,
+                val next = state.next
+                if (next != null) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .fadeUpOnAppear(delayMs = 1400)
+                            .clip(RoundedCornerShape(22.dp))
+                            .background(surface)
+                            .border(1.dp, line, RoundedCornerShape(22.dp))
+                            .padding(horizontal = 18.dp, vertical = 16.dp),
                     ) {
-                        Text(
-                            text = stringResource(R.string.onboarding_ready_next_class_label),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 10.sp,
-                                letterSpacing = 1.5.sp,
-                                fontFamily = FontFamily.Monospace,
-                            ),
-                            color = ink3,
-                        )
-                        Text(
-                            text = stringResource(R.string.onboarding_ready_next_class_countdown),
-                            style = MaterialTheme.typography.labelSmall.copy(
-                                fontSize = 11.sp,
-                                fontFamily = FontFamily.Monospace,
-                            ),
-                            color = accent,
-                        )
-                    }
-                    Spacer(Modifier.height(10.dp))
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(12.dp),
-                    ) {
-                        Box(
-                            Modifier
-                                .size(48.dp)
-                                .clip(RoundedCornerShape(14.dp)),
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically,
                         ) {
-                            Mesh(
-                                variant = MeshVariant.Cool,
-                                modifier = Modifier.fillMaxSize(),
-                            )
-                        }
-                        Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = stringResource(R.string.onboarding_ready_next_class_name),
-                                style = MaterialTheme.typography.headlineSmall.copy(
-                                    fontSize = 20.sp,
-                                    lineHeight = 22.sp,
-                                    letterSpacing = (-0.2).sp,
+                                text = stringResource(R.string.onboarding_ready_next_class_label),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.5.sp,
+                                    fontFamily = FontFamily.Monospace,
                                 ),
-                                color = ink,
-                            )
-                            Spacer(Modifier.height(2.dp))
-                            Text(
-                                text = stringResource(R.string.onboarding_ready_next_class_meta),
-                                style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
                                 color = ink3,
                             )
+                            Text(
+                                text = formatCountdown(context, next.startsInMinutes),
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontSize = 11.sp,
+                                    fontFamily = FontFamily.Monospace,
+                                ),
+                                color = accent,
+                            )
+                        }
+                        Spacer(Modifier.height(10.dp))
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(12.dp),
+                        ) {
+                            Box(
+                                Modifier
+                                    .size(48.dp)
+                                    .clip(RoundedCornerShape(14.dp)),
+                            ) {
+                                Mesh(
+                                    variant = MeshVariant.Cool,
+                                    modifier = Modifier.fillMaxSize(),
+                                )
+                            }
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text(
+                                    text = next.disciplineName,
+                                    style = MaterialTheme.typography.headlineSmall.copy(
+                                        fontSize = 20.sp,
+                                        lineHeight = 22.sp,
+                                        letterSpacing = (-0.2).sp,
+                                    ),
+                                    color = ink,
+                                )
+                                Spacer(Modifier.height(2.dp))
+                                Text(
+                                    text = formatNextClassMeta(
+                                        context = context,
+                                        timeRaw = next.timeRaw,
+                                        room = next.spaceLocation,
+                                        teacherFirstName = next.teacherFirstName,
+                                    ),
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                                    color = ink3,
+                                )
+                            }
                         }
                     }
                 }
@@ -306,14 +327,85 @@ private fun CheckMedallion(ringProgress: Float, checkProgress: Float) {
 }
 
 @Composable
-private fun readyHeadline(userName: String, ink: Color, accent: Color): AnnotatedString {
+private fun readyHeadline(firstName: String, ink: Color, accent: Color): AnnotatedString {
     val top = stringResource(R.string.onboarding_ready_headline_top)
     val fallback = stringResource(R.string.onboarding_ready_default_user)
     return buildAnnotatedString {
         withStyle(SpanStyle(color = ink)) { append("$top\n") }
         withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) {
-            append(userName.ifBlank { fallback })
+            append(firstName.ifBlank { fallback })
             append(".")
         }
+    }
+}
+
+private fun formatSemesterSummary(
+    context: android.content.Context,
+    classCount: Int,
+    totalCredits: Int,
+    semesterCode: String?,
+): String {
+    val classes = context.resources.getQuantityString(
+        R.plurals.onboarding_ready_classes,
+        classCount,
+        classCount,
+    )
+    val credits = context.resources.getQuantityString(
+        R.plurals.onboarding_ready_credits,
+        totalCredits,
+        totalCredits,
+    )
+    return if (semesterCode.isNullOrBlank()) {
+        context.getString(R.string.onboarding_ready_semester_summary_no_code, classes, credits)
+    } else {
+        context.getString(
+            R.string.onboarding_ready_semester_summary_format,
+            classes,
+            credits,
+            semesterCode,
+        )
+    }
+}
+
+private fun formatCountdown(context: android.content.Context, minutesUntil: Int): String {
+    if (minutesUntil <= 0) return context.getString(R.string.onboarding_ready_starts_in_now)
+    val days = minutesUntil / (60 * 24)
+    val hoursTotal = minutesUntil / 60
+    val hoursOfDay = hoursTotal % 24
+    val minutesOfHour = minutesUntil % 60
+    return when {
+        days >= 1 && hoursOfDay > 0 -> context.getString(
+            R.string.onboarding_ready_starts_in_day_hour,
+            days,
+            hoursOfDay,
+        )
+        days >= 1 -> context.getString(R.string.onboarding_ready_starts_in_days, days)
+        hoursTotal >= 1 && minutesOfHour > 0 -> context.getString(
+            R.string.onboarding_ready_starts_in_hour_min,
+            hoursTotal,
+            minutesOfHour,
+        )
+        hoursTotal >= 1 -> context.getString(R.string.onboarding_ready_starts_in_hours, hoursTotal)
+        else -> context.getString(R.string.onboarding_ready_starts_in_min, minutesUntil)
+    }
+}
+
+private fun formatNextClassMeta(
+    context: android.content.Context,
+    timeRaw: String,
+    room: String?,
+    teacherFirstName: String?,
+): String {
+    // iOS trims to "HH:mm". The shared model already returns "HH:mm[:ss]" — drop seconds if present.
+    val time = timeRaw.split(':').take(2).joinToString(":")
+    return when {
+        !room.isNullOrBlank() && !teacherFirstName.isNullOrBlank() ->
+            context.getString(R.string.onboarding_ready_next_class_meta_full, time, room, teacherFirstName)
+        !teacherFirstName.isNullOrBlank() ->
+            context.getString(R.string.onboarding_ready_next_class_meta_no_room, time, teacherFirstName)
+        !room.isNullOrBlank() ->
+            context.getString(R.string.onboarding_ready_next_class_meta_no_teacher, time, room)
+        else ->
+            context.getString(R.string.onboarding_ready_next_class_meta_time_only, time)
     }
 }

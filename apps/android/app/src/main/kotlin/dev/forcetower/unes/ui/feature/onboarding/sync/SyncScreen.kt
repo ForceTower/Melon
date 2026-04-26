@@ -29,12 +29,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -57,45 +52,48 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
-import kotlinx.coroutines.delay
+import dev.forcetower.unes.mvi.collectAsEffect
 import kotlin.math.roundToInt
 
 private val DarkBg = Color(0xFF1A0F28)
 private val SurfaceLight = Color(0xFFFBF7F2)
 
-private data class SyncStep(val key: String, @StringRes val labelRes: Int)
+private data class SyncStepDisplay(val key: String, @StringRes val labelRes: Int)
 
+// Display-only metadata (label + key match what SyncViewModel runs). The
+// orchestration durations live in SyncViewModel; this list just maps a key
+// to its visible label.
 private val SYNC_STEPS = listOf(
-    SyncStep("auth", R.string.onboarding_sync_step_auth),
-    SyncStep("profile", R.string.onboarding_sync_step_profile),
-    SyncStep("classes", R.string.onboarding_sync_step_classes),
-    SyncStep("schedule", R.string.onboarding_sync_step_schedule),
-    SyncStep("grades", R.string.onboarding_sync_step_grades),
-    SyncStep("msgs", R.string.onboarding_sync_step_messages),
+    SyncStepDisplay("auth", R.string.onboarding_sync_step_auth),
+    SyncStepDisplay("profile", R.string.onboarding_sync_step_profile),
+    SyncStepDisplay("classes", R.string.onboarding_sync_step_classes),
+    SyncStepDisplay("schedule", R.string.onboarding_sync_step_schedule),
+    SyncStepDisplay("grades", R.string.onboarding_sync_step_grades),
+    SyncStepDisplay("msgs", R.string.onboarding_sync_step_messages),
 )
 
 @Composable
 fun SyncScreen(
-    userId: String,
+    firstName: String,
     onDone: () -> Unit,
+    onAuthFailed: () -> Unit,
+    vm: SyncViewModel = hiltViewModel(),
 ) {
-    var stepIdx by remember { mutableIntStateOf(0) }
-    val done = remember { mutableStateListOf<String>() }
+    val state by vm.state.collectAsStateWithLifecycle()
+    val stepIdx = state.currentStepIdx
+    val done = state.doneKeys
 
-    LaunchedEffect(stepIdx) {
-        if (stepIdx >= SYNC_STEPS.size) {
-            delay(700)
-            onDone()
-            return@LaunchedEffect
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            SyncEffect.Done -> onDone()
+            SyncEffect.AuthFailed -> onAuthFailed()
         }
-        val dwell = if (stepIdx == 0) 900L else (800L + (200..600).random())
-        delay(dwell)
-        done += SYNC_STEPS[stepIdx].key
-        stepIdx += 1
     }
 
     val progress by animateFloatAsState(
@@ -129,7 +127,7 @@ fun SyncScreen(
             )
             Spacer(Modifier.height(14.dp))
             Text(
-                text = syncHeadline(userId, amber),
+                text = syncHeadline(firstName, amber),
                 style = MaterialTheme.typography.displayLarge.copy(
                     fontSize = 44.sp,
                     lineHeight = 44.sp,
@@ -359,13 +357,13 @@ private fun StepSpinner(amber: Color) {
 }
 
 @Composable
-private fun syncHeadline(userId: String, amber: Color): AnnotatedString {
+private fun syncHeadline(firstName: String, amber: Color): AnnotatedString {
     val top = stringResource(R.string.onboarding_sync_headline_top)
     val fallback = stringResource(R.string.onboarding_sync_default_user)
     return buildAnnotatedString {
         withStyle(SpanStyle(color = SurfaceLight)) { append("$top\n") }
         withStyle(SpanStyle(color = amber, fontStyle = FontStyle.Italic)) {
-            append(userId.ifBlank { fallback })
+            append(firstName.ifBlank { fallback })
             append(".")
         }
     }

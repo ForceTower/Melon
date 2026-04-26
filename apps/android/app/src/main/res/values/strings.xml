@@ -71,6 +71,26 @@
     <string name="onboarding_login_terms_separator"> e </string>
     <string name="onboarding_login_terms_link_privacy">Privacidade</string>
     <string name="onboarding_login_terms_suffix">.</string>
+
+    <!-- Login error messages -->
+    <string name="onboarding_login_error_no_connection">Sem conexão. Verifique sua internet.</string>
+    <string name="onboarding_login_error_invalid_credentials">Usuário ou senha incorretos.</string>
+    <string name="onboarding_login_error_unexpected">Algo deu errado. Tente novamente.</string>
+    <string name="onboarding_login_error_server">%1$s</string>
+    <string name="onboarding_login_passkey_not_supported">Passkey não é suportada neste dispositivo.</string>
+    <string name="onboarding_login_passkey_invalid_challenge">Desafio inválido recebido do servidor.</string>
+    <string name="onboarding_login_passkey_no_credential">Nenhuma credencial foi retornada.</string>
+
+    <!-- Forgot password sheet -->
+    <string name="onboarding_forgot_password_title">Esqueci minha senha</string>
+    <string name="onboarding_forgot_password_label">RECUPERAÇÃO · PORTAL UEFS</string>
+    <string name="onboarding_forgot_password_description">O UNES não gerencia sua senha. A recuperação é feita direto no portal acadêmico da UEFS — depois de redefinir por lá, volte aqui e entre normalmente.</string>
+    <string name="onboarding_forgot_password_step_1">Abra o Portal Acadêmico</string>
+    <string name="onboarding_forgot_password_step_2">Use o link \"Esqueci minha senha\"</string>
+    <string name="onboarding_forgot_password_step_3">Defina a nova senha e volte ao UNES</string>
+    <string name="onboarding_forgot_password_open_portal">Abrir portal da UEFS</string>
+    <string name="onboarding_forgot_password_back">Voltar</string>
+    <string name="onboarding_forgot_password_portal_url" translatable="false">https://academico.uefs.br/PortalSagres/Acesso.aspx</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Sync -->
@@ -84,17 +104,46 @@
     <string name="onboarding_sync_step_grades">Baixando notas do semestre</string>
     <string name="onboarding_sync_step_messages">Sincronizando recados</string>
     <string name="onboarding_sync_footer">Isso levará alguns segundos na sua conexão.</string>
+    <string name="onboarding_sync_auth_failed">Sua sessão expirou. Entre novamente.</string>
     <!-- endregion -->
 
     <!-- region Onboarding · Ready -->
     <string name="onboarding_ready_eyebrow">◦ CONECTADO</string>
     <string name="onboarding_ready_headline_top">Prontinho,</string>
     <string name="onboarding_ready_default_user">estudante</string>
-    <string name="onboarding_ready_semester_summary">6 turmas · 24 créditos · semestre 2026.1</string>
+
+    <!-- Semester summary: "{classes} · {credits} · semestre {code}".
+         Built by combining two plurals + the semester code. When the
+         code is missing, the third clause is dropped via
+         onboarding_ready_semester_summary_no_code. -->
+    <string name="onboarding_ready_semester_summary_format">%1$s · %2$s · semestre %3$s</string>
+    <string name="onboarding_ready_semester_summary_no_code">%1$s · %2$s</string>
+    <plurals name="onboarding_ready_classes">
+        <item quantity="one">%d turma</item>
+        <item quantity="other">%d turmas</item>
+    </plurals>
+    <plurals name="onboarding_ready_credits">
+        <item quantity="one">%d crédito</item>
+        <item quantity="other">%d créditos</item>
+    </plurals>
+
     <string name="onboarding_ready_next_class_label">PRÓXIMA AULA</string>
-    <string name="onboarding_ready_next_class_countdown">em 1h 12min</string>
-    <string name="onboarding_ready_next_class_name">Cálculo Diferencial II</string>
-    <string name="onboarding_ready_next_class_meta">10:20 · sala MT-14 · Prof. Adriana</string>
+
+    <!-- Countdown variants. iOS picks the longest non-zero unit pair. -->
+    <string name="onboarding_ready_starts_in_now">agora</string>
+    <string name="onboarding_ready_starts_in_min">em %1$d min</string>
+    <string name="onboarding_ready_starts_in_hour_min">em %1$dh %2$dmin</string>
+    <string name="onboarding_ready_starts_in_hours">em %1$dh</string>
+    <string name="onboarding_ready_starts_in_day_hour">em %1$dd %2$dh</string>
+    <string name="onboarding_ready_starts_in_days">em %1$dd</string>
+
+    <!-- Next-class meta: "{time} · sala {room} · Prof. {first-name}".
+         Variants drop room or teacher when missing. -->
+    <string name="onboarding_ready_next_class_meta_full">%1$s · sala %2$s · Prof. %3$s</string>
+    <string name="onboarding_ready_next_class_meta_no_room">%1$s · Prof. %2$s</string>
+    <string name="onboarding_ready_next_class_meta_no_teacher">%1$s · sala %2$s</string>
+    <string name="onboarding_ready_next_class_meta_time_only">%1$s</string>
+
     <string name="onboarding_ready_cta">Ver meu semestre</string>
     <!-- endregion -->
 </resources>

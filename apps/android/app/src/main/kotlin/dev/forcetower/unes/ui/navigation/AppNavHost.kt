@@ -1,20 +1,26 @@
 package dev.forcetower.unes.ui.navigation
 
+import android.widget.Toast
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
+import dev.forcetower.unes.R
 import dev.forcetower.unes.ui.feature.home.HomeScreen
 import dev.forcetower.unes.ui.feature.onboarding.intro.IntroCarouselScreen
 import dev.forcetower.unes.ui.feature.onboarding.login.LoginScreen
 import dev.forcetower.unes.ui.feature.onboarding.ready.ReadyScreen
-import dev.forcetower.unes.ui.feature.splash.SplashScreen
 import dev.forcetower.unes.ui.feature.onboarding.sync.SyncScreen
 import dev.forcetower.unes.ui.feature.onboarding.welcome.WelcomeScreen
+import dev.forcetower.unes.ui.feature.splash.SplashScreen
 
 @Composable
 fun AppNavHost() {
     val backStack = rememberNavBackStack(AppRoute.Splash)
+    val context = LocalContext.current
+    val authFailedToast = stringResource(R.string.onboarding_sync_auth_failed)
 
     fun replace(route: AppRoute) {
         backStack.clear()
@@ -26,7 +32,10 @@ fun AppNavHost() {
         onBack = { backStack.removeLastOrNull() },
         entryProvider = entryProvider {
             entry<AppRoute.Splash> {
-                SplashScreen(onDone = { replace(AppRoute.Welcome) })
+                SplashScreen(
+                    onGoHome = { replace(AppRoute.Home) },
+                    onGoOnboarding = { replace(AppRoute.Welcome) },
+                )
             }
             entry<AppRoute.Welcome> {
                 WelcomeScreen(
@@ -42,19 +51,23 @@ fun AppNavHost() {
             }
             entry<AppRoute.Login> {
                 LoginScreen(
-                    onSubmit = { id -> replace(AppRoute.Sync(userId = id)) },
+                    onSubmit = { firstName -> replace(AppRoute.Sync(firstName = firstName)) },
                     onBack = { backStack.removeLastOrNull() },
                 )
             }
             entry<AppRoute.Sync> { route ->
                 SyncScreen(
-                    userId = route.userId,
-                    onDone = { replace(AppRoute.Ready(userName = route.userId)) },
+                    firstName = route.firstName,
+                    onDone = { replace(AppRoute.Ready(firstName = route.firstName)) },
+                    onAuthFailed = {
+                        Toast.makeText(context, authFailedToast, Toast.LENGTH_LONG).show()
+                        replace(AppRoute.Welcome)
+                    },
                 )
             }
             entry<AppRoute.Ready> { route ->
                 ReadyScreen(
-                    userName = route.userName,
+                    firstName = route.firstName,
                     onEnter = { replace(AppRoute.Home) },
                 )
             }

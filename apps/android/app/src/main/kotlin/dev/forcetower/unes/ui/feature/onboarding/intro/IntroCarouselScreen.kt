@@ -92,6 +92,13 @@ fun IntroCarouselScreen(
     var index by remember { mutableIntStateOf(0) }
     var contentKey by remember { mutableIntStateOf(0) }
     val slide = slides[index]
+    val requestNotifications = rememberRequestNotificationPermission()
+    // iOS prompts for notifications on the final-slide CTA (and skip), then
+    // immediately navigates regardless of the user's choice.
+    val finishWithPermissionPrompt = {
+        requestNotifications()
+        onDone()
+    }
 
     Box(
         Modifier
@@ -183,7 +190,7 @@ fun IntroCarouselScreen(
                         .clickable(
                             role = Role.Button,
                             onClickLabel = stringResource(R.string.onboarding_intro_skip_label),
-                        ) { onDone() }
+                        ) { finishWithPermissionPrompt() }
                         .padding(8.dp),
                 )
             }
@@ -283,7 +290,7 @@ fun IntroCarouselScreen(
                                 index += 1
                                 contentKey += 1
                             } else {
-                                onDone()
+                                finishWithPermissionPrompt()
                             }
                         },
                         modifier = Modifier.fadeUpOnAppear(delayMs = 400),

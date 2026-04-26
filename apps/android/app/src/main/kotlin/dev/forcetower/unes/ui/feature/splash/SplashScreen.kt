@@ -21,7 +21,10 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
@@ -34,23 +37,51 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.mvi.collectAsEffect
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 private val DarkBg = Color(0xFF1A0F28)
 private val SurfaceLight = Color(0xFFFBF7F2)
 
+private fun dispatch(
+    effect: SplashEffect,
+    onGoHome: () -> Unit,
+    onGoOnboarding: () -> Unit,
+) {
+    when (effect) {
+        SplashEffect.GoHome -> onGoHome()
+        SplashEffect.GoOnboarding -> onGoOnboarding()
+    }
+}
+
 @Composable
-fun SplashScreen(onDone: () -> Unit) {
+fun SplashScreen(
+    onGoHome: () -> Unit,
+    onGoOnboarding: () -> Unit,
+    vm: SplashViewModel = hiltViewModel(),
+) {
     val wordmarkOffsetY = remember { Animatable(12f) }
     val wordmarkAlpha = remember { Animatable(0f) }
     val dotScale = remember { Animatable(0f) }
     val captionAlpha = remember { Animatable(0f) }
     val creditAlpha = remember { Animatable(0f) }
+
+    var animationDone by remember { mutableStateOf(false) }
+    var pendingDestination by remember { mutableStateOf<SplashEffect?>(null) }
+
+    vm.effects.collectAsEffect { effect ->
+        if (animationDone) {
+            dispatch(effect, onGoHome, onGoOnboarding)
+        } else {
+            pendingDestination = effect
+        }
+    }
 
     LaunchedEffect(Unit) {
         launch {
@@ -72,7 +103,8 @@ fun SplashScreen(onDone: () -> Unit) {
             creditAlpha.animateTo(1f, tween(600))
         }
         delay(2600)
-        onDone()
+        animationDone = true
+        pendingDestination?.let { dispatch(it, onGoHome, onGoOnboarding) }
     }
 
     Box(

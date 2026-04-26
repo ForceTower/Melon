@@ -32,11 +32,12 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
+import androidx.activity.compose.LocalActivity
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -58,6 +59,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonGhostButton
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
@@ -66,8 +69,7 @@ import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.melon
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
+import dev.forcetower.unes.mvi.collectAsEffect
 
 private enum class LoginField { Id, Password }
 
@@ -75,13 +77,12 @@ private enum class LoginField { Id, Password }
 fun LoginScreen(
     onSubmit: (String) -> Unit,
     onBack: () -> Unit,
+    vm: LoginViewModel = hiltViewModel(),
 ) {
-    var id by remember { mutableStateOf("") }
-    var pw by remember { mutableStateOf("") }
-    var showPw by remember { mutableStateOf(false) }
+    val state by vm.state.collectAsStateWithLifecycle()
     var focused by remember { mutableStateOf<LoginField?>(null) }
-    var loading by remember { mutableStateOf(false) }
-    val scope = rememberCoroutineScope()
+    var showForgotPasswordSheet by remember { mutableStateOf(false) }
+    val activity = LocalActivity.current
 
     val ink = MaterialTheme.colorScheme.onBackground
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
@@ -91,22 +92,16 @@ fun LoginScreen(
     val card = MaterialTheme.melon.surface.card
     val line = MaterialTheme.melon.surface.line
     val surface2 = MaterialTheme.colorScheme.surfaceVariant
+    val errorColor = MaterialTheme.colorScheme.error
 
-    fun submit() {
-        if (loading || id.isBlank() || pw.isBlank()) return
-        loading = true
-        scope.launch {
-            delay(900)
-            onSubmit(id)
-        }
-    }
+    val id = state.username
+    val pw = state.password
+    val showPw = state.showPassword
+    val loading = state.isLoading
 
-    fun passkey() {
-        if (loading) return
-        loading = true
-        scope.launch {
-            delay(1400)
-            onSubmit("passkey")
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            is LoginEffect.Authenticated -> onSubmit(effect.firstName)
         }
     }
 
@@ -180,7 +175,7 @@ fun LoginScreen(
                         label = stringResource(R.string.onboarding_login_id_label),
                         placeholder = stringResource(R.string.onboarding_login_id_placeholder),
                         value = id,
-                        onValueChange = { id = it },
+                        onValueChange = { vm.onIntent(LoginIntent.UsernameChanged(it)) },
                         onFocusChanged = { f ->
                             focused = when {
                                 f -> LoginField.Id
@@ -216,7 +211,7 @@ fun LoginScreen(
                         label = stringResource(R.string.onboarding_login_password_label),
                         placeholder = stringResource(R.string.onboarding_login_password_placeholder),
                         value = pw,
-                        onValueChange = { pw = it },
+                        onValueChange = { vm.onIntent(LoginIntent.PasswordChanged(it)) },
                         onFocusChanged = { f ->
                             focused = when {
                                 f -> LoginField.Password
@@ -243,7 +238,7 @@ fun LoginScreen(
                                     .clickable(
                                         role = Role.Button,
                                         onClickLabel = toggleLabel,
-                                    ) { showPw = !showPw },
+                                    ) { vm.onIntent(LoginIntent.TogglePasswordVisibility) },
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
@@ -270,17 +265,32 @@ fun LoginScreen(
                     .clickable(
                         role = Role.Button,
                         onClickLabel = stringResource(R.string.onboarding_login_forgot_password_label),
-                    ) {}
+                    ) { showForgotPasswordSheet = true }
                     .padding(vertical = 8.dp)
                     .fadeUpOnAppear(delayMs = 450),
             )
+
+            AnimatedVisibility(visible = state.errorRes != null) {
+                val errorRes = state.errorRes
+                if (errorRes != null) {
+                    val message = state.errorArg
+                        ?.let { stringResource(errorRes, it) }
+                        ?: stringResource(errorRes)
+                    Text(
+                        text = message,
+                        style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
+                        color = errorColor,
+                        modifier = Modifier.padding(top = 12.dp),
+                    )
+                }
+            }
 
             Spacer(Modifier.height(24.dp))
 
             MelonPrimaryButton(
                 text = stringResource(R.string.onboarding_login_submit),
-                onClick = ::submit,
-                enabled = id.isNotBlank() && pw.isNotBlank() && !loading,
+                onClick = { vm.onIntent(LoginIntent.Submit) },
+                enabled = state.canSubmit,
                 isLoading = loading,
                 modifier = Modifier.fadeUpOnAppear(delayMs = 500),
             )
@@ -311,7 +321,10 @@ fun LoginScreen(
 
             MelonGhostButton(
                 text = stringResource(R.string.onboarding_login_passkey),
-                onClick = ::passkey,
+                onClick = {
+                    val current = activity ?: return@MelonGhostButton
+                    vm.onIntent(LoginIntent.SubmitPasskey(current))
+                },
                 leading = {
                     Icon(
                         imageVector = Icons.Filled.Key,
@@ -356,6 +369,10 @@ fun LoginScreen(
                 modifier = Modifier.size(16.dp),
             )
         }
+    }
+
+    if (showForgotPasswordSheet) {
+        ForgotPasswordSheet(onDismiss = { showForgotPasswordSheet = false })
     }
 }
 
