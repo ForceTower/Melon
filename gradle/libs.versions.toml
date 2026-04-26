@@ -20,7 +20,7 @@ android-core-ktx = "1.16.0"
 android-activity-compose = "1.11.0"
 android-lifecycle = "2.10.0"
 android-compose-bom = "2026.03.00"
-android-navigation3 = "1.0.0-alpha10"
+android-navigation3 = "1.1.1"
 android-hilt = "2.59.2"
 android-hilt-navigation-compose = "1.2.0"
 android-datastore = "1.1.7"
@@ -78,7 +78,7 @@ androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
 androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
 androidx-compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
 
-# Navigation 3 (alpha)
+# Navigation 3
 androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "android-navigation3" }
 androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "android-navigation3" }
 
