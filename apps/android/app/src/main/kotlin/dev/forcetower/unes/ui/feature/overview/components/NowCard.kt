@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -63,15 +62,19 @@ internal fun NowCard(now: OverviewNowClass, modifier: Modifier = Modifier) {
             .clip(RoundedCornerShape(28.dp))
             .background(alwaysDark),
     ) {
+        // The card has no explicit height — inside a scroll its vertical
+        // constraints are unbounded, so `fillMaxSize` would collapse the mesh
+        // and veil to 0dp and we'd see only the flat dark base. `matchParentSize`
+        // defers measurement until the content Column reports its height,
+        // mirroring SwiftUI's ZStack auto-stretching behavior on iOS.
         Mesh(
             variant = now.meshVariant,
             intensity = 1f,
-            modifier = Modifier.fillMaxSize(),
+            modifier = Modifier.matchParentSize(),
         )
-        // Dim veil for contrast.
         Box(
             modifier = Modifier
-                .fillMaxSize()
+                .matchParentSize()
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
