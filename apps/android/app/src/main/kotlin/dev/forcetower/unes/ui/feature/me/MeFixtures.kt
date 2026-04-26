@@ -106,12 +106,8 @@ internal object MeFixtures {
     )
 
     val defaultPinned: List<ShortcutKind> = listOf(
-        ShortcutKind.Account,
-        ShortcutKind.Flowchart,
-        ShortcutKind.Bandejao,
         ShortcutKind.Calendar,
         ShortcutKind.Countdown,
-        ShortcutKind.Reminders,
     )
 
     fun pinned(ids: List<ShortcutKind>): List<Shortcut> =

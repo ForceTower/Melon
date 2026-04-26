@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.me
 
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
 import androidx.compose.foundation.background
@@ -249,7 +250,10 @@ private fun launchFeedbackEmail(
         putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
         putExtra(Intent.EXTRA_TEXT, body)
     }
-    if (intent.resolveActivity(context.packageManager) != null) {
+    try {
         context.startActivity(intent)
+    } catch (_: ActivityNotFoundException) {
+        // No email client installed — drop silently, same as iOS when
+        // `canOpenURL` rejects the sms: URL.
     }
 }
