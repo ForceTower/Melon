@@ -5,10 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
@@ -62,6 +67,10 @@ fun OverviewScreen(
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                // Horizontal-only safe-drawing inset keeps content out of side
+                // cutouts and the landscape nav bar without cropping the mesh,
+                // which intentionally bleeds edge to edge behind the content.
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = bottomInset),
             verticalArrangement = Arrangement.spacedBy(14.dp),

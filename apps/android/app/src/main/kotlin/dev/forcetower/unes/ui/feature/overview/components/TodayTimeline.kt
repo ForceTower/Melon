@@ -214,7 +214,7 @@ private fun TimeRailColumn(
             ink4 = ink4,
             surface3 = surface3,
             surface = surface,
-            modifier = Modifier.padding(start = 18.dp, top = 30.dp),
+            modifier = Modifier.padding(start = 14.dp, top = 30.dp),
         )
     }
 }

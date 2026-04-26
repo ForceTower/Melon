@@ -6,10 +6,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.displayCutout
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.union
 import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -91,7 +95,14 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
             backdrop = backdrop,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .windowInsetsPadding(WindowInsets.navigationBars)
+                // Nav bars handle the gesture/3-button bar (any rotation);
+                // horizontal display cutout keeps the bar off the notch when
+                // the device is rotated to landscape. IME is intentionally
+                // excluded so the bar stays under the keyboard.
+                .windowInsetsPadding(
+                    WindowInsets.navigationBars
+                        .union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)),
+                )
                 .padding(horizontal = 14.dp, vertical = 22.dp),
         )
     }

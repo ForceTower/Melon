@@ -68,7 +68,7 @@ private struct TodayRow: View {
                 }
 
                 TimelineDot(color: item.color, isNow: isNow, isDone: isDone)
-                    .padding(.leading, 18)
+                    .padding(.leading, 14)
                     .padding(.top, 30)
             }
             .frame(width: 44, alignment: .topLeading)
