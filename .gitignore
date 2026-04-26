@@ -76,3 +76,5 @@ apps/ios/UNES/Resources/Licenses/
 # ---------- Misc ----------
 tmp/
 .temp/
+
+claude_scripts/
