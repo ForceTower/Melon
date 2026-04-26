@@ -70,7 +70,6 @@ body {
 .stat-num em,
 .hero-meta .num em,
 .mock-grade-num em,
-.logobar-marks em,
 .accent {
   font-family: var(--font-accent);
   font-style: var(--font-accent-style);
@@ -670,44 +669,6 @@ section.land {
   margin: 18px 0 0;
   max-width: 580px;
   letter-spacing: -0.005em;
-}
-
-/* ── Logo bar ── */
-.logobar {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  gap: 36px;
-  align-items: center;
-  padding: 36px 0 24px;
-  border-bottom: 1px solid var(--hair);
-}
-.logobar-label {
-  font: 500 11px/1.4 var(--font-mono);
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-3);
-  max-width: 200px;
-}
-.logobar-marks {
-  display: flex;
-  gap: 36px;
-  flex-wrap: wrap;
-  align-items: center;
-  opacity: 0.7;
-}
-.logobar-marks span {
-  font-family: var(--font-serif);
-  font-size: 22px;
-  color: var(--ink-2);
-  letter-spacing: -0.01em;
-}
-.logobar-marks em {
-  color: var(--accent);
-}
-.logobar-marks .mono {
-  font-family: var(--font-mono);
-  font-size: 14px;
-  letter-spacing: 0.04em;
 }
 
 /* ── Pillars ── */
