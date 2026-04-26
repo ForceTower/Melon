@@ -26,4 +26,13 @@ object MelonMotion {
 
     val EmphasizedEasing = CubicBezierEasing(0.2f, 0.8f, 0.2f, 1f)
     val PopEasing = CubicBezierEasing(0.2f, 0.9f, 0.3f, 1.2f)
+
+    // iOS `UINavigationController` push/pop keyframes — fast acceleration,
+    // gentle landing. Used by the nav-stack transitions in
+    // `app/ui/navigation/NavTransitions.kt`.
+    val NavPushEasing = CubicBezierEasing(0.32f, 0.72f, 0f, 1f)
+    const val NavPushDurationMillis: Int = 350
+
+    fun <T> navPush(): AnimationSpec<T> =
+        tween(durationMillis = NavPushDurationMillis, easing = NavPushEasing)
 }

@@ -286,6 +286,69 @@
     <string name="messages_attach_separator">·</string>
     <!-- endregion -->
 
+    <!-- region Disciplinas · Header -->
+    <string name="disciplines_title">Disciplinas</string>
+    <!-- "◦ SEMESTRE 2026.1" — eyebrow above the title. Code uppercased at render. -->
+    <string name="disciplines_eyebrow_semester_format">◦ semestre %1$s</string>
+    <string name="disciplines_history_divider">Histórico</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Summary strip -->
+    <string name="disciplines_summary_partial_average">Média parcial</string>
+    <string name="disciplines_summary_count">Disciplinas</string>
+    <string name="disciplines_summary_attention">Atenção</string>
+    <string name="disciplines_summary_attention_items">itens</string>
+    <string name="disciplines_summary_attention_none">nada</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Active card -->
+    <string name="disciplines_card_grade_label">média</string>
+    <!-- "60h" — discipline workload in hours. -->
+    <string name="disciplines_card_hours_format">%1$dh</string>
+    <string name="disciplines_card_footer_absences">Faltas</string>
+    <string name="disciplines_card_footer_next_eval">Próxima avaliação</string>
+    <string name="disciplines_card_footer_for_seven">Para média 7</string>
+    <string name="disciplines_card_footer_progress">Progresso</string>
+    <string name="disciplines_card_countdown_today">hoje</string>
+    <!-- "5d" — short countdown to the next eval. -->
+    <string name="disciplines_card_countdown_days_format">%1$dd</string>
+    <string name="disciplines_card_needed_unreachable">inatingível</string>
+    <plurals name="disciplines_card_needed_remaining">
+        <item quantity="one">%d restante</item>
+        <item quantity="other">%d restantes</item>
+    </plurals>
+    <string name="disciplines_card_progress_evaluations">avaliações</string>
+    <!-- "{remaining} restantes" — used by the absence bar tail label. -->
+    <plurals name="disciplines_absences_remaining">
+        <item quantity="one">%d restante</item>
+        <item quantity="other">%d restantes</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Past semester card -->
+    <plurals name="disciplines_past_count">
+        <item quantity="one">%d disciplina</item>
+        <item quantity="other">%d disciplinas</item>
+    </plurals>
+    <string name="disciplines_past_mean_label">média</string>
+    <!-- "5/6 aprovadas" — past semester pass count over total. -->
+    <string name="disciplines_past_approved_format">%1$d/%2$d aprovadas</string>
+    <string name="disciplines_past_status_approved">aprovado</string>
+    <string name="disciplines_past_status_failed">reprovado</string>
+    <!-- endregion -->
+
+    <!-- region Disciplinas · Undownloaded placeholder -->
+    <string name="disciplines_undownloaded_idle_subtitle">Toque para baixar o histórico deste semestre.</string>
+    <string name="disciplines_undownloaded_loading_subtitle">Buscando notas e faltas do semestre…</string>
+    <string name="disciplines_undownloaded_cta">Baixar</string>
+    <string name="disciplines_undownloaded_count_loading">baixando…</string>
+    <string name="disciplines_undownloaded_count_unknown">não baixado</string>
+    <plurals name="disciplines_undownloaded_count_estimated">
+        <item quantity="one">~%d disciplina</item>
+        <item quantity="other">~%d disciplinas</item>
+    </plurals>
+    <!-- endregion -->
+
     <!-- region Schedule · Header -->
     <string name="schedule_title">Horário</string>
     <string name="schedule_eyebrow_format">◦ SEMANA %1$s</string>

@@ -30,6 +30,9 @@ fun AppNavHost() {
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        transitionSpec = { iosPush() },
+        popTransitionSpec = { iosPop() },
+        predictivePopTransitionSpec = { _ -> iosPop() },
         entryProvider = entryProvider {
             entry<AppRoute.Splash> {
                 SplashScreen(

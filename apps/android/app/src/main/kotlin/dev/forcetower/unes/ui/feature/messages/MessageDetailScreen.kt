@@ -45,12 +45,14 @@ import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.role
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.AnnotatedString
+import androidx.compose.ui.text.LinkAnnotation
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLinkStyles
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextDecoration
-import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.text.withLink
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -436,22 +438,31 @@ private fun BodyText(message: Message, accent: Color, modifier: Modifier = Modif
 }
 
 // Build an annotated body where URL-like tokens are tinted in the origin
-// accent color and underlined. URLs are not actually clickable here — the
-// tokens are styled the same way iOS shows them, but the design surface
-// doesn't open external browsers from the message yet.
+// accent color, underlined, and clickable. `Text` routes `LinkAnnotation.Url`
+// clicks through the ambient `UriHandler`, which hands off to the system
+// browser.
 private val UrlPattern = Regex(
     "(https?://[^\\s]+|www\\.[^\\s]+|[a-z0-9.-]+\\.(?:br|com|org|edu|net|io)/[^\\s]*)",
     RegexOption.IGNORE_CASE,
 )
 
 private fun linkify(text: String, accent: Color): AnnotatedString = buildAnnotatedString {
+    val linkStyle = TextLinkStyles(
+        style = SpanStyle(color = accent, textDecoration = TextDecoration.Underline),
+    )
     var cursor = 0
     UrlPattern.findAll(text).forEach { match ->
         if (match.range.first > cursor) {
             append(text.substring(cursor, match.range.first))
         }
-        withStyle(SpanStyle(color = accent, textDecoration = TextDecoration.Underline)) {
-            append(match.value)
+        val raw = match.value
+        val href = when {
+            raw.startsWith("http://", ignoreCase = true) -> raw
+            raw.startsWith("https://", ignoreCase = true) -> raw
+            else -> "https://$raw"
+        }
+        withLink(LinkAnnotation.Url(url = href, styles = linkStyle)) {
+            append(raw)
         }
         cursor = match.range.last + 1
     }

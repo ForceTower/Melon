@@ -40,6 +40,7 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.ui.feature.disciplines.DisciplinesScreen
 import dev.forcetower.unes.ui.feature.me.MeScreen
 import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
 import dev.forcetower.unes.ui.feature.messages.MessagesIntent
@@ -75,7 +76,7 @@ fun ConnectedScreen(
     val messagesVm: MessagesViewModel = hiltViewModel()
     val messagesState by messagesVm.state.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(
-        ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
+        ConnectedTab.Messages to 0 /* messagesState.rawItems.count { it.isUnread } */,
     ).filterValues { it > 0 }
     val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val bottomInset = TabBarBlockHeight + navBarBottom
@@ -101,16 +102,19 @@ fun ConnectedScreen(
             backStack = stack,
             entryDecorators = listOf(saveableDecorator),
             entryProvider = entryProvider {
-                entry<ConnectedRoute.Overview> {
+                entry<ConnectedRoute.Overview>(metadata = TabRootMetadata) {
                     OverviewScreen(bottomInset = bottomInset)
                 }
-                entry<ConnectedRoute.Schedule> {
+                entry<ConnectedRoute.Schedule>(metadata = TabRootMetadata) {
                     ScheduleScreen(bottomInset = bottomInset)
                 }
-                entry<ConnectedRoute.Classes> {
-                    ComingSoonPanel(ConnectedTab.Classes)
+                entry<ConnectedRoute.Classes>(metadata = TabRootMetadata) {
+                    DisciplinesScreen(
+                        bottomInset = bottomInset,
+                        onOpenDiscipline = { /* TODO: push detail destination */ },
+                    )
                 }
-                entry<ConnectedRoute.MessagesList> {
+                entry<ConnectedRoute.MessagesList>(metadata = TabRootMetadata) {
                     MessagesScreen(
                         bottomInset = bottomInset,
                         onOpen = { id, seed ->
@@ -127,7 +131,7 @@ fun ConnectedScreen(
                         bottomInset = bottomInset,
                     )
                 }
-                entry<ConnectedRoute.Me> {
+                entry<ConnectedRoute.Me>(metadata = TabRootMetadata) {
                     MeScreen(onLoggedOut = onLoggedOut, bottomInset = bottomInset)
                 }
             },
@@ -158,6 +162,9 @@ fun ConnectedScreen(
                 NavDisplay(
                     entries = entriesByTab.getValue(navigator.activeTab),
                     onBack = { navigator.goBack() },
+                    transitionSpec = connectedPushTransition,
+                    popTransitionSpec = connectedPopTransition,
+                    predictivePopTransitionSpec = connectedPredictivePopTransition,
                 )
             }
 
