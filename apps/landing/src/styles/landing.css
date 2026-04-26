@@ -1389,6 +1389,105 @@ footer.land-foot {
   border-color: var(--accent-press);
 }
 
+.deletion-form {
+  display: grid;
+  gap: 22px;
+  margin: 8px 0 32px;
+}
+.df-field {
+  display: grid;
+  gap: 8px;
+}
+.df-field label {
+  font: 500 13px/1.2 var(--font-sans);
+  letter-spacing: 0.01em;
+  color: var(--ink);
+}
+.df-optional {
+  font-weight: 400;
+  color: var(--ink-3);
+}
+.df-field input,
+.df-field textarea {
+  width: 100%;
+  padding: 12px 14px;
+  font: 400 16px/1.45 var(--font-sans);
+  color: var(--ink);
+  background: var(--cream);
+  border: 1px solid var(--hair-2);
+  border-radius: 12px;
+  outline: none;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
+}
+.df-field input::placeholder,
+.df-field textarea::placeholder {
+  color: var(--ink-4);
+}
+.df-field input:focus,
+.df-field textarea:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(232, 93, 78, 0.18);
+}
+.df-field textarea {
+  resize: vertical;
+  min-height: 120px;
+}
+.df-help {
+  font: 400 13px/1.4 var(--font-sans);
+  color: var(--ink-3);
+}
+.df-message {
+  padding: 14px 16px;
+  border-radius: 12px;
+  font: 500 14px/1.5 var(--font-sans);
+}
+.df-message--success {
+  background: rgba(232, 93, 78, 0.08);
+  border: 1px solid rgba(232, 93, 78, 0.22);
+  color: var(--ink);
+}
+.df-message--error {
+  background: rgba(178, 58, 122, 0.08);
+  border: 1px solid rgba(178, 58, 122, 0.28);
+  color: var(--magenta);
+}
+.df-submit {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  padding: 0 26px;
+  border-radius: 999px;
+  border: 0;
+  background: var(--accent);
+  color: var(--cream);
+  font: 600 15px/1 var(--font-sans);
+  letter-spacing: 0.01em;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    transform 0.05s;
+}
+.df-submit:hover {
+  background: var(--accent-press);
+}
+.df-submit:active {
+  transform: scale(0.97);
+}
+.df-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+.df-fineprint {
+  font: 400 14px/1.6 var(--font-sans);
+  color: var(--ink-3);
+  margin: 8px 0 0;
+}
+
 /* ── Responsive ── */
 @media (max-width: 960px) {
   .hero-grid {

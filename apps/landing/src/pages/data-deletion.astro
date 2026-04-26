@@ -1,0 +1,137 @@
+---
+import Footer from "../components/footer.astro";
+import Nav from "../components/nav.astro";
+import Base from "../layouts/base.astro";
+---
+
+<Base
+  title="Excluir meus dados — UNES"
+  description="Solicite a exclusão dos seus dados do UNES. Vamos te responder pelo email informado pra confirmar a identidade antes de apagar."
+>
+  <Nav />
+  <main class="legal">
+    <header class="legal-head">
+      <div class="section-eyebrow">◦ seus dados</div>
+      <h1 class="legal-title">Excluir meus <em>dados</em></h1>
+      <p class="legal-meta">Solicitação de exclusão · LGPD</p>
+    </header>
+
+    <article class="legal-body">
+      <p class="lede">
+        Quer apagar seus dados do UNES? Preenche o formulário abaixo. A gente responde pelo
+        email que você informar pra confirmar quem é você antes de remover qualquer coisa —
+        é uma etapa rápida pra garantir que ninguém apague a conta de outra pessoa.
+      </p>
+
+      <form id="deletion-form" class="deletion-form" novalidate>
+        <div class="df-field">
+          <label for="df-email">Email para contato</label>
+          <input
+            type="email"
+            id="df-email"
+            name="email"
+            required
+            autocomplete="email"
+            placeholder="seuemail@exemplo.com"
+          />
+          <span class="df-help">É por aqui que vamos te responder pra verificar a identidade.</span>
+        </div>
+
+        <div class="df-field">
+          <label for="df-username">Nome de usuário</label>
+          <input
+            type="text"
+            id="df-username"
+            name="username"
+            required
+            autocomplete="username"
+            placeholder="seu usuário do UNES"
+          />
+          <span class="df-help">O mesmo nome de usuário que você usa pra entrar no UNES (o do portal da UEFS).</span>
+        </div>
+
+        <div class="df-field">
+          <label for="df-details">
+            Detalhes adicionais <span class="df-optional">(opcional)</span>
+          </label>
+          <textarea
+            id="df-details"
+            name="details"
+            rows="5"
+            placeholder="Conta qualquer contexto que ajude a confirmar sua identidade ou explica o motivo da solicitação."
+          ></textarea>
+        </div>
+
+        <div id="df-message" class="df-message" hidden></div>
+
+        <button type="submit" id="df-submit" class="df-submit">Enviar solicitação</button>
+      </form>
+
+      <p class="df-fineprint">
+        Após receber, eu respondo no email informado pra confirmar quem é você. A exclusão
+        em si acontece depois dessa verificação. Em caso de dúvida, fala direto comigo em
+        <a href="mailto:me@forcetower.dev">me@forcetower.dev</a>.
+      </p>
+    </article>
+  </main>
+  <div class="land-shell">
+    <Footer />
+  </div>
+</Base>
+
+<script>
+  const form = document.getElementById("deletion-form") as HTMLFormElement | null;
+  const submitBtn = document.getElementById("df-submit") as HTMLButtonElement | null;
+  const messageEl = document.getElementById("df-message") as HTMLDivElement | null;
+
+  if (form && submitBtn && messageEl) {
+    const API_URL = import.meta.env.PUBLIC_API_URL ?? "https://api.unes.app";
+
+    const showMessage = (kind: "success" | "error", text: string) => {
+      messageEl.className = `df-message df-message--${kind}`;
+      messageEl.textContent = text;
+      messageEl.hidden = false;
+    };
+
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+      messageEl.hidden = true;
+      submitBtn.disabled = true;
+      const originalLabel = submitBtn.textContent;
+      submitBtn.textContent = "Enviando…";
+
+      const data = new FormData(form);
+      const payload = {
+        email: String(data.get("email") ?? "").trim(),
+        username: String(data.get("username") ?? "").trim(),
+        details: String(data.get("details") ?? "").trim() || undefined,
+      };
+
+      try {
+        const res = await fetch(`${API_URL}/api/data-deletion`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+        const body = await res.json().catch(() => ({}));
+
+        if (res.ok && body.ok) {
+          form.reset();
+          form.hidden = true;
+          showMessage(
+            "success",
+            `Recebido! Vamos te responder em ${payload.email} pra confirmar a identidade antes de apagar qualquer coisa.`,
+          );
+        } else {
+          showMessage("error", body.message ?? "Não foi possível enviar agora. Tenta de novo daqui a pouco.");
+          submitBtn.disabled = false;
+          submitBtn.textContent = originalLabel;
+        }
+      } catch {
+        showMessage("error", "Erro de rede. Verifica sua conexão e tenta de novo.");
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalLabel;
+      }
+    });
+  }
+</script>
