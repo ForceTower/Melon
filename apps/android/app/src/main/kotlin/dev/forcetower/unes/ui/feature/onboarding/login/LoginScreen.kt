@@ -57,6 +57,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -68,6 +69,7 @@ import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeInOnAppear
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
 
@@ -80,6 +82,26 @@ fun LoginScreen(
     vm: LoginViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+
+    vm.effects.collectAsEffect { effect ->
+        when (effect) {
+            is LoginEffect.Authenticated -> onSubmit(effect.firstName)
+        }
+    }
+
+    LoginContent(
+        state = state,
+        onIntent = vm::onIntent,
+        onBack = onBack,
+    )
+}
+
+@Composable
+private fun LoginContent(
+    state: LoginUiState,
+    onIntent: (LoginIntent) -> Unit,
+    onBack: () -> Unit,
+) {
     var focused by remember { mutableStateOf<LoginField?>(null) }
     var showForgotPasswordSheet by remember { mutableStateOf(false) }
     val activity = LocalActivity.current
@@ -98,12 +120,6 @@ fun LoginScreen(
     val pw = state.password
     val showPw = state.showPassword
     val loading = state.isLoading
-
-    vm.effects.collectAsEffect { effect ->
-        when (effect) {
-            is LoginEffect.Authenticated -> onSubmit(effect.firstName)
-        }
-    }
 
     Box(
         Modifier
@@ -175,7 +191,7 @@ fun LoginScreen(
                         label = stringResource(R.string.onboarding_login_id_label),
                         placeholder = stringResource(R.string.onboarding_login_id_placeholder),
                         value = id,
-                        onValueChange = { vm.onIntent(LoginIntent.UsernameChanged(it)) },
+                        onValueChange = { onIntent(LoginIntent.UsernameChanged(it)) },
                         onFocusChanged = { f ->
                             focused = when {
                                 f -> LoginField.Id
@@ -211,7 +227,7 @@ fun LoginScreen(
                         label = stringResource(R.string.onboarding_login_password_label),
                         placeholder = stringResource(R.string.onboarding_login_password_placeholder),
                         value = pw,
-                        onValueChange = { vm.onIntent(LoginIntent.PasswordChanged(it)) },
+                        onValueChange = { onIntent(LoginIntent.PasswordChanged(it)) },
                         onFocusChanged = { f ->
                             focused = when {
                                 f -> LoginField.Password
@@ -238,7 +254,7 @@ fun LoginScreen(
                                     .clickable(
                                         role = Role.Button,
                                         onClickLabel = toggleLabel,
-                                    ) { vm.onIntent(LoginIntent.TogglePasswordVisibility) },
+                                    ) { onIntent(LoginIntent.TogglePasswordVisibility) },
                                 contentAlignment = Alignment.Center,
                             ) {
                                 Icon(
@@ -289,7 +305,7 @@ fun LoginScreen(
 
             MelonPrimaryButton(
                 text = stringResource(R.string.onboarding_login_submit),
-                onClick = { vm.onIntent(LoginIntent.Submit) },
+                onClick = { onIntent(LoginIntent.Submit) },
                 enabled = state.canSubmit,
                 isLoading = loading,
                 modifier = Modifier.fadeUpOnAppear(delayMs = 500),
@@ -323,7 +339,7 @@ fun LoginScreen(
                 text = stringResource(R.string.onboarding_login_passkey),
                 onClick = {
                     val current = activity ?: return@MelonGhostButton
-                    vm.onIntent(LoginIntent.SubmitPasskey(current))
+                    onIntent(LoginIntent.SubmitPasskey(current))
                 },
                 leading = {
                     Icon(
@@ -483,6 +499,18 @@ private fun loginHeadline(ink: Color, accent: Color): AnnotatedString =
             append(stringResource(R.string.onboarding_login_headline_accent))
         }
     }
+
+@Preview
+@Composable
+private fun LoginScreenPreview() {
+    MelonTheme {
+        LoginContent(
+            state = LoginUiState(username = "21345678", password = "secret"),
+            onIntent = {},
+            onBack = {},
+        )
+    }
+}
 
 @Composable
 private fun termsFooter(ink4: Color, ink2: Color): AnnotatedString =

@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.connected
 
+import android.os.Build
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -16,6 +17,12 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.drawWithContent
+import androidx.compose.ui.graphics.BlurEffect
+import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.layer.GraphicsLayer
+import androidx.compose.ui.graphics.layer.drawLayer
+import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -34,14 +41,41 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
     var active by rememberSaveable { mutableStateOf(ConnectedTab.Overview) }
     val unreadBadges = remember { mapOf(ConnectedTab.Messages to 2) }
 
+    // Backdrop captured into an offscreen layer with `BlurEffect` set so the
+    // tab bar can replay it pre-blurred — Compose's native equivalent of CSS
+    // `backdrop-filter: blur(...)`. Mesh.kt uses the same blur primitive (via
+    // `Modifier.blur` — content blur). Both rely on API 31+; on older devices
+    // the layer draws unblurred, leaving just the translucent chrome.
+    val backdrop: GraphicsLayer? = if (BackdropBlurSupported) {
+        rememberGraphicsLayer().also { layer ->
+            layer.renderEffect = BlurEffect(BackdropBlurRadius, BackdropBlurRadius, TileMode.Decal)
+        }
+    } else null
+
     Box(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.surface),
     ) {
-        when (active) {
-            ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBottomInset)
-            else -> ComingSoonPanel(active)
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (backdrop != null) {
+                        Modifier.drawWithContent {
+                            // Record the (sharp) screen content into the layer
+                            // — the layer applies its blur on playback when
+                            // the tab bar later calls `drawLayer(backdrop)`.
+                            backdrop.record { this@drawWithContent.drawContent() }
+                            drawContent()
+                        }
+                    } else Modifier,
+                ),
+        ) {
+            when (active) {
+                ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBottomInset)
+                else -> ComingSoonPanel(active)
+            }
         }
 
         LiquidTabBar(
@@ -49,6 +83,7 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
             active = active,
             onChange = { active = it },
             badges = unreadBadges,
+            backdrop = backdrop,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
                 .padding(horizontal = 14.dp, vertical = 22.dp),
@@ -57,6 +92,13 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
 }
 
 private val TabBarBottomInset = 110.dp
+
+// 40px Gaussian σ — same order of magnitude as the JSX prototype's
+// `backdrop-filter: blur(20px) saturate(180%)` (Compose's BlurEffect uses
+// pixel radii and reads heavier than CSS blur for an equivalent perceived
+// blur, hence 40 vs 20).
+private const val BackdropBlurRadius = 40f
+private val BackdropBlurSupported = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
 @Composable
 private fun ComingSoonPanel(tab: ConnectedTab) {

@@ -50,6 +50,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -57,6 +58,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.mvi.collectAsEffect
 import kotlin.math.roundToInt
@@ -86,8 +88,6 @@ fun SyncScreen(
     vm: SyncViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
-    val stepIdx = state.currentStepIdx
-    val done = state.doneKeys
 
     vm.effects.collectAsEffect { effect ->
         when (effect) {
@@ -95,6 +95,17 @@ fun SyncScreen(
             SyncEffect.AuthFailed -> onAuthFailed()
         }
     }
+
+    SyncContent(firstName = firstName, state = state)
+}
+
+@Composable
+private fun SyncContent(
+    firstName: String,
+    state: SyncUiState,
+) {
+    val stepIdx = state.currentStepIdx
+    val done = state.doneKeys
 
     val progress by animateFloatAsState(
         targetValue = (done.size.toFloat() / SYNC_STEPS.size).coerceAtMost(1f),
@@ -352,6 +363,20 @@ private fun StepSpinner(amber: Color) {
             topLeft = Offset(sw / 2f, sw / 2f),
             size = Size(size.width - sw, size.height - sw),
             style = Stroke(width = sw, cap = StrokeCap.Round),
+        )
+    }
+}
+
+@Preview
+@Composable
+private fun SyncScreenPreview() {
+    MelonTheme {
+        SyncContent(
+            firstName = "Joana",
+            state = SyncUiState(
+                currentStepIdx = 3,
+                doneKeys = setOf("auth", "profile", "classes"),
+            ),
         )
     }
 }

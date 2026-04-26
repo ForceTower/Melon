@@ -45,6 +45,7 @@ import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -55,6 +56,7 @@ import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.delay
@@ -69,6 +71,15 @@ fun ReadyScreen(
     vm: ReadyViewModel = hiltViewModel(),
 ) {
     val state by vm.state.collectAsStateWithLifecycle()
+    ReadyContent(firstName = firstName, state = state, onEnter = onEnter)
+}
+
+@Composable
+private fun ReadyContent(
+    firstName: String,
+    state: ReadyUiState,
+    onEnter: () -> Unit,
+) {
     val context = LocalContext.current
 
     val ink = MaterialTheme.colorScheme.onBackground
@@ -387,6 +398,30 @@ private fun formatCountdown(context: android.content.Context, minutesUntil: Int)
         )
         hoursTotal >= 1 -> context.getString(R.string.onboarding_ready_starts_in_hours, hoursTotal)
         else -> context.getString(R.string.onboarding_ready_starts_in_min, minutesUntil)
+    }
+}
+
+@Preview
+@Composable
+private fun ReadyScreenPreview() {
+    MelonTheme {
+        ReadyContent(
+            firstName = "Joana",
+            state = ReadyUiState(
+                loading = false,
+                semesterCode = "2026.1",
+                classCount = 6,
+                totalCredits = 24,
+                next = NextClassDisplay(
+                    disciplineName = "Cálculo III",
+                    timeRaw = "08:00",
+                    spaceLocation = "Sala 304",
+                    teacherFirstName = "Marina",
+                    startsInMinutes = 45,
+                ),
+            ),
+            onEnter = {},
+        )
     }
 }
 

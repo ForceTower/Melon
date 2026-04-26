@@ -43,6 +43,7 @@ import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
@@ -51,6 +52,7 @@ import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.onboarding.intro.illustrations.GradesIllustration
 import dev.forcetower.unes.ui.feature.onboarding.intro.illustrations.MessagesIllustration
 import dev.forcetower.unes.ui.feature.onboarding.intro.illustrations.NotificationsIllustration
@@ -87,12 +89,12 @@ private enum class IntroSlide(
 fun IntroCarouselScreen(
     onDone: () -> Unit,
     onBack: () -> Unit,
+    requestNotifications: () -> Unit = rememberRequestNotificationPermission(),
 ) {
     val slides = remember { IntroSlide.entries.toList() }
     var index by remember { mutableIntStateOf(0) }
     var contentKey by remember { mutableIntStateOf(0) }
     val slide = slides[index]
-    val requestNotifications = rememberRequestNotificationPermission()
     // iOS prompts for notifications on the final-slide CTA (and skip), then
     // immediately navigates regardless of the user's choice.
     val finishWithPermissionPrompt = {
@@ -298,6 +300,18 @@ fun IntroCarouselScreen(
                 }
             }
         }
+    }
+}
+
+@Preview
+@Composable
+private fun IntroCarouselScreenPreview() {
+    MelonTheme {
+        IntroCarouselScreen(
+            onDone = {},
+            onBack = {},
+            requestNotifications = {},
+        )
     }
 }
 

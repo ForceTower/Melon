@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import dev.forcetower.unes.R
@@ -29,6 +30,7 @@ import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
+import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 
 private val DarkBg = androidx.compose.ui.graphics.Color(0xFF1A0F28)
@@ -109,6 +111,12 @@ fun WelcomeScreen(
             }
         }
     }
+}
+
+@Preview
+@Composable
+private fun WelcomeScreenPreview() {
+    MelonTheme { WelcomeScreen(onNext = {}, onLogin = {}) }
 }
 
 @Composable
