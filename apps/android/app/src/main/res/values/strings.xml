@@ -4,7 +4,7 @@
 
     <!-- region Onboarding · Splash -->
     <string name="onboarding_splash_wordmark">unes</string>
-    <string name="onboarding_splash_caption">Universidade · Notas · Encontros · Semestre</string>
+    <string name="onboarding_splash_caption">Universidade · Notas · Semestre</string>
     <string name="onboarding_splash_credit_prefix">para</string>
     <string name="onboarding_splash_credit_university">UEFS</string>
     <string name="onboarding_splash_credit_location">· Feira de Santana</string>
@@ -35,17 +35,17 @@
 
     <string name="onboarding_intro_grades_eyebrow">notas</string>
     <string name="onboarding_intro_grades_body">Notas parciais, coeficiente e histórico. Sem precisar entrar no Portal pelo navegador toda semana.</string>
-    <string name="onboarding_intro_grades_headline_top">Acompanhe\nseu </string>
+    <string name="onboarding_intro_grades_headline_top">"Acompanhe\nseu "</string>
     <string name="onboarding_intro_grades_headline_accent">desempenho.</string>
 
     <string name="onboarding_intro_messages_eyebrow">recados</string>
     <string name="onboarding_intro_messages_body">Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes.</string>
-    <string name="onboarding_intro_messages_headline_top">Tudo o que\nvocê </string>
+    <string name="onboarding_intro_messages_headline_top">"Tudo o que\nvocê "</string>
     <string name="onboarding_intro_messages_headline_accent">precisa saber.</string>
 
     <string name="onboarding_intro_notifications_eyebrow">notificações</string>
     <string name="onboarding_intro_notifications_body">Nota nova, recado de professor, material publicado, sala trocada — um toque no bolso antes de você abrir o app.</string>
-    <string name="onboarding_intro_notifications_headline_top">Avisa no </string>
+    <string name="onboarding_intro_notifications_headline_top">"Avisa no "</string>
     <string name="onboarding_intro_notifications_headline_accent">instante</string>
     <string name="onboarding_intro_notifications_headline_bottom">\nque acontece.</string>
     <!-- endregion -->
@@ -66,9 +66,9 @@
     <string name="onboarding_login_or_separator">OU</string>
     <string name="onboarding_login_passkey">Entrar com passkey</string>
     <string name="onboarding_login_back">Voltar</string>
-    <string name="onboarding_login_terms_prefix">Ao continuar, você concorda com nossos </string>
+    <string name="onboarding_login_terms_prefix">"Ao continuar, você concorda com nossos "</string>
     <string name="onboarding_login_terms_link_terms">Termos</string>
-    <string name="onboarding_login_terms_separator"> e </string>
+    <string name="onboarding_login_terms_separator">" e "</string>
     <string name="onboarding_login_terms_link_privacy">Privacidade</string>
     <string name="onboarding_login_terms_suffix">.</string>
 
