@@ -1,5 +1,7 @@
 package dev.forcetower.unes.ui.feature.me
 
+import android.content.Intent
+import android.net.Uri
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,10 +24,10 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
@@ -49,6 +51,7 @@ import dev.forcetower.unes.ui.feature.me.components.MeSignOutButton
 import dev.forcetower.unes.ui.feature.me.components.SemesterStrip
 import dev.forcetower.unes.ui.feature.me.components.SettingsCard
 import dev.forcetower.unes.ui.feature.me.components.ShortcutGrid
+import dev.forcetower.unes.ui.feature.me.components.rememberAppInfo
 import java.util.Locale
 
 // "Eu" tab — personal hub mirroring the JSX `MeScreen` and iOS `MeView`.
@@ -75,6 +78,18 @@ internal fun MeScreen(
 
     var aboutOpen by rememberSaveable { mutableStateOf(false) }
 
+    val context = LocalContext.current
+    val appInfo = rememberAppInfo()
+    val feedbackRecipient = stringResource(R.string.me_feedback_recipient)
+    val feedbackBody = stringResource(
+        R.string.me_feedback_body_format,
+        appInfo.version,
+        appInfo.build,
+        appInfo.phoneModel,
+        Locale.getDefault().toLanguageTag(),
+        appInfo.machineId,
+    )
+
     val surface = MaterialTheme.colorScheme.surface
 
     Box(modifier = modifier
@@ -87,7 +102,7 @@ internal fun MeScreen(
             .height(320.dp)) {
             Mesh(
                 variant = MeshVariant.Rose,
-                intensity = 0.55f,
+                intensity = 0.22f,
                 modifier = Modifier.fillMaxSize().padding(top = 0.dp),
             )
             Box(
@@ -109,30 +124,30 @@ internal fun MeScreen(
                 .verticalScroll(rememberScrollState())
                 .padding(bottom = bottomInset),
         ) {
-            MeHeader(
-                identity = identity,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
+            if (identity != null) {
+                MeHeader(
+                    identity = identity,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+                )
+            }
 
             Column(modifier = Modifier.padding(horizontal = 14.dp)) {
-                IdentityCard(
-                    identity = identity,
-                    modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.985f),
-                )
-                Spacer14()
+                if (identity != null) {
+                    IdentityCard(
+                        identity = identity,
+                        modifier = Modifier.scaleInOnAppear(delayMs = 120, fromScale = 0.985f),
+                    )
+                    Spacer14()
 
-                SemesterStrip(
-                    identity = identity,
-                    modifier = Modifier.fadeUpOnAppear(delayMs = 220),
-                )
-                Spacer14()
+                    SemesterStrip(
+                        identity = identity,
+                        modifier = Modifier.fadeUpOnAppear(delayMs = 220),
+                    )
+                    Spacer14()
+                }
 
                 Column(modifier = Modifier.fadeUpOnAppear(delayMs = 300)) {
-                    MeSectionLabel(
-                        label = stringResource(R.string.me_section_shortcuts),
-                        actionLabel = stringResource(R.string.me_section_shortcuts_action),
-                        onAction = { /* manage pinned shortcuts — TODO when settings lands */ },
-                    )
+                    MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
                     ShortcutGrid(
                         shortcuts = pinned,
                         onOpen = { /* shortcut routing — TODO once Calendar/Countdown land on Android */ },
@@ -147,6 +162,11 @@ internal fun MeScreen(
                         onSelect = { id ->
                             when (id) {
                                 SettingsRowKind.About -> aboutOpen = true
+                                SettingsRowKind.Feedback -> launchFeedbackEmail(
+                                    context = context,
+                                    recipient = feedbackRecipient,
+                                    body = feedbackBody,
+                                )
                                 else -> Unit
                             }
                         },
@@ -159,12 +179,15 @@ internal fun MeScreen(
                     modifier = Modifier.fadeUpOnAppear(delayMs = 460),
                 )
 
-                Footer(modifier = Modifier.fadeUpOnAppear(delayMs = 540))
+                Footer(
+                    version = appInfo.version,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 540),
+                )
             }
         }
     }
 
-    if (state.logoutStep == LogoutStep.Confirming) {
+    if (state.logoutStep == LogoutStep.Confirming && identity != null) {
         LogoutSheet(
             identity = identity,
             onCancel = { vm.onIntent(MeIntent.CancelLogout) },
@@ -194,9 +217,9 @@ private fun Spacer14() {
 }
 
 @Composable
-private fun Footer(modifier: Modifier = Modifier) {
+private fun Footer(version: String, modifier: Modifier = Modifier) {
     Text(
-        text = stringResource(R.string.me_footer).uppercase(Locale.ROOT),
+        text = stringResource(R.string.me_footer_format, version).uppercase(Locale.ROOT),
         style = MaterialTheme.typography.labelSmall.copy(
             fontSize = 9.sp,
             letterSpacing = 1.26.sp,
@@ -208,4 +231,24 @@ private fun Footer(modifier: Modifier = Modifier) {
             .padding(top = 4.dp, bottom = 8.dp),
         textAlign = androidx.compose.ui.text.style.TextAlign.Center,
     )
+}
+
+// Fires a `mailto:` SEND_TO intent — Android's analogue to iOS's
+// `sms:joaopaulo761@gmail.com?body=…` (which on iOS routes through iMessage
+// since the recipient is an email-as-iMessage-id). On Android there's no
+// iMessage equivalent, so feedback goes through the user's email client; the
+// debug-info body iOS attaches survives the platform swap unchanged.
+private fun launchFeedbackEmail(
+    context: android.content.Context,
+    recipient: String,
+    body: String,
+) {
+    val intent = Intent(Intent.ACTION_SENDTO).apply {
+        data = Uri.parse("mailto:")
+        putExtra(Intent.EXTRA_EMAIL, arrayOf(recipient))
+        putExtra(Intent.EXTRA_TEXT, body)
+    }
+    if (intent.resolveActivity(context.packageManager) != null) {
+        context.startActivity(intent)
+    }
 }

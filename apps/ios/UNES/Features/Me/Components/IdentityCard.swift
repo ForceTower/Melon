@@ -157,7 +157,12 @@ struct IdentityCard: View {
             HStack(alignment: .top, spacing: 4) {
                 IdentityStat(
                     label: "CR atual",
-                    value: String(format: "%.1f", identity.cr).replacingOccurrences(of: ".", with: ","),
+                    // NaN means the overallScore flow hasn't emitted yet —
+                    // render "—" rather than the misleading 0,0 a numeric
+                    // format would produce.
+                    value: identity.cr.isNaN
+                        ? "—"
+                        : String(format: "%.1f", identity.cr).replacingOccurrences(of: ".", with: ","),
                     accent: identity.crDelta
                 )
                 Spacer(minLength: 0)

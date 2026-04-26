@@ -45,8 +45,10 @@ internal data class MeUiState(
     // right name even after the profile flow has been wiped by `logout()`.
     val logoutFirstName: String = "Estudante",
 ) : UiState {
-    val identity: ProfileIdentity = profileRaw?.let { mapIdentity(it, overallScore) }
-        ?: MeFixtures.identity
+    // Null until the profile flow emits — the screen hides the hero in that
+    // window rather than substitute fake fixture content. `MeFixtures.identity`
+    // is preview-only.
+    val identity: ProfileIdentity? = profileRaw?.let { mapIdentity(it, overallScore) }
 }
 
 @HiltViewModel
@@ -82,7 +84,7 @@ internal class MeViewModel @Inject constructor(
         // `keepData` is captured for a future SessionStore branch that keeps
         // local prefs (themes, reminders) on logout; the KMP API doesn't take
         // it yet — match iOS, which threads it through to a no-op as well.
-        val firstName = currentState.identity.firstName.ifBlank { "Estudante" }
+        val firstName = currentState.identity?.firstName?.ifBlank { null } ?: "Estudante"
         setState { copy(logoutStep = LogoutStep.Flashing, logoutFirstName = firstName) }
         viewModelScope.launch {
             runCatching { sessionStore.logout() }
@@ -120,7 +122,9 @@ private fun mapIdentity(raw: MeProfile, overallScore: Double?): ProfileIdentity 
         semesterWeek = semester?.currentWeek ?: 0,
         semesterTotalWeeks = semester?.totalWeeks ?: 0,
         progressPct = semester?.progressPercent ?: 0,
-        cr = overallScore ?: 0.0,
+        // NaN is the "score not yet emitted" sentinel — the IdentityCard
+        // renders "—" for it instead of a fake 0,0 / 8,5 value.
+        cr = overallScore ?: Double.NaN,
         // Lifetime CR has no natural delta — leave blank so the up-arrow row
         // collapses (iOS does the same).
         crDelta = "",

@@ -20,7 +20,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -37,9 +36,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.me.MeScreen
 import dev.forcetower.unes.ui.feature.messages.MessagesScreen
+import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 
@@ -59,7 +60,15 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onAppeared() }
 
     var active by rememberSaveable { mutableStateOf(ConnectedTab.Overview) }
-    val unreadBadges = remember { mapOf(ConnectedTab.Messages to 2) }
+    // Live unread count piggybacks on `MessagesViewModel`. Hilt scopes the VM
+    // to the surrounding NavBackStackEntry, so this instance is the same one
+    // the Messages tab will read when it composes — the inbox flow is shared
+    // and the second `collectAsStateWithLifecycle` is essentially free.
+    val messagesVm: MessagesViewModel = hiltViewModel()
+    val messagesState by messagesVm.state.collectAsStateWithLifecycle()
+    val unreadBadges = mapOf(
+        ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
+    ).filterValues { it > 0 }
     val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     // Backdrop captured into an offscreen layer with `BlurEffect` set so the

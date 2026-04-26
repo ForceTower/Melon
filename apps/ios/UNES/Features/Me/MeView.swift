@@ -42,8 +42,11 @@ struct MeView: View {
         self.onLoggedOut = {}
     }
 
-    private var identity: ProfileIdentity {
-        viewModel.identity ?? MeFixtures.identity
+    // Nil until the profile flow emits — `screenBody` hides the hero in that
+    // window rather than substitute fake fixture content. `MeFixtures.identity`
+    // is preview-only.
+    private var identity: ProfileIdentity? {
+        viewModel.identity
     }
 
     var body: some View {
@@ -137,29 +140,31 @@ struct MeView: View {
 
     @ViewBuilder
     private var logoutSheet: some View {
-        if #available(iOS 16.4, *) {
-            LogoutConfirmationSheet(
-                identity: identity,
-                onCancel: { viewModel.cancelLogout() },
-                onConfirm: { keepData in
-                    Task { await viewModel.confirmLogout(keepData: keepData) }
-                },
-                measuredHeight: $logoutSheetHeight
-            )
-            .presentationDetents([.height(logoutSheetHeight)])
-            .presentationDragIndicator(.visible)
-            .presentationBackground(UNESColor.surface)
-        } else {
-            LogoutConfirmationSheet(
-                identity: identity,
-                onCancel: { viewModel.cancelLogout() },
-                onConfirm: { keepData in
-                    Task { await viewModel.confirmLogout(keepData: keepData) }
-                },
-                measuredHeight: $logoutSheetHeight
-            )
-            .presentationDetents([.height(logoutSheetHeight)])
-            .presentationDragIndicator(.visible)
+        if let identity {
+            if #available(iOS 16.4, *) {
+                LogoutConfirmationSheet(
+                    identity: identity,
+                    onCancel: { viewModel.cancelLogout() },
+                    onConfirm: { keepData in
+                        Task { await viewModel.confirmLogout(keepData: keepData) }
+                    },
+                    measuredHeight: $logoutSheetHeight
+                )
+                .presentationDetents([.height(logoutSheetHeight)])
+                .presentationDragIndicator(.visible)
+                .presentationBackground(UNESColor.surface)
+            } else {
+                LogoutConfirmationSheet(
+                    identity: identity,
+                    onCancel: { viewModel.cancelLogout() },
+                    onConfirm: { keepData in
+                        Task { await viewModel.confirmLogout(keepData: keepData) }
+                    },
+                    measuredHeight: $logoutSheetHeight
+                )
+                .presentationDetents([.height(logoutSheetHeight)])
+                .presentationDragIndicator(.visible)
+            }
         }
     }
 
@@ -193,15 +198,19 @@ struct MeView: View {
 
             ScrollView(showsIndicators: false) {
                 VStack(spacing: 0) {
-                    MeHeader(identity: identity)
-                        .fadeUpOnAppear(delay: 0.02, distance: 12, duration: 0.55)
+                    if let identity {
+                        MeHeader(identity: identity)
+                            .fadeUpOnAppear(delay: 0.02, distance: 12, duration: 0.55)
+                    }
 
                     VStack(spacing: 14) {
-                        IdentityCard(identity: identity)
-                            .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
+                        if let identity {
+                            IdentityCard(identity: identity)
+                                .fadeScaleInOnAppear(delay: 0.12, from: 0.985, duration: 0.6, anchor: .top)
 
-                        SemesterStrip(identity: identity)
-                            .fadeUpOnAppear(delay: 0.22, distance: 12, duration: 0.55)
+                            SemesterStrip(identity: identity)
+                                .fadeUpOnAppear(delay: 0.22, distance: 12, duration: 0.55)
+                        }
 
                         VStack(spacing: 0) {
                             MeSectionLabel(label: "atalhos fixados")

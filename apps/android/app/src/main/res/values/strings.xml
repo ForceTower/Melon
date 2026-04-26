@@ -272,6 +272,15 @@
     <string name="messages_rel_time_yesterday">ontem</string>
     <string name="messages_rel_time_days">%1$d d</string>
 
+    <!-- Sender role fallbacks — used when the KMP feed doesn't carry a
+         specific discipline name on a row. Mirror the iOS `roleFor()` map. -->
+    <string name="messages_role_discipline_default">Disciplina</string>
+    <string name="messages_role_secretariat">Secretaria Acadêmica</string>
+    <string name="messages_role_campus">Comunicado oficial</string>
+    <string name="messages_role_app">Equipe UNES</string>
+    <string name="messages_role_module">Módulo</string>
+    <string name="messages_role_direct">Mensagem pessoal</string>
+
     <!-- Detail screen -->
     <string name="messages_attachments_section_format">ANEXOS · %1$d</string>
     <string name="messages_attach_separator">·</string>
@@ -281,9 +290,10 @@
     <string name="schedule_title">Horário</string>
     <string name="schedule_eyebrow_format">◦ SEMANA %1$s</string>
     <string name="schedule_today_button">hoje</string>
-    <!-- "14 – 20 abr" — first day · last day · month abbreviation. -->
-    <string name="schedule_week_range_format">%1$d – %2$d %3$s</string>
-    <string name="schedule_month_apr_short">abr</string>
+    <!-- "14 – 20 abr" — same-month: first · last · month abbreviation. -->
+    <string name="schedule_week_range_same_month_format">%1$d – %2$d %3$s</string>
+    <!-- "28 abr – 4 mai" — spanning two months: first · firstMonth · last · lastMonth. -->
+    <string name="schedule_week_range_spanning_format">%1$d %2$s – %3$d %4$s</string>
     <!-- endregion -->
 
     <!-- region Schedule · Week spine -->
@@ -324,8 +334,29 @@
 
     <!-- region Me · Section labels -->
     <string name="me_section_shortcuts">atalhos fixados</string>
-    <string name="me_section_shortcuts_action">gerenciar</string>
     <string name="me_section_settings">definições</string>
+    <!-- endregion -->
+
+    <!-- region Me · Identity card -->
+    <!-- "usuário · {username}" — eyebrow inside the dark hero card. -->
+    <string name="me_identity_card_username_format">usuário · %1$s</string>
+    <!-- Pill on the right of the eyebrow row — "carteirinha" stamp. -->
+    <string name="me_identity_card_pill">carteirinha</string>
+    <string name="me_identity_card_stat_cr">CR atual</string>
+    <string name="me_identity_card_stat_credits">créditos</string>
+    <string name="me_identity_card_stat_semester">semestre</string>
+    <!-- "/ {creditsRequired}" — denominator next to current credits. -->
+    <string name="me_identity_card_stat_total_format">/ %1$d</string>
+    <!-- "/ {totalWeeks} sem" — denominator next to current semester week. -->
+    <string name="me_identity_card_stat_weeks_format">/ %1$d sem</string>
+    <!-- endregion -->
+
+    <!-- region Me · Semester strip -->
+    <!-- "◦ semestre {code}" — uppercased at render. -->
+    <string name="me_semester_strip_eyebrow_format">◦ semestre %1$s</string>
+    <string name="me_semester_strip_week_prefix">"Semana "</string>
+    <!-- " de {totalWeeks}" — trailing fragment after the italic accent week number. -->
+    <string name="me_semester_strip_week_suffix_format">" de %1$d"</string>
     <!-- endregion -->
 
     <!-- region Me · Shortcut catalogue -->
@@ -364,8 +395,16 @@
 
     <!-- region Me · Sign out + footer -->
     <string name="me_sign_out_label">Sair da conta</string>
-    <!-- "◦ UNES · FEITO COM ♥ EM FEIRA DE SANTANA ◦" — uppercased at render. -->
-    <string name="me_footer">◦ unes · feito com ♥ em feira de santana ◦</string>
+    <!-- "◦ UNES V{version} · FEITO COM ♥ EM FEIRA DE SANTANA ◦" — uppercased at render. -->
+    <string name="me_footer_format">◦ unes v%1$s · feito com ♥ em feira de santana ◦</string>
+    <!-- endregion -->
+
+    <!-- region Me · Feedback intent (settings row "Erros & sugestões") -->
+    <!-- Email recipient that receives the debug-info feedback message. -->
+    <string name="me_feedback_recipient" translatable="false">joaopaulo761@gmail.com</string>
+    <!-- Body prelude appended to the feedback email. iOS uses the same shape:
+         "UNES {version}({build}) - {model} {locale}\nid: {machineId}\nOs dados acima me ajudam a encontrar o erro, não apaga se puder :)" -->
+    <string name="me_feedback_body_format">UNES %1$s(%2$s) - %3$s %4$s\nid: %5$s\nOs dados acima me ajudam a encontrar o erro, não apaga se puder :)</string>
     <!-- endregion -->
 
     <!-- region Me · Logout confirmation sheet -->

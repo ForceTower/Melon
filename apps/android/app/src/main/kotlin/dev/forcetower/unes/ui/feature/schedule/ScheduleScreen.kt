@@ -22,6 +22,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -32,33 +33,67 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
+import dev.forcetower.unes.designsystem.theme.MelonPaletteColors
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.designsystem.theme.melon
+import dev.forcetower.unes.ui.feature.overview.ColorFor
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleDayColumn
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleHeader
 import dev.forcetower.unes.ui.feature.schedule.components.ScheduleWeekSpine
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import kotlinx.coroutines.delay
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleClass as KmpScheduleClass
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleDay as KmpScheduleDay
+import dev.forcetower.melon.feature.schedule.domain.model.ScheduleWeek as KmpScheduleWeek
 
 // "Horário" tab inside `ConnectedScreen`. Day-focused weekly view: header +
 // horizontal week pills + the active day's class column. Mirrors iOS
-// `ScheduleFocusedView` and the JSX prototype `UNES Schedule.html`. Until
-// the KMP-backed view model lands, fixtures from `ScheduleFixtures` drive
-// the rendering — same payload shape iOS uses, so the prototype, iOS, and
-// Android stay visually identical.
+// `ScheduleFocusedView`. The `ScheduleViewModel` owns the KMP flow + clock
+// ticker; this composable maps the raw KMP payload into the local UI
+// projection types (the local `ScheduleClass` carries a Color so the column
+// stays self-contained — same call iOS made).
 @Composable
 fun ScheduleScreen(
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
-    val week = ScheduleFixtures.week()
-    val dates = ScheduleFixtures.dates
-    val todayIdx = ScheduleFixtures.TODAY_INDEX
-    val nowMin = ScheduleFixtures.NOW_MIN
-    val weekNumber = ScheduleFixtures.WEEK_NUMBER
+    val vm: ScheduleViewModel = hiltViewModel()
+    val state by vm.state.collectAsStateWithLifecycle()
+    val palette = MaterialTheme.melon.palette
+    val week = remember(state.raw, palette) { mapWeek(state.raw, palette) }
 
-    var activeIdx by rememberSaveable { mutableIntStateOf(todayIdx) }
+    ScheduleContent(
+        state = state,
+        week = week,
+        modifier = modifier,
+        bottomInset = bottomInset,
+    )
+}
+
+@Composable
+private fun ScheduleContent(
+    state: ScheduleUiState,
+    week: List<List<ScheduleClass>>,
+    modifier: Modifier = Modifier,
+    bottomInset: Dp = 0.dp,
+) {
+    var activeIdx by rememberSaveable { mutableIntStateOf(-1) }
+    // Seed the active pill once the first valid emission lands. iOS does the
+    // same in `init` via a Calendar lookup; Android waits for KMP because the
+    // use case is the source of truth on what counts as "today".
+    LaunchedEffect(state.todayIdx >= 0) {
+        if (activeIdx < 0 && state.todayIdx >= 0) {
+            activeIdx = state.todayIdx.coerceAtLeast(0)
+        }
+    }
+
     // `entering` flips false after the first staggered enter pass so subsequent
     // day swaps use the lighter horizontal slide animation on each block.
     var entering by rememberSaveable { mutableStateOf(true) }
@@ -70,6 +105,8 @@ fun ScheduleScreen(
     }
 
     val surface = MaterialTheme.colorScheme.surface
+    val resolvedActive = activeIdx.coerceAtLeast(0)
+    val showTodayButton = state.todayIdx != -1 && resolvedActive != state.todayIdx
 
     Box(
         modifier = modifier
@@ -86,19 +123,19 @@ fun ScheduleScreen(
                 .padding(bottom = bottomInset),
         ) {
             ScheduleHeader(
-                weekNumber = weekNumber,
-                weekRange = formatWeekRange(),
-                showTodayButton = activeIdx != todayIdx,
-                onToday = { activeIdx = todayIdx },
+                weekNumber = state.weekNumber,
+                weekRange = formatWeekRange(state.firstIso, state.lastIso),
+                showTodayButton = showTodayButton,
+                onToday = { activeIdx = state.todayIdx.coerceAtLeast(0) },
                 entering = entering,
             )
 
             ScheduleWeekSpine(
-                activeIdx = activeIdx,
+                activeIdx = resolvedActive,
                 onChange = { activeIdx = it },
                 week = week,
-                dates = dates,
-                todayIdx = todayIdx,
+                dates = state.dates,
+                todayIdx = state.todayIdx,
                 entering = entering,
             )
 
@@ -106,10 +143,10 @@ fun ScheduleScreen(
             // animation re-runs on each pill tap — same trick the JSX uses
             // with `<DayColumn key={activeIdx} … />`.
             DayColumnSlot(
-                key = activeIdx,
-                classes = week.getOrNull(activeIdx).orEmpty(),
-                isToday = activeIdx == todayIdx,
-                nowMin = nowMin,
+                key = resolvedActive,
+                classes = week.getOrNull(resolvedActive).orEmpty(),
+                isToday = resolvedActive == state.todayIdx,
+                nowMin = state.nowMin,
                 entering = entering,
             )
 
@@ -162,16 +199,93 @@ private fun AmbientMeshTop(surface: Color, modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-private fun formatWeekRange(): String {
-    val first = ScheduleFixtures.dates.first()
-    val last = ScheduleFixtures.dates.last()
-    val month = stringResource(R.string.schedule_month_apr_short)
-    return stringResource(R.string.schedule_week_range_format, first, last, month)
+// ───────── KMP → UI projection ─────────
+
+private fun mapWeek(
+    raw: KmpScheduleWeek?,
+    palette: MelonPaletteColors,
+): List<List<ScheduleClass>> {
+    val days = raw?.days
+    if (days.isNullOrEmpty()) return List(7) { emptyList() }
+    val bucket = MutableList(7) { emptyList<ScheduleClass>() }
+    for (day in days) {
+        val idx = day.dayIndex
+        if (idx in 0..6) bucket[idx] = mapDay(day, palette)
+    }
+    return bucket
 }
+
+private fun mapDay(day: KmpScheduleDay, palette: MelonPaletteColors): List<ScheduleClass> =
+    day.classes.map { mapClass(it, palette) }
+
+private fun mapClass(raw: KmpScheduleClass, palette: MelonPaletteColors): ScheduleClass =
+    ScheduleClass(
+        start = trimTime(raw.startTime),
+        end = raw.endTime?.let(::trimTime).orEmpty(),
+        code = raw.code,
+        title = raw.title,
+        prof = raw.teacherName.orEmpty(),
+        color = ColorFor.discipline(palette, raw.code),
+        modulo = raw.modulo,
+        room = raw.room,
+        campus = raw.campus,
+        topic = raw.topic,
+    )
+
+// Upstream ships HH:mm or HH:mm:ss — trim to five chars so the time rail
+// renders minutes only, matching iOS `ScheduleFocusedViewModel.trimTime`.
+private fun trimTime(value: String): String = value.take(5)
+
+// ───────── formatting helpers ─────────
+
+@Composable
+private fun formatWeekRange(firstIso: String?, lastIso: String?): String {
+    if (firstIso == null || lastIso == null) return ""
+    val first = runCatching { LocalDate.parse(firstIso) }.getOrNull() ?: return ""
+    val last = runCatching { LocalDate.parse(lastIso) }.getOrNull() ?: return ""
+    val firstMonth = formatShortMonth(first)
+    val lastMonth = formatShortMonth(last)
+    return if (first.monthValue == last.monthValue && first.year == last.year) {
+        stringResource(
+            R.string.schedule_week_range_same_month_format,
+            first.dayOfMonth,
+            last.dayOfMonth,
+            firstMonth,
+        )
+    } else {
+        stringResource(
+            R.string.schedule_week_range_spanning_format,
+            first.dayOfMonth,
+            firstMonth,
+            last.dayOfMonth,
+            lastMonth,
+        )
+    }
+}
+
+private val PtBr: Locale = Locale.forLanguageTag("pt-BR")
+
+// Mirrors `OverviewScreen.formatShortDate` post-processing — strip the
+// trailing dot some pt-BR locales emit for `MMM` and lowercase. Same shape
+// iOS uses in `ScheduleFocusedViewModel.shortMonth`.
+private val ShortMonthFormatter: DateTimeFormatter =
+    DateTimeFormatter.ofPattern("MMM", PtBr)
+
+private fun formatShortMonth(date: LocalDate): String =
+    ShortMonthFormatter.format(date)
+        .replace(".", "")
+        .lowercase(PtBr)
 
 @Preview
 @Composable
 private fun ScheduleScreenPreview() {
-    MelonTheme { ScheduleScreen() }
+    MelonTheme {
+        val palette = MaterialTheme.melon.palette
+        val raw = ScheduleFixtures.kmpWeek()
+        val week = mapWeek(raw, palette)
+        ScheduleContent(
+            state = ScheduleUiState(raw = raw),
+            week = week,
+        )
+    }
 }

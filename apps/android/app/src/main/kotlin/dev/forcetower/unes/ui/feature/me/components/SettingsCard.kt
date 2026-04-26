@@ -108,6 +108,6 @@ private fun SettingsRowItem(row: SettingsRow, onClick: () -> Unit) {
                 color = ink4,
             )
         }
-        MeChevronGlyph(color = ink4, modifier = Modifier.size(14.dp))
+        MeChevronGlyph(color = ink4, modifier = Modifier.size(12.dp))
     }
 }

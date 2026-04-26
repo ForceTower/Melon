@@ -27,6 +27,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -69,12 +70,17 @@ internal fun MessageDetailScreen(
     message: Message,
     onBack: () -> Unit,
     bottomInset: Dp = 0.dp,
+    onAppear: (() -> Unit)? = null,
     modifier: Modifier = Modifier,
 ) {
     val meta = originMeta(message)
     val surface = MaterialTheme.colorScheme.surface
     val images = message.attachments.filter { it.kind == MessageAttachmentKind.Image }
     val nonImages = message.attachments.filter { it.kind != MessageAttachmentKind.Image }
+
+    LaunchedEffect(message.id) {
+        onAppear?.invoke()
+    }
 
     Box(
         modifier = modifier
@@ -454,8 +460,12 @@ private val StarColor = Color(0xFFD9852E)
 @Composable
 private fun MessageDetailScreenPreview() {
     MelonTheme {
+        val roles = rememberMessageRoleStrings()
+        val seed = MessagesFixtures.items[1]
+        val detail = MessagesFixtures.detailById[seed.id]
+        val message = detail?.toUi(roles) ?: seed.toUi(roles)
         MessageDetailScreen(
-            message = MessagesFixtures.messages[1],
+            message = message,
             onBack = {},
         )
     }

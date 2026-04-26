@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.graphicsLayer
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
@@ -33,6 +34,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.me.ProfileIdentity
 import java.util.Locale
@@ -73,7 +75,8 @@ private fun Header(identity: ProfileIdentity) {
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
-                text = "◦ semestre ${identity.semester}".uppercase(Locale.ROOT),
+                text = stringResource(R.string.me_semester_strip_eyebrow_format, identity.semester)
+                    .uppercase(Locale.ROOT),
                 style = MaterialTheme.typography.labelMedium.copy(
                     fontSize = 10.sp,
                     letterSpacing = 1.2.sp,
@@ -84,11 +87,18 @@ private fun Header(identity: ProfileIdentity) {
             Spacer(Modifier.height(2.dp))
             Text(
                 text = buildAnnotatedString {
-                    withStyle(SpanStyle(color = ink)) { append("Semana ") }
+                    withStyle(SpanStyle(color = ink)) {
+                        append(stringResource(R.string.me_semester_strip_week_prefix))
+                    }
                     withStyle(
                         SpanStyle(color = accent, fontStyle = FontStyle.Italic),
                     ) { append(identity.semesterWeek.toString()) }
-                    withStyle(SpanStyle(color = ink)) { append(" de ${identity.semesterTotalWeeks}") }
+                    withStyle(SpanStyle(color = ink)) {
+                        append(stringResource(
+                            R.string.me_semester_strip_week_suffix_format,
+                            identity.semesterTotalWeeks,
+                        ))
+                    }
                 },
                 style = MaterialTheme.typography.headlineSmall.copy(
                     fontSize = 19.sp,

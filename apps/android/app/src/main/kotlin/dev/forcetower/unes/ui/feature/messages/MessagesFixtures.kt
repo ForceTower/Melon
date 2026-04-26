@@ -1,18 +1,28 @@
 package dev.forcetower.unes.ui.feature.messages
 
-import java.time.LocalDateTime
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachment
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedAttachmentKind
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedDetail
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedOrigin
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedSource
 
-// Mirrors `MESSAGES` from `screens-messages-data.jsx` and the iOS
-// `MessageFixtures`. Same ids and order so swapping to the real KMP feed
-// later is a drop-in.
+// KMP-shaped fixtures for `@Preview` blocks. Mirrors `screens-messages-data.jsx`
+// and the iOS `MessageFixtures` ids/order so the preview canvas keeps rendering
+// without Hilt/UmbrellaGraph wiring. Same attachments + timestamps end up
+// landing in the same date buckets as iOS once the mapper runs.
+//
+// The KMP feed has no `MODULE` origin — the two "module" fixtures from the
+// iOS bundle become app-origin entries here so the preview still exercises
+// the subject + preview row layout.
 internal object MessagesFixtures {
-    val messages: List<Message> = listOf(
+    val items: List<MessageFeedItem> = listOf(
         // ── Today
-        Message(
+        item(
             id = "m01",
-            origin = MessageOrigin.Campus,
-            sender = MessageSender("Reitoria UEFS", "Comunicado oficial"),
-            body = """
+            origin = MessageFeedOrigin.CAMPUS,
+            senderName = "Reitoria UEFS",
+            content = """
                 Prezadxs estudantes,
 
                 Confirmamos o retorno das atividades presenciais na próxima quarta-feira, 22 de abril, após a semana de recesso do feriado de Tiradentes.
@@ -22,23 +32,17 @@ internal object MessagesFixtures {
                 Atenciosamente,
                 Reitoria UEFS
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 18, 9, 14),
-            unread = true,
-            attachments = listOf(
-                MessageAttachment(
-                    kind = MessageAttachmentKind.Link,
-                    title = "Calendário acadêmico 2026.1",
-                    host = "uefs.br",
-                    url = "uefs.br/calendario-2026-1",
-                ),
-            ),
+            timestamp = "2026-04-18T09:14:00Z",
+            isUnread = true,
+            attachmentCount = 1,
         ),
-        Message(
+        item(
             id = "m02",
-            origin = MessageOrigin.Discipline,
+            origin = MessageFeedOrigin.DISCIPLINE,
             disciplineCode = "ALGI",
-            sender = MessageSender("Adriana Lima", "Algoritmos e Programação II"),
-            body = """
+            disciplineName = "Algoritmos e Programação II",
+            senderName = "Adriana Lima",
+            content = """
                 Pessoal,
 
                 Subi o gabarito comentado da primeira avaliação no moodle. Qualquer dúvida, usem o fórum da disciplina ou me procurem no início da aula de segunda.
@@ -48,20 +52,19 @@ internal object MessagesFixtures {
                 Abs,
                 Adriana
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 18, 8, 2),
-            unread = true,
-            starred = true,
-            attachments = listOf(
-                MessageAttachment(MessageAttachmentKind.Pdf, name = "gabarito-av1-algi.pdf", size = "1.4 MB"),
-            ),
+            timestamp = "2026-04-18T08:02:00Z",
+            isUnread = true,
+            isStarred = true,
+            attachmentCount = 1,
         ),
 
         // ── Yesterday
-        Message(
+        item(
             id = "m03",
-            origin = MessageOrigin.Direct,
-            sender = MessageSender("Beatriz Sampaio", "Professora · Física II"),
-            body = """
+            origin = MessageFeedOrigin.DIRECT,
+            senderName = "Beatriz Sampaio",
+            disciplineName = "Professora · Física II",
+            content = """
                 Mariana,
 
                 Notei que você não compareceu ao laboratório 03 ontem. Se foi alguma questão de saúde ou imprevisto, me avise em particular para que eu possa ajustar a nota de participação.
@@ -71,58 +74,46 @@ internal object MessagesFixtures {
                 Att,
                 Beatriz
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 17, 18, 42),
-            unread = true,
+            timestamp = "2026-04-17T18:42:00Z",
+            isUnread = true,
         ),
-        Message(
+        item(
             id = "m04",
-            origin = MessageOrigin.Module,
-            moduleId = "intercambio",
-            sender = MessageSender("Mobilidade Internacional", "Módulo Intercâmbio"),
+            origin = MessageFeedOrigin.APP,
+            senderName = "Mobilidade Internacional",
             subject = "Edital 01/2026 — resultado da 1ª fase",
-            preview = "O resultado da primeira fase do edital de mobilidade internacional foi publicado. 47 candidatos aprovados seguem para a fase 2.",
-            body = """
+            content = """
                 Prezadx candidatx,
 
                 O resultado da primeira fase do Edital 01/2026 de Mobilidade Internacional foi publicado. Você pode consultar a lista nominal e as instruções para a segunda fase no link abaixo.
 
                 Documentos para a fase 2 devem ser entregues até 30/04.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 17, 14, 7),
-            starred = true,
-            attachments = listOf(
-                MessageAttachment(
-                    kind = MessageAttachmentKind.Link,
-                    title = "Resultado 1ª fase — Edital 01/2026",
-                    host = "drive.google.com",
-                    url = "drive.google.com/…/edital-01-2026.pdf",
-                ),
-            ),
+            timestamp = "2026-04-17T14:07:00Z",
+            isStarred = true,
+            attachmentCount = 1,
         ),
 
         // ── This week
-        Message(
+        item(
             id = "m05",
-            origin = MessageOrigin.Discipline,
+            origin = MessageFeedOrigin.DISCIPLINE,
             disciplineCode = "LPOO",
-            sender = MessageSender("Carlos Mendes", "LPOO · Turma T01"),
-            body = """
+            disciplineName = "LPOO · Turma T01",
+            senderName = "Carlos Mendes",
+            content = """
                 Pessoal,
 
                 Adicionei dois capítulos do Bloch (Effective Java) e o slide atualizado sobre mixins ao repositório da disciplina. Recomendo muito a leitura antes da aula de quinta.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 15, 11, 30),
-            attachments = listOf(
-                MessageAttachment(MessageAttachmentKind.Pdf, name = "effective-java-cap3.pdf", size = "2.1 MB"),
-                MessageAttachment(MessageAttachmentKind.Pdf, name = "effective-java-cap4.pdf", size = "1.8 MB"),
-                MessageAttachment(MessageAttachmentKind.Slides, name = "mixins-2026.pdf", size = "890 KB"),
-            ),
+            timestamp = "2026-04-15T11:30:00Z",
+            attachmentCount = 3,
         ),
-        Message(
+        item(
             id = "m06",
-            origin = MessageOrigin.Secretariat,
-            sender = MessageSender("Secretaria Acadêmica", "Renata da Silva Costa"),
-            body = """
+            origin = MessageFeedOrigin.SECRETARIAT,
+            senderName = "Secretaria Acadêmica",
+            content = """
                 Caros estudantes,
 
                 Convidamos vocês para uma roda de conversa sobre Transtorno do Espectro Autista (TEA), organizada pelo núcleo de acessibilidade da UEFS.
@@ -132,15 +123,14 @@ internal object MessagesFixtures {
 
                 Inscrições até 22/04.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 14, 17, 17),
+            timestamp = "2026-04-14T17:17:00Z",
         ),
-        Message(
+        item(
             id = "m07",
-            origin = MessageOrigin.App,
-            sender = MessageSender("UNES", "Equipe do app"),
+            origin = MessageFeedOrigin.APP,
+            senderName = "UNES",
             subject = "Novidade: notas da prática e teórica separadas",
-            preview = "A partir desta semana, disciplinas com múltiplas turmas mostram professores e notas separados por turma.",
-            body = """
+            content = """
                 Olá,
 
                 A partir desta semana, disciplinas com múltiplas turmas (como Física II, que tem turma teórica e prática) mostram professores, notas e anexos separados por turma. Vocês podem filtrar pelo cabeçalho da disciplina.
@@ -149,38 +139,34 @@ internal object MessagesFixtures {
 
                 — UNES
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 14, 10, 0),
-            attachments = listOf(
-                MessageAttachment(MessageAttachmentKind.Image, name = "preview-tudo-teorica-pratica.png"),
-            ),
+            timestamp = "2026-04-14T10:00:00Z",
+            attachmentCount = 1,
+            imageCount = 1,
         ),
 
         // ── Earlier this month
-        Message(
+        item(
             id = "m08",
-            origin = MessageOrigin.Discipline,
+            origin = MessageFeedOrigin.DISCIPLINE,
             disciplineCode = "CALC",
-            sender = MessageSender("Renato Pessoa", "Cálculo III"),
-            body = """
+            disciplineName = "Cálculo III",
+            senderName = "Renato Pessoa",
+            content = """
                 Pessoal,
 
                 Postei a lista 02 no moodle. Entrega individual via sistema até 23:59 de 25/04. Capítulos 4 e 5.
 
                 Quem tiver dúvida, horário de atendimento continua o mesmo: quartas 14h–16h.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 10, 8, 45),
-            attachments = listOf(
-                MessageAttachment(MessageAttachmentKind.Pdf, name = "lista-02-calc3.pdf", size = "620 KB"),
-            ),
+            timestamp = "2026-04-10T08:45:00Z",
+            attachmentCount = 1,
         ),
-        Message(
+        item(
             id = "m09",
-            origin = MessageOrigin.Module,
-            moduleId = "biblioteca",
-            sender = MessageSender("Biblioteca Central", "Módulo Biblioteca"),
+            origin = MessageFeedOrigin.APP,
+            senderName = "Biblioteca Central",
             subject = "Renovação pendente: 3 livros",
-            preview = "Você tem 3 livros com devolução até 20/04. Renove pelo app ou passe na biblioteca.",
-            body = """
+            content = """
                 Olá, Mariana.
 
                 Você tem 3 livros emprestados com prazo de devolução até 20 de abril. Eles podem ser renovados pelo app ou presencialmente.
@@ -189,27 +175,28 @@ internal object MessagesFixtures {
                 - Introduction to Algorithms (Cormen)
                 - The Pragmatic Programmer (Hunt & Thomas)
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 8, 9, 10),
+            timestamp = "2026-04-08T09:10:00Z",
         ),
-        Message(
+        item(
             id = "m10",
-            origin = MessageOrigin.Campus,
-            sender = MessageSender("Comunicação UEFS", "Campus wide"),
-            body = """
+            origin = MessageFeedOrigin.CAMPUS,
+            senderName = "Comunicação UEFS",
+            content = """
                 Estudantes,
 
                 Devido à greve anunciada dos transportes municipais de Feira de Santana para o dia 15/04, as aulas presenciais serão opcionais. Os professores foram orientados a não aplicar avaliações.
 
                 Acompanhem os canais oficiais para atualizações.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 7, 7, 6),
+            timestamp = "2026-04-07T07:06:00Z",
         ),
-        Message(
+        item(
             id = "m11",
-            origin = MessageOrigin.Discipline,
+            origin = MessageFeedOrigin.DISCIPLINE,
             disciplineCode = "FIS2",
-            sender = MessageSender("João Nascimento", "Física II · T01"),
-            body = """
+            disciplineName = "Física II · T01",
+            senderName = "João Nascimento",
+            content = """
                 Pessoal,
 
                 Por motivos de saúde não teremos aula hoje, 03/04. A reposição será agendada na próxima semana — mandarei uma pesquisa de disponibilidade por aqui.
@@ -217,29 +204,29 @@ internal object MessagesFixtures {
                 Bom fim de semana,
                 João
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 4, 3, 7, 6),
+            timestamp = "2026-04-03T07:06:00Z",
         ),
 
         // ── Older
-        Message(
+        item(
             id = "m12",
-            origin = MessageOrigin.Discipline,
+            origin = MessageFeedOrigin.DISCIPLINE,
             disciplineCode = "LPOO",
-            sender = MessageSender("Carlos Mendes", "LPOO · Turma T01"),
-            body = """
+            disciplineName = "LPOO · Turma T01",
+            senderName = "Carlos Mendes",
+            content = """
                 Pessoal,
 
                 Classroom da disciplina foi criado. Entrem com o código 3qnn64a para não perderem os avisos paralelos ao UNES. Vou usar para compartilhar vídeos longos.
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 3, 11, 10, 0),
+            timestamp = "2026-03-11T10:00:00Z",
         ),
-        Message(
+        item(
             id = "m13",
-            origin = MessageOrigin.App,
-            sender = MessageSender("UNES", "Equipe do app"),
+            origin = MessageFeedOrigin.APP,
+            senderName = "UNES",
             subject = "Bem-vinda ao UNES",
-            preview = "Oi Mariana! Seja bem-vinda. Se precisar de algo, nos mande uma mensagem — respondemos rápido.",
-            body = """
+            content = """
                 Oi, Mariana!
 
                 Seja bem-vinda ao UNES. Se precisar de algo ou tiver sugestões, nos mande uma mensagem direto por aqui — respondemos rápido.
@@ -247,7 +234,84 @@ internal object MessagesFixtures {
                 Bons estudos!
                 — Equipe UNES
             """.trimIndent(),
-            receivedAt = LocalDateTime.of(2026, 3, 1, 11, 0),
+            timestamp = "2026-03-01T11:00:00Z",
         ),
+    )
+
+    val detailById: Map<String, MessageFeedDetail> = mapOf(
+        "m02" to detail(
+            base = items.first { it.id == "m02" },
+            attachments = listOf(
+                attachment("m02-a1", MessageFeedAttachmentKind.PDF, "gabarito-av1-algi.pdf"),
+            ),
+        ),
+    )
+
+    fun previewState(): MessagesUiState = MessagesUiState(
+        rawItems = items,
+        isLoading = false,
+    )
+
+    private fun item(
+        id: String,
+        origin: MessageFeedOrigin,
+        senderName: String,
+        content: String,
+        timestamp: String,
+        disciplineCode: String? = null,
+        disciplineName: String? = null,
+        subject: String? = null,
+        isUnread: Boolean = false,
+        isStarred: Boolean = false,
+        attachmentCount: Int = 0,
+        imageCount: Int = 0,
+    ): MessageFeedItem = MessageFeedItem(
+        id = id,
+        source = MessageFeedSource.UPSTREAM,
+        origin = origin,
+        disciplineCode = disciplineCode,
+        disciplineName = disciplineName,
+        subject = subject,
+        content = content,
+        senderName = senderName,
+        senderType = null,
+        timestamp = timestamp,
+        isUnread = isUnread,
+        isStarred = isStarred,
+        attachmentCount = attachmentCount,
+        imageCount = imageCount,
+    )
+
+    private fun detail(
+        base: MessageFeedItem,
+        attachments: List<MessageFeedAttachment>,
+    ): MessageFeedDetail = MessageFeedDetail(
+        id = base.id,
+        source = base.source,
+        origin = base.origin,
+        disciplineCode = base.disciplineCode,
+        disciplineName = base.disciplineName,
+        subject = base.subject,
+        content = base.content,
+        senderName = base.senderName,
+        senderType = base.senderType,
+        timestamp = base.timestamp,
+        isUnread = base.isUnread,
+        isStarred = base.isStarred,
+        attachments = attachments,
+    )
+
+    private fun attachment(
+        id: String,
+        kind: MessageFeedAttachmentKind,
+        name: String,
+        url: String = "https://melon.example/$id",
+        position: Int = 0,
+    ): MessageFeedAttachment = MessageFeedAttachment(
+        id = id,
+        kind = kind,
+        name = name,
+        url = url,
+        position = position,
     )
 }

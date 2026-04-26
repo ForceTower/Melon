@@ -26,10 +26,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,6 +39,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -50,34 +49,59 @@ import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.messages.components.FilterChipRow
 import dev.forcetower.unes.ui.feature.messages.components.MessageRow
+import java.time.LocalDateTime
+import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 
 // Messages ("Mensagens") inbox — grouped by date bucket with filter chips at
 // the top. Tapping a row swaps the screen for `MessageDetailScreen`, which
 // keeps the floating tab bar visible (the JSX prototype's pattern).
 //
 // Mirrors `MessagesScreen` in `screens-messages.jsx` and `MessagesListView`
-// on iOS.
+// on iOS. Driven by `MessagesViewModel`, which subscribes to the KMP inbox
+// flow and starts a child detail subscription whenever a row is opened.
 @Composable
 internal fun MessagesScreen(
     bottomInset: Dp = 0.dp,
     modifier: Modifier = Modifier,
 ) {
-    var openMessage by rememberSaveable(stateSaver = MessageIdSaver) {
-        mutableStateOf<String?>(null)
-    }
-    val open = openMessage?.let { id -> MessagesFixtures.messages.firstOrNull { it.id == id } }
+    val vm: MessagesViewModel = hiltViewModel()
+    val state by vm.state.collectAsStateWithLifecycle()
+    MessagesContent(
+        state = state,
+        onIntent = vm::onIntent,
+        bottomInset = bottomInset,
+        modifier = modifier,
+    )
+}
 
+@Composable
+private fun MessagesContent(
+    state: MessagesUiState,
+    onIntent: (MessagesIntent) -> Unit,
+    bottomInset: Dp,
+    modifier: Modifier = Modifier,
+) {
+    val roles = rememberMessageRoleStrings()
     Box(modifier = modifier.fillMaxSize()) {
-        if (open != null) {
-            MessageDetailScreen(
-                message = open,
-                onBack = { openMessage = null },
-                bottomInset = bottomInset,
-            )
+        val openSeed = state.openSeed
+        val openId = state.openMessageId
+        if (openId != null) {
+            val rendered = state.openDetail?.toUi(roles) ?: openSeed?.toUi(roles)
+            if (rendered != null) {
+                MessageDetailScreen(
+                    message = rendered,
+                    onBack = { onIntent(MessagesIntent.CloseMessage) },
+                    onAppear = { onIntent(MessagesIntent.MarkRead(rendered.id)) },
+                    bottomInset = bottomInset,
+                )
+            }
         } else {
             InboxList(
-                messages = MessagesFixtures.messages,
-                onOpen = { openMessage = it.id },
+                rawItems = state.rawItems,
+                filter = state.filter,
+                roles = roles,
+                onFilterChange = { onIntent(MessagesIntent.SetFilter(it)) },
+                onOpen = { id, seed -> onIntent(MessagesIntent.OpenMessage(id, seed)) },
                 bottomInset = bottomInset,
             )
         }
@@ -86,19 +110,24 @@ internal fun MessagesScreen(
 
 @Composable
 private fun InboxList(
-    messages: List<Message>,
-    onOpen: (Message) -> Unit,
+    rawItems: List<KmpMessageFeedItem>,
+    filter: MessageFilter,
+    roles: MessageRoleStrings,
+    onFilterChange: (MessageFilter) -> Unit,
+    onOpen: (String, KmpMessageFeedItem) -> Unit,
     bottomInset: Dp,
 ) {
-    var filter by rememberSaveable { mutableStateOf(MessageFilter.All) }
     val surface = MaterialTheme.colorScheme.surface
+    val seedById = remember(rawItems) { rawItems.associateBy { it.id } }
+    val messages = remember(rawItems, roles) { rawItems.map { it.toUi(roles) } }
 
     val counts = remember(messages) {
         MessageFilter.entries.associateWith { f -> messages.count(f::matches) }
     }
     val unreadCount = remember(messages) { messages.count { it.unread } }
     val filtered = messages.filter(filter::matches)
-    val buckets = remember(filtered) { groupByBucket(filtered) }
+    val now = remember(messages) { LocalDateTime.now() }
+    val buckets = remember(filtered, now) { groupByBucket(filtered, now) }
 
     Box(
         modifier = Modifier
@@ -124,7 +153,7 @@ private fun InboxList(
             FilterChipRow(
                 active = filter,
                 counts = counts,
-                onChange = { filter = it },
+                onChange = onFilterChange,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(top = 4.dp, bottom = 6.dp)
@@ -137,7 +166,9 @@ private fun InboxList(
                 buckets.forEachIndexed { index, bucket ->
                     BucketCard(
                         bucket = bucket,
-                        onOpen = onOpen,
+                        onOpen = { message ->
+                            seedById[message.id]?.let { seed -> onOpen(message.id, seed) }
+                        },
                         modifier = Modifier.fadeUpOnAppear(delayMs = 180 + index * 60),
                     )
                 }
@@ -335,25 +366,24 @@ private fun EmptyState() {
 
 internal data class BucketGroup(val bucket: MessageBucket, val items: List<Message>)
 
-private fun groupByBucket(messages: List<Message>): List<BucketGroup> {
+private fun groupByBucket(messages: List<Message>, now: LocalDateTime): List<BucketGroup> {
     val map = LinkedHashMap<MessageBucket, MutableList<Message>>()
     messages.forEach { m ->
-        map.getOrPut(bucketOf(m.receivedAt)) { mutableListOf() }.add(m)
+        map.getOrPut(bucketOf(m.receivedAt, now)) { mutableListOf() }.add(m)
     }
     return MessageBucket.entries.mapNotNull { b ->
         map[b]?.let { items -> BucketGroup(b, items) }
     }
 }
 
-// Saver for the openMessage state — keep just the message id so the value
-// survives configuration changes without serializing the whole Message graph.
-private val MessageIdSaver = androidx.compose.runtime.saveable.Saver<String?, String>(
-    save = { it ?: "" },
-    restore = { it.takeIf(String::isNotEmpty) },
-)
-
 @Preview
 @Composable
 private fun MessagesScreenPreview() {
-    MelonTheme { MessagesScreen() }
+    MelonTheme {
+        MessagesContent(
+            state = MessagesFixtures.previewState(),
+            onIntent = {},
+            bottomInset = 0.dp,
+        )
+    }
 }

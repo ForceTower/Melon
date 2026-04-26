@@ -156,12 +156,7 @@ internal enum class MessageBucket(@StringRes val labelRes: Int) {
     Older(R.string.messages_bucket_older),
 }
 
-// "Today" for the demo bucketing matches the JSX prototype/iOS fixtures —
-// 2026-04-18 13:20 — so the seed messages land in the same buckets across
-// every platform. When the live feed hits, this becomes `LocalDateTime.now()`.
-internal val MessagesNow: LocalDateTime = LocalDateTime.of(2026, 4, 18, 13, 20)
-
-internal fun bucketOf(received: LocalDateTime, now: LocalDateTime = MessagesNow): MessageBucket {
+internal fun bucketOf(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): MessageBucket {
     val days = floor(secondsBetween(received, now) / 86_400.0).toInt()
     return when {
         days <= 0 -> MessageBucket.Today
@@ -181,7 +176,7 @@ internal sealed class RelativeTime {
     data class Literal(val text: String) : RelativeTime()
 }
 
-internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = MessagesNow): RelativeTime {
+internal fun relativeTime(received: LocalDateTime, now: LocalDateTime = LocalDateTime.now()): RelativeTime {
     val mins = floor(secondsBetween(received, now) / 60.0).toInt()
     if (mins < 1) return RelativeTime.Resource(R.string.messages_rel_time_now)
     if (mins < 60) return RelativeTime.Resource(R.string.messages_rel_time_minutes, arg = mins)

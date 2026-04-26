@@ -23,9 +23,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
@@ -96,12 +98,14 @@ internal fun IdentityCard(identity: ProfileIdentity, modifier: Modifier = Modifi
 
 @Composable
 private fun EyebrowRow(identity: ProfileIdentity, onDark: Color, onDarkSubtle: Color) {
+    val username = identity.username.ifBlank { "—" }
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            text = "matrícula · ${identity.enrollment}".uppercase(Locale.ROOT),
+            text = stringResource(R.string.me_identity_card_username_format, username)
+                .uppercase(Locale.ROOT),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 10.sp,
                 letterSpacing = 1.8.sp,
@@ -127,7 +131,7 @@ private fun StudentCardPill(onDark: Color, @Suppress("UNUSED_PARAMETER") onDarkS
     ) {
         MeQrGlyph(color = onDark, modifier = Modifier.size(11.dp))
         Text(
-            text = "carteirinha".uppercase(Locale.ROOT),
+            text = stringResource(R.string.me_identity_card_pill).uppercase(Locale.ROOT),
             style = MaterialTheme.typography.labelSmall.copy(
                 fontSize = 9.5.sp,
                 letterSpacing = 0.95.sp,
@@ -177,7 +181,7 @@ private fun AvatarRow(
                 text = identity.campus,
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 9.sp,
-                    letterSpacing = 0.72.sp,
+                    letterSpacing = 0.36.sp,
                     fontWeight = FontWeight.Medium,
                 ),
                 color = onDarkSubtle,
@@ -259,25 +263,32 @@ private fun StatsRail(identity: ProfileIdentity, onDark: Color, onDarkSubtle: Co
         Spacer(Modifier.height(16.dp))
         Row(modifier = Modifier.fillMaxWidth()) {
             IdentityStat(
-                label = "CR atual",
-                value = String.format(Locale.forLanguageTag("pt-BR"), "%.1f", identity.cr),
+                label = stringResource(R.string.me_identity_card_stat_cr),
+                // NaN means the overallScore flow hasn't emitted yet — render
+                // an em-dash rather than the misleading 0,0 a numeric format
+                // would produce.
+                value = if (identity.cr.isNaN()) {
+                    "—"
+                } else {
+                    String.format(Locale.forLanguageTag("pt-BR"), "%.1f", identity.cr)
+                },
                 accent = identity.crDelta.takeIf { it.isNotEmpty() },
                 onDark = onDark,
                 onDarkSubtle = onDarkSubtle,
                 modifier = Modifier.weight(1f),
             )
             IdentityStat(
-                label = "créditos",
+                label = stringResource(R.string.me_identity_card_stat_credits),
                 value = identity.creditsDone.toString(),
-                sub = "/ ${identity.creditsRequired}",
+                sub = stringResource(R.string.me_identity_card_stat_total_format, identity.creditsRequired),
                 onDark = onDark,
                 onDarkSubtle = onDarkSubtle,
                 modifier = Modifier.weight(1f),
             )
             IdentityStat(
-                label = "semestre",
+                label = stringResource(R.string.me_identity_card_stat_semester),
                 value = identity.semesterWeek.toString(),
-                sub = "/ ${identity.semesterTotalWeeks} sem",
+                sub = stringResource(R.string.me_identity_card_stat_weeks_format, identity.semesterTotalWeeks),
                 onDark = onDark,
                 onDarkSubtle = onDarkSubtle,
                 modifier = Modifier.weight(1f),

@@ -15,6 +15,9 @@ import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
+import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessagesInboxUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -26,6 +29,7 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeade
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
+import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
@@ -128,4 +132,19 @@ object UmbrellaBridgeModule {
         graph.observeMeProfileUseCase
     @Provides fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =
         graph.calculateOverallScoreUseCase
+
+    // Horário tab — single flow emitting the seven-day week, today index, and
+    // the current week number; nowMin ticks in the ViewModel.
+    @Provides fun provideObserveScheduleWeekUseCase(graph: UmbrellaGraph): ObserveScheduleWeekUseCase =
+        graph.observeScheduleWeekUseCase
+
+    // Mensagens tab — inbox observation, per-message detail observation, and
+    // the local mark-as-read mutation (idempotent, so list and detail can
+    // both invoke it without coordinating).
+    @Provides fun provideObserveMessagesInboxUseCase(graph: UmbrellaGraph): ObserveMessagesInboxUseCase =
+        graph.observeMessagesInboxUseCase
+    @Provides fun provideObserveMessageDetailUseCase(graph: UmbrellaGraph): ObserveMessageDetailUseCase =
+        graph.observeMessageDetailUseCase
+    @Provides fun provideMarkMessageAsReadUseCase(graph: UmbrellaGraph): MarkMessageAsReadUseCase =
+        graph.markMessageAsReadUseCase
 }

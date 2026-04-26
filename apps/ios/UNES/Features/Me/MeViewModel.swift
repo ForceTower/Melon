@@ -153,8 +153,10 @@ final class MeViewModel {
             semesterTotalWeeks: Int(semester?.totalWeeks ?? 0),
             progressPct: Int(semester?.progressPercent ?? 0),
             // Lifetime CR — sourced from CalculateOverallScoreUseCase, not the
-            // profile flow's per-semester partial average.
-            cr: overallScore ?? 0,
+            // profile flow's per-semester partial average. NaN signals the
+            // score flow hasn't emitted yet (`IdentityCard` renders "—" for
+            // it instead of a misleading 0,0).
+            cr: overallScore ?? .nan,
             crDelta: "",
             creditsDone: Int(raw.enrollment.completedHours),
             creditsRequired: Int(raw.enrollment.totalHours),
