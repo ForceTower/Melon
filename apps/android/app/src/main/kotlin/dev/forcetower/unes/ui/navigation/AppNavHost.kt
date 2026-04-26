@@ -1,16 +1,16 @@
-package dev.forcetower.unes.navigation
+package dev.forcetower.unes.ui.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
-import dev.forcetower.unes.feature.home.HomeScreen
-import dev.forcetower.unes.feature.onboarding.IntroCarouselScreen
-import dev.forcetower.unes.feature.onboarding.LoginScreen
-import dev.forcetower.unes.feature.onboarding.ReadyScreen
-import dev.forcetower.unes.feature.onboarding.SplashScreen
-import dev.forcetower.unes.feature.onboarding.SyncScreen
-import dev.forcetower.unes.feature.onboarding.WelcomeScreen
+import dev.forcetower.unes.ui.feature.home.HomeScreen
+import dev.forcetower.unes.ui.feature.onboarding.IntroCarouselScreen
+import dev.forcetower.unes.ui.feature.onboarding.LoginScreen
+import dev.forcetower.unes.ui.feature.onboarding.ReadyScreen
+import dev.forcetower.unes.ui.feature.onboarding.SplashScreen
+import dev.forcetower.unes.ui.feature.onboarding.SyncScreen
+import dev.forcetower.unes.ui.feature.onboarding.WelcomeScreen
 
 @Composable
 fun AppNavHost() {

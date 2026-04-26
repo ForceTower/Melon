@@ -1,4 +1,4 @@
-package dev.forcetower.unes.feature.onboarding
+package dev.forcetower.unes.ui.feature.onboarding
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
@@ -48,10 +48,10 @@ import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
-import dev.forcetower.unes.feature.onboarding.illustrations.GradesIllustration
-import dev.forcetower.unes.feature.onboarding.illustrations.MessagesIllustration
-import dev.forcetower.unes.feature.onboarding.illustrations.NotificationsIllustration
-import dev.forcetower.unes.feature.onboarding.illustrations.ScheduleIllustration
+import dev.forcetower.unes.ui.feature.onboarding.illustrations.GradesIllustration
+import dev.forcetower.unes.ui.feature.onboarding.illustrations.MessagesIllustration
+import dev.forcetower.unes.ui.feature.onboarding.illustrations.NotificationsIllustration
+import dev.forcetower.unes.ui.feature.onboarding.illustrations.ScheduleIllustration
 
 private enum class IntroSlide(
     val eyebrow: String,

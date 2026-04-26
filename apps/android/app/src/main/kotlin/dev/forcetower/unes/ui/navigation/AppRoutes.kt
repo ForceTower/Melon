@@ -1,4 +1,4 @@
-package dev.forcetower.unes.navigation
+package dev.forcetower.unes.ui.navigation
 
 import androidx.navigation3.runtime.NavKey
 import kotlinx.serialization.Serializable

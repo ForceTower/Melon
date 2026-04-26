@@ -30,6 +30,7 @@ android {
 
 dependencies {
     implementation(project(":apps:android:design-system"))
+    implementation(project(":apps:android:mvi"))
     implementation(project(":packages:shared-kmp:umbrella"))
 
     implementation(libs.androidx.core.ktx)

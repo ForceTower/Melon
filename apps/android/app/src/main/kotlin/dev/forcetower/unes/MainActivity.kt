@@ -6,7 +6,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import dagger.hilt.android.AndroidEntryPoint
 import dev.forcetower.unes.designsystem.theme.MelonTheme
-import dev.forcetower.unes.navigation.AppNavHost
+import dev.forcetower.unes.ui.navigation.AppNavHost
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {

@@ -1,4 +1,4 @@
-package dev.forcetower.unes.feature.onboarding
+package dev.forcetower.unes.ui.feature.onboarding
 
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode

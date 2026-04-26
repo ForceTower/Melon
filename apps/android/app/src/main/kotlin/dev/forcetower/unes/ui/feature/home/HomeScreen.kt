@@ -1,4 +1,4 @@
-package dev.forcetower.unes.feature.home
+package dev.forcetower.unes.ui.feature.home
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box

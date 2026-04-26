@@ -19,6 +19,7 @@ rootProject.name = "Melon"
 
 include(":apps:android:app")
 include(":apps:android:design-system")
+include(":apps:android:mvi")
 
 include(":packages:shared-kmp:core:common")
 include(":packages:shared-kmp:core:logging")
