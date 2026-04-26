@@ -203,7 +203,7 @@
         <item quantity="one">dia</item>
         <item quantity="other">dias</item>
     </plurals>
-    <string name="overview_tile_tests_subject_format">%1$s · %2$s</string>
+    <string name="overview_tile_tests_subject_format">%1$s</string>
     <string name="overview_tile_tests_empty_value">—</string>
     <string name="overview_tile_tests_empty_caption">sem provas agendadas</string>
 
@@ -369,11 +369,14 @@
     <string name="discipline_detail_grades_doing_well">Você está indo bem.</string>
     <string name="discipline_detail_grades_no_grades">Ainda sem notas lançadas.</string>
     <!-- "Precisa de 7,5 na 1 avaliação restante para fechar em 7,0." — assembled
-         in code so the required-score chunk can carry its own SpanStyle color. -->
-    <string name="discipline_detail_grades_needed_lead">Precisa de </string>
+         in code so the required-score chunk can carry its own SpanStyle color.
+         Wrapped in double-quotes so Android keeps the leading/trailing spaces
+         around the spliced number; otherwise the resource loader trims them
+         and the line collapses to "Precisa de7,5nas 2 avaliações…". -->
+    <string name="discipline_detail_grades_needed_lead">"Precisa de "</string>
     <string name="discipline_detail_grades_needed_unreachable">—</string>
-    <string name="discipline_detail_grades_needed_pending_one_format"> na %1$d avaliação restante para fechar em </string>
-    <string name="discipline_detail_grades_needed_pending_other_format"> nas %1$d avaliações restantes para fechar em </string>
+    <string name="discipline_detail_grades_needed_pending_one_format">" na %1$d avaliação restante para fechar em "</string>
+    <string name="discipline_detail_grades_needed_pending_other_format">" nas %1$d avaliações restantes para fechar em "</string>
     <string name="discipline_detail_grades_needed_target">7,0</string>
     <string name="discipline_detail_grades_needed_dot">.</string>
     <string name="discipline_detail_grade_no_label">—</string>
@@ -413,8 +416,9 @@
 
     <!-- region Discipline Detail · Presença -->
     <string name="discipline_detail_presence_title">Presença</string>
-    <!-- " de 15" — small "of N" tail after the absences count. -->
-    <string name="discipline_detail_presence_of_format"> de %1$d</string>
+    <!-- " de 15" — small "of N" tail after the absences count. Quoted so the
+         leading space survives the resource loader's trim. -->
+    <string name="discipline_detail_presence_of_format">" de %1$d"</string>
     <string name="discipline_detail_presence_so_far">faltas até agora</string>
     <string name="discipline_detail_presence_remaining_label">AINDA PODEM</string>
     <string name="discipline_detail_presence_warn_high">Atenção: próximo do limite de faltas.</string>

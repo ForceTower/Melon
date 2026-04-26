@@ -326,7 +326,6 @@ private fun TestsTile(data: OverviewNextTestTileData?, modifier: Modifier = Modi
                 Text(
                     text = stringResource(
                         R.string.overview_tile_tests_subject_format,
-                        data.label,
                         data.disciplineName,
                     ),
                     style = MaterialTheme.typography.bodyMedium.copy(
