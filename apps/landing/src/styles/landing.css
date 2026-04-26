@@ -557,7 +557,7 @@ body {
   height: 100%;
   border-radius: 42px;
   overflow: hidden;
-  background: var(--cream);
+  background: var(--surface);
   position: relative;
 }
 .phone-notch {
@@ -580,7 +580,7 @@ body {
   background:
     radial-gradient(circle at 25% 30%, #f4a23c 0%, transparent 55%),
     radial-gradient(circle at 75% 20%, #e85d4e 0%, transparent 60%),
-    radial-gradient(circle at 60% 70%, #b23a7a 0%, transparent 55%), #fbf7f2;
+    radial-gradient(circle at 60% 70%, #b23a7a 0%, transparent 55%), var(--surface);
   filter: blur(14px);
   opacity: 0.55;
 }
@@ -661,7 +661,7 @@ body {
   margin-top: 12px;
 }
 .mh-tile {
-  background: #fff;
+  background: var(--card);
   border-radius: 16px;
   padding: 10px;
   height: 92px;
@@ -1052,7 +1052,7 @@ section.showcase {
   margin-top: auto;
   height: 220px;
   border-radius: 14px;
-  background: var(--cream);
+  background: var(--surface);
   position: relative;
   overflow: hidden;
   border: 1px solid rgba(251, 247, 242, 0.06);
@@ -1104,7 +1104,7 @@ section.showcase {
 }
 .mock-cal-grid > .g {
   background: var(--ink);
-  color: var(--cream);
+  color: var(--page);
 }
 
 .mock-msg {
