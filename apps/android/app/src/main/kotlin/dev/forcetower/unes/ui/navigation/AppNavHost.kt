@@ -71,7 +71,9 @@ fun AppNavHost() {
                     onEnter = { replace(AppRoute.Connected) },
                 )
             }
-            entry<AppRoute.Connected> { ConnectedScreen() }
+            entry<AppRoute.Connected> {
+                ConnectedScreen(onLoggedOut = { replace(AppRoute.Welcome) })
+            }
         },
     )
 }

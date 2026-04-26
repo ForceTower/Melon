@@ -32,6 +32,7 @@ internal class ConnectedViewModel @Inject constructor(
     // Called from the screen on every `Lifecycle.Event.ON_START` — covers
     // first composition AND background → foreground transitions in one path.
     fun onAppeared(reason: String = "onStart") {
+        log.i { "Firing on appear" }
         viewModelScope.launch { runRefresh(reason) }
         if (!backfillStarted) {
             backfillStarted = true

@@ -24,13 +24,13 @@ import kotlinx.coroutines.launch
 //
 // The logout state machine lives here too: `Idle → Confirming → Flashing →
 // LoggedOut`. When `LoggedOut` is reached the screen swaps in `LoggedOutView`;
-// from there a CTA flips back to `Idle` so the rest of the Connected shell
-// can survive an in-place sign-out without re-routing through the splash.
+// the CTA there bubbles up to the host nav, which replaces the back stack
+// with `Welcome` — matching iOS, where `RootView` flips to `OnboardingFlow`
+// on `AuthState.Unauthenticated`.
 internal sealed interface MeIntent : UiIntent {
     data object BeginLogout : MeIntent
     data object CancelLogout : MeIntent
     data class ConfirmLogout(val keepData: Boolean) : MeIntent
-    data object DismissLoggedOut : MeIntent
 }
 
 internal sealed interface MeEffect : UiEffect
@@ -74,9 +74,6 @@ internal class MeViewModel @Inject constructor(
             MeIntent.BeginLogout -> setState { copy(logoutStep = LogoutStep.Confirming) }
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
             is MeIntent.ConfirmLogout -> performLogout(intent.keepData)
-            MeIntent.DismissLoggedOut -> setState {
-                copy(logoutStep = LogoutStep.Idle, profileRaw = null, overallScore = null)
-            }
         }
     }
 

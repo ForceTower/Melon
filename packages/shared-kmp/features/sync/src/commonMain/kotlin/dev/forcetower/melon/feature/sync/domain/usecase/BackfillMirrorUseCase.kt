@@ -75,12 +75,17 @@ class BackfillMirrorUseCase internal constructor(
             }
         }
 
-        when (val result = paginateMessages()) {
-            is Outcome.Err -> {
-                log.w { "backfill failed paginating messages err=${result.error}" }
-                return result
+        try {
+            when (val result = paginateMessages()) {
+                is Outcome.Err -> {
+                    log.w { "backfill failed paginating messages err=${result.error}" }
+                    return result
+                }
+
+                is Outcome.Ok -> Unit
             }
-            is Outcome.Ok -> Unit
+        } catch (e: Throwable) {
+            log.e(e) { "Waaat?" }
         }
 
         syncState.setBackfillMirrorComplete(true)

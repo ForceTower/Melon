@@ -52,7 +52,10 @@ import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 // Classes still falls through to a placeholder so the bar's selection
 // motion can be tested end-to-end before that feature lands.
 @Composable
-fun ConnectedScreen(modifier: Modifier = Modifier) {
+fun ConnectedScreen(
+    onLoggedOut: () -> Unit,
+    modifier: Modifier = Modifier,
+) {
     val vm: ConnectedViewModel = hiltViewModel()
     // Fires on initial mount AND on every background → foreground transition,
     // mirroring iOS's `.task` + `.onChange(of: scenePhase)` pair. Concurrent
@@ -106,7 +109,10 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
                 ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBlockHeight + navBarBottom)
                 ConnectedTab.Schedule -> ScheduleScreen(bottomInset = TabBarBlockHeight + navBarBottom)
                 ConnectedTab.Messages -> MessagesScreen(bottomInset = TabBarBlockHeight + navBarBottom)
-                ConnectedTab.Me -> MeScreen(bottomInset = TabBarBlockHeight + navBarBottom)
+                ConnectedTab.Me -> MeScreen(
+                    onLoggedOut = onLoggedOut,
+                    bottomInset = TabBarBlockHeight + navBarBottom,
+                )
                 else -> ComingSoonPanel(active)
             }
         }
@@ -163,5 +169,5 @@ private fun ComingSoonPanel(tab: ConnectedTab) {
 @Preview
 @Composable
 private fun ConnectedScreenPreview() {
-    MelonTheme { ConnectedScreen() }
+    MelonTheme { ConnectedScreen(onLoggedOut = {}) }
 }

@@ -62,6 +62,7 @@ import java.util.Locale
 // the logout flow lands.
 @Composable
 internal fun MeScreen(
+    onLoggedOut: () -> Unit,
     modifier: Modifier = Modifier,
     bottomInset: Dp = 0.dp,
 ) {
@@ -206,7 +207,7 @@ internal fun MeScreen(
     if (state.logoutStep == LogoutStep.LoggedOut) {
         LoggedOutView(
             firstName = state.logoutFirstName,
-            onSignIn = { vm.onIntent(MeIntent.DismissLoggedOut) },
+            onSignIn = onLoggedOut,
         )
     }
 }

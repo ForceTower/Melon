@@ -13,15 +13,16 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
+import dev.forcetower.unes.di.ApplicationScope
 import dev.forcetower.unes.mvi.MviViewModel
 import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
 import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.async
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -75,6 +76,7 @@ class SyncViewModel @Inject constructor(
     private val syncMessages: SyncMessagesUseCase,
     private val fetchOnboardingStatus: FetchOnboardingStatusUseCase,
     private val sessionStore: SessionStore,
+    @ApplicationScope private val applicationScope: CoroutineScope,
 ) : MviViewModel<SyncUiState, SyncIntent, SyncEffect>(SyncUiState()) {
 
     private var didStart = false
@@ -263,8 +265,7 @@ class SyncViewModel @Inject constructor(
             // Detached so they outlive the ViewModel — the umbrella graph owns
             // the network + DAOs they touch.
             val extraIds = extras.map { it.id }
-            @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
-            GlobalScope.launch(Dispatchers.IO) {
+            applicationScope.launch(Dispatchers.IO) {
                 for (id in extraIds) {
                     runCatching { syncSemester(id) }
                 }
@@ -364,8 +365,7 @@ class SyncViewModel @Inject constructor(
 
     private fun startBackgroundPagination(firstCursor: String) {
         // Detached background pagination — doesn't block onDone.
-        @OptIn(kotlinx.coroutines.DelicateCoroutinesApi::class)
-        GlobalScope.launch(Dispatchers.IO) {
+        applicationScope.launch(Dispatchers.IO) {
             var cursor: String? = firstCursor
             var pages = 0
             val maxPages = 20
