@@ -1,17 +1,16 @@
-import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-
 plugins {
     id("org.jetbrains.kotlin.multiplatform")
-    id("com.android.library")
+    id("com.android.kotlin.multiplatform.library")
 }
 
 kotlin {
     jvmToolchain(21)
 
-    androidTarget {
-        compilerOptions {
-            jvmTarget.set(JvmTarget.JVM_21)
-        }
+    androidLibrary {
+        namespace = "dev.forcetower.unes.shared" +
+            project.path.removePrefix(":packages:shared-kmp").replace(":", ".")
+        compileSdk = 37
+        minSdk = 28
     }
     jvm()
     iosX64()
@@ -26,18 +25,5 @@ kotlin {
                 }
             }
         }
-    }
-}
-
-android {
-    namespace = "dev.forcetower.unes.shared" +
-        project.path.removePrefix(":packages:shared-kmp").replace(":", ".")
-    compileSdk = 37
-    defaultConfig {
-        minSdk = 28
-    }
-    compileOptions {
-        sourceCompatibility = JavaVersion.VERSION_21
-        targetCompatibility = JavaVersion.VERSION_21
     }
 }

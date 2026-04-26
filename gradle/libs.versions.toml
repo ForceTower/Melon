@@ -5,7 +5,7 @@ metro = "1.0.0-RC2"
 skie = "0.10.11"
 room = "2.8.4"
 sqlite = "2.6.2"
-ktor = "3.2.0"
+ktor = "3.4.3"
 kotlinx-coroutines = "1.10.1"
 kotlinx-serialization = "1.8.0"
 kotlinx-datetime = "0.6.1"
@@ -21,7 +21,7 @@ android-activity-compose = "1.11.0"
 android-lifecycle = "2.10.0"
 android-compose-bom = "2026.03.00"
 android-navigation3 = "1.0.0-alpha10"
-android-hilt = "2.57.1"
+android-hilt = "2.59.2"
 android-hilt-navigation-compose = "1.2.0"
 android-datastore = "1.1.7"
 timber = "5.0.1"
@@ -30,6 +30,7 @@ kotlinx-coroutines-android = "1.10.1"
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+kotlin-compose-compiler-gradle-plugin = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
 room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
@@ -106,4 +107,5 @@ skie = { id = "co.touchlab.skie", version.ref = "skie" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
 android-application = { id = "com.android.application", version.ref = "agp" }
 android-library = { id = "com.android.library", version.ref = "agp" }
+android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "android-hilt" }

@@ -1,7 +1,6 @@
 package dev.forcetower.unes.navigation
 
 import androidx.compose.runtime.Composable
-import androidx.navigation3.runtime.entry
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
