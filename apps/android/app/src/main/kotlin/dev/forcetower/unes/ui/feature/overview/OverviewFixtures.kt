@@ -63,7 +63,9 @@ internal data class OverviewNextTestTileData(
 )
 
 internal data class OverviewAttendanceTileData(
-    val percentage: Int,
+    // Null when the active semester has no tracked hours yet — the tile then
+    // falls back to its "—" empty state.
+    val percentage: Int?,
     val days: List<Boolean>,
     val allowedAbsences: Int,
     val periodDays: Int,

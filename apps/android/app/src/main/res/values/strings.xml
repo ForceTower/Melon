@@ -225,7 +225,12 @@
     <!-- endregion -->
 
     <!-- region Overview · Footer -->
-    <!-- Eyebrow stamp at the bottom of the scroll: "◦ atualizado há 2 min ◦". -->
+    <!-- Eyebrow stamp at the bottom of the scroll. Picks the longest unit
+         relative to the last sync; "syncing" shows while no sync has landed. -->
     <string name="overview_last_updated_format">◦ atualizado há %1$d min ◦</string>
+    <string name="overview_last_updated_now">◦ atualizado agora ◦</string>
+    <string name="overview_last_updated_hours_format">◦ atualizado há %1$d h ◦</string>
+    <string name="overview_last_updated_days_format">◦ atualizado há %1$d d ◦</string>
+    <string name="overview_last_updated_syncing">◦ sincronizando ◦</string>
     <!-- endregion -->
 </resources>

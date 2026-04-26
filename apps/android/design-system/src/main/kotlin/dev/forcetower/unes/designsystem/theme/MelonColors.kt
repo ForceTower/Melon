@@ -54,6 +54,11 @@ data class MelonPaletteColors(
     val magenta: Color,
     val teal: Color,
     val plum: Color,
+    val rose: Color,
+    val sky: Color,
+    val emerald: Color,
+    val indigo: Color,
+    val mustard: Color,
 )
 
 private val MelonBrandDefaults = MelonBrandColors(
@@ -79,6 +84,11 @@ internal fun melonColorsLight() = MelonColors(
         magenta = PaletteMagentaLight,
         teal = PaletteTealLight,
         plum = PalettePlumLight,
+        rose = PaletteRoseLight,
+        sky = PaletteSkyLight,
+        emerald = PaletteEmeraldLight,
+        indigo = PaletteIndigoLight,
+        mustard = PaletteMustardLight,
     ),
 )
 
@@ -96,6 +106,11 @@ internal fun melonColorsDark() = MelonColors(
         magenta = PaletteMagentaDark,
         teal = PaletteTealDark,
         plum = PalettePlumDark,
+        rose = PaletteRoseDark,
+        sky = PaletteSkyDark,
+        emerald = PaletteEmeraldDark,
+        indigo = PaletteIndigoDark,
+        mustard = PaletteMustardDark,
     ),
 )
 

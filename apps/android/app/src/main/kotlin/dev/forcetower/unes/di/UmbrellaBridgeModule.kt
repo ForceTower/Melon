@@ -14,7 +14,15 @@ import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseC
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveGradeTileUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveLastSyncUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNextTestTileUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
+import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
@@ -59,9 +67,25 @@ object UmbrellaBridgeModule {
     @Provides fun provideCompletePasskeyLoginUseCase(graph: UmbrellaGraph): CompletePasskeyLoginUseCase =
         graph.completePasskeyLoginUseCase
 
-    // Overview — only the header is wired for the placeholder Home screen.
+    // Overview — nine flows that drive the "Hoje" tab.
     @Provides fun provideObserveOverviewHeaderUseCase(graph: UmbrellaGraph): ObserveOverviewHeaderUseCase =
         graph.observeOverviewHeaderUseCase
+    @Provides fun provideObserveNowClassUseCase(graph: UmbrellaGraph): ObserveNowClassUseCase =
+        graph.observeNowClassUseCase
+    @Provides fun provideObserveTodayTimelineUseCase(graph: UmbrellaGraph): ObserveTodayTimelineUseCase =
+        graph.observeTodayTimelineUseCase
+    @Provides fun provideObserveDisciplinesUseCase(graph: UmbrellaGraph): ObserveDisciplinesUseCase =
+        graph.observeDisciplinesUseCase
+    @Provides fun provideObserveUnreadMessagesTileUseCase(graph: UmbrellaGraph): ObserveUnreadMessagesTileUseCase =
+        graph.observeUnreadMessagesTileUseCase
+    @Provides fun provideObserveNextTestTileUseCase(graph: UmbrellaGraph): ObserveNextTestTileUseCase =
+        graph.observeNextTestTileUseCase
+    @Provides fun provideObserveAttendanceTileUseCase(graph: UmbrellaGraph): ObserveAttendanceTileUseCase =
+        graph.observeAttendanceTileUseCase
+    @Provides fun provideObserveGradeTileUseCase(graph: UmbrellaGraph): ObserveGradeTileUseCase =
+        graph.observeGradeTileUseCase
+    @Provides fun provideObserveLastSyncUseCase(graph: UmbrellaGraph): ObserveLastSyncUseCase =
+        graph.observeLastSyncUseCase
 
     // Sync orchestration — six steps run by SyncViewModel during onboarding.
     @Provides fun providePingActivityUseCase(graph: UmbrellaGraph): PingActivityUseCase =
