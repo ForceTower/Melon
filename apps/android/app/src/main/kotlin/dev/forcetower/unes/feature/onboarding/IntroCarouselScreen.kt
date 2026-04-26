@@ -194,8 +194,8 @@ fun IntroCarouselScreen(
                         Modifier
                             .fillMaxSize()
                             .padding(30.dp)
-                            .clip(RoundedCornerShape(40.dp))
-                            .scaleInOnAppear(durationMs = 500),
+                            .scaleInOnAppear(durationMs = 500)
+                            .clip(RoundedCornerShape(40.dp)),
                     ) {
                         Mesh(
                             variant = slide.variant,

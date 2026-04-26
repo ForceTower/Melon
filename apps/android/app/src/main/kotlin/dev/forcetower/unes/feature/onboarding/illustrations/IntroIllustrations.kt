@@ -143,6 +143,8 @@ fun ScheduleIllustration() {
         // Class blocks reveal one-by-one. Each block is absolutely positioned
         // via `offset(...)` so the modifier-based fade-up doesn't push siblings
         // around — the parent Box always reserves the same area.
+        // `fadeUpOnAppear` sits before the visual modifiers so the entire
+        // colored block fades + slides, not just the inner labels.
         SCHEDULE_BLOCKS.forEachIndexed { i, block ->
             Box(
                 modifier = Modifier
@@ -150,11 +152,11 @@ fun ScheduleIllustration() {
                         x = (21 + block.col * 73).dp,
                         y = (31 + block.row * 40).dp,
                     )
+                    .fadeUpOnAppear(delayMs = 100 + i * 120, durationMs = 500)
                     .size(width = 71.dp, height = (block.height * 40 - 2).dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(block.color)
-                    .padding(8.dp)
-                    .fadeUpOnAppear(delayMs = 100 + i * 120, durationMs = 500),
+                    .padding(8.dp),
             ) {
                 Column {
                     Text(
@@ -338,12 +340,12 @@ fun MessagesIllustration() {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
+                    .fadeUpOnAppear(delayMs = 100 + i * 150, durationMs = 500)
                     .rotate(tilt)
                     .clip(RoundedCornerShape(18.dp))
                     .background(surface)
                     .border(1.dp, line, RoundedCornerShape(18.dp))
-                    .padding(horizontal = 14.dp, vertical = 12.dp)
-                    .fadeUpOnAppear(delayMs = 100 + i * 150, durationMs = 500),
+                    .padding(horizontal = 14.dp, vertical = 12.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(12.dp),
             ) {
@@ -438,7 +440,7 @@ fun NotificationsIllustration() {
     val line = MaterialTheme.melon.surface.line
 
     Column(
-        modifier = Modifier.size(IllustrationSize).padding(top = 4.dp),
+        modifier = Modifier.width(IllustrationSize).padding(top = 4.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Column(
@@ -472,11 +474,11 @@ fun NotificationsIllustration() {
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fadeUpOnAppear(delayMs = 150 + i * 110, durationMs = 550, fromOffset = 18.dp)
                         .clip(RoundedCornerShape(14.dp))
                         .background(surface)
                         .border(1.dp, line, RoundedCornerShape(14.dp))
-                        .padding(horizontal = 11.dp, vertical = 9.dp)
-                        .fadeUpOnAppear(delayMs = 150 + i * 110, durationMs = 550, fromOffset = 18.dp),
+                        .padding(horizontal = 11.dp, vertical = 9.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.spacedBy(10.dp),
                 ) {

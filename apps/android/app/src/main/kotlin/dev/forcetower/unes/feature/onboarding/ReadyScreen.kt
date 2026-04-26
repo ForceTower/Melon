@@ -187,11 +187,11 @@ fun ReadyScreen(
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
+                        .fadeUpOnAppear(delayMs = 1400)
                         .clip(RoundedCornerShape(22.dp))
                         .background(surface)
                         .border(1.dp, line, RoundedCornerShape(22.dp))
-                        .padding(horizontal = 18.dp, vertical = 16.dp)
-                        .fadeUpOnAppear(delayMs = 1400),
+                        .padding(horizontal = 18.dp, vertical = 16.dp),
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),

@@ -24,6 +24,12 @@ import kotlinx.coroutines.launch
 // rather than rising from below. graphicsLayer never affects layout, so the
 // content keeps its final slot from frame zero and the motion is purely
 // visual — exactly the iOS feel.
+//
+// PLACEMENT: put these modifiers BEFORE any `background`, `border`, `clip`
+// in the chain. graphicsLayer only wraps the modifiers + content that come
+// AFTER it, so trailing-position usage animates only the inner children
+// while the container's background/border stay fixed. Layout modifiers
+// (`offset`, `size`, `weight`) can sit on either side.
 
 /** Slide up from `fromOffset` while fading in. Defaults match iOS `fadeUpOnAppear`. */
 fun Modifier.fadeUpOnAppear(

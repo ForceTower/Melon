@@ -1,5 +1,6 @@
 package dev.forcetower.unes.designsystem.foundation
 
+import android.os.Build
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
@@ -16,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.BlurredEdgeTreatment
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.geometry.Offset
@@ -28,15 +31,20 @@ import dev.forcetower.unes.designsystem.theme.melon
 import kotlin.math.cos
 import kotlin.math.sin
 
-// Compose port of the JSX/SwiftUI `Mesh` component: animated radial-gradient
-// blobs softly orbiting inside a contained rect. The CSS prototype stacks
-// blurred opaque circles; we use radial gradients with a 0.85 → 0 alpha falloff
-// to get the same "atmospheric" look without depending on the (API-31+) blur
-// modifier — that keeps the gradient consistent across our minSdk 28 surface.
+// Compose port of the SwiftUI `MeshGradientView`: solid blobs softly orbiting
+// inside a contained rect, smeared by a 48dp Gaussian to give the field its
+// atmospheric, "no visible edges" feel. iOS draws solid 0.85-alpha discs then
+// applies `.blur(radius: 48)` per blob — on API 31+ we mirror that exactly
+// with `Modifier.blur`. On API 28-30 the blur modifier is a no-op, so we
+// fall back to a Gaussian-shaped multi-stop radial alpha that approximates
+// the same falloff without the visible shoulder of the old 3-stop curve.
 //
 // Variants match `MeshVariant` on iOS and the JSX `variants` object so the
 // same screen reads visually identical on every platform.
 enum class MeshVariant { Warm, Cool, Sun, Rose, Fresh }
+
+private val BlurRadius = 48.dp
+private val SupportsBlur = Build.VERSION.SDK_INT >= Build.VERSION_CODES.S
 
 /**
  * Static blob description. `originX/Y` are fractional positions inside the
@@ -79,50 +87,76 @@ fun Mesh(
         label = "mesh-time",
     )
 
-    Canvas(modifier = modifier.clipToBounds()) {
-        val w = size.width
-        val h = size.height
-        val seconds = time * 60f
+    val baseAlpha = (0.85f * intensity).coerceIn(0f, 1f)
 
-        blobs.forEach { blob ->
-            val phase = (seconds / blob.period) * (2f * Math.PI.toFloat()) + blob.phaseOffset
-            val dx = cos(phase) * blob.amplitudeX
-            val dy = sin(phase * blob.ySpeed) * blob.amplitudeY
-            val scale = 1f + sin(phase * 0.7f) * 0.15f
-
-            val sizePx = blob.sizeDp.dp.toPx()
-            val baseLeft = w * blob.originX + dx.dp.toPx()
-            val baseTop = h * blob.originY + dy.dp.toPx()
-            val cx = baseLeft + sizePx / 2f
-            val cy = baseTop + sizePx / 2f
-            val radius = (sizePx * scale) / 2f
-
-            drawCircle(
-                brush = Brush.radialGradient(
-                    colorStops = arrayOf(
-                        0f to blob.color.copy(alpha = 0.85f * intensity),
-                        0.55f to blob.color.copy(alpha = 0.55f * intensity),
-                        1f to blob.color.copy(alpha = 0f),
-                    ),
-                    center = Offset(cx, cy),
-                    radius = radius,
+    Box(modifier = modifier.clipToBounds()) {
+        Canvas(
+            modifier = Modifier
+                .fillMaxSize()
+                .then(
+                    if (SupportsBlur) Modifier.blur(BlurRadius, BlurredEdgeTreatment.Unbounded)
+                    else Modifier,
                 ),
-                radius = radius,
-                center = Offset(cx, cy),
-            )
+        ) {
+            val w = size.width
+            val h = size.height
+            val seconds = time * 60f
+
+            blobs.forEach { blob ->
+                val phase = (seconds / blob.period) * (2f * Math.PI.toFloat()) + blob.phaseOffset
+                val dx = cos(phase) * blob.amplitudeX
+                val dy = sin(phase * blob.ySpeed) * blob.amplitudeY
+                val scale = 1f + sin(phase * 0.7f) * 0.15f
+
+                val sizePx = blob.sizeDp.dp.toPx()
+                val baseLeft = w * blob.originX + dx.dp.toPx()
+                val baseTop = h * blob.originY + dy.dp.toPx()
+                val cx = baseLeft + sizePx / 2f
+                val cy = baseTop + sizePx / 2f
+                val radius = (sizePx * scale) / 2f
+
+                if (SupportsBlur) {
+                    drawCircle(
+                        color = blob.color.copy(alpha = baseAlpha),
+                        radius = radius,
+                        center = Offset(cx, cy),
+                    )
+                } else {
+                    drawCircle(
+                        brush = Brush.radialGradient(
+                            colorStops = arrayOf(
+                                0f to blob.color.copy(alpha = baseAlpha),
+                                0.35f to blob.color.copy(alpha = (0.78f * intensity).coerceIn(0f, 1f)),
+                                0.6f to blob.color.copy(alpha = (0.45f * intensity).coerceIn(0f, 1f)),
+                                0.82f to blob.color.copy(alpha = (0.16f * intensity).coerceIn(0f, 1f)),
+                                1f to blob.color.copy(alpha = 0f),
+                            ),
+                            center = Offset(cx, cy),
+                            radius = radius,
+                        ),
+                        radius = radius,
+                        center = Offset(cx, cy),
+                    )
+                }
+            }
         }
 
-        // Subtle film-grain highlight, mirroring the CSS overlay. Soft white
-        // top-left bias adds warmth without flattening the mesh.
-        drawCircle(
-            brush = Brush.radialGradient(
-                colors = listOf(Color.White.copy(alpha = 0.08f), Color.Transparent),
+        // Film-grain highlight stays on its own un-blurred layer so it reads
+        // crisp on top of the diffused blobs, matching iOS where the highlight
+        // is filled on the parent context without the per-blob blur filter.
+        Canvas(modifier = Modifier.fillMaxSize()) {
+            val w = size.width
+            val h = size.height
+            drawCircle(
+                brush = Brush.radialGradient(
+                    colors = listOf(Color.White.copy(alpha = 0.08f), Color.Transparent),
+                    center = Offset(w * 0.3f, h * 0.2f),
+                    radius = w * 0.7f,
+                ),
+                radius = w,
                 center = Offset(w * 0.3f, h * 0.2f),
-                radius = w * 0.7f,
-            ),
-            radius = w,
-            center = Offset(w * 0.3f, h * 0.2f),
-        )
+            )
+        }
     }
 }
 
