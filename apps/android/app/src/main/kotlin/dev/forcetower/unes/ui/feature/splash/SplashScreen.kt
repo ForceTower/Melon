@@ -1,4 +1,4 @@
-package dev.forcetower.unes.ui.feature.onboarding
+package dev.forcetower.unes.ui.feature.splash
 
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.CubicBezierEasing

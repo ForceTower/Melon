@@ -1,4 +1,4 @@
-package dev.forcetower.unes.ui.feature.onboarding
+package dev.forcetower.unes.ui.feature.onboarding.welcome
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

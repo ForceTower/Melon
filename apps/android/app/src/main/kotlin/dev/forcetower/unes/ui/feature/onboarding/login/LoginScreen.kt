@@ -1,4 +1,4 @@
-package dev.forcetower.unes.ui.feature.onboarding
+package dev.forcetower.unes.ui.feature.onboarding.login
 
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
