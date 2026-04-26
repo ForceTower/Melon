@@ -88,37 +88,123 @@ body {
     transform: scale(0.95);
   }
 }
+/* Mesh-blob orbits — sampled along sine curves so the motion is a smooth,
+   continuous loop (mirrors the iOS MeshGradientView, which drives each blob
+   with cos/sin of t/period plus a slow scale pulse). */
 @keyframes floatA {
-  0%,
-  100% {
+  0% {
     transform: translate(0, 0) scale(1);
   }
-  33% {
-    transform: translate(40px, -30px) scale(1.15);
+  12.5% {
+    transform: translate(28px, 9px) scale(1.07);
   }
-  66% {
-    transform: translate(-25px, 35px) scale(0.92);
+  25% {
+    transform: translate(40px, 30px) scale(1.1);
+  }
+  37.5% {
+    transform: translate(28px, 51px) scale(1.07);
+  }
+  50% {
+    transform: translate(0, 60px) scale(1);
+  }
+  62.5% {
+    transform: translate(-28px, 51px) scale(0.93);
+  }
+  75% {
+    transform: translate(-40px, 30px) scale(0.9);
+  }
+  87.5% {
+    transform: translate(-28px, 9px) scale(0.93);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
   }
 }
 @keyframes floatB {
-  0%,
-  100% {
+  0% {
     transform: translate(0, 0) scale(1);
   }
+  12.5% {
+    transform: translate(-32px, 7px) scale(0.95);
+  }
+  25% {
+    transform: translate(-45px, 25px) scale(0.9);
+  }
+  37.5% {
+    transform: translate(-32px, 43px) scale(0.95);
+  }
   50% {
-    transform: translate(-45px, 25px) scale(1.2);
+    transform: translate(0, 50px) scale(1);
+  }
+  62.5% {
+    transform: translate(32px, 43px) scale(1.07);
+  }
+  75% {
+    transform: translate(45px, 25px) scale(1.1);
+  }
+  87.5% {
+    transform: translate(32px, 7px) scale(1.07);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
   }
 }
 @keyframes floatC {
-  0%,
+  0% {
+    transform: translate(0, 0) scale(1);
+  }
+  12.5% {
+    transform: translate(-25px, 12px) scale(1.05);
+  }
+  25% {
+    transform: translate(-35px, 40px) scale(1.1);
+  }
+  37.5% {
+    transform: translate(-25px, 68px) scale(1.05);
+  }
+  50% {
+    transform: translate(0, 80px) scale(1);
+  }
+  62.5% {
+    transform: translate(25px, 68px) scale(0.95);
+  }
+  75% {
+    transform: translate(35px, 40px) scale(0.9);
+  }
+  87.5% {
+    transform: translate(25px, 12px) scale(0.95);
+  }
   100% {
     transform: translate(0, 0) scale(1);
   }
-  40% {
-    transform: translate(30px, 40px) scale(0.88);
+}
+@keyframes floatD {
+  0% {
+    transform: translate(0, 0) scale(1);
   }
-  80% {
-    transform: translate(-35px, -25px) scale(1.1);
+  12.5% {
+    transform: translate(21px, -7px) scale(1.04);
+  }
+  25% {
+    transform: translate(30px, -25px) scale(1.08);
+  }
+  37.5% {
+    transform: translate(21px, -43px) scale(1.04);
+  }
+  50% {
+    transform: translate(0, -50px) scale(1);
+  }
+  62.5% {
+    transform: translate(-21px, -43px) scale(0.96);
+  }
+  75% {
+    transform: translate(-30px, -25px) scale(0.92);
+  }
+  87.5% {
+    transform: translate(-21px, -7px) scale(0.96);
+  }
+  100% {
+    transform: translate(0, 0) scale(1);
   }
 }
 @keyframes bounce {
@@ -257,7 +343,7 @@ body {
   filter: blur(80px);
   top: -12%;
   left: -10%;
-  animation: floatA 14s ease-in-out infinite;
+  animation: floatA 14s linear infinite;
 }
 .hero-mesh > .b2 {
   width: 440px;
@@ -265,7 +351,7 @@ body {
   background: #e85d4e;
   top: 30%;
   left: 55%;
-  animation: floatB 11s ease-in-out infinite;
+  animation: floatB 11s linear infinite;
   opacity: 0.85;
 }
 .hero-mesh > .b3 {
@@ -274,7 +360,7 @@ body {
   background: #f4a23c;
   top: 60%;
   left: -10%;
-  animation: floatC 17s ease-in-out infinite;
+  animation: floatC 17s linear infinite;
   opacity: 0.8;
 }
 .hero-mesh > .b4 {
@@ -283,7 +369,7 @@ body {
   background: #b23a7a;
   top: 55%;
   left: 60%;
-  animation: floatA 13s ease-in-out infinite reverse;
+  animation: floatD 13s linear infinite;
   opacity: 0.75;
 }
 
@@ -1172,7 +1258,7 @@ details.q .ans {
   filter: blur(80px);
   top: -20%;
   left: -10%;
-  animation: floatA 14s ease-in-out infinite;
+  animation: floatA 14s linear infinite;
 }
 .cta-band-mesh > .b2 {
   width: 440px;
@@ -1180,7 +1266,7 @@ details.q .ans {
   background: #e85d4e;
   top: 30%;
   left: 55%;
-  animation: floatB 11s ease-in-out infinite;
+  animation: floatB 11s linear infinite;
   opacity: 0.85;
 }
 .cta-band-mesh > .b3 {
@@ -1189,7 +1275,7 @@ details.q .ans {
   background: #f4a23c;
   top: 60%;
   left: 5%;
-  animation: floatC 17s ease-in-out infinite;
+  animation: floatC 17s linear infinite;
   opacity: 0.8;
 }
 .cta-band > .inner {
