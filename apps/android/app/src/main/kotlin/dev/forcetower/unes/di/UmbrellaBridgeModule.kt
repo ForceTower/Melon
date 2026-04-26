@@ -23,8 +23,10 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveNowClassUseCa
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveOverviewHeaderUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimelineUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
+import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncMessagesUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncProfileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
@@ -100,6 +102,13 @@ object UmbrellaBridgeModule {
         graph.syncMessagesUseCase
     @Provides fun provideFetchOnboardingStatusUseCase(graph: UmbrellaGraph): FetchOnboardingStatusUseCase =
         graph.fetchOnboardingStatusUseCase
+
+    // Authenticated-shell sync — fired on every Connected entry and on
+    // background → foreground transitions, mirroring iOS `ConnectedView`.
+    @Provides fun provideRefreshSessionUseCase(graph: UmbrellaGraph): RefreshSessionUseCase =
+        graph.refreshSessionUseCase
+    @Provides fun provideBackfillMirrorUseCase(graph: UmbrellaGraph): BackfillMirrorUseCase =
+        graph.backfillMirrorUseCase
 
     // Dashboard — Ready screen snapshot at the end of onboarding.
     @Provides fun provideGetReadyOverviewUseCase(graph: UmbrellaGraph): GetReadyOverviewUseCase =

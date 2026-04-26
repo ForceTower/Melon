@@ -34,6 +34,9 @@ import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 
@@ -46,6 +49,12 @@ import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 // motion can be tested end-to-end before the corresponding features land.
 @Composable
 fun ConnectedScreen(modifier: Modifier = Modifier) {
+    val vm: ConnectedViewModel = hiltViewModel()
+    // Fires on initial mount AND on every background → foreground transition,
+    // mirroring iOS's `.task` + `.onChange(of: scenePhase)` pair. Concurrent
+    // calls are deduped by a Mutex inside `ConnectedViewModel`.
+    LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onAppeared() }
+
     var active by rememberSaveable { mutableStateOf(ConnectedTab.Overview) }
     val unreadBadges = remember { mapOf(ConnectedTab.Messages to 2) }
     val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
