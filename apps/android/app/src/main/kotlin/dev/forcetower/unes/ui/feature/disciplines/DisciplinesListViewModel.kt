@@ -29,10 +29,19 @@ internal data class DisciplinesUiState(
     val pending: List<Semester> = emptyList(),
     val downloading: Set<String> = emptySet(),
     val downloadError: String? = null,
+    // Seed handover for the detail route. Set when the list-card is tapped so
+    // `DisciplineDetailRoute` can render the screen against the list payload
+    // while its own VM hydrates from `ObserveDisciplineDetailUseCase`. Mirrors
+    // the iOS pattern where `DisciplinesListView` constructs the detail VM
+    // with the tapped Discipline as the seed.
+    val openOfferId: String? = null,
+    val openSeed: Discipline? = null,
 ) : UiState
 
 internal sealed interface DisciplinesIntent : UiIntent {
     data class Download(val semesterCode: String) : DisciplinesIntent
+    data class OpenDiscipline(val discipline: Discipline) : DisciplinesIntent
+    data object CloseDiscipline : DisciplinesIntent
 }
 
 internal sealed interface DisciplinesEffect : UiEffect
@@ -52,6 +61,12 @@ internal class DisciplinesListViewModel @Inject constructor(
     override fun onIntent(intent: DisciplinesIntent) {
         when (intent) {
             is DisciplinesIntent.Download -> download(intent.semesterCode)
+            is DisciplinesIntent.OpenDiscipline -> setState {
+                copy(openOfferId = intent.discipline.offerId, openSeed = intent.discipline)
+            }
+            DisciplinesIntent.CloseDiscipline -> setState {
+                copy(openOfferId = null, openSeed = null)
+            }
         }
     }
 

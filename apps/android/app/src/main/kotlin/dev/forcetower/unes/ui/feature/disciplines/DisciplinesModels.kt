@@ -28,6 +28,41 @@ internal data class DisciplineGroup(
     val prof: String,
 )
 
+// One row on the detail screen's classes timeline. `past`/`isNext` are
+// classified upstream by `ObserveDisciplineDetailUseCase` against real
+// today, so the UI doesn't need its own clock.
+internal data class ClassEntry(
+    val date: String?,
+    val title: String,
+    // Null when upstream doesn't expose the count; 0 hides the paperclip,
+    // any positive value shows the badge.
+    val attachments: Int?,
+    val past: Boolean,
+    val isNext: Boolean = false,
+)
+
+internal enum class AttachmentKind {
+    Pdf, Slides, Link, Notes, Other;
+
+    val label: String
+        get() = when (this) {
+            Pdf -> "PDF"
+            Slides -> "SLIDES"
+            Link -> "LINK"
+            Notes -> "NOTES"
+            Other -> "FILE"
+        }
+}
+
+internal data class Attachment(
+    val name: String,
+    val kind: AttachmentKind,
+    val added: String,
+    // Class group name (e.g. "T01"). Null on single-group disciplines.
+    val group: String?,
+    val url: String? = null,
+)
+
 // One discipline card. `color` is resolved via `ColorFor.discipline(code)` so
 // the same code lands on the same tint across Overview, Schedule, and the
 // Disciplinas screens.
@@ -42,6 +77,8 @@ internal data class Discipline(
     val absences: Int,
     val allowedAbsences: Int,
     val sections: List<GradeSection>,
+    val classes: List<ClassEntry> = emptyList(),
+    val attachments: List<Attachment> = emptyList(),
     val ementa: String? = null,
     val groups: List<DisciplineGroup> = emptyList(),
     val finalGrade: Double? = null,
@@ -152,6 +189,21 @@ internal val Discipline.groupsShortLabel: String?
 internal val Discipline.nextEvaluation: GradeEntry?
     get() = allGrades.firstOrNull { it.score == null && it.date != null }
 
+// Filter sections to those visible for the currently-selected group pill.
+// `null` (= "Tudo") returns all sections; a specific group returns only its
+// sections plus any group-agnostic ones (KMP emits one merged section with
+// `group = null` so it stays visible across every pill).
+internal fun Discipline.sectionsForGroup(groupCode: String?): List<GradeSection> {
+    if (groupCode == null) return sections
+    return sections.filter { it.group == groupCode || it.group == null }
+}
+
+// Same idea for attachments — filtered by the segmented control selection.
+internal fun Discipline.attachmentsForGroup(groupCode: String?): List<Attachment> {
+    if (groupCode == null) return attachments
+    return attachments.filter { it.group == groupCode || it.group == null }
+}
+
 // Trend across the last two completed grades (null when fewer than two).
 internal val Discipline.trend: Double?
     get() {
@@ -168,6 +220,13 @@ internal object DisciplineDateFormatting {
     fun ddMmYyyy(iso: String?): String? {
         if (iso == null || iso.length < 10) return null
         return "${iso.substring(8, 10)}/${iso.substring(5, 7)}/${iso.substring(0, 4)}"
+    }
+
+    // "20/03" — short form used for the attachment "added" caption (matches
+    // iOS `DisciplineDateFormatting.ddMm`).
+    fun ddMm(iso: String?): String? {
+        if (iso == null || iso.length < 10) return null
+        return "${iso.substring(8, 10)}/${iso.substring(5, 7)}"
     }
 }
 

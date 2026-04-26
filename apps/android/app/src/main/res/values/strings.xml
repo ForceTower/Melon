@@ -349,6 +349,78 @@
     </plurals>
     <!-- endregion -->
 
+    <!-- region Discipline Detail · Hero / stats -->
+    <string name="discipline_detail_back">Voltar</string>
+    <!-- "Departamento de Ciências Exatas" — eyebrow line under the code chip. -->
+    <string name="discipline_detail_department_format">Departamento de %1$s</string>
+    <string name="discipline_detail_stat_hours">Carga horária</string>
+    <string name="discipline_detail_stat_hours_sub">total da disciplina</string>
+    <string name="discipline_detail_stat_absences">Faltas</string>
+    <!-- "13 ainda disponíveis" — sub-line under the absences stat value. -->
+    <string name="discipline_detail_stat_absences_sub_format">%1$d ainda disponíveis</string>
+    <string name="discipline_detail_group_all">Tudo</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Notas -->
+    <string name="discipline_detail_grades_title">Notas</string>
+    <string name="discipline_detail_grades_partial_label">MÉDIA PARCIAL</string>
+    <!-- "MÉDIA PARCIAL · T01" — eyebrow when a specific group pill is selected. -->
+    <string name="discipline_detail_grades_partial_label_with_group_format">MÉDIA PARCIAL · %1$s</string>
+    <string name="discipline_detail_grades_doing_well">Você está indo bem.</string>
+    <string name="discipline_detail_grades_no_grades">Ainda sem notas lançadas.</string>
+    <!-- "Precisa de 7,5 na 1 avaliação restante para fechar em 7,0." — assembled
+         in code so the required-score chunk can carry its own SpanStyle color. -->
+    <string name="discipline_detail_grades_needed_lead">Precisa de </string>
+    <string name="discipline_detail_grades_needed_unreachable">—</string>
+    <string name="discipline_detail_grades_needed_pending_one_format"> na %1$d avaliação restante para fechar em </string>
+    <string name="discipline_detail_grades_needed_pending_other_format"> nas %1$d avaliações restantes para fechar em </string>
+    <string name="discipline_detail_grades_needed_target">7,0</string>
+    <string name="discipline_detail_grades_needed_dot">.</string>
+    <string name="discipline_detail_grade_no_label">—</string>
+    <string name="discipline_detail_grade_no_title">Avaliação</string>
+    <string name="discipline_detail_grade_no_date">data não divulgada</string>
+    <string name="discipline_detail_grade_empty_score">—</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Ementa -->
+    <string name="discipline_detail_ementa_title">Ementa</string>
+    <string name="discipline_detail_ementa_show_more">ler mais</string>
+    <string name="discipline_detail_ementa_show_less">mostrar menos</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Aulas -->
+    <string name="discipline_detail_classes_title">Aulas</string>
+    <!-- "12 aulas" — count caption next to the section title. -->
+    <plurals name="discipline_detail_classes_count">
+        <item quantity="one">%d aula</item>
+        <item quantity="other">%d aulas</item>
+    </plurals>
+    <string name="discipline_detail_classes_empty">O professor ainda não registrou aulas.</string>
+    <string name="discipline_detail_classes_next_eyebrow">PRÓXIMA AULA</string>
+    <string name="discipline_detail_classes_no_date">—</string>
+    <string name="discipline_detail_classes_no_title">—</string>
+    <string name="discipline_detail_classes_separator">·</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Anexos -->
+    <string name="discipline_detail_attachments_title">Anexos</string>
+    <string name="discipline_detail_attachments_empty">Sem anexos desta turma.</string>
+    <!-- "PDF · adicionado em 24/03" — assembled when the attachment carries a
+         lecture date (most do); falls back to the kind-only variant otherwise. -->
+    <string name="discipline_detail_attachment_meta_with_date_format">%1$s · adicionado em %2$s</string>
+    <string name="discipline_detail_attachment_meta_kind_only_format">%1$s</string>
+    <!-- endregion -->
+
+    <!-- region Discipline Detail · Presença -->
+    <string name="discipline_detail_presence_title">Presença</string>
+    <!-- " de 15" — small "of N" tail after the absences count. -->
+    <string name="discipline_detail_presence_of_format"> de %1$d</string>
+    <string name="discipline_detail_presence_so_far">faltas até agora</string>
+    <string name="discipline_detail_presence_remaining_label">AINDA PODEM</string>
+    <string name="discipline_detail_presence_warn_high">Atenção: próximo do limite de faltas.</string>
+    <string name="discipline_detail_presence_warn_mid">Monitore suas faltas com cuidado.</string>
+    <!-- endregion -->
+
     <!-- region Schedule · Header -->
     <string name="schedule_title">Horário</string>
     <string name="schedule_eyebrow_format">◦ SEMANA %1$s</string>

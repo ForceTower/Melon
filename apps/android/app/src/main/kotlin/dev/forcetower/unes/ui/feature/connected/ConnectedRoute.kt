@@ -12,6 +12,11 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data object Overview : ConnectedRoute
     @Serializable data object Schedule : ConnectedRoute
     @Serializable data object Classes : ConnectedRoute
+    // Detail screen pushed onto the Classes stack when a discipline card is
+    // tapped. `offerId` is the only identifier needed to scope the
+    // `ObserveDisciplineDetailUseCase` flow; the seed Discipline is handed
+    // off in-memory through `DisciplinesListViewModel.openSeed`.
+    @Serializable data class DisciplineDetail(val offerId: String) : ConnectedRoute
     @Serializable data object MessagesList : ConnectedRoute
     @Serializable data class MessageDetail(val id: String) : ConnectedRoute
     @Serializable data object Me : ConnectedRoute

@@ -40,6 +40,9 @@ import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.ui.feature.disciplinedetail.DisciplineDetailRoute
+import dev.forcetower.unes.ui.feature.disciplines.DisciplinesIntent
+import dev.forcetower.unes.ui.feature.disciplines.DisciplinesListViewModel
 import dev.forcetower.unes.ui.feature.disciplines.DisciplinesScreen
 import dev.forcetower.unes.ui.feature.me.MeScreen
 import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
@@ -75,6 +78,10 @@ fun ConnectedScreen(
     // tab — the second `collectAsStateWithLifecycle` is essentially free.
     val messagesVm: MessagesViewModel = hiltViewModel()
     val messagesState by messagesVm.state.collectAsStateWithLifecycle()
+    // Same shared-VM trick as messages: the disciplines list VM holds the
+    // tap seed, so the detail route can read it without an extra navigation
+    // payload (which Nav3 would have to serialize).
+    val disciplinesVm: DisciplinesListViewModel = hiltViewModel()
     val unreadBadges = mapOf(
         ConnectedTab.Messages to 0 /* messagesState.rawItems.count { it.isUnread } */,
     ).filterValues { it > 0 }
@@ -111,7 +118,19 @@ fun ConnectedScreen(
                 entry<ConnectedRoute.Classes>(metadata = TabRootMetadata) {
                     DisciplinesScreen(
                         bottomInset = bottomInset,
-                        onOpenDiscipline = { /* TODO: push detail destination */ },
+                        onOpenDiscipline = { d ->
+                            val offerId = d.offerId ?: return@DisciplinesScreen
+                            disciplinesVm.onIntent(DisciplinesIntent.OpenDiscipline(d))
+                            navigator.navigate(ConnectedRoute.DisciplineDetail(offerId))
+                        },
+                    )
+                }
+                entry<ConnectedRoute.DisciplineDetail> { route ->
+                    DisciplineDetailRoute(
+                        offerId = route.offerId,
+                        listVm = disciplinesVm,
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
                     )
                 }
                 entry<ConnectedRoute.MessagesList>(metadata = TabRootMetadata) {
