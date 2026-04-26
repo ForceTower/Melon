@@ -8,6 +8,13 @@ struct LoginView: View {
 
     @State private var viewModel: LoginViewModel
     @FocusState private var focusedField: Field?
+    @State private var forgotPasswordPresented: Bool = false
+    // Mirrors the intrinsic-height pattern used by `LogoutConfirmationSheet`
+    // / `AboutSheet` — the sheet reports its measured height back so the
+    // detent never reserves empty space below the buttons.
+    @State private var forgotPasswordSheetHeight: CGFloat = 440
+
+    private static let forgotPasswordURL = URL(string: "https://academico.uefs.br/PortalSagres/Acesso.aspx")!
 
     init(
         loginUseCase: AuthLoginUseCase?,
@@ -62,7 +69,10 @@ struct LoginView: View {
                     inputGroup
                         .fadeUpOnAppear(delay: 0.35)
 
-                    Button("Esqueci minha senha") {}
+                    Button("Esqueci minha senha") {
+                        focusedField = nil
+                        forgotPasswordPresented = true
+                    }
                         .font(UNESFont.sans(14, weight: .medium))
                         .foregroundStyle(UNESColor.ink3)
                         .padding(.top, 10)
@@ -113,6 +123,34 @@ struct LoginView: View {
         .toolbarBackground(.hidden, for: .navigationBar)
         .tint(UNESColor.ink)
         .animation(.easeInOut(duration: 0.2), value: viewModel.errorMessage)
+        .sheet(isPresented: $forgotPasswordPresented) {
+            forgotPasswordSheet
+        }
+    }
+
+    @ViewBuilder
+    private var forgotPasswordSheet: some View {
+        if #available(iOS 16.4, *) {
+            ForgotPasswordSheet(
+                onOpenPortal: openForgotPasswordPortal,
+                measuredHeight: $forgotPasswordSheetHeight
+            )
+            .presentationDetents([.height(forgotPasswordSheetHeight)])
+            .presentationDragIndicator(.visible)
+            .presentationBackground(UNESColor.surface)
+        } else {
+            ForgotPasswordSheet(
+                onOpenPortal: openForgotPasswordPortal,
+                measuredHeight: $forgotPasswordSheetHeight
+            )
+            .presentationDetents([.height(forgotPasswordSheetHeight)])
+            .presentationDragIndicator(.visible)
+        }
+    }
+
+    private func openForgotPasswordPortal() {
+        UIApplication.shared.open(Self.forgotPasswordURL)
+        forgotPasswordPresented = false
     }
 
     private var titleText: Text {

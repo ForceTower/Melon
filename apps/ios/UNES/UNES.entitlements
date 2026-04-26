@@ -6,7 +6,7 @@
 	<string>development</string>
 	<key>com.apple.developer.associated-domains</key>
 	<array>
-		<string>webcredentials:u.forcetower.dev</string>
+		<string>webcredentials:melon.forcetower.dev</string>
 	</array>
 </dict>
 </plist>
