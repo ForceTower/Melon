@@ -9,7 +9,6 @@ import dev.forcetower.unes.mvi.UiEffect
 import dev.forcetower.unes.mvi.UiIntent
 import dev.forcetower.unes.mvi.UiState
 import javax.inject.Inject
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 
 data object SplashState : UiState
@@ -28,9 +27,7 @@ class SplashViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            // Wait for the session store to settle (init is synchronous today,
-            // but using `first` keeps us safe if the store ever loads async).
-            val authState = sessionStore.authState.first()
+            val authState = sessionStore.currentAuthState()
             emitEffect(
                 when (authState) {
                     is AuthState.Authenticated -> SplashEffect.GoHome

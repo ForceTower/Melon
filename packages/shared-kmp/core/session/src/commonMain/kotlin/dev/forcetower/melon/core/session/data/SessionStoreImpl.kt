@@ -75,6 +75,16 @@ internal class SessionStoreImpl(
 
     override suspend fun getAccessToken(): String? = storage.get(ACCESS_TOKEN_KEY)
 
+    override suspend fun currentAuthState(): AuthState {
+        val token = storage.get(ACCESS_TOKEN_KEY)
+        val user = userDao.getCurrent()
+        return if (token != null && user != null) {
+            AuthState.Authenticated(user.toDomain())
+        } else {
+            AuthState.Unauthenticated
+        }
+    }
+
     override suspend fun persist(
         accessToken: String,
         refreshToken: String,

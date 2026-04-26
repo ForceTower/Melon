@@ -11,6 +11,16 @@ interface SessionStore : AuthTokenSource {
     val authState: StateFlow<AuthState>
 
     /**
+     * Resolves the auth state by reading persisted state directly, bypassing
+     * the [authState] StateFlow's startup race. The flow seeds with
+     * [AuthState.Unauthenticated] so `.first()` on a cold start can hand back
+     * the seed before the implementation finishes loading the token from
+     * disk. Splash routing reads this instead so a returning user lands on
+     * Home rather than being bounced back to onboarding.
+     */
+    suspend fun currentAuthState(): AuthState
+
+    /**
      * Persists session tokens and the authenticated user.
      *
      * `username` and `password` are the upstream (Snowpiercer) credentials —

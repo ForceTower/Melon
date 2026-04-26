@@ -119,6 +119,8 @@ private class RecordingSessionStore : SessionStore, AuthTokenSource {
 
     override suspend fun getAccessToken(): String? = lastAccessToken
 
+    override suspend fun currentAuthState(): AuthState = _authState.value
+
     override suspend fun persist(
         accessToken: String,
         refreshToken: String,
