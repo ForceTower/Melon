@@ -27,7 +27,9 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,12 +55,69 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.messages.components.AttachmentTile
 import dev.forcetower.unes.ui.feature.messages.components.OriginSwatch
+
+// Route adapter sitting between the Messages tab's `MessageDetail` NavKey
+// and the pure detail screen below. Owns the open/close lifecycle of the
+// detail subscription on `MessagesViewModel`: opens on enter (using the
+// seed already in the inbox flow), closes on dispose. Falls back through
+// `openDetail` → `openSeed` → `rawItems` so the screen renders something
+// even when the route is restored after process death and the inbox flow
+// hasn't landed yet.
+@Composable
+internal fun MessageDetailRoute(
+    id: String,
+    vm: MessagesViewModel,
+    onBack: () -> Unit,
+    bottomInset: Dp = 0.dp,
+) {
+    val state by vm.state.collectAsStateWithLifecycle()
+    val roles = rememberMessageRoleStrings()
+
+    // Re-open on (re-)compose if the VM isn't already tracking this id.
+    // Re-fires when `rawItems` lands so the seed is available after
+    // process-death restoration; the `openMessageId == id` guard makes
+    // subsequent inbox emits no-ops.
+    LaunchedEffect(id, state.rawItems) {
+        if (state.openMessageId != id) {
+            val seed = state.rawItems.firstOrNull { it.id == id }
+            if (seed != null) {
+                vm.onIntent(MessagesIntent.OpenMessage(id, seed))
+            }
+        }
+    }
+
+    DisposableEffect(id) {
+        onDispose {
+            // Tear down the detail subscription when the entry leaves
+            // composition (popped from the stack OR tab switched away).
+            // Guarded so we don't clobber a different detail that's now
+            // active.
+            if (vm.state.value.openMessageId == id) {
+                vm.onIntent(MessagesIntent.CloseMessage)
+            }
+        }
+    }
+
+    val rendered = state.openDetail?.takeIf { it.id == id }?.toUi(roles)
+        ?: state.openSeed?.takeIf { it.id == id }?.toUi(roles)
+        ?: state.rawItems.firstOrNull { it.id == id }?.toUi(roles)
+
+    if (rendered != null) {
+        MessageDetailScreen(
+            message = rendered,
+            onBack = onBack,
+            onAppear = { vm.onIntent(MessagesIntent.MarkRead(id)) },
+            bottomInset = bottomInset,
+        )
+    }
+}
 
 // Full message detail — sender card, optional serif subject, formatted body
 // with linkified URLs, image gallery, and the attachments list.

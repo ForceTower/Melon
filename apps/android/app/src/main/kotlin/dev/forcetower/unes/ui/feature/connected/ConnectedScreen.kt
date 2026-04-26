@@ -18,17 +18,14 @@ import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawWithContent
 import androidx.compose.ui.graphics.BlurEffect
 import androidx.compose.ui.graphics.TileMode
 import androidx.compose.ui.graphics.layer.GraphicsLayer
-import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.graphics.rememberGraphicsLayer
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -37,8 +34,15 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation3.runtime.NavKey
+import androidx.navigation3.runtime.entryProvider
+import androidx.navigation3.runtime.rememberDecoratedNavEntries
+import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
+import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.designsystem.theme.MelonTheme
 import dev.forcetower.unes.ui.feature.me.MeScreen
+import dev.forcetower.unes.ui.feature.messages.MessageDetailRoute
+import dev.forcetower.unes.ui.feature.messages.MessagesIntent
 import dev.forcetower.unes.ui.feature.messages.MessagesScreen
 import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
@@ -48,9 +52,10 @@ import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 // feature's first screen. Mirrors iOS `ConnectedView` in shape: enum-driven
 // tabs, single shared chrome, content swapped underneath.
 //
-// Overview, Schedule, Messages, and Me are wired to their real screens.
-// Classes still falls through to a placeholder so the bar's selection
-// motion can be tested end-to-end before that feature lands.
+// Navigation is per-tab: each tab keeps its own `NavBackStack` (see
+// `ConnectedNavigator`), so deep navigation inside a tab (e.g. opening a
+// message detail) is popped by the system back gesture without leaving the
+// tab. The floating tab bar stays composed across all routes.
 @Composable
 fun ConnectedScreen(
     onLoggedOut: () -> Unit,
@@ -62,17 +67,18 @@ fun ConnectedScreen(
     // calls are deduped by a Mutex inside `ConnectedViewModel`.
     LifecycleEventEffect(Lifecycle.Event.ON_START) { vm.onAppeared() }
 
-    var active by rememberSaveable { mutableStateOf(ConnectedTab.Overview) }
-    // Live unread count piggybacks on `MessagesViewModel`. Hilt scopes the VM
-    // to the surrounding NavBackStackEntry, so this instance is the same one
-    // the Messages tab will read when it composes — the inbox flow is shared
-    // and the second `collectAsStateWithLifecycle` is essentially free.
+    val navigator = rememberConnectedNavigator(initial = ConnectedTab.Overview)
+    // Live unread count piggybacks on `MessagesViewModel`. Without nav3
+    // viewmodel-decoration, `hiltViewModel()` resolves to the activity
+    // store, so this instance is shared with the one inside the Messages
+    // tab — the second `collectAsStateWithLifecycle` is essentially free.
     val messagesVm: MessagesViewModel = hiltViewModel()
     val messagesState by messagesVm.state.collectAsStateWithLifecycle()
     val unreadBadges = mapOf(
         ConnectedTab.Messages to messagesState.rawItems.count { it.isUnread },
     ).filterValues { it > 0 }
     val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val bottomInset = TabBarBlockHeight + navBarBottom
 
     // Backdrop captured into an offscreen layer with `BlurEffect` set so the
     // tab bar can replay it pre-blurred — Compose's native equivalent of CSS
@@ -85,56 +91,95 @@ fun ConnectedScreen(
         }
     } else null
 
-    Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
-    ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .then(
-                    if (backdrop != null) {
-                        Modifier.drawWithContent {
-                            // Record the (sharp) screen content into the layer
-                            // — the layer applies its blur on playback when
-                            // the tab bar later calls `drawLayer(backdrop)`.
-                            backdrop.record { this@drawWithContent.drawContent() }
-                            drawContent()
-                        }
-                    } else Modifier,
-                ),
-        ) {
-            when (active) {
-                ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBlockHeight + navBarBottom)
-                ConnectedTab.Schedule -> ScheduleScreen(bottomInset = TabBarBlockHeight + navBarBottom)
-                ConnectedTab.Messages -> MessagesScreen(bottomInset = TabBarBlockHeight + navBarBottom)
-                ConnectedTab.Me -> MeScreen(
-                    onLoggedOut = onLoggedOut,
-                    bottomInset = TabBarBlockHeight + navBarBottom,
-                )
-                else -> ComingSoonPanel(active)
-            }
-        }
+    // Lifted above the per-tab decorated entries below so saveable state
+    // (lazy scroll positions, expanded/collapsed flags) survives tab
+    // switches even though inactive tabs leave composition.
+    val saveableDecorator = rememberSaveableStateHolderNavEntryDecorator<NavKey>()
 
-        LiquidTabBar(
-            items = ConnectedTab.entries,
-            active = active,
-            onChange = { active = it },
-            badges = unreadBadges,
-            backdrop = backdrop,
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                // Nav bars handle the gesture/3-button bar (any rotation);
-                // horizontal display cutout keeps the bar off the notch when
-                // the device is rotated to landscape. IME is intentionally
-                // excluded so the bar stays under the keyboard.
-                .windowInsetsPadding(
-                    WindowInsets.navigationBars
-                        .union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)),
-                )
-                .padding(horizontal = 14.dp, vertical = 22.dp),
+    val entriesByTab = navigator.stacks.mapValues { (_, stack) ->
+        rememberDecoratedNavEntries(
+            backStack = stack,
+            entryDecorators = listOf(saveableDecorator),
+            entryProvider = entryProvider {
+                entry<ConnectedRoute.Overview> {
+                    OverviewScreen(bottomInset = bottomInset)
+                }
+                entry<ConnectedRoute.Schedule> {
+                    ScheduleScreen(bottomInset = bottomInset)
+                }
+                entry<ConnectedRoute.Classes> {
+                    ComingSoonPanel(ConnectedTab.Classes)
+                }
+                entry<ConnectedRoute.MessagesList> {
+                    MessagesScreen(
+                        bottomInset = bottomInset,
+                        onOpen = { id, seed ->
+                            messagesVm.onIntent(MessagesIntent.OpenMessage(id, seed))
+                            navigator.navigate(ConnectedRoute.MessageDetail(id))
+                        },
+                    )
+                }
+                entry<ConnectedRoute.MessageDetail> { route ->
+                    MessageDetailRoute(
+                        id = route.id,
+                        vm = messagesVm,
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Me> {
+                    MeScreen(onLoggedOut = onLoggedOut, bottomInset = bottomInset)
+                }
+            },
         )
+    }
+
+    CompositionLocalProvider(LocalConnectedNavigator provides navigator) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .then(
+                        if (backdrop != null) {
+                            Modifier.drawWithContent {
+                                // Record the (sharp) screen content into the layer
+                                // — the layer applies its blur on playback when
+                                // the tab bar later calls `drawLayer(backdrop)`.
+                                backdrop.record { this@drawWithContent.drawContent() }
+                                drawContent()
+                            }
+                        } else Modifier,
+                    ),
+            ) {
+                NavDisplay(
+                    entries = entriesByTab.getValue(navigator.activeTab),
+                    onBack = { navigator.goBack() },
+                )
+            }
+
+            LiquidTabBar(
+                items = ConnectedTab.entries,
+                active = navigator.activeTab,
+                onChange = { navigator.selectTab(it) },
+                badges = unreadBadges,
+                backdrop = backdrop,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    // Nav bars handle the gesture/3-button bar (any rotation);
+                    // horizontal display cutout keeps the bar off the notch when
+                    // the device is rotated to landscape. IME is intentionally
+                    // excluded so the bar stays under the keyboard.
+                    .windowInsetsPadding(
+                        WindowInsets.navigationBars
+                            .union(WindowInsets.displayCutout.only(WindowInsetsSides.Horizontal)),
+                    )
+                    .padding(horizontal = 14.dp, vertical = 22.dp),
+            )
+        }
     }
 }
 

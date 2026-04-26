@@ -1,12 +1,11 @@
 package dev.forcetower.unes.ui.feature.messages
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,10 +17,10 @@ import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsPadding
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,8 +29,17 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.drawBehind
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Rect
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Path
+import androidx.compose.ui.graphics.RectangleShape
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.graphics.drawscope.DrawScope
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -53,58 +61,49 @@ import java.time.LocalDateTime
 import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as KmpMessageFeedItem
 
 // Messages ("Mensagens") inbox — grouped by date bucket with filter chips at
-// the top. Tapping a row swaps the screen for `MessageDetailScreen`, which
-// keeps the floating tab bar visible (the JSX prototype's pattern).
+// the top. Tapping a row pushes `MessageDetail` onto the Messages tab's back
+// stack (see `ConnectedNavigator`), which keeps the floating tab bar visible
+// and lets system back / predictive back pop it like a native nav stack.
 //
 // Mirrors `MessagesScreen` in `screens-messages.jsx` and `MessagesListView`
 // on iOS. Driven by `MessagesViewModel`, which subscribes to the KMP inbox
-// flow and starts a child detail subscription whenever a row is opened.
+// flow; the per-message detail flow is started by `MessageDetailRoute` on
+// composition and torn down on dispose.
 @Composable
 internal fun MessagesScreen(
+    onOpen: (id: String, seed: KmpMessageFeedItem) -> Unit,
     bottomInset: Dp = 0.dp,
     modifier: Modifier = Modifier,
 ) {
     val vm: MessagesViewModel = hiltViewModel()
     val state by vm.state.collectAsStateWithLifecycle()
-    MessagesContent(
+    MessagesInbox(
         state = state,
         onIntent = vm::onIntent,
+        onOpen = onOpen,
         bottomInset = bottomInset,
         modifier = modifier,
     )
 }
 
 @Composable
-private fun MessagesContent(
+private fun MessagesInbox(
     state: MessagesUiState,
     onIntent: (MessagesIntent) -> Unit,
+    onOpen: (id: String, seed: KmpMessageFeedItem) -> Unit,
     bottomInset: Dp,
     modifier: Modifier = Modifier,
 ) {
     val roles = rememberMessageRoleStrings()
     Box(modifier = modifier.fillMaxSize()) {
-        val openSeed = state.openSeed
-        val openId = state.openMessageId
-        if (openId != null) {
-            val rendered = state.openDetail?.toUi(roles) ?: openSeed?.toUi(roles)
-            if (rendered != null) {
-                MessageDetailScreen(
-                    message = rendered,
-                    onBack = { onIntent(MessagesIntent.CloseMessage) },
-                    onAppear = { onIntent(MessagesIntent.MarkRead(rendered.id)) },
-                    bottomInset = bottomInset,
-                )
-            }
-        } else {
-            InboxList(
-                rawItems = state.rawItems,
-                filter = state.filter,
-                roles = roles,
-                onFilterChange = { onIntent(MessagesIntent.SetFilter(it)) },
-                onOpen = { id, seed -> onIntent(MessagesIntent.OpenMessage(id, seed)) },
-                bottomInset = bottomInset,
-            )
-        }
+        InboxList(
+            rawItems = state.rawItems,
+            filter = state.filter,
+            roles = roles,
+            onFilterChange = { onIntent(MessagesIntent.SetFilter(it)) },
+            onOpen = onOpen,
+            bottomInset = bottomInset,
+        )
     }
 }
 
@@ -125,7 +124,7 @@ private fun InboxList(
         MessageFilter.entries.associateWith { f -> messages.count(f::matches) }
     }
     val unreadCount = remember(messages) { messages.count { it.unread } }
-    val filtered = messages.filter(filter::matches)
+    val filtered = remember(messages, filter) { messages.filter(filter::matches) }
     val now = remember(messages) { LocalDateTime.now() }
     val buckets = remember(filtered, now) { groupByBucket(filtered, now) }
 
@@ -138,43 +137,58 @@ private fun InboxList(
             AmbientMeshTop(surface = surface)
         }
 
-        Column(
+        LazyColumn(
             modifier = Modifier
                 .fillMaxSize()
-                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal))
-                .verticalScroll(rememberScrollState())
-                .padding(bottom = bottomInset),
+                .windowInsetsPadding(WindowInsets.safeDrawing.only(WindowInsetsSides.Horizontal)),
+            contentPadding = PaddingValues(bottom = bottomInset + 32.dp),
         ) {
-            MessagesHeader(
-                unreadCount = unreadCount,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 20),
-            )
-
-            FilterChipRow(
-                active = filter,
-                counts = counts,
-                onChange = onFilterChange,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(top = 4.dp, bottom = 6.dp)
-                    .fadeUpOnAppear(delayMs = 100),
-            )
-
-            if (buckets.isEmpty()) {
-                EmptyState()
-            } else {
-                buckets.forEachIndexed { index, bucket ->
-                    BucketCard(
-                        bucket = bucket,
-                        onOpen = { message ->
-                            seedById[message.id]?.let { seed -> onOpen(message.id, seed) }
-                        },
-                        modifier = Modifier.fadeUpOnAppear(delayMs = 180 + index * 60),
-                    )
-                }
+            item("messages-header") {
+                MessagesHeader(
+                    unreadCount = unreadCount,
+                    modifier = Modifier.fadeUpOnAppear(delayMs = 20),
+                )
+            }
+            item("messages-filter") {
+                FilterChipRow(
+                    active = filter,
+                    counts = counts,
+                    onChange = onFilterChange,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(top = 4.dp, bottom = 6.dp)
+                        .fadeUpOnAppear(delayMs = 100),
+                )
             }
 
-            Spacer(Modifier.height(32.dp))
+            if (buckets.isEmpty()) {
+                item("messages-empty") { EmptyState() }
+            } else {
+                buckets.forEachIndexed { index, bucket ->
+                    item(key = "bucket-${bucket.bucket.name}-header") {
+                        BucketHeader(
+                            label = stringResource(bucket.bucket.labelRes),
+                            count = bucket.items.size,
+                            modifier = Modifier.fadeUpOnAppear(delayMs = 180 + index * 60),
+                        )
+                    }
+                    val rows = bucket.items
+                    val lastIndex = rows.lastIndex
+                    itemsIndexed(
+                        items = rows,
+                        key = { _, m -> m.id },
+                    ) { i, m ->
+                        BucketRow(
+                            message = m,
+                            isFirst = i == 0,
+                            isLast = i == lastIndex,
+                            onOpen = { msg ->
+                                seedById[msg.id]?.let { seed -> onOpen(msg.id, seed) }
+                            },
+                        )
+                    }
+                }
+            }
         }
     }
 }
@@ -272,48 +286,140 @@ private fun UnreadBadge(count: Int) {
     }
 }
 
+// One LazyColumn item per message. The bucket "card" frame (rounded
+// corners, side borders, top/bottom edges, inter-row dividers) is drawn
+// per row via `drawBucketEdges` so adjacent rows visually compose into a
+// single bordered card without needing a shared parent layout.
 @Composable
-private fun BucketCard(
-    bucket: BucketGroup,
+private fun BucketRow(
+    message: Message,
+    isFirst: Boolean,
+    isLast: Boolean,
     onOpen: (Message) -> Unit,
-    modifier: Modifier = Modifier,
 ) {
     val card = MaterialTheme.melon.surface.card
     val cardLine = MaterialTheme.melon.surface.cardLine
     val line = MaterialTheme.melon.surface.line
+    val shape = remember(isFirst, isLast) { bucketRowShape(isFirst, isLast) }
 
-    Column(modifier = modifier) {
-        BucketHeader(label = stringResource(bucket.bucket.labelRes), count = bucket.items.size)
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(horizontal = 12.dp)
+            .clip(shape)
+            .background(card)
+            .drawBehind {
+                drawBucketEdges(
+                    isFirst = isFirst,
+                    isLast = isLast,
+                    cardLine = cardLine,
+                    line = line,
+                )
+            },
+    ) {
+        MessageRow(message = message, onOpen = onOpen)
+    }
+}
 
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp)
-                .clip(RoundedCornerShape(18.dp))
-                .background(card)
-                .border(1.dp, cardLine, RoundedCornerShape(18.dp)),
-        ) {
-            bucket.items.forEachIndexed { i, m ->
-                MessageRow(message = m, onOpen = onOpen)
-                if (i < bucket.items.size - 1) {
-                    Box(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(1.dp)
-                            .background(line),
-                    )
-                }
-            }
+private val BucketRowCornerRadius = 18.dp
+
+private fun bucketRowShape(isFirst: Boolean, isLast: Boolean): Shape {
+    val r = BucketRowCornerRadius
+    return when {
+        isFirst && isLast -> RoundedCornerShape(r)
+        isFirst -> RoundedCornerShape(topStart = r, topEnd = r, bottomStart = 0.dp, bottomEnd = 0.dp)
+        isLast -> RoundedCornerShape(topStart = 0.dp, topEnd = 0.dp, bottomStart = r, bottomEnd = r)
+        else -> RectangleShape
+    }
+}
+
+private fun DrawScope.drawBucketEdges(
+    isFirst: Boolean,
+    isLast: Boolean,
+    cardLine: Color,
+    line: Color,
+) {
+    val strokePx = 1.dp.toPx()
+    val radiusPx = BucketRowCornerRadius.toPx()
+    val w = size.width
+    val h = size.height
+    val inset = strokePx / 2f
+    val stroke = Stroke(width = strokePx)
+
+    drawLine(
+        color = cardLine,
+        start = Offset(inset, if (isFirst) radiusPx else 0f),
+        end = Offset(inset, if (isLast) h - radiusPx else h),
+        strokeWidth = strokePx,
+    )
+    drawLine(
+        color = cardLine,
+        start = Offset(w - inset, if (isFirst) radiusPx else 0f),
+        end = Offset(w - inset, if (isLast) h - radiusPx else h),
+        strokeWidth = strokePx,
+    )
+
+    val arcSize = Size(2f * radiusPx - strokePx, 2f * radiusPx - strokePx)
+
+    if (isFirst) {
+        val topPath = Path().apply {
+            moveTo(inset, radiusPx)
+            arcTo(
+                rect = Rect(offset = Offset(inset, inset), size = arcSize),
+                startAngleDegrees = 180f,
+                sweepAngleDegrees = 90f,
+                forceMoveTo = false,
+            )
+            lineTo(w - radiusPx, inset)
+            arcTo(
+                rect = Rect(offset = Offset(w - 2f * radiusPx + inset, inset), size = arcSize),
+                startAngleDegrees = 270f,
+                sweepAngleDegrees = 90f,
+                forceMoveTo = false,
+            )
         }
+        drawPath(topPath, color = cardLine, style = stroke)
+    }
+
+    if (isLast) {
+        val bottomPath = Path().apply {
+            moveTo(w - inset, h - radiusPx)
+            arcTo(
+                rect = Rect(
+                    offset = Offset(w - 2f * radiusPx + inset, h - 2f * radiusPx + inset),
+                    size = arcSize,
+                ),
+                startAngleDegrees = 0f,
+                sweepAngleDegrees = 90f,
+                forceMoveTo = false,
+            )
+            lineTo(radiusPx, h - inset)
+            arcTo(
+                rect = Rect(offset = Offset(inset, h - 2f * radiusPx + inset), size = arcSize),
+                startAngleDegrees = 90f,
+                sweepAngleDegrees = 90f,
+                forceMoveTo = false,
+            )
+        }
+        drawPath(bottomPath, color = cardLine, style = stroke)
+    }
+
+    if (!isLast) {
+        drawLine(
+            color = line,
+            start = Offset(0f, h - inset),
+            end = Offset(w, h - inset),
+            strokeWidth = strokePx,
+        )
     }
 }
 
 @Composable
-private fun BucketHeader(label: String, count: Int) {
+private fun BucketHeader(label: String, count: Int, modifier: Modifier = Modifier) {
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val line = MaterialTheme.melon.surface.line
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .padding(top = 18.dp, bottom = 6.dp),
@@ -380,9 +486,10 @@ private fun groupByBucket(messages: List<Message>, now: LocalDateTime): List<Buc
 @Composable
 private fun MessagesScreenPreview() {
     MelonTheme {
-        MessagesContent(
+        MessagesInbox(
             state = MessagesFixtures.previewState(),
             onIntent = {},
+            onOpen = { _, _ -> },
             bottomInset = 0.dp,
         )
     }

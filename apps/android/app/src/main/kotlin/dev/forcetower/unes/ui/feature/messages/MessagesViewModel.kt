@@ -1,6 +1,5 @@
 package dev.forcetower.unes.ui.feature.messages
 
-import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
@@ -21,6 +20,10 @@ import dev.forcetower.melon.feature.messages.domain.model.MessageFeedItem as Kmp
 // per-message detail flow is started/cancelled as a child job whenever a row
 // is opened. Mark-as-read is idempotent on the KMP side, so list-tap and
 // detail-appear can both call it without coordinating.
+//
+// Open/close are driven from `MessageDetailRoute`'s composition lifecycle,
+// not stored in `SavedStateHandle` — the route itself lives on the Messages
+// tab's back stack and is restored across process death by Nav3.
 internal sealed interface MessagesIntent : UiIntent {
     data class OpenMessage(val id: String, val seed: KmpMessageFeedItem) : MessagesIntent
     data object CloseMessage : MessagesIntent
@@ -44,7 +47,6 @@ internal class MessagesViewModel @Inject constructor(
     private val observeInbox: ObserveMessagesInboxUseCase,
     private val observeDetail: ObserveMessageDetailUseCase,
     private val markReadUseCase: MarkMessageAsReadUseCase,
-    private val savedStateHandle: SavedStateHandle,
 ) : MviViewModel<MessagesUiState, MessagesIntent, MessagesEffect>(MessagesUiState()) {
 
     private var detailJob: Job? = null
@@ -54,15 +56,6 @@ internal class MessagesViewModel @Inject constructor(
             observeInbox().collect { items ->
                 setState { copy(rawItems = items, isLoading = false) }
             }
-        }
-        savedStateHandle.get<String>(KEY_OPEN_ID)?.let { restored ->
-            // Re-attach a detail subscription after process death — we don't
-            // have the original seed, so the screen falls back to whatever
-            // the detail flow emits first. Initial detail is null until the
-            // flow lands; the row card itself is gone but the detail screen
-            // still shows the back button + its own ambient glow.
-            setState { copy(openMessageId = restored) }
-            startDetail(restored)
         }
     }
 
@@ -76,7 +69,6 @@ internal class MessagesViewModel @Inject constructor(
     }
 
     private fun open(id: String, seed: KmpMessageFeedItem) {
-        savedStateHandle[KEY_OPEN_ID] = id
         setState { copy(openMessageId = id, openSeed = seed, openDetail = null) }
         startDetail(id)
         markRead(id)
@@ -85,7 +77,6 @@ internal class MessagesViewModel @Inject constructor(
     private fun close() {
         detailJob?.cancel()
         detailJob = null
-        savedStateHandle.remove<String>(KEY_OPEN_ID)
         setState { copy(openMessageId = null, openSeed = null, openDetail = null) }
     }
 
@@ -100,9 +91,5 @@ internal class MessagesViewModel @Inject constructor(
 
     private fun markRead(id: String) {
         viewModelScope.launch { runCatching { markReadUseCase.invoke(id) } }
-    }
-
-    private companion object {
-        const val KEY_OPEN_ID = "messages.openMessageId"
     }
 }
