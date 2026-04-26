@@ -22,6 +22,7 @@ import androidx.compose.ui.graphics.Color
 data class MelonColors(
     val brand: MelonBrandColors,
     val surface: MelonSurfaceColors,
+    val palette: MelonPaletteColors,
 )
 
 @Immutable
@@ -43,6 +44,18 @@ data class MelonSurfaceColors(
     val pressedAccent: Color,
 )
 
+// Discipline tinting palette. Adaptive: same semantic slot in light/dark, but
+// dark values are lifted so chips/dots stay legible on `SurfaceDark`. Mirrors
+// iOS `ColorFor` (Overview/OverviewViewModel.swift) — keep the two in sync.
+@Immutable
+data class MelonPaletteColors(
+    val coral: Color,
+    val amber: Color,
+    val magenta: Color,
+    val teal: Color,
+    val plum: Color,
+)
+
 private val MelonBrandDefaults = MelonBrandColors(
     plum = BrandPlum,
     magenta = BrandMagenta,
@@ -60,6 +73,13 @@ internal fun melonColorsLight() = MelonColors(
         line = LineLight,
         pressedAccent = AccentPressLight,
     ),
+    palette = MelonPaletteColors(
+        coral = PaletteCoralLight,
+        amber = PaletteAmberLight,
+        magenta = PaletteMagentaLight,
+        teal = PaletteTealLight,
+        plum = PalettePlumLight,
+    ),
 )
 
 internal fun melonColorsDark() = MelonColors(
@@ -69,6 +89,13 @@ internal fun melonColorsDark() = MelonColors(
         cardLine = CardLineDark,
         line = LineDark,
         pressedAccent = AccentPressDark,
+    ),
+    palette = MelonPaletteColors(
+        coral = PaletteCoralDark,
+        amber = PaletteAmberDark,
+        magenta = PaletteMagentaDark,
+        teal = PaletteTealDark,
+        plum = PalettePlumDark,
     ),
 )
 

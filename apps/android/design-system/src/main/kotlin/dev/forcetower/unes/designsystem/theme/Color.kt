@@ -45,3 +45,19 @@ internal val AccentLight = BrandCoral
 internal val AccentPressLight = Color(0xFFC94538)
 internal val AccentDark = BrandAmber
 internal val AccentPressDark = Color(0xFFE88A1D)
+
+// Discipline palette — adaptive accents used to tint discipline cards, "AGORA"
+// chips, schedule blocks, and timeline dots. Light values match the brand
+// hexes; dark values are lifted so the same semantic ("CALC is teal") still
+// reads on `SurfaceDark`. Mirrors iOS `ColorFor.{coral, amber, magenta, teal,
+// plum}` from `OverviewViewModel.swift`.
+internal val PaletteCoralLight = BrandCoral
+internal val PaletteCoralDark = Color(0xFFF27E6E)
+internal val PaletteAmberLight = BrandAmber
+internal val PaletteAmberDark = BrandAmber
+internal val PaletteMagentaLight = BrandMagenta
+internal val PaletteMagentaDark = Color(0xFFD46299)
+internal val PaletteTealLight = Color(0xFF3B9EAE)
+internal val PaletteTealDark = Color(0xFF5BB8C6)
+internal val PalettePlumLight = BrandPlum
+internal val PalettePlumDark = Color(0xFFB39DDB)

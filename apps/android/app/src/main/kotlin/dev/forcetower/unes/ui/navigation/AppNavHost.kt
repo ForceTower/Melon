@@ -8,7 +8,7 @@ import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
 import dev.forcetower.unes.R
-import dev.forcetower.unes.ui.feature.home.HomeScreen
+import dev.forcetower.unes.ui.feature.connected.ConnectedScreen
 import dev.forcetower.unes.ui.feature.onboarding.intro.IntroCarouselScreen
 import dev.forcetower.unes.ui.feature.onboarding.login.LoginScreen
 import dev.forcetower.unes.ui.feature.onboarding.ready.ReadyScreen
@@ -33,7 +33,7 @@ fun AppNavHost() {
         entryProvider = entryProvider {
             entry<AppRoute.Splash> {
                 SplashScreen(
-                    onGoHome = { replace(AppRoute.Home) },
+                    onGoHome = { replace(AppRoute.Connected) },
                     onGoOnboarding = { replace(AppRoute.Welcome) },
                 )
             }
@@ -68,10 +68,10 @@ fun AppNavHost() {
             entry<AppRoute.Ready> { route ->
                 ReadyScreen(
                     firstName = route.firstName,
-                    onEnter = { replace(AppRoute.Home) },
+                    onEnter = { replace(AppRoute.Connected) },
                 )
             }
-            entry<AppRoute.Home> { HomeScreen() }
+            entry<AppRoute.Connected> { ConnectedScreen() }
         },
     )
 }

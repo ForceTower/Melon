@@ -146,4 +146,86 @@
 
     <string name="onboarding_ready_cta">Ver meu semestre</string>
     <!-- endregion -->
+
+    <!-- region Connected · Tab bar -->
+    <string name="connected_tab_overview">Hoje</string>
+    <string name="connected_tab_schedule">Horário</string>
+    <string name="connected_tab_classes">Turmas</string>
+    <string name="connected_tab_messages">Mensagens</string>
+    <string name="connected_tab_me">Eu</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Header -->
+    <string name="overview_greeting_morning">Bom dia</string>
+    <string name="overview_greeting_afternoon">Boa tarde</string>
+    <string name="overview_greeting_evening">Boa noite</string>
+    <!-- "{greeting}, {name}." — name styled italic + accent at the call site. -->
+    <string name="overview_greeting_format">%1$s, %2$s</string>
+    <string name="overview_default_user">Mariana</string>
+    <string name="overview_date_eyebrow_prefix">◦</string>
+    <string name="overview_search_label">Buscar</string>
+    <string name="overview_avatar_label">Sua conta</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Now card -->
+    <!-- "próxima aula · em {countdown}" — eyebrow above the next class title. -->
+    <string name="overview_now_eyebrow">próxima aula · em %1$s</string>
+    <string name="overview_now_countdown_min">%1$dmin</string>
+    <string name="overview_now_countdown_hour_min">%1$dh %2$dmin</string>
+    <string name="overview_now_room_label">sala %1$s</string>
+    <string name="overview_now_prof_prefix">Prof.</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Today timeline -->
+    <string name="overview_today_title">Seu dia</string>
+    <string name="overview_today_week_action">semana</string>
+    <string name="overview_today_state_now">AGORA</string>
+    <string name="overview_today_room_format">sala %1$s</string>
+    <string name="overview_today_topic_format">“%1$s”</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Tiles -->
+    <string name="overview_tile_grade_eyebrow">◦ coeficiente</string>
+    <string name="overview_tile_grade_decimal_separator">,</string>
+    <!-- "+0,3 vs 2025.2" — split into delta + comparison so the styles differ. -->
+    <string name="overview_tile_grade_delta_format">%1$s</string>
+    <string name="overview_tile_grade_comparison_format">vs %1$s</string>
+    <string name="overview_tile_grade_empty_value">—</string>
+    <string name="overview_tile_grade_empty_caption">em breve</string>
+
+    <string name="overview_tile_messages_eyebrow">◦ recados</string>
+    <string name="overview_tile_messages_unread_caption">não lidos</string>
+    <string name="overview_tile_messages_empty_preview">caixa de entrada em dia</string>
+    <string name="overview_tile_messages_preview_full">%1$s · %2$s</string>
+
+    <string name="overview_tile_tests_eyebrow">◦ próxima prova</string>
+    <plurals name="overview_tile_tests_days_unit">
+        <item quantity="one">dia</item>
+        <item quantity="other">dias</item>
+    </plurals>
+    <string name="overview_tile_tests_subject_format">%1$s · %2$s</string>
+    <string name="overview_tile_tests_empty_value">—</string>
+    <string name="overview_tile_tests_empty_caption">sem provas agendadas</string>
+
+    <string name="overview_tile_attendance_eyebrow">◦ frequência</string>
+    <string name="overview_tile_attendance_percent_format">%1$d</string>
+    <string name="overview_tile_attendance_percent_suffix">%</string>
+    <plurals name="overview_tile_attendance_allowed">
+        <item quantity="one">%d falta permitida</item>
+        <item quantity="other">%d faltas permitidas</item>
+    </plurals>
+    <string name="overview_tile_attendance_footer_format">%1$d dias · %2$s</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Disciplines strip -->
+    <string name="overview_disciplines_eyebrow">◦ semestre %1$s</string>
+    <string name="overview_disciplines_title">Suas turmas</string>
+    <string name="overview_disciplines_status_partial">PARCIAL</string>
+    <string name="overview_disciplines_grade_empty">—</string>
+    <!-- endregion -->
+
+    <!-- region Overview · Footer -->
+    <!-- Eyebrow stamp at the bottom of the scroll: "◦ atualizado há 2 min ◦". -->
+    <string name="overview_last_updated_format">◦ atualizado há %1$d min ◦</string>
+    <!-- endregion -->
 </resources>

@@ -12,5 +12,5 @@ sealed interface AppRoute : NavKey {
     @Serializable data object Login : AppRoute
     @Serializable data class Sync(val firstName: String) : AppRoute
     @Serializable data class Ready(val firstName: String) : AppRoute
-    @Serializable data object Home : AppRoute
+    @Serializable data object Connected : AppRoute
 }
