@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -52,10 +55,9 @@ internal fun OverviewHeader(
     Row(
         modifier = modifier
             .fillMaxWidth()
+            .windowInsetsPadding(WindowInsets.statusBars)
             .padding(horizontal = 24.dp)
-            // Top inset clears the status bar in edge-to-edge mode and matches
-            // the prototype's `padding: '60px 24px 26px'` on `.home-in`.
-            .padding(top = 60.dp, bottom = 26.dp),
+            .padding(top = 16.dp, bottom = 26.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(

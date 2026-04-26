@@ -4,7 +4,6 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.LocalIndication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,6 +20,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Chat
+import androidx.compose.material.icons.automirrored.outlined.Chat
+import androidx.compose.material.icons.filled.GridView
+import androidx.compose.material.icons.filled.Home
+import androidx.compose.material.icons.filled.Layers
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.outlined.GridView
+import androidx.compose.material.icons.outlined.Home
+import androidx.compose.material.icons.outlined.Hub
+import androidx.compose.material.icons.outlined.Layers
+import androidx.compose.material.icons.outlined.Person
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -34,15 +46,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Rect
-import androidx.compose.ui.geometry.RoundRect
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.Path
-import androidx.compose.ui.graphics.StrokeCap
-import androidx.compose.ui.graphics.StrokeJoin
-import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.drawscope.translate
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.graphics.layer.GraphicsLayer
 import androidx.compose.ui.graphics.layer.drawLayer
 import androidx.compose.ui.layout.onGloballyPositioned
@@ -265,120 +271,18 @@ private fun BadgeBubble(
 
 @Composable
 private fun TabIcon(tab: ConnectedTab, color: Color, size: Dp, active: Boolean) {
-    val width = if (active) 1.8.dp else 1.5.dp
-    when (tab) {
-        ConnectedTab.Overview -> HomeGlyph(color, width, size)
-        ConnectedTab.Schedule -> GridGlyph(color, width, size)
-        ConnectedTab.Classes -> StackGlyph(color, width, size)
-        ConnectedTab.Messages -> ChatGlyph(color, width, size)
-        ConnectedTab.Me -> UserGlyph(color, width, size)
-    }
+    Icon(
+        imageVector = imageVectorFor(tab, active),
+        contentDescription = null,
+        tint = color,
+        modifier = Modifier.size(size),
+    )
 }
 
-@Composable
-private fun HomeGlyph(color: Color, width: Dp, size: Dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val s = Stroke(width = width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-        val p = Path().apply {
-            moveTo(w * (3f / 22f), h * (10f / 22f))
-            lineTo(w * (11f / 22f), h * (4f / 22f))
-            lineTo(w * (19f / 22f), h * (10f / 22f))
-            lineTo(w * (19f / 22f), h * (18f / 22f))
-            lineTo(w * (15.5f / 22f), h * (19.5f / 22f))
-            lineTo(w * (15.5f / 22f), h * (13f / 22f))
-            lineTo(w * (8.5f / 22f), h * (13f / 22f))
-            lineTo(w * (8.5f / 22f), h * (19.5f / 22f))
-            lineTo(w * (4.5f / 22f), h * (18f / 22f))
-            close()
-        }
-        drawPath(p, color = color, style = s)
-    }
-}
-
-@Composable
-private fun GridGlyph(color: Color, width: Dp, size: Dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val s = Stroke(width = width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-        listOf(
-            Offset(3f, 3f), Offset(12f, 3f), Offset(3f, 12f), Offset(12f, 12f),
-        ).forEach { o ->
-            val rect = Rect(
-                offset = Offset(w * (o.x / 22f), h * (o.y / 22f)),
-                size = Size(w * (7f / 22f), h * (7f / 22f)),
-            )
-            val rounded = RoundRect(rect, androidx.compose.ui.geometry.CornerRadius(w * (1.5f / 22f)))
-            drawPath(Path().apply { addRoundRect(rounded) }, color = color, style = s)
-        }
-    }
-}
-
-@Composable
-private fun StackGlyph(color: Color, width: Dp, size: Dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val s = Stroke(width = width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-        val top = Path().apply {
-            moveTo(w * (11f / 22f), h * (3f / 22f))
-            lineTo(w * (3f / 22f), h * (7f / 22f))
-            lineTo(w * (11f / 22f), h * (11f / 22f))
-            lineTo(w * (19f / 22f), h * (7f / 22f))
-            close()
-        }
-        drawPath(top, color = color, style = s)
-        listOf(11f, 15f).forEach { y ->
-            val mid = Path().apply {
-                moveTo(w * (3f / 22f), h * (y / 22f))
-                lineTo(w * (11f / 22f), h * ((y + 4f) / 22f))
-                lineTo(w * (19f / 22f), h * (y / 22f))
-            }
-            drawPath(mid, color = color, style = s)
-        }
-    }
-}
-
-@Composable
-private fun ChatGlyph(color: Color, width: Dp, size: Dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val s = Stroke(width = width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-        val rect = Path().apply {
-            val r = w * (2f / 22f)
-            val rounded = RoundRect(
-                rect = Rect(Offset(w * (4f / 22f), h * (3.5f / 22f)), Size(w * (14f / 22f), h * (11f / 22f))),
-                cornerRadius = androidx.compose.ui.geometry.CornerRadius(r),
-            )
-            addRoundRect(rounded)
-            moveTo(w * (5f / 22f), h * (18f / 22f))
-            lineTo(w * (5f / 22f), h * (14.5f / 22f))
-            moveTo(w * (5f / 22f), h * (18f / 22f))
-            lineTo(w * (9f / 22f), h * (14.5f / 22f))
-        }
-        drawPath(rect, color = color, style = s)
-    }
-}
-
-@Composable
-private fun UserGlyph(color: Color, width: Dp, size: Dp) {
-    Canvas(modifier = Modifier.size(size)) {
-        val w = this.size.width
-        val h = this.size.height
-        val s = Stroke(width = width.toPx(), cap = StrokeCap.Round, join = StrokeJoin.Round)
-        drawCircle(
-            color = color,
-            radius = w * (3.5f / 22f),
-            center = Offset(w * (11f / 22f), h * (8f / 22f)),
-            style = s,
-        )
-        val shoulders = Path().apply {
-            moveTo(w * (4.5f / 22f), h * (18f / 22f))
-            quadraticTo(w * 0.5f, h * (12f / 22f), w * (17.5f / 22f), h * (18f / 22f))
-        }
-        drawPath(shoulders, color = color, style = s)
-    }
+private fun imageVectorFor(tab: ConnectedTab, active: Boolean): ImageVector = when (tab) {
+    ConnectedTab.Overview -> if (active) Icons.Filled.Home else Icons.Outlined.Home
+    ConnectedTab.Schedule ->if (active) Icons.Filled.GridView else Icons.Outlined.GridView
+    ConnectedTab.Classes -> if (active) Icons.Filled.Layers else Icons.Outlined.Layers
+    ConnectedTab.Messages -> if (active) Icons.AutoMirrored.Filled.Chat else Icons.AutoMirrored.Outlined.Chat
+    ConnectedTab.Me -> if (active) Icons.Filled.Person else Icons.Outlined.Person
 }

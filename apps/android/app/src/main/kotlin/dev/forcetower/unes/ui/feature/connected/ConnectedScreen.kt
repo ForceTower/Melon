@@ -5,8 +5,12 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.windowInsetsPadding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,6 +44,7 @@ import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 fun ConnectedScreen(modifier: Modifier = Modifier) {
     var active by rememberSaveable { mutableStateOf(ConnectedTab.Overview) }
     val unreadBadges = remember { mapOf(ConnectedTab.Messages to 2) }
+    val navBarBottom = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
 
     // Backdrop captured into an offscreen layer with `BlurEffect` set so the
     // tab bar can replay it pre-blurred — Compose's native equivalent of CSS
@@ -73,7 +78,7 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
                 ),
         ) {
             when (active) {
-                ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBottomInset)
+                ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBlockHeight + navBarBottom)
                 else -> ComingSoonPanel(active)
             }
         }
@@ -86,12 +91,17 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
             backdrop = backdrop,
             modifier = Modifier
                 .align(Alignment.BottomCenter)
+                .windowInsetsPadding(WindowInsets.navigationBars)
                 .padding(horizontal = 14.dp, vertical = 22.dp),
         )
     }
 }
 
-private val TabBarBottomInset = 110.dp
+// Visual height of the floating tab bar block (bar + 22dp top/bottom design
+// margin). Content scroll views add this plus the live navigation-bar inset
+// to keep the last item from sliding under the bar on devices with a
+// 3-button nav bar.
+private val TabBarBlockHeight = 110.dp
 
 // 40px Gaussian σ — same order of magnitude as the JSX prototype's
 // `backdrop-filter: blur(20px) saturate(180%)` (Compose's BlurEffect uses
