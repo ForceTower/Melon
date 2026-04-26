@@ -22,7 +22,10 @@ struct DayColumn: View {
                 .padding(.horizontal, 30)
                 .padding(.vertical, 60)
                 .contentShape(Rectangle())
-                .onLongPressGesture(minimumDuration: 0.55) {
+                // Held distinctly longer than the iOS system long-press
+                // (~0.5s) so an accidental hold won't open the easter egg
+                // — discovery should feel like a deliberate secret.
+                .onLongPressGesture(minimumDuration: 1.2) {
                     showFolioRunner = true
                 }
                 .sensoryFeedback(.impact(weight: .medium), trigger: showFolioRunner)
