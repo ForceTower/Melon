@@ -79,3 +79,20 @@ internal val PaletteIndigoLight = Color(0xFF4A5FB8)
 internal val PaletteIndigoDark = Color(0xFF8A9EE8)
 internal val PaletteMustardLight = Color(0xFFA0741F)
 internal val PaletteMustardDark = Color(0xFFD4A84C)
+
+// Verdict hero gradient pairs (`MelonVerdictColors`). Hand-tuned dark stops
+// for each verdict outcome family in the Final Countdown screen — passed
+// reads as a deep emerald wash, failed/impossible as plum, final as a brick
+// red, borderline as warm amber-brown, and ontrack/empty as a teal slate.
+// Mirrors iOS `backgroundGradient` (FCVerdictHero.swift). These are dark in
+// every theme because the hero card is its own world.
+internal val VerdictPassedTop = Color(0xFF1A3A28)
+internal val VerdictPassedBottom = Color(0xFF0F2418)
+internal val VerdictFailedTop = Color(0xFF2A1624)
+internal val VerdictFailedBottom = Color(0xFF180D1A)
+internal val VerdictFinalTop = Color(0xFF3A1E1A)
+internal val VerdictFinalBottom = Color(0xFF201110)
+internal val VerdictBorderlineTop = Color(0xFF3A2A12)
+internal val VerdictBorderlineBottom = Color(0xFF201608)
+internal val VerdictNeutralTop = Color(0xFF1A2A2F)
+internal val VerdictNeutralBottom = Color(0xFF0E1618)

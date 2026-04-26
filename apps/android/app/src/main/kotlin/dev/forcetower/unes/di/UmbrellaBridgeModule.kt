@@ -12,10 +12,13 @@ import dev.forcetower.melon.core.session.domain.SessionStore
 import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveActiveSemesterCodeUseCase
+import dev.forcetower.melon.feature.calendar.domain.usecase.ObserveCalendarEventsUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplineDetailUseCase
 import dev.forcetower.melon.feature.disciplines.domain.usecase.ObserveDisciplinesListUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveCurrentCredentialsUseCase
 import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.MarkMessageAsReadUseCase
 import dev.forcetower.melon.feature.messages.domain.usecase.ObserveMessageDetailUseCase
@@ -32,6 +35,8 @@ import dev.forcetower.melon.feature.overview.domain.usecase.ObserveTodayTimeline
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveUnreadMessagesTileUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.BackfillMirrorUseCase
 import dev.forcetower.melon.feature.schedule.domain.usecase.ObserveScheduleWeekUseCase
+import dev.forcetower.melon.feature.settings.domain.usecase.ObserveSettingsUseCase
+import dev.forcetower.melon.feature.settings.domain.usecase.UpdateSettingsUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.FetchOnboardingStatusUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.PingActivityUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.RefreshSessionUseCase
@@ -158,4 +163,22 @@ object UmbrellaBridgeModule {
         graph.observeMessageDetailUseCase
     @Provides fun provideMarkMessageAsReadUseCase(graph: UmbrellaGraph): MarkMessageAsReadUseCase =
         graph.markMessageAsReadUseCase
+
+    // Configurações — credential vault read flow lives in `feature/me`, the
+    // user settings flow + patch live in `feature/settings`. `observeLastSync`
+    // is already provided in the Overview block above and reused here.
+    @Provides fun provideObserveCurrentCredentialsUseCase(graph: UmbrellaGraph): ObserveCurrentCredentialsUseCase =
+        graph.observeCurrentCredentialsUseCase
+    @Provides fun provideObserveSettingsUseCase(graph: UmbrellaGraph): ObserveSettingsUseCase =
+        graph.observeSettingsUseCase
+    @Provides fun provideUpdateSettingsUseCase(graph: UmbrellaGraph): UpdateSettingsUseCase =
+        graph.updateSettingsUseCase
+
+    // Calendário — academic-calendar events feed for the agenda + the
+    // active-semester code that powers the header eyebrow. Mirrors iOS
+    // `CalendarUseCases` in `CalendarFactory.swift`.
+    @Provides fun provideObserveCalendarEventsUseCase(graph: UmbrellaGraph): ObserveCalendarEventsUseCase =
+        graph.observeCalendarEventsUseCase
+    @Provides fun provideObserveActiveSemesterCodeUseCase(graph: UmbrellaGraph): ObserveActiveSemesterCodeUseCase =
+        graph.observeActiveSemesterCodeUseCase
 }

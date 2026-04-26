@@ -51,6 +51,9 @@ import dev.forcetower.unes.ui.feature.messages.MessagesScreen
 import dev.forcetower.unes.ui.feature.messages.MessagesViewModel
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
+import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
+import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
+import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 
 // The authenticated shell — hosts the liquid tab bar and routes to each
 // feature's first screen. Mirrors iOS `ConnectedView` in shape: enum-driven
@@ -152,6 +155,24 @@ fun ConnectedScreen(
                 }
                 entry<ConnectedRoute.Me>(metadata = TabRootMetadata) {
                     MeScreen(onLoggedOut = onLoggedOut, bottomInset = bottomInset)
+                }
+                entry<ConnectedRoute.Settings> {
+                    SettingsScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Calendar> {
+                    CalendarScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.FinalCountdown> {
+                    FinalCountdownScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
                 }
             },
         )

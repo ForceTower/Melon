@@ -20,6 +20,16 @@ internal sealed interface ConnectedRoute : NavKey {
     @Serializable data object MessagesList : ConnectedRoute
     @Serializable data class MessageDetail(val id: String) : ConnectedRoute
     @Serializable data object Me : ConnectedRoute
+    // Pushed onto the Me stack when the "Configurações" row is tapped — the
+    // editorial settings hub (credential vault + spoiler picker + per-row
+    // notification toggles). Mirrors iOS `SettingsView`.
+    @Serializable data object Settings : ConnectedRoute
+    // Pushed onto the active tab when the "Calendário" shortcut is tapped on
+    // the Me hub. No payload — the screen drives off the KMP events flow.
+    @Serializable data object Calendar : ConnectedRoute
+    // Pushed onto the active tab when the "Final Countdown" shortcut is tapped
+    // on the Me hub. Fixture-driven calculator — no payload, no KMP wiring.
+    @Serializable data object FinalCountdown : ConnectedRoute
 }
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute = when (this) {

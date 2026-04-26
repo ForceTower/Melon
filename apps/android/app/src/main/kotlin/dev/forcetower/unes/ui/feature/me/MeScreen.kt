@@ -41,6 +41,8 @@ import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.foundation.fadeUpOnAppear
 import dev.forcetower.unes.designsystem.foundation.scaleInOnAppear
+import dev.forcetower.unes.ui.feature.connected.ConnectedRoute
+import dev.forcetower.unes.ui.feature.connected.LocalConnectedNavigator
 import dev.forcetower.unes.ui.feature.me.components.AboutSheet
 import dev.forcetower.unes.ui.feature.me.components.IdentityCard
 import dev.forcetower.unes.ui.feature.me.components.LoggedOutView
@@ -81,6 +83,7 @@ internal fun MeScreen(
     var aboutOpen by rememberSaveable { mutableStateOf(false) }
 
     val context = LocalContext.current
+    val connectedNavigator = LocalConnectedNavigator.current
     val appInfo = rememberAppInfo()
     val feedbackRecipient = stringResource(R.string.me_feedback_recipient)
     val feedbackBody = stringResource(
@@ -152,7 +155,13 @@ internal fun MeScreen(
                     MeSectionLabel(label = stringResource(R.string.me_section_shortcuts))
                     ShortcutGrid(
                         shortcuts = pinned,
-                        onOpen = { /* shortcut routing — TODO once Calendar/Countdown land on Android */ },
+                        onOpen = { kind ->
+                            when (kind) {
+                                ShortcutKind.Calendar -> connectedNavigator.navigate(ConnectedRoute.Calendar)
+                                ShortcutKind.Countdown -> connectedNavigator.navigate(ConnectedRoute.FinalCountdown)
+                                else -> Unit
+                            }
+                        },
                     )
                 }
                 Spacer14()
@@ -163,6 +172,7 @@ internal fun MeScreen(
                         rows = settingsRows,
                         onSelect = { id ->
                             when (id) {
+                                SettingsRowKind.Settings -> connectedNavigator.navigate(ConnectedRoute.Settings)
                                 SettingsRowKind.About -> aboutOpen = true
                                 SettingsRowKind.Feedback -> launchFeedbackEmail(
                                     context = context,

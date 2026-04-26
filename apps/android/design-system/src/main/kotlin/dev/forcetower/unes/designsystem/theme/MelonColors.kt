@@ -24,6 +24,7 @@ data class MelonColors(
     val surface: MelonSurfaceColors,
     val palette: MelonPaletteColors,
     val fixed: MelonFixedColors,
+    val verdict: MelonVerdictColors,
 )
 
 // Tokens that don't flip with light/dark and aren't part of the brand identity
@@ -66,6 +67,24 @@ data class MelonSurfaceColors(
     val pressedAccent: Color,
 )
 
+// Hand-tuned dark gradient pairs used by the Final Countdown verdict hero.
+// Always painted dark regardless of system theme — the hero card is its own
+// world. One pair per verdict outcome family. Mirrors iOS `backgroundGradient`
+// in `FCVerdictHero.swift`.
+@Immutable
+data class MelonVerdictColors(
+    val passedTop: Color,
+    val passedBottom: Color,
+    val failedTop: Color,
+    val failedBottom: Color,
+    val finalTop: Color,
+    val finalBottom: Color,
+    val borderlineTop: Color,
+    val borderlineBottom: Color,
+    val neutralTop: Color,
+    val neutralBottom: Color,
+)
+
 // Discipline tinting palette. Adaptive: same semantic slot in light/dark, but
 // dark values are lifted so chips/dots stay legible on `SurfaceDark`. Mirrors
 // iOS `ColorFor` (Overview/OverviewViewModel.swift) — keep the two in sync.
@@ -99,6 +118,19 @@ private val MelonFixedDefaults = MelonFixedColors(
     okOnDark = OkOnDarkFixed,
 )
 
+private val MelonVerdictDefaults = MelonVerdictColors(
+    passedTop = VerdictPassedTop,
+    passedBottom = VerdictPassedBottom,
+    failedTop = VerdictFailedTop,
+    failedBottom = VerdictFailedBottom,
+    finalTop = VerdictFinalTop,
+    finalBottom = VerdictFinalBottom,
+    borderlineTop = VerdictBorderlineTop,
+    borderlineBottom = VerdictBorderlineBottom,
+    neutralTop = VerdictNeutralTop,
+    neutralBottom = VerdictNeutralBottom,
+)
+
 internal fun melonColorsLight() = MelonColors(
     brand = MelonBrandDefaults,
     surface = MelonSurfaceColors(
@@ -120,6 +152,7 @@ internal fun melonColorsLight() = MelonColors(
         mustard = PaletteMustardLight,
     ),
     fixed = MelonFixedDefaults,
+    verdict = MelonVerdictDefaults,
 )
 
 internal fun melonColorsDark() = MelonColors(
@@ -143,6 +176,7 @@ internal fun melonColorsDark() = MelonColors(
         mustard = PaletteMustardDark,
     ),
     fixed = MelonFixedDefaults,
+    verdict = MelonVerdictDefaults,
 )
 
 internal val LocalMelonColors = compositionLocalOf<MelonColors> {
