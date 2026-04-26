@@ -280,8 +280,31 @@ struct LoginView: View {
             .font(.system(size: 18, weight: .regular))
     }
 
-    private var termsFooter: Text {
-        Text("\(Text("Ao continuar, você concorda com nossos ").foregroundStyle(UNESColor.ink4))\(Text("Termos").foregroundStyle(UNESColor.ink2).underline())\(Text(" e ").foregroundStyle(UNESColor.ink4))\(Text("Privacidade").foregroundStyle(UNESColor.ink2).underline())\(Text(".").foregroundStyle(UNESColor.ink4))")
+    private var termsFooter: some View {
+        var string = AttributedString("Ao continuar, você concorda com nossos ")
+        string.foregroundColor = UNESColor.ink4
+
+        var terms = AttributedString("Termos")
+        terms.foregroundColor = UNESColor.ink2
+        terms.underlineStyle = .single
+        terms.link = URL(string: "https://u.forcetower.dev/terms/")
+        string.append(terms)
+
+        var middle = AttributedString(" e ")
+        middle.foregroundColor = UNESColor.ink4
+        string.append(middle)
+
+        var privacy = AttributedString("Privacidade")
+        privacy.foregroundColor = UNESColor.ink2
+        privacy.underlineStyle = .single
+        privacy.link = URL(string: "https://u.forcetower.dev/privacy/")
+        string.append(privacy)
+
+        var suffix = AttributedString(".")
+        suffix.foregroundColor = UNESColor.ink4
+        string.append(suffix)
+
+        return Text(string).tint(UNESColor.ink2)
     }
 
     private func submit() {

@@ -1,4 +1,100 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Melon</string>
+
+    <!-- region Onboarding · Splash -->
+    <string name="onboarding_splash_wordmark">unes</string>
+    <string name="onboarding_splash_caption">Universidade · Notas · Encontros · Semestre</string>
+    <string name="onboarding_splash_credit_prefix">para</string>
+    <string name="onboarding_splash_credit_university">UEFS</string>
+    <string name="onboarding_splash_credit_location">· Feira de Santana</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Welcome -->
+    <string name="onboarding_welcome_eyebrow">◦ Boas vindas ao UNES</string>
+    <string name="onboarding_welcome_headline_top">Seu semestre,</string>
+    <string name="onboarding_welcome_headline_accent">num só</string>
+    <string name="onboarding_welcome_headline_bottom">lugar.</string>
+    <string name="onboarding_welcome_body">Horários, notas, recados da coordenação e turmas da UEFS — tudo conectado à sua matrícula.</string>
+    <string name="onboarding_welcome_primary_cta">Conhecer o app</string>
+    <string name="onboarding_welcome_secondary_cta">Já tenho matrícula</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Intro carousel -->
+    <string name="onboarding_intro_back">Voltar</string>
+    <string name="onboarding_intro_skip">Pular</string>
+    <string name="onboarding_intro_skip_label">Pular introdução</string>
+    <string name="onboarding_intro_page_position">Página %1$d de %2$d</string>
+    <string name="onboarding_intro_continue">Continuar</string>
+    <string name="onboarding_intro_finish">Entrar na conta</string>
+
+    <string name="onboarding_intro_schedule_eyebrow">horário</string>
+    <string name="onboarding_intro_schedule_body">A grade da UEFS puxada direto do Portal. Aulas canceladas, salas trocadas e provas — tudo em tempo real.</string>
+    <string name="onboarding_intro_schedule_headline_top">Sua semana,</string>
+    <string name="onboarding_intro_schedule_headline_accent">organizada.</string>
+
+    <string name="onboarding_intro_grades_eyebrow">notas</string>
+    <string name="onboarding_intro_grades_body">Notas parciais, coeficiente e histórico. Sem precisar entrar no Portal pelo navegador toda semana.</string>
+    <string name="onboarding_intro_grades_headline_top">Acompanhe\nseu </string>
+    <string name="onboarding_intro_grades_headline_accent">desempenho.</string>
+
+    <string name="onboarding_intro_messages_eyebrow">recados</string>
+    <string name="onboarding_intro_messages_body">Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes.</string>
+    <string name="onboarding_intro_messages_headline_top">Tudo o que\nvocê </string>
+    <string name="onboarding_intro_messages_headline_accent">precisa saber.</string>
+
+    <string name="onboarding_intro_notifications_eyebrow">notificações</string>
+    <string name="onboarding_intro_notifications_body">Nota nova, recado de professor, material publicado, sala trocada — um toque no bolso antes de você abrir o app.</string>
+    <string name="onboarding_intro_notifications_headline_top">Avisa no </string>
+    <string name="onboarding_intro_notifications_headline_accent">instante</string>
+    <string name="onboarding_intro_notifications_headline_bottom">\nque acontece.</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Login -->
+    <string name="onboarding_login_eyebrow">◦ UEFS · UNES</string>
+    <string name="onboarding_login_headline_top">Entre com seu\n</string>
+    <string name="onboarding_login_headline_accent">usuário.</string>
+    <string name="onboarding_login_id_label">Usuário</string>
+    <string name="onboarding_login_id_placeholder">nome123</string>
+    <string name="onboarding_login_password_label">Senha</string>
+    <string name="onboarding_login_password_placeholder">••••••••</string>
+    <string name="onboarding_login_show_password">Mostrar senha</string>
+    <string name="onboarding_login_hide_password">Ocultar senha</string>
+    <string name="onboarding_login_forgot_password">Esqueci minha senha</string>
+    <string name="onboarding_login_forgot_password_label">Recuperar senha</string>
+    <string name="onboarding_login_submit">Entrar</string>
+    <string name="onboarding_login_or_separator">OU</string>
+    <string name="onboarding_login_passkey">Entrar com passkey</string>
+    <string name="onboarding_login_back">Voltar</string>
+    <string name="onboarding_login_terms_prefix">Ao continuar, você concorda com nossos </string>
+    <string name="onboarding_login_terms_link_terms">Termos</string>
+    <string name="onboarding_login_terms_separator"> e </string>
+    <string name="onboarding_login_terms_link_privacy">Privacidade</string>
+    <string name="onboarding_login_terms_suffix">.</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Sync -->
+    <string name="onboarding_sync_eyebrow">◦ PREPARANDO SEU SEMESTRE</string>
+    <string name="onboarding_sync_headline_top">Quase lá,</string>
+    <string name="onboarding_sync_default_user">estudante</string>
+    <string name="onboarding_sync_step_auth">Verificando matrícula</string>
+    <string name="onboarding_sync_step_profile">Carregando seu perfil</string>
+    <string name="onboarding_sync_step_classes">Conectando às suas turmas</string>
+    <string name="onboarding_sync_step_schedule">Montando seu horário</string>
+    <string name="onboarding_sync_step_grades">Baixando notas do semestre</string>
+    <string name="onboarding_sync_step_messages">Sincronizando recados</string>
+    <string name="onboarding_sync_footer">Isso levará alguns segundos na sua conexão.</string>
+    <!-- endregion -->
+
+    <!-- region Onboarding · Ready -->
+    <string name="onboarding_ready_eyebrow">◦ CONECTADO</string>
+    <string name="onboarding_ready_headline_top">Prontinho,</string>
+    <string name="onboarding_ready_default_user">estudante</string>
+    <string name="onboarding_ready_semester_summary">6 turmas · 24 créditos · semestre 2026.1</string>
+    <string name="onboarding_ready_next_class_label">PRÓXIMA AULA</string>
+    <string name="onboarding_ready_next_class_countdown">em 1h 12min</string>
+    <string name="onboarding_ready_next_class_name">Cálculo Diferencial II</string>
+    <string name="onboarding_ready_next_class_meta">10:20 · sala MT-14 · Prof. Adriana</string>
+    <string name="onboarding_ready_cta">Ver meu semestre</string>
+    <!-- endregion -->
 </resources>

@@ -24,6 +24,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
+import androidx.annotation.StringRes
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -44,6 +45,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -55,6 +57,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
@@ -64,15 +67,15 @@ import kotlin.math.roundToInt
 private val DarkBg = Color(0xFF1A0F28)
 private val SurfaceLight = Color(0xFFFBF7F2)
 
-private data class SyncStep(val key: String, val label: String)
+private data class SyncStep(val key: String, @StringRes val labelRes: Int)
 
 private val SYNC_STEPS = listOf(
-    SyncStep("auth", "Verificando matrícula"),
-    SyncStep("profile", "Carregando seu perfil"),
-    SyncStep("schedule", "Montando seu horário"),
-    SyncStep("classes", "Conectando às suas turmas"),
-    SyncStep("grades", "Baixando notas do semestre"),
-    SyncStep("msgs", "Sincronizando recados"),
+    SyncStep("auth", R.string.onboarding_sync_step_auth),
+    SyncStep("profile", R.string.onboarding_sync_step_profile),
+    SyncStep("classes", R.string.onboarding_sync_step_classes),
+    SyncStep("schedule", R.string.onboarding_sync_step_schedule),
+    SyncStep("grades", R.string.onboarding_sync_step_grades),
+    SyncStep("msgs", R.string.onboarding_sync_step_messages),
 )
 
 @Composable
@@ -116,7 +119,7 @@ fun SyncScreen(
                 .padding(start = 28.dp, end = 28.dp, top = 120.dp, bottom = 60.dp),
         ) {
             Text(
-                text = "◦ PREPARANDO SEU SEMESTRE",
+                text = stringResource(R.string.onboarding_sync_eyebrow),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 11.sp,
                     letterSpacing = 1.8.sp,
@@ -186,7 +189,7 @@ fun SyncScreen(
                             }
                         }
                         Text(
-                            text = s.label,
+                            text = stringResource(s.labelRes),
                             style = MaterialTheme.typography.bodyMedium.copy(
                                 fontSize = 14.sp,
                                 fontWeight = if (isActive) FontWeight.Medium else FontWeight.Normal,
@@ -208,7 +211,7 @@ fun SyncScreen(
             Spacer(Modifier.height(20.dp))
 
             Text(
-                text = "Isso leva cerca de 12 segundos na sua conexão.",
+                text = stringResource(R.string.onboarding_sync_footer),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 10.sp,
                     letterSpacing = 1.sp,
@@ -355,11 +358,15 @@ private fun StepSpinner(amber: Color) {
     }
 }
 
-private fun syncHeadline(userId: String, amber: Color): AnnotatedString =
-    buildAnnotatedString {
-        withStyle(SpanStyle(color = SurfaceLight)) { append("Quase lá,\n") }
+@Composable
+private fun syncHeadline(userId: String, amber: Color): AnnotatedString {
+    val top = stringResource(R.string.onboarding_sync_headline_top)
+    val fallback = stringResource(R.string.onboarding_sync_default_user)
+    return buildAnnotatedString {
+        withStyle(SpanStyle(color = SurfaceLight)) { append("$top\n") }
         withStyle(SpanStyle(color = amber, fontStyle = FontStyle.Italic)) {
-            append(userId.ifBlank { "estudante" })
+            append(userId.ifBlank { fallback })
             append(".")
         }
     }
+}

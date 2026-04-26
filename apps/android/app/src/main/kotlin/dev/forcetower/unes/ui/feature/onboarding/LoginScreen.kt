@@ -33,7 +33,6 @@ import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -45,6 +44,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
@@ -58,6 +58,7 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonGhostButton
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
@@ -146,7 +147,7 @@ fun LoginScreen(
                 .padding(start = 28.dp, end = 28.dp, top = 120.dp, bottom = 40.dp),
         ) {
             Text(
-                text = "◦ UEFS · SAGRES",
+                text = stringResource(R.string.onboarding_login_eyebrow),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 12.sp,
                     letterSpacing = 1.4.sp,
@@ -166,17 +167,6 @@ fun LoginScreen(
                 ),
                 modifier = Modifier.fadeUpOnAppear(delayMs = 150),
             )
-            Spacer(Modifier.height(8.dp))
-            Text(
-                text = "As mesmas credenciais que você usa pra entrar no SAGRES. Nada fica no nosso servidor.",
-                style = MaterialTheme.typography.bodyLarge.copy(
-                    fontSize = 15.sp,
-                    lineHeight = 22.sp,
-                    letterSpacing = (-0.08).sp,
-                ),
-                color = ink3,
-                modifier = Modifier.fadeUpOnAppear(delayMs = 250),
-            )
             Spacer(Modifier.height(28.dp))
 
             InputGroup(
@@ -187,8 +177,8 @@ fun LoginScreen(
                 modifier = Modifier.fadeUpOnAppear(delayMs = 350),
             ) {
                     InputRow(
-                        label = "Matrícula",
-                        placeholder = "202300000",
+                        label = stringResource(R.string.onboarding_login_id_label),
+                        placeholder = stringResource(R.string.onboarding_login_id_placeholder),
                         value = id,
                         onValueChange = { id = it },
                         onFocusChanged = { f ->
@@ -198,7 +188,7 @@ fun LoginScreen(
                                 else -> focused
                             }
                         },
-                        keyboardType = KeyboardType.Number,
+                        keyboardType = KeyboardType.Text,
                         isPassword = false,
                         showPassword = false,
                         ink = ink,
@@ -223,8 +213,8 @@ fun LoginScreen(
                     )
                     Box(Modifier.fillMaxWidth().height(1.dp).background(line))
                     InputRow(
-                        label = "Senha",
-                        placeholder = "••••••••",
+                        label = stringResource(R.string.onboarding_login_password_label),
+                        placeholder = stringResource(R.string.onboarding_login_password_placeholder),
                         value = pw,
                         onValueChange = { pw = it },
                         onFocusChanged = { f ->
@@ -241,8 +231,10 @@ fun LoginScreen(
                         ink3 = ink3,
                         ink4 = ink4,
                         trailing = {
-                            val toggleLabel =
-                                if (showPw) "Ocultar senha" else "Mostrar senha"
+                            val toggleLabel = stringResource(
+                                if (showPw) R.string.onboarding_login_hide_password
+                                else R.string.onboarding_login_show_password,
+                            )
                             Box(
                                 Modifier
                                     .size(32.dp)
@@ -266,7 +258,7 @@ fun LoginScreen(
                 }
 
             Text(
-                text = "Esqueci minha senha",
+                text = stringResource(R.string.onboarding_login_forgot_password),
                 style = MaterialTheme.typography.labelLarge.copy(
                     fontSize = 14.sp,
                     fontWeight = FontWeight.Medium,
@@ -277,7 +269,7 @@ fun LoginScreen(
                     .clip(RoundedCornerShape(8.dp))
                     .clickable(
                         role = Role.Button,
-                        onClickLabel = "Recuperar senha",
+                        onClickLabel = stringResource(R.string.onboarding_login_forgot_password_label),
                     ) {}
                     .padding(vertical = 8.dp)
                     .fadeUpOnAppear(delayMs = 450),
@@ -286,7 +278,7 @@ fun LoginScreen(
             Spacer(Modifier.height(24.dp))
 
             MelonPrimaryButton(
-                text = "Entrar",
+                text = stringResource(R.string.onboarding_login_submit),
                 onClick = ::submit,
                 enabled = id.isNotBlank() && pw.isNotBlank() && !loading,
                 isLoading = loading,
@@ -304,7 +296,7 @@ fun LoginScreen(
             ) {
                 Box(Modifier.weight(1f).height(1.dp).background(line))
                 Text(
-                    text = "OU",
+                    text = stringResource(R.string.onboarding_login_or_separator),
                     style = MaterialTheme.typography.labelSmall.copy(
                         fontSize = 10.sp,
                         letterSpacing = 1.5.sp,
@@ -318,7 +310,7 @@ fun LoginScreen(
             Spacer(Modifier.height(18.dp))
 
             MelonGhostButton(
-                text = "Entrar com passkey",
+                text = stringResource(R.string.onboarding_login_passkey),
                 onClick = ::passkey,
                 leading = {
                     Icon(
@@ -350,12 +342,16 @@ fun LoginScreen(
                 .clip(CircleShape)
                 .background(surface.copy(alpha = 0.6f))
                 .border(1.dp, line, CircleShape)
-                .clickable(role = Role.Button, onClickLabel = "Voltar", onClick = onBack),
+                .clickable(
+                    role = Role.Button,
+                    onClickLabel = stringResource(R.string.onboarding_login_back),
+                    onClick = onBack,
+                ),
             contentAlignment = Alignment.Center,
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                contentDescription = "Voltar",
+                contentDescription = stringResource(R.string.onboarding_login_back),
                 tint = ink,
                 modifier = Modifier.size(16.dp),
             )
@@ -460,25 +456,33 @@ private fun InputRow(
     }
 }
 
+@Composable
 private fun loginHeadline(ink: Color, accent: Color): AnnotatedString =
     buildAnnotatedString {
-        withStyle(SpanStyle(color = ink)) { append("Entre com sua\n") }
+        withStyle(SpanStyle(color = ink)) {
+            append(stringResource(R.string.onboarding_login_headline_top))
+        }
         withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) {
-            append("matrícula.")
+            append(stringResource(R.string.onboarding_login_headline_accent))
         }
     }
 
+@Composable
 private fun termsFooter(ink4: Color, ink2: Color): AnnotatedString =
     buildAnnotatedString {
         withStyle(SpanStyle(color = ink4)) {
-            append("Ao continuar, você concorda com nossos ")
+            append(stringResource(R.string.onboarding_login_terms_prefix))
         }
         withStyle(SpanStyle(color = ink2, textDecoration = TextDecoration.Underline)) {
-            append("Termos")
+            append(stringResource(R.string.onboarding_login_terms_link_terms))
         }
-        withStyle(SpanStyle(color = ink4)) { append(" e ") }
+        withStyle(SpanStyle(color = ink4)) {
+            append(stringResource(R.string.onboarding_login_terms_separator))
+        }
         withStyle(SpanStyle(color = ink2, textDecoration = TextDecoration.Underline)) {
-            append("Privacidade")
+            append(stringResource(R.string.onboarding_login_terms_link_privacy))
         }
-        withStyle(SpanStyle(color = ink4)) { append(".") }
+        withStyle(SpanStyle(color = ink4)) {
+            append(stringResource(R.string.onboarding_login_terms_suffix))
+        }
     }

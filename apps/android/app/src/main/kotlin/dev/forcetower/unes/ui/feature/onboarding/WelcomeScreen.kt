@@ -13,6 +13,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -22,6 +23,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonGlassButton
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
@@ -51,7 +53,7 @@ fun WelcomeScreen(
             verticalArrangement = Arrangement.SpaceBetween,
         ) {
             Text(
-                text = "◦ Bem-vinde ao UNES",
+                text = stringResource(R.string.onboarding_welcome_eyebrow),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 11.sp,
                     letterSpacing = 2.2.sp,
@@ -77,7 +79,7 @@ fun WelcomeScreen(
                 )
                 Spacer(Modifier.height(22.dp))
                 Text(
-                    text = "Horários, notas, recados da coordenação e turmas da UEFS — tudo conectado à sua matrícula.",
+                    text = stringResource(R.string.onboarding_welcome_body),
                     style = MaterialTheme.typography.bodyLarge.copy(
                         fontSize = 17.sp,
                         lineHeight = 25.sp,
@@ -95,13 +97,13 @@ fun WelcomeScreen(
                 modifier = Modifier.fadeUpOnAppear(delayMs = 650),
             ) {
                 MelonPrimaryButton(
-                    text = "Conhecer o app",
+                    text = stringResource(R.string.onboarding_welcome_primary_cta),
                     onClick = onNext,
                     background = SurfaceLight,
                     contentColor = androidx.compose.ui.graphics.Color(0xFF1A1420),
                 )
                 MelonGlassButton(
-                    text = "Já tenho matrícula",
+                    text = stringResource(R.string.onboarding_welcome_secondary_cta),
                     onClick = onLogin,
                 )
             }
@@ -109,14 +111,19 @@ fun WelcomeScreen(
     }
 }
 
-private fun welcomeHeadline(amber: androidx.compose.ui.graphics.Color, ink: androidx.compose.ui.graphics.Color): AnnotatedString =
-    buildAnnotatedString {
-        withStyle(SpanStyle(color = ink)) { append("Seu semestre,\n") }
+@Composable
+private fun welcomeHeadline(amber: androidx.compose.ui.graphics.Color, ink: androidx.compose.ui.graphics.Color): AnnotatedString {
+    val top = stringResource(R.string.onboarding_welcome_headline_top)
+    val accent = stringResource(R.string.onboarding_welcome_headline_accent)
+    val bottom = stringResource(R.string.onboarding_welcome_headline_bottom)
+    return buildAnnotatedString {
+        withStyle(SpanStyle(color = ink)) { append("$top\n") }
         withStyle(
             SpanStyle(
                 color = amber,
                 fontStyle = FontStyle.Italic,
             ),
-        ) { append("num só") }
-        withStyle(SpanStyle(color = ink)) { append("\nlugar.") }
+        ) { append(accent) }
+        withStyle(SpanStyle(color = ink)) { append("\n$bottom") }
     }
+}

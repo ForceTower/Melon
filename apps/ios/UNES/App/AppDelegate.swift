@@ -9,7 +9,7 @@ final class AppDelegate: NSObject, UIApplicationDelegate {
     lazy var graph: UmbrellaGraph = {
         let config = UmbrellaConfig(
             baseUrl: "https://melon.forcetower.dev",
-            appContext: ApplicationContext(),
+            appContext: CommonApplicationContext(),
             logging: LoggingLoggingConfig(
                 serviceName: "melon-ios",
                 serviceVersion: Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String,

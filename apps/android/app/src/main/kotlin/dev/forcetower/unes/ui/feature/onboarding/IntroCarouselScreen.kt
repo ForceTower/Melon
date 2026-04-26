@@ -1,5 +1,6 @@
 package dev.forcetower.unes.ui.feature.onboarding
 
+import androidx.annotation.StringRes
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.foundation.background
@@ -32,6 +33,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.contentDescription
 import androidx.compose.ui.semantics.semantics
@@ -43,6 +45,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -54,29 +57,29 @@ import dev.forcetower.unes.ui.feature.onboarding.illustrations.NotificationsIllu
 import dev.forcetower.unes.ui.feature.onboarding.illustrations.ScheduleIllustration
 
 private enum class IntroSlide(
-    val eyebrow: String,
+    @StringRes val eyebrowRes: Int,
     val variant: MeshVariant,
-    val body: String,
+    @StringRes val bodyRes: Int,
 ) {
     Schedule(
-        eyebrow = "horário",
+        eyebrowRes = R.string.onboarding_intro_schedule_eyebrow,
         variant = MeshVariant.Cool,
-        body = "A grade da UEFS puxada direto do SAGRES. Aulas canceladas, salas trocadas e provas — tudo em tempo real.",
+        bodyRes = R.string.onboarding_intro_schedule_body,
     ),
     Grades(
-        eyebrow = "notas",
+        eyebrowRes = R.string.onboarding_intro_grades_eyebrow,
         variant = MeshVariant.Sun,
-        body = "Notas parciais, coeficiente e histórico. Sem precisar entrar no SAGRES pelo navegador toda semana.",
+        bodyRes = R.string.onboarding_intro_grades_body,
     ),
     Messages(
-        eyebrow = "recados",
+        eyebrowRes = R.string.onboarding_intro_messages_eyebrow,
         variant = MeshVariant.Rose,
-        body = "Recados de professores, coordenação e DCE — sem perder prazos nem assembleias importantes.",
+        bodyRes = R.string.onboarding_intro_messages_body,
     ),
     Notifications(
-        eyebrow = "notificações",
+        eyebrowRes = R.string.onboarding_intro_notifications_eyebrow,
         variant = MeshVariant.Warm,
-        body = "Nota nova, recado de professor, material publicado, sala trocada — um toque no bolso antes de você abrir o app.",
+        bodyRes = R.string.onboarding_intro_notifications_body,
     ),
 }
 
@@ -104,13 +107,14 @@ fun IntroCarouselScreen(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween,
             ) {
+                val backLabel = stringResource(R.string.onboarding_intro_back)
                 Box(
                     Modifier
                         .size(36.dp)
                         .clip(CircleShape)
                         .clickable(
                             role = Role.Button,
-                            onClickLabel = "Voltar",
+                            onClickLabel = backLabel,
                         ) {
                             if (index > 0) {
                                 index -= 1
@@ -125,7 +129,7 @@ fun IntroCarouselScreen(
                     // clickable's semantics, giving TalkBack "Voltar, botão".
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                        contentDescription = "Voltar",
+                        contentDescription = backLabel,
                         tint = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.size(18.dp),
                     )
@@ -133,7 +137,11 @@ fun IntroCarouselScreen(
 
                 // Dots are visual progress only; merge into a single
                 // page-position announcement instead of N separate nodes.
-                val pageDescription = "Página ${index + 1} de ${slides.size}"
+                val pageDescription = stringResource(
+                    R.string.onboarding_intro_page_position,
+                    index + 1,
+                    slides.size,
+                )
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(6.dp),
                     modifier = Modifier.semantics(mergeDescendants = true) {
@@ -164,7 +172,7 @@ fun IntroCarouselScreen(
                 }
 
                 Text(
-                    text = "Pular",
+                    text = stringResource(R.string.onboarding_intro_skip),
                     style = MaterialTheme.typography.labelLarge.copy(
                         fontSize = 14.sp,
                         fontWeight = FontWeight.Medium,
@@ -174,7 +182,7 @@ fun IntroCarouselScreen(
                         .clip(RoundedCornerShape(8.dp))
                         .clickable(
                             role = Role.Button,
-                            onClickLabel = "Pular introdução",
+                            onClickLabel = stringResource(R.string.onboarding_intro_skip_label),
                         ) { onDone() }
                         .padding(8.dp),
                 )
@@ -228,7 +236,7 @@ fun IntroCarouselScreen(
                         .padding(start = 28.dp, end = 28.dp, bottom = 50.dp),
                 ) {
                     Text(
-                        text = "◦ ${slide.eyebrow}".uppercase(),
+                        text = "◦ ${stringResource(slide.eyebrowRes)}".uppercase(),
                         style = MaterialTheme.typography.labelSmall.copy(
                             fontSize = 12.sp,
                             letterSpacing = 1.4.sp,
@@ -254,7 +262,7 @@ fun IntroCarouselScreen(
                     )
                     Spacer(Modifier.height(14.dp))
                     Text(
-                        text = slide.body,
+                        text = stringResource(slide.bodyRes),
                         style = MaterialTheme.typography.bodyLarge.copy(
                             fontSize = 16.sp,
                             lineHeight = 24.sp,
@@ -265,7 +273,11 @@ fun IntroCarouselScreen(
                     )
                     Spacer(Modifier.height(28.dp))
                     MelonPrimaryButton(
-                        text = if (index == slides.lastIndex) "Entrar na conta" else "Continuar",
+                        text = if (index == slides.lastIndex) {
+                            stringResource(R.string.onboarding_intro_finish)
+                        } else {
+                            stringResource(R.string.onboarding_intro_continue)
+                        },
                         onClick = {
                             if (index < slides.lastIndex) {
                                 index += 1
@@ -282,27 +294,28 @@ fun IntroCarouselScreen(
     }
 }
 
+@Composable
 private fun slideHeadline(slide: IntroSlide, ink: Color, accent: Color): AnnotatedString {
     val italicAccent = SpanStyle(color = accent, fontStyle = FontStyle.Italic)
     val plainInk = SpanStyle(color = ink)
     return buildAnnotatedString {
         when (slide) {
             IntroSlide.Schedule -> {
-                withStyle(plainInk) { append("Sua semana,\n") }
-                withStyle(italicAccent) { append("organizada.") }
+                withStyle(plainInk) { append("${stringResource(R.string.onboarding_intro_schedule_headline_top)}\n") }
+                withStyle(italicAccent) { append(stringResource(R.string.onboarding_intro_schedule_headline_accent)) }
             }
             IntroSlide.Grades -> {
-                withStyle(plainInk) { append("Acompanhe\nseu ") }
-                withStyle(italicAccent) { append("desempenho.") }
+                withStyle(plainInk) { append(stringResource(R.string.onboarding_intro_grades_headline_top)) }
+                withStyle(italicAccent) { append(stringResource(R.string.onboarding_intro_grades_headline_accent)) }
             }
             IntroSlide.Messages -> {
-                withStyle(plainInk) { append("Tudo o que\nvocê ") }
-                withStyle(italicAccent) { append("precisa saber.") }
+                withStyle(plainInk) { append(stringResource(R.string.onboarding_intro_messages_headline_top)) }
+                withStyle(italicAccent) { append(stringResource(R.string.onboarding_intro_messages_headline_accent)) }
             }
             IntroSlide.Notifications -> {
-                withStyle(plainInk) { append("Avisa no ") }
-                withStyle(italicAccent) { append("instante") }
-                withStyle(plainInk) { append("\nque acontece.") }
+                withStyle(plainInk) { append(stringResource(R.string.onboarding_intro_notifications_headline_top)) }
+                withStyle(italicAccent) { append(stringResource(R.string.onboarding_intro_notifications_headline_accent)) }
+                withStyle(plainInk) { append(stringResource(R.string.onboarding_intro_notifications_headline_bottom)) }
             }
         }
     }

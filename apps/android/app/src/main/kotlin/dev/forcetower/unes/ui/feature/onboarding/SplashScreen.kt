@@ -28,11 +28,13 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
 import dev.forcetower.unes.designsystem.theme.melon
@@ -89,7 +91,7 @@ fun SplashScreen(onDone: () -> Unit) {
         ) {
             Row(verticalAlignment = Alignment.Bottom) {
                 Text(
-                    text = "unes",
+                    text = stringResource(R.string.onboarding_splash_wordmark),
                     style = MaterialTheme.typography.displayLarge.copy(
                         fontSize = 88.sp,
                         lineHeight = 88.sp,
@@ -118,7 +120,7 @@ fun SplashScreen(onDone: () -> Unit) {
             Spacer(Modifier.height(18.dp))
 
             Text(
-                text = "Universidade · Notas · Encontros · Semestre",
+                text = stringResource(R.string.onboarding_splash_caption),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 11.sp,
                     letterSpacing = 2.sp,
@@ -138,12 +140,12 @@ fun SplashScreen(onDone: () -> Unit) {
             horizontalArrangement = Arrangement.spacedBy(4.dp),
         ) {
             Text(
-                text = "para",
+                text = stringResource(R.string.onboarding_splash_credit_prefix),
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
                 color = SurfaceLight.copy(alpha = 0.45f),
             )
             Text(
-                text = "UEFS",
+                text = stringResource(R.string.onboarding_splash_credit_university),
                 style = MaterialTheme.typography.bodyMedium.copy(
                     fontSize = 13.sp,
                     fontWeight = FontWeight.Medium,
@@ -151,7 +153,7 @@ fun SplashScreen(onDone: () -> Unit) {
                 color = SurfaceLight.copy(alpha = 0.8f),
             )
             Text(
-                text = "· Feira de Santana",
+                text = stringResource(R.string.onboarding_splash_credit_location),
                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
                 color = SurfaceLight.copy(alpha = 0.45f),
             )

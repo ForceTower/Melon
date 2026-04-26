@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
@@ -45,6 +46,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.components.MelonPrimaryButton
 import dev.forcetower.unes.designsystem.foundation.Mesh
 import dev.forcetower.unes.designsystem.foundation.MeshVariant
@@ -132,7 +134,7 @@ fun ReadyScreen(
             }
             Spacer(Modifier.height(20.dp))
             Text(
-                text = "◦ CONECTADO",
+                text = stringResource(R.string.onboarding_ready_eyebrow),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontSize = 12.sp,
                     letterSpacing = 1.4.sp,
@@ -163,7 +165,7 @@ fun ReadyScreen(
             )
             Spacer(Modifier.height(10.dp))
             Text(
-                text = "6 turmas · 24 créditos · semestre 2026.1",
+                text = stringResource(R.string.onboarding_ready_semester_summary),
                 style = MaterialTheme.typography.bodyLarge.copy(
                     fontSize = 15.sp,
                     lineHeight = 22.sp,
@@ -199,7 +201,7 @@ fun ReadyScreen(
                         verticalAlignment = Alignment.CenterVertically,
                     ) {
                         Text(
-                            text = "PRÓXIMA AULA",
+                            text = stringResource(R.string.onboarding_ready_next_class_label),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontSize = 10.sp,
                                 letterSpacing = 1.5.sp,
@@ -208,7 +210,7 @@ fun ReadyScreen(
                             color = ink3,
                         )
                         Text(
-                            text = "em 1h 12min",
+                            text = stringResource(R.string.onboarding_ready_next_class_countdown),
                             style = MaterialTheme.typography.labelSmall.copy(
                                 fontSize = 11.sp,
                                 fontFamily = FontFamily.Monospace,
@@ -233,7 +235,7 @@ fun ReadyScreen(
                         }
                         Column(modifier = Modifier.weight(1f)) {
                             Text(
-                                text = "Cálculo Diferencial II",
+                                text = stringResource(R.string.onboarding_ready_next_class_name),
                                 style = MaterialTheme.typography.headlineSmall.copy(
                                     fontSize = 20.sp,
                                     lineHeight = 22.sp,
@@ -243,7 +245,7 @@ fun ReadyScreen(
                             )
                             Spacer(Modifier.height(2.dp))
                             Text(
-                                text = "10:20 · sala MT-14 · Prof. Adriana",
+                                text = stringResource(R.string.onboarding_ready_next_class_meta),
                                 style = MaterialTheme.typography.bodyMedium.copy(fontSize = 13.sp),
                                 color = ink3,
                             )
@@ -253,7 +255,7 @@ fun ReadyScreen(
             }
 
             MelonPrimaryButton(
-                text = "Ver meu semestre",
+                text = stringResource(R.string.onboarding_ready_cta),
                 onClick = onEnter,
                 modifier = Modifier.fadeUpOnAppear(delayMs = 1500),
             )
@@ -303,11 +305,15 @@ private fun CheckMedallion(ringProgress: Float, checkProgress: Float) {
     }
 }
 
-private fun readyHeadline(userName: String, ink: Color, accent: Color): AnnotatedString =
-    buildAnnotatedString {
-        withStyle(SpanStyle(color = ink)) { append("Prontinho,\n") }
+@Composable
+private fun readyHeadline(userName: String, ink: Color, accent: Color): AnnotatedString {
+    val top = stringResource(R.string.onboarding_ready_headline_top)
+    val fallback = stringResource(R.string.onboarding_ready_default_user)
+    return buildAnnotatedString {
+        withStyle(SpanStyle(color = ink)) { append("$top\n") }
         withStyle(SpanStyle(color = accent, fontStyle = FontStyle.Italic)) {
-            append(userName.ifBlank { "estudante" })
+            append(userName.ifBlank { fallback })
             append(".")
         }
     }
+}
