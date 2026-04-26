@@ -8,5 +8,8 @@ kotlin {
         commonMain.dependencies {
             api(libs.kermit)
         }
+        androidMain.dependencies {
+            api(libs.timber)
+        }
     }
 }

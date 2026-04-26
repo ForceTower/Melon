@@ -1,6 +1,7 @@
 package dev.forcetower.melon.umbrella
 
 import co.touchlab.kermit.Logger
+import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.logging.CrashReporter
 import dev.forcetower.melon.core.logging.LoggingConfig
 import dev.forcetower.melon.core.logging.NoopCrashReporter
@@ -131,6 +132,7 @@ interface UmbrellaGraph {
             @Provides baseUrl: BaseUrl,
             @Provides loggingConfig: LoggingConfig,
             @Provides crashReporter: CrashReporter,
+            @Provides appContext: ApplicationContext,
         ): UmbrellaGraph
     }
 }
@@ -144,5 +146,6 @@ fun UmbrellaGraph(config: UmbrellaConfig): UmbrellaGraph {
             BaseUrl(config.baseUrl),
             logging,
             config.crashReporter ?: NoopCrashReporter,
+            config.appContext,
         )
 }

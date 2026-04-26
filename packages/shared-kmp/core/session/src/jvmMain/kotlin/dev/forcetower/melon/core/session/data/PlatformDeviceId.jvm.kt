@@ -1,3 +1,5 @@
 package dev.forcetower.melon.core.session.data
 
-internal actual fun platformDeviceId(): String? = null
+import dev.forcetower.melon.core.common.ApplicationContext
+
+internal actual fun platformDeviceId(appContext: ApplicationContext): String? = null

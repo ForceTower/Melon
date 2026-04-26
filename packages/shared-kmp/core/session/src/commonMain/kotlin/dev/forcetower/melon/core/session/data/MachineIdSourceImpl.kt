@@ -1,5 +1,6 @@
 package dev.forcetower.melon.core.session.data
 
+import dev.forcetower.melon.core.common.ApplicationContext
 import dev.forcetower.melon.core.network.MachineIdSource
 import dev.forcetower.melon.core.storage.KeyValueStorage
 import dev.zacsweers.metro.AppScope
@@ -13,15 +14,18 @@ import kotlin.uuid.Uuid
 
 internal const val MACHINE_ID_KEY = "melon.machine_id"
 
-// Platforms that expose a stable, vendor-scoped device id (e.g. iOS IDFV) return it here.
-// Returning null falls back to a generated UUID persisted in storage.
-internal expect fun platformDeviceId(): String?
+// Platforms that expose a stable, vendor-scoped device id (e.g. iOS IDFV,
+// Android ANDROID_ID) return it here. Returning null falls back to a
+// generated UUID persisted in storage. The `appContext` is ignored on
+// platforms that don't need it (iOS, JVM).
+internal expect fun platformDeviceId(appContext: ApplicationContext): String?
 
 @Inject
 @SingleIn(AppScope::class)
 @ContributesBinding(AppScope::class)
 internal class MachineIdSourceImpl(
     private val storage: KeyValueStorage,
+    private val appContext: ApplicationContext,
 ) : MachineIdSource {
 
     private val mutex = Mutex()
@@ -29,7 +33,7 @@ internal class MachineIdSourceImpl(
     @OptIn(ExperimentalUuidApi::class)
     override suspend fun getMachineId(): String = mutex.withLock {
         storage.get(MACHINE_ID_KEY) ?: run {
-            val id = platformDeviceId() ?: Uuid.random().toString().replace("-", "")
+            val id = platformDeviceId(appContext) ?: Uuid.random().toString().replace("-", "")
             storage.put(MACHINE_ID_KEY, id)
             id
         }

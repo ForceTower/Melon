@@ -10,6 +10,7 @@ metro {
 kotlin {
     sourceSets {
         commonMain.dependencies {
+            api(project(":packages:shared-kmp:core:common"))
             api(project(":packages:shared-kmp:core:network"))
             implementation(project(":packages:shared-kmp:core:storage"))
             implementation(project(":packages:shared-kmp:core:database"))

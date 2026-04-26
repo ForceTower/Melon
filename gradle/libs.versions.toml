@@ -11,12 +11,30 @@ kotlinx-serialization = "1.8.0"
 kotlinx-datetime = "0.6.1"
 kermit = "2.0.4"
 
+# Android
+agp = "9.2.0"
+android-compile-sdk = "37"
+android-target-sdk = "37"
+android-min-sdk = "28"
+android-core-ktx = "1.16.0"
+android-activity-compose = "1.11.0"
+android-lifecycle = "2.10.0"
+android-compose-bom = "2026.03.00"
+android-navigation3 = "1.0.0-alpha10"
+android-hilt = "2.57.1"
+android-hilt-navigation-compose = "1.2.0"
+android-datastore = "1.1.7"
+timber = "5.0.1"
+kotlinx-coroutines-android = "1.10.1"
+
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
 kotlin-gradle-plugin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 ksp-gradle-plugin = { module = "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", version.ref = "ksp" }
 metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.ref = "metro" }
 room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
+agp-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
+hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "android-hilt" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -42,10 +60,50 @@ androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-sqlite-bundled = { module = "androidx.sqlite:sqlite-bundled", version.ref = "sqlite" }
 
+# AndroidX core / lifecycle / activity
+androidx-core-ktx = { module = "androidx.core:core-ktx", version.ref = "android-core-ktx" }
+androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "android-activity-compose" }
+androidx-lifecycle-runtime-ktx = { module = "androidx.lifecycle:lifecycle-runtime-ktx", version.ref = "android-lifecycle" }
+androidx-lifecycle-runtime-compose = { module = "androidx.lifecycle:lifecycle-runtime-compose", version.ref = "android-lifecycle" }
+androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "android-lifecycle" }
+
+# Compose
+androidx-compose-bom = { module = "androidx.compose:compose-bom", version.ref = "android-compose-bom" }
+androidx-compose-ui = { module = "androidx.compose.ui:ui" }
+androidx-compose-ui-graphics = { module = "androidx.compose.ui:ui-graphics" }
+androidx-compose-ui-tooling = { module = "androidx.compose.ui:ui-tooling" }
+androidx-compose-ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview" }
+androidx-compose-material3 = { module = "androidx.compose.material3:material3" }
+androidx-compose-material-icons-extended = { module = "androidx.compose.material:material-icons-extended" }
+androidx-compose-ui-text-google-fonts = { module = "androidx.compose.ui:ui-text-google-fonts" }
+
+# Navigation 3 (alpha)
+androidx-navigation3-runtime = { module = "androidx.navigation3:navigation3-runtime", version.ref = "android-navigation3" }
+androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", version.ref = "android-navigation3" }
+
+# Hilt
+hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "android-hilt" }
+hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "android-hilt" }
+androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "android-hilt-navigation-compose" }
+
+# DataStore (Android key/value persistence backing core/storage)
+androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "android-datastore" }
+
+# Timber (Android logging tree backing core/logging)
+timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
+
+# Coroutines Android dispatcher
+kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
+kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 metro = { id = "dev.zacsweers.metro", version.ref = "metro" }
 skie = { id = "co.touchlab.skie", version.ref = "skie" }
 androidx-room = { id = "androidx.room", version.ref = "room" }
+android-application = { id = "com.android.application", version.ref = "agp" }
+android-library = { id = "com.android.library", version.ref = "agp" }
+hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "android-hilt" }
