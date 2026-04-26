@@ -23,6 +23,28 @@ data class MelonColors(
     val brand: MelonBrandColors,
     val surface: MelonSurfaceColors,
     val palette: MelonPaletteColors,
+    val fixed: MelonFixedColors,
+)
+
+// Tokens that don't flip with light/dark and aren't part of the brand identity
+// — semantic colors used in fixed contexts (success indicators on dark cards,
+// destructive actions, fixed light surfaces inside always-dark containers).
+// Routed through `MaterialTheme.melon.fixed.*` so feature code never reaches
+// for raw `Color(0x…)` literals (see CLAUDE.md design-system rules).
+@Immutable
+data class MelonFixedColors(
+    // Always-light cream — same value as iOS `UNESColor.surfaceLight`. Use
+    // for foregrounds inside always-dark containers (the IdentityCard hero,
+    // pressed states on the dark splash buttons, etc.).
+    val surfaceLight: Color,
+    // Destructive accent for sign-out / wipe-data CTAs. Same hex iOS uses
+    // (`MeColors.signOut`); kept fixed so it stays warning-red regardless of
+    // theme.
+    val destructive: Color,
+    // "Online" / "ok" / "success" indicator dot. Lifted variant
+    // (`successFg`) reads cleanly against `alwaysDarkBg`.
+    val ok: Color,
+    val okOnDark: Color,
 )
 
 @Immutable
@@ -70,6 +92,13 @@ private val MelonBrandDefaults = MelonBrandColors(
     alwaysDarkBg = AlwaysDarkBg,
 )
 
+private val MelonFixedDefaults = MelonFixedColors(
+    surfaceLight = SurfaceLight,
+    destructive = DestructiveFixed,
+    ok = OkFixed,
+    okOnDark = OkOnDarkFixed,
+)
+
 internal fun melonColorsLight() = MelonColors(
     brand = MelonBrandDefaults,
     surface = MelonSurfaceColors(
@@ -90,6 +119,7 @@ internal fun melonColorsLight() = MelonColors(
         indigo = PaletteIndigoLight,
         mustard = PaletteMustardLight,
     ),
+    fixed = MelonFixedDefaults,
 )
 
 internal fun melonColorsDark() = MelonColors(
@@ -112,6 +142,7 @@ internal fun melonColorsDark() = MelonColors(
         indigo = PaletteIndigoDark,
         mustard = PaletteMustardDark,
     ),
+    fixed = MelonFixedDefaults,
 )
 
 internal val LocalMelonColors = compositionLocalOf<MelonColors> {

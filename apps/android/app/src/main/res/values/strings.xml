@@ -233,4 +233,177 @@
     <string name="overview_last_updated_days_format">◦ atualizado há %1$d d ◦</string>
     <string name="overview_last_updated_syncing">◦ sincronizando ◦</string>
     <!-- endregion -->
+
+    <!-- region Messages -->
+    <string name="messages_title">Mensagens</string>
+    <string name="messages_eyebrow_inbox">◦ CAIXA DE ENTRADA</string>
+    <string name="messages_unread_badge_format">%1$d NOVAS</string>
+    <string name="messages_empty">Nenhuma mensagem neste filtro.</string>
+    <string name="messages_back_label">Voltar</string>
+
+    <!-- Filter chips -->
+    <string name="messages_filter_all">Todas</string>
+    <string name="messages_filter_unread">Não lidas</string>
+    <string name="messages_filter_starred">Salvas</string>
+    <string name="messages_filter_disciplines">Disciplinas</string>
+    <string name="messages_filter_university">Universidade</string>
+    <string name="messages_filter_app">App &amp; módulos</string>
+
+    <!-- Bucket headers -->
+    <string name="messages_bucket_today">Hoje</string>
+    <string name="messages_bucket_yesterday">Ontem</string>
+    <string name="messages_bucket_this_week">Esta semana</string>
+    <string name="messages_bucket_this_month">Este mês</string>
+    <string name="messages_bucket_older">Mais antigas</string>
+
+    <!-- Origin kind labels (sender card eyebrow) -->
+    <string name="messages_origin_kind_discipline">Disciplina</string>
+    <string name="messages_origin_kind_secretariat">Secretaria</string>
+    <string name="messages_origin_kind_campus">Universidade</string>
+    <string name="messages_origin_kind_app">App</string>
+    <string name="messages_origin_kind_module">Módulo</string>
+    <string name="messages_origin_kind_direct">Pessoal</string>
+    <string name="messages_origin_kind_direct_for_you">%1$s · PARA VOCÊ</string>
+
+    <!-- Relative time strings on the row -->
+    <string name="messages_rel_time_now">agora</string>
+    <string name="messages_rel_time_minutes">%1$d min</string>
+    <string name="messages_rel_time_hours">%1$dh</string>
+    <string name="messages_rel_time_yesterday">ontem</string>
+    <string name="messages_rel_time_days">%1$d d</string>
+
+    <!-- Detail screen -->
+    <string name="messages_attachments_section_format">ANEXOS · %1$d</string>
+    <string name="messages_attach_separator">·</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Header -->
+    <string name="schedule_title">Horário</string>
+    <string name="schedule_eyebrow_format">◦ SEMANA %1$s</string>
+    <string name="schedule_today_button">hoje</string>
+    <!-- "14 – 20 abr" — first day · last day · month abbreviation. -->
+    <string name="schedule_week_range_format">%1$d – %2$d %3$s</string>
+    <string name="schedule_month_apr_short">abr</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Week spine -->
+    <string-array name="schedule_days_short">
+        <item>seg</item>
+        <item>ter</item>
+        <item>qua</item>
+        <item>qui</item>
+        <item>sex</item>
+        <item>sáb</item>
+        <item>dom</item>
+    </string-array>
+    <!-- endregion -->
+
+    <!-- region Schedule · Class block -->
+    <string name="schedule_now_state">AGORA</string>
+    <string name="schedule_duration_format">%1$dmin</string>
+    <string name="schedule_topic_format">“%1$s”</string>
+    <!-- "{label} de intervalo" — label is "30min" or "2h15". -->
+    <string name="schedule_gap_format">%1$s de intervalo</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Location -->
+    <string name="schedule_location_unknown">Local não divulgado</string>
+    <string name="schedule_location_online">ONLINE</string>
+    <!-- endregion -->
+
+    <!-- region Schedule · Empty day -->
+    <string name="schedule_empty_title">Nenhuma aula</string>
+    <string name="schedule_empty_subtitle">Dia livre. Aproveite.</string>
+    <!-- endregion -->
+
+    <!-- region Me · Header -->
+    <!-- "◦ PERFIL · {semester}" — eyebrow stamp above the greeting. -->
+    <string name="me_header_eyebrow_format">◦ PERFIL · %1$s</string>
+    <string name="me_header_greeting">Olá</string>
+    <!-- endregion -->
+
+    <!-- region Me · Section labels -->
+    <string name="me_section_shortcuts">atalhos fixados</string>
+    <string name="me_section_shortcuts_action">gerenciar</string>
+    <string name="me_section_settings">definições</string>
+    <!-- endregion -->
+
+    <!-- region Me · Shortcut catalogue -->
+    <string name="me_shortcut_account_label">Conta UNES</string>
+    <string name="me_shortcut_account_hint">SSO · histórico</string>
+    <string name="me_shortcut_zhonya_label">Zhonya</string>
+    <string name="me_shortcut_zhonya_hint">pausar notificações</string>
+    <string name="me_shortcut_flowchart_label">Fluxograma</string>
+    <string name="me_shortcut_flowchart_hint">grade curricular</string>
+    <string name="me_shortcut_bandejao_label">Bandejão</string>
+    <string name="me_shortcut_bandejao_hint">cardápio de hoje</string>
+    <string name="me_shortcut_calendar_label">Calendário</string>
+    <string name="me_shortcut_calendar_hint">datas acadêmicas</string>
+    <string name="me_shortcut_countdown_label">Final Countdown</string>
+    <string name="me_shortcut_countdown_hint">dá para passar?</string>
+    <string name="me_shortcut_request_label">Requerimentos</string>
+    <string name="me_shortcut_request_hint">secretaria</string>
+    <string name="me_shortcut_theme_label">Editor de tema</string>
+    <string name="me_shortcut_theme_hint">cores e fontes</string>
+    <string name="me_shortcut_reminders_label">Lembretes</string>
+    <string name="me_shortcut_reminders_hint">3 ativos</string>
+    <string name="me_shortcut_adventure_label">Adventure</string>
+    <string name="me_shortcut_adventure_hint">easter egg</string>
+    <!-- endregion -->
+
+    <!-- region Me · Settings rows -->
+    <string name="me_settings_row_settings_label">Configurações</string>
+    <string name="me_settings_row_settings_hint">conta, exibição, notificações</string>
+    <string name="me_settings_row_about_label">Sobre o aplicativo</string>
+    <string name="me_settings_row_about_hint">versão e build</string>
+    <string name="me_settings_row_feedback_label">Erros &amp; sugestões</string>
+    <string name="me_settings_row_feedback_hint">fale com o desenvolvedor</string>
+    <string name="me_settings_row_licenses_label">Licenças open source</string>
+    <string name="me_settings_row_licenses_hint">abrir índice</string>
+    <!-- endregion -->
+
+    <!-- region Me · Sign out + footer -->
+    <string name="me_sign_out_label">Sair da conta</string>
+    <!-- "◦ UNES · FEITO COM ♥ EM FEIRA DE SANTANA ◦" — uppercased at render. -->
+    <string name="me_footer">◦ unes · feito com ♥ em feira de santana ◦</string>
+    <!-- endregion -->
+
+    <!-- region Me · Logout confirmation sheet -->
+    <string name="me_logout_sheet_title">Sair da conta?</string>
+    <string name="me_logout_sheet_eyebrow_format">id · %1$s</string>
+    <string name="me_logout_sheet_account_username_format">usuário · %1$s</string>
+    <string name="me_logout_sheet_description">Você precisará entrar com o seu nome de usuário novamente para ver horários, notas e mensagens da coordenação.</string>
+    <string name="me_logout_sheet_keep_data_label">Manter dados no dispositivo</string>
+    <string name="me_logout_sheet_keep_data_hint">lembretes, temas e atalhos ficam salvos</string>
+    <string name="me_logout_sheet_cancel">Cancelar</string>
+    <string name="me_logout_sheet_confirm">Sair agora</string>
+    <!-- endregion -->
+
+    <!-- region Me · Logout flash + goodbye -->
+    <string name="me_logout_flash_caption">encerrando sessão…</string>
+    <string name="me_logged_out_eyebrow">sessão encerrada</string>
+    <string name="me_logged_out_greeting_prefix">Até logo,</string>
+    <string name="me_logged_out_body">Seus lembretes e preferências ficaram guardados aqui no aparelho. Quando quiser voltar, a sua matrícula te espera.</string>
+    <string name="me_logged_out_local_data_title">Dados locais preservados</string>
+    <string name="me_logged_out_local_data_hint">lembretes, temas e atalhos ficam salvos</string>
+    <string name="me_logged_out_cta">Entrar novamente</string>
+    <string name="me_logged_out_footer">◦ unes ◦</string>
+    <!-- endregion -->
+
+    <!-- region Me · About sheet -->
+    <string name="me_about_title">Sobre o aplicativo</string>
+    <string name="me_about_subtitle">unes · informações de depuração</string>
+    <string name="me_about_build_format">build %1$s</string>
+    <string name="me_about_row_version">versão</string>
+    <string name="me_about_row_version_origin">Play Store</string>
+    <string name="me_about_row_build">build</string>
+    <string name="me_about_row_build_origin_format">origem · %1$s</string>
+    <string name="me_about_row_machine_id">machine id</string>
+    <string name="me_about_row_machine_id_sub">gerado para depuração</string>
+    <string name="me_about_row_device">aparelho</string>
+    <string name="me_about_row_device_sub">detectado automaticamente</string>
+    <string name="me_about_copy_label">Copiar informações</string>
+    <string name="me_about_copy_done">Copiado para a área de transferência</string>
+    <string name="me_about_footer">◦ feito com ♥ em feira de santana ◦</string>
+    <!-- endregion -->
 </resources>

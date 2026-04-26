@@ -13,6 +13,8 @@ import dev.forcetower.melon.feature.auth.domain.usecase.BeginPasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.CompletePasskeyLoginUseCase
 import dev.forcetower.melon.feature.auth.domain.usecase.LoginUseCase
 import dev.forcetower.melon.feature.dashboard.domain.usecase.GetReadyOverviewUseCase
+import dev.forcetower.melon.feature.disciplines.domain.usecase.CalculateOverallScoreUseCase
+import dev.forcetower.melon.feature.me.domain.usecase.ObserveMeProfileUseCase
 import dev.forcetower.melon.feature.notifications.domain.usecase.RegisterNotificationTokenUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveAttendanceTileUseCase
 import dev.forcetower.melon.feature.overview.domain.usecase.ObserveDisciplinesUseCase
@@ -117,4 +119,13 @@ object UmbrellaBridgeModule {
     // Notifications — token registration during the auth phase of sync.
     @Provides fun provideRegisterNotificationTokenUseCase(graph: UmbrellaGraph): RegisterNotificationTokenUseCase =
         graph.registerNotificationTokenUseCase
+
+    // Me ("Eu") tab — single flow with the hero identity, semester strip data,
+    // CR/hours rollup, and the closest upcoming evaluation. Lifetime CR (the
+    // value rendered in the hero stat rail) comes from a separate use case
+    // shared with the Overview grade tile.
+    @Provides fun provideObserveMeProfileUseCase(graph: UmbrellaGraph): ObserveMeProfileUseCase =
+        graph.observeMeProfileUseCase
+    @Provides fun provideCalculateOverallScoreUseCase(graph: UmbrellaGraph): CalculateOverallScoreUseCase =
+        graph.calculateOverallScoreUseCase
 }

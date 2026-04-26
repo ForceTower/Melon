@@ -40,6 +40,14 @@ internal val BrandPeach = Color(0xFFFBD9A8)
 // Not adaptive — same in light and dark mode.
 internal val AlwaysDarkBg = Color(0xFF1A0F28)
 
+// Fixed semantic tokens (`MelonFixedColors`). These don't flip with light/dark
+// — they're consumed by always-dark surfaces (the IdentityCard hero) or by
+// destructive/success affordances that should stay the same color regardless
+// of theme. Each mirrors a corresponding iOS `MeColors`/`UNESColor` constant.
+internal val DestructiveFixed = Color(0xFFC94538)
+internal val OkFixed = Color(0xFF4AA679)
+internal val OkOnDarkFixed = Color(0xFF7FD4A2)
+
 // Accent — adaptive: coral in light, amber in dark (matches iOS `UNESColor.accent`).
 internal val AccentLight = BrandCoral
 internal val AccentPressLight = Color(0xFFC94538)

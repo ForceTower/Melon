@@ -38,15 +38,18 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleEventEffect
 import dev.forcetower.unes.designsystem.theme.MelonTheme
+import dev.forcetower.unes.ui.feature.me.MeScreen
+import dev.forcetower.unes.ui.feature.messages.MessagesScreen
 import dev.forcetower.unes.ui.feature.overview.OverviewScreen
+import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 
 // The authenticated shell — hosts the liquid tab bar and routes to each
 // feature's first screen. Mirrors iOS `ConnectedView` in shape: enum-driven
 // tabs, single shared chrome, content swapped underneath.
 //
-// Only the Overview tab has a real implementation today (the design pass for
-// `UNES Home.html`). Other tabs render placeholders so the bar's selection
-// motion can be tested end-to-end before the corresponding features land.
+// Overview, Schedule, Messages, and Me are wired to their real screens.
+// Classes still falls through to a placeholder so the bar's selection
+// motion can be tested end-to-end before that feature lands.
 @Composable
 fun ConnectedScreen(modifier: Modifier = Modifier) {
     val vm: ConnectedViewModel = hiltViewModel()
@@ -92,6 +95,9 @@ fun ConnectedScreen(modifier: Modifier = Modifier) {
         ) {
             when (active) {
                 ConnectedTab.Overview -> OverviewScreen(bottomInset = TabBarBlockHeight + navBarBottom)
+                ConnectedTab.Schedule -> ScheduleScreen(bottomInset = TabBarBlockHeight + navBarBottom)
+                ConnectedTab.Messages -> MessagesScreen(bottomInset = TabBarBlockHeight + navBarBottom)
+                ConnectedTab.Me -> MeScreen(bottomInset = TabBarBlockHeight + navBarBottom)
                 else -> ComingSoonPanel(active)
             }
         }
