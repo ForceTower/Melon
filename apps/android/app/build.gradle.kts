@@ -4,6 +4,8 @@ plugins {
     id("melon.android-application")
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.licensee)
+    alias(libs.plugins.google.services)
+    alias(libs.plugins.firebase.crashlytics)
 }
 
 fun gitOutput(vararg args: String): String? {
@@ -133,4 +135,13 @@ dependencies {
     implementation(libs.androidx.credentials.play.services.auth)
 
     implementation(libs.androidx.biometric)
+
+    // Firebase BoM pins all SDK versions in lockstep — Analytics for usage
+    // tracking, Crashlytics for crash reporting, Messaging for FCM push.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.messaging)
+    // `await()` extension for FirebaseMessaging.getToken() / Tasks.
+    implementation(libs.kotlinx.coroutines.play.services)
 }

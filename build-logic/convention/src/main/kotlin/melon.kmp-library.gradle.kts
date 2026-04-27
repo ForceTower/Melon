@@ -6,7 +6,7 @@ plugins {
 kotlin {
     jvmToolchain(21)
 
-    androidLibrary {
+    android {
         namespace = "dev.forcetower.unes.shared" +
             project.path.removePrefix(":packages:shared-kmp").replace(":", ".")
         compileSdk = 37

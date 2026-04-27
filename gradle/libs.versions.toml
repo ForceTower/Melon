@@ -29,6 +29,9 @@ android-biometric = "1.2.0-alpha05"
 timber = "5.0.1"
 kotlinx-coroutines-android = "1.10.2"
 licensee = "1.14.1"
+google-services = "4.4.4"
+firebase-bom = "34.12.0"
+firebase-crashlytics-gradle = "3.0.7"
 
 [libraries]
 # Gradle plugin artifacts used by the build-logic convention project
@@ -39,6 +42,8 @@ metro-gradle-plugin = { module = "dev.zacsweers.metro:gradle-plugin", version.re
 room-gradle-plugin = { module = "androidx.room:room-gradle-plugin", version.ref = "room" }
 agp-gradle-plugin = { module = "com.android.tools.build:gradle", version.ref = "agp" }
 hilt-gradle-plugin = { module = "com.google.dagger:hilt-android-gradle-plugin", version.ref = "android-hilt" }
+google-services-gradle-plugin = { module = "com.google.gms:google-services", version.ref = "google-services" }
+firebase-crashlytics-gradle-plugin = { module = "com.google.firebase:firebase-crashlytics-gradle", version.ref = "firebase-crashlytics-gradle" }
 
 # Ktor
 ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
@@ -105,6 +110,13 @@ timber = { module = "com.jakewharton.timber:timber", version.ref = "timber" }
 
 # Coroutines Android dispatcher
 kotlinx-coroutines-android = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-android", version.ref = "kotlinx-coroutines-android" }
+kotlinx-coroutines-play-services = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-play-services", version.ref = "kotlinx-coroutines-android" }
+
+# Firebase (Android-only — iOS configures its own SDKs via Swift Package Manager)
+firebase-bom = { module = "com.google.firebase:firebase-bom", version.ref = "firebase-bom" }
+firebase-analytics = { module = "com.google.firebase:firebase-analytics" }
+firebase-crashlytics = { module = "com.google.firebase:firebase-crashlytics" }
+firebase-messaging = { module = "com.google.firebase:firebase-messaging" }
 
 [plugins]
 kotlin-multiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
@@ -120,3 +132,5 @@ android-library = { id = "com.android.library", version.ref = "agp" }
 android-kmp-library = { id = "com.android.kotlin.multiplatform.library", version.ref = "agp" }
 hilt-android = { id = "com.google.dagger.hilt.android", version.ref = "android-hilt" }
 licensee = { id = "app.cash.licensee", version.ref = "licensee" }
+google-services = { id = "com.google.gms.google-services", version.ref = "google-services" }
+firebase-crashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebase-crashlytics-gradle" }

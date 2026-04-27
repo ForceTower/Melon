@@ -46,6 +46,7 @@ import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterListUseCase
 import dev.forcetower.melon.feature.sync.domain.usecase.SyncSemesterUseCase
 import dev.forcetower.melon.umbrella.UmbrellaConfig
 import dev.forcetower.melon.umbrella.UmbrellaGraph
+import dev.forcetower.unes.firebase.FirebaseCrashReporter
 import javax.inject.Singleton
 
 // Bridges the Metro `UmbrellaGraph` from `:packages:shared-kmp:umbrella` into
@@ -68,6 +69,9 @@ object UmbrellaBridgeModule {
                 // TODO: source from BuildConfig so debug builds can hit a local API.
                 baseUrl = "https://melon.forcetower.dev",
                 appContext = ApplicationContext(context),
+                // Routes KMP logger non-fatals + breadcrumbs into Crashlytics.
+                // iOS wires its equivalent in AppDelegate.swift.
+                crashReporter = FirebaseCrashReporter(),
             ),
         )
 
