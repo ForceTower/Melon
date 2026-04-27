@@ -366,6 +366,13 @@
     <string name="discipline_detail_grades_partial_label">MÉDIA PARCIAL</string>
     <!-- "MÉDIA PARCIAL · T01" — eyebrow when a specific group pill is selected. -->
     <string name="discipline_detail_grades_partial_label_with_group_format">MÉDIA PARCIAL · %1$s</string>
+    <!-- Headline label swap when the discipline already has a final grade — the
+         ring renders the final, the subtitle swaps to a status sentence below. -->
+    <string name="discipline_detail_grades_final_label">MÉDIA FINAL</string>
+    <string name="discipline_detail_grades_final_label_with_group_format">MÉDIA FINAL · %1$s</string>
+    <string name="discipline_detail_grades_final_status_approved">Disciplina concluída — aprovado.</string>
+    <string name="discipline_detail_grades_final_status_failed">Disciplina concluída — reprovado.</string>
+    <string name="discipline_detail_grades_final_status_final">Foi para prova final.</string>
     <string name="discipline_detail_grades_doing_well">Você está indo bem.</string>
     <string name="discipline_detail_grades_no_grades">Ainda sem notas lançadas.</string>
     <!-- "Precisa de 7,5 na 1 avaliação restante para fechar em 7,0." — assembled

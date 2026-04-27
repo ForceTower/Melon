@@ -21,7 +21,20 @@ struct DisciplineGradesBlock: View {
         return scores.reduce(0, +) / Double(scores.count)
     }
 
+    // Closed-out disciplines render the upstream final grade in the headline
+    // ring; everything else falls back to the unweighted partial mean. Keeps
+    // the past-semester detail screen consistent with the list card, which
+    // already shows the final grade — without it, tapping a closed
+    // discipline would lead to a "MÉDIA PARCIAL" derived from the same grades
+    // upstream already weighted into the final, confusing the read.
+    private var headlineScore: Double? {
+        discipline.finalGrade ?? average
+    }
+
+    private var isClosed: Bool { discipline.finalGrade != nil }
+
     private var needed: NeededProjection? {
+        guard !isClosed else { return nil }
         let done = visibleGrades.compactMap(\.score)
         let pending = visibleGrades.filter { $0.score == nil }
         guard !done.isEmpty, !pending.isEmpty else { return nil }
@@ -44,17 +57,35 @@ struct DisciplineGradesBlock: View {
         .padding(.bottom, 18)
     }
 
+    private var headlineLabel: String {
+        let prefix = isClosed ? "MÉDIA FINAL" : "MÉDIA PARCIAL"
+        return "\(prefix)\(selectedGroup.map { " · \($0)" } ?? "")"
+    }
+
+    private var closedSubtitle: String {
+        switch discipline.status.key {
+        case .approved: return "Disciplina concluída — aprovado."
+        case .failed:   return "Disciplina concluída — reprovado."
+        case .final:    return "Foi para prova final."
+        default:        return discipline.status.label
+        }
+    }
+
     private var headline: some View {
         HStack(alignment: .center, spacing: 16) {
-            GradeRing(score: average, size: 74, stroke: 5, color: discipline.color)
+            GradeRing(score: headlineScore, size: 74, stroke: 5, color: discipline.color)
 
             VStack(alignment: .leading, spacing: 4) {
-                Text("MÉDIA PARCIAL\(selectedGroup.map { " · \($0)" } ?? "")")
+                Text(headlineLabel)
                     .font(UNESFont.mono(9, weight: .semibold))
                     .tracking(1.08)
                     .foregroundStyle(UNESColor.ink4)
 
-                if let needed {
+                if isClosed {
+                    Text(closedSubtitle)
+                        .font(UNESFont.sans(13))
+                        .foregroundStyle(UNESColor.ink2)
+                } else if let needed {
                     neededText(needed: needed)
                         .font(UNESFont.sans(13))
                         .foregroundStyle(UNESColor.ink2)

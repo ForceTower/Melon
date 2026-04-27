@@ -32,9 +32,11 @@ import dev.forcetower.unes.ui.feature.disciplines.Discipline
 import dev.forcetower.unes.ui.feature.disciplines.DisciplineScoreColor
 import dev.forcetower.unes.ui.feature.disciplines.GradeEntry
 import dev.forcetower.unes.ui.feature.disciplines.GradeSection
+import dev.forcetower.unes.ui.feature.disciplines.DisciplineStatus
 import dev.forcetower.unes.ui.feature.disciplines.NeededProjection
 import dev.forcetower.unes.ui.feature.disciplines.components.GradeRing
 import dev.forcetower.unes.ui.feature.disciplines.sectionsForGroup
+import dev.forcetower.unes.ui.feature.disciplines.status
 import java.util.Locale
 
 // Grades section for the detail view. Headline card with the partial average
@@ -50,15 +52,23 @@ internal fun DisciplineGradesBlock(
     val visibleGrades = visibleSections.flatMap { it.grades }
     val scores = visibleGrades.mapNotNull { it.score }
     val average = if (scores.isEmpty()) null else scores.sum() / scores.size
-    val needed = run {
-        val done = visibleGrades.mapNotNull { it.score }
-        val pending = visibleGrades.filter { it.score == null }
-        if (done.isEmpty() || pending.isEmpty()) {
-            null
-        } else {
-            val sumDone = done.sum()
-            val required = (7.0 * visibleGrades.size - sumDone) / pending.size.toDouble()
-            NeededProjection(required = required, pending = pending.size, target = 7.0)
+    val finalGrade = discipline.finalGrade
+    // Closed-out disciplines render the upstream final in the headline ring;
+    // the "needed to close at 7" projection only makes sense while the
+    // discipline is still in progress, so suppress it once a final exists.
+    val needed = if (finalGrade != null) {
+        null
+    } else {
+        run {
+            val done = visibleGrades.mapNotNull { it.score }
+            val pending = visibleGrades.filter { it.score == null }
+            if (done.isEmpty() || pending.isEmpty()) {
+                null
+            } else {
+                val sumDone = done.sum()
+                val required = (7.0 * visibleGrades.size - sumDone) / pending.size.toDouble()
+                NeededProjection(required = required, pending = pending.size, target = 7.0)
+            }
         }
     }
 
@@ -71,6 +81,8 @@ internal fun DisciplineGradesBlock(
         DisciplineSectionHeader(title = stringResource(R.string.discipline_detail_grades_title))
         Headline(
             average = average,
+            finalGrade = finalGrade,
+            statusKey = discipline.status.key,
             needed = needed,
             selectedGroup = selectedGroup,
             accent = discipline.color,
@@ -88,6 +100,8 @@ internal fun DisciplineGradesBlock(
 @Composable
 private fun Headline(
     average: Double?,
+    finalGrade: Double?,
+    statusKey: DisciplineStatus.Key,
     needed: NeededProjection?,
     selectedGroup: String?,
     accent: Color,
@@ -100,6 +114,8 @@ private fun Headline(
     val ink3 = MaterialTheme.colorScheme.onSurfaceVariant
     val ink4 = MaterialTheme.colorScheme.outlineVariant
 
+    val isClosed = finalGrade != null
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -110,19 +126,24 @@ private fun Headline(
         horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically,
     ) {
-        GradeRing(score = average, size = 74.dp, stroke = 5.dp, color = accent)
+        GradeRing(score = finalGrade ?: average, size = 74.dp, stroke = 5.dp, color = accent)
 
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
-            val partialLabel = if (selectedGroup != null) {
-                stringResource(R.string.discipline_detail_grades_partial_label_with_group_format, selectedGroup)
-            } else {
-                stringResource(R.string.discipline_detail_grades_partial_label)
+            val headlineLabel = when {
+                isClosed && selectedGroup != null ->
+                    stringResource(R.string.discipline_detail_grades_final_label_with_group_format, selectedGroup)
+                isClosed ->
+                    stringResource(R.string.discipline_detail_grades_final_label)
+                selectedGroup != null ->
+                    stringResource(R.string.discipline_detail_grades_partial_label_with_group_format, selectedGroup)
+                else ->
+                    stringResource(R.string.discipline_detail_grades_partial_label)
             }
             Text(
-                text = partialLabel.uppercase(Locale.ROOT),
+                text = headlineLabel.uppercase(Locale.ROOT),
                 style = MaterialTheme.typography.labelSmall.copy(
                     fontFamily = FontFamily.Monospace,
                     fontSize = 9.sp,
@@ -131,10 +152,26 @@ private fun Headline(
                 ),
                 color = ink4,
             )
-            if (needed != null) {
-                NeededText(needed = needed, ink2 = ink2)
-            } else {
-                Text(
+            when {
+                isClosed -> {
+                    val subtitle = when (statusKey) {
+                        DisciplineStatus.Key.Approved ->
+                            stringResource(R.string.discipline_detail_grades_final_status_approved)
+                        DisciplineStatus.Key.Failed ->
+                            stringResource(R.string.discipline_detail_grades_final_status_failed)
+                        DisciplineStatus.Key.Final ->
+                            stringResource(R.string.discipline_detail_grades_final_status_final)
+                        else ->
+                            stringResource(R.string.discipline_detail_grades_final_status_approved)
+                    }
+                    Text(
+                        text = subtitle,
+                        style = MaterialTheme.typography.bodySmall.copy(fontSize = 13.sp, lineHeight = 17.sp),
+                        color = ink2,
+                    )
+                }
+                needed != null -> NeededText(needed = needed, ink2 = ink2)
+                else -> Text(
                     text = if (average != null) {
                         stringResource(R.string.discipline_detail_grades_doing_well)
                     } else {
