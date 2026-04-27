@@ -38,7 +38,7 @@ android {
 
     defaultConfig {
         applicationId = "com.forcetower.uefs"
-        versionCode = gitVersionCode
+        versionCode = 2130000 + gitVersionCode
         versionName = gitVersionName
     }
 
@@ -130,6 +130,7 @@ dependencies {
     implementation(libs.hilt.android)
     ksp(libs.hilt.compiler)
     implementation(libs.androidx.hilt.navigation.compose)
+    implementation(libs.androidx.hilt.lifecycle.viewmodel.compose)
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)

@@ -12,6 +12,11 @@ import kotlinx.coroutines.SupervisorJob
 
 @Qualifier
 @Retention(AnnotationRetention.BINARY)
+@Target(
+    AnnotationTarget.FIELD,
+    AnnotationTarget.VALUE_PARAMETER,
+    AnnotationTarget.FUNCTION,
+)
 internal annotation class ApplicationScope
 
 // Process-lifetime coroutine scope for fire-and-forget work that must outlive

@@ -1,3 +1,5 @@
+@file:OptIn(dev.zacsweers.metro.gradle.ExperimentalMetroGradleApi::class)
+
 plugins {
     id("melon.kmp-library")
     alias(libs.plugins.metro)

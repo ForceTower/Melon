@@ -94,6 +94,7 @@ androidx-navigation3-ui = { module = "androidx.navigation3:navigation3-ui", vers
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "android-hilt" }
 hilt-compiler = { module = "com.google.dagger:hilt-compiler", version.ref = "android-hilt" }
 androidx-hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "android-hilt-navigation-compose" }
+androidx-hilt-lifecycle-viewmodel-compose = { module = "androidx.hilt:hilt-lifecycle-viewmodel-compose", version.ref = "android-hilt-navigation-compose" }
 
 # DataStore (Android key/value persistence backing core/storage)
 androidx-datastore-preferences = { module = "androidx.datastore:datastore-preferences", version.ref = "android-datastore" }
