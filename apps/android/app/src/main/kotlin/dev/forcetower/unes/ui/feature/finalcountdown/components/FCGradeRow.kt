@@ -15,13 +15,18 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.LocalTextStyle
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +35,7 @@ import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.StrokeJoin
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.input.ImeAction
@@ -170,9 +176,37 @@ private fun ScoreField(
 ) {
     val interaction = remember { MutableInteractionSource() }
     val focused by interaction.collectIsFocusedAsState()
-    val display = row.score?.let { FinalCountdownMath.formatGrade(it) } ?: ""
     val ink4 = MaterialTheme.colorScheme.outlineVariant
     val borderColor = if (focused) accent else line
+    val focusManager = LocalFocusManager.current
+
+    // Display the canonical formatted score when not editing, but let the user
+    // type freely (digits + a single `,` or `.`) while focused. We only parse
+    // and coerce into a 0..10 Double on focus loss, which keeps mid-edit states
+    // like "4." or "4,3" from being clobbered into "4,0".
+    var text by rememberSaveable(row.id) {
+        mutableStateOf(row.score?.let { FinalCountdownMath.formatGrade(it) } ?: "")
+    }
+
+    var prevFocused by remember { mutableStateOf(false) }
+    LaunchedEffect(focused) {
+        val wasFocused = prevFocused
+        prevFocused = focused
+        if (wasFocused && !focused) {
+            val parsed = parseScore(text)
+            text = parsed?.let { FinalCountdownMath.formatGrade(it) } ?: ""
+            if (parsed != row.score) onUpdate(row.copy(score = parsed))
+        }
+    }
+
+    // Reflect external row.score changes (clear button, programmatic resets)
+    // when the field isn't actively being edited.
+    LaunchedEffect(row.score) {
+        if (!focused) {
+            val canonical = row.score?.let { FinalCountdownMath.formatGrade(it) } ?: ""
+            if (text != canonical) text = canonical
+        }
+    }
 
     Box(
         modifier = modifier
@@ -183,8 +217,8 @@ private fun ScoreField(
         contentAlignment = Alignment.Center,
     ) {
         BasicTextField(
-            value = display,
-            onValueChange = { raw -> onUpdate(row.copy(score = parseScore(raw))) },
+            value = text,
+            onValueChange = { raw -> text = sanitizeScoreInput(raw) },
             singleLine = true,
             textStyle = MaterialTheme.typography.headlineSmall.copy(
                 fontSize = 20.sp,
@@ -198,10 +232,11 @@ private fun ScoreField(
                 keyboardType = KeyboardType.Decimal,
                 imeAction = ImeAction.Done,
             ),
+            keyboardActions = KeyboardActions(onDone = { focusManager.clearFocus() }),
             interactionSource = interaction,
             modifier = Modifier.fillMaxWidth(),
             decorationBox = { inner ->
-                if (display.isEmpty()) {
+                if (text.isEmpty()) {
                     Text(
                         text = stringResource(R.string.final_countdown_row_score_placeholder),
                         style = MaterialTheme.typography.headlineSmall.copy(
@@ -314,6 +349,25 @@ private fun XGlyph(color: androidx.compose.ui.graphics.Color, size: androidx.com
         }
         drawPath(path = path, color = color, style = stroke)
     }
+}
+
+// Drop characters the decimal keyboard shouldn't have produced (some IMEs
+// surface letters or extra separators) and cap to a sane length so the field
+// can't accumulate garbage during editing. We keep both `,` and `.` so the
+// caret stays where the user typed — parsing happens later, on focus loss.
+private fun sanitizeScoreInput(raw: String): String {
+    val sb = StringBuilder()
+    var sepSeen = false
+    for (c in raw) {
+        when {
+            c.isDigit() -> sb.append(c)
+            (c == ',' || c == '.') && !sepSeen -> {
+                sb.append(c)
+                sepSeen = true
+            }
+        }
+    }
+    return sb.toString().take(5)
 }
 
 // Parse the user's keystrokes back into a 0..10 Double, or null when empty /

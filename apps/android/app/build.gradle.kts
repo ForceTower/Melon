@@ -6,13 +6,38 @@ plugins {
     alias(libs.plugins.licensee)
 }
 
+fun gitOutput(vararg args: String): String? {
+    val execOutput =
+        providers.exec {
+            commandLine("git", *args)
+            workingDir = rootDir
+            isIgnoreExitValue = true
+        }
+    return if (execOutput.result.get().exitValue == 0) {
+        execOutput.standardOutput.asText.get().trim().ifEmpty { null }
+    } else {
+        null
+    }
+}
+
+val gitVersionName =
+    gitOutput(
+        "for-each-ref",
+        "--sort=-creatordate",
+        "--count=1",
+        "--format=%(refname:short)",
+        "refs/tags/",
+    ) ?: "0.1.0"
+
+val gitVersionCode = gitOutput("rev-list", "--count", "next")?.toIntOrNull() ?: 1
+
 android {
     namespace = "dev.forcetower.unes"
 
     defaultConfig {
-        applicationId = "com.forcetower.dev"
-        versionCode = 1
-        versionName = "0.1.0"
+        applicationId = "com.forcetower.uefs"
+        versionCode = gitVersionCode
+        versionName = gitVersionName
     }
 
     buildTypes {

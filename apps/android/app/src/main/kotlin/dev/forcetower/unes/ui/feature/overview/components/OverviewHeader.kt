@@ -85,11 +85,6 @@ internal fun OverviewHeader(
         }
 
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            CircleIconButton(
-                contentDescription = stringResource(R.string.overview_search_label),
-            ) {
-                SearchGlyph()
-            }
             AvatarButton(
                 initial = avatarInitial,
                 contentDescription = stringResource(R.string.overview_avatar_label),
