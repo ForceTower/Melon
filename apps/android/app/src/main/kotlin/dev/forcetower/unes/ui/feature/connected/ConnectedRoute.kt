@@ -30,6 +30,9 @@ internal sealed interface ConnectedRoute : NavKey {
     // Pushed onto the active tab when the "Final Countdown" shortcut is tapped
     // on the Me hub. Fixture-driven calculator — no payload, no KMP wiring.
     @Serializable data object FinalCountdown : ConnectedRoute
+    // Pushed onto the Me stack when the "Licenças open source" row is tapped.
+    // Reads the bundled `artifacts.json` Licensee emits at build time.
+    @Serializable data object Licenses : ConnectedRoute
 }
 
 internal fun ConnectedTab.rootRoute(): ConnectedRoute = when (this) {

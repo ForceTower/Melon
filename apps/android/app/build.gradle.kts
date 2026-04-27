@@ -1,6 +1,9 @@
+import app.cash.licensee.LicenseeTask
+
 plugins {
     id("melon.android-application")
     alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.licensee)
 }
 
 android {
@@ -25,6 +28,47 @@ android {
                 "proguard-rules.pro",
             )
         }
+    }
+}
+
+// Licensee scans the runtime classpath at build time and emits an
+// `artifacts.json` listing every dependency's coordinates, license, and
+// declared homepage. The Licenças screen reads that JSON from assets at
+// runtime so the credits stay honest — anything bundled in the APK is
+// represented, anything missing from the JSON isn't bundled. The allowlist
+// keeps the build from failing on the typical OSS license set we ship.
+licensee {
+    allow("Apache-2.0")
+    allow("MIT")
+    allow("BSD-2-Clause")
+    allow("BSD-3-Clause")
+    allow("ISC")
+    allow("MPL-2.0")
+    allow("EPL-1.0")
+    allow("CC0-1.0")
+    allow("Unlicense")
+
+    // Play Services and Google identity libraries declare their license via
+    // URL only (no SPDX id), so allow the Android SDK terms URL explicitly —
+    // the bundled libraries that ship under it are first-party Google.
+    allowUrl("https://developer.android.com/studio/terms.html")
+    // slf4j declares MIT by URL form rather than SPDX id.
+    allowUrl("https://opensource.org/license/mit")
+}
+
+// Bundle the per-variant `artifacts.json` into the APK as an asset. AGP picks
+// up the Licensee task's output directory as a generated assets root, so the
+// JSON ends up at `assets/artifacts.json` for the runtime loader to read.
+// The Android-flavoured Licensee task is named `licenseeAndroid<Variant>`
+// (one per debug/release), distinct from the catch-all `licensee` task.
+androidComponents {
+    onVariants { variant ->
+        val capitalized = variant.name.replaceFirstChar(Char::titlecase)
+        val licenseeTask = tasks.named("licenseeAndroid$capitalized", LicenseeTask::class.java)
+        variant.sources.assets?.addGeneratedSourceDirectory(
+            licenseeTask,
+            LicenseeTask::outputDir,
+        )
     }
 }
 
@@ -62,4 +106,6 @@ dependencies {
 
     implementation(libs.androidx.credentials)
     implementation(libs.androidx.credentials.play.services.auth)
+
+    implementation(libs.androidx.biometric)
 }

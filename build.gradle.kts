@@ -10,4 +10,5 @@ plugins {
     alias(libs.plugins.metro) apply false
     alias(libs.plugins.androidx.room) apply false
     alias(libs.plugins.skie) apply false
+    alias(libs.plugins.licensee) apply false
 }

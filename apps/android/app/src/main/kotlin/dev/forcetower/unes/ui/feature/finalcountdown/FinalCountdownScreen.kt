@@ -78,7 +78,7 @@ internal fun FinalCountdownScreen(
     bottomInset: Dp = 0.dp,
 ) {
     var rows by rememberSaveable(stateSaver = FCRowsSaver) {
-        mutableStateOf(FinalCountdownFixtures.borderline)
+        mutableStateOf(FinalCountdownFixtures.defaultRows)
     }
     var weighted by rememberSaveable { mutableStateOf(false) }
 
@@ -163,7 +163,7 @@ internal fun FinalCountdownScreen(
                         FCGradeRow(
                             row = row,
                             weighted = weighted,
-                            canRemove = rows.size > 1,
+                            canRemove = true,
                             onUpdate = { next ->
                                 rows = rows.toMutableList().also { it[index] = next }
                             },
@@ -611,13 +611,23 @@ private fun LegendFooter(modifier: Modifier = Modifier) {
                 append(stringResource(R.string.final_countdown_legend_pass_value))
             }
             append(stringResource(R.string.final_countdown_legend_middle))
+            append(" ")
             withStyle(SpanStyle(color = ink, fontWeight = FontWeight.SemiBold)) {
                 append(stringResource(R.string.final_countdown_legend_final_band))
             }
+            append(" ")
             append(stringResource(R.string.final_countdown_legend_after_final))
+            append(" ")
             withStyle(SpanStyle(color = ink, fontWeight = FontWeight.SemiBold)) {
                 append(stringResource(R.string.final_countdown_legend_fail_band))
             }
+            append(stringResource(R.string.final_countdown_legend_low_intro))
+            append(" ")
+            withStyle(SpanStyle(color = ink, fontWeight = FontWeight.SemiBold)) {
+                append(stringResource(R.string.final_countdown_legend_low_band))
+            }
+            append(" ")
+            append(stringResource(R.string.final_countdown_legend_low_outro))
             append(stringResource(R.string.final_countdown_legend_outro))
         }
         Text(

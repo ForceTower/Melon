@@ -1,8 +1,13 @@
 package dev.forcetower.unes.ui.feature.settings.components
 
+import android.app.KeyguardManager
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import android.os.Build
+import androidx.activity.compose.LocalActivity
+import androidx.biometric.BiometricManager
+import androidx.biometric.BiometricPrompt
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -34,6 +39,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import dev.forcetower.unes.R
 import dev.forcetower.unes.designsystem.theme.melon
 import dev.forcetower.unes.ui.feature.settings.SettingsTone
@@ -41,11 +48,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 // Credential vault card — header pill toggles reveal/hide; copy is gated on
-// the password being visible. Mirrors `CredentialCard.swift`. The biometric
-// reauth on reveal that iOS performs is intentionally not ported yet — the
-// Android `androidx.biometric` dependency isn't on the classpath, and iOS
-// already gracefully degrades to "let the reveal through" when no biometric
-// policy is enrolled, so the screens stay behaviourally consistent.
+// the password being visible. Reveal is gated behind a device-owner
+// authentication prompt (biometric or screen-lock fallback) so a borrowed
+// phone can't pop the password by tapping. Mirrors `CredentialCard.swift`.
 @Composable
 internal fun CredentialCard(
     username: String,
@@ -61,6 +66,11 @@ internal fun CredentialCard(
     val tone = resolveTone(SettingsTone.Plum)
     val masked = remember(password) { "•".repeat(password.length.coerceAtLeast(8)) }
 
+    val context = LocalContext.current
+    val activity = LocalActivity.current as? FragmentActivity
+    val promptTitle = stringResource(R.string.settings_credentials_biometric_prompt_title)
+    val promptSubtitle = stringResource(R.string.settings_credentials_biometric_prompt_subtitle)
+
     Column(
         modifier = modifier
             .fillMaxWidth()
@@ -71,7 +81,23 @@ internal fun CredentialCard(
             .padding(top = 14.dp, bottom = 12.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        Header(tone = tone, revealed = revealed, onToggle = onToggleReveal)
+        Header(
+            tone = tone,
+            revealed = revealed,
+            onToggle = {
+                if (revealed) {
+                    onToggleReveal()
+                } else {
+                    requestBiometricReveal(
+                        context = context,
+                        activity = activity,
+                        title = promptTitle,
+                        subtitle = promptSubtitle,
+                        onSuccess = onToggleReveal,
+                    )
+                }
+            },
+        )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
@@ -260,4 +286,53 @@ private fun CredentialField(label: String, value: String, canCopy: Boolean) {
 private fun copyToClipboard(context: Context, label: String, value: String) {
     val clipboard = context.getSystemService(Context.CLIPBOARD_SERVICE) as? ClipboardManager ?: return
     clipboard.setPrimaryClip(ClipData.newPlainText(label, value))
+}
+
+// Hiding the password is free; revealing demands a live device-owner check so
+// a borrowed phone can't expose it by tapping. Mirrors iOS'
+// `LAPolicy.deviceOwnerAuthentication` — biometric primary with screen-lock
+// fallback. If the device has no lock at all, we let the reveal through
+// rather than strand the user (same fallback iOS takes when
+// `canEvaluatePolicy` is false). Combined BIOMETRIC_STRONG | DEVICE_CREDENTIAL
+// is only valid on API 30+; below that we use the deprecated
+// `setDeviceCredentialAllowed(true)` which expresses the same intent.
+private fun requestBiometricReveal(
+    context: Context,
+    activity: FragmentActivity?,
+    title: String,
+    subtitle: String,
+    onSuccess: () -> Unit,
+) {
+    val keyguard = context.getSystemService(Context.KEYGUARD_SERVICE) as? KeyguardManager
+    if (activity == null || keyguard?.isDeviceSecure != true) {
+        onSuccess()
+        return
+    }
+
+    val info = BiometricPrompt.PromptInfo.Builder()
+        .setTitle(title)
+        .setSubtitle(subtitle)
+        .apply {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+                setAllowedAuthenticators(
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG or
+                        BiometricManager.Authenticators.DEVICE_CREDENTIAL,
+                )
+            } else {
+                @Suppress("DEPRECATION")
+                setDeviceCredentialAllowed(true)
+            }
+        }
+        .build()
+
+    val prompt = BiometricPrompt(
+        activity,
+        ContextCompat.getMainExecutor(context),
+        object : BiometricPrompt.AuthenticationCallback() {
+            override fun onAuthenticationSucceeded(result: BiometricPrompt.AuthenticationResult) {
+                onSuccess()
+            }
+        },
+    )
+    prompt.authenticate(info)
 }

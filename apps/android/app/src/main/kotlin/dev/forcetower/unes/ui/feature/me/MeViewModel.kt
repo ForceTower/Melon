@@ -31,6 +31,13 @@ internal sealed interface MeIntent : UiIntent {
     data object BeginLogout : MeIntent
     data object CancelLogout : MeIntent
     data class ConfirmLogout(val keepData: Boolean) : MeIntent
+    // Bounces the state machine back to Idle. The screen fires this when the
+    // goodbye view's CTA is tapped — Hilt scopes this VM to the Activity, so
+    // without an explicit reset the next time the Me tab mounts (after the
+    // user signs back in) `logoutStep` is still `LoggedOut` and the goodbye
+    // view sticks. iOS doesn't need this because `RootView` swaps the whole
+    // `ConnectedView` destination, which destroys the VM.
+    data object ResetLogout : MeIntent
 }
 
 internal sealed interface MeEffect : UiEffect
@@ -74,6 +81,9 @@ internal class MeViewModel @Inject constructor(
             MeIntent.BeginLogout -> setState { copy(logoutStep = LogoutStep.Confirming) }
             MeIntent.CancelLogout -> setState { copy(logoutStep = LogoutStep.Idle) }
             is MeIntent.ConfirmLogout -> performLogout(intent.keepData)
+            MeIntent.ResetLogout -> setState {
+                copy(logoutStep = LogoutStep.Idle, profileRaw = null, overallScore = null)
+            }
         }
     }
 

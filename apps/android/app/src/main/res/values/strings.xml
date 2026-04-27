@@ -785,6 +785,9 @@
     <string name="final_countdown_legend_final_band">3,0 ≤ m &lt; 7,0</string>
     <string name="final_countdown_legend_after_final">e reprovação direta para</string>
     <string name="final_countdown_legend_fail_band">m &lt; 3,0</string>
+    <string name="final_countdown_legend_low_intro">, contudo, sua experiência pode variar, eu já ouvi histórias que mesmo tendo média</string>
+    <string name="final_countdown_legend_low_band">m &gt;= 2.4</string>
+    <string name="final_countdown_legend_low_outro">você ainda consegue fazer a final, mas vai precisar de um literal 10 para passar</string>
     <string name="final_countdown_legend_outro">. Deixe uma avaliação em branco para ver quanto precisa tirar nela.</string>
     <string name="final_countdown_signature_title">final countdown</string>
     <string name="final_countdown_signature_caption">faça as contas antes que a final faça você</string>
@@ -858,5 +861,74 @@
     <string name="me_about_copy_label">Copiar informações</string>
     <string name="me_about_copy_done">Copiado para a área de transferência</string>
     <string name="me_about_footer">◦ feito com ♥ em feira de santana ◦</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Header chrome -->
+    <string name="licenses_back">Voltar</string>
+    <!-- "◦ BUILD 1842 · V0.1.0" — top-right monospace stamp on the header. -->
+    <string name="licenses_header_meta_format">◦ BUILD %1$s · V%2$s</string>
+    <!-- "◦ CRÉDITOS · 126 PACOTES" — eyebrow above the editorial title. Plural
+         is folded into a single format because the prototype keeps the noun
+         fixed regardless of count. -->
+    <string name="licenses_header_eyebrow_format">◦ CRÉDITOS · %1$d PACOTES</string>
+    <!-- The title is split so the second word can be italicised in the accent
+         color (matches the JSX `<em className="accent-text">open source</em>`
+         and iOS `Text("open source").font(UNESFont.serif(40, italic: true))`). -->
+    <string name="licenses_header_title_lead">"Licenças "</string>
+    <string name="licenses_header_title_accent">open source</string>
+    <string name="licenses_header_subtitle">UNES é construído sobre o trabalho de centenas de pessoas que compartilham seu código abertamente. Aqui está quem.</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Distribution summary card -->
+    <string name="licenses_summary_eyebrow">◦ DISTRIBUIÇÃO</string>
+    <plurals name="licenses_summary_packages">
+        <item quantity="one">pacote direto</item>
+        <item quantity="other">pacotes diretos</item>
+    </plurals>
+    <plurals name="licenses_summary_families">
+        <item quantity="one">◦ %1$d FAMÍLIA</item>
+        <item quantity="other">◦ %1$d FAMÍLIAS</item>
+    </plurals>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Tribute card -->
+    <string name="licenses_tribute_eyebrow">◦ UM OBRIGADO COLETIVO</string>
+    <!-- Body is split into three runs so the middle phrase can be italicised
+         and tinted amber. Matches `LicensesTributeCard` (iOS) verbatim. -->
+    <string name="licenses_tribute_body_lead">"Nada disso aqui existiria sem quem "</string>
+    <string name="licenses_tribute_body_accent">publicou seu código</string>
+    <string name="licenses_tribute_body_tail">" de graça."</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Search + filter -->
+    <string name="licenses_search_placeholder">buscar por pacote ou licença</string>
+    <string name="licenses_search_clear">Limpar busca</string>
+    <string name="licenses_filter_all">todos</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Group rows -->
+    <string name="licenses_row_unknown_group">grupo desconhecido</string>
+    <!-- "Distribuído por {coords} sob a licença {LicenseId}. O software é fornecido…"
+         — split into runs so the coords and license id are weighted-bold
+         while the surrounding prose stays in the muted ink-3 tone. -->
+    <string name="licenses_row_blurb_lead">Distribuído por</string>
+    <string name="licenses_row_blurb_under">sob a licença</string>
+    <string name="licenses_row_blurb_tail">. O software é fornecido \"como está\", sem garantia de qualquer espécie.</string>
+    <string name="licenses_action_text_format">Texto · %1$s</string>
+    <string name="licenses_action_text_fallback">licença</string>
+    <string name="licenses_action_copied">copiado</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Empty states -->
+    <string name="licenses_empty_artifact_title">Sem licenças bundladas</string>
+    <string name="licenses_empty_artifact_subtitle">Rode o build uma vez para gerar artifacts.json no diretório de assets do app.</string>
+    <string name="licenses_empty_title">nada por aqui</string>
+    <string name="licenses_empty_subtitle">TENTE OUTRA BUSCA OU FILTRO</string>
+    <!-- endregion -->
+
+    <!-- region Licenças open source · Footer signature -->
+    <string name="licenses_footer_signature">unes</string>
+    <string name="licenses_footer_build_format">V%1$s · BUILD %2$s</string>
+    <string name="licenses_footer_compliance">EM CONFORMIDADE COM OS TERMOS\nDE CADA LICENÇA REPRODUZIDA ACIMA</string>
     <!-- endregion -->
 </resources>

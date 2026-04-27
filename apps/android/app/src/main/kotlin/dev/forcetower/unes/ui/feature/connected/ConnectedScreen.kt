@@ -53,6 +53,7 @@ import dev.forcetower.unes.ui.feature.overview.OverviewScreen
 import dev.forcetower.unes.ui.feature.schedule.ScheduleScreen
 import dev.forcetower.unes.ui.feature.calendar.CalendarScreen
 import dev.forcetower.unes.ui.feature.finalcountdown.FinalCountdownScreen
+import dev.forcetower.unes.ui.feature.licenses.LicensesScreen
 import dev.forcetower.unes.ui.feature.settings.SettingsScreen
 
 // The authenticated shell — hosts the liquid tab bar and routes to each
@@ -170,6 +171,12 @@ fun ConnectedScreen(
                 }
                 entry<ConnectedRoute.FinalCountdown> {
                     FinalCountdownScreen(
+                        onBack = { navigator.goBack() },
+                        bottomInset = bottomInset,
+                    )
+                }
+                entry<ConnectedRoute.Licenses> {
+                    LicensesScreen(
                         onBack = { navigator.goBack() },
                         bottomInset = bottomInset,
                     )

@@ -179,7 +179,7 @@ internal fun MeScreen(
                                     recipient = feedbackRecipient,
                                     body = feedbackBody,
                                 )
-                                else -> Unit
+                                SettingsRowKind.Licenses -> connectedNavigator.navigate(ConnectedRoute.Licenses)
                             }
                         },
                     )
@@ -218,7 +218,14 @@ internal fun MeScreen(
     if (state.logoutStep == LogoutStep.LoggedOut) {
         LoggedOutView(
             firstName = state.logoutFirstName,
-            onSignIn = onLoggedOut,
+            // Reset *before* bubbling the nav callback up: Hilt scopes
+            // MeViewModel to the Activity, so without this the VM sticks at
+            // `LoggedOut` and the goodbye view re-appears the next time the
+            // Me tab mounts after the user signs back in.
+            onSignIn = {
+                vm.onIntent(MeIntent.ResetLogout)
+                onLoggedOut()
+            },
         )
     }
 }
